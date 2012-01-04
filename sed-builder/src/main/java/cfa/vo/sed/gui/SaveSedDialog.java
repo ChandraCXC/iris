@@ -1,0 +1,352 @@
+/**
+ * Copyright (C) Smithsonian Astrophysical Observatory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/*
+ * SaveConfigurationDialog.java
+ *
+ * Created on May 25, 2011, 12:03:17 AM
+ */
+
+package cfa.vo.sed.gui;
+
+import cfa.vo.iris.gui.NarrowOptionPane;
+import cfa.vo.iris.sed.SedlibSedManager.ExtSed;
+import cfa.vo.iris.utils.SpaceTrimmer;
+import cfa.vo.sed.builder.SedBuilder;
+import cfa.vo.sedlib.io.SedFormat;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JFileChooser;
+
+/**
+ *
+ * @author olaurino
+ */
+public final class SaveSedDialog extends javax.swing.JDialog {
+
+    private boolean savable = false;
+    public static final String PROP_SAVABLE = "savable";
+
+    /**
+     * Get the value of savable
+     *
+     * @return the value of savable
+     */
+    public boolean isSavable() {
+        return savable;
+    }
+
+    /**
+     * Set the value of savable
+     *
+     * @param savable new value of savable
+     */
+    public void setSavable(boolean savable) {
+        boolean oldSavable = this.savable;
+        this.savable = savable;
+        firePropertyChange(PROP_SAVABLE, oldSavable, savable);
+    }
+
+    private ExtSed sed;
+
+
+    private String sedName;
+
+    /**
+     * Get the value of sedName
+     *
+     * @return the value of sedName
+     */
+    public String getSedName() {
+        return sedName;
+    }
+
+    /**
+     * Set the value of sedName
+     *
+     * @param sedName new value of sedName
+     */
+    public void setSedName(String sedName) {
+        this.sedName = sedName;
+    }
+
+    private List<SedFormat> sedFormats = new ArrayList();
+
+    public static final String PROP_SEDFORMATS = "sedFormats";
+
+    /**
+     * Get the value of sedFormats
+     *
+     * @return the value of sedFormats
+     */
+    public List<SedFormat> getSedFormats() {
+        return sedFormats;
+    }
+
+    /**
+     * Set the value of sedFormats
+     *
+     * @param sedFormats new value of sedFormats
+     */
+    public void setSedFormats(List<SedFormat> sedFormats) {
+        List<SedFormat> oldSedFormats = this.sedFormats;
+        this.sedFormats = sedFormats;
+        firePropertyChange(PROP_SEDFORMATS, oldSedFormats, sedFormats);
+    }
+
+
+    private SedFormat format;
+    public static final String PROP_FORMAT = "format";
+
+    /**
+     * Get the value of format
+     *
+     * @return the value of format
+     */
+    public SedFormat getFormat() {
+        return format;
+    }
+
+    /**
+     * Set the value of format
+     *
+     * @param format new value of format
+     */
+    public void setFormat(SedFormat format) {
+        SedFormat oldFormat = this.format;
+        this.format = format;
+        firePropertyChange(PROP_FORMAT, oldFormat, format);
+        if(!filePath.isEmpty()) {
+            setFilePath(filePath.replaceAll(getExtension(new File(filePath)), format.exten()));
+        }
+    }
+
+
+    private String filePath = "";
+    public static final String PROP_FILEPATH = "filePath";
+
+    /**
+     * Get the value of filePath
+     *
+     * @return the value of filePath
+     */
+    public String getFilePath() {
+        return filePath;
+    }
+
+    /**
+     * Set the value of filePath
+     *
+     * @param filePath new value of filePath
+     */
+    public void setFilePath(String filePath) {
+        filePath = SpaceTrimmer.sideTrim(filePath);
+        String oldFilePath = this.filePath;
+        this.filePath = filePath;
+        File f = new File(filePath);
+        setSavable(!f.isDirectory());
+        firePropertyChange(PROP_FILEPATH, oldFilePath, filePath);
+    }
+
+
+    /** Creates new form SaveConfigurationDialog */
+    public SaveSedDialog(java.awt.Frame parent, ExtSed sed) {
+        super(parent, true);
+        setSedName(sed.getId());
+        initComponents();
+        if(sed.getNumberOfSegments()==0)
+            warningText.setText("Warning: SED is empty");
+        List formats = new ArrayList();
+        formats.add(SedFormat.VOT);
+        formats.add(SedFormat.FITS);
+        setSedFormats(formats);
+        this.setLocationRelativeTo(parent);
+        this.getRootPane().setDefaultButton(jButton2);
+    }
+
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
+
+        jTextField2 = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox();
+        jLabel1 = new javax.swing.JLabel();
+        warningText = new javax.swing.JLabel();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Save Sed File");
+
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${filePath}"), jTextField2, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        jButton1.setText("Browse...");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1browse(evt);
+            }
+        });
+
+        jButton2.setText("Save");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${savable}"), jButton2, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                save(evt);
+            }
+        });
+
+        org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${sedFormats}");
+        org.jdesktop.swingbinding.JComboBoxBinding jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, jComboBox1);
+        bindingGroup.addBinding(jComboBoxBinding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${format}"), jComboBox1, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        bindingGroup.addBinding(binding);
+
+        jLabel1.setText("File Format");
+
+        warningText.setForeground(new java.awt.Color(153, 0, 51));
+
+        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(layout.createSequentialGroup()
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(jLabel1)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jButton2))
+                    .add(layout.createSequentialGroup()
+                        .add(jButton1)
+                        .add(18, 18, 18)
+                        .add(warningText, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE))
+                    .add(jTextField2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 301, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jTextField2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(8, 8, 8)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(layout.createSequentialGroup()
+                        .add(jButton1)
+                        .add(7, 7, 7))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                        .add(warningText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(13, 13, 13)))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jButton2)
+                    .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jLabel1))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        bindingGroup.bind();
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1browse(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1browse
+        JFileChooser jfc = SedBuilder.getWorkspace().getFileChooser();
+        File l = new File(filePath);
+        if(l.isDirectory())
+            jfc.setCurrentDirectory(l);
+        jfc.setApproveButtonText("Select");
+        jfc.setSelectedFile(new File(sedName+"."+format.exten()));
+        int returnval = jfc.showSaveDialog(this);
+        if(returnval == JFileChooser.APPROVE_OPTION) {
+            File f = jfc.getSelectedFile();
+            String ext = getExtension(f).isEmpty() ? "."+format.exten() : "";
+            setFilePath(f.getAbsolutePath()+ext);
+            setFilePath(f.getAbsolutePath().replaceAll(getExtension(new File(filePath)), format.exten()));
+        }
+}//GEN-LAST:event_jButton1browse
+
+    private void save(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_save
+        try {
+
+            File f = new File(filePath);
+
+            boolean overwrite = true;
+            int resp = NarrowOptionPane.YES_OPTION;
+                if(f.exists()) {
+                    resp = NarrowOptionPane.showConfirmDialog(SedBuilder.getWorkspace().getRootFrame(),
+                        filePath+" exists, do you want to overwrite it?", "File exists", NarrowOptionPane.YES_NO_OPTION);
+            }
+
+            overwrite = (resp == NarrowOptionPane.YES_OPTION);
+
+            if(overwrite) {
+                sed.write(filePath, format);
+            
+                NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
+                        "Saved file "+filePath, "Saved File", NarrowOptionPane.INFORMATION_MESSAGE);
+            }
+        } catch (Exception ex) {
+            NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
+                    ex.getMessage(), "Error saving file", NarrowOptionPane.ERROR_MESSAGE);
+        } finally {
+            this.dispose();
+        }
+    }//GEN-LAST:event_save
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JLabel warningText;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
+    // End of variables declaration//GEN-END:variables
+
+    /*
+     * Get the extension of a file.
+     */
+    private String getExtension(File f) {
+        String ext = "";
+        String s = f.getName();
+        int i = s.lastIndexOf('.');
+
+        if (i > 0 &&  i < s.length() - 1) {
+            ext = s.substring(i+1).toLowerCase();
+        }
+
+        return ext;
+    }
+
+}

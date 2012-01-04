@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.1"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.1"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.ivoa.net/xml/VOTable/v1.1"
+  >
+  <RESOURCE utype="Spectrum.Sed">
+    <TABLE utype="Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="Spectrum.DataModel" value="Spectrum-1.0"/>
+      <PARAM arraysize="*" datatype="char" name="DatasetType" utype="Spectrum.Type" value="Photometry Point"/>
+      <GROUP utype="Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="TargetName" ucd="meta.id;src" utype="Spectrum.Target.Name" value="3C 066A"/>
+        <PARAM arraysize="2" datatype="double" name="SpatialAxisCoverageLocation" ucd="pos.eq" utype="Spectrum.Target.Pos" value="35.665048 43.035500"/>
+      </GROUP>
+      <GROUP utype="Spectrum.Char">
+        <GROUP utype="Spectrum.Char.SpatialAxis">
+          <GROUP utype="Spectrum.Char.SpatialAxis.Coverage">
+            <GROUP utype="Spectrum.Char.SpatialAxis.Coverage.Location">
+              <PARAM arraysize="2" datatype="double" name="SpatialAxisCoverageLocation" ucd="pos.eq" utype="Spectrum.Char.SpatialAxis.Coverage.Location.Value" value="35.665048 43.035500"/>
+            </GROUP>
+            <GROUP utype="Spectrum.Char.SpatialAxis.Coverage.Bounds">
+              <PARAM datatype="double" name="SpatialAxisCoverageBoundsExtent" ucd="instr.fov" utype="Spectrum.Char.SpatialAxis.Coverage.Bounds.Extent"/>
+            </GROUP>
+          </GROUP>
+        </GROUP>
+        <GROUP utype="Spectrum.Char.TimeAxis">
+          <GROUP utype="Spectrum.Char.TimeAxis.Coverage">
+            <GROUP utype="Spectrum.Char.TimeAxis.Coverage.Location">
+              <PARAM datatype="double" name="TimeAxisCoverageLocation" ucd="time.epoch" utype="Spectrum.Char.TimeAxis.Coverage.Location.Value"/>
+            </GROUP>
+            <GROUP utype="Spectrum.Char.TimeAxis.Coverage.Bounds">
+              <PARAM datatype="double" name="TimeAxisCoverageBoundsExtent" ucd="time.duration" utype="Spectrum.Char.TimeAxis.Coverage.Bounds.Extent"/>
+            </GROUP>
+          </GROUP>
+        </GROUP>
+        <GROUP utype="Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralCoord" ucd="em.freq" unit="Hz" utype="Spectrum.Char.SpectralAxis.Name" value="SpectralCoord"/>
+          <PARAM arraysize="*" datatype="char" name="SpectralAxisCalibration" ucd="meta.code.qual" utype="Spectrum.Char.SpectralAxis.Calibration" value="Calibrated"/>
+          <GROUP utype="Spectrum.Char.SpectralAxis.Coverage">
+            <GROUP utype="Spectrum.Char.SpectralAxis.Coverage.Location">
+              <PARAM datatype="double" name="SpectralAxisCoverageLocation" ucd="instr.bandpass" utype="Spectrum.Char.SpectralAxis.Coverage.Location.Value"/>
+            </GROUP>
+            <GROUP utype="Spectrum.Char.SpectralAxis.Coverage.Bounds">
+              <PARAM datatype="double" name="SpectralAxisCoverageBoundsExtent" ucd="instr.bandwidth" utype="Spectrum.Char.SpectralAxis.Coverage.Bounds.Extent"/>
+              <PARAM datatype="double" name="SpectralAxisCoverageBoundsStart" ucd="em.freq;stat.min" utype="Spectrum.Char.SpectralAxis.Coverage.Bounds.Min"/>
+              <PARAM datatype="double" name="SpectralAxisCoverageBoundsStop" ucd="em.freq;stat.max" utype="Spectrum.Char.SpectralAxis.Coverage.Bounds.Max"/>
+            </GROUP>
+          </GROUP>
+        </GROUP>
+        <GROUP utype="Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="Flux" ucd="phot.flux.density;em.freq" utype="Spectrum.Char.FluxAxis.Name" value="Flux"/>
+          <PARAM arraysize="*" datatype="char" name="FluxAxisCalibration" ucd="meta.code.qual" utype="Spectrum.Char.FluxAxis.Calibration" value="Calibrated"/>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="Spectrum.Curation.Publisher" value="Me"/>
+      </GROUP>
+      <GROUP utype="Spectrum.DataID">
+        <PARAM arraysize="*" datatype="char" name="Title" ucd="meta.title;meta.dataset" utype="Spectrum.DataID.Title" value="Photometric Data for 3C 066A, calculated by NED from available published values"/>
+        <PARAM arraysize="*" datatype="char" name="Creator" utype="Spectrum.DataID.Creator" value="Me"/>
+        <PARAM arraysize="*" datatype="char" name="CreationType" utype="Spectrum.DataID.CreationType" value="Derived"/>
+      </GROUP>
+      <GROUP utype="Spectrum.Data">
+        <GROUP utype="Spectrum.Data.SpectralAxis">
+          <FIELDref ref="DataSpectralValue"/>
+          <PARAM ID="DataSpectralUcd" arraysize="*" datatype="char" name="DataSpectralUcd" value="em.freq"/>
+          <PARAM ID="DataSpectralUnit" arraysize="*" datatype="char" name="DataSpectralUnit" value="Hz"/>
+        </GROUP>
+        <GROUP utype="Spectrum.Data.FluxAxis">
+          <FIELDref ref="DataFluxValue"/>
+          <PARAM ID="DataFluxUcd" arraysize="*" datatype="char" name="DataFluxUcd" value="phot.flux.density;em.freq"/>
+          <PARAM ID="DataFluxUnit" arraysize="*" datatype="char" name="DataFluxUnit" ucd="phot.flux.density;em.freq;unit" value="Jy"/>
+          <GROUP utype="Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="DataFluxStatErr"/>
+          </GROUP>
+        </GROUP>
+        <GROUP ID="Data.SpectralAxis.Published">
+          <FIELDref ref="DataPointNumber"/>
+          <FIELDref ref="DataSpectralPassBand"/>
+        </GROUP>
+        <GROUP ID="Data.FluxAxis.Published">
+          <FIELDref ref="DataFluxPublishedValue"/>
+          <FIELDref ref="DataFluxPublishedStatErr"/>
+          <FIELDref ref="DataFluxPublishedUnit"/>
+        </GROUP>
+        <GROUP ID="Data.Published.Info">
+          <FIELDref ref="DataRefcode"/>
+          <FIELDref ref="DataSignificance"/>
+          <FIELDref ref="DataSpectralPublishedValue"/>
+          <FIELDref ref="DataFrequencyMode"/>
+          <FIELDref ref="DataTargetPos"/>
+          <FIELDref ref="DataSpatialMode"/>
+          <FIELDref ref="DataQualifiers"/>
+          <FIELDref ref="DataComments"/>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="DataSpectralValue" datatype="double" name="DataSpectralValue" ucd="em.freq" unit="Hz" utype="Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="DataFluxValue" datatype="double" name="DataFluxValue" ucd="phot.flux.density;em.freq" unit="Jy" utype="Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="DataFluxStatErr" datatype="double" name="DataFluxStatErr" ucd="phot.flux.density;em.freq;stat.error" unit="Jy" utype="Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <FIELD ID="DataPointNumber" datatype="int" name="DataPointNumber" ucd="meta.number;phot.mag"/>
+      <FIELD ID="DataSpectralPassBand" arraysize="*" datatype="char" name="DataSpectralPassBand" ucd="instr.bandpass"/>
+      <FIELD ID="DataFluxPublishedValue" datatype="double" name="DataFluxPublishedValue" ucd="em.freq"/>
+      <FIELD ID="DataFluxPublishedStatErr" datatype="double" name="DataFluxPublishedStatErr" ucd="phot.flux.density;em.freq;stat.error"/>
+      <FIELD ID="DataFluxPublishedUnit" arraysize="*" datatype="char" name="DataFluxPublishedUnit"/>
+      <FIELD ID="DataRefcode" arraysize="*" datatype="char" name="DataRefcode" ucd="meta.bib.bibcode"/>
+      <FIELD ID="DataSignificance" arraysize="*" datatype="char" name="DataSignificance" ucd="meta.code.qual"/>
+      <FIELD ID="DataSpectralPublishedValue" arraysize="*" datatype="char" name="DataSpectralPublishedValue" ucd="em.freq"/>
+      <FIELD ID="DataFrequencyMode" arraysize="*" datatype="char" name="DataFrequencyMode" ucd="meta.note;src"/>
+      <FIELD ID="DataTargetPos" arraysize="*" datatype="char" name="DataTargetPos" ucd="pos.eq;src"/>
+      <FIELD ID="DataSpatialMode" arraysize="*" datatype="char" name="DataSpatialMode" ucd="meta.note;src"/>
+      <FIELD ID="DataQualifiers" arraysize="*" datatype="char" name="DataQualifiers" ucd="meta.note;src"/>
+      <FIELD ID="DataComments" arraysize="*" datatype="char" name="DataComments" ucd="meta.note;src"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>8.5E11</TD>
+            <TD>0.70</TD>
+            <TD>0.05</TD>
+            <TD>3</TD>
+            <TD>4-8 keV (BeppoSAX)  </TD>
+            <TD>2.2E-15</TD>
+            <TD>NaN</TD>
+            <TD>W m^-2^             </TD>
+            <TD>2005A&amp;A...433.1163D</TD>
+            <TD>no uncertainty reported</TD>
+            <TD>       6   keV       </TD>
+            <TD> Broad-band measurement</TD>
+            <TD>
+            </TD>
+            <TD> Flux integrated from map</TD>
+            <TD>Observation made on 1999.01.31          </TD>
+            <TD>Averaged new and previously published data;Extinction-corrected for Milky Way; NED frequency assigned tomid-point of band in keV</TD>
+          </TR>
+          <TR>
+            <TD>1.0E12</TD>
+            <TD>0.63</TD>
+            <TD>0.03</TD>
+            <TD>4</TD>
+            <TD>0.4-10 keV (XMM)    </TD>
+            <TD>2.1E-12</TD>
+            <TD>NaN</TD>
+            <TD>erg cm^-2^ s^-1^    </TD>
+            <TD>2006A&amp;A...453..829F</TD>
+            <TD>no uncertainty reported</TD>
+            <TD>    5.20   keV       </TD>
+            <TD> Broad-band measurement</TD>
+            <TD>02 22 39.6 +43 02 08 (J2000)</TD>
+            <TD> Flux integrated from map</TD>
+            <TD>Single PL model                         </TD>
+            <TD>From reprocessed raw data; NED frequency assigned tomid-point of band in keV</TD>
+          </TR>
+          <TR>
+            <TD>1.4E12</TD>
+            <TD>0.52</TD>
+            <TD>0.05</TD>
+            <TD>5</TD>
+            <TD>0.4-10 keV (XMM)    </TD>
+            <TD>2.4E-12</TD>
+            <TD>NaN</TD>
+            <TD>erg cm^-2^ s^-1^    </TD>
+            <TD>2006A&amp;A...453..829F</TD>
+            <TD>no uncertainty reported</TD>
+            <TD>    5.20   keV       </TD>
+            <TD> Broad-band measurement</TD>
+            <TD>02 22 39.6 +43 02 08 (J2000)</TD>
+            <TD> Flux integrated from map</TD>
+            <TD>Broken PL model                         </TD>
+            <TD>From reprocessed raw data; NED frequency assigned tomid-point of band in keV</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+  </RESOURCE>
+</VOTABLE>
