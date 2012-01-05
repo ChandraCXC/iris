@@ -24,6 +24,11 @@
             <artifactId>commons-codec</artifactId>
             <version>1.4</version>
         </dependency>
+        <dependency>
+            <groupId>jsamp</groupId>
+            <artifactId>jsamp</artifactId>
+            <version>1.2</version>
+        </dependency>
     </dependencies>
 
     <build>
