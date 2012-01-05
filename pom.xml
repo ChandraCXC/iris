@@ -128,7 +128,7 @@
 
     <distributionManagement>
         <repository>
-            <id>vao-repository</id>
+            <id>vao-deploy-repository</id>
             <name>vaotest2.tuc.noao.edu-releases</name>
             <url>http://vaotest2.tuc.noao.edu:8080/artifactory/libs-snapshot-local</url>
         </repository>
