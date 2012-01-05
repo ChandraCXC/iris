@@ -38,11 +38,6 @@
       <version>1.0.3</version>
     </dependency>
     <dependency>
-      <groupId>AbsoluteLayout</groupId>
-      <artifactId>AbsoluteLayout</artifactId>
-      <version>1.0</version>
-    </dependency>
-    <dependency>
       <groupId>net.java.dev.appframework</groupId>
       <artifactId>appframework</artifactId>
       <version>1.03</version>
@@ -57,8 +52,14 @@
       <groupId>org.uispec4j</groupId>
       <artifactId>uispec4j</artifactId>
       <version>2.4</version>
+      <classifier>jdk16</classifier>
       <scope>test</scope>
       <type>jar</type>
+    </dependency>
+    <dependency>
+      <groupId>AbsoluteLayout</groupId>
+      <artifactId>AbsoluteLayout</artifactId>
+      <version>1.0</version>
     </dependency>
   </dependencies>
 
