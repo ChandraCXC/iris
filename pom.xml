@@ -126,13 +126,34 @@
         </plugins>
     </reporting>
 
+    <repositories>
+
+        <repository>
+            <id>vao-deploy-repository</id>
+            <name>vaotest2.tuc.noao.edu-releases</name>
+            <url>http://vaotest2.tuc.noao.edu:8080/artifactory/repo</url>
+        </repository>
+        <repository>
+            <url>http://download.java.net/maven/2/</url>
+            <id>beans-binding</id>
+            <layout>default</layout>
+            <name>Repository for library Library[beans-binding]</name>
+        </repository>
+        <repository>
+            <url>http://download.java.net/maven/2</url>
+            <id>metro</id>
+            <layout>default</layout>
+            <name>Repository for library[metro]</name>
+        </repository>
+    </repositories>
+
     <distributionManagement>
         <repository>
             <id>vao-deploy-repository</id>
             <name>vaotest2.tuc.noao.edu-releases</name>
             <url>http://vaotest2.tuc.noao.edu:8080/artifactory/libs-snapshot-local</url>
         </repository>
-  </distributionManagement>
+    </distributionManagement>
   
 </project>
 
