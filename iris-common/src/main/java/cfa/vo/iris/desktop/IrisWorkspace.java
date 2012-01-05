@@ -23,9 +23,12 @@ public class IrisWorkspace implements IWorkspace {
 
     private ISedManager sedManager;
 
-    public IrisWorkspace(IrisDesktop desktop) {
-        this.mainview = desktop;
+    public IrisWorkspace() {
         sedManager = new SedlibSedManager();
+    }
+
+    public void setDesktop(IrisDesktop mainView) {
+        this.mainview = mainView;
     }
 
     @Override

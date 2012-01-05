@@ -13,6 +13,8 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -26,31 +28,39 @@ public class ComponentLoader {
         componentsURL = url;
     }
 
-    public static List<IrisComponent> instantiateComponents() throws IOException {
+    public static List<IrisComponent> instantiateComponents() {
         List<IrisComponent> components = new ArrayList();
         
         String compOverride = System.getProperty("compFile");
-        if(compOverride!=null) {
-                File f = new File(compOverride);
-                componentsURL = new URL("file:"+f.getAbsolutePath());
-        }
 
-        InputStream is = componentsURL.openStream();
+        try {
 
-        BufferedReader r = new BufferedReader(new InputStreamReader(is));
-
-        String line;
-
-        while((line = r.readLine()) != null) {
-            try {
-                Class componentClass = Class.forName(line);
-                components.add((IrisComponent) componentClass.newInstance());
-            } catch (Exception ex) {
-                System.out.println("Can't find or instantiate class: "+line);
+            if(compOverride!=null) {
+                    File f = new File(compOverride);
+                    componentsURL = new URL("file:"+f.getAbsolutePath());
             }
-        }
 
-        r.close();
+            InputStream is = componentsURL.openStream();
+
+            BufferedReader r = new BufferedReader(new InputStreamReader(is));
+
+            String line;
+
+            while((line = r.readLine()) != null) {
+                try {
+                    Class componentClass = Class.forName(line);
+                    components.add((IrisComponent) componentClass.newInstance());
+                } catch (Exception ex) {
+                    System.out.println("Can't find or instantiate class: "+line);
+                }
+            }
+
+            r.close();
+        } catch (Exception ex) {
+            System.out.println("Can't read"+componentsURL);
+            Logger.getLogger(ComponentLoader.class.getName()).log(Level.SEVERE, null, ex);
+            return new ArrayList();
+        }
 
         return components;
     }

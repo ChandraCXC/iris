@@ -31,7 +31,7 @@ public abstract class IrisAbstractApplication extends Application implements Iri
     private static SedSAMPController sampController;
     private static boolean isTest = false;
     private Map<String, IrisComponent> components = new HashMap();
-    private IWorkspace ws;
+    private IrisWorkspace ws;
     private IrisDesktop desktop;
     public static final File CONFIGURATION_DIR = new File(System.getProperty("user.home") + "/.vao/iris/importer/");
     public final boolean MAC_OS_X = System.getProperty("os.name").toLowerCase().startsWith("mac os x");
@@ -122,24 +122,7 @@ public abstract class IrisAbstractApplication extends Application implements Iri
         } catch (Exception ex) {
             System.out.println("Error reading component file");
         }
-        //        try {
-        //
-        //            IrisComponent component = SedBuilder.class.newInstance();
-        //            components.put(component.getCli().getName(), component);
-        //        } catch (InstantiationException ex) {
-        //            Logger.getLogger(Iris.class.getName()).log(Level.SEVERE, null, ex);
-        //        } catch (IllegalAccessException ex) {
-        //            Logger.getLogger(Iris.class.getName()).log(Level.SEVERE, null, ex);
-        //        }
-        //        try {
-        //
-        //            IrisComponent component = SedBuilder.class.newInstance();
-        //            components.put(component.getCli().getName(), component);
-        //        } catch (InstantiationException ex) {
-        //            Logger.getLogger(Iris.class.getName()).log(Level.SEVERE, null, ex);
-        //        } catch (IllegalAccessException ex) {
-        //            Logger.getLogger(Iris.class.getName()).log(Level.SEVERE, null, ex);
-        //        }
+        
     }
 
     @Override
@@ -171,6 +154,10 @@ public abstract class IrisAbstractApplication extends Application implements Iri
                 public void run() {
                     Logger.getLogger("").setLevel(Level.SEVERE);
                     sampSetup();
+                    ws = new IrisWorkspace();
+                    for (IrisComponent component : components.values()) {
+                        component.init(IrisAbstractApplication.this, ws);
+                    }
                     try {
                         desktop = new IrisDesktop(IrisAbstractApplication.this);
                     } catch (Exception ex) {
@@ -178,10 +165,7 @@ public abstract class IrisAbstractApplication extends Application implements Iri
                         Logger.getLogger(IrisAbstractApplication.class.getName()).log(Level.SEVERE, null, ex);
                         exitApp();
                     }
-                    ws = new IrisWorkspace(desktop);
-                    for (IrisComponent component : components.values()) {
-                        component.init(IrisAbstractApplication.this, ws);
-                    }
+                    ws.setDesktop(desktop);
                     desktop.setVisible(true);
                 }
             });

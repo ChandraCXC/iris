@@ -83,7 +83,7 @@ public class SedBuilder implements IrisComponent {
         iris = app;
         workspace = ws;
         rootFrame = workspace.getRootFrame();
-        this.sedManager = (SedlibSedManager) workspace.getSedManager();
+        sedManager = (SedlibSedManager) workspace.getSedManager();
 
         FileFormatManager.getInstance().init();
     }

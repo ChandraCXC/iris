@@ -30,6 +30,8 @@ import javax.swing.JDialog;
  */
 public class Iris extends IrisAbstractApplication {
 
+    private List<IrisComponent> components = ComponentLoader.instantiateComponents();
+
     @Override
     public URL getSAMPIcon() {
         return getClass().getResource("/iris_button_tiny.png");
@@ -37,7 +39,7 @@ public class Iris extends IrisAbstractApplication {
 
     @Override
     public List<IrisComponent> getComponents() throws IOException {
-        return ComponentLoader.instantiateComponents();
+        return components;
     }
 
     @Override

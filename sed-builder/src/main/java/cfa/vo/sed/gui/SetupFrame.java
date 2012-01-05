@@ -1114,12 +1114,12 @@ public final class SetupFrame extends ConfirmJInternalFrame {
             sed.remove(generated);
             sed.addSegment(segment, i>=0? i : sed.getNumberOfSegments());
             this.generated = segment;
-            Map<String, SetupFrame> attach = (Map<String, SetupFrame>) manager.getAttachment(sed.getId(), "builder:configuration");
+            Map<Segment, SetupFrame> attach = (Map<Segment, SetupFrame>) manager.getAttachment(sed.getId(), "builder:configuration");
             if(attach==null) {
                 attach = new HashMap();
                 sed.addAttachment("builder:configuration", attach);
             }
-            attach.put(String.valueOf(System.identityHashCode(segment)), this);//FIXME WILD WORKAROUND TO OVERCOME SEDLIB SEGMENT.HASHCODE BUG
+            attach.put(segment, this);
             this.setVisible(false);
         } catch (Exception ex) {
             Logger.getLogger(SetupFrame.class.getName()).log(Level.SEVERE, null, ex);

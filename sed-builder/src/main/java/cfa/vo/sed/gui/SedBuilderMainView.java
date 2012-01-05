@@ -315,8 +315,8 @@ public class SedBuilderMainView extends JInternalFrame {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        jTable1.setColumnSelectionAllowed(true);
         jTable1.setName("jTable1"); // NOI18N
+        jTable1.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         jTable1.getTableHeader().setReorderingAllowed(false);
 
         org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${segments}");
@@ -663,11 +663,10 @@ public class SedBuilderMainView extends JInternalFrame {
     public void editSegment() throws Exception {
         boolean warning = false;
         for(Segment s : selectedSegments) {
-            Map<String, SetupFrame> map = (Map<String, SetupFrame>) sed.getAttachment("builder:configuration");
+            Map<Segment, SetupFrame> map = (Map<Segment, SetupFrame>) sed.getAttachment("builder:configuration");
             if(map!=null) {
-                String key = String.valueOf(System.identityHashCode(s));//FIXME WILD WORKAROUND TO THE SEDLIB SEGMENT.HASHCODE BUG
-                if(map.containsKey(key)) {
-                    SetupFrame sf = map.get(key);
+                if(map.containsKey(s)) {
+                    SetupFrame sf = map.get(s);
                     sf.setVisible(true);
                 } else
                     warning = true;

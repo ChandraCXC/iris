@@ -175,7 +175,7 @@ public class IrisDesktop extends JFrame {
         int[] b = getVaoBounds();
         jLabel2.setBounds(b[0], b[1], b[2], b[3]);
         paintButtons();
-        desktopPane.setLayer(jLabel2, 0);
+        desktopPane.setLayer(jLabel2, -1);
     }
 
     private int[] getVaoBounds() {
@@ -206,7 +206,6 @@ public class IrisDesktop extends JFrame {
 
 
             b.setBounds(baseX, baseY, baseX + xl, baseY + yl);
-            desktopPane.setLayer(b, 1);
 
         }
     }
