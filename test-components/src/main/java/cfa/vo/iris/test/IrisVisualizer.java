@@ -14,7 +14,13 @@ import cfa.vo.iris.NullCommandLineInterface;
 import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SedListener;
+import cfa.vo.iris.events.SegmentEvent;
+import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
+import cfa.vo.iris.events.SegmentListener;
+import cfa.vo.iris.logging.LogEntry;
+import cfa.vo.iris.logging.LogEvent;
 import cfa.vo.iris.sed.SedlibSedManager.ExtSed;
+import cfa.vo.sedlib.Segment;
 import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +42,7 @@ public class IrisVisualizer implements IrisComponent {
     private IrisInitialization irisinit;
     private IWorkspace ws;
     private IrisApplication app;
+    private JInternalFrame currentFrame;
 
     @Override
     public void init(IrisApplication app, IWorkspace workspace) {
@@ -53,10 +60,6 @@ public class IrisVisualizer implements IrisComponent {
 
         this.ws = workspace;
 
-        idm = new IrisDisplayManager(irisinit.getConnection());
-
-        idm.setDesktopMode(true);
-
         SedEvent.getInstance().add(new SedListener() {
 
             @Override
@@ -65,14 +68,44 @@ public class IrisVisualizer implements IrisComponent {
 
                     @Override
                     public void run() {
-                        idm.display(source);
-                        ws.addFrame(idm.getInternalFrame());
+                        display(source);
                     }
                 });
-                
+
             }
         });
 
+        SegmentEvent.getInstance().add(new SegmentListener() {
+
+            @Override
+            public void process(Segment source, final SegmentPayload payload) {
+                EventQueue.invokeLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        display(payload.getSed());
+                    }
+                });
+            }
+        });
+
+
+    }
+
+    private void display(ExtSed sed) {
+        try {
+            idm.display(sed);
+            JInternalFrame frame = idm.getInternalFrame();
+            if (frame != currentFrame) {
+                currentFrame.dispose();
+                currentFrame = frame;
+                currentFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
+                ws.addFrame(frame);
+                ws.getDesktop().setLayer(frame, 1);
+            }
+        } catch (Exception ex) {
+            LogEvent.getInstance().fire(this, new LogEntry("Error: " + ex.getMessage(), sed));
+        }
     }
 
     @Override
@@ -113,11 +146,18 @@ public class IrisVisualizer implements IrisComponent {
                         @Override
                         public void run() {
 
-                            JInternalFrame frame = idm.getInternalFrame();
+                            if (idm == null) {
+                                idm = new IrisDisplayManager(irisinit.getConnection());
+                                idm.setDesktopMode(true);
+                            }
 
-                            ws.addFrame(frame);
+                            if (currentFrame == null) {
+                                currentFrame = idm.getInternalFrame();
+                                currentFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
+                                ws.addFrame(currentFrame);
+                            }
 
-                            frame.setVisible(true);
+                            currentFrame.setVisible(true);
                         }
                     });
 
