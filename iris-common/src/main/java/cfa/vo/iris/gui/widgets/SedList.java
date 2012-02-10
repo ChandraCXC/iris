@@ -14,6 +14,7 @@ import cfa.vo.iris.events.SegmentListener;
 import cfa.vo.iris.sed.ISedManager;
 import cfa.vo.iris.sed.SedlibSedManager.ExtSed;
 import cfa.vo.sedlib.Segment;
+import java.awt.EventQueue;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
@@ -73,6 +74,16 @@ public final class SedList extends JList {
         this.selectedSed = sed;
     }
 
+    public void update() {
+        EventQueue.invokeLater(new Runnable() {
+
+            @Override
+            public void run() {
+                SedList.this.updateUI();
+            }
+        });
+    }
+
     
 
     private class SedListModel extends DefaultListModel {
@@ -83,7 +94,7 @@ public final class SedList extends JList {
 
                 @Override
                 public void process(Segment source, SegmentPayload payload) {
-                    SedList.this.updateUI();
+                    SedList.this.update();
                 }
             });
 
@@ -93,7 +104,7 @@ public final class SedList extends JList {
                 public void process(ExtSed source, SedCommand payload) {
                     switch (payload) {
                         case CHANGED:
-                            SedList.this.updateUI();
+                            SedList.this.update();
                             break;
                         case ADDED:
                             addElement(source);

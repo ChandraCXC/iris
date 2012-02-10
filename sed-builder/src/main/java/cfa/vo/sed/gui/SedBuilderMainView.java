@@ -112,6 +112,10 @@ public class SedBuilderMainView extends JInternalFrame {
         
     }
 
+    public LoadSegmentFrame getLoadSegmentFrame() {
+        return loadFrame;
+    }
+
     private void setSed(ExtSed sed) {
         this.sed = sed;
         boolean n = sed==null;

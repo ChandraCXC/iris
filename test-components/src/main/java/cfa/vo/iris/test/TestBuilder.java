@@ -26,7 +26,7 @@ import org.astrogrid.samp.client.MessageHandler;
  */
 public class TestBuilder implements IrisComponent {
 
-    private IrisApplication app;
+    private static IrisApplication app;
 
     private IWorkspace ws;
 
@@ -34,7 +34,7 @@ public class TestBuilder implements IrisComponent {
 
     @Override
     public void init(IrisApplication app, IWorkspace workspace) {
-        this.app = app;
+        TestBuilder.app = app;
         this.ws = workspace;
 //        SedEvent.getInstance().add(this);
         SegmentEvent.getInstance().add(new SegListener());
@@ -63,6 +63,10 @@ public class TestBuilder implements IrisComponent {
     @Override
     public List<MessageHandler> getSampHandlers() {
         return new ArrayList();
+    }
+
+    public static IrisApplication getApplication() {
+        return app;
     }
 
 

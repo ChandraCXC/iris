@@ -28,7 +28,7 @@ import javax.swing.JDialog;
 /**
  * The main class of the application.
  */
-public class Iris extends IrisAbstractApplication {
+public class Iris extends AbstractIrisApplication {
 
     private List<IrisComponent> components = ComponentLoader.instantiateComponents();
 

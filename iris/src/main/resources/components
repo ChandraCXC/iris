@@ -1,3 +1,5 @@
 cfa.vo.iris.test.TestBuilder
 cfa.vo.iris.test.TestLogger
 cfa.vo.sed.builder.SedBuilder
+cfa.vo.iris.test.SSATestHandler
+cfa.vo.iris.test.IrisVisualizer

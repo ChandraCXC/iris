@@ -7,7 +7,7 @@ package cfa.vo.iris;
 
 import cfa.vo.sedlib.Sed;
 import java.io.File;
-import org.astrogrid.samp.client.MessageHandler;
+import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.SampException;
 
 /**
@@ -40,4 +40,6 @@ public interface IrisApplication {
      * @throws SampException If an exception is thrown while the message is being sent
      */
     void sendSedMessage(Sed sed, String sedId) throws SampException;
+
+    void sendSampMessage(Message msg) throws SampException;
 }

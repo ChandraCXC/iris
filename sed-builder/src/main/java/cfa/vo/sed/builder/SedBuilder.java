@@ -141,6 +141,7 @@ public class SedBuilder implements IrisComponent {
                     if(pManager==null) {
                         pManager = new PluginManager();
                         workspace.addFrame(pManager);
+                        pManager.setLoadFrame(view.getLoadSegmentFrame());
                     }
                     pManager.show();
                     try {
@@ -174,11 +175,11 @@ public class SedBuilder implements IrisComponent {
 
         @Override
         public Map processCall(HubConnection hc, String string, Message msg) throws MalformedURLException {
-            String formatName = msg.getMType().toLowerCase().equals("table.load.votable") ? "VOTABLE" : "FITS";
+            String formatName = msg.getMType().toLowerCase().equals("table.load.votable") ? "VOT" : "FITS";
             URL url = new URL((String) msg.getParam("url"));
             ExtSed sed = sedManager.getSelected() != null ? sedManager.getSelected() : sedManager.newSed("SAMP");
             try {
-                    Sed s = Sed.read(url.openStream(), SedFormat.VOT);
+                    Sed s = Sed.read(url.openStream(), SedFormat.valueOf(formatName));
                     List<ValidationError> validErrors = new ArrayList();
                     s.validate(validErrors);
                     for (ValidationError error : validErrors) {
@@ -249,7 +250,7 @@ public class SedBuilder implements IrisComponent {
 
             if(args.length > 0) {
                 if(args.length < 2) {
-                    System.err.println("Usage: sedimporter config_file output_file [output_format].");
+                    System.err.println("Usage: builder config_file output_file [output_format].");
                     return;
                 } else {
                     String formatS = args.length==2 ? "VOT" : args[2];

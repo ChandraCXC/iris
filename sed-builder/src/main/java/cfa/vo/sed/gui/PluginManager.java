@@ -51,6 +51,8 @@ public class PluginManager extends javax.swing.JInternalFrame {
 
     private FileFormatManager ffm = FileFormatManager.getInstance();
 
+    private LoadSegmentFrame loadFrame;
+
     public FileFormatManager getFfm() {
         return ffm;
     }
@@ -226,6 +228,10 @@ public class PluginManager extends javax.swing.JInternalFrame {
         return Holder.LOADPLUGINDIALOG;
     }
 
+    public void setLoadFrame(LoadSegmentFrame loadSegmentFrame) {
+        this.loadFrame = loadSegmentFrame;
+    }
+
     private static class Holder {
         private static final LoadPluginDialog LOADPLUGINDIALOG = new LoadPluginDialog(SedBuilder.getWorkspace().getRootFrame(), true);
     }
@@ -240,6 +246,7 @@ public class PluginManager extends javax.swing.JInternalFrame {
                 URL url = dia.getURL();
                 FileFormatManager.getInstance().addFormatsFromJar(url, true);
                 refreshTree();
+                loadFrame.reset();
             }
         } catch(Exception ex) {
             Logger.getLogger(PluginManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -270,6 +277,7 @@ public class PluginManager extends javax.swing.JInternalFrame {
                                     Plugin plugin = (Plugin) obj.getUserObject();
                                     FileFormatManager.getInstance().remove(plugin.getUrl());
                                     refreshTree();
+                                    loadFrame.reset();
                                 }
                             });
                             popup.add(item);

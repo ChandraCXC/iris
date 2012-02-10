@@ -5,6 +5,7 @@
 package cfa.vo.iris;
 
 import cfa.vo.interop.SAMPConnectionListener;
+import cfa.vo.interop.SimpleSAMPMessage;
 import cfa.vo.iris.desktop.IrisDesktop;
 import cfa.vo.iris.desktop.IrisWorkspace;
 import cfa.vo.iris.interop.SedSAMPController;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
+import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.MessageHandler;
 import org.astrogrid.samp.client.SampException;
 import org.jdesktop.application.Application;
@@ -26,7 +28,7 @@ import org.jdesktop.application.Application;
  *
  * @author olaurino
  */
-public abstract class IrisAbstractApplication extends Application implements IrisApplication {
+public abstract class AbstractIrisApplication extends Application implements IrisApplication {
 
     private static SedSAMPController sampController;
     private static boolean isTest = false;
@@ -57,11 +59,10 @@ public abstract class IrisAbstractApplication extends Application implements Iri
 
     public abstract URL getSAMPIcon();
 
-    public static IrisAbstractApplication getInstance() {
-        return Application.getInstance(IrisAbstractApplication.class);
+    public static AbstractIrisApplication getInstance() {
+        return Application.getInstance(AbstractIrisApplication.class);
     }
 
-    
     public void sampSetup() {
         if (SAMP_ENABLED) {
             sampController = new SedSAMPController(getName(), getDescription(), getSAMPIcon().toString());
@@ -93,7 +94,7 @@ public abstract class IrisAbstractApplication extends Application implements Iri
     protected String componentName;
     protected boolean isBatch = false;
 
-    protected IrisAbstractApplication() {
+    protected AbstractIrisApplication() {
     }
 
     public abstract List<IrisComponent> getComponents() throws Exception;
@@ -122,7 +123,7 @@ public abstract class IrisAbstractApplication extends Application implements Iri
         } catch (Exception ex) {
             System.out.println("Error reading component file");
         }
-        
+
     }
 
     @Override
@@ -133,6 +134,11 @@ public abstract class IrisAbstractApplication extends Application implements Iri
     @Override
     public void sendSedMessage(Sed sed, String sedId) throws SampException {
         sampController.sendSedMessage(sed, sedId);
+    }
+
+    @Override
+    public void sendSampMessage(Message msg) throws SampException {
+        sampController.sendMessage(new SimpleSAMPMessage(msg));
     }
 
     @Override
@@ -156,13 +162,14 @@ public abstract class IrisAbstractApplication extends Application implements Iri
                     sampSetup();
                     ws = new IrisWorkspace();
                     for (IrisComponent component : components.values()) {
-                        component.init(IrisAbstractApplication.this, ws);
+
+                        component.init(AbstractIrisApplication.this, ws);
                     }
                     try {
-                        desktop = new IrisDesktop(IrisAbstractApplication.this);
+                        desktop = new IrisDesktop(AbstractIrisApplication.this);
                     } catch (Exception ex) {
                         System.out.println("Error initializing components");
-                        Logger.getLogger(IrisAbstractApplication.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(AbstractIrisApplication.class.getName()).log(Level.SEVERE, null, ex);
                         exitApp();
                     }
                     ws.setDesktop(desktop);

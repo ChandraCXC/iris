@@ -30,7 +30,7 @@ package cfa.vo.iris.desktop;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.interop.SAMPConnectionListener;
 import cfa.vo.iris.IMenuItem;
-import cfa.vo.iris.IrisAbstractApplication;
+import cfa.vo.iris.AbstractIrisApplication;
 import cfa.vo.iris.IrisComponent;
 import java.awt.Color;
 import java.awt.event.WindowAdapter;
@@ -63,10 +63,10 @@ public class IrisDesktop extends JFrame {
 //    private About aboutBox = new About(IrisDesktop.getInstance(), false);
     private JDialog aboutBox;
 
-    IrisAbstractApplication app;
+    AbstractIrisApplication app;
 
     /** Creates new form SedImporterMainView */
-    public IrisDesktop(IrisAbstractApplication app) throws Exception {
+    public IrisDesktop(AbstractIrisApplication app) throws Exception {
         initComponents();
 
         this.app = app;

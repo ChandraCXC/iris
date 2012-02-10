@@ -10,6 +10,7 @@
  */
 package cfa.vo.iris.test;
 
+import cfa.vo.interop.SimpleSAMPMessage;
 import cfa.vo.iris.gui.widgets.SedList;
 import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
@@ -18,12 +19,17 @@ import cfa.vo.iris.sed.SedlibSedManager.ExtSed;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JInternalFrame;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import org.astrogrid.samp.Message;
+import org.astrogrid.samp.client.SampException;
 
 /**
  *
@@ -98,6 +104,8 @@ public final class TestBuilderFrame extends JInternalFrame {
         segNumber = new javax.swing.JTextField();
         removeButton = new javax.swing.JButton();
         listPanel = new javax.swing.JScrollPane();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -159,25 +167,47 @@ public final class TestBuilderFrame extends JInternalFrame {
             }
         });
 
+        jButton1.setText("Send VOTable through SAMP");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sendVOTable(evt);
+            }
+        });
+
+        jButton2.setText("Send FITS through SAMP");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sendFITS(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(17, 17, 17)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
+                        .add(17, 17, 17)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(newSedButton)
-                            .add(removeButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 99, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(listPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE))
-                    .add(addUserButton)
-                    .add(addNedButton)
+                            .add(layout.createSequentialGroup()
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(newSedButton)
+                                    .add(removeButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 99, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(listPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE))
+                            .add(addUserButton)
+                            .add(addNedButton)
+                            .add(layout.createSequentialGroup()
+                                .add(removeSegmentButton)
+                                .add(9, 9, 9)
+                                .add(segNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 27, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
                     .add(layout.createSequentialGroup()
-                        .add(removeSegmentButton)
-                        .add(9, 9, 9)
-                        .add(segNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 27, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap()
+                        .add(jButton1))
+                    .add(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jButton2)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -200,7 +230,11 @@ public final class TestBuilderFrame extends JInternalFrame {
                         .add(1, 1, 1)
                         .add(removeSegmentButton))
                     .add(segNumber, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(18, 18, 18)
+                .add(jButton1)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jButton2)
+                .addContainerGap(37, Short.MAX_VALUE))
         );
 
         bindingGroup.bind();
@@ -248,9 +282,44 @@ public final class TestBuilderFrame extends JInternalFrame {
     private void removeSed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeSed
         manager.remove(sedList.getSelectedSed().getId());
     }//GEN-LAST:event_removeSed
+
+    private void sendVOTable(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendVOTable
+        URL url = getClass().getResource("/3c066aNED.vot");
+        String format = "application/x-votable+xml";
+        Message msg = new Message("spectrum.load.ssa-generic");
+        Map map = new HashMap();
+        map.put("Access.Format", format);
+        msg.addParam("meta", map);
+        msg.addParam("url", url.toString());
+        msg.addParam("name", "3c066a");
+        try {
+            SSATestHandler.getController().sendMessage(new SimpleSAMPMessage(msg));
+        } catch (SampException ex) {
+            Logger.getLogger(TestBuilderFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_sendVOTable
+
+    private void sendFITS(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sendFITS
+        URL url = getClass().getResource("/3c066aNED.fits");
+        String format = "application/fits";
+        Message msg = new Message("spectrum.load.ssa-generic");
+        Map map = new HashMap();
+        map.put("Access.Format", format);
+        msg.addParam("meta", map);
+        msg.addParam("url", url.toString());
+        msg.addParam("name", "3c066a");
+        try {
+            SSATestHandler.getController().sendMessage(new SimpleSAMPMessage(msg));
+        } catch (SampException ex) {
+            Logger.getLogger(TestBuilderFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_sendFITS
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addNedButton;
     private javax.swing.JButton addUserButton;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JScrollPane listPanel;
     private javax.swing.JButton newSedButton;
     private javax.swing.JButton removeButton;
