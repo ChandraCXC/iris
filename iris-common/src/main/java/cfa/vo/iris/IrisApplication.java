@@ -5,6 +5,7 @@
 
 package cfa.vo.iris;
 
+import cfa.vo.interop.SAMPController;
 import cfa.vo.sedlib.Sed;
 import java.io.File;
 import org.astrogrid.samp.Message;
@@ -42,4 +43,6 @@ public interface IrisApplication {
     void sendSedMessage(Sed sed, String sedId) throws SampException;
 
     void sendSampMessage(Message msg) throws SampException;
+
+    SAMPController getSAMPController();
 }

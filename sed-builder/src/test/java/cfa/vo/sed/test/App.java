@@ -4,6 +4,7 @@
  */
 package cfa.vo.sed.test;
 
+import cfa.vo.interop.SAMPController;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.sedlib.Sed;
 import java.io.File;
@@ -33,6 +34,11 @@ public class App implements IrisApplication {
 
     @Override
     public void sendSampMessage(Message msg) throws SampException {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public SAMPController getSAMPController() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }

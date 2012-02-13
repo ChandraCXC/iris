@@ -27,11 +27,11 @@ import java.util.logging.Logger;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.Metadata;
 import org.astrogrid.samp.client.DefaultClientProfile;
-import org.astrogrid.samp.client.HubConnector;
 import org.astrogrid.samp.client.LogResultHandler;
 import org.astrogrid.samp.client.MessageHandler;
 import org.astrogrid.samp.client.ResultHandler;
 import org.astrogrid.samp.client.SampException;
+import org.astrogrid.samp.gui.GuiHubConnector;
 import org.astrogrid.samp.httpd.HttpServer;
 import org.astrogrid.samp.httpd.ResourceHandler;
 import org.astrogrid.samp.httpd.ServerResource;
@@ -62,7 +62,7 @@ import org.astrogrid.samp.hub.HubServiceMode;
  *
  * @author olaurino
  */
-public class SAMPController extends HubConnector {
+public class SAMPController extends GuiHubConnector {
 
     private static final int DEFAULT_TIMEOUT = 10;
 

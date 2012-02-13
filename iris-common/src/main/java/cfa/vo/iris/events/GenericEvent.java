@@ -5,6 +5,7 @@
 
 package cfa.vo.iris.events;
 
+import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,9 +28,16 @@ public abstract class GenericEvent<SourceClass, ListenerClass extends IListener<
     }
 
     @Override
-    public void fire(SourceClass source, PayloadClass payload) {
-        for(ListenerClass listener : listeners) {
-            listener.process(source, payload);
+    public void fire(final SourceClass source, final PayloadClass payload) {
+        for(final ListenerClass listener : listeners) {
+            EventQueue.invokeLater(new Runnable() {
+
+                @Override
+                public void run() {
+                    listener.process(source, payload);
+                }
+            });
+            
         }
     }
 

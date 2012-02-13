@@ -5,6 +5,7 @@
 package cfa.vo.iris;
 
 import cfa.vo.interop.SAMPConnectionListener;
+import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SimpleSAMPMessage;
 import cfa.vo.iris.desktop.IrisDesktop;
 import cfa.vo.iris.desktop.IrisWorkspace;
@@ -177,5 +178,10 @@ public abstract class AbstractIrisApplication extends Application implements Iri
                 }
             });
         }
+    }
+
+    @Override
+    public SAMPController getSAMPController() {
+        return sampController;
     }
 }
