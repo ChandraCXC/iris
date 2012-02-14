@@ -6,8 +6,10 @@
 package cfa.vo.iris.desktop;
 
 import cfa.vo.iris.IMenuItem;
+import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import javax.swing.JLabel;
+import javax.swing.border.LineBorder;
 
 /**
  *

@@ -119,13 +119,15 @@ public class IrisDesktop extends JFrame {
 
         }
 
+        jLabel2.setIcon(new ImageIcon(app.getDesktopIcon()));
+
         this.setLocationRelativeTo(null);
         this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 
         this.repaint();
 
-//        int[] bo = getVaoBounds();
-//        jLabel2.setBounds(bo[0], bo[1], bo[2], bo[3]);
+        int[] bo = getVaoBounds();
+        jLabel2.setBounds(bo[0], bo[1], bo[2], bo[3]);
         
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
@@ -181,21 +183,21 @@ public class IrisDesktop extends JFrame {
     private int[] getVaoBounds() {
         int xb = (this.getWidth()-jLabel2.getWidth())/2;
         int yb = (this.getHeight()-jLabel2.getHeight())/2;
-        int xf = xb+jLabel2.getWidth()/2;
-        int yf = yb+jLabel2.getHeight()/2;
+        int xf = jLabel2.getWidth();
+        int yf = jLabel2.getHeight();
         return new int[]{xb, yb, xf, yf};
     }
 
 
     private void paintButtons() {
         int width = this.getWidth();
-        int xl = 100;
+        int xl = 150;
         int yl = 150;
         int baseX = 20-xl;
         int baseY = 20;
         for(DesktopButton b : buttons) {
             baseX = baseX + xl;
-            if(width>100) {
+            if(width>xl+20) {
                 if(baseX+xl>width) {
                     baseY = baseY+yl;
                     baseX = 20;
@@ -205,9 +207,12 @@ public class IrisDesktop extends JFrame {
             }
 
 
-            b.setBounds(baseX, baseY, baseX + xl, baseY + yl);
+            b.setBounds(baseX, baseY, xl, yl);
 
         }
+
+
+        sampIcon.setBounds(20, this.getHeight()-sampIcon.getHeight()-20, sampIcon.getWidth(), sampIcon.getHeight());
     }
 
     /** This method is called from within the constructor to
@@ -254,8 +259,7 @@ public class IrisDesktop extends JFrame {
         desktopPane.add(sampIcon, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/vao.png")));
-        jLabel2.setBounds(350, 340, 330, 150);
+        jLabel2.setBounds(350, 250, 330, 240);
         desktopPane.add(jLabel2, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         jToolBar1.setRollover(true);
@@ -314,8 +318,6 @@ public class IrisDesktop extends JFrame {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, desktopPane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 671, Short.MAX_VALUE)
         );
-
-        getAccessibleContext().setAccessibleName("");
 
         bindingGroup.bind();
 

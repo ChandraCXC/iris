@@ -184,4 +184,6 @@ public abstract class AbstractIrisApplication extends Application implements Iri
     public SAMPController getSAMPController() {
         return sampController;
     }
+
+    public abstract URL getDesktopIcon();
 }

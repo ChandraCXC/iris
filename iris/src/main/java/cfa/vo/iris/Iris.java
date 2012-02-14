@@ -61,4 +61,9 @@ public class Iris extends AbstractIrisApplication {
         return "The VAO SED Analysis Tool";
     }
 
+    @Override
+    public URL getDesktopIcon() {
+        return getClass().getResource("/Iris_logo.png");
+    }
+
 }
