@@ -64,7 +64,7 @@ public class SedTest {
 
      @Test
      public void sedMessageTest() throws Exception {
-        Sed sed = Sed.read(getClass().getResourceAsStream("/3C273.vot"), SedFormat.VOT);
+        Sed sed = Sed.read(getClass().getResource("/test_data/3C273.vot").getPath(), SedFormat.VOT);
         SedManager man = new SedManager();
         SedManager.SpecviewSed s = man.new SpecviewSed(sed, "3c273");
         Assert.assertEquals("3c273", s.getId());
@@ -72,7 +72,7 @@ public class SedTest {
         s.addAttachment("test", "TEST");
         String string = (String) s.getAttachment("test");
         Assert.assertEquals("TEST", string);
-        s.write(getClass().getResource("/test.vot").getPath(), SedFormat.VOT);
+        s.write(getClass().getResource("/test_data/test.vot").getPath(), SedFormat.VOT);
      }
 
     public class SedManager extends SedlibSedManager {
