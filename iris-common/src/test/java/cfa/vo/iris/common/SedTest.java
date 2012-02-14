@@ -64,6 +64,7 @@ public class SedTest {
 
      @Test
      public void sedMessageTest() throws Exception {
+        System.out.println(getClass().getResource("/test_data/3C273.vot").getPath());
         Sed sed = Sed.read(getClass().getResource("/test_data/3C273.vot").getPath(), SedFormat.VOT);
         SedManager man = new SedManager();
         SedManager.SpecviewSed s = man.new SpecviewSed(sed, "3c273");
