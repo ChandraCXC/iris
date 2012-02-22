@@ -148,8 +148,10 @@ public class IrisDesktop extends JFrame {
                         null, null, null);
 
                 if (confirm == 0) {
-
-                System.exit(0);
+                    for(IrisComponent component : components) {
+                        component.shutdown();
+                    }
+                    System.exit(0);
 
               }
             }

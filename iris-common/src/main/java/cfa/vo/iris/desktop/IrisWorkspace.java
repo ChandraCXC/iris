@@ -61,6 +61,7 @@ public class IrisWorkspace implements IWorkspace {
     @Override
     public void addFrame(JInternalFrame frame) {
         this.getDesktop().add(frame);
+        this.getDesktop().setLayer(frame, 1);
     }
 
     @Override

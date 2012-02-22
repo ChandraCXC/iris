@@ -55,4 +55,9 @@ public interface IrisComponent {
      * @return A list of the SAMP message listeners that have to be registered to the SAMP hub.
      */
     List<MessageHandler> getSampHandlers();
+
+    /**
+     * Callback invoked when the component is shutdown
+     */
+    void shutdown();
 }

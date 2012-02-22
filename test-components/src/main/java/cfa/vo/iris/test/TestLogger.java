@@ -59,4 +59,9 @@ public class TestLogger implements IrisComponent, LogListener {
         System.out.println(payload.getFormatted());
     }
 
+    @Override
+    public void shutdown() {
+        
+    }
+
 }

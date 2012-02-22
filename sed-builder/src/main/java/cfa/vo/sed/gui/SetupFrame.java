@@ -24,13 +24,14 @@
  *
  * Created on May 19, 2011, 7:54:58 AM
  */
-
 package cfa.vo.sed.gui;
 
 import cfa.vo.iris.gui.ConfirmJInternalFrame;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ISedManager;
 import cfa.vo.iris.sed.SedlibSedManager.ExtSed;
+import cfa.vo.iris.utils.NameResolver;
+import cfa.vo.iris.utils.NameResolver.Position;
 import cfa.vo.iris.utils.SkyCoordinates;
 import cfa.vo.sed.setup.SetupBean;
 import cfa.vo.sed.setup.validation.AxesValidator;
@@ -48,6 +49,7 @@ import cfa.vo.sed.quantities.SPVYQuantity;
 import cfa.vo.sed.quantities.XQuantity;
 import cfa.vo.sed.setup.validation.IValidator;
 import cfa.vo.sedlib.Segment;
+import java.awt.EventQueue;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -57,6 +59,9 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import jsky.catalog.Catalog;
+import org.jdesktop.application.Action;
+import org.jdesktop.application.Task;
 
 /**
  *
@@ -64,6 +69,7 @@ import javax.swing.DefaultComboBoxModel;
  */
 public final class SetupFrame extends ConfirmJInternalFrame {
 
+    private NameResolver resolver = new NameResolver();
     private boolean configurationValid;
     public static final String PROP_CONFIGURATIONVALID = "configurationValid";
 
@@ -86,8 +92,6 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         this.configurationValid = configurationValid;
         firePropertyChange(PROP_CONFIGURATIONVALID, oldConfigurationValid, configurationValid);
     }
-
-
     private String message;
     public static final String PROP_MESSAGE = "message";
 
@@ -110,8 +114,6 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         this.message = message;
         firePropertyChange(PROP_MESSAGE, oldMessage, message);
     }
-
-
     private String ra;
     public static final String PROP_RA = "ra";
 
@@ -130,16 +132,18 @@ public final class SetupFrame extends ConfirmJInternalFrame {
      * @param ra new value of ra
      */
     public void setRa(String ra) {
-        if(ra!=null)
-            if(!ra.isEmpty())
+        if (ra != null) {
+            if (!ra.isEmpty()) {
                 ra = SkyCoordinates.getRaDegString(ra);
+            }
+        }
         String oldRa = this.ra;
         this.ra = ra;
         firePropertyChange(PROP_RA, oldRa, ra);
-        if(ra!=null)
+        if (ra != null) {
             confBean.setTargetRa(ra);
+        }
     }
-
     private String dec;
     public static final String PROP_DEC = "dec";
 
@@ -158,17 +162,18 @@ public final class SetupFrame extends ConfirmJInternalFrame {
      * @param dec new value of dec
      */
     public void setDec(String dec) {
-        if(dec!=null)
-            if(!dec.isEmpty())
+        if (dec != null) {
+            if (!dec.isEmpty()) {
                 dec = SkyCoordinates.getDecDegString(dec);
+            }
+        }
         String oldDec = this.dec;
         this.dec = dec;
         firePropertyChange(PROP_DEC, oldDec, dec);
-        if(dec!=null)
+        if (dec != null) {
             confBean.setTargetDec(dec);
+        }
     }
-
-
     private String targetName = "";
     public static final String PROP_TARGETNAME = "targetName";
 
@@ -190,10 +195,10 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         String oldTargetName = this.targetName;
         this.targetName = targetName;
         firePropertyChange(PROP_TARGETNAME, oldTargetName, targetName);
-        if(!targetName.equals(""))
+        if (!targetName.equals("")) {
             confBean.setTargetName(targetName);
+        }
     }
-
     private SetupBean confBean;
     public static final String PROP_CONFBEAN = "confBean";
 
@@ -216,7 +221,6 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         this.confBean = confBean;
         firePropertyChange(PROP_CONFBEAN, oldConfBean, confBean);
     }
-
     private ISegmentMetadata metadata;
     public static final String PROP_METADATA = "metadata";
 
@@ -239,7 +243,6 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         this.metadata = metadata;
         firePropertyChange(PROP_METADATA, oldMetadata, metadata);
     }
-
     private String sedID;
     public static final String PROP_SEDID = "sedID";
 
@@ -262,7 +265,6 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         this.sedID = sedID;
         firePropertyChange(PROP_SEDID, oldSedID, sedID);
     }
-
     private String fileUrl;
     public static final String PROP_FILEURL = "fileUrl";
 
@@ -285,7 +287,6 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         this.fileUrl = fileUrl;
         firePropertyChange(PROP_FILEURL, oldFileUrl, fileUrl);
     }
-
     private String xQuantity;
     public static final String PROP_XQUANTITY = "xQuantity";
 
@@ -309,12 +310,12 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         firePropertyChange(PROP_XQUANTITY, oldXQuantity, xQuantity);
         List strings = new ArrayList();
         XQuantity q = XQuantity.valueOf(xQuantity);
-        for(IUnit unit : q.getPossibleUnits())
+        for (IUnit unit : q.getPossibleUnits()) {
             strings.add(unit.getString());
+        }
         setTheXUnits(strings);
         confBean.setXAxisQuantity(q.name());
     }
-
     private String yQuantity;
     public static final String PROP_YQUANTITY = "yQuantity";
 
@@ -338,12 +339,12 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         firePropertyChange(PROP_YQUANTITY, oldYQuantity, yQuantity);
         List strings = new ArrayList();
         SPVYQuantity q = SPVYQuantity.valueOf(yQuantity);
-        for(IUnit unit : q.getPossibleUnits())
+        for (IUnit unit : q.getPossibleUnits()) {
             strings.add(unit.getString());
+        }
         setTheYUnits(strings);
         confBean.setYAxisQuantity(q.name());
     }
-
     private List<String> theXUnits;
     public static final String PROP_THEXUNITS = "theXUnits";
 
@@ -366,9 +367,6 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         this.theXUnits = theXUnits;
         firePropertyChange(PROP_THEXUNITS, oldTheXUnits, theXUnits);
     }
-
-
-
     private List<String> theYUnits;
     public static final String PROP_THEYUNITS = "theYUnits";
 
@@ -395,11 +393,8 @@ public final class SetupFrame extends ConfirmJInternalFrame {
     public void setImportButtonLabel(String string) {
         jButton1.setText(string);
     }
-
     private boolean constructed = false;
-
     private ISedManager<ExtSed> manager;
-
     private ExtSed sed;
 
     public SetupFrame(ISedManager<ExtSed> manager, SetupBean c, ExtSed sed, ISegmentMetadata metadata) throws IOException {
@@ -421,9 +416,10 @@ public final class SetupFrame extends ConfirmJInternalFrame {
 
         setFileUrl(c.getFileLocation());
 
-        if (metadata.getParameters().isEmpty())
+        if (metadata.getParameters().isEmpty()) {
             jRadioButton4.setEnabled(false);
-        
+        }
+
         constructed = true;
 
     }
@@ -442,19 +438,22 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         URL url = new URL(c.getFileLocation());
         IFileFormat format = FileFormatManager.getInstance().getFormatByName(c.getFormatName());
 
-        if(format==null) throw new FilterException("Format not found: "+c.getFormatName());
+        if (format == null) {
+            throw new FilterException("Format not found: " + c.getFormatName());
+        }
 
         List<ISegmentMetadata> md = SegmentImporter.getSegmentsMetadata(url, format);
 
 
-        if(md.size()>1 && c.getPositionInFile()==0)
-            for(int i=1; i<md.size(); i++) {
+        if (md.size() > 1 && c.getPositionInFile() == 0) {
+            for (int i = 1; i < md.size(); i++) {
                 SetupBean sb = new SetupBean();
                 sb.setFileLocation(c.getFileLocation());
                 sb.setFormatName(c.getFormatName());
                 sb.setPositionInFile(i);
                 spawn(sb, md.get(i));
             }
+        }
 
         IValidator val = new AxesValidator(new ErrorValidator(), true, c);
 
@@ -465,15 +464,16 @@ public final class SetupFrame extends ConfirmJInternalFrame {
 
         setFileUrl(c.getFileLocation());
 
-        if (metadata.getParameters().isEmpty())
+        if (metadata.getParameters().isEmpty()) {
             jRadioButton4.setEnabled(false);
+        }
 
-//        jRadioButton3.setVisible(false);
-//        jRadioButton5.setVisible(false);
-//        jComboBox2.setVisible(false);
-//        jComboBox3.setVisible(false);
-//        jComboBox5.setVisible(false);
-//        jComboBox6.setVisible(false);
+        jRadioButton3.setVisible(false);
+        jRadioButton5.setVisible(false);
+        jComboBox2.setVisible(false);
+        jComboBox3.setVisible(false);
+        jComboBox5.setVisible(false);
+        jComboBox6.setVisible(false);
 
         constructed = true;
     }
@@ -542,11 +542,13 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         jButton4 = new javax.swing.JButton();
         jLabel16 = new javax.swing.JLabel();
         jTextField7 = new javax.swing.JTextField();
+        jComboBox7 = new javax.swing.JComboBox();
         jPanel8 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -594,19 +596,16 @@ public final class SetupFrame extends ConfirmJInternalFrame {
                 .addContainerGap()
                 .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jLabel3)
-                    .add(xAxisCombo, 0, 143, Short.MAX_VALUE))
+                    .add(xAxisCombo, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 166, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(xAxisCombo1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 153, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jLabel2))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel3Layout.createSequentialGroup()
-                        .add(jLabel4)
-                        .add(189, 189, 189))
-                    .add(jPanel3Layout.createSequentialGroup()
-                        .add(xAxisCombo2, 0, 205, Short.MAX_VALUE)
-                        .addContainerGap())))
+                    .add(jLabel4)
+                    .add(xAxisCombo2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 186, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(70, 70, 70))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -665,26 +664,23 @@ public final class SetupFrame extends ConfirmJInternalFrame {
                     .add(xAxisCombo6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 168, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jLabel10)
-                    .add(xAxisCombo8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 153, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(xAxisCombo8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 153, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jLabel10))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jLabel8)
-                    .add(xAxisCombo7, 0, 180, Short.MAX_VALUE))
-                .addContainerGap())
+                .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(jPanel4Layout.createSequentialGroup()
+                        .add(jLabel8)
+                        .add(151, 151, 151))
+                    .add(xAxisCombo7, 0, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel4Layout.createSequentialGroup()
-                .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jPanel4Layout.createSequentialGroup()
-                        .add(jLabel9)
-                        .add(4, 4, 4))
-                    .add(jPanel4Layout.createSequentialGroup()
-                        .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(jLabel10)
-                            .add(jLabel8))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))
+                .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel9)
+                    .add(jLabel10)
+                    .add(jLabel8))
+                .add(4, 4, 4)
                 .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(xAxisCombo6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(xAxisCombo8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
@@ -745,7 +741,7 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jRadioButton2, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jComboBox1, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
-        jPanel5.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 120, 340, -1));
+        jPanel5.add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 120, 310, -1));
 
         eLProperty = org.jdesktop.beansbinding.ELProperty.create("${metadata.columns}");
         jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, jComboBox2);
@@ -756,7 +752,7 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jRadioButton3, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jComboBox2, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
-        jPanel5.add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 190, 340, -1));
+        jPanel5.add(jComboBox2, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 190, 310, -1));
 
         jComboBox4.setName("symmetricParameterValue"); // NOI18N
 
@@ -769,7 +765,7 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jRadioButton4, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jComboBox4, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
-        jPanel5.add(jComboBox4, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 160, 340, -1));
+        jPanel5.add(jComboBox4, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 160, 310, -1));
 
         buttonGroup1.add(jRadioButton4);
         jRadioButton4.setText("SymmetricParameter");
@@ -790,7 +786,7 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jRadioButton3, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jComboBox3, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
-        jPanel5.add(jComboBox3, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 220, 340, -1));
+        jPanel5.add(jComboBox3, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 220, 310, -1));
 
         eLProperty = org.jdesktop.beansbinding.ELProperty.create("${metadata.parameters}");
         jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, jComboBox6);
@@ -801,7 +797,7 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jRadioButton5, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jComboBox6, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
-        jPanel5.add(jComboBox6, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 260, 340, -1));
+        jPanel5.add(jComboBox6, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 260, 310, -1));
 
         eLProperty = org.jdesktop.beansbinding.ELProperty.create("${metadata.parameters}");
         jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, jComboBox5);
@@ -812,7 +808,7 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jRadioButton5, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jComboBox5, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
-        jPanel5.add(jComboBox5, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 290, 340, -1));
+        jPanel5.add(jComboBox5, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 290, 310, -1));
 
         buttonGroup1.add(jRadioButton5);
         jRadioButton5.setText("AsymmetricParameter");
@@ -837,13 +833,12 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel1Layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 560, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(jPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(jPanel3, 0, 547, Short.MAX_VALUE)
+                    .add(jPanel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(jPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -852,7 +847,8 @@ public final class SetupFrame extends ConfirmJInternalFrame {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(8, 8, 8)
-                .add(jPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 344, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(jPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 357, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(9, 9, 9))
         );
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "General"));
@@ -899,8 +895,8 @@ public final class SetupFrame extends ConfirmJInternalFrame {
                             .add(jLabel5))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jTextField3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
-                            .add(jTextField2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE))))
+                            .add(jTextField3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE)
+                            .add(jTextField2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 205, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -944,8 +940,9 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dec}"), jTextField6, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
+        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance().getContext().getActionMap(SetupFrame.class, this);
+        jButton4.setAction(actionMap.get("resolve")); // NOI18N
         jButton4.setText("Resolve");
-        jButton4.setEnabled(false);
 
         jLabel16.setText("Publisher:");
 
@@ -954,48 +951,54 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${confBean.publisher}"), jTextField7, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
+        jComboBox7.setModel(new DefaultComboBoxModel(resolver.getCatalogs().toArray(new Catalog[resolver.getCatalogs().size()])));
+
         org.jdesktop.layout.GroupLayout jPanel7Layout = new org.jdesktop.layout.GroupLayout(jPanel7);
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel7Layout.createSequentialGroup()
-                .addContainerGap(22, Short.MAX_VALUE)
+                .addContainerGap()
                 .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel7Layout.createSequentialGroup()
-                        .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                            .add(jPanel7Layout.createSequentialGroup()
-                                .add(jLabel13)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jTextField4))
-                            .add(jPanel7Layout.createSequentialGroup()
-                                .add(jLabel14)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jTextField5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 88, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jLabel15)))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                            .add(jTextField6)
-                            .add(jButton4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .add(jPanel7Layout.createSequentialGroup()
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel7Layout.createSequentialGroup()
                         .add(jLabel16)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 189, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                        .add(jTextField7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 189, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(jPanel7Layout.createSequentialGroup()
+                        .add(jLabel13)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jTextField4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE))
+                    .add(jPanel7Layout.createSequentialGroup()
+                        .add(jLabel14)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jTextField5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 95, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jLabel15)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jTextField6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel7Layout.createSequentialGroup()
+                        .add(jComboBox7, 0, 163, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jButton4)))
+                .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
             jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel7Layout.createSequentialGroup()
                 .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel13)
-                    .add(jTextField4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jComboBox7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jButton4))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel13)
+                    .add(jTextField4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel14)
                     .add(jTextField5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jTextField6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jLabel15))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 26, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel16)
                     .add(jTextField7, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
@@ -1024,7 +1027,7 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         jPanel8.setLayout(jPanel8Layout);
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 283, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 301, Short.MAX_VALUE)
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -1058,14 +1061,15 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jPanel2Layout.createSequentialGroup()
                         .add(jButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 111, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                        .add(jButton1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .add(jPanel8, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(jPanel6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(jPanel7, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .add(jButton1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 193, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel8, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel7, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -1083,23 +1087,28 @@ public final class SetupFrame extends ConfirmJInternalFrame {
                 .addContainerGap())
         );
 
+        jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 597, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 297, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(jSeparator1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(18, 18, 18)
+                .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel2, 0, 538, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 575, Short.MAX_VALUE)
+                    .add(jSeparator1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 547, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         bindingGroup.bind();
@@ -1112,10 +1121,10 @@ public final class SetupFrame extends ConfirmJInternalFrame {
             Segment segment = SegmentImporter.getSegments(confBean).get(0);
             int i = sed.indexOf(generated);
             sed.remove(generated);
-            sed.addSegment(segment, i>=0? i : sed.getNumberOfSegments());
+            sed.addSegment(segment, i >= 0 ? i : sed.getNumberOfSegments());
             this.generated = segment;
             Map<Segment, SetupFrame> attach = (Map<Segment, SetupFrame>) manager.getAttachment(sed.getId(), "builder:configuration");
-            if(attach==null) {
+            if (attach == null) {
                 attach = new HashMap();
                 sed.addAttachment("builder:configuration", attach);
             }
@@ -1135,8 +1144,6 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         SaveSetupDialog dia = new SaveSetupDialog(SedBuilder.getWorkspace().getRootFrame(), confBean);
         dia.setVisible(true);
     }//GEN-LAST:event_save
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton1;
@@ -1148,6 +1155,7 @@ public final class SetupFrame extends ConfirmJInternalFrame {
     private javax.swing.JComboBox jComboBox4;
     private javax.swing.JComboBox jComboBox5;
     private javax.swing.JComboBox jComboBox6;
+    private javax.swing.JComboBox jComboBox7;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel12;
@@ -1176,6 +1184,7 @@ public final class SetupFrame extends ConfirmJInternalFrame {
     private javax.swing.JRadioButton jRadioButton5;
     private javax.swing.JRadioButton jRadioButton6;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
@@ -1194,12 +1203,12 @@ public final class SetupFrame extends ConfirmJInternalFrame {
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
-    private String[] loadEnum(Class<? extends Enum>  clazz) {
+    private String[] loadEnum(Class<? extends Enum> clazz) {
         try {
             Enum[] l;
             l = (Enum[]) clazz.getMethod("values").invoke(null);
             String[] s = new String[l.length];
-            for(int i = 0; i<l.length; i++) {
+            for (int i = 0; i < l.length; i++) {
                 s[i] = l[i].name();
             }
             return s;
@@ -1214,17 +1223,17 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         @Override
         public Object convertReverse(Object value) {
             ISegmentColumn col = (ISegmentColumn) value;
-            if(Number.class.isAssignableFrom(col.getContentClass()) || col.getContentClass().isArray()) {
+            if (Number.class.isAssignableFrom(col.getContentClass()) || col.getContentClass().isArray()) {
                 return col.getNumber();
-            }
-            else {
-                if(constructed)
+            } else {
+                if (constructed) {
                     NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
-                        "The selected column contains strings. "
-                        + "You can't import string columns in a segment. "
-                        + "Please correct the problem by selecting a different, numeric column.",
-                        "Non numeric column selected",
-                        NarrowOptionPane.WARNING_MESSAGE);
+                            "The selected column contains strings. "
+                            + "You can't import string columns in a segment. "
+                            + "Please correct the problem by selecting a different, numeric column.",
+                            "Non numeric column selected",
+                            NarrowOptionPane.WARNING_MESSAGE);
+                }
                 return -1;
             }
         }
@@ -1233,7 +1242,6 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         public Object convertForward(Object value) {
             return value;
         }
-
     }
 
     private class ParameterConverter extends org.jdesktop.beansbinding.Converter {
@@ -1241,17 +1249,17 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         @Override
         public Object convertReverse(Object value) {
             ISegmentParameter param = (ISegmentParameter) value;
-            if(Number.class.isAssignableFrom(param.getContentClass())) {
+            if (Number.class.isAssignableFrom(param.getContentClass())) {
                 return param.getName();
-            }
-            else {
-                if(constructed)
+            } else {
+                if (constructed) {
                     NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
-                        "The selected parameter contains a string. "
-                        + "You can't import string parameters in a segment. "
-                        + "Please correct the problem by selecting a different, numeric parameter.",
-                        "Non numeric parameter selected",
-                        NarrowOptionPane.WARNING_MESSAGE);
+                            "The selected parameter contains a string. "
+                            + "You can't import string parameters in a segment. "
+                            + "Please correct the problem by selecting a different, numeric parameter.",
+                            "Non numeric parameter selected",
+                            NarrowOptionPane.WARNING_MESSAGE);
+                }
                 return "INVALID";
             }
 
@@ -1261,12 +1269,43 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         public Object convertForward(Object value) {
             return value;
         }
-
     }
 
+    @Action
+    public Task resolve() {
+        return new ResolveTask(org.jdesktop.application.Application.getInstance());
+    }
+
+    private class ResolveTask extends org.jdesktop.application.Task<Object, Void> {
+        private Catalog cat;
+
+        ResolveTask(org.jdesktop.application.Application app) {
+            super(app);
+            cat = (Catalog) jComboBox7.getSelectedItem();
+        }
+
+        @Override protected Object doInBackground() {
+            Object pos = null;
+                try {
+                    pos = resolver.resolve(cat, targetName);
+                } catch (RuntimeException ex) {
+                    return ex.getMessage();
+                } catch (IOException ex) {
+                    return ex.getMessage();
+                }
+            return pos;
+        }
+        @Override protected void succeeded(Object result) {
+            if(result instanceof String)
+                NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(), result, "Error trying to resolve name", NarrowOptionPane.ERROR_MESSAGE);
+            else {
+                Position pos = (Position) result;
+                setRa(pos.getRa().toString());
+                setDec(pos.getDec().toString());
+            }
+        }
+    }
+
+
     private Segment generated;
-    
-
-    
-
 }

@@ -35,6 +35,16 @@
             <artifactId>sed-builder</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>jsky</groupId>
+            <artifactId>jsky</artifactId>
+            <version>3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>jel</groupId>
+            <artifactId>jel</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -67,8 +77,81 @@
                     </archive>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>install</phase>
+                        <configuration>
+                            <tasks>
+                                <copy todir="${basedir}/target/">
+                                    <fileset dir="${basedir}" includes="Iris"/>
+                                </copy>
+                                <chmod file="${basedir}/target/Iris" perm="+x"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>
+                omar
+            </id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-resources-plugin</artifactId>
+<!--                <version>2.5</version>-->
+                        <executions>
+                            <execution>
+                                <id>copy-resources</id>
+            <!-- here the phase you need -->
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${basedir}/target/lib/sherpa</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>/Users/olaurino/Desktop/pune/iris-1.0-macosx-x86_64/lib/sherpa</directory>
+                                            <filtering>false</filtering>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>install</phase>
+                                <configuration>
+                                    <tasks>
+                                        <chmod file="${basedir}/target/lib/sherpa/bin/python2.6" perm="+x"/>
+                                    </tasks>
+                                </configuration>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     
 

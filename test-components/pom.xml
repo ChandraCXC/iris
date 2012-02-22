@@ -31,11 +31,6 @@
             <version>1.2.1</version>
         </dependency>
         <dependency>
-            <groupId>specview</groupId>
-            <artifactId>specview</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <dependency>
             <groupId>javax.help</groupId>
             <artifactId>javahelp</artifactId>
             <version>2.0.05</version>
@@ -44,6 +39,11 @@
             <groupId>xml</groupId>
             <artifactId>xml</artifactId>
             <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>specview</groupId>
+            <artifactId>specview</artifactId>
+            <version>1.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

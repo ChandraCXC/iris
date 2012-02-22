@@ -69,6 +69,11 @@ public class TestBuilder implements IrisComponent {
         return app;
     }
 
+    @Override
+    public void shutdown() {
+        
+    }
+
 
 
     private class TestBuilderMenus extends ArrayList<IMenuItem> {

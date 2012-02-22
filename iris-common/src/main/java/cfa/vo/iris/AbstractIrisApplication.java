@@ -162,9 +162,15 @@ public abstract class AbstractIrisApplication extends Application implements Iri
                     Logger.getLogger("").setLevel(Level.SEVERE);
                     sampSetup();
                     ws = new IrisWorkspace();
-                    for (IrisComponent component : components.values()) {
+                    for (final IrisComponent component : components.values()) {
+                        EventQueue.invokeLater(new Runnable() {
 
-                        component.init(AbstractIrisApplication.this, ws);
+                            @Override
+                            public void run() {
+                                component.init(AbstractIrisApplication.this, ws);
+                            }
+                        });
+                        
                     }
                     try {
                         desktop = new IrisDesktop(AbstractIrisApplication.this);

@@ -85,6 +85,11 @@ public class SSATestHandler implements IrisComponent {
         return l;
     }
 
+    @Override
+    public void shutdown() {
+        
+    }
+
     private class SSAHandler extends AbstractMessageHandler {
 
         public SSAHandler() {

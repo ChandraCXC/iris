@@ -39,7 +39,7 @@ import spv.spectrum.factory.SED.SEDFactoryModule;
 public class IrisFitManager implements IrisComponent {
 
     private JInternalFrame currentFitFrame;
-    SEDFactoryModule factory = new SEDFactoryModule();
+    private SEDFactoryModule factory = new SEDFactoryModule();
     private SherpaModelManager smm;
     private IWorkspace ws;
     private ISedManager<ExtSed> manager;
@@ -121,6 +121,11 @@ public class IrisFitManager implements IrisComponent {
     @Override
     public List<MessageHandler> getSampHandlers() {
         return new ArrayList();
+    }
+
+    @Override
+    public void shutdown() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     private class Menus extends ArrayList {

@@ -1,0 +1,11 @@
+#!/bin/sh
+
+bindir=$( cd -P "$( dirname "$0" )" && pwd )
+if [ -h "$0" ]; then
+    bindir=$( cd -P "$( dirname "`readlink -n "$0"`" )" && pwd )
+fi
+
+export IRIS_DIR=$bindir
+
+java -DIRIS_DIR=$bindir -jar iris-2.0-SNAPSHOT.jar
+
