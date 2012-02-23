@@ -77,12 +77,7 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
     void display(SedlibSedManager.ExtSed sed, String name) {
         if (sed != null) {
 
-            System.out.println ("IrisDisplayManager  line: 80  -   " + sed.getNumberOfSegments());
-
             ManagedSpectrum2 msp1 = (ManagedSpectrum2) sed.getAttachment(FIT_MODEL);
-
-            System.out.println ("IrisDisplayManager  line: 84  -   nbins:     " + msp1.getSpectrum().getNBins());
-            System.out.println ("IrisDisplayManager  line: 85  -   #spectra:  " + msp1.getSpectrum().getNumberOfSpectra());
 
             msp1.getSpectrum().setName(name);
             display(msp1);

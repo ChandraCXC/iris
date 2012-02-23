@@ -106,6 +106,22 @@ public class IrisVisualizer implements IrisComponent {
 
             @Override
             public void process(Segment source, final SegmentPayload payload) {
+                ExtSed sed = payload.getSed();
+
+                ManagedSpectrum2 msp = (ManagedSpectrum2) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
+                if (msp != null) {
+
+                    sed.removeAttachment(IrisDisplayManager.FIT_MODEL);
+
+                    if (modelManager != null && modelManager.isActive()) {
+                        modelManager.resetFitManagerReference();
+                        modelManager.dispose();
+                        modelManager.setVisible(false);
+                        modelManager.setActive(false);
+                        modelManager = null;
+                    }
+                }
+
                 display(payload.getSed());
             }
         });
