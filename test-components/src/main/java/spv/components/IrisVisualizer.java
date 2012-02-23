@@ -116,8 +116,8 @@ public class IrisVisualizer implements IrisComponent {
         try {
             displayedSed = sed;
 
-
             Spectrum sp = factory.readAllSegments(null, sed);
+
             sp.setName(sed.getId());
 
             ManagedSpectrum2 managedSpectrum = (ManagedSpectrum2) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
@@ -128,9 +128,6 @@ public class IrisVisualizer implements IrisComponent {
 
                 modelManager = new SherpaModelManager(sp, idm.getSAMPConnector(), ws.getDesktop());
                 modelManager.setActive(false);
-                managedSpectrum = new ManagedSpectrum2(sp, modelManager);
-
-                displayedSed.addAttachment(IrisDisplayManager.FIT_MODEL, managedSpectrum);
 
             } else {
 
@@ -138,6 +135,9 @@ public class IrisVisualizer implements IrisComponent {
 
                 modelManager = (SherpaModelManager) managedSpectrum.getModelManager();
             }
+
+            managedSpectrum = new ManagedSpectrum2(sp, modelManager);
+            displayedSed.addAttachment(IrisDisplayManager.FIT_MODEL, managedSpectrum);
 
             idm.display(displayedSed, "");
 
