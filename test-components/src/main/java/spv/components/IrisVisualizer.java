@@ -10,6 +10,16 @@ package spv.components;
  * Date: 2/13/12
  * Time: 3:03 PM
  */
+
+import java.awt.EventQueue;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JInternalFrame;
+
+import org.astrogrid.samp.client.MessageHandler;
+
 import cfa.vo.iris.AbstractDesktopItem;
 import cfa.vo.iris.ICommandLineInterface;
 import cfa.vo.iris.IMenuItem;
@@ -29,14 +39,7 @@ import cfa.vo.iris.logging.LogEvent;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.sed.SedlibSedManager.ExtSed;
 import cfa.vo.sedlib.Segment;
-import java.awt.EventQueue;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JInternalFrame;
 
-import org.astrogrid.samp.client.MessageHandler;
 import spv.SpvInitialization;
 import spv.controller.ManagedSpectrum2;
 import spv.controller.SherpaModelManager;
@@ -107,6 +110,9 @@ public class IrisVisualizer implements IrisComponent {
             @Override
             public void process(Segment source, final SegmentPayload payload) {
                 ExtSed sed = payload.getSed();
+
+                // If the sed structure was modified, invalidate
+                // any model associated with it.
 
                 ManagedSpectrum2 msp = (ManagedSpectrum2) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
                 if (msp != null) {
