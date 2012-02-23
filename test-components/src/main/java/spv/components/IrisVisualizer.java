@@ -40,7 +40,6 @@ import org.astrogrid.samp.client.MessageHandler;
 import spv.SpvInitialization;
 import spv.controller.ManagedSpectrum2;
 import spv.controller.SherpaModelManager;
-import spv.controller.display.IrisDisplayManager;
 import spv.fit.FittedSpectrum;
 import spv.fit.FittingEngine;
 import spv.fit.FittingEngineFactory;
@@ -81,6 +80,7 @@ public class IrisVisualizer implements IrisComponent {
         FittingEngineFactory f = new FittingEngineFactory();
         try {
             sherpa = f.get("sherpa");
+//            sherpa = f.get("test");
             sherpa.start();
             LogEvent.getInstance().fire(sherpa, new LogEntry("Sherpa started", this));
         } catch (NoSuchEngineException ex) {
@@ -275,6 +275,7 @@ public class IrisVisualizer implements IrisComponent {
                                     // And display it.
 
                                     idm.display(displayedSed, "");
+
                                 } catch (Exception ex) {
                                     LogEvent.getInstance().fire(this, new LogEntry("Error: " + ex.getMessage(), sed));
                                     Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
