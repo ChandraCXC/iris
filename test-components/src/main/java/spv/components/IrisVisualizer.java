@@ -50,6 +50,7 @@ import spv.fit.FittingEngineFactory;
 import spv.fit.NoSuchEngineException;
 import spv.spectrum.Spectrum;
 import spv.spectrum.factory.SED.SEDFactoryModule;
+import spv.util.Command;
 import spv.util.Include;
 import spv.util.properties.SpvProperties;
 
@@ -151,13 +152,21 @@ public class IrisVisualizer implements IrisComponent {
 
                 SherpaModelManager modelManager = new SherpaModelManager(sp, idm.getSAMPConnector(), ws.getDesktop());
                 modelManager.setActive(false);
+
+                modelManager.setCallback(new Command() {
+                    public void execute(Object o) {
+                        displayedSed.removeAttachment(IrisDisplayManager.FIT_MODEL);
+                        display(displayedSed);
+                    }
+                });
+
                 managedSpectrum = new ManagedSpectrum2(sp, modelManager);
                 displayedSed.addAttachment(IrisDisplayManager.FIT_MODEL, managedSpectrum);
             }
 
             // Now display the Sed.
 
-            idm.display(displayedSed, "");
+            idm.display(displayedSed, displayedSed.getId());
 
             // and add its frame to the workspace.
 
@@ -272,8 +281,6 @@ public class IrisVisualizer implements IrisComponent {
                                     SherpaModelManager modelManager = (SherpaModelManager) managedSpectrum.getModelManager();
 
                                     modelManager.execute(null);
-
-                                    System.out.println ("IrisVisualizer$VisualizerMenus  line: 276  - model manager being activated:  " + modelManager.hashCode());
 
                                     // Display the model manager frame.
 
