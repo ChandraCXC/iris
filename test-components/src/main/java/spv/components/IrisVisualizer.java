@@ -153,7 +153,9 @@ public class IrisVisualizer implements IrisComponent {
                 SherpaModelManager modelManager = new SherpaModelManager(sp, idm.getSAMPConnector(), ws.getDesktop());
                 modelManager.setActive(false);
 
-                modelManager.setCallback(new Command() {
+                // This is needed to capture the 'Quit' button action
+                // that comes from the model manager GUI.
+                modelManager.setCallbackOnDispose(new Command() {
                     public void execute(Object o) {
                         displayedSed.removeAttachment(IrisDisplayManager.FIT_MODEL);
                         display(displayedSed);
