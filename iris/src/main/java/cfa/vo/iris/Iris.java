@@ -17,12 +17,14 @@
 /*
  * IrisImporterApp.java
  */
-
 package cfa.vo.iris;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JDialog;
 
 /**
@@ -66,4 +68,13 @@ public class Iris extends AbstractIrisApplication {
         return getClass().getResource("/Iris_logo.png");
     }
 
+    @Override
+    public URL getHelpURL() {
+        try {
+            return new URL("http://cxc.cfa.harvard.edu/iris/");
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(Iris.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
 }

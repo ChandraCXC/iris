@@ -74,6 +74,11 @@ public class TestBuilder implements IrisComponent {
         
     }
 
+    @Override
+    public void initCli(IrisApplication app) {
+        
+    }
+
 
 
     private class TestBuilderMenus extends ArrayList<IMenuItem> {

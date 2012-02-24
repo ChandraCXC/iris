@@ -29,6 +29,7 @@ package cfa.vo.iris.desktop;
 
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.interop.SAMPConnectionListener;
+import cfa.vo.iris.AbstractDesktopItem;
 import cfa.vo.iris.IMenuItem;
 import cfa.vo.iris.AbstractIrisApplication;
 import cfa.vo.iris.IrisComponent;
@@ -66,12 +67,14 @@ public class IrisDesktop extends JFrame {
     AbstractIrisApplication app;
 
     /** Creates new form SedImporterMainView */
-    public IrisDesktop(AbstractIrisApplication app) throws Exception {
+    public IrisDesktop(final AbstractIrisApplication app) throws Exception {
         initComponents();
 
         this.app = app;
 
         aboutBox = app.getAboutBox();
+
+        aboutLabel.setText("About "+app.getName());
 
         components = app.getComponents();
 
@@ -118,6 +121,23 @@ public class IrisDesktop extends JFrame {
             paintButtons();
 
         }
+
+        AbstractDesktopItem help = new AbstractDesktopItem("Help", "Help on "+app.getName(), "/help_contextual.png", "/help_contextual_tiny.png") {
+
+            @Override
+            public void onClick() {
+                showLink(app.getHelpURL());
+            }
+        };
+
+        IrisMenuItem helpItem = new IrisMenuItem(help);
+
+        helpMenu.add(helpItem);
+        DesktopButton b = new DesktopButton(help);
+        buttons.add(b);
+        desktopPane.add(b);
+
+        paintButtons();
 
         jLabel2.setIcon(new ImageIcon(app.getDesktopIcon()));
 
@@ -237,8 +257,8 @@ public class IrisDesktop extends JFrame {
         toolsMenu = new javax.swing.JMenu();
         jMenu1 = new javax.swing.JMenu();
         jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
-        jMenu2 = new javax.swing.JMenu();
-        jMenuItem5 = new javax.swing.JMenuItem();
+        helpMenu = new javax.swing.JMenu();
+        aboutLabel = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -290,23 +310,23 @@ public class IrisDesktop extends JFrame {
 
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("Help");
-        jMenu2.addActionListener(new java.awt.event.ActionListener() {
+        helpMenu.setText("Help");
+        helpMenu.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 showAbout(evt);
             }
         });
 
-        jMenuItem5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iris_button_tiny.png")));
-        jMenuItem5.setText("About SedImporter");
-        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+        aboutLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iris_button_tiny.png")));
+        aboutLabel.setText("About SedImporter");
+        aboutLabel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 showAbout(evt);
             }
         });
-        jMenu2.add(jMenuItem5);
+        helpMenu.add(aboutLabel);
 
-        jMenuBar1.add(jMenu2);
+        jMenuBar1.add(helpMenu);
 
         setJMenuBar(jMenuBar1);
 
@@ -357,10 +377,7 @@ public class IrisDesktop extends JFrame {
         aboutBox.setVisible(true);
     }//GEN-LAST:event_showAbout
 
-//    public static IrisDesktop getInstance() {
-//        return MainViewHolder.INSTANCE;
-//    }
-
+    
 
 
     public JDesktopPane getDesktopPane() {
@@ -380,15 +397,15 @@ public class IrisDesktop extends JFrame {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem aboutLabel;
     private javax.swing.JDesktopPane desktopPane;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
+    private javax.swing.JMenu helpMenu;
     private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel sampIcon;
     private javax.swing.JMenu toolsMenu;

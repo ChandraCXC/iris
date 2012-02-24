@@ -8,6 +8,7 @@ package cfa.vo.iris;
 import cfa.vo.interop.SAMPController;
 import cfa.vo.sedlib.Sed;
 import java.io.File;
+import java.net.URL;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.SampException;
 
@@ -45,4 +46,6 @@ public interface IrisApplication {
     void sendSampMessage(Message msg) throws SampException;
 
     SAMPController getSAMPController();
+
+    URL getHelpURL();
 }

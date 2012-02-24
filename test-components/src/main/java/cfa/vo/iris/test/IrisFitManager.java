@@ -128,6 +128,11 @@ public class IrisFitManager implements IrisComponent {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
+    public void initCli(IrisApplication app) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
     private class Menus extends ArrayList {
 
         public Menus() {

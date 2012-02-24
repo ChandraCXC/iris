@@ -128,6 +128,11 @@ public class SedBuilder implements IrisComponent {
         
     }
 
+    @Override
+    public void initCli(IrisApplication app) {
+        this.iris = app;
+    }
+
     private class BuilderMenuItems extends ArrayList<IMenuItem> {
         public BuilderMenuItems() {
             add(new AbstractDesktopItem("File|Build SED", "Load SED data from several different sources", "/scratch.png", "/scratch_tiny.png") {

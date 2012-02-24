@@ -114,6 +114,11 @@ public class ModelManagerComponent implements IrisComponent {
         }
     }
 
+    @Override
+    public void initCli(IrisApplication app) {
+        
+    }
+
     private class VisualizerMenus extends ArrayList<IMenuItem> {
 
         public VisualizerMenus() {

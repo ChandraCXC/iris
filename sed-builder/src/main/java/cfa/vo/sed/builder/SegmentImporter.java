@@ -79,7 +79,8 @@ public class SegmentImporter {
 
         URL fileLoc = new URL(conf.getFileLocation());
         IFileFormat format = FileFormatManager.getInstance().getFormatByName(conf.getFormatName());
-        Integer segmentNumber = conf.getPositionInFile();
+        Integer pos = conf.getPositionInFile();
+        Integer segmentNumber = pos==null ? 0 : pos;
 
         switch(errorType) {
             case Unknown:
@@ -310,7 +311,8 @@ public class SegmentImporter {
 
         URL fileLoc = new URL(conf.getFileLocation());
         IFileFormat format = FileFormatManager.getInstance().getFormatByName(conf.getFormatName().toUpperCase());
-        Integer segmentNumber = conf.getPositionInFile();
+        Integer pos = conf.getPositionInFile();
+        Integer segmentNumber = pos==null ? 0 : pos;
         
         ISegmentMetadata metadata = format.getFilter(fileLoc).getMetadata().get(segmentNumber);
 

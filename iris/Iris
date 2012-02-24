@@ -7,5 +7,7 @@ fi
 
 export IRIS_DIR=$bindir
 
-java -DIRIS_DIR=$bindir -jar iris-2.0-SNAPSHOT.jar
+java -DIRIS_DIR=$bindir -jar iris-2.0-SNAPSHOT.jar $@
+
+
 

@@ -64,4 +64,9 @@ public class TestLogger implements IrisComponent, LogListener {
         
     }
 
+    @Override
+    public void initCli(IrisApplication app) {
+        
+    }
+
 }

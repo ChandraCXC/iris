@@ -172,7 +172,7 @@ public class IrisVisualizer implements IrisComponent {
                 currentFrame.dispose();
                 currentFrame = frame;
                 currentFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
-                frame.setTitle("Fit Engine");
+                frame.setTitle("Iris Visualizer");
                 ws.addFrame(frame);
             }
 
@@ -225,11 +225,16 @@ public class IrisVisualizer implements IrisComponent {
         sherpa.shutdown();
     }
 
+    @Override
+    public void initCli(IrisApplication app) {
+        
+    }
+
     private class VisualizerMenus extends ArrayList<IMenuItem> {
 
         public VisualizerMenus() {
             add(new AbstractDesktopItem("SED Visualizer", "Explore SEDs",
-                    "/tool.png", "/tool_tiny.png") {
+                    "/iris_button_small.png", "/iris_button_tiny.png") {
 
                 @Override
                 public void onClick() {
@@ -253,7 +258,7 @@ public class IrisVisualizer implements IrisComponent {
             });
 
             add(new AbstractDesktopItem("Fitting", "Fitting",
-                    "/tool.png", "/tool_tiny.png") {
+                    "/ruler_small.png", "/ruler_tiny.png") {
 
                 @Override
                 public void onClick() {

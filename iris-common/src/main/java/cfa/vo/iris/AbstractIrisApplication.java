@@ -119,6 +119,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
         }
         try {
             for (IrisComponent component : getComponents()) {
+                component.initCli(this);
                 components.put(component.getCli().getName(), component);
             }
         } catch (Exception ex) {

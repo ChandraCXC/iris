@@ -43,6 +43,11 @@ public interface IrisComponent {
      */
     ICommandLineInterface getCli();
     /**
+     * Initialize the Command Line Application interface
+     * @param app Reference to the enclosing application
+     */
+    void initCli(IrisApplication app);
+    /**
      * The component can contribute menu items and desktop buttons to the enclosing GUI applications
      * by providing a list of MenuItems.
      *
