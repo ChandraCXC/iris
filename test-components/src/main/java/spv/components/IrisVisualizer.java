@@ -42,6 +42,7 @@ import cfa.vo.sedlib.Segment;
 
 import spv.SpvInitialization;
 import spv.controller.ManagedSpectrum2;
+import spv.controller.ModelManager2;
 import spv.controller.SherpaModelManager;
 import spv.fit.FittedSpectrum;
 import spv.fit.FittingEngine;
@@ -62,7 +63,6 @@ public class IrisVisualizer implements IrisComponent {
     private IWorkspace ws;
     private IrisApplication app;
     private JInternalFrame currentFrame;
-    private SherpaModelManager modelManager;
     private SedlibSedManager manager;
     private ExtSed displayedSed;
     private SEDFactoryModule factory = new SEDFactoryModule();
@@ -131,6 +131,7 @@ public class IrisVisualizer implements IrisComponent {
     }
 
     private void remove(ExtSed source) {
+        invalidateModel(source);
         idm.remove(source.getId());
     }
 
@@ -141,28 +142,24 @@ public class IrisVisualizer implements IrisComponent {
 
             ManagedSpectrum2 managedSpectrum = (ManagedSpectrum2) displayedSed.getAttachment(IrisDisplayManager.FIT_MODEL);
 
-            if (managedSpectrum == null) {
+            // There is no Sed attachment, so build a model manager and attach it.
 
-                // There is no attachment to the Sed, so build a model manager and attach it.
+            if (managedSpectrum == null) {
 
                 Spectrum sp = factory.readAllSegments(null, displayedSed);
                 sp.setName(displayedSed.getId());
 
-                modelManager = new SherpaModelManager(sp, idm.getSAMPConnector(), ws.getDesktop());
+                SherpaModelManager modelManager = new SherpaModelManager(sp, idm.getSAMPConnector(), ws.getDesktop());
                 modelManager.setActive(false);
                 managedSpectrum = new ManagedSpectrum2(sp, modelManager);
                 displayedSed.addAttachment(IrisDisplayManager.FIT_MODEL, managedSpectrum);
-
-            } else {
-
-                // Retrieve model manager from the attachment.
-
-                invalidateModelManager();
-
-                modelManager = (SherpaModelManager) managedSpectrum.getModelManager();
             }
 
+            // Now display the Sed.
+
             idm.display(displayedSed, "");
+
+            // and add its frame to the workspace.
 
             JInternalFrame frame = idm.getInternalFrame();
             if (frame != currentFrame) {
@@ -182,19 +179,12 @@ public class IrisVisualizer implements IrisComponent {
         ManagedSpectrum2 msp = (ManagedSpectrum2) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
         if (msp != null) {
 
+            ModelManager2 mm = msp.getModelManager();
+            if (mm != null && mm.isActive()) {
+                mm.dispose();
+            }
+
             sed.removeAttachment(IrisDisplayManager.FIT_MODEL);
-
-            invalidateModelManager();
-        }
-    }
-
-    private void invalidateModelManager() {
-        if (modelManager != null && modelManager.isActive()) {
-//            modelManager.resetFitManagerReference();
-            modelManager.dispose();
-//            modelManager.setVisible(false);
-//            modelManager.setActive(false);
-            modelManager = null;
         }
     }
 
@@ -275,15 +265,17 @@ public class IrisVisualizer implements IrisComponent {
                                     Spectrum sp = factory.readAllSegments(null, sed);
                                     sp.setName(sed.getId());
 
-                                    if (modelManager == null) {
-                                        modelManager = new SherpaModelManager(sp, idm.getSAMPConnector(), ws.getDesktop());
-                                    }
+                                    // Get model manager from Sed attachment
+                                    // and activate it.
 
-                                    // Activate model manager.
+                                    ManagedSpectrum2 managedSpectrum = (ManagedSpectrum2) displayedSed.getAttachment(IrisDisplayManager.FIT_MODEL);
+                                    SherpaModelManager modelManager = (SherpaModelManager) managedSpectrum.getModelManager();
 
                                     modelManager.execute(null);
 
-                                    // Display its frame.
+                                    System.out.println ("IrisVisualizer$VisualizerMenus  line: 276  - model manager being activated:  " + modelManager.hashCode());
+
+                                    // Display the model manager frame.
 
                                     JInternalFrame frame = modelManager.getInternalFrame();
                                     frame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
@@ -294,16 +286,18 @@ public class IrisVisualizer implements IrisComponent {
                                     } catch (java.beans.PropertyVetoException e) {
                                     }
 
-                                    // Get the fitted spectrum from the model manager.
+                                    // Get the FittedSpectrum instance from the model manager.
 
                                     FittedSpectrum fsp = modelManager.getSEDFittedSpectrum();
                                     fsp.enableNotifications(true);
 
-                                    // Before attaching the new model to the Sed being displayed,
-                                    // we must make sure that any existing attachment with an
-                                    // old model gets removed first. This assumes that a Sed
-                                    // instance supposedly can be associated with only one
-                                    // model at a time, although this can change in the future.
+                                    // This new fitted spectrum, as well as the now active model
+                                    // manager, must be associated with the sed as an attachment
+                                    // Before attaching, we must make sure that any existing
+                                    // attachment with an old model gets removed first. This
+                                    // assumes that a Sed instance supposedly can be associated
+                                    // with only one model at a time, although this can change
+                                    // in the future.
 
                                     if (displayedSed.getAttachment(IrisDisplayManager.FIT_MODEL) != null) {
                                         displayedSed.removeAttachment(IrisDisplayManager.FIT_MODEL);
@@ -317,7 +311,7 @@ public class IrisVisualizer implements IrisComponent {
 
                                     // And display it.
 
-                                    idm.display(displayedSed, "");
+                                    display(displayedSed);
 
                                 } catch (Exception ex) {
                                     LogEvent.getInstance().fire(this, new LogEntry("Error: " + ex.getMessage(), sed));
