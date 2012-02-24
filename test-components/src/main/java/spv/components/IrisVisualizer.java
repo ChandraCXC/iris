@@ -153,17 +153,12 @@ public class IrisVisualizer implements IrisComponent {
                 SherpaModelManager modelManager = new SherpaModelManager(sp, idm.getSAMPConnector(), ws.getDesktop());
                 modelManager.setActive(false);
 
-                // This is needed to capture the 'Quit' button action
-                // that comes from the model manager GUI.
-                modelManager.setCallbackOnDispose(new Command() {
-                    public void execute(Object o) {
-                        displayedSed.removeAttachment(IrisDisplayManager.FIT_MODEL);
-                        display(displayedSed);
-                    }
-                });
-
                 managedSpectrum = new ManagedSpectrum2(sp, modelManager);
                 displayedSed.addAttachment(IrisDisplayManager.FIT_MODEL, managedSpectrum);
+
+                // This is needed to capture the 'Quit' button action
+                // that comes from the model manager GUI.
+                modelManager.setCallbackOnDispose(new OnDisposeCommand(displayedSed));
             }
 
             // Now display the Sed.
@@ -333,6 +328,19 @@ public class IrisVisualizer implements IrisComponent {
                     });
                 }
             });
+        }
+    }
+
+    private class OnDisposeCommand implements Command {
+        private ExtSed sed;
+
+        private OnDisposeCommand(ExtSed sed) {
+            this.sed  = sed;
+        }
+
+        public void execute(Object o) {
+            sed.removeAttachment(IrisDisplayManager.FIT_MODEL);
+            display(sed);
         }
     }
 }
