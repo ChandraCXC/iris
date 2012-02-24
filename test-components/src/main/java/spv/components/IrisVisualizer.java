@@ -101,7 +101,16 @@ public class IrisVisualizer implements IrisComponent {
 
             @Override
             public void process(final ExtSed source, SedCommand payload) {
-                display(source);
+
+                if (payload == SedCommand.SELECTED) {
+
+                    display(source);
+
+                } else if (payload == SedCommand.REMOVED) {
+
+                    remove(source);
+
+                }
             }
         });
 
@@ -114,23 +123,15 @@ public class IrisVisualizer implements IrisComponent {
                 // If the sed structure was modified, invalidate
                 // any model associated with it.
 
-                ManagedSpectrum2 msp = (ManagedSpectrum2) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
-                if (msp != null) {
-
-                    sed.removeAttachment(IrisDisplayManager.FIT_MODEL);
-
-                    if (modelManager != null && modelManager.isActive()) {
-                        modelManager.resetFitManagerReference();
-                        modelManager.dispose();
-                        modelManager.setVisible(false);
-                        modelManager.setActive(false);
-                        modelManager = null;
-                    }
-                }
+                invalidateModel(sed);
 
                 display(payload.getSed());
             }
         });
+    }
+
+    private void remove(ExtSed source) {
+        idm.remove(source.getId());
     }
 
     private void display(ExtSed sed) {
@@ -138,28 +139,28 @@ public class IrisVisualizer implements IrisComponent {
         try {
             displayedSed = sed;
 
-            Spectrum sp = factory.readAllSegments(null, sed);
-
-            sp.setName(sed.getId());
-
-            ManagedSpectrum2 managedSpectrum = (ManagedSpectrum2) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
+            ManagedSpectrum2 managedSpectrum = (ManagedSpectrum2) displayedSed.getAttachment(IrisDisplayManager.FIT_MODEL);
 
             if (managedSpectrum == null) {
 
-                // There is no attachment to the Sed, so build one.
+                // There is no attachment to the Sed, so build a model manager and attach it.
+
+                Spectrum sp = factory.readAllSegments(null, displayedSed);
+                sp.setName(displayedSed.getId());
 
                 modelManager = new SherpaModelManager(sp, idm.getSAMPConnector(), ws.getDesktop());
                 modelManager.setActive(false);
+                managedSpectrum = new ManagedSpectrum2(sp, modelManager);
+                displayedSed.addAttachment(IrisDisplayManager.FIT_MODEL, managedSpectrum);
 
             } else {
 
                 // Retrieve model manager from the attachment.
 
+                invalidateModelManager();
+
                 modelManager = (SherpaModelManager) managedSpectrum.getModelManager();
             }
-
-            managedSpectrum = new ManagedSpectrum2(sp, modelManager);
-            displayedSed.addAttachment(IrisDisplayManager.FIT_MODEL, managedSpectrum);
 
             idm.display(displayedSed, "");
 
@@ -174,6 +175,26 @@ public class IrisVisualizer implements IrisComponent {
 
         } catch (Exception ex) {
             LogEvent.getInstance().fire(this, new LogEntry("Error: " + ex.getMessage(), sed));
+        }
+    }
+
+    private void invalidateModel(ExtSed sed) {
+        ManagedSpectrum2 msp = (ManagedSpectrum2) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
+        if (msp != null) {
+
+            sed.removeAttachment(IrisDisplayManager.FIT_MODEL);
+
+            invalidateModelManager();
+        }
+    }
+
+    private void invalidateModelManager() {
+        if (modelManager != null && modelManager.isActive()) {
+//            modelManager.resetFitManagerReference();
+            modelManager.dispose();
+//            modelManager.setVisible(false);
+//            modelManager.setActive(false);
+            modelManager = null;
         }
     }
 

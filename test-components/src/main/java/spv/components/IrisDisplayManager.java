@@ -102,6 +102,10 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
         }
     }
 
+    public void remove(String name) {
+        secondaryController.remove(name);
+    }
+
     public PlotWidget getPlotWidget() {
         return secondaryController.getPlotWidget();
     }

@@ -46,6 +46,8 @@ public class ModelManagerComponent implements IrisComponent {
                 EventQueue.invokeLater(new Runnable() {
                     public void run() {
 
+                        System.out.println ("ModelManagerComponent  line: 49  - ");
+
                         // Retrieve model manager from the attachment.
 
                         ManagedSpectrum2 managedSpectrum = (ManagedSpectrum2) source.getAttachment(IrisDisplayManager.FIT_MODEL);
