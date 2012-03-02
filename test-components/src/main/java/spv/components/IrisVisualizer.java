@@ -77,8 +77,8 @@ public class IrisVisualizer implements IrisComponent {
 
         SpvInitialization spvinit = new SpvInitialization(new String[]{}, null);
 
-        SpvProperties.SetProperty(Include.APP_NAME, "Iris");
-        SpvProperties.SetProperty(Include.PYTHON_PATH, sherpaDir);
+        SpvProperties.SetSessionProperty(Include.APP_NAME, "Iris");
+        SpvProperties.SetSessionProperty(Include.PYTHON_PATH, sherpaDir);
         spvinit.initialize(null, false);
 
         FittingEngineFactory f = new FittingEngineFactory();
@@ -139,6 +139,7 @@ public class IrisVisualizer implements IrisComponent {
     private void display(ExtSed sed) {
 
         try {
+
             displayedSed = sed;
 
             ManagedSpectrum2 managedSpectrum = (ManagedSpectrum2) displayedSed.getAttachment(IrisDisplayManager.FIT_MODEL);
@@ -158,6 +159,7 @@ public class IrisVisualizer implements IrisComponent {
 
                 // This is needed to capture the 'Quit' button action
                 // that comes from the model manager GUI.
+
                 modelManager.setCallbackOnDispose(new OnDisposeCommand(displayedSed));
             }
 
@@ -294,6 +296,7 @@ public class IrisVisualizer implements IrisComponent {
                                         frame.setSelected(true);
                                     } catch (java.beans.PropertyVetoException e) {
                                     }
+//                                    idm.setModelmanagerFrame(frame);
 
                                     // Get the FittedSpectrum instance from the model manager.
 
