@@ -20,6 +20,7 @@ import org.astrogrid.samp.client.MessageHandler;
 
 import cfa.vo.iris.*;
 import cfa.vo.iris.events.*;
+import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.sedlib.Segment;
 
@@ -33,7 +34,7 @@ public class ModelManagerComponent implements IrisComponent {
     private IWorkspace ws;
     private IrisApplication app;
     private SherpaModelManager modelManager;
-    private SedlibSedManager.ExtSed displayedSed;
+    private ExtSed displayedSed;
 
     @Override
     public void init(IrisApplication app, IWorkspace workspace) {
@@ -42,7 +43,7 @@ public class ModelManagerComponent implements IrisComponent {
         this.ws = workspace;
 
         SedEvent.getInstance().add(new SedListener() {
-            public void process(final SedlibSedManager.ExtSed source, final SedCommand payload) {
+            public void process(final ExtSed source, final SedCommand payload) {
                 EventQueue.invokeLater(new Runnable() {
                     public void run() {
 

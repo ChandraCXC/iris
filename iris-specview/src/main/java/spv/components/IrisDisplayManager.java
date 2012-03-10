@@ -22,7 +22,7 @@ import org.astrogrid.samp.gui.GuiHubConnector;
 import cfa.vo.iris.events.*;
 import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
-import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.iris.sed.ExtSed;
 
 import spv.controller.ManagedSpectrum2;
 import spv.controller.SecondaryController2;
@@ -74,7 +74,7 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
      *               frame is loaded on the display.
      * @param name   the string to be used as frame title.
      */
-    void display(SedlibSedManager.ExtSed sed, String name) {
+    void display(ExtSed sed, String name) {
         if (sed != null) {
 
             ManagedSpectrum2 msp1 = (ManagedSpectrum2) sed.getAttachment(FIT_MODEL);
@@ -185,7 +185,7 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
         return connection;
     }
 
-    public void process(SedlibSedManager.ExtSed extSed, SedCommand sedCommand) {
+    public void process(ExtSed extSed, SedCommand sedCommand) {
     }
 
     // Metadata button. This button is not present in Iris 1.0. Its

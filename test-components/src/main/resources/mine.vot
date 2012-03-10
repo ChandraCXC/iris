@@ -69,7 +69,7 @@
         <GROUP utype="Spectrum.Data.FluxAxis">
           <FIELDref ref="DataFluxValue"/>
           <PARAM ID="DataFluxUcd" arraysize="*" datatype="char" name="DataFluxUcd" value="phot.flux.density;em.freq"/>
-          <PARAM ID="DataFluxUnit" arraysize="*" datatype="char" name="DataFluxUnit" ucd="phot.flux.density;em.freq;unit" value="Jy"/>
+          <PARAM ID="DataFluxUnit" arraysize="*" datatype="char" name="DataFluxUnit" ucd="phot.flux.density;em.freq;unit" utype="spec:Spectrum.Data.FluxAxis.Unit" value="Jy"/>
           <GROUP utype="Spectrum.Data.FluxAxis.Accuracy">
             <FIELDref ref="DataFluxStatErr"/>
           </GROUP>

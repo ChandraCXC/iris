@@ -28,7 +28,7 @@
 package cfa.vo.sed.gui;
 
 import cfa.vo.iris.gui.NarrowOptionPane;
-import cfa.vo.iris.sed.SedlibSedManager.ExtSed;
+import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.utils.SpaceTrimmer;
 import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sedlib.io.SedFormat;
@@ -171,6 +171,7 @@ public final class SaveSedDialog extends javax.swing.JDialog {
     /** Creates new form SaveConfigurationDialog */
     public SaveSedDialog(java.awt.Frame parent, ExtSed sed) {
         super(parent, true);
+        this.sed = sed;
         setSedName(sed.getId());
         initComponents();
         if(sed.getNumberOfSegments()==0)

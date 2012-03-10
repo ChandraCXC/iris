@@ -17,6 +17,7 @@
 
 package cfa.vo.interop;
 
+import com.google.common.base.CaseFormat;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -184,7 +185,8 @@ class SAMPProxy implements InvocationHandler {
     }
 
     private static String objectName(Method method) {
-        String name = method.getName().replaceFirst("^get|^set|^add", "").toLowerCase();
+        String name = method.getName().replaceFirst("^get|^set|^add", "");
+        name = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_HYPHEN, name);
         return name;
     }
 

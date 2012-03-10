@@ -862,7 +862,6 @@
                 <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
                   <action class="cfa.vo.sed.gui.SetupFrame" id="resolve" methodName="resolve"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Resolve"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel16">

@@ -5,7 +5,7 @@
 
 package cfa.vo.iris.events;
 
-import cfa.vo.iris.sed.SedlibSedManager.ExtSed;
+import cfa.vo.iris.sed.ExtSed;
 
 /**
  *

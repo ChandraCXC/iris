@@ -15,7 +15,8 @@ import cfa.vo.iris.gui.widgets.SedList;
 import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
 import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.iris.sed.SedlibSedManager.ExtSed;
+import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.sedlib.DoubleParam;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
@@ -38,7 +39,6 @@ import org.astrogrid.samp.client.SampException;
 public final class TestBuilderFrame extends JInternalFrame {
 
     private SedlibSedManager manager;
-
     private SedList sedList;
 
     /** Creates new form TestBuilderFrame */
@@ -55,7 +55,7 @@ public final class TestBuilderFrame extends JInternalFrame {
 
             @Override
             public void valueChanged(ListSelectionEvent lse) {
-                if(!lse.getValueIsAdjusting()) {
+                if (!lse.getValueIsAdjusting()) {
                     JList list = (JList) lse.getSource();
                     setSedSelected(!list.isSelectionEmpty());
                 }
@@ -63,7 +63,6 @@ public final class TestBuilderFrame extends JInternalFrame {
         });
 
     }
-
     private boolean sedSelected;
     public static final String PROP_SEDSELECTED = "sedSelected";
 
@@ -254,8 +253,16 @@ public final class TestBuilderFrame extends JInternalFrame {
 
     private void addNedSegment(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addNedSegment
         try {
-            Segment segment = Sed.read(getClass().getResource("/3c066aNED.vot").openStream(), SedFormat.VOT).getSegment(0);
-            manager.getSelected().addSegment(segment);
+            Segment seg = Sed.read(getClass().getResource("/3c066aNED.vot").openStream(), SedFormat.VOT).getSegment(0);
+            if (seg.createTarget().getPos() == null) {
+
+                if (seg.createChar().createSpatialAxis().createCoverage().getLocation() != null) {
+                    seg.createTarget().createPos().setValue(seg.getChar().getSpatialAxis().getCoverage().getLocation().getValue());
+                } else {
+                    seg.createTarget().createPos().setValue(new DoubleParam[]{new DoubleParam(Double.NaN), new DoubleParam(Double.NaN)});
+                }
+            }
+            manager.getSelected().addSegment(seg);
         } catch (Exception ex) {
             Logger.getLogger(TestBuilderFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -314,7 +321,6 @@ public final class TestBuilderFrame extends JInternalFrame {
             Logger.getLogger(TestBuilderFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_sendFITS
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addNedButton;
     private javax.swing.JButton addUserButton;
@@ -327,6 +333,4 @@ public final class TestBuilderFrame extends JInternalFrame {
     private javax.swing.JTextField segNumber;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
-
-
 }

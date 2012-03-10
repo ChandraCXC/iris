@@ -6,7 +6,7 @@
 package cfa.vo.iris.events;
 
 import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
-import cfa.vo.iris.sed.SedlibSedManager.ExtSed;
+import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sedlib.Segment;
 
 /**

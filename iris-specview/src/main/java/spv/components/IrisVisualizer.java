@@ -37,7 +37,7 @@ import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
 import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.iris.sed.SedlibSedManager.ExtSed;
+import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sedlib.Segment;
 
 import spv.SpvInitialization;

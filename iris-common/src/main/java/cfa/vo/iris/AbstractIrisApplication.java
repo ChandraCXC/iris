@@ -14,6 +14,7 @@ import cfa.vo.sedlib.Sed;
 import java.awt.EventQueue;
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -109,14 +110,24 @@ public abstract class AbstractIrisApplication extends Application implements Iri
 
     @Override
     protected void initialize(String[] args) {
-        if (args.length > 1) {
+        List<String> properties = new ArrayList();
+        List<String> arguments = new ArrayList();
+        for(String arg : args) {
+            if(arg.startsWith("--")) {
+                arg = arg.replaceFirst("--", "");
+                properties.add(arg);
+            } else
+                arguments.add(arg);
+        }
+        if (arguments.size() >= 1) {
             isBatch = true;
-            componentName = args[0];
-            componentArgs = new String[args.length - 1];
-            for (int i = 1; i < args.length; i++) {
-                componentArgs[i - 1] = args[i];
+            componentName = arguments.get(0);
+            componentArgs = new String[arguments.size() - 1];
+            for (int i = 1; i < arguments.size(); i++) {
+                componentArgs[i - 1] = arguments.get(i);
             }
         }
+        setProperties(properties);
         try {
             for (IrisComponent component : getComponents()) {
                 component.initCli(this);
@@ -149,7 +160,12 @@ public abstract class AbstractIrisApplication extends Application implements Iri
             CONFIGURATION_DIR.mkdirs();
         }
         if (isBatch) {
-            components.get(componentName).getCli().call(componentArgs);
+            if(!components.containsKey(componentName))
+                System.out.println("Component "+componentName+ " does not exist.");
+            else
+                components.get(componentName).getCli().call(componentArgs);
+
+            exitApp();
         } else {
 
             if (MAC_OS_X) {
@@ -160,7 +176,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
 
                 @Override
                 public void run() {
-                    Logger.getLogger("").setLevel(Level.SEVERE);
+                    Logger.getLogger("").setLevel(Level.OFF);
                     sampSetup();
                     ws = new IrisWorkspace();
                     for (final IrisComponent component : components.values()) {
@@ -193,4 +209,6 @@ public abstract class AbstractIrisApplication extends Application implements Iri
     }
 
     public abstract URL getDesktopIcon();
+
+    public abstract void setProperties(List<String> properties);
 }

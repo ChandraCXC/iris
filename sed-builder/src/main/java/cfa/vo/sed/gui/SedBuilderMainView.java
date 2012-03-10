@@ -19,8 +19,9 @@ import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
 import cfa.vo.iris.events.SegmentListener;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.gui.widgets.SedList;
+import cfa.vo.iris.interop.SedSAMPController;
 import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.iris.sed.SedlibSedManager.ExtSed;
+import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sedlib.DoubleParam;
 import cfa.vo.sedlib.Sed;
@@ -545,7 +546,7 @@ public class SedBuilderMainView extends JInternalFrame {
     @Action
     public void broadcast() {
         try {
-            SedBuilder.getApplication().sendSedMessage(sed, sed.getId());
+            ((SedSAMPController)SedBuilder.getApplication().getSAMPController()).sendSedMessage(sed);
         } catch (SampException ex) {
             NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
                     ex.getMessage(), "Error broadcasting file", NarrowOptionPane.ERROR_MESSAGE);
@@ -728,7 +729,7 @@ public class SedBuilderMainView extends JInternalFrame {
     @Action
     public void saveSegments() {
         try {
-            ExtSed s = manager.new ExtSed("");
+            ExtSed s = new ExtSed("");
             s.addSegment(selectedSegments);
             SaveSedDialog ssd = new SaveSedDialog(rootFrame, s);
             ssd.setVisible(true);

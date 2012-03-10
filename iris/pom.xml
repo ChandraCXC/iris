@@ -5,17 +5,19 @@
     <groupId>cfa.vo</groupId>
     <artifactId>iris</artifactId>
     <packaging>jar</packaging>
-    <version>2.0-SNAPSHOT</version>
     <name>iris</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.build.timestamp.format>yyyy/MM/dd</maven.build.timestamp.format>
+        <buildDate>${maven.build.timestamp}</buildDate>
+        <sherpa.version>4.4</sherpa.version>
     </properties>
 
     <parent>
         <groupId>cfa.vo</groupId>
         <artifactId>iris2</artifactId>
-        <version>2.0-SNAPSHOT</version>
+        <version>1.1-beta1</version>
     </parent>
 
     <dependencies>
@@ -31,11 +33,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>sed-builder</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>jsky</groupId>
             <artifactId>jsky</artifactId>
             <version>3.0</version>
@@ -48,11 +45,33 @@
         <dependency>
             <groupId>spv</groupId>
             <artifactId>iris-specview</artifactId>
-            <version>2.0-SNAPSHOT</version>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+        </dependency>
+        <dependency>
+            <groupId>cfa.vo</groupId>
+            <artifactId>sed-builder</artifactId>
+            <version>${project.version}</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
 
     <build>
+
+        <resources>
+            <resource>
+                <directory>distro</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+
         <plugins>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -66,6 +85,7 @@
                             <outputDirectory>${project.build.directory}/lib</outputDirectory>
                         </configuration>
                     </execution>
+
                 </executions>
             </plugin>
             <plugin>
@@ -84,23 +104,154 @@
             </plugin>
 
             <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
+                <artifactId>maven-resources-plugin</artifactId>
+<!--                <version>2.5</version>-->
                 <executions>
                     <execution>
+                        <id>copy-resources</id>
+            <!-- here the phase you need -->
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/distro</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>sherpa</id>
                         <phase>install</phase>
                         <configuration>
-                            <tasks>
-                                <copy todir="${basedir}/target/">
-                                    <fileset dir="${basedir}" includes="Iris"/>
-                                </copy>
-                                <chmod file="${basedir}/target/Iris" perm="+x"/>
-                            </tasks>
+                            <target name="sherpa" >
+                                <taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="maven.plugin.classpath" />
+                                
+                                <condition property="isDistribution">
+                                    <isset property="distribution"/>
+                                </condition>
+                                <condition property="isSetPlatform">
+                                    <isset property="platform"/>
+                                </condition>
+
+                                <if>
+                                    <equals arg1="${isDistribution}" arg2="true"/>
+                                    <then>
+                                        <property name="plats" value="${platforms}"/>
+                                    </then>
+                                    <else>
+                                        <if>
+                                            <equals arg1="${isSetPlatform}" arg2="true"/>
+                                            <then>
+                                                <property name="plats" value="${platform}"/>
+                                            </then>
+<!--                                            <else>
+                                                <if>
+                                                    <equals arg1="${os.name}" arg2="Mac OS X"/>
+                                                    <then>
+                                                        <property name="plat" value="macosx"/>
+                                                    </then>
+                                                    <else>
+                                                        <property name="plat" value="unix"/>
+                                                    </else>
+                                                </if>
+                                                <if>
+                                                    <or>
+                                                        <equals arg1="${os.arch}" arg2="amd64"/>
+                                                        <equals arg1="${os.arch}" arg2="x86_64"/>
+                                                    </or>
+                                                    <then>
+                                                        <property name="form" value="x86_64"/>
+                                                    </then>
+                                                    <else>
+                                                        <property name="form" value="i386"/>
+                                                    </else>
+                                                </if>
+                                                
+                                                <property name="plats" value="${plat}-${form}"/>
+
+                                            </else>-->
+                                        </if>
+                                    </else>
+                                </if>
+
+                                <echo>Your architecture is: ${os.name} - ${os.arch}</echo>
+                                <echo/>
+                                <echo>Building for these architectures:</echo>
+
+                                <for list="${platforms}" param="p">
+                                    <sequential>
+                                        <echo>@{p}</echo>
+                                    </sequential>
+                                </for>
+
+                                
+
+                                <for list="${platforms}" param="p">
+                                    <sequential>
+                                        <delete dir="${basedir}/target/lib/sherpa"/>
+                                        <move todir="${basedir}/target/">
+                                            <fileset dir="${basedir}/target/lib/" includes="sherpa-*.tgz"/>
+                                        </move>
+                                        <echo>Unpacking Sherpa</echo>
+                                        <exec executable="tar">
+                                            <arg value="-C"/>
+                                            <arg value="${basedir}/target/lib/"/>
+                                            <arg value ="-xzf"/>
+                                            <arg value="${basedir}/target/sherpa-${sherpa.version}-@{p}.tgz"/>
+                                        </exec>
+                                        <echo>Building distribution archive for architecture @{p}</echo>
+                                        
+                                        <mkdir dir="${basedir}/target/${project.name}-${project.version}-@{p}"/>
+
+                                        <copy todir="${basedir}/target/${project.name}-${project.version}-@{p}" overwrite="true">
+                                            <fileset dir="${basedir}/target/" includes="Iris,examples/*,${project.name}-${project.version}-@{p}.tar.gz,${project.name}-${project.version}.jar,LICENSE*,README.txt,COPYING,lib/**/*"/>
+                                        </copy>
+
+                                        <chmod file="${basedir}/target/${project.name}-${project.version}-@{p}/Iris" perm="+x"/>
+
+                                        <chmod file="${basedir}/target/${project.name}-${project.version}-@{p}/lib/sherpa/bin/python2.6" perm="+x"/>
+
+                                        <echo>Created ${project.name}-${project.version}-@{p}.tar.gz</echo>
+                                    </sequential>
+                                </for>
+
+                            </target>
                         </configuration>
                         <goals>
                             <goal>run</goal>
                         </goals>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>ant-contrib</groupId>
+                        <artifactId>ant-contrib</artifactId>
+                        <version>1.0b3</version>
+                        <exclusions>
+                            <exclusion>
+                                <groupId>ant</groupId>
+                                <artifactId>ant</artifactId>
+                            </exclusion>
+                        </exclusions>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant-nodeps</artifactId>
+                        <version>1.8.1</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
         </plugins>
@@ -108,56 +259,129 @@
 
     <profiles>
         <profile>
-            <id>
-                omar
-            </id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-resources-plugin</artifactId>
-<!--                <version>2.5</version>-->
-                        <executions>
-                            <execution>
-                                <id>copy-resources</id>
-            <!-- here the phase you need -->
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${basedir}/target/lib/sherpa</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>/Users/olaurino/Desktop/pune/iris-1.0-macosx-x86_64/lib/sherpa</directory>
-                                            <filtering>false</filtering>
-                                        </resource>
-                                    </resources>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>install</phase>
-                                <configuration>
-                                    <tasks>
-                                        <chmod file="${basedir}/target/lib/sherpa/bin/python2.6" perm="+x"/>
-                                    </tasks>
-                                </configuration>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
+            <id>distribution</id>
+            <properties>
+                <platforms>macosx-x86_64,macosx-i386,unix-x86_64,unix-i386</platforms>
+                <distribution>true</distribution>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>sherpa</groupId>
+                    <artifactId>sherpa</artifactId>
+                    <version>${sherpa.version}</version>
+                    <classifier>macosx-x86_64</classifier>
+                    <type>tgz</type>
+                </dependency>
+                <dependency>
+                    <groupId>sherpa</groupId>
+                    <artifactId>sherpa</artifactId>
+                    <version>${sherpa.version}</version>
+                    <classifier>macosx-i386</classifier>
+                    <type>tgz</type>
+                </dependency>
+                <dependency>
+                    <groupId>sherpa</groupId>
+                    <artifactId>sherpa</artifactId>
+                    <version>${sherpa.version}</version>
+                    <classifier>unix-i386</classifier>
+                    <type>tgz</type>
+                </dependency>
+                <dependency>
+                    <groupId>sherpa</groupId>
+                    <artifactId>sherpa</artifactId>
+                    <version>${sherpa.version}</version>
+                    <classifier>unix-x86_64</classifier>
+                    <type>tgz</type>
+                </dependency>
+            </dependencies>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>macosx-x86_64</id>
+            <activation>
+                <property>
+                    <name>platform</name>
+                    <value>macosx-x86_64</value>
+                </property>
+            </activation>
+            <properties>
+                <platforms>macosx-x86_64</platforms>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>sherpa</groupId>
+                    <artifactId>sherpa</artifactId>
+                    <version>${sherpa.version}</version>
+                    <classifier>macosx-x86_64</classifier>
+                    <type>tgz</type>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>macosx-i386</id>
+            <activation>
+                <property>
+                    <name>platform</name>
+                    <value>macosx-i386</value>
+                </property>
+            </activation>
+            <properties>
+                <platforms>macosx-i386</platforms>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>sherpa</groupId>
+                    <artifactId>sherpa</artifactId>
+                    <version>${sherpa.version}</version>
+                    <classifier>macosx-i386</classifier>
+                    <type>tgz</type>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>unix-i386</id>
+            <activation>
+                <property>
+                    <name>platform</name>
+                    <value>unix-i386</value>
+                </property>
+            </activation>
+            <properties>
+                <platforms>unix-i386</platforms>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>sherpa</groupId>
+                    <artifactId>sherpa</artifactId>
+                    <version>${sherpa.version}</version>
+                    <classifier>unix-i386</classifier>
+                    <type>tgz</type>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>unix-x86_64</id>
+            <activation>
+                <property>
+                    <name>platform</name>
+                    <value>unix-x86_64</value>
+                </property>
+            </activation>
+            <properties>
+                <platforms>unix-x86_64</platforms>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>sherpa</groupId>
+                    <artifactId>sherpa</artifactId>
+                    <version>${sherpa.version}</version>
+                    <classifier>unix-x86_64</classifier>
+                    <type>tgz</type>
+                </dependency>
+            </dependencies>
         </profile>
     </profiles>
-
-    
 
 </project>

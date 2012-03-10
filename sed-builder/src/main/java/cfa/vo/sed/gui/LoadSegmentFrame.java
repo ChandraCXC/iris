@@ -29,7 +29,7 @@ package cfa.vo.sed.gui;
 
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ISedManager;
-import cfa.vo.iris.sed.SedlibSedManager.ExtSed;
+import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.utils.SpaceTrimmer;
 import cfa.vo.sed.builder.NEDImporter;
 import cfa.vo.sed.builder.SedBuilder;

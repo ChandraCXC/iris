@@ -17,6 +17,7 @@
 
 package cfa.vo.iris.common;
 
+import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.sedlib.RangeParam;
 import cfa.vo.sedlib.Sed;
@@ -29,7 +30,6 @@ import cfa.vo.sedlib.io.SedFormat;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
-import junit.framework.Assert;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

@@ -12,7 +12,7 @@ import cfa.vo.iris.events.SegmentEvent;
 import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
 import cfa.vo.iris.events.SegmentListener;
 import cfa.vo.iris.sed.ISedManager;
-import cfa.vo.iris.sed.SedlibSedManager.ExtSed;
+import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sedlib.Segment;
 import java.awt.EventQueue;
 import javax.swing.DefaultListModel;

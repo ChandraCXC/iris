@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package cfa.vo.sed.builder;
 
 import cfa.vo.iris.AbstractDesktopItem;
@@ -14,7 +13,7 @@ import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.iris.sed.SedlibSedManager.ExtSed;
+import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sed.filters.FileFormatManager;
 import cfa.vo.sed.gui.LoadSetupDialog;
 import cfa.vo.sed.gui.PluginManager;
@@ -23,6 +22,7 @@ import cfa.vo.sed.gui.SetupFrame;
 import cfa.vo.sed.setup.ISetup;
 import cfa.vo.sed.setup.SetupBean;
 import cfa.vo.sed.setup.SetupManager;
+import cfa.vo.sedlib.DoubleParam;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedInconsistentException;
@@ -54,19 +54,14 @@ import org.astrogrid.samp.client.MessageHandler;
 public class SedBuilder implements IrisComponent {
 
     private static IrisApplication iris;
-
     private static IWorkspace workspace;
-
     private static JFrame rootFrame;
-
     private static SedlibSedManager sedManager;
-
     private static SedBuilderMainView view;
-
     private PluginManager pManager;
 
     public static void show() {
-        if(view==null) {
+        if (view == null) {
             view = new SedBuilderMainView(sedManager, workspace.getRootFrame());
             workspace.addFrame(view);
         }
@@ -125,7 +120,6 @@ public class SedBuilder implements IrisComponent {
 
     @Override
     public void shutdown() {
-        
     }
 
     @Override
@@ -134,6 +128,7 @@ public class SedBuilder implements IrisComponent {
     }
 
     private class BuilderMenuItems extends ArrayList<IMenuItem> {
+
         public BuilderMenuItems() {
             add(new AbstractDesktopItem("File|Build SED", "Load SED data from several different sources", "/scratch.png", "/scratch_tiny.png") {
 
@@ -141,14 +136,13 @@ public class SedBuilder implements IrisComponent {
                 public void onClick() {
                     SedBuilder.show();
                 }
-
             });
 
             add(new AbstractMenuItem("Plugins..", "Manage custom file filters plug-ins", false, "/plugin.png", "/plugin.png") {
 
                 @Override
                 public void onClick() {
-                    if(pManager==null) {
+                    if (pManager == null) {
                         pManager = new PluginManager();
                         workspace.addFrame(pManager);
                         pManager.setLoadFrame(view.getLoadSegmentFrame());
@@ -160,7 +154,6 @@ public class SedBuilder implements IrisComponent {
                         Logger.getLogger(SedBuilder.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-
             });
 
             add(new AbstractMenuItem("Load setup file...", "Load a SED from a previously saved Setup File", false, "/tool.png", "/tool_tiny.png") {
@@ -169,7 +162,6 @@ public class SedBuilder implements IrisComponent {
                 public void onClick() {
                     new LoadSetupDialog(rootFrame, sedManager).setVisible(true);
                 }
-
             });
 
         }
@@ -179,8 +171,7 @@ public class SedBuilder implements IrisComponent {
 
         public SAMPTableHandler() {
             super(new String[]{"table.load.votable",
-                                "table.load.fits",
-                                });
+                        "table.load.fits",});
         }
 
         @Override
@@ -189,33 +180,48 @@ public class SedBuilder implements IrisComponent {
             URL url = new URL((String) msg.getParam("url"));
             ExtSed sed = sedManager.getSelected() != null ? sedManager.getSelected() : sedManager.newSed("SAMP");
             try {
-                    Sed s = Sed.read(url.openStream(), SedFormat.valueOf(formatName));
-                    List<ValidationError> validErrors = new ArrayList();
-                    s.validate(validErrors);
-                    for (ValidationError error : validErrors) {
-                        if (error.getError().equals(ValidationErrorEnum.MISSING_DATA_FLUXAXIS_VALUE)) {
-                            return doImport(url, formatName, sed);
+                Sed s = Sed.read(url.openStream(), SedFormat.valueOf(formatName));
+                List<ValidationError> validErrors = new ArrayList();
+                s.validate(validErrors);
+                for (ValidationError error : validErrors) {
+                    if (error.getError().equals(ValidationErrorEnum.MISSING_DATA_FLUXAXIS_VALUE)) {
+                        return doImport(url, formatName, sed);
+                    }
+                    if (error.getError().equals(ValidationErrorEnum.MISSING_DATA_SPECTRALAXIS_VALUE)) {
+                        return doImport(url, formatName, sed);
+                    }
+                    if (error.getError().equals(ValidationErrorEnum.MISSING_CHAR_FLUXAXIS_UCD)) {
+                        return doImport(url, formatName, sed);
+                    }
+                    if (error.getError().equals(ValidationErrorEnum.MISSING_CHAR_FLUXAXIS_UNIT)) {
+                        for (int i = 0; i < s.getNumberOfSegments(); i++) {
+                            Segment seg = s.getSegment(i);
+                            String u = seg.getFluxAxisUnits();
+                            if (u == null || u.equals("")) {
+                                return doImport(url, formatName, sed);
+                            }
                         }
-                        if (error.getError().equals(ValidationErrorEnum.MISSING_DATA_SPECTRALAXIS_VALUE)) {
-                            return doImport(url, formatName, sed);
-                        }
-                        if (error.getError().equals(ValidationErrorEnum.MISSING_CHAR_FLUXAXIS_UCD)) {
-                            return doImport(url, formatName, sed);
-                        }
-                        if (error.getError().equals(ValidationErrorEnum.MISSING_CHAR_FLUXAXIS_UNIT)) {
-                            return doImport(url, formatName, sed);
-                        }
+                    }
 
+                }
+                for (int i = 0; i < s.getNumberOfSegments(); i++) {
+                    Segment seg = s.getSegment(i);
+                    if (seg.createTarget().getPos() == null) {
+
+                        if (seg.createChar().createSpatialAxis().createCoverage().getLocation() != null) {
+                            seg.createTarget().createPos().setValue(seg.getChar().getSpatialAxis().getCoverage().getLocation().getValue());
+                        } else {
+                            seg.createTarget().createPos().setValue(new DoubleParam[]{new DoubleParam(Double.NaN), new DoubleParam(Double.NaN)});
+                        }
                     }
-                    for (int i = 0; i < s.getNumberOfSegments(); i++) {
-                        sed.addSegment(s.getSegment(i));
-                    }
-            }catch (Exception ex) {
+                    sed.addSegment(seg);
+                }
+            } catch (Exception ex) {
                 Logger.getLogger(SedBuilder.class.getName()).log(Level.SEVERE, null, ex);
                 NarrowOptionPane.showMessageDialog(rootFrame,
-                            ex.getMessage(),
-                            "Import Error",
-                            NarrowOptionPane.ERROR_MESSAGE);
+                        ex.getMessage(),
+                        "Import Error",
+                        NarrowOptionPane.ERROR_MESSAGE);
             }
 
             return null;
@@ -223,24 +229,24 @@ public class SedBuilder implements IrisComponent {
 
         private Map doImport(URL url, String formatName, ExtSed sed) {
             try {
-                    //SED not valid
-                    SetupBean c = new SetupBean();
-                    c.setPositionInFile(0);
-                    c.setFileLocation(url.toString());
-                    c.setFormatName(formatName);
-                    SetupFrame sf = new SetupFrame(sedManager, c, sed);
-                    workspace.addFrame(sf);
-                    sf.setVisible(true);
-                } catch (Exception ex) {
-                    Logger.getLogger(SedBuilder.class.getName()).log(Level.SEVERE, null, ex);
-                    NarrowOptionPane.showMessageDialog(rootFrame,
-                            ex.getMessage(),
-                            "Import Error",
-                            NarrowOptionPane.ERROR_MESSAGE);
-                }
+                //SED not valid
+                SetupBean c = new SetupBean();
+                c.setPositionInFile(0);
+                c.setFileLocation(url.toString());
+                formatName = formatName.equals("VOT") ? "VOTABLE" : formatName;
+                c.setFormatName(formatName);
+                SetupFrame sf = new SetupFrame(sedManager, c, sed);
+                workspace.addFrame(sf);
+                sf.setVisible(true);
+            } catch (Exception ex) {
+                Logger.getLogger(SedBuilder.class.getName()).log(Level.SEVERE, null, ex);
+                NarrowOptionPane.showMessageDialog(rootFrame,
+                        ex.getMessage(),
+                        "Import Error",
+                        NarrowOptionPane.ERROR_MESSAGE);
+            }
             return null;
         }
-
     }
 
     private class SedBuilderCli implements ICommandLineInterface {
@@ -258,42 +264,42 @@ public class SedBuilder implements IrisComponent {
             SedFormat format;
             File outputFile;
 
-            if(args.length > 0) {
-                if(args.length < 2) {
+            if (args.length > 0) {
+                if (args.length < 2) {
                     System.err.println("Usage: builder config_file output_file [output_format].");
                     return;
                 } else {
-                    String formatS = args.length==2 ? "VOT" : args[2];
+                    String formatS = args.length == 2 ? "VOT" : args[2];
                     try {
                         URL url;
-                        if(args[0].contains("://")) {
+                        if (args[0].contains("://")) {
                             url = new URL(args[0]);
                         } else {
                             File f = new File(args[0]);
-                            url = new URL("file://"+f.getAbsolutePath());
+                            url = new URL("file://" + f.getAbsolutePath());
                         }
                         confList = SetupManager.read(url);
                     } catch (IOException ex) {
-                        System.err.println("Error reading file "+args[0]+": "+ex.getMessage());
+                        System.err.println("Error reading file " + args[0] + ": " + ex.getMessage());
                         return;
                     } catch (Exception ex) {
-                        System.err.println("Generic error reading file "+args[0]+": "+ex.getMessage());
+                        System.err.println("Generic error reading file " + args[0] + ": " + ex.getMessage());
                         return;
                     }
                     try {
                         outputFile = new File(args[1]);
-                        if(outputFile.exists() && !outputFile.canWrite()) {
-                            System.err.println("Error: file "+args[1]+" is not writable.");
+                        if (outputFile.exists() && !outputFile.canWrite()) {
+                            System.err.println("Error: file " + args[1] + " is not writable.");
                             return;
                         }
                     } catch (Exception ex) {
-                        System.err.println("Error opening file "+args[1]+": "+ex.getMessage());
+                        System.err.println("Error opening file " + args[1] + ": " + ex.getMessage());
                         return;
                     }
                     try {
                         format = SedFormat.valueOf(formatS.toUpperCase());
                     } catch (Exception ex) {
-                        System.err.println("No such a format: "+formatS+". Please use 'vot' or 'fits'.");
+                        System.err.println("No such a format: " + formatS + ". Please use 'vot' or 'fits'.");
                         return;
                     }
 
@@ -305,7 +311,7 @@ public class SedBuilder implements IrisComponent {
                         System.out.println();
                         segments = SegmentImporter.getSegments(confList);
                     } catch (Exception ex) {
-                        System.err.println("Error while building segments: "+ex.getMessage());
+                        System.err.println("Error while building segments: " + ex.getMessage());
                         return;
                     }
                     System.out.println();
@@ -318,17 +324,17 @@ public class SedBuilder implements IrisComponent {
                             Logger.getLogger(SedBuilder.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     } catch (SedInconsistentException ex) {
-                        System.err.println("Error: segments are inconsistent: "+ ex.getMessage());
+                        System.err.println("Error: segments are inconsistent: " + ex.getMessage());
                         return;
                     }
                     try {
                         System.out.println();
-                        System.out.println("Writing SED to "+outputFile.getAbsolutePath()+"...");
+                        System.out.println("Writing SED to " + outputFile.getAbsolutePath() + "...");
                         sed.write(new FileOutputStream(outputFile), format);
                         System.out.println();
                         System.out.println("DONE.");
                     } catch (Exception ex) {
-                        System.err.println("Error while serializing SED: "+ex.getMessage());
+                        System.err.println("Error while serializing SED: " + ex.getMessage());
                     }
 
 
@@ -336,5 +342,4 @@ public class SedBuilder implements IrisComponent {
             }
         }
     }
-
 }

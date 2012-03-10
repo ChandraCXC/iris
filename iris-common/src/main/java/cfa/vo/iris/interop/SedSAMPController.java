@@ -14,14 +14,18 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package cfa.vo.iris.interop;
 
 import cfa.vo.interop.SAMPController;
+import cfa.vo.interop.SAMPFactory;
+import cfa.vo.interop.SAMPMessage;
+import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sedlib.Sed;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.astrogrid.samp.client.SampException;
 
 /**
@@ -41,7 +45,6 @@ public class SedSAMPController extends SAMPController {
     public SedSAMPController(String name, String description, String iconUrl) {
         super(name, description, iconUrl);
     }
-    
 
     /**
      * This convenience method, when provided with a Sed and an Id to it, builds a new
@@ -62,6 +65,34 @@ public class SedSAMPController extends SAMPController {
         }
     }
 
-    
+    public void sendSedMessage(ExtSed sed) throws SampException {
+        try {
 
+            for (int i = 1; i < sed.getNumberOfSegments()+1; i++) {
+
+                String n = i==1 ? "" : "Segment"+i;
+                String id = sed.getId()+n;
+                Sed s = new Sed();
+
+                s.addSegment(sed.getSegment(i-1));
+
+                VaoMessage msg = (VaoMessage) SAMPFactory.get(VaoMessage.class);
+                msg.setName(id);
+                msg.setTableId(id);
+                msg.getVaoPayload().setMessageType("sed");
+                msg.getVaoPayload().setSenderId("iris");
+                String filename = URLEncoder.encode(id + ".vot", "UTF-8");
+                URL url = addResource(filename, new SedServerResource(s));
+                msg.setUrl(url.toString());
+
+                SAMPMessage message = SAMPFactory.createMessage("table.load.votable", msg, VaoMessage.class);
+                sendMessage(message);
+            }
+
+        } catch (Exception ex) {
+            Logger.getLogger(SedSAMPController.class.getName()).log(Level.SEVERE, null, ex);
+            throw new SampException(ex);
+        }
+
+    }
 }

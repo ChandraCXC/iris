@@ -20,17 +20,16 @@
  */
 package cfa.vo.sed.builder.gui;
 
+import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sed.gui.SedBuilderMainView;
-import cfa.vo.iris.sed.SedlibSedManager.ExtSed;
 import cfa.vo.sed.test.App;
 import cfa.vo.sed.test.Oracle;
 import cfa.vo.sed.test.Ws;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
-import java.awt.Component;
 import java.net.URL;
 import javax.swing.JDesktopPane;
 import junit.framework.Assert;
@@ -44,7 +43,6 @@ import org.uispec4j.Button;
 import org.uispec4j.Desktop;
 import org.uispec4j.Table;
 import org.uispec4j.UISpecTestCase;
-import org.uispec4j.finder.ComponentMatcher;
 
 /**
  *

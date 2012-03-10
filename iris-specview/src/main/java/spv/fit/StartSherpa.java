@@ -6,10 +6,10 @@ package spv.fit;
  * Date: 5/12/11
  * Time: 11:18 AM
  */
+import cfa.vo.iris.logging.LogEntry;
+import cfa.vo.iris.logging.LogEvent;
 import spv.util.ExceptionHandler;
-import spv.util.Include;
 import spv.util.SpvLogger;
-import spv.util.properties.SpvProperties;
 
 import java.io.IOException;
 
@@ -26,13 +26,13 @@ public class StartSherpa extends AbstractFittingEngine {
     private ProcessBuilder builder;
     private Process process;
     private Map<String, String> env;
+    private boolean destroyed = false;
 
     public StartSherpa() {
 
         String arch = System.getProperty("os.name");
-        String cwd = System.getProperty("user.dir");
 
-        String pythonPath = SpvProperties.GetProperty(Include.PYTHON_PATH);
+        String pythonPath = System.getProperty("IRIS_DIR")+"/lib/sherpa";
         builder = new ProcessBuilder(pythonPath + "/bin/" + cmd[0], pythonPath + "/" + cmd[1]);
         env = builder.environment();
         env.put("PYTHONPATH", "");
@@ -100,22 +100,15 @@ public class StartSherpa extends AbstractFittingEngine {
         } catch (IndexOutOfBoundsException iobe) {
             ExceptionHandler.handleException(iobe);
         }
-
-        try {
-            process.waitFor();
-        } catch (InterruptedException ie) {
-            SpvLogger.log(Level.INFO, "Interrupt: Shutting down Sherpa...");
-            shutdown();
-            return;
-        }
-
-        print(process.getInputStream());
+            
     }
 
     @Override
     public void shutdown() {
-        if (process != null) {
+        if (process != null && !destroyed) {
+            destroyed = true;
             process.destroy();
         }
+        
     }
 }

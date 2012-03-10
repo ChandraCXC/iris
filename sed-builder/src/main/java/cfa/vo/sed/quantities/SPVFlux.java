@@ -31,6 +31,7 @@ public class SPVFlux extends AbstractQuantity {
         super("Flux", "Flux", "phot.flux.density");
         add(SPVYUnit.FLUX0);
         add(SPVYUnit.FLUX1);
+        add(SPVYUnit.PHOTONFLUX);
     }
 
 }

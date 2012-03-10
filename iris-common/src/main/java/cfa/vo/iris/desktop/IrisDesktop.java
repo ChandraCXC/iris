@@ -171,7 +171,7 @@ public class IrisDesktop extends JFrame {
                     for(IrisComponent component : components) {
                         component.shutdown();
                     }
-                    System.exit(0);
+                    app.exitApp();
 
               }
             }

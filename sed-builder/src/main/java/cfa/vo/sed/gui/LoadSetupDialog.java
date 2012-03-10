@@ -29,7 +29,7 @@ package cfa.vo.sed.gui;
 
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.iris.sed.SedlibSedManager.ExtSed;
+import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sed.builder.SegmentImporter;
 import cfa.vo.sed.setup.SetupManager;
