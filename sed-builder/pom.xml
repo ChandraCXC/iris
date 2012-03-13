@@ -1,89 +1,110 @@
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>sed-builder</artifactId>
-  <packaging>jar</packaging>
-  <name>sed-builder</name>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>sed-builder</artifactId>
+    <packaging>jar</packaging>
+    <name>sed-builder</name>
 
-  <parent>
-       <groupId>cfa.vo</groupId>
-       <artifactId>iris2</artifactId>
-       <version>1.1-beta1</version>
+    <parent>
+        <groupId>cfa.vo</groupId>
+        <artifactId>iris2</artifactId>
+        <version>1.1-beta1</version>
     </parent>
 
-  <dependencies>
+    <dependencies>
     
     
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>iris-common</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.ini4j</groupId>
-      <artifactId>ini4j</artifactId>
-      <version>0.5.2-SNAPSHOT</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.jdesktop</groupId>
-      <artifactId>beansbinding</artifactId>
-      <version>1.2.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.swinglabs</groupId>
-      <artifactId>swing-layout</artifactId>
-      <version>1.0.3</version>
-    </dependency>
-    <dependency>
-      <groupId>net.java.dev.appframework</groupId>
-      <artifactId>appframework</artifactId>
-      <version>1.03</version>
-    </dependency>
-    <dependency>
-      <groupId>cfa.vao.sed</groupId>
-      <artifactId>sedlib</artifactId>
-      <version>2.0-SNAPSHOT</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.uispec4j</groupId>
-      <artifactId>uispec4j</artifactId>
-      <version>2.4</version>
-      <classifier>jdk16</classifier>
-      <scope>test</scope>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>AbsoluteLayout</groupId>
-      <artifactId>AbsoluteLayout</artifactId>
-      <version>1.0</version>
-    </dependency>
-  </dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>iris-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.ini4j</groupId>
+            <artifactId>ini4j</artifactId>
+            <version>0.5.2-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.jdesktop</groupId>
+            <artifactId>beansbinding</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.swinglabs</groupId>
+            <artifactId>swing-layout</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.appframework</groupId>
+            <artifactId>appframework</artifactId>
+            <version>1.03</version>
+        </dependency>
+        <dependency>
+            <groupId>cfa.vao.sed</groupId>
+            <artifactId>sedlib</artifactId>
+            <version>2.0-SNAPSHOT</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.uispec4j</groupId>
+            <artifactId>uispec4j</artifactId>
+            <version>2.4</version>
+            <classifier>jdk16</classifier>
+            <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>AbsoluteLayout</groupId>
+            <artifactId>AbsoluteLayout</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
 
 
-  <build>
-  <plugins>
+    <build>
+        <plugins>
 
-     <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
 <!--        <version>2.0.2</version>-->
-        <configuration>
-          <source>1.6</source>
-          <target>1.6</target>
-        </configuration>
-      </plugin>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
 
-   </plugins>
+        </plugins>
 
-   </build>
-  <repositories>
-    <repository>
-      <url>http://download.java.net/maven/2/</url>
-      <id>beans-binding</id>
-      <layout>default</layout>
-      <name>Repository for library Library[beans-binding]</name>
-    </repository>
-  </repositories>
+    </build>
+    <repositories>
+        <repository>
+            <url>http://download.java.net/maven/2/</url>
+            <id>beans-binding</id>
+            <layout>default</layout>
+            <name>Repository for library Library[beans-binding]</name>
+        </repository>
+    </repositories>
+
+    <profiles>
+        <profile>
+            <id>NoGuiTests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <excludes>
+                                <exclude>BuilderMainViewTest.java</exclude>
+                            </excludes>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>

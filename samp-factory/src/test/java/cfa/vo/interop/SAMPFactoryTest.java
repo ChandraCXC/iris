@@ -28,6 +28,7 @@ public class SAMPFactoryTest extends TestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        System.setProperty("jsamp.hub.profiles", "std");
         controller = new SAMPController("test", "test", SAMPController.class.getResource("/iris_button_tiny.png").toString());
         controller.start(false);
     }

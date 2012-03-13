@@ -7,6 +7,8 @@ package cfa.vo.sed.test;
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ISedManager;
 import cfa.vo.iris.sed.SedlibSedManager;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -20,16 +22,17 @@ public class Ws implements IWorkspace {
 
     SedlibSedManager manager = new SedlibSedManager();
 
-    JDesktopPane desktop = new JDesktopPane();
+//    JDesktopPane desktop = new JDesktopPane();
+    List<JInternalFrame> frames = new ArrayList<JInternalFrame>();
 
     @Override
     public void addFrame(JInternalFrame frame) {
-        desktop.add(frame);
+        frames.add(frame);
     }
 
     @Override
     public void removeFrame(JInternalFrame frame) {
-        desktop.remove(frame);
+        frames.remove(frame);
     }
 
     @Override
@@ -49,6 +52,6 @@ public class Ws implements IWorkspace {
 
     @Override
     public JDesktopPane getDesktop() {
-        return desktop;
+        return null;
     }
 }

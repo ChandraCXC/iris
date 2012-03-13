@@ -21,6 +21,9 @@
 
 package cfa.vo.sed.filters;
 
+import cfa.vo.sed.builder.SedBuilder;
+import cfa.vo.sed.test.App;
+import cfa.vo.sed.test.Ws;
 import cfa.vo.sed.setup.ISetup;
 import cfa.vo.sed.setup.SetupBean;
 import cfa.vo.sed.setup.SetupManager;
@@ -77,6 +80,9 @@ public class FileFormatsTest {
      */
     @Test
     public void testConfigurationIOFormats() throws Exception {
+        SedBuilder builder = new SedBuilder();
+        builder.init(new App(), new Ws());
+
         System.out.println("read all configurations in fileformats.ini");
         URL fileURL = URLTestConverter.getURL("test:///test_data/fileformats.ini");
         System.out.println(fileURL);

@@ -6,10 +6,7 @@ package spv.fit;
  * Date: 5/12/11
  * Time: 11:18 AM
  */
-import cfa.vo.iris.logging.LogEntry;
-import cfa.vo.iris.logging.LogEvent;
 import spv.util.ExceptionHandler;
-import spv.util.SpvLogger;
 
 import java.io.IOException;
 
@@ -18,7 +15,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.InputStream;
 import java.io.BufferedInputStream;
-import java.util.logging.Level;
 
 public class StartSherpa extends AbstractFittingEngine {
 
