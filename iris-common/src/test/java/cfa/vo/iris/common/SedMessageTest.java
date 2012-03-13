@@ -71,10 +71,11 @@ public class SedMessageTest {
 
         while(!sampSender.isConnected()) {
             System.out.println("waiting connection");
+            Thread.sleep(1000);
         }
 
         while(!sampReceiver.isConnected()) {
-            System.out.println("waiting connection");
+            Thread.sleep(1000);
         }
 
         Sed sed = Sed.read(this.getClass().getResource("/test_data/3c273.xml").getFile(), SedFormat.VOT);

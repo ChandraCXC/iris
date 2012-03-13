@@ -98,7 +98,7 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <excludes>
-                                <exclude>BuilderMainViewTest.java</exclude>
+                                <exclude>**/BuilderMainViewTest.java</exclude>
                             </excludes>
                         </configuration>
                     </plugin>

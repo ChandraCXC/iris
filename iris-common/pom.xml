@@ -58,7 +58,7 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <configuration>
                             <excludes>
-                                <exclude>NameResolverTest.java</exclude>
+                                <exclude>**/NameResolverTest.java</exclude>
                             </excludes>
                         </configuration>
                     </plugin>
