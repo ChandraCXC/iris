@@ -57,6 +57,8 @@ public class SedMessageTest {
 
      @Test
      public void sedMessageTest() throws Exception {
+        System.setProperty("jsamp.hub.profiles", "std");
+
         SedSAMPController sampSender = new SedSAMPController("TestSender", "An SED builder from the Virtual Astronomical Observatory", this.getClass().getResource("/iris_button_tiny.png").toString());
         SedSAMPController sampReceiver = new SedSAMPController("TestReceiver", "An SED builder from the Virtual Astronomical Observatory", this.getClass().getResource("/iris_button_tiny.png").toString());
 
