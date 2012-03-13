@@ -25,8 +25,8 @@ import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sed.gui.SedBuilderMainView;
 import cfa.vo.sed.test.App;
+import cfa.vo.sed.test.DesktopWs;
 import cfa.vo.sed.test.Oracle;
-import cfa.vo.sed.test.Ws;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
@@ -80,7 +80,7 @@ public class BuilderMainViewTest extends UISpecTestCase {
         Oracle oracle = new Oracle();
 
         SedBuilder builder = new SedBuilder();
-        builder.init(new App(), new Ws());
+        builder.init(new App(), new DesktopWs());
 
         SedlibSedManager manager = (SedlibSedManager) SedBuilder.getWorkspace().getSedManager();
 
