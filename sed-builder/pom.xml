@@ -91,6 +91,9 @@
     <profiles>
         <profile>
             <id>NoGuiTests</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <build>
                 <plugins>
                     <plugin>
