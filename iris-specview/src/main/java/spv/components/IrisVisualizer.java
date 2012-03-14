@@ -39,6 +39,7 @@ import cfa.vo.iris.logging.LogEvent;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sedlib.Segment;
+import java.awt.Point;
 
 import spv.SpvInitialization;
 import spv.controller.ManagedSpectrum2;
@@ -69,6 +70,7 @@ public class IrisVisualizer implements IrisComponent {
     private SEDFactoryModule factory = new SEDFactoryModule();
     private FittingEngine sherpa;
     private String sherpaDir = System.getProperty("IRIS_DIR") + "/lib/sherpa";
+    private Point lastLocation;
 
     @Override
     public void init(IrisApplication app, IWorkspace workspace) {
@@ -169,9 +171,11 @@ public class IrisVisualizer implements IrisComponent {
 
             JInternalFrame frame = idm.getInternalFrame();
             if (frame != currentFrame) {
+                lastLocation = currentFrame.getLocation();
                 currentFrame.dispose();
                 currentFrame = frame;
                 currentFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
+                currentFrame.setLocation(lastLocation);
                 frame.setTitle("Iris Visualizer");
                 ws.addFrame(frame);
             }
@@ -248,6 +252,8 @@ public class IrisVisualizer implements IrisComponent {
                                 currentFrame = idm.getInternalFrame();
                                 currentFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
                                 ws.addFrame(currentFrame);
+                                if(lastLocation!=null)
+                                    currentFrame.setLocation(lastLocation);
                             }
 
                             currentFrame.setVisible(true);
