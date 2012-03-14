@@ -10,7 +10,6 @@ package spv.components;
  * Date: 2/13/12
  * Time: 3:03 PM
  */
-
 import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.List;
@@ -231,7 +230,6 @@ public class IrisVisualizer implements IrisComponent {
 
     @Override
     public void initCli(IrisApplication app) {
-        
     }
 
     private class VisualizerMenus extends ArrayList<IMenuItem> {
@@ -252,9 +250,10 @@ public class IrisVisualizer implements IrisComponent {
                                 currentFrame = idm.getInternalFrame();
                                 currentFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
                                 ws.addFrame(currentFrame);
-                                if(lastLocation!=null)
-                                    currentFrame.setLocation(lastLocation);
                             }
+
+                            if (lastLocation != null)
+                                currentFrame.setLocation(lastLocation);
 
                             currentFrame.setVisible(true);
 
@@ -343,10 +342,11 @@ public class IrisVisualizer implements IrisComponent {
     }
 
     private class OnDisposeCommand implements Command {
+
         private ExtSed sed;
 
         private OnDisposeCommand(ExtSed sed) {
-            this.sed  = sed;
+            this.sed = sed;
         }
 
         public void execute(Object o) {
