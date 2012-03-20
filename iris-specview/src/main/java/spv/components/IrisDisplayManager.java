@@ -27,10 +27,7 @@ import cfa.vo.iris.sed.ExtSed;
 import spv.controller.ManagedSpectrum2;
 import spv.controller.SecondaryController2;
 import spv.controller.display.SecondaryDisplayManager;
-import spv.glue.PlottableSEDFittedSpectrum;
-import spv.glue.PlottableSEDSegmentedSpectrum;
-import spv.glue.SEDFittedSpectrumVisualEditor;
-import spv.glue.SEDSegmentedSpectrumVisualEditor;
+import spv.glue.*;
 import spv.util.Callback;
 import spv.util.Command;
 import spv.util.Include;
@@ -58,6 +55,7 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
     public static final String FIT_MODEL = "fit.model";
 
     private SecondaryController2 secondaryController;
+    private SpectrumVisualEditor visualEditor;
     private GuiHubConnector connection;
 
     public IrisDisplayManager() {
@@ -103,11 +101,27 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
     }
 
     public void remove(String name) {
-        secondaryController.remove(name);
+//        if (secondaryController != null) {
+//            secondaryController.remove(name);
+//
+//            PlotWidget plotWidget = secondaryController.getPlotWidget();
+//            Command[] commands = plotWidget.getCommands();
+//            Command command = commands[Callback.META_DATA.ord];
+//            if (command instanceof MetadataDisplay) {
+//                if (visualEditor != null) {
+//                    visualEditor.getFrame().setVisible(false);
+//                    visualEditor = null;
+//                }
+//            }
+//        }
     }
 
     public PlotWidget getPlotWidget() {
-        return secondaryController.getPlotWidget();
+        if (secondaryController != null) {
+            return secondaryController.getPlotWidget();
+        } else {
+            return null;
+        }
     }
 
     void setDesktopMode(boolean desktopMode) {
@@ -188,6 +202,15 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
     public void process(ExtSed extSed, SedCommand sedCommand) {
     }
 
+    public SpectrumVisualEditor getVisualEditor() {
+        return visualEditor;
+    }
+
+    public void removeVisualEditor() {
+        visualEditor.getFrame().setVisible(false);
+        visualEditor = null;
+    }
+
     // Metadata button. This button is not present in Iris 1.0. Its
     // purpose is to give access to the table with metadata and data
     // for the entire SED. This function was available in Iris 1.0
@@ -195,19 +218,20 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
 
     private class MetadataDisplay implements Command {
         public void execute(Object arg) {
+
             if (arg instanceof PlottableSEDSegmentedSpectrum) {
 
                 // Use this metadata/data browser when not fitting.
 
-                new SEDSegmentedSpectrumVisualEditor((PlottableSEDSegmentedSpectrum) arg,
-                                                       null, true, Color.red, null);
+                visualEditor = new SEDSegmentedSpectrumVisualEditor(
+                        (PlottableSEDSegmentedSpectrum) arg, null, true, Color.red, null);
 
             } else if (arg instanceof PlottableSEDFittedSpectrum) {
 
                 // Use this metadata/data browser when fitting a model.
 
-                new SEDFittedSpectrumVisualEditor((PlottableSEDFittedSpectrum)arg,
-                                                  null, Color.red, null);
+                visualEditor = new SEDFittedSpectrumVisualEditor(
+                        (PlottableSEDFittedSpectrum)arg, null, Color.red, null);
             }
         }
     }

@@ -106,7 +106,9 @@ public class IrisVisualizer implements IrisComponent {
 
                 if (payload == SedCommand.SELECTED) {
 
-                    display(source);
+                    if (source.getNumberOfSegments() > 0) {
+                        display(source);
+                    }
 
                 } else if (payload == SedCommand.REMOVED) {
 
@@ -138,6 +140,8 @@ public class IrisVisualizer implements IrisComponent {
     }
 
     private void display(ExtSed sed) {
+
+        manageAssociatedManagerWindows(sed);
 
         try {
             displayedSed = sed;
@@ -184,6 +188,30 @@ public class IrisVisualizer implements IrisComponent {
         }
     }
 
+    private void manageAssociatedManagerWindows(ExtSed sed) {
+        if (sed != displayedSed) {
+
+            // displayedSed is exiting: make its model manager and metadata windows invisible.
+            if (displayedSed != null) {
+                ManagedSpectrum2 managedSpectrum = (ManagedSpectrum2) displayedSed.getAttachment(IrisDisplayManager.FIT_MODEL);
+                if (managedSpectrum != null) {
+                    ModelManager2 modelManager = managedSpectrum.getModelManager();
+                    modelManager.setVisible(false);
+                    idm.getVisualEditor().getFrame().setVisible(false);
+                }
+            }
+
+            // new Sed is entering display: make its model manager window visible if active.
+            if (sed != null) {
+                ManagedSpectrum2 managedSpectrum = (ManagedSpectrum2) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
+                if (managedSpectrum != null) {
+                    ModelManager2 modelManager = managedSpectrum.getModelManager();
+                    modelManager.setVisible(modelManager.isActive());
+                }
+            }
+        }
+    }
+
     private void invalidateModel(ExtSed sed) {
         ManagedSpectrum2 msp = (ManagedSpectrum2) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
         if (msp != null) {
@@ -214,8 +242,7 @@ public class IrisVisualizer implements IrisComponent {
 
     @Override
     public List<IMenuItem> getMenus() {
-        VisualizerMenus visualizerMenus = new VisualizerMenus();
-        return visualizerMenus;
+        return new VisualizerMenus();
     }
 
     @Override
@@ -327,6 +354,8 @@ public class IrisVisualizer implements IrisComponent {
 
                                     display(displayedSed);
 
+                                    idm.removeVisualEditor();
+
                                 } catch (Exception ex) {
                                     LogEvent.getInstance().fire(this, new LogEntry("Error: " + ex.getMessage(), sed));
                                     Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
@@ -341,7 +370,11 @@ public class IrisVisualizer implements IrisComponent {
         }
     }
 
-    private class OnDisposeCommand implements Command {
+    // This class responds to the Dispose button in the model manager
+    // and discards the model associated with the Sed, re-displaying
+    // it as a non-fitted Sed.
+
+    public class OnDisposeCommand implements Command {
 
         private ExtSed sed;
 
@@ -351,6 +384,7 @@ public class IrisVisualizer implements IrisComponent {
 
         public void execute(Object o) {
             sed.removeAttachment(IrisDisplayManager.FIT_MODEL);
+            idm.removeVisualEditor();
             display(sed);
         }
     }
