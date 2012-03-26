@@ -48,6 +48,7 @@ import spv.fit.FittedSpectrum;
 import spv.fit.FittingEngine;
 import spv.fit.FittingEngineFactory;
 import spv.fit.NoSuchEngineException;
+import spv.glue.SpectrumVisualEditor;
 import spv.spectrum.Spectrum;
 import spv.spectrum.factory.SED.SEDFactoryModule;
 import spv.util.Command;
@@ -197,7 +198,10 @@ public class IrisVisualizer implements IrisComponent {
                 if (managedSpectrum != null) {
                     ModelManager2 modelManager = managedSpectrum.getModelManager();
                     modelManager.setVisible(false);
-                    idm.getVisualEditor().getFrame().setVisible(false);
+                    SpectrumVisualEditor editor = idm.getVisualEditor();
+                    if (editor != null) {
+                        editor.getFrame().setVisible(false);
+                    }
                 }
             }
 

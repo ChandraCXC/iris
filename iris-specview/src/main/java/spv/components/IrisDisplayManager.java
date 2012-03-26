@@ -17,6 +17,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
 
+import cfa.vo.sedlib.Sed;
+import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.common.SedInconsistentException;
+import cfa.vo.sedlib.common.SedNoDataException;
 import org.astrogrid.samp.gui.GuiHubConnector;
 
 import cfa.vo.iris.events.*;
@@ -30,6 +34,7 @@ import spv.controller.display.SecondaryDisplayManager;
 import spv.glue.*;
 import spv.util.Callback;
 import spv.util.Command;
+import spv.util.ExceptionHandler;
 import spv.util.Include;
 import spv.util.properties.SpvProperties;
 import spv.view.PlotWidget;
@@ -128,21 +133,6 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
         SpvProperties.SetSessionProperty(Include.DESKTOP_MODE, desktopMode ? "true" : "false");
     }
 
-    protected void displayInSecondaryWindow(ManagedSpectrum2 msp) {
-
-        PlotWidget pw = buildPlotWidget(msp, false, null);
-
-        MetadataDisplay metadataDisplay = new MetadataDisplay();
-        pw.setCommand(Callback.META_DATA, metadataDisplay);
-
-        if (secondaryController == null ) {
-            secondaryController = new SecondaryController2(pw, this);
-        } else {
-            secondaryController.unregister();
-            secondaryController.loadWidget(pw);
-        }
-    }
-
     // GUI stuff.
 
     JInternalFrame getInternalFrame() {
@@ -207,8 +197,10 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
     }
 
     public void removeVisualEditor() {
-        visualEditor.getFrame().setVisible(false);
-        visualEditor = null;
+        if (visualEditor != null) {
+            visualEditor.getFrame().setVisible(false);
+            visualEditor = null;
+        }
     }
 
     // Metadata button. This button is not present in Iris 1.0. Its
@@ -226,12 +218,40 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
                 visualEditor = new SEDSegmentedSpectrumVisualEditor(
                         (PlottableSEDSegmentedSpectrum) arg, null, true, Color.red, null);
 
+                // Attach a listener to the visual editor so Seds
+                // can be extracted from the one being displayed.
+                ((SEDSegmentedSpectrumVisualEditor)visualEditor).setCommand(new OnExtractCommand());
+
             } else if (arg instanceof PlottableSEDFittedSpectrum) {
 
                 // Use this metadata/data browser when fitting a model.
 
                 visualEditor = new SEDFittedSpectrumVisualEditor(
                         (PlottableSEDFittedSpectrum)arg, null, Color.red, null);
+            }
+        }
+    }
+
+    // This class responds to the Extract button in the metadata browser.
+
+    private class OnExtractCommand implements Command {
+        public void execute(Object o) {
+            if (o instanceof Sed) {
+                Sed sed = (Sed)o;
+                ExtSed extSed = new ExtSed(sed.toString());
+                int numberOfSegments = sed.getNumberOfSegments();
+                for (int i = 0; i < numberOfSegments; i++) {
+                    Segment segment = sed.getSegment(i);
+                    try {
+                        extSed.addSegment(segment);
+                    } catch (SedInconsistentException e) {
+                        ExceptionHandler.handleException(e);
+                    } catch (SedNoDataException e) {
+                        ExceptionHandler.handleException(e);
+                    }
+                }
+
+                SedEvent.getInstance().fire(extSed, SedCommand.ADDED);
             }
         }
     }
