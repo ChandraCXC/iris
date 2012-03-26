@@ -17,6 +17,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
 
+import cfa.vo.iris.sed.IXSed;
+import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedInconsistentException;
@@ -238,6 +240,9 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
         public void execute(Object o) {
             if (o instanceof Sed) {
                 Sed sed = (Sed)o;
+
+                SedlibSedManager manager = new SedlibSedManager();
+
                 ExtSed extSed = new ExtSed(sed.toString());
                 int numberOfSegments = sed.getNumberOfSegments();
                 for (int i = 0; i < numberOfSegments; i++) {
@@ -251,7 +256,8 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
                     }
                 }
 
-                SedEvent.getInstance().fire(extSed, SedCommand.ADDED);
+                manager.add(extSed);
+//                SedEvent.getInstance().fire(extSed, SedCommand.ADDED);
             }
         }
     }
