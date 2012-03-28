@@ -73,7 +73,13 @@ public class FilterCache {
                 return instance;
             }
         } else {
-            return filterMap.get(filterClass).get(url==null? null : url.toString());
+            IFilter instance = filterMap.get(filterClass).get(url==null? null : url.toString());
+            if(instance.wasModified()) {
+                remove(url);
+                return getInstance(filterClass, url);
+            }
+
+            return instance;
         }
     }
 

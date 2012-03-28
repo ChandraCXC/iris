@@ -60,6 +60,10 @@ public class SedBuilder implements IrisComponent {
     private static SedBuilderMainView view;
     private PluginManager pManager;
 
+    public static void update() {
+        view.update();
+    }
+
     public static void show() {
         if (view == null) {
             view = new SedBuilderMainView(sedManager, workspace.getRootFrame());
@@ -71,6 +75,8 @@ public class SedBuilder implements IrisComponent {
         } catch (PropertyVetoException ex) {
             Logger.getLogger(SedBuilder.class.getName()).log(Level.SEVERE, null, ex);
         }
+        if(sedManager.getSeds().isEmpty())
+            view.newSed();
     }
 
     @Override
@@ -130,7 +136,17 @@ public class SedBuilder implements IrisComponent {
     private class BuilderMenuItems extends ArrayList<IMenuItem> {
 
         public BuilderMenuItems() {
-            add(new AbstractDesktopItem("File|Build SED", "Load SED data from several different sources", "/scratch.png", "/scratch_tiny.png") {
+
+            add(new AbstractDesktopItem("File|Load File...", "Load SED data from several different sources", "/scratch.png", "/scratch_tiny.png") {
+
+                @Override
+                public void onClick() {
+                    SedBuilder.show();
+                    view.getLoadSegmentFrame().show();
+                }
+            });
+
+            add(new AbstractDesktopItem("File|Build SED", "Load SED data from several different sources", "/tool.png", "/tool_tiny.png") {
 
                 @Override
                 public void onClick() {
@@ -181,6 +197,10 @@ public class SedBuilder implements IrisComponent {
             ExtSed sed = sedManager.getSelected() != null ? sedManager.getSelected() : sedManager.newSed("SAMP");
             try {
                 Sed s = Sed.read(url.openStream(), SedFormat.valueOf(formatName));
+                
+                if(s.getNumberOfSegments()==0)
+                    return doImport(url, formatName, sed);
+                
                 List<ValidationError> validErrors = new ArrayList();
                 s.validate(validErrors);
                 for (ValidationError error : validErrors) {

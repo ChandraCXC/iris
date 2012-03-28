@@ -21,7 +21,9 @@
 
 package cfa.vo.sed.builder;
 
+import cfa.vo.sedlib.DoubleParam;
 import cfa.vo.sedlib.Sed;
+import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -45,8 +47,17 @@ public class NEDImporter {
             endpoint = endpoint.replace(":targetName", targetName);
             URL nedUrl = new URL(endpoint);
 
-            return Sed.read(nedUrl.openStream(), SedFormat.VOT);
+            Sed sed = Sed.read(nedUrl.openStream(), SedFormat.VOT);
 
+            Segment seg = sed.getSegment(0);
+
+            if(seg.createTarget().getPos()==null)
+                        if(seg.createChar().createSpatialAxis().createCoverage().getLocation()!=null)
+                            seg.createTarget().createPos().setValue(seg.getChar().getSpatialAxis().getCoverage().getLocation().getValue());
+                        else
+                            seg.createTarget().createPos().setValue(new DoubleParam[]{new DoubleParam(Double.NaN), new DoubleParam(Double.NaN)});
+
+            return sed;
 
         } catch (Exception ex) {
             throw new SegmentImporterException(ex);

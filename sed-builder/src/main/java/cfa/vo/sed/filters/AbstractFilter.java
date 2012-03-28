@@ -17,6 +17,7 @@
 
 package cfa.vo.sed.filters;
 
+import java.io.File;
 import java.net.URL;
 
 /**
@@ -27,9 +28,25 @@ public abstract class AbstractFilter implements IFilter {
 
     private URL url;
 
+    private long lastModified;
+
     @Override
     public void setUrl(URL url) {
         this.url = url;
+        if(url!=null && url.getProtocol().equals("file")) {
+            File file = new File(url.getFile());
+            lastModified = file.lastModified();
+        }
+    }
+
+    @Override
+    public boolean wasModified() {
+        if(url!=null && url.getProtocol().equals("file")) {
+            File file = new File(url.getFile());
+            return lastModified != file.lastModified();
+        } else {
+            return false;
+        }
     }
 
     @Override

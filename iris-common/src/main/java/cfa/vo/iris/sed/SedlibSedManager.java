@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package cfa.vo.iris.sed;
 
 import cfa.vo.iris.events.SedCommand;
@@ -20,7 +19,6 @@ import java.util.TreeMap;
 public class SedlibSedManager implements ISedManager<ExtSed> {
 
     private TreeMap<String, ExtSed> sedMap = new TreeMap();
-
     private ExtSed selected;
 
     @Override
@@ -72,7 +70,7 @@ public class SedlibSedManager implements ISedManager<ExtSed> {
     public void add(ExtSed sed) {
         sedMap.put(sed.getId(), sed);
         SedEvent.getInstance().fire(sed, SedCommand.ADDED);
-        LogEvent.getInstance().fire(this, new LogEntry("SED added: "+sed.getId(), this));
+        LogEvent.getInstance().fire(this, new LogEntry("SED added: " + sed.getId(), this));
         select(sed);
     }
 
@@ -81,14 +79,14 @@ public class SedlibSedManager implements ISedManager<ExtSed> {
         ExtSed sed = sedMap.get(id);
         sedMap.remove(id);
         SedEvent.getInstance().fire(sed, SedCommand.REMOVED);
-        LogEvent.getInstance().fire(this, new LogEntry("SED removed: "+id, this));
+        LogEvent.getInstance().fire(this, new LogEntry("SED removed: " + id, this));
     }
 
     @Override
     public void select(ExtSed sed) {
         this.selected = sed;
         SedEvent.getInstance().fire(sed, SedCommand.SELECTED);
-        LogEvent.getInstance().fire(this, new LogEntry("SED selected: "+sed.getId(), this));
+        LogEvent.getInstance().fire(this, new LogEntry("SED selected: " + sed.getId(), this));
     }
 //
 //    @Override
@@ -103,10 +101,14 @@ public class SedlibSedManager implements ISedManager<ExtSed> {
 
     @Override
     public ExtSed newSed(String id) {
-        ExtSed sed = new ExtSed(id);
+        int c = 0;
+        while (existsSed(id + (c == 0 ? "" : c))) {
+            c++;
+        }
+        ExtSed sed = new ExtSed(id + (c == 0 ? "" : c));
         sedMap.put(id, sed);
         SedEvent.getInstance().fire(sed, SedCommand.ADDED);
-        LogEvent.getInstance().fire(this, new LogEntry("SED created: "+id, this));
+        LogEvent.getInstance().fire(this, new LogEntry("SED created: " + id, this));
         select(sed);
         return sed;
     }
@@ -123,9 +125,8 @@ public class SedlibSedManager implements ISedManager<ExtSed> {
         sed.setId(newId);
         sedMap.put(newId, sed);
         SedEvent.getInstance().fire(sed, SedCommand.CHANGED);
-        LogEvent.getInstance().fire(this, new LogEntry("SED changed: "+oldId+" -> "+newId, sed));
+        LogEvent.getInstance().fire(this, new LogEntry("SED changed: " + oldId + " -> " + newId, sed));
     }
-
 //    public class ExtSed extends Sed {
 //        private Map<String, Object> attachments = new TreeMap();
 //
@@ -221,5 +222,4 @@ public class SedlibSedManager implements ISedManager<ExtSed> {
 //        }
 //
 //    }
-
 }

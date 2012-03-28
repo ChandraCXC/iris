@@ -3,7 +3,6 @@
  * as described in the LICENSE file at the top
  * source directory in the Specview source code base.
  */
-
 package spv.components;
 
 /**
@@ -12,7 +11,6 @@ package spv.components;
  * Date: Nov 18, 2011
  * Time: 9:25:07 AM
  */
-
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
@@ -29,6 +27,7 @@ import cfa.vo.iris.events.*;
 import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.SedlibSedManager;
 
 import spv.controller.ManagedSpectrum2;
 import spv.controller.SecondaryController2;
@@ -47,7 +46,6 @@ import spv.view.PlotWidget;
  *
  *  18 Nov 11  -  Implemented (IB)
  */
-
 /**
  * This class provides support for Iris-specific display requirements.
  *
@@ -55,17 +53,16 @@ import spv.view.PlotWidget;
  * @author Ivo Busko (Space Telescope Science Institute)
  * @version 1.0 - 18Nov11
  */
-
-
 public class IrisDisplayManager extends SecondaryDisplayManager implements SedListener {
 
     public static final String FIT_MODEL = "fit.model";
-
     private SecondaryController2 secondaryController;
     private SpectrumVisualEditor visualEditor;
     private GuiHubConnector connection;
+    private SedlibSedManager manager;
 
-    public IrisDisplayManager() {
+    public IrisDisplayManager(SedlibSedManager manager) {
+        this.manager = manager;
     }
 
     void setConnection(GuiHubConnector connection) {
@@ -136,7 +133,6 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
     }
 
     // GUI stuff.
-
     JInternalFrame getInternalFrame() {
         if (secondaryController != null) {
             return secondaryController.getInternalFrame();
@@ -157,9 +153,9 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
         writeIrisIDPanel(titlePanel);
 
         panel.removeAll();
-        panel.setLayout (new BorderLayout());
+        panel.setLayout(new BorderLayout());
         panel.setPreferredSize(Include.DEFAULT_EMPTY_WINDOW_SIZE);
-        panel.setBackground( new java.awt.Color(0,0,0) );
+        panel.setBackground(new java.awt.Color(0, 0, 0));
         {
             String strConstraint;
             strConstraint = "Center";
@@ -209,8 +205,8 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
     // purpose is to give access to the table with metadata and data
     // for the entire SED. This function was available in Iris 1.0
     // from the Coplot window instead.
-
     private class MetadataDisplay implements Command {
+
         public void execute(Object arg) {
 
             if (arg instanceof PlottableSEDSegmentedSpectrum) {
@@ -222,28 +218,27 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
 
                 // Attach a listener to the visual editor so Seds
                 // can be extracted from the one being displayed.
-                ((SEDSegmentedSpectrumVisualEditor)visualEditor).setCommand(new OnExtractCommand());
+                ((SEDSegmentedSpectrumVisualEditor) visualEditor).setCommand(new OnExtractCommand());
 
             } else if (arg instanceof PlottableSEDFittedSpectrum) {
 
                 // Use this metadata/data browser when fitting a model.
 
                 visualEditor = new SEDFittedSpectrumVisualEditor(
-                        (PlottableSEDFittedSpectrum)arg, null, Color.red, null);
+                        (PlottableSEDFittedSpectrum) arg, null, Color.red, null);
             }
         }
     }
 
     // This class responds to the Extract button in the metadata browser.
-
     private class OnExtractCommand implements Command {
+
         public void execute(Object o) {
             if (o instanceof Sed) {
-                Sed sed = (Sed)o;
+                Sed sed = (Sed) o;
 
-                SedlibSedManager manager = new SedlibSedManager();
+                ExtSed extSed = manager.newSed("FilterSed");
 
-                ExtSed extSed = new ExtSed(sed.toString());
                 int numberOfSegments = sed.getNumberOfSegments();
                 for (int i = 0; i < numberOfSegments; i++) {
                     Segment segment = sed.getSegment(i);
@@ -255,9 +250,6 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
                         ExceptionHandler.handleException(e);
                     }
                 }
-
-                manager.add(extSed);
-//                SedEvent.getInstance().fire(extSed, SedCommand.ADDED);
             }
         }
     }

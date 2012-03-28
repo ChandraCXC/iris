@@ -494,6 +494,8 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         buttonGroup1 = new javax.swing.ButtonGroup();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jSplitPane1 = new javax.swing.JSplitPane();
         jPanel1 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
@@ -547,7 +549,6 @@ public final class SetupFrame extends ConfirmJInternalFrame {
         jTextArea1 = new javax.swing.JTextArea();
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JSeparator();
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -850,6 +851,8 @@ public final class SetupFrame extends ConfirmJInternalFrame {
                 .add(9, 9, 9))
         );
 
+        jSplitPane1.setLeftComponent(jPanel1);
+
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "General"));
 
         jLabel5.setText("SED ID:");
@@ -941,7 +944,6 @@ public final class SetupFrame extends ConfirmJInternalFrame {
 
         javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance().getContext().getActionMap(SetupFrame.class, this);
         jButton4.setAction(actionMap.get("resolve")); // NOI18N
-        jButton4.setText("Resolve");
 
         jLabel16.setText("Publisher:");
 
@@ -1086,28 +1088,19 @@ public final class SetupFrame extends ConfirmJInternalFrame {
                 .addContainerGap())
         );
 
-        jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
+        jSplitPane1.setRightComponent(jPanel2);
+
+        jTabbedPane1.addTab("Spectrum (Simple)", jSplitPane1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(jSeparator1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(18, 18, 18)
-                .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
-                .addContainerGap())
+            .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 575, Short.MAX_VALUE)
-                    .add(jSeparator1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 547, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+            .add(jTabbedPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         bindingGroup.bind();
@@ -1129,20 +1122,22 @@ public final class SetupFrame extends ConfirmJInternalFrame {
             }
             attach.put(segment, this);
             this.setVisible(false);
+            SedBuilder.update();
         } catch (Exception ex) {
             Logger.getLogger(SetupFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_importSegment
-
-    private void changeError(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeError
-        confBean.setErrorType(evt.getActionCommand());
-        setConfBean(confBean);
-    }//GEN-LAST:event_changeError
+}//GEN-LAST:event_importSegment
 
     private void save(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_save
         SaveSetupDialog dia = new SaveSetupDialog(SedBuilder.getWorkspace().getRootFrame(), confBean);
         dia.setVisible(true);
-    }//GEN-LAST:event_save
+}//GEN-LAST:event_save
+
+    private void changeError(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeError
+        confBean.setErrorType(evt.getActionCommand());
+        setConfBean(confBean);
+}//GEN-LAST:event_changeError
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton1;
@@ -1183,7 +1178,8 @@ public final class SetupFrame extends ConfirmJInternalFrame {
     private javax.swing.JRadioButton jRadioButton5;
     private javax.swing.JRadioButton jRadioButton6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;

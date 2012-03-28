@@ -37,7 +37,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
     private Map<String, IrisComponent> components = new HashMap();
     private IrisWorkspace ws;
     private IrisDesktop desktop;
-    public static final File CONFIGURATION_DIR = new File(System.getProperty("user.home") + "/.vao/iris/importer/");
+    public static final File CONFIGURATION_DIR = new File(System.getProperty("user.home") + "/.vao/iris/");
     public final boolean MAC_OS_X = System.getProperty("os.name").toLowerCase().startsWith("mac os x");
     static boolean SAMP_ENABLED = System.getProperty("samp", "true").toLowerCase().equals("false") ? false : true;
     public static final boolean SAMP_FALLBACK = false;

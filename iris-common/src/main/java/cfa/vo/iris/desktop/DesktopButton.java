@@ -6,10 +6,9 @@
 package cfa.vo.iris.desktop;
 
 import cfa.vo.iris.IMenuItem;
-import java.awt.Color;
+import java.awt.EventQueue;
 import java.awt.event.MouseAdapter;
 import javax.swing.JLabel;
-import javax.swing.border.LineBorder;
 
 /**
  *
@@ -33,7 +32,14 @@ public class DesktopButton extends JLabel {
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                item.onClick();
+                EventQueue.invokeLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        item.onClick();
+                    }
+                });
+                
             }
         });
         

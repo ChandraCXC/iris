@@ -44,6 +44,8 @@ public interface IFilter {
 
     public URL getUrl();
 
+    public boolean wasModified();
+
     public String getAuthor();
 
     public String getVersion();

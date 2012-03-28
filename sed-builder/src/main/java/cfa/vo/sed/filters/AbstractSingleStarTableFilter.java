@@ -44,30 +44,19 @@ import uk.ac.starlink.util.URLDataSource;
  *
  * @author omarlaurino
  */
-public abstract class AbstractSingleStarTableFilter implements IFilter {
+public abstract class AbstractSingleStarTableFilter extends AbstractFilter {
 
-    private URL url;
 
     private StarTable table;
 
     private ISegmentMetadata meta;
 
     public AbstractSingleStarTableFilter(URL url) {
-        this.url = url;
+        setUrl(url);
     }
 
     public AbstractSingleStarTableFilter() {
         
-    }
-
-    @Override
-    public URL getUrl() {
-        return url;
-    }
-
-    @Override
-    public void setUrl(URL url) {
-        this.url = url;
     }
 
     @Override
@@ -159,11 +148,6 @@ public abstract class AbstractSingleStarTableFilter implements IFilter {
     @Override
     public String getVersion() {
         return "2011";
-    }
-
-    @Override
-    public String toString() {
-        return getName();
     }
 
 }

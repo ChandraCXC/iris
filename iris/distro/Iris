@@ -7,7 +7,7 @@ fi
 
 export IRIS_DIR=$bindir
 
-java -DIRIS_DIR=$bindir -jar ${project.name}-${project.version}.jar $@
+java -DIRIS_DIR=$bindir -jar $bindir/${project.name}-${project.version}.jar $@
 
 
 

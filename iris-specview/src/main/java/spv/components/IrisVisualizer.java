@@ -10,7 +10,6 @@ package spv.components;
  * Date: 2/13/12
  * Time: 3:03 PM
  */
-import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -66,7 +65,6 @@ public class IrisVisualizer implements IrisComponent {
     private IrisApplication app;
     private JInternalFrame currentFrame;
     private SedlibSedManager manager;
-    private ExtSed displayedSed;
     private SEDFactoryModule factory = new SEDFactoryModule();
     private FittingEngine sherpa;
     private String sherpaDir = System.getProperty("IRIS_DIR") + "/lib/sherpa";
@@ -96,7 +94,7 @@ public class IrisVisualizer implements IrisComponent {
         this.app = app;
         this.ws = workspace;
 
-        idm = new IrisDisplayManager();
+        idm = new IrisDisplayManager(manager);
         idm.setDesktopMode(true);
         idm.setConnection(app.getSAMPController());
 
@@ -145,31 +143,30 @@ public class IrisVisualizer implements IrisComponent {
         manageAssociatedManagerWindows(sed);
 
         try {
-            displayedSed = sed;
 
-            ManagedSpectrum2 managedSpectrum = (ManagedSpectrum2) displayedSed.getAttachment(IrisDisplayManager.FIT_MODEL);
+            ManagedSpectrum2 managedSpectrum = (ManagedSpectrum2) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
 
             // There is no Sed attachment, so build a model manager and attach it.
 
             if (managedSpectrum == null) {
 
-                Spectrum sp = factory.readAllSegments(null, displayedSed);
-                sp.setName(displayedSed.getId());
+                Spectrum sp = factory.readAllSegments(null, sed);
+                sp.setName(sed.getId());
 
                 SherpaModelManager modelManager = new SherpaModelManager(sp, idm.getSAMPConnector(), ws.getDesktop());
                 modelManager.setActive(false);
 
                 managedSpectrum = new ManagedSpectrum2(sp, modelManager);
-                displayedSed.addAttachment(IrisDisplayManager.FIT_MODEL, managedSpectrum);
+                sed.addAttachment(IrisDisplayManager.FIT_MODEL, managedSpectrum);
 
                 // This is needed to capture the 'Quit' button action
                 // that comes from the model manager GUI.
-                modelManager.setCallbackOnDispose(new OnDisposeCommand(displayedSed));
+                modelManager.setCallbackOnDispose(new OnDisposeCommand(sed));
             }
 
             // Now display the Sed.
 
-            idm.display(displayedSed, displayedSed.getId());
+            idm.display(sed, sed.getId());
 
             // and add its frame to the workspace.
 
@@ -190,11 +187,11 @@ public class IrisVisualizer implements IrisComponent {
     }
 
     private void manageAssociatedManagerWindows(ExtSed sed) {
-        if (sed != displayedSed) {
+        if (sed != manager.getSelected()) {
 
             // displayedSed is exiting: make its model manager and metadata windows invisible.
-            if (displayedSed != null) {
-                ManagedSpectrum2 managedSpectrum = (ManagedSpectrum2) displayedSed.getAttachment(IrisDisplayManager.FIT_MODEL);
+            if (manager.getSelected() != null) {
+                ManagedSpectrum2 managedSpectrum = (ManagedSpectrum2) manager.getSelected().getAttachment(IrisDisplayManager.FIT_MODEL);
                 if (managedSpectrum != null) {
                     ModelManager2 modelManager = managedSpectrum.getModelManager();
                     modelManager.setVisible(false);
@@ -266,109 +263,108 @@ public class IrisVisualizer implements IrisComponent {
     private class VisualizerMenus extends ArrayList<IMenuItem> {
 
         public VisualizerMenus() {
-            add(new AbstractDesktopItem("SED Visualizer", "Explore SEDs",
+            add(new AbstractDesktopItem("View SED", "Explore SEDs",
                     "/iris_button_small.png", "/iris_button_tiny.png") {
 
                 @Override
                 public void onClick() {
 
-                    EventQueue.invokeLater(new Runnable() {
-
-                        @Override
-                        public void run() {
-
-                            if (currentFrame == null) {
-                                currentFrame = idm.getInternalFrame();
-                                currentFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
-                                ws.addFrame(currentFrame);
-                            }
-
-                            if (lastLocation != null)
-                                currentFrame.setLocation(lastLocation);
-
-                            currentFrame.setVisible(true);
-
+                    if (manager.getSeds().isEmpty()) {
+                        idm = new IrisDisplayManager(manager);
+                        idm.setDesktopMode(true);
+                        idm.setConnection(app.getSAMPController());
+                        if (currentFrame != null) {
+                            lastLocation = currentFrame.getLocation();
+                            currentFrame.dispose();
                         }
-                    });
+                    }
+
+                    if (currentFrame == null) {
+                        currentFrame = idm.getInternalFrame();
+                        currentFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
+                        ws.addFrame(currentFrame);
+                    }
+
+                    currentFrame.show();
+
+                    if (manager.getSeds().isEmpty()) {
+                        NarrowOptionPane.showMessageDialog(ws.getRootFrame(), "No SEDs to display. Please load a file.", "SED Visualizer", NarrowOptionPane.INFORMATION_MESSAGE);
+                    }
+
                 }
             });
 
-            add(new AbstractDesktopItem("Fitting", "Fitting",
+            add(new AbstractDesktopItem("Fit SED", "Fit mathematical, phisical models, and templates",
                     "/ruler_small.png", "/ruler_tiny.png") {
 
                 @Override
                 public void onClick() {
 
-                    EventQueue.invokeLater(new Runnable() {
 
-                        @Override
-                        public void run() {
 
-                            if (manager.getSelected() != null) {
+                    if (manager.getSelected() != null) {
 
-                                ExtSed sed = manager.getSelected();
+                        ExtSed sed = manager.getSelected();
 
-                                try {
-                                    Spectrum sp = factory.readAllSegments(null, sed);
-                                    sp.setName(sed.getId());
+                        try {
+                            Spectrum sp = factory.readAllSegments(null, sed);
+                            sp.setName(sed.getId());
 
-                                    // Get model manager from Sed attachment
-                                    // and activate it.
+                            // Get model manager from Sed attachment
+                            // and activate it.
 
-                                    ManagedSpectrum2 managedSpectrum = (ManagedSpectrum2) displayedSed.getAttachment(IrisDisplayManager.FIT_MODEL);
-                                    SherpaModelManager modelManager = (SherpaModelManager) managedSpectrum.getModelManager();
+                            ManagedSpectrum2 managedSpectrum = (ManagedSpectrum2) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
+                            SherpaModelManager modelManager = (SherpaModelManager) managedSpectrum.getModelManager();
 
-                                    modelManager.execute(null);
+                            modelManager.execute(null);
 
-                                    // Display the model manager frame.
+                            // Display the model manager frame.
 
-                                    JInternalFrame frame = modelManager.getInternalFrame();
-                                    frame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
-                                    ws.addFrame(frame);
-                                    frame.setVisible(true);
-                                    try {
-                                        frame.setSelected(true);
-                                    } catch (java.beans.PropertyVetoException e) {
-                                    }
-
-                                    // Get the FittedSpectrum instance from the model manager.
-
-                                    FittedSpectrum fsp = modelManager.getSEDFittedSpectrum();
-                                    fsp.enableNotifications(true);
-
-                                    // This new fitted spectrum, as well as the now active model
-                                    // manager, must be associated with the sed as an attachment
-                                    // Before attaching, we must make sure that any existing
-                                    // attachment with an old model gets removed first. This
-                                    // assumes that a Sed instance supposedly can be associated
-                                    // with only one model at a time, although this can change
-                                    // in the future.
-
-                                    if (displayedSed.getAttachment(IrisDisplayManager.FIT_MODEL) != null) {
-                                        displayedSed.removeAttachment(IrisDisplayManager.FIT_MODEL);
-                                    }
-
-                                    // Now, attach existing model and new
-                                    // FittedSpectrum instance to the Sed.
-
-                                    ManagedSpectrum2 msp = new ManagedSpectrum2(fsp, modelManager);
-                                    displayedSed.addAttachment(IrisDisplayManager.FIT_MODEL, msp);
-
-                                    // And display it.
-
-                                    display(displayedSed);
-
-                                    idm.removeVisualEditor();
-
-                                } catch (Exception ex) {
-                                    LogEvent.getInstance().fire(this, new LogEntry("Error: " + ex.getMessage(), sed));
-                                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
-                                }
-                            } else {
-                                NarrowOptionPane.showMessageDialog(ws.getRootFrame(), "Please create/select an SED first", "Fitting Engine", NarrowOptionPane.INFORMATION_MESSAGE);
+                            JInternalFrame frame = modelManager.getInternalFrame();
+                            frame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
+                            ws.addFrame(frame);
+                            frame.setVisible(true);
+                            try {
+                                frame.setSelected(true);
+                            } catch (java.beans.PropertyVetoException e) {
                             }
+
+                            // Get the FittedSpectrum instance from the model manager.
+
+                            FittedSpectrum fsp = modelManager.getSEDFittedSpectrum();
+                            fsp.enableNotifications(true);
+
+                            // This new fitted spectrum, as well as the now active model
+                            // manager, must be associated with the sed as an attachment
+                            // Before attaching, we must make sure that any existing
+                            // attachment with an old model gets removed first. This
+                            // assumes that a Sed instance supposedly can be associated
+                            // with only one model at a time, although this can change
+                            // in the future.
+
+                            if (sed.getAttachment(IrisDisplayManager.FIT_MODEL) != null) {
+                                sed.removeAttachment(IrisDisplayManager.FIT_MODEL);
+                            }
+
+                            // Now, attach existing model and new
+                            // FittedSpectrum instance to the Sed.
+
+                            ManagedSpectrum2 msp = new ManagedSpectrum2(fsp, modelManager);
+                            sed.addAttachment(IrisDisplayManager.FIT_MODEL, msp);
+
+                            // And display it.
+
+                            display(sed);
+
+                            idm.removeVisualEditor();
+
+                        } catch (Exception ex) {
+                            LogEvent.getInstance().fire(this, new LogEntry("Error: " + ex.getMessage(), sed));
+                            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
                         }
-                    });
+                    } else {
+                        NarrowOptionPane.showMessageDialog(ws.getRootFrame(), "No SEDs to fit. Please load a file.", "Fitting Engine", NarrowOptionPane.INFORMATION_MESSAGE);
+                    }
                 }
             });
         }
@@ -377,7 +373,6 @@ public class IrisVisualizer implements IrisComponent {
     // This class responds to the Dispose button in the model manager
     // and discards the model associated with the Sed, re-displaying
     // it as a non-fitted Sed.
-
     public class OnDisposeCommand implements Command {
 
         private ExtSed sed;

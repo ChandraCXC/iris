@@ -23,6 +23,7 @@ package cfa.vo.sed.filters;
 
 import cfa.vo.sed.filters.FileFormatManager.CustomFilterContainer;
 import cfa.vo.sed.builder.ISegmentMetadata;
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -46,6 +47,9 @@ public final class FilterProxy implements InvocationHandler {
     private String version;
     private String description;
     private String author;
+
+    private long lastModified;
+    private URL url;
 
     public FilterProxy(Class filterClass) {
         try {
@@ -116,6 +120,17 @@ public final class FilterProxy implements InvocationHandler {
             methodMap.get("url").invoke(filterInstance, url);
         else
             fieldMap.get("url").set(filterInstance, url);
+
+        this.url = url;
+    }
+
+    private boolean wasModified() {
+        if(url.getProtocol().equals("file")) {
+            File file = new File(url.getFile());
+            return lastModified == file.lastModified();
+        } else
+            return false;
+
     }
 
     private String getDescription() throws Exception {
@@ -147,6 +162,8 @@ public final class FilterProxy implements InvocationHandler {
             return getVersion();
         else if(method.getName().equals("toString"))
             return getName();
+        else if(method.getName().equals("wasModified"))
+            return wasModified();
         return null;
     }
     

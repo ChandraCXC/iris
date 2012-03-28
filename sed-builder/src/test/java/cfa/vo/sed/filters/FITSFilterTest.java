@@ -92,5 +92,4 @@ public class FITSFilterTest {
         Segment segment = SegmentImporter.getSegments(conf).get(0);
     }
 
-
 }
