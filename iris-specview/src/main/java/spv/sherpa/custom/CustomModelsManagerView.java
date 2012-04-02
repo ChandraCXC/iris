@@ -38,9 +38,9 @@ public class CustomModelsManagerView extends javax.swing.JInternalFrame {
     private CustomModelsManager manager;
 
     /** Creates new form CustomModelsManagerView */
-    public CustomModelsManagerView(File rootDir, JFileChooser chooser) throws IOException {
+    public CustomModelsManagerView(CustomModelsManager manager, JFileChooser chooser) throws IOException {
         this.chooser = chooser;
-        this.manager = new CustomModelsManager(rootDir);
+        this.manager = manager;
         this.diskLocation = chooser.getSelectedFile() != null ? chooser.getSelectedFile().getAbsolutePath() : System.getProperty("user.home");
         initComponents();
         jTree1.setPreferredSize(null);
@@ -567,6 +567,7 @@ public class CustomModelsManagerView extends javax.swing.JInternalFrame {
                     public void actionPerformed(java.awt.event.ActionEvent evt) {
                         CustomModel model = (CustomModel) obj.getUserObject();
                         manager.removeModel(model.getUrl().getFile());
+                        setDiskLocation("");
                         try {
                             jTree1.setModel(manager.getCustomModels());
                         } catch (IOException ex) {

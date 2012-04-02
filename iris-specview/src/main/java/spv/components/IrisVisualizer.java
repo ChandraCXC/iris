@@ -53,6 +53,7 @@ import spv.fit.FittingEngine;
 import spv.fit.FittingEngineFactory;
 import spv.fit.NoSuchEngineException;
 import spv.glue.SpectrumVisualEditor;
+import spv.sherpa.custom.CustomModelsManager;
 import spv.sherpa.custom.CustomModelsManagerView;
 import spv.spectrum.Spectrum;
 import spv.spectrum.factory.SED.SEDFactoryModule;
@@ -75,7 +76,8 @@ public class IrisVisualizer implements IrisComponent {
     private FittingEngine sherpa;
     private String sherpaDir = System.getProperty("IRIS_DIR") + "/lib/sherpa";
     private Point lastLocation;
-    private CustomModelsManagerView customManager;
+    private CustomModelsManagerView customManagerView;
+    private CustomModelsManager customManager;
 
     @Override
     public void init(IrisApplication app, IWorkspace workspace) {
@@ -99,11 +101,20 @@ public class IrisVisualizer implements IrisComponent {
         }
 
         this.app = app;
-        this.ws = workspace;
+        ws = workspace;
 
         idm = new IrisDisplayManager(manager, ws);
         idm.setDesktopMode(true);
         idm.setConnection(app.getSAMPController());
+
+        try {
+            File rootDir = new File(app.getConfigurationDir() + File.separator + "analysis" + File.separator + "custom_models");
+            customManager = new CustomModelsManager(rootDir);
+            customManagerView = new CustomModelsManagerView(customManager, ws.getFileChooser());
+            ws.addFrame(customManagerView);
+        } catch (IOException ex) {
+            NarrowOptionPane.showMessageDialog(ws.getRootFrame(), "Error initializing Custom Fit Component Manager: " + ex.getMessage(), "Iris Visualizer", NarrowOptionPane.ERROR_MESSAGE);
+        }
 
         SedEvent.getInstance().add(new SedListener() {
 
@@ -381,29 +392,18 @@ public class IrisVisualizer implements IrisComponent {
             });
 
             add(new AbstractMenuItem("Custom Fit Model Components Manager", "Install Custom Components that can be used for fitting SEDs", false,
-                    "/iris_button_small.png", "/iris_button_tiny.png") {
+                    "/ruler_small.png", "/ruler_tiny.png") {
 
                 @Override
                 public void onClick() {
-                    try {
-                        if (customManager == null) {
 
-                            File rootDir = new File(app.getConfigurationDir() + File.separator + "analysis" + File.separator + "custom_models");
-                            customManager = new CustomModelsManagerView(rootDir, ws.getFileChooser());
-                            ws.addFrame(customManager);
-
-                        }
-                        customManager.show();
+                        customManagerView.show();
                         try {
-                            customManager.setIcon(false);
+                            customManagerView.setIcon(false);
                         } catch (PropertyVetoException ex) {
                             Logger.getLogger(IrisVisualizer.class.getName()).log(Level.SEVERE, null, ex);
                         }
 
-                    } catch (IOException ex) {
-                        NarrowOptionPane.showMessageDialog(ws.getRootFrame(), ex.getMessage(), "Error initializing the Custom Fit Model Components Manager", NarrowOptionPane.ERROR_MESSAGE);
-                        Logger.getLogger(IrisVisualizer.class.getName()).log(Level.SEVERE, null, ex);
-                    }
                 }
             });
         }
