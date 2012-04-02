@@ -3,6 +3,7 @@
  * as described in the LICENSE file at the top
  * source directory in the Specview source code base.
  */
+
 package spv.components;
 
 /**
@@ -14,8 +15,10 @@ package spv.components;
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
-import cfa.vo.iris.sed.IXSed;
+import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
@@ -27,10 +30,10 @@ import cfa.vo.iris.events.*;
 import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.SedlibSedManager;
 
 import spv.controller.ManagedSpectrum2;
 import spv.controller.SecondaryController2;
+import spv.controller.display.PlotWidgetFactory;
 import spv.controller.display.SecondaryDisplayManager;
 import spv.glue.*;
 import spv.util.Callback;
@@ -38,6 +41,9 @@ import spv.util.Command;
 import spv.util.ExceptionHandler;
 import spv.util.Include;
 import spv.util.properties.SpvProperties;
+import spv.view.BasicPlotWidget;
+import spv.view.FittingPlotWidget;
+import spv.view.PlotStatus;
 import spv.view.PlotWidget;
 
 /*
@@ -60,9 +66,16 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
     private SpectrumVisualEditor visualEditor;
     private GuiHubConnector connection;
     private SedlibSedManager manager;
+    private IWorkspace ws;
+    private ExtSed sedDisplaying;
 
-    public IrisDisplayManager(SedlibSedManager manager) {
+    private Map<String,PlotStatus> plotStatusStorage;
+
+    public IrisDisplayManager(SedlibSedManager manager, IWorkspace ws) {
         this.manager = manager;
+        this.ws = ws;
+
+        plotStatusStorage = new HashMap<String, PlotStatus>();
     }
 
     void setConnection(GuiHubConnector connection) {
@@ -82,13 +95,20 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
             ManagedSpectrum2 msp1 = (ManagedSpectrum2) sed.getAttachment(FIT_MODEL);
 
             msp1.getSpectrum().setName(name);
-            display(msp1);
+
+            removeVisualEditor();
+
+            display(msp1, sed.getId());
+
+            sedDisplaying = sed;
 
             LogEvent.getInstance().fire(this, new LogEntry("SED displayed:  " + name, this));
         }
     }
 
-    public void display(ManagedSpectrum2 msp) {
+    public void display(ManagedSpectrum2 msp, String id) {
+
+        // this widget will display the new Sed.
         PlotWidget pw = buildPlotWidget(msp, false, null);
 
         MetadataDisplay metadataDisplay = new MetadataDisplay();
@@ -97,8 +117,21 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
         if (secondaryController == null) {
             secondaryController = new SecondaryController2(pw, this);
         } else {
-            PlotWidget widget = secondaryController.getPlotWidget();
-            widget.removeListeners();
+
+            // here we remove the listeners from the existing plot
+            // widget. Then we get its plot status and store it for
+            // use later on.
+            getPlotWidget().removeListeners();
+
+            PlotStatus plotStatus = getPlotWidget().getPlotStatus();
+            plotStatusStorage.put(sedDisplaying.getId(), plotStatus);
+
+            // if there is a plot status associated with the Sed
+            // to be displayed, use it.
+            PlotStatus ps = plotStatusStorage.get((id));
+            if (ps != null) {
+                pw.setPlotStatus(ps);
+            }
 
             secondaryController.loadWidget(pw);
         }
@@ -130,6 +163,17 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
 
     void setDesktopMode(boolean desktopMode) {
         SpvProperties.SetSessionProperty(Include.DESKTOP_MODE, desktopMode ? "true" : "false");
+    }
+
+    // Lame override of base class. This is all just to force the residuals
+    // plot to never show up when displaying non-fitted data. It's a consequence
+    // of re-purposing the pan canvas as a residuals plot area.
+    protected PlotWidget getPlotWidgetFromFactory(PlottableSpectrum plottable) {
+        if (plottable instanceof PlottableFittedSpectrum && SpvProperties.GetProperty(Include.APP_NAME).equals(Include.IRIS_APP_NAME)) {
+            return new FittingPlotWidget(plottable, false);
+        }
+
+        return new SEDBasicPlotWidget(plottable, false);
     }
 
     // GUI stuff.
@@ -196,9 +240,13 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
 
     public void removeVisualEditor() {
         if (visualEditor != null) {
-            visualEditor.getFrame().setVisible(false);
+            visualEditor.getJFrame().setVisible(false);
             visualEditor = null;
         }
+    }
+
+    public ExtSed getDisplaying() {
+        return sedDisplaying;
     }
 
     // Metadata button. This button is not present in Iris 1.0. Its
@@ -227,6 +275,9 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
                 visualEditor = new SEDFittedSpectrumVisualEditor(
                         (PlottableSEDFittedSpectrum) arg, null, Color.red, null);
             }
+
+            JInternalFrame frame = visualEditor.getJFrame().getInternalFrame();
+            ws.addFrame(frame);
         }
     }
 

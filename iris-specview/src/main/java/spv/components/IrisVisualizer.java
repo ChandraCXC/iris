@@ -94,7 +94,7 @@ public class IrisVisualizer implements IrisComponent {
         this.app = app;
         this.ws = workspace;
 
-        idm = new IrisDisplayManager(manager);
+        idm = new IrisDisplayManager(manager, ws);
         idm.setDesktopMode(true);
         idm.setConnection(app.getSAMPController());
 
@@ -187,42 +187,46 @@ public class IrisVisualizer implements IrisComponent {
     }
 
     private void manageAssociatedManagerWindows(ExtSed sed) {
-        if (sed != manager.getSelected()) {
 
-            // displayedSed is exiting: make its model manager and metadata windows invisible.
-            if (manager.getSelected() != null) {
-                ManagedSpectrum2 managedSpectrum = (ManagedSpectrum2) manager.getSelected().getAttachment(IrisDisplayManager.FIT_MODEL);
+        ExtSed displaying = idm.getDisplaying();
+
+        if (displaying != null) {
+            if (!sed.getId().equals(displaying.getId())) {
+                // displayedSed is exiting: make its model manager and metadata windows invisible.
+                ManagedSpectrum2 managedSpectrum = (ManagedSpectrum2) displaying.getAttachment(IrisDisplayManager.FIT_MODEL);
                 if (managedSpectrum != null) {
                     ModelManager2 modelManager = managedSpectrum.getModelManager();
                     modelManager.setVisible(false);
                     SpectrumVisualEditor editor = idm.getVisualEditor();
                     if (editor != null) {
-                        editor.getFrame().setVisible(false);
+                        editor.getJFrame().setVisible(false);
                     }
                 }
-            }
 
-            // new Sed is entering display: make its model manager window visible if active.
-            if (sed != null) {
-                ManagedSpectrum2 managedSpectrum = (ManagedSpectrum2) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
-                if (managedSpectrum != null) {
-                    ModelManager2 modelManager = managedSpectrum.getModelManager();
-                    modelManager.setVisible(modelManager.isActive());
+                // new Sed is entering display: make its model manager window visible if active.
+                if (sed != null) {
+                    managedSpectrum = (ManagedSpectrum2) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
+                    if (managedSpectrum != null) {
+                        ModelManager2 modelManager = managedSpectrum.getModelManager();
+                        modelManager.setVisible(modelManager.isActive());
+                    }
                 }
             }
         }
     }
 
     private void invalidateModel(ExtSed sed) {
-        ManagedSpectrum2 msp = (ManagedSpectrum2) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
-        if (msp != null) {
+        if (sed != null) {
+            ManagedSpectrum2 msp = (ManagedSpectrum2) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
+            if (msp != null) {
 
-            ModelManager2 mm = msp.getModelManager();
-            if (mm != null && mm.isActive()) {
-                mm.dispose();
+                ModelManager2 mm = msp.getModelManager();
+                if (mm != null && mm.isActive()) {
+                    mm.dispose();
+                }
+
+                sed.removeAttachment(IrisDisplayManager.FIT_MODEL);
             }
-
-            sed.removeAttachment(IrisDisplayManager.FIT_MODEL);
         }
     }
 
@@ -270,7 +274,7 @@ public class IrisVisualizer implements IrisComponent {
                 public void onClick() {
 
                     if (manager.getSeds().isEmpty()) {
-                        idm = new IrisDisplayManager(manager);
+                        idm = new IrisDisplayManager(manager, ws);
                         idm.setDesktopMode(true);
                         idm.setConnection(app.getSAMPController());
                         if (currentFrame != null) {
@@ -299,9 +303,6 @@ public class IrisVisualizer implements IrisComponent {
 
                 @Override
                 public void onClick() {
-
-
-
                     if (manager.getSelected() != null) {
 
                         ExtSed sed = manager.getSelected();
