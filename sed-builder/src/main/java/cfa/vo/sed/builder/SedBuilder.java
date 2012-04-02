@@ -16,6 +16,7 @@ import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sed.filters.FileFormatManager;
 import cfa.vo.sed.gui.LoadSetupDialog;
+import cfa.vo.sed.gui.PhotometryFilterBrowser;
 import cfa.vo.sed.gui.PluginManager;
 import cfa.vo.sed.gui.SedBuilderMainView;
 import cfa.vo.sed.gui.SetupFrame;
@@ -58,6 +59,7 @@ public class SedBuilder implements IrisComponent {
     private static JFrame rootFrame;
     private static SedlibSedManager sedManager;
     private static SedBuilderMainView view;
+    private static PhotometryFilterBrowser pfbrowser;
     private PluginManager pManager;
 
     public static void update() {
@@ -75,8 +77,32 @@ public class SedBuilder implements IrisComponent {
         } catch (PropertyVetoException ex) {
             Logger.getLogger(SedBuilder.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if(sedManager.getSeds().isEmpty())
+        if (sedManager.getSeds().isEmpty()) {
             view.newSed();
+        }
+    }
+
+    public static void showPhotometryFilterBrowser() {
+        if (pfbrowser == null) {
+            try {
+                pfbrowser = new PhotometryFilterBrowser();
+                workspace.addFrame(pfbrowser);
+            } catch (Exception ex) {
+                NarrowOptionPane.showMessageDialog(rootFrame, "Error reading filters database: " + ex.getMessage(), "Photometry Filters Browser", NarrowOptionPane.ERROR_MESSAGE);
+                Logger.getLogger(SedBuilder.class.getName()).log(Level.SEVERE, null, ex);
+                return;
+            }
+        }
+        pfbrowser.show();
+        if (pfbrowser.isIcon()) {
+            try {
+                pfbrowser.setIcon(false);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(SedBuilder.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        pfbrowser.toFront();
     }
 
     @Override
@@ -137,7 +163,7 @@ public class SedBuilder implements IrisComponent {
 
         public BuilderMenuItems() {
 
-            add(new AbstractDesktopItem("File|Load File...", "Load SED data from several different sources", "/scratch.png", "/scratch_tiny.png") {
+            add(new AbstractDesktopItem("File|Load File", "Load SED data from several different sources", "/scratch.png", "/scratch_tiny.png") {
 
                 @Override
                 public void onClick() {
@@ -146,7 +172,7 @@ public class SedBuilder implements IrisComponent {
                 }
             });
 
-            add(new AbstractDesktopItem("File|Build SED", "Load SED data from several different sources", "/tool.png", "/tool_tiny.png") {
+            add(new AbstractDesktopItem("File|SED Builder", "Load SED data from several different sources", "/tool.png", "/tool_tiny.png") {
 
                 @Override
                 public void onClick() {
@@ -154,7 +180,7 @@ public class SedBuilder implements IrisComponent {
                 }
             });
 
-            add(new AbstractMenuItem("Plugins..", "Manage custom file filters plug-ins", false, "/plugin.png", "/plugin.png") {
+            add(new AbstractMenuItem("Plugins...", "Manage custom file filters plug-ins", false, "/plugin.png", "/plugin.png") {
 
                 @Override
                 public void onClick() {
@@ -180,6 +206,14 @@ public class SedBuilder implements IrisComponent {
                 }
             });
 
+            add(new AbstractMenuItem("Photometry Filters Browser", "Browse Photometry Filters", false, "/tool.png", "/tool_tiny.png") {
+
+                @Override
+                public void onClick() {
+                    SedBuilder.showPhotometryFilterBrowser();
+                }
+            });
+
         }
     }
 
@@ -197,10 +231,11 @@ public class SedBuilder implements IrisComponent {
             ExtSed sed = sedManager.getSelected() != null ? sedManager.getSelected() : sedManager.newSed("SAMP");
             try {
                 Sed s = Sed.read(url.openStream(), SedFormat.valueOf(formatName));
-                
-                if(s.getNumberOfSegments()==0)
+
+                if (s.getNumberOfSegments() == 0) {
                     return doImport(url, formatName, sed);
-                
+                }
+
                 List<ValidationError> validErrors = new ArrayList();
                 s.validate(validErrors);
                 for (ValidationError error : validErrors) {

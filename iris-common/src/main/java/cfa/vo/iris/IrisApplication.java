@@ -6,7 +6,7 @@
 package cfa.vo.iris;
 
 import cfa.vo.interop.SAMPController;
-import cfa.vo.sedlib.Sed;
+import cfa.vo.iris.sed.ExtSed;
 import java.io.File;
 import java.net.URL;
 import org.astrogrid.samp.Message;
@@ -41,7 +41,7 @@ public interface IrisApplication {
      * @param sedId The ID of the SED file sent
      * @throws SampException If an exception is thrown while the message is being sent
      */
-    void sendSedMessage(Sed sed, String sedId) throws SampException;
+    void sendSedMessage(ExtSed sed) throws SampException;
 
     void sendSampMessage(Message msg) throws SampException;
 

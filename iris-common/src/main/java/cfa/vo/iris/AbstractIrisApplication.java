@@ -10,7 +10,7 @@ import cfa.vo.interop.SimpleSAMPMessage;
 import cfa.vo.iris.desktop.IrisDesktop;
 import cfa.vo.iris.desktop.IrisWorkspace;
 import cfa.vo.iris.interop.SedSAMPController;
-import cfa.vo.sedlib.Sed;
+import cfa.vo.iris.sed.ExtSed;
 import java.awt.EventQueue;
 import java.io.File;
 import java.net.URL;
@@ -51,6 +51,9 @@ public abstract class AbstractIrisApplication extends Application implements Iri
     }
 
     public void exitApp() {
+        for (IrisComponent component : components.values()) {
+            component.shutdown();
+        }
         sampShutdown();
         System.exit(0);
     }
@@ -112,12 +115,13 @@ public abstract class AbstractIrisApplication extends Application implements Iri
     protected void initialize(String[] args) {
         List<String> properties = new ArrayList();
         List<String> arguments = new ArrayList();
-        for(String arg : args) {
-            if(arg.startsWith("--")) {
+        for (String arg : args) {
+            if (arg.startsWith("--")) {
                 arg = arg.replaceFirst("--", "");
                 properties.add(arg);
-            } else
+            } else {
                 arguments.add(arg);
+            }
         }
         if (arguments.size() >= 1) {
             isBatch = true;
@@ -145,8 +149,8 @@ public abstract class AbstractIrisApplication extends Application implements Iri
     }
 
     @Override
-    public void sendSedMessage(Sed sed, String sedId) throws SampException {
-        sampController.sendSedMessage(sed, sedId);
+    public void sendSedMessage(ExtSed sed) throws SampException {
+        sampController.sendSedMessage(sed);
     }
 
     @Override
@@ -160,10 +164,11 @@ public abstract class AbstractIrisApplication extends Application implements Iri
             CONFIGURATION_DIR.mkdirs();
         }
         if (isBatch) {
-            if(!components.containsKey(componentName))
-                System.out.println("Component "+componentName+ " does not exist.");
-            else
+            if (!components.containsKey(componentName)) {
+                System.out.println("Component " + componentName + " does not exist.");
+            } else {
                 components.get(componentName).getCli().call(componentArgs);
+            }
 
             exitApp();
         } else {
@@ -187,7 +192,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
                                 component.init(AbstractIrisApplication.this, ws);
                             }
                         });
-                        
+
                     }
                     try {
                         desktop = new IrisDesktop(AbstractIrisApplication.this);

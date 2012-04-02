@@ -39,7 +39,7 @@ public final class SedMessage implements SAMPMessage {
     private SedFormat format = SedFormat.VOT;
     private Message message;
 
-    public static final String MTYPE = "load.sed";
+    public static final String MTYPE = "table.load.votable";
 
     /**
      *

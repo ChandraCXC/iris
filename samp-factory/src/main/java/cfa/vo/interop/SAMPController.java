@@ -191,6 +191,9 @@ public class SAMPController extends GuiHubConnector {
      * @throws SampException
      */
     public void sendMessage(SAMPMessage message) throws SampException {
+        if(this.getConnection().getSubscribedClients(message.get().getMType()).isEmpty())
+            throw new SampException("No clients can receive the SAMP Message");
+
         callAll(message.get(), new LogResultHandler(message.get()), DEFAULT_TIMEOUT);
     }
 
@@ -203,6 +206,9 @@ public class SAMPController extends GuiHubConnector {
      * @throws SampException
      */
     public void sendMessage(SAMPMessage message, ResultHandler handler, int timeout) throws SampException {
+        if(this.getConnection().getSubscribedClients(message.get().getMType()).isEmpty())
+            throw new SampException("No clients can receive the SAMP Message");
+
         callAll(message.get(), handler, timeout);
     }
 

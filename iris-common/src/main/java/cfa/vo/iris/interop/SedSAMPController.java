@@ -21,9 +21,9 @@ import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sedlib.Sed;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.astrogrid.samp.client.SampException;
@@ -47,24 +47,13 @@ public class SedSAMPController extends SAMPController {
     }
 
     /**
-     * This convenience method, when provided with a Sed and an Id to it, builds a new
+     * This convenience method, when provided with a ExtSed instance, builds a new
      * SedMessage, creates a new resource to be served by the internal HTTPServer and
      * sends the SedMessage to the hub.
      *
      * @param sed
-     * @param sedId
      * @throws SampException
      */
-    public void sendSedMessage(Sed sed, String sedId) throws SampException {
-        try {
-            String filename = URLEncoder.encode(sedId + ".xml", "UTF-8");
-            URL url = addResource(filename, new SedServerResource(sed));
-            sendMessage(new SedMessage(sedId, url));
-        } catch (UnsupportedEncodingException ex) {
-            throw new SampException(ex);
-        }
-    }
-
     public void sendSedMessage(ExtSed sed) throws SampException {
         try {
 
@@ -86,12 +75,13 @@ public class SedSAMPController extends SAMPController {
                 msg.setUrl(url.toString());
 
                 SAMPMessage message = SAMPFactory.createMessage("table.load.votable", msg, VaoMessage.class);
+                ((Map)message.get().getParam("vao-payload")).put("sed-id", sed.getId());
                 sendMessage(message);
             }
 
         } catch (Exception ex) {
             Logger.getLogger(SedSAMPController.class.getName()).log(Level.SEVERE, null, ex);
-            throw new SampException(ex);
+            throw new SampException(ex.getMessage());
         }
 
     }

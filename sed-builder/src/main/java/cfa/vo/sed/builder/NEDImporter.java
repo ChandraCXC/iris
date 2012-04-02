@@ -49,14 +49,15 @@ public class NEDImporter {
 
             Sed sed = Sed.read(nedUrl.openStream(), SedFormat.VOT);
 
-            Segment seg = sed.getSegment(0);
+            if(sed.getNumberOfSegments()>0) {
+                Segment seg = sed.getSegment(0);
 
-            if(seg.createTarget().getPos()==null)
-                        if(seg.createChar().createSpatialAxis().createCoverage().getLocation()!=null)
-                            seg.createTarget().createPos().setValue(seg.getChar().getSpatialAxis().getCoverage().getLocation().getValue());
-                        else
-                            seg.createTarget().createPos().setValue(new DoubleParam[]{new DoubleParam(Double.NaN), new DoubleParam(Double.NaN)});
-
+                if(seg.createTarget().getPos()==null)
+                            if(seg.createChar().createSpatialAxis().createCoverage().getLocation()!=null)
+                                seg.createTarget().createPos().setValue(seg.getChar().getSpatialAxis().getCoverage().getLocation().getValue());
+                            else
+                                seg.createTarget().createPos().setValue(new DoubleParam[]{new DoubleParam(Double.NaN), new DoubleParam(Double.NaN)});
+            }
             return sed;
 
         } catch (Exception ex) {

@@ -13,6 +13,10 @@ import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
+import cfa.vo.sedlib.common.SedParsingException;
+import cfa.vo.sedlib.io.SedFormat;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -25,9 +29,15 @@ public class ExtSed extends Sed {
 
     private Map<String, Object> attachments = new TreeMap();
     private String id;
+    private boolean managed = true;
 
     public ExtSed(String id) {
         this.id = id;
+    }
+
+    public ExtSed(String id, boolean managed) {
+        this(id);
+        this.managed = managed;
     }
 
     @Override
@@ -38,25 +48,25 @@ public class ExtSed extends Sed {
     @Override
     public void addSegment(Segment segment, int offset) throws SedNoDataException, SedInconsistentException {
         super.addSegment(segment, offset);
-        SegmentEvent.getInstance().fire(segment, new SegmentPayload(this, SedCommand.ADDED));
-        LogEvent.getInstance().fire(this, new LogEntry("Segment added to SED: " + id, this));
+        if (managed) {
+            SegmentEvent.getInstance().fire(segment, new SegmentPayload(this, SedCommand.ADDED));
+            LogEvent.getInstance().fire(this, new LogEntry("Segment added to SED: " + id, this));
+        }
     }
 
     @Override
     public void addSegment(java.util.List<Segment> segments) throws SedInconsistentException, SedNoDataException {
         super.addSegment(segments);
-//            for(Segment segment : segments) {
-//                SegmentEvent.getInstance().fire(segment, new SegmentPayload(this, SedCommand.ADDED));
-//                LogEvent.getInstance().fire(this, new LogEntry("Segment added to SED: "+id, this));
-//            }
     }
 
     @Override
     public void addSegment(java.util.List<Segment> segments, int offset) throws SedInconsistentException, SedNoDataException {
         super.addSegment(segments, offset);
-        for (Segment segment : segments) {
-            SegmentEvent.getInstance().fire(segment, new SegmentPayload(this, SedCommand.ADDED));
-            LogEvent.getInstance().fire(this, new LogEntry("Segment added to SED: " + id, this));
+        if (managed) {
+            for (Segment segment : segments) {
+                SegmentEvent.getInstance().fire(segment, new SegmentPayload(this, SedCommand.ADDED));
+                LogEvent.getInstance().fire(this, new LogEntry("Segment added to SED: " + id, this));
+            }
         }
     }
 
@@ -64,8 +74,10 @@ public class ExtSed extends Sed {
     public void removeSegment(int i) {
         Segment seg = this.getSegment(i);
         super.removeSegment(i);
-        SegmentEvent.getInstance().fire(seg, new SegmentPayload(this, SedCommand.REMOVED));
-        LogEvent.getInstance().fire(this, new LogEntry("Segment removed from SED: " + id, this));
+        if (managed) {
+            SegmentEvent.getInstance().fire(seg, new SegmentPayload(this, SedCommand.REMOVED));
+            LogEvent.getInstance().fire(this, new LogEntry("Segment removed from SED: " + id, this));
+        }
     }
 
     public String getId() {
@@ -106,11 +118,24 @@ public class ExtSed extends Sed {
 
     public boolean remove(Segment s) {
         boolean resp = super.segmentList.remove(s);
-        SegmentEvent.getInstance().fire(s, new SegmentPayload(this, SedCommand.REMOVED));
+        if(managed)
+            SegmentEvent.getInstance().fire(s, new SegmentPayload(this, SedCommand.REMOVED));
         return resp;
     }
 
     public int indexOf(Segment s) {
         return segmentList.indexOf(s);
+    }
+
+    public static ExtSed read(String filename, SedFormat format) throws SedParsingException, SedInconsistentException, IOException, SedNoDataException {
+        Sed sed = Sed.read(filename, format);
+        String[] path = filename.split(File.separator);
+        String id = path[path.length - 1].split("\\.")[0];
+        ExtSed s = new ExtSed(id);
+        for (int i = 0; i < sed.getNumberOfSegments(); i++) {
+            s.addSegment(sed.getSegment(i));
+        }
+
+        return s;
     }
 }

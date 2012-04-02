@@ -6,7 +6,7 @@ package cfa.vo.iris.test;
 
 import cfa.vo.interop.SAMPController;
 import cfa.vo.iris.IrisApplication;
-import cfa.vo.sedlib.Sed;
+import cfa.vo.iris.sed.ExtSed;
 import java.io.File;
 import java.net.URL;
 import org.astrogrid.samp.Message;
@@ -29,7 +29,7 @@ public class App implements IrisApplication {
     }
 
     @Override
-    public void sendSedMessage(Sed sed, String sedId) throws SampException {
+    public void sendSedMessage(ExtSed sed) throws SampException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

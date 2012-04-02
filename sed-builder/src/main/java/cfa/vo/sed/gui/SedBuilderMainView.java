@@ -24,7 +24,6 @@ import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sedlib.DoubleParam;
-import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
@@ -153,6 +152,13 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton9 = new javax.swing.JButton();
         jButton11 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JToolBar.Separator();
+        jLabel1 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jButton13 = new javax.swing.JButton();
+        jTextField2 = new javax.swing.JTextField();
+        jTextField3 = new javax.swing.JTextField();
+        jButton14 = new javax.swing.JButton();
         jSplitPane1 = new javax.swing.JSplitPane();
         jPanel3 = new javax.swing.JPanel();
         sedPanel = new javax.swing.JScrollPane();
@@ -163,6 +169,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jToolBar2 = new javax.swing.JToolBar();
         jLabel4 = new javax.swing.JLabel();
         jButton3 = new javax.swing.JButton();
+        jButton12 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
@@ -189,6 +196,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton8.setAction(actionMap.get("newSed")); // NOI18N
         jButton8.setIcon(new ImageIcon(getClass().getResource("/list_add.png")));
         jButton8.setBorderPainted(false);
+        jButton8.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton8.setFocusable(false);
         jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton8.setMargin(new java.awt.Insets(2, 2, 0, 2));
@@ -201,6 +209,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton2.setAction(actionMap.get("removeSed")); // NOI18N
         jButton2.setIcon(new ImageIcon(getClass().getResource("/edit_clear_list.png")));
         jButton2.setBorderPainted(false);
+        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton2.setFocusable(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton2.setMargin(new java.awt.Insets(2, 2, 0, 2));
@@ -217,6 +226,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton9.setAction(actionMap.get("saveSed")); // NOI18N
         jButton9.setIcon(new ImageIcon(getClass().getResource("/document_save_all.png")));
         jButton9.setBorderPainted(false);
+        jButton9.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton9.setFocusable(false);
         jButton9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton9.setMargin(new java.awt.Insets(2, 2, 0, 2));
@@ -233,6 +243,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton11.setAction(actionMap.get("duplicateSed")); // NOI18N
         jButton11.setIcon(new ImageIcon(getClass().getResource("/editcopy.png")));
         jButton11.setBorderPainted(false);
+        jButton11.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton11.setFocusable(false);
         jButton11.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton11.setMargin(new java.awt.Insets(2, 2, 0, 2));
@@ -249,6 +260,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton10.setAction(actionMap.get("broadcast")); // NOI18N
         jButton10.setIcon(new ImageIcon(getClass().getResource("/file_export.png")));
         jButton10.setBorderPainted(false);
+        jButton10.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton10.setFocusable(false);
         jButton10.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton10.setMargin(new java.awt.Insets(2, 2, 0, 2));
@@ -262,6 +274,41 @@ public class SedBuilderMainView extends JInternalFrame {
 
         jToolBar1.add(jButton10);
 
+        jSeparator1.setName("jSeparator1"); // NOI18N
+        jToolBar1.add(jSeparator1);
+
+        jLabel1.setText("Target Name:");
+        jLabel1.setName("jLabel1"); // NOI18N
+        jToolBar1.add(jLabel1);
+
+        jTextField1.setName("jTextField1"); // NOI18N
+        jToolBar1.add(jTextField1);
+
+        jButton13.setIcon(new ImageIcon(getClass().getResource("/search.png")));
+        jButton13.setText("Resolve");
+        jButton13.setBorder(null);
+        jButton13.setFocusable(false);
+        jButton13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton13.setName("jButton13"); // NOI18N
+        jButton13.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton13);
+
+        jTextField2.setName("jTextField2"); // NOI18N
+        jToolBar1.add(jTextField2);
+
+        jTextField3.setName("jTextField3"); // NOI18N
+        jToolBar1.add(jTextField3);
+
+        jButton14.setIcon(new ImageIcon(getClass().getResource("/apply.png")));
+        jButton14.setText("Apply");
+        jButton14.setBorder(null);
+        jButton14.setFocusable(false);
+        jButton14.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton14.setName("jButton14"); // NOI18N
+        jButton14.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar1.add(jButton14);
+
+        jSplitPane1.setBorder(null);
         jSplitPane1.setName("jSplitPane1"); // NOI18N
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Open SEDs"));
@@ -278,7 +325,7 @@ public class SedBuilderMainView extends JInternalFrame {
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(sedPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)
+            .add(sedPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
         );
 
         jSplitPane1.setLeftComponent(jPanel3);
@@ -311,6 +358,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton3.setAction(actionMap.get("newSegment")); // NOI18N
         jButton3.setIcon(new ImageIcon(getClass().getResource("/list_add.png")));
         jButton3.setBorderPainted(false);
+        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton3.setFocusable(false);
         jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton3.setMargin(new java.awt.Insets(2, 2, 0, 2));
@@ -324,9 +372,27 @@ public class SedBuilderMainView extends JInternalFrame {
 
         jToolBar2.add(jButton3);
 
+        jButton12.setAction(actionMap.get("newPoint")); // NOI18N
+        jButton12.setIcon(new ImageIcon(getClass().getResource("/list_add.png")));
+        jButton12.setBorderPainted(false);
+        jButton12.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton12.setFocusable(false);
+        jButton12.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton12.setMargin(new java.awt.Insets(2, 2, 0, 2));
+        jButton12.setMaximumSize(new java.awt.Dimension(65, 50));
+        jButton12.setMinimumSize(new java.awt.Dimension(65, 50));
+        jButton12.setName("jButton12"); // NOI18N
+        jButton12.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jButton3, org.jdesktop.beansbinding.ELProperty.create("${enabled}"), jButton12, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
+        jToolBar2.add(jButton12);
+
         jButton5.setAction(actionMap.get("removeSegment")); // NOI18N
         jButton5.setIcon(new ImageIcon(getClass().getResource("/list_remove.png")));
         jButton5.setBorderPainted(false);
+        jButton5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton5.setFocusable(false);
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton5.setMargin(new java.awt.Insets(2, 2, 0, 2));
@@ -343,6 +409,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton7.setAction(actionMap.get("saveSegments")); // NOI18N
         jButton7.setIcon(new ImageIcon(getClass().getResource("/document_save.png")));
         jButton7.setBorderPainted(false);
+        jButton7.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton7.setFocusable(false);
         jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton7.setMargin(new java.awt.Insets(2, 2, 0, 2));
@@ -359,6 +426,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton4.setAction(actionMap.get("editSegment")); // NOI18N
         jButton4.setIcon(new ImageIcon(getClass().getResource("/edit.png")));
         jButton4.setBorderPainted(false);
+        jButton4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton4.setFocusable(false);
         jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton4.setMargin(new java.awt.Insets(2, 2, 0, 2));
@@ -375,6 +443,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton6.setAction(actionMap.get("broadcastSegments")); // NOI18N
         jButton6.setIcon(new ImageIcon(getClass().getResource("/file_export.png")));
         jButton6.setBorderPainted(false);
+        jButton6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton6.setFocusable(false);
         jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton6.setMargin(new java.awt.Insets(2, 2, 0, 2));
@@ -415,7 +484,11 @@ public class SedBuilderMainView extends JInternalFrame {
         jTableBinding.bind();
         jScrollPane1.setViewportView(jTable1);
         jTable1.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        jTable1.getColumnModel().getColumn(0).setPreferredWidth(50);
+        jTable1.getColumnModel().getColumn(1).setPreferredWidth(100);
         jTable1.getColumnModel().getColumn(1).setCellRenderer(new PosRenderer());
+        jTable1.getColumnModel().getColumn(2).setPreferredWidth(255);
+        jTable1.getColumnModel().getColumn(3).setPreferredWidth(50);
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -425,11 +498,11 @@ public class SedBuilderMainView extends JInternalFrame {
                 .addContainerGap()
                 .add(jLabel2)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(sedName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
+                .add(sedName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jButton1))
-            .add(jToolBar2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 657, Short.MAX_VALUE)
-            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 657, Short.MAX_VALUE)
+            .add(jToolBar2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 641, Short.MAX_VALUE)
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 641, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -441,7 +514,7 @@ public class SedBuilderMainView extends JInternalFrame {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(jToolBar2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 46, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE))
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel1);
@@ -450,19 +523,15 @@ public class SedBuilderMainView extends JInternalFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jToolBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 935, Short.MAX_VALUE)
-            .add(layout.createSequentialGroup()
-                .add(20, 20, 20)
-                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 895, Short.MAX_VALUE)
-                .add(20, 20, 20))
+            .add(jToolBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 875, Short.MAX_VALUE)
+            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 875, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 51, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 548, Short.MAX_VALUE)
-                .addContainerGap())
+                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE))
         );
 
         bindingGroup.bind();
@@ -506,6 +575,9 @@ public class SedBuilderMainView extends JInternalFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
+    private javax.swing.JButton jButton12;
+    private javax.swing.JButton jButton13;
+    private javax.swing.JButton jButton14;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -514,14 +586,19 @@ public class SedBuilderMainView extends JInternalFrame {
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToolBar jToolBar2;
     private javax.swing.JTextField sedName;
@@ -661,9 +738,11 @@ public class SedBuilderMainView extends JInternalFrame {
 
     @Action
     public void newSegment() throws PropertyVetoException {
-        loadFrame.setVisible(true);
+        loadFrame.show();
         if(loadFrame.isIcon())
             loadFrame.setIcon(false);
+        loadFrame.setSelected(true);
+        loadFrame.moveToFront();
     }
 
     private List<Segment> selectedSegments;
@@ -713,10 +792,10 @@ public class SedBuilderMainView extends JInternalFrame {
     public void editSegment() throws Exception {
         boolean warning = false;
         for(Segment s : selectedSegments) {
-            Map<Segment, SetupFrame> map = (Map<Segment, SetupFrame>) sed.getAttachment("builder:configuration");
+            Map<Segment, JInternalFrame> map = (Map<Segment, JInternalFrame>) sed.getAttachment("builder:configuration");
             if(map!=null) {
                 if(map.containsKey(s)) {
-                    SetupFrame sf = map.get(s);
+                    JInternalFrame sf = map.get(s);
                     sf.setVisible(true);
                 } else
                     warning = true;
@@ -746,28 +825,18 @@ public class SedBuilderMainView extends JInternalFrame {
     @Action
     public void broadcastSegments() {
         try {
-            Sed s = new Sed();
+            ExtSed s = new ExtSed(sed.getId()+"Selection", false);
             s.addSegment(selectedSegments);
-            SedBuilder.getApplication().sendSedMessage(s, sed.getId()+"Selection");
-        } catch (SampException ex) {
-            Logger.getLogger(SedBuilderMainView.class.getName()).log(Level.SEVERE, null, ex);
-            NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
-                        "A SAMP error occurred. Is a SAMP hub running? Is the SAMP connection working?",
-                        "Error broadcasting segments",
-                        NarrowOptionPane.ERROR_MESSAGE);
+            ((SedSAMPController)SedBuilder.getApplication().getSAMPController()).sendSedMessage(sed);
         } catch (SedInconsistentException ex) {//If the segment is already in the SED this exception can't be thrown.
             Logger.getLogger(SedBuilderMainView.class.getName()).log(Level.SEVERE, null, ex);
-            NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
-                        "Segments are physically inconsistent and an SED can't be built for them",
-                        "Error broadcasting segments",
-                        NarrowOptionPane.ERROR_MESSAGE);
         } catch (SedNoDataException ex) {//If the segment is alreadt in the SED this exception can't be thrown.
             Logger.getLogger(SedBuilderMainView.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SampException ex) {
             NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
-                        "A Segment has no data",
-                        "Error broadcasting segments",
-                        NarrowOptionPane.ERROR_MESSAGE);
+                    ex.getMessage(), "Error broadcasting file", NarrowOptionPane.ERROR_MESSAGE);
         }
+        
 
     }
 
@@ -783,6 +852,13 @@ public class SedBuilderMainView extends JInternalFrame {
         } catch (SedNoDataException ex) {
             Logger.getLogger(SedBuilderMainView.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    @Action
+    public void newPoint() {
+        PhotometryPointFrame f = new PhotometryPointFrame(sed, manager);
+        SedBuilder.getWorkspace().addFrame(f);
+        f.show();
     }
 
 

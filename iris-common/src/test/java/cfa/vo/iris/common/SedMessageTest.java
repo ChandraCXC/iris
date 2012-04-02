@@ -19,6 +19,7 @@ package cfa.vo.iris.common;
 
 import cfa.vo.iris.interop.AbstractSedMessageHandler;
 import cfa.vo.iris.interop.SedSAMPController;
+import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
@@ -78,21 +79,21 @@ public class SedMessageTest {
             Thread.sleep(1000);
         }
 
-        Sed sed = Sed.read(this.getClass().getResource("/test_data/3c273.xml").getFile(), SedFormat.VOT);
-
         sampReceiver.addMessageHandler(new SedHandler());
+
+        ExtSed sed = ExtSed.read(this.getClass().getResource("/test_data/3c273.xml").getFile(), SedFormat.VOT);
 
         Thread.sleep(5000);
 
-        sampSender.sendSedMessage(sed, "testSed");
+        sampSender.sendSedMessage(sed);
 
         int i=0;
 
-        for(; (mySed==null && i<10); i++) {
+        for(; (mySed==null && i<20); i++) {
             Thread.sleep(1000);
         }
 
-        if(i==10)
+        if(i==20)
             Assert.fail("timeout waiting for SAMP response");
 
         Assert.assertEquals(1, mySed.getNumberOfSegments());
@@ -106,6 +107,8 @@ public class SedMessageTest {
         Segment segment = sed.getSegment(0);
 
         Assert.assertEquals("NASA/IPAC Extragalactic Database (NED)", segment.getCuration().getPublisher().getValue());
+
+        Assert.assertEquals("3c273", sed.getId());
 
      }
 

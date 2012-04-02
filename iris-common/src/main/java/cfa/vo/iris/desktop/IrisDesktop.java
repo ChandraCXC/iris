@@ -24,7 +24,6 @@
  *
  * Created on May 6, 2011, 3:53:29 PM
  */
-
 package cfa.vo.iris.desktop;
 
 import cfa.vo.iris.gui.NarrowOptionPane;
@@ -58,12 +57,9 @@ import org.jdesktop.application.Action;
 public class IrisDesktop extends JFrame {
 
     private List<DesktopButton> buttons = new ArrayList();
-    
     private List<IrisComponent> components;
-
 //    private About aboutBox = new About(IrisDesktop.getInstance(), false);
     private JDialog aboutBox;
-
     AbstractIrisApplication app;
 
     /** Creates new form SedImporterMainView */
@@ -74,7 +70,7 @@ public class IrisDesktop extends JFrame {
 
         aboutBox = app.getAboutBox();
 
-        aboutLabel.setText("About "+app.getName());
+        aboutLabel.setText("About " + app.getName());
 
         components = app.getComponents();
 
@@ -82,47 +78,52 @@ public class IrisDesktop extends JFrame {
 
         desktopPane.setDesktopManager(new BoundDesktopManager(desktopPane));
         desktopPane.setDragMode(JDesktopPane.OUTLINE_DRAG_MODE);
-        
 
-        if(app.isSampEnabled()) {
-            for(IrisComponent component : components)
-                for(MessageHandler handler : component.getSampHandlers())
+
+        if (app.isSampEnabled()) {
+            for (IrisComponent component : components) {
+                for (MessageHandler handler : component.getSampHandlers()) {
                     app.addMessageHandler(handler);
+                }
+            }
 
             app.addConnectionListener(new SampStatusListener());
-            
+
         }
-        
+
         sampIcon.setVisible(app.isSampEnabled());
 
-        int c=0;
-        for(IrisComponent component : components) {
+        int c = 0;
+        for (IrisComponent component : components) {
             int cf = 0;
             JMenu cMenu = null;
-            for(IMenuItem item : component.getMenus()) {
+            for (IMenuItem item : component.getMenus()) {
                 IrisMenuItem i = new IrisMenuItem(item);
-                if(i.getMenu().equals("File"))
-                    fileMenu.add(i, c+cf++);
-                else {
-                    if(cMenu==null)
+                if (i.getMenu().equals("File")) {
+                    fileMenu.add(i, c + cf++);
+                } else {
+                    if (cMenu == null) {
                         cMenu = new JMenu(component.getName());
+                    }
                     cMenu.add(i);
                 }
-                if(item.isOnDesktop()) {
+                if (item.isOnDesktop()) {
                     DesktopButton b = new DesktopButton(item);
                     buttons.add(b);
                     desktopPane.add(b, javax.swing.JLayeredPane.DEFAULT_LAYER);
                 }
             }
-            if(cf>0)
-                fileMenu.add(new JSeparator(), (c++)+(cf++));
-            if(cMenu!=null)
+            if (cf > 0) {
+                fileMenu.add(new JSeparator(), (c++) + (cf++));
+            }
+            if (cMenu != null) {
                 toolsMenu.add(cMenu);
+            }
             paintButtons();
 
         }
 
-        AbstractDesktopItem help = new AbstractDesktopItem("Help", "Help on "+app.getName(), "/help_contextual.png", "/help_contextual_tiny.png") {
+        AbstractDesktopItem help = new AbstractDesktopItem("Help", "Help on " + app.getName(), "/help_contextual.png", "/help_contextual_tiny.png") {
 
             @Override
             public void onClick() {
@@ -148,40 +149,23 @@ public class IrisDesktop extends JFrame {
 
         int[] bo = getVaoBounds();
         jLabel2.setBounds(bo[0], bo[1], bo[2], bo[3]);
-        
+
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
 
         this.addWindowListener(new WindowAdapter() {
+
             @Override
             public void windowClosing(WindowEvent e) {
-                int confirm = JOptionPane.showOptionDialog(IrisDesktop.this,
-
-                        "Do you really want to close " + getTitle() + "?",
-
-                        "Close Confirmation",
-
-                        JOptionPane.YES_NO_OPTION,
-
-                        JOptionPane.QUESTION_MESSAGE,
-
-                        null, null, null);
-
-                if (confirm == 0) {
-                    for(IrisComponent component : components) {
-                        component.shutdown();
-                    }
-                    app.exitApp();
-
-              }
+                exit();
             }
         });
         if (app.MAC_OS_X) {
             try {
                 // Generate and register the OSXAdapter, passing it a hash of all the methods we wish to
                 // use as delegates for various com.apple.eawt.ApplicationListener methods
-                OSXAdapter.setQuitHandler(this, getClass().getDeclaredMethod("quit", (Class[])null));
-                OSXAdapter.setAboutHandler(this, getClass().getDeclaredMethod("about", (Class[])null));
+                OSXAdapter.setQuitHandler(this, getClass().getDeclaredMethod("quit", (Class[]) null));
+                OSXAdapter.setAboutHandler(this, getClass().getDeclaredMethod("about", (Class[]) null));
 //                OSXAdapter.setPreferencesHandler(this, getClass().getDeclaredMethod("preferences", (Class[])null));
 //                OSXAdapter.setFileHandler(this, getClass().getDeclaredMethod("loadImageFile", new Class[] { String.class }));
             } catch (Exception e) {
@@ -190,7 +174,7 @@ public class IrisDesktop extends JFrame {
             }
         }
 
-        
+
     }
 
     @Override
@@ -203,29 +187,28 @@ public class IrisDesktop extends JFrame {
     }
 
     private int[] getVaoBounds() {
-        int xb = (this.getWidth()-jLabel2.getWidth())/2;
-        int yb = (this.getHeight()-jLabel2.getHeight())/2;
+        int xb = (this.getWidth() - jLabel2.getWidth()) / 2;
+        int yb = (this.getHeight() - jLabel2.getHeight()) / 2;
         int xf = jLabel2.getWidth();
         int yf = jLabel2.getHeight();
         return new int[]{xb, yb, xf, yf};
     }
 
-
     private void paintButtons() {
         int width = this.getWidth();
         int xl = 150;
         int yl = 150;
-        int baseX = 20-xl;
+        int baseX = 20 - xl;
         int baseY = 20;
-        for(DesktopButton b : buttons) {
+        for (DesktopButton b : buttons) {
             baseX = baseX + xl;
-            if(width>xl+20) {
-                if(baseX+xl>width) {
-                    baseY = baseY+yl;
+            if (width > xl + 20) {
+                if (baseX + xl > width) {
+                    baseY = baseY + yl;
                     baseX = 20;
                 }
             } else {
-                baseY = baseY+170;
+                baseY = baseY + 170;
             }
 
 
@@ -234,7 +217,7 @@ public class IrisDesktop extends JFrame {
         }
 
 
-        sampIcon.setBounds(20, this.getHeight()-sampIcon.getHeight()-20, sampIcon.getWidth(), sampIcon.getHeight());
+        sampIcon.setBounds(20, this.getHeight() - sampIcon.getHeight() - 20, sampIcon.getWidth(), sampIcon.getHeight());
     }
 
     /** This method is called from within the constructor to
@@ -360,30 +343,25 @@ public class IrisDesktop extends JFrame {
                 jta.setBackground(NarrowOptionPane.getRootFrame().getBackground());
                 jta.setContentType("text/html");
                 jta.setText("<html><body>SedImporter couldn't open your default browser. You can use this link directly: <br/>"
-                                        + url+"</body></html>");
+                        + url + "</body></html>");
                 jta.setEditable(false);
 
                 NarrowOptionPane.showMessageDialog(null,
-                    jta,
-                    "Desktop communication error",
-                    JOptionPane.ERROR_MESSAGE
-                );
+                        jta,
+                        "Desktop communication error",
+                        JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
     private void showAbout(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showAbout
-        aboutBox.setLocation((int)desktopPane.getWidth()/2-125, (int)desktopPane.getHeight()/2-110);
+        aboutBox.setLocation((int) desktopPane.getWidth() / 2 - 125, (int) desktopPane.getHeight() / 2 - 110);
         aboutBox.setVisible(true);
     }//GEN-LAST:event_showAbout
-
-    
-
 
     public JDesktopPane getDesktopPane() {
         return desktopPane;
     }
-
 //    /**
 //    * @param args the command line arguments
 //    */
@@ -395,7 +373,6 @@ public class IrisDesktop extends JFrame {
 //            }
 //        });
 //    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutLabel;
     private javax.swing.JDesktopPane desktopPane;
@@ -420,28 +397,19 @@ public class IrisDesktop extends JFrame {
 //    private static class MainViewHolder {
 //        private static final IrisDesktop INSTANCE = new IrisDesktop();
 //    }
-
-    
-
     public boolean quit() {
         int confirm = NarrowOptionPane.showOptionDialog(this,
-
-                        "Do you really want to close " + getTitle() + "?",
-
-                        "Close Confirmation",
-
-                        JOptionPane.YES_NO_OPTION,
-
-                        JOptionPane.QUESTION_MESSAGE,
-
-                        null, null, null);
+                "Do you really want to close " + getTitle() + "?",
+                "Close Confirmation",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null, null, null);
         return (confirm == NarrowOptionPane.YES_OPTION);
     }
 
     public void about() {
         showAbout(null);
     }
-
     private boolean sampConnected = false;
 
     /**
@@ -452,7 +420,6 @@ public class IrisDesktop extends JFrame {
     public boolean isSampConnected() {
         return sampConnected;
     }
-
     private static final Icon sampNo = new ImageIcon(IrisDesktop.class.getResource("/connect_no.png"));
     private static final Icon sampYes = new ImageIcon(IrisDesktop.class.getResource("/connect_established.png"));
 
@@ -462,14 +429,13 @@ public class IrisDesktop extends JFrame {
      * @param sampConnected new value of sampConnected
      */
     public void setSampConnected(boolean sampConnected) {
-        if(sampConnected!=this.sampConnected) {
+        if (sampConnected != this.sampConnected) {
             this.sampConnected = sampConnected;
             sampIcon.setIcon(sampConnected ? sampYes : sampNo);
-            sampIcon.setText( sampConnected ? "SAMP status: connected" : "SAMP status: disconnected" );
-            sampIcon.setForeground(sampConnected? new Color(0, 200, 0) : Color.WHITE);
+            sampIcon.setText(sampConnected ? "SAMP status: connected" : "SAMP status: disconnected");
+            sampIcon.setForeground(sampConnected ? new Color(0, 200, 0) : Color.WHITE);
         }
     }
-
     private boolean sampAutoHub = true;
     public static final String PROP_SAMPAUTOHUB = "sampAutoHub";
 
@@ -494,25 +460,18 @@ public class IrisDesktop extends JFrame {
         firePropertyChange(PROP_SAMPAUTOHUB, oldSampAutoHub, sampAutoHub);
     }
 
-    
-
-    
-
     private class SampStatusListener implements SAMPConnectionListener {
 
         @Override
         public void run(boolean status) {
             setSampConnected(status);
         }
-
     }
-
-    
 
     @Action
     public void exit() {
-        if (quit())
+        if (quit()) {
             app.exitApp();
+        }
     }
-
 }

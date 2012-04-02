@@ -8,6 +8,7 @@ package cfa.vo.iris.smoketest;
 import cfa.vo.interop.PingMessage;
 import cfa.vo.iris.interop.AbstractSedMessageHandler;
 import cfa.vo.iris.interop.SedSAMPController;
+import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sed.builder.SegmentImporter;
 import cfa.vo.sed.setup.ErrorType;
 import cfa.vo.sed.setup.SetupBean;
@@ -121,7 +122,7 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
             log("Importing the file...");
             List<Segment> segments = SegmentImporter.getSegments(conf);
 
-            Sed sed = new Sed();
+            ExtSed sed = new ExtSed("testSed");
             sed.addSegment(segments);
 
             //Setup a client that handles SEDs
@@ -140,7 +141,7 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
 
             //Send the Sed
             log("Broadcasting the SED...");
-            controller.sendSedMessage(sed, "testSed");
+            controller.sendSedMessage(sed);
 
             waitUntil("control", Boolean.TRUE, "It looks like the SED wasn't processed");//give the receiver TIMEOUT seconds to reply
 

@@ -10,6 +10,7 @@ package spv.components;
  * Date: 2/13/12
  * Time: 3:03 PM
  */
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -19,6 +20,7 @@ import javax.swing.JInternalFrame;
 import org.astrogrid.samp.client.MessageHandler;
 
 import cfa.vo.iris.AbstractDesktopItem;
+import cfa.vo.iris.AbstractMenuItem;
 import cfa.vo.iris.ICommandLineInterface;
 import cfa.vo.iris.IMenuItem;
 import cfa.vo.iris.IWorkspace;
@@ -38,6 +40,9 @@ import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sedlib.Segment;
 import java.awt.Point;
+import java.beans.PropertyVetoException;
+import java.io.File;
+import javax.swing.JFrame;
 
 import spv.SpvInitialization;
 import spv.controller.ManagedSpectrum2;
@@ -48,6 +53,7 @@ import spv.fit.FittingEngine;
 import spv.fit.FittingEngineFactory;
 import spv.fit.NoSuchEngineException;
 import spv.glue.SpectrumVisualEditor;
+import spv.sherpa.custom.CustomModelsManagerView;
 import spv.spectrum.Spectrum;
 import spv.spectrum.factory.SED.SEDFactoryModule;
 import spv.util.Command;
@@ -61,7 +67,7 @@ import spv.util.properties.SpvProperties;
 public class IrisVisualizer implements IrisComponent {
 
     private IrisDisplayManager idm;
-    private IWorkspace ws;
+    private static IWorkspace ws;
     private IrisApplication app;
     private JInternalFrame currentFrame;
     private SedlibSedManager manager;
@@ -69,6 +75,7 @@ public class IrisVisualizer implements IrisComponent {
     private FittingEngine sherpa;
     private String sherpaDir = System.getProperty("IRIS_DIR") + "/lib/sherpa";
     private Point lastLocation;
+    private CustomModelsManagerView customManager;
 
     @Override
     public void init(IrisApplication app, IWorkspace workspace) {
@@ -264,10 +271,14 @@ public class IrisVisualizer implements IrisComponent {
     public void initCli(IrisApplication app) {
     }
 
+    public static JFrame getRootFrame() {
+        return ws.getRootFrame();
+    }
+
     private class VisualizerMenus extends ArrayList<IMenuItem> {
 
         public VisualizerMenus() {
-            add(new AbstractDesktopItem("View SED", "Explore SEDs",
+            add(new AbstractDesktopItem("SED Viewer", "Explore SEDs",
                     "/iris_button_small.png", "/iris_button_tiny.png") {
 
                 @Override
@@ -298,7 +309,7 @@ public class IrisVisualizer implements IrisComponent {
                 }
             });
 
-            add(new AbstractDesktopItem("Fit SED", "Fit mathematical, phisical models, and templates",
+            add(new AbstractDesktopItem("Fitting Tool", "Fit mathematical, phisical models, and templates",
                     "/ruler_small.png", "/ruler_tiny.png") {
 
                 @Override
@@ -365,6 +376,33 @@ public class IrisVisualizer implements IrisComponent {
                         }
                     } else {
                         NarrowOptionPane.showMessageDialog(ws.getRootFrame(), "No SEDs to fit. Please load a file.", "Fitting Engine", NarrowOptionPane.INFORMATION_MESSAGE);
+                    }
+                }
+            });
+
+            add(new AbstractMenuItem("Custom Fit Model Components Manager", "Install Custom Components that can be used for fitting SEDs", false,
+                    "/iris_button_small.png", "/iris_button_tiny.png") {
+
+                @Override
+                public void onClick() {
+                    try {
+                        if (customManager == null) {
+
+                            File rootDir = new File(app.getConfigurationDir() + File.separator + "analysis" + File.separator + "custom_models");
+                            customManager = new CustomModelsManagerView(rootDir, ws.getFileChooser());
+                            ws.addFrame(customManager);
+
+                        }
+                        customManager.show();
+                        try {
+                            customManager.setIcon(false);
+                        } catch (PropertyVetoException ex) {
+                            Logger.getLogger(IrisVisualizer.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                    } catch (IOException ex) {
+                        NarrowOptionPane.showMessageDialog(ws.getRootFrame(), ex.getMessage(), "Error initializing the Custom Fit Model Components Manager", NarrowOptionPane.ERROR_MESSAGE);
+                        Logger.getLogger(IrisVisualizer.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
             });

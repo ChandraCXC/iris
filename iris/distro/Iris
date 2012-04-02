@@ -7,7 +7,9 @@ fi
 
 export IRIS_DIR=$bindir
 
-java -DIRIS_DIR=$bindir -jar $bindir/${project.name}-${project.version}.jar $@
+args="-Xms256m -Xmx1024m -Xdock:name=Iris -Dhttp.agent=${project.name}/${project.version}"
+
+java $args -DIRIS_DIR=$bindir -jar $bindir/${project.name}-${project.version}.jar $@
 
 
 

@@ -24,7 +24,6 @@
  *
  * Created on May 14, 2011, 5:23:17 AM
  */
-
 package cfa.vo.sed.gui;
 
 import cfa.vo.iris.gui.NarrowOptionPane;
@@ -61,6 +60,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JList;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import org.jdesktop.application.Action;
+import org.jdesktop.application.Task;
 
 /**
  *
@@ -69,15 +69,14 @@ import org.jdesktop.application.Action;
 public final class LoadSegmentFrame extends JInternalFrame {
 
     private ISedManager<ExtSed> manager;
-
     private ExtSed sed;
 
     public void setSed(ExtSed sed) {
         this.sed = sed;
-        if(sed!=null)
+        if (sed != null) {
             sedId.setText(sed.getId());
+        }
     }
-
     private String nedEndpoint = NEDImporter.NED_DATA_DEFAULT_ENDPOINT;
     public static final String PROP_NEDENDPOINT = "nedEndpoint";
 
@@ -100,8 +99,6 @@ public final class LoadSegmentFrame extends JInternalFrame {
         this.nedEndpoint = nedEndpoint;
         firePropertyChange(PROP_NEDENDPOINT, oldNedEndpoint, nedEndpoint);
     }
-
-
     private String urlText = "";
     public static final String PROP_URLTEXT = "urlText";
 
@@ -126,8 +123,6 @@ public final class LoadSegmentFrame extends JInternalFrame {
         firePropertyChange(PROP_URLTEXT, oldUrlText, urlText);
         setUrlS(urlText);
     }
-
-
     private boolean urlSelected = false;
     public static final String PROP_URLSELECTED = "urlSelected";
 
@@ -151,8 +146,6 @@ public final class LoadSegmentFrame extends JInternalFrame {
         firePropertyChange(PROP_URLSELECTED, oldUrlSelected, urlSelected);
         setUrlS(urlText);
     }
-
-
     private boolean localSelected = true;
     public static final String PROP_LOCALSELECTED = "localSelected";
 
@@ -174,11 +167,10 @@ public final class LoadSegmentFrame extends JInternalFrame {
         boolean oldLocalSelected = this.localSelected;
         this.localSelected = localSelected;
         firePropertyChange(PROP_LOCALSELECTED, oldLocalSelected, localSelected);
-        if(localSelected)
-            setUrlS("file://"+new File(diskLocation).getAbsolutePath());
+        if (localSelected) {
+            setUrlS("file://" + new File(diskLocation).getAbsolutePath());
+        }
     }
-
-
     private boolean nedVisible = false;
     public static final String PROP_NEDVISIBLE = "nedVisible";
 
@@ -202,7 +194,6 @@ public final class LoadSegmentFrame extends JInternalFrame {
         firePropertyChange(PROP_NEDVISIBLE, oldNedVisible, nedVisible);
         setIsLoadable(!nedVisible);
     }
-
     private List<Segment> segList = new ArrayList();
 
     public boolean hasSegments() {
@@ -212,7 +203,6 @@ public final class LoadSegmentFrame extends JInternalFrame {
     public List<Segment> getSegments() {
         return segList;
     }
-
     private String targetName = "";
     public static final String PROP_TARGETNAME = "targetName";
 
@@ -235,8 +225,6 @@ public final class LoadSegmentFrame extends JInternalFrame {
         this.targetName = targetName;
         firePropertyChange(PROP_TARGETNAME, oldTargetName, targetName);
     }
-
-
     private boolean isLoadable = false;
     public static final String PROP_ISLOADABLE = "isLoadable";
 
@@ -259,10 +247,7 @@ public final class LoadSegmentFrame extends JInternalFrame {
         this.isLoadable = isLoadable;
         firePropertyChange(PROP_ISLOADABLE, oldIsLoadable, isLoadable);
     }
-
-
     public static final String PROP_FORMATS = "formats";
-
     private String diskLocation = "";
     public static final String PROP_DISKLOCATION = "diskLocation";
 
@@ -285,12 +270,9 @@ public final class LoadSegmentFrame extends JInternalFrame {
         String oldLocation = this.diskLocation;
         this.diskLocation = location;
         firePropertyChange(PROP_DISKLOCATION, oldLocation, location);
-        setUrlS("file://"+new File(location).getAbsolutePath());
+        setUrlS("file://" + new File(location).getAbsolutePath());
     }
-
-
     public static final String PROP_URLS = "urlS";
-
     private String urlS;
 
     /**
@@ -314,24 +296,24 @@ public final class LoadSegmentFrame extends JInternalFrame {
         setIsLoadable(isSetURL());
     }
 
-
     public URL getURL() throws MalformedURLException {
         return new URL(urlS);
     }
 
     public boolean isSetURL() {
-        if(localSelected)
+        if (localSelected) {
             return new File(diskLocation).isFile();
-        if(urlSelected)
+        }
+        if (urlSelected) {
             try {
                 return !getURL().getHost().isEmpty() && !getURL().getPath().isEmpty() && getURL().getProtocol().matches("http|ftp");
             } catch (MalformedURLException ex) {
                 return false;
             }
+        }
         return false;
 
     }
-
     private IFileFormat format = NativeFileFormat.VOTABLE;
     public static final String PROP_FORMAT = "format";
 
@@ -389,6 +371,8 @@ public final class LoadSegmentFrame extends JInternalFrame {
         jCheckBox1 = new javax.swing.JCheckBox();
         jLabel3 = new javax.swing.JLabel();
         jTextField4 = new javax.swing.JTextField();
+        progressBar = new javax.swing.JProgressBar();
+        cancelButton = new javax.swing.JButton();
         jRadioButton3 = new javax.swing.JRadioButton();
         jButton4 = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
@@ -464,16 +448,11 @@ public final class LoadSegmentFrame extends JInternalFrame {
 
         jLabel2.setText("Target Name:");
 
+        jButton3.setAction(actionMap.get("importNed")); // NOI18N
         jButton3.setText("Import NED SED");
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${nedVisible}"), jButton3, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
-
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                importNedSed(evt);
-            }
-        });
 
         jCheckBox1.setText("Change Endpoint");
 
@@ -484,25 +463,36 @@ public final class LoadSegmentFrame extends JInternalFrame {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jCheckBox1, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jTextField4, org.jdesktop.beansbinding.BeanProperty.create("editable"));
         bindingGroup.addBinding(binding);
 
+        progressBar.setEnabled(false);
+        progressBar.setString("");
+        progressBar.setStringPainted(true);
+
+        cancelButton.setAction(actionMap.get("cancel")); // NOI18N
+        cancelButton.setEnabled(false);
+
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
+            .add(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jButton3)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1Layout.createSequentialGroup()
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .add(progressBar, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(cancelButton))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jButton3)
+                    .add(jPanel1Layout.createSequentialGroup()
                         .add(jLabel3)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1Layout.createSequentialGroup()
+                        .add(jTextField4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE))
+                    .add(jPanel1Layout.createSequentialGroup()
                         .add(jCheckBox1)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 238, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 252, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(jPanel1Layout.createSequentialGroup()
                         .add(jLabel2)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 283, Short.MAX_VALUE)))
+                        .add(jTextField3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -519,7 +509,12 @@ public final class LoadSegmentFrame extends JInternalFrame {
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel3)
                     .add(jTextField4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 32, Short.MAX_VALUE)
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, cancelButton)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .add(progressBar, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(8, 8, 8))))
         );
 
         buttonGroup1.add(jRadioButton3);
@@ -538,33 +533,33 @@ public final class LoadSegmentFrame extends JInternalFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .add(jLabel4)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(sedId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE))
-                    .add(jSeparator2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
-                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(jRadioButton3)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jButton1)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(sedId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jSeparator2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jRadioButton3)
+                    .add(jButton1)
+                    .add(layout.createSequentialGroup()
                         .add(jRadioButton2)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 259, Short.MAX_VALUE))
-                    .add(layout.createSequentialGroup()
+                        .add(jTextField2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 273, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .add(jRadioButton1)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(jTextField1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE))
+                    .add(layout.createSequentialGroup()
                         .add(jLabel1)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 127, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jButton2))
-                    .add(jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jButton4))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
+                    .add(jButton4))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -596,7 +591,7 @@ public final class LoadSegmentFrame extends JInternalFrame {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(jRadioButton3)
                 .add(17, 17, 17)
-                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 188, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jButton4)
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -610,58 +605,20 @@ public final class LoadSegmentFrame extends JInternalFrame {
     private void browse(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browse
         JFileChooser jfc = SedBuilder.getWorkspace().getFileChooser();
         File l = new File(diskLocation);
-        if(l.isDirectory())
+        if (l.isDirectory()) {
             jfc.setCurrentDirectory(l);
+        }
         jfc.setApproveButtonText("Select");
         int returnval = jfc.showOpenDialog(SedBuilder.getWorkspace().getRootFrame());
-        if(returnval == JFileChooser.APPROVE_OPTION) {
+        if (returnval == JFileChooser.APPROVE_OPTION) {
             File f = jfc.getSelectedFile();
             setDiskLocation(f.getAbsolutePath());
         }
     }//GEN-LAST:event_browse
 
-    private void importNedSed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importNedSed
-        if(targetName.isEmpty())
-            NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
-                    "The target name is empty",
-                    "Warning",
-                    NarrowOptionPane.WARNING_MESSAGE);
-        else
-            try {
-                Sed s = NEDImporter.getSedFromName(targetName, nedEndpoint);
-//                Sed sed = NEDImporter.getError();
-
-                if(s.getNumberOfSegments()==0)
-                    NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
-                        "No Data",
-                        "Warning",
-                        NarrowOptionPane.WARNING_MESSAGE);
-
-                else {
-                    for(int i=0; i<s.getNumberOfSegments(); i++) {
-                        Segment segment = s.getSegment(i);
-                        sed.addSegment(segment);
-                    }
-
-                }
-        } catch (SedInconsistentException ex) {
-            NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
-                    "This segment is physically inconsistent with the rest of the SED",
-                    "Error",
-                    NarrowOptionPane.ERROR_MESSAGE);
-        } catch (SedNoDataException ex) {
-            Logger.getLogger(LoadSegmentFrame.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SegmentImporterException ex) {
-            NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
-                    ex.getMessage(),
-                    "Error",
-                    NarrowOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_importNedSed
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JButton cancelButton;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -682,6 +639,7 @@ public final class LoadSegmentFrame extends JInternalFrame {
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
+    private javax.swing.JProgressBar progressBar;
     private javax.swing.JTextField sedId;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
@@ -695,21 +653,21 @@ public final class LoadSegmentFrame extends JInternalFrame {
 
         @Override
         public Component getListCellRendererComponent(JList list, Object value,
-            int index, boolean isSelected, boolean cellHasFocus) {
+                int index, boolean isSelected, boolean cellHasFocus) {
 
 
             IFileFormat format = (IFileFormat) value;
 
             if (isSelected) {
-                    setBackground(list.getSelectionBackground());
-                    setForeground(list.getSelectionForeground());
-                    if (-1 < index) {
-                        try {
-                            list.setToolTipText(format.getFilter(null).getDescription());
-                        } catch (FilterException ex) {
-                            Logger.getLogger(LoadSegmentFrame.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                setBackground(list.getSelectionBackground());
+                setForeground(list.getSelectionForeground());
+                if (-1 < index) {
+                    try {
+                        list.setToolTipText(format.getFilter(null).getDescription());
+                    } catch (FilterException ex) {
+                        Logger.getLogger(LoadSegmentFrame.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                }
             } else {
                 setBackground(list.getBackground());
                 setForeground(list.getForeground());
@@ -734,9 +692,9 @@ public final class LoadSegmentFrame extends JInternalFrame {
         List<Integer> unsuc = readCompliant();
 
         try {
-            if(unsuc!=null) {
-                if(!segList.isEmpty())
-                    for(Segment seg : segList)
+            if (unsuc != null) {
+                if (!segList.isEmpty()) {
+                    for (Segment seg : segList) {
                         try {
                             sed.addSegment(seg);
                         } catch (SedInconsistentException ex) {
@@ -744,16 +702,19 @@ public final class LoadSegmentFrame extends JInternalFrame {
                         } catch (SedNoDataException ex) {
                             NarrowOptionPane.showMessageDialog(this, "The segment contains no data", "Segment could not be imported", NarrowOptionPane.OK_OPTION);
                         }
+                    }
+                }
 
                 StringBuilder sb = new StringBuilder();
-                sb.append(segList.isEmpty()? "No " : segList.size());
+                sb.append(segList.isEmpty() ? "No " : segList.size());
                 sb.append(" compliant segment(s) was added to SED: ").append(sed.getId());
-                if(!unsuc.isEmpty())
+                if (!unsuc.isEmpty()) {
                     sb.append("\n For ").append(unsuc.size()).append(" non compliant segment(s) the Import Window will be opened");
+                }
 
                 NarrowOptionPane.showMessageDialog(this, sb, "Importing Results", NarrowOptionPane.INFORMATION_MESSAGE);
 
-                for(Integer i : unsuc) {
+                for (Integer i : unsuc) {
                     SetupBean conf = new SetupBean();
                     conf.setFileLocation(getURL().toString());
                     conf.setPositionInFile(i);
@@ -774,7 +735,7 @@ public final class LoadSegmentFrame extends JInternalFrame {
 
             setVisible(false);
 
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             Logger.getLogger(LoadSegmentFrame.class.getName()).log(Level.SEVERE, "", ex);
             NarrowOptionPane.showMessageDialog(this, "An error occurred. Please check the file", "Error", NarrowOptionPane.ERROR_MESSAGE);
         }
@@ -785,37 +746,41 @@ public final class LoadSegmentFrame extends JInternalFrame {
     }
 
     private List<Integer> readCompliant() {
-        if(format.equals(NativeFileFormat.FITS) || format.equals(NativeFileFormat.VOTABLE)) {
+        if (format.equals(NativeFileFormat.FITS) || format.equals(NativeFileFormat.VOTABLE)) {
             try {
-                SedFormat f = format.equals(NativeFileFormat.FITS)? SedFormat.FITS : SedFormat.VOT;
+                SedFormat f = format.equals(NativeFileFormat.FITS) ? SedFormat.FITS : SedFormat.VOT;
                 Sed s = Sed.read(getURL().openStream(), f);
 
                 List<Integer> unsuccessful = new ArrayList();
 
-                for(int i=0; i<s.getNumberOfSegments(); i++) {
+                for (int i = 0; i < s.getNumberOfSegments(); i++) {
                     Segment seg = s.getSegment(i);
 
                     List<ValidationError> errList = new ArrayList();
                     seg.validate(errList);
 
-                    if(seg.createTarget().getPos()==null)
-                        if(seg.createChar().createSpatialAxis().createCoverage().getLocation()!=null)
+                    if (seg.createTarget().getPos() == null) {
+                        if (seg.createChar().createSpatialAxis().createCoverage().getLocation() != null) {
                             seg.createTarget().createPos().setValue(seg.getChar().getSpatialAxis().getCoverage().getLocation().getValue());
-                        else
+                        } else {
                             seg.createTarget().createPos().setValue(new DoubleParam[]{new DoubleParam(Double.NaN), new DoubleParam(Double.NaN)});
-
-
-                    if(errList.isEmpty())
-                        segList.add(seg);
-                    else
-                        for(ValidationError err : errList) {
-                            ValidationErrorEnum en = err.getError();
-                            if(!en.equals(ValidationErrorEnum.MISSING_DATA_FLUXAXIS_VALUE) &&
-                               !en.equals(ValidationErrorEnum.MISSING_DATA_SPECTRALAXIS_VALUE))
-                                segList.add(seg);
-                            else
-                                unsuccessful.add(i);
                         }
+                    }
+
+
+                    if (errList.isEmpty()) {
+                        segList.add(seg);
+                    } else {
+                        for (ValidationError err : errList) {
+                            ValidationErrorEnum en = err.getError();
+                            if (!en.equals(ValidationErrorEnum.MISSING_DATA_FLUXAXIS_VALUE)
+                                    && !en.equals(ValidationErrorEnum.MISSING_DATA_SPECTRALAXIS_VALUE)) {
+                                segList.add(seg);
+                            } else {
+                                unsuccessful.add(i);
+                            }
+                        }
+                    }
                 }
 
                 return unsuccessful;
@@ -827,5 +792,125 @@ public final class LoadSegmentFrame extends JInternalFrame {
         return null;
     }
 
+    private Task task;
 
+        @Action(block = Task.BlockingScope.ACTION)
+    public Task importNed() {
+        Task t = new ImportNedTask(org.jdesktop.application.Application.getInstance());
+        this.task = t;
+        return t;
+    }
+
+
+    @Action
+    public void cancel() {
+       if(task!=null && !task.isDone())
+           task.cancel(true);
+    }
+
+    private class ImportNedTask extends org.jdesktop.application.Task<Object, Void> {
+
+        private int resultCode = 0;
+        private Sed s;
+        private Exception ex;
+
+        ImportNedTask(org.jdesktop.application.Application app) {
+            super(app);
+            progressBar.setEnabled(true);
+            progressBar.setIndeterminate(true);
+            progressBar.setString("Fetching SED from NED");
+            progressBar.setStringPainted(true);
+            cancelButton.setEnabled(true);
+        }
+
+        @Override
+        protected void cancelled() {
+            super.cancelled();
+            progressBar.setEnabled(false);
+            progressBar.setIndeterminate(false);
+            progressBar.setString(null);
+            progressBar.setStringPainted(false);
+            cancelButton.setEnabled(false);
+        }
+
+        @Override
+        protected Object doInBackground() {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                resultCode=2;
+                return null;
+            }
+
+            if (targetName.isEmpty()) {
+                resultCode = 1;
+
+            } else {
+                try {
+                    s = NEDImporter.getSedFromName(targetName, nedEndpoint);
+//                Sed sed = NEDImporter.getError();
+
+                    if (s.getNumberOfSegments() == 0) {
+                        resultCode = 2;
+                    } else {
+                        resultCode = 0;
+                    }
+                } catch (SegmentImporterException e) {
+                    resultCode = 3;
+                    this.ex = e;
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void succeeded(Object result) {
+            progressBar.setEnabled(false);
+            progressBar.setIndeterminate(false);
+            progressBar.setString("");
+            cancelButton.setEnabled(false);
+            switch (resultCode) {
+                case 0:
+                    for (int i = 0; i < s.getNumberOfSegments(); i++) {
+                        Segment segment = s.getSegment(i);
+                        try {
+                            sed.addSegment(segment);
+                        } catch (SedInconsistentException e) {
+                            NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
+                                    "This segment is physically inconsistent with the rest of the SED",
+                                    "Error",
+                                    NarrowOptionPane.ERROR_MESSAGE);
+                        } catch (SedNoDataException e) {
+                            NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
+                                    "Empty SED",
+                                    "Error",
+                                    NarrowOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                    NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
+                            "Segment added to SED: "+sed.getId(),
+                            "Success",
+                            NarrowOptionPane.INFORMATION_MESSAGE);
+                    break;
+                case 1:
+                    NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
+                            "The target name is empty",
+                            "Warning",
+                            NarrowOptionPane.WARNING_MESSAGE);
+                    break;
+                case 2:
+                    NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
+                            "No Data",
+                            "Warning",
+                            NarrowOptionPane.WARNING_MESSAGE);
+                    break;
+                case 3:
+                    NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
+                            ex.getMessage(),
+                            "Error",
+                            NarrowOptionPane.ERROR_MESSAGE);
+                    break;
+            }
+        }
+    }
 }

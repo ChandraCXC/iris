@@ -17,7 +17,7 @@
     <parent>
         <groupId>cfa.vo</groupId>
         <artifactId>iris2</artifactId>
-        <version>1.1-beta2</version>
+        <version>1.1-beta3</version>
     </parent>
 
     <dependencies>
@@ -197,35 +197,42 @@
                                 </for>
 
                                 
+                                <if>
+                                    <equals arg1="${sherpa}" arg2="no"/>
+                                    <then>
+                                        <echo>Skipping Sherpa unpacking</echo>
+                                    </then>
+                                    <else>
+                                        <for list="${platforms}" param="p">
+                                            <sequential>
+                                                <delete dir="${basedir}/target/lib/sherpa"/>
+                                                <move todir="${basedir}/target/">
+                                                    <fileset dir="${basedir}/target/lib/" includes="sherpa-*.tgz"/>
+                                                </move>
+                                                <echo>Unpacking Sherpa</echo>
+                                                <exec executable="tar">
+                                                    <arg value="-C"/>
+                                                    <arg value="${basedir}/target/lib/"/>
+                                                    <arg value ="-xzf"/>
+                                                    <arg value="${basedir}/target/sherpa-${sherpa.version}-@{p}.tgz"/>
+                                                </exec>
+                                                <echo>Building distribution archive for architecture @{p}</echo>
 
-                                <for list="${platforms}" param="p">
-                                    <sequential>
-                                        <delete dir="${basedir}/target/lib/sherpa"/>
-                                        <move todir="${basedir}/target/">
-                                            <fileset dir="${basedir}/target/lib/" includes="sherpa-*.tgz"/>
-                                        </move>
-                                        <echo>Unpacking Sherpa</echo>
-                                        <exec executable="tar">
-                                            <arg value="-C"/>
-                                            <arg value="${basedir}/target/lib/"/>
-                                            <arg value ="-xzf"/>
-                                            <arg value="${basedir}/target/sherpa-${sherpa.version}-@{p}.tgz"/>
-                                        </exec>
-                                        <echo>Building distribution archive for architecture @{p}</echo>
-                                        
-                                        <mkdir dir="${basedir}/target/${project.name}-${project.version}-@{p}"/>
+                                                <mkdir dir="${basedir}/target/${project.name}-${project.version}-@{p}"/>
 
-                                        <copy todir="${basedir}/target/${project.name}-${project.version}-@{p}" overwrite="true">
-                                            <fileset dir="${basedir}/target/" includes="Iris,examples/*,${project.name}-${project.version}-@{p}.tar.gz,${project.name}-${project.version}.jar,LICENSE*,README.txt,COPYING,lib/**/*"/>
-                                        </copy>
+                                                <copy todir="${basedir}/target/${project.name}-${project.version}-@{p}" overwrite="true">
+                                                    <fileset dir="${basedir}/target/" includes="Iris,examples/*,${project.name}-${project.version}-@{p}.tar.gz,${project.name}-${project.version}.jar,LICENSE*,README.txt,COPYING,lib/**/*"/>
+                                                </copy>
 
-                                        <chmod file="${basedir}/target/${project.name}-${project.version}-@{p}/Iris" perm="+x"/>
+                                                <chmod file="${basedir}/target/${project.name}-${project.version}-@{p}/Iris" perm="+x"/>
 
-                                        <chmod file="${basedir}/target/${project.name}-${project.version}-@{p}/lib/sherpa/bin/python2.6" perm="+x"/>
+                                                <chmod file="${basedir}/target/${project.name}-${project.version}-@{p}/lib/sherpa/bin/python2.6" perm="+x"/>
 
-                                        <echo>Created ${project.name}-${project.version}-@{p}.tar.gz</echo>
-                                    </sequential>
-                                </for>
+                                                <echo>Created ${project.name}-${project.version}-@{p}.tar.gz</echo>
+                                            </sequential>
+                                        </for>
+                                    </else>
+                                </if>
 
                             </target>
                         </configuration>
@@ -257,7 +264,7 @@
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
-                    <tarLongFileMode>gnu</tarLongFileMode> 
+                    <tarLongFileMode>gnu</tarLongFileMode>
                     <descriptors>
                         <descriptor>src/main/macosx-i386.xml</descriptor>
                     </descriptors>
