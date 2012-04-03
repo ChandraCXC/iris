@@ -43,6 +43,8 @@ import java.awt.Point;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import javax.swing.JFrame;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 import spv.SpvInitialization;
 import spv.controller.ManagedSpectrum2;
@@ -57,6 +59,7 @@ import spv.sherpa.custom.CustomModelsManager;
 import spv.sherpa.custom.CustomModelsManagerView;
 import spv.spectrum.Spectrum;
 import spv.spectrum.factory.SED.SEDFactoryModule;
+import spv.spectrum.function.FunctionFactorySherpaHelper;
 import spv.util.Command;
 import spv.util.Include;
 import spv.util.properties.SpvProperties;
@@ -112,6 +115,11 @@ public class IrisVisualizer implements IrisComponent {
             customManager = new CustomModelsManager(rootDir);
             customManagerView = new CustomModelsManagerView(customManager, ws.getFileChooser());
             ws.addFrame(customManagerView);
+
+            DefaultTreeModel models = customManager.getCustomModels();
+            DefaultMutableTreeNode root = (DefaultMutableTreeNode) models.getRoot();
+            FunctionFactorySherpaHelper.SetRoot(root);
+
         } catch (IOException ex) {
             NarrowOptionPane.showMessageDialog(ws.getRootFrame(), "Error initializing Custom Fit Component Manager: " + ex.getMessage(), "Iris Visualizer", NarrowOptionPane.ERROR_MESSAGE);
         }
