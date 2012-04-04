@@ -2,6 +2,7 @@
  * This software is distributed under a BSD license,
  * as described in the LICENSE file at the top source directory.
  */
+
 package spv.components;
 
 /**
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JInternalFrame;
+import javax.swing.*;
 
 import org.astrogrid.samp.client.MessageHandler;
 
@@ -42,7 +43,8 @@ import cfa.vo.sedlib.Segment;
 import java.awt.Point;
 import java.beans.PropertyVetoException;
 import java.io.File;
-import javax.swing.JFrame;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -57,11 +59,14 @@ import spv.fit.NoSuchEngineException;
 import spv.glue.SpectrumVisualEditor;
 import spv.sherpa.custom.CustomModelsManager;
 import spv.sherpa.custom.CustomModelsManagerView;
+import spv.sherpa.custom.DefaultCustomModel;
 import spv.spectrum.Spectrum;
 import spv.spectrum.factory.SED.SEDFactoryModule;
-import spv.spectrum.function.FunctionFactorySherpaHelper;
+import spv.spectrum.function.*;
 import spv.util.Command;
+import spv.util.ExceptionHandler;
 import spv.util.Include;
+import spv.util.NonSupportedUnits;
 import spv.util.properties.SpvProperties;
 
 /**
@@ -79,8 +84,8 @@ public class IrisVisualizer implements IrisComponent {
     private FittingEngine sherpa;
     private String sherpaDir = System.getProperty("IRIS_DIR") + "/lib/sherpa";
     private Point lastLocation;
-    private CustomModelsManagerView customManagerView;
     private CustomModelsManager customManager;
+    private CustomModelsManagerView customManagerView;
 
     @Override
     public void init(IrisApplication app, IWorkspace workspace) {
@@ -116,9 +121,9 @@ public class IrisVisualizer implements IrisComponent {
             customManagerView = new CustomModelsManagerView(customManager, ws.getFileChooser());
             ws.addFrame(customManagerView);
 
-            DefaultTreeModel models = customManager.getCustomModels();
-            DefaultMutableTreeNode root = (DefaultMutableTreeNode) models.getRoot();
-            FunctionFactorySherpaHelper.SetRoot(root);
+            TreeRefresher treeRefresher = new TreeRefresher();
+            treeRefresher.execute(null);
+            FunctionFactorySherpaHelper.SetTreeRefresher(treeRefresher);
 
         } catch (IOException ex) {
             NarrowOptionPane.showMessageDialog(ws.getRootFrame(), "Error initializing Custom Fit Component Manager: " + ex.getMessage(), "Iris Visualizer", NarrowOptionPane.ERROR_MESSAGE);
@@ -434,4 +439,102 @@ public class IrisVisualizer implements IrisComponent {
             display(sed);
         }
     }
+
+    // This class responds to selection actions in the component tree widget.
+    // It supports both the traditional Sherpa models, as well as the new
+    // templates/tables/functions custom models.
+
+    public class ComponentTreeSelectionListener implements TreeSelectionListener {
+        public void valueChanged(TreeSelectionEvent e) {
+
+            JTree tree = FunctionFactorySherpaHelper.GetJTree();
+
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode)
+                    tree.getLastSelectedPathComponent();
+            if (node == null) {
+                return;
+            }
+            Object node_object = node.getUserObject();
+
+            if (node.isLeaf()) {
+
+                try {
+                    // analytic Sherpa functions.
+                    Function rf = (Function) node_object;
+                    try {
+                        if (rf instanceof Polynomial) {
+                            rf = new Polynomial(1);
+                        } else {
+                            rf = (Function) rf.clone();
+                        }
+                    } catch (CloneNotSupportedException ex) {
+                        rf = null;
+                    }
+                    FunctionFactorySherpaHelper.SetFunction(rf);
+                } catch (ClassCastException e1) {
+                    // templates, tables and user files
+                    try {
+                        DefaultCustomModel model = (DefaultCustomModel) node_object;
+
+                        SherpaFunction function = new SherpaFunction();
+                        function.setUserID(model.getName());
+                        function.setName(model.getName());
+
+                        // Converting a DefaultCustomModel to a SherpaFunction might
+                        // require more than this. We'll see as we go further down the road...
+
+                        SherpaFParameter functionParameter = null;
+                        try {
+                            functionParameter = new SherpaFParameter(model.getParnames(),
+                                    Double.valueOf(model.getParvals()),
+                                    Double.valueOf(model.getParmins()),
+                                    Double.valueOf(model.getParmaxs()),
+                                    new NonSupportedUnits(""));
+                        } catch (NumberFormatException e2) {
+                            ExceptionHandler.handleException(e2);
+                            tree.clearSelection();
+                            FunctionFactorySherpaHelper.dispose();
+                            return;
+                        }
+
+                        String frozen = model.getParfrozen();
+                        if (frozen != null) {
+                            boolean fixed = (frozen.equals("True")) ? true : false;
+                            functionParameter.setFixed(fixed);
+                        }
+                        function.addParameter(functionParameter);
+
+                        FunctionFactorySherpaHelper.SetFunction(function);
+
+                    } catch (ClassCastException e2) {
+                    }
+                }
+                tree.clearSelection();
+                FunctionFactorySherpaHelper.dispose();
+            }
+        }
+    }
+
+    // This class will re-build the tree model and stick a
+    // new tree selection handler to it. It should be used
+    // whenever the tree must be refreshed to pick up new
+    // models that the user might have opened.
+
+    public class TreeRefresher implements Command {
+
+        public void execute(Object o) {
+
+            DefaultTreeModel models = null;
+            try {
+                models = customManager.getCustomModels();
+            } catch (IOException e) {
+            }
+            DefaultMutableTreeNode root = (DefaultMutableTreeNode) models.getRoot();
+            FunctionFactorySherpaHelper.SetRoot(root);
+
+            FunctionFactorySherpaHelper.AddTreeSelectionListener(new ComponentTreeSelectionListener());
+        }
+    }
 }
+
+
