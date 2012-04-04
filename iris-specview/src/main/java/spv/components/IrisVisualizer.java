@@ -12,6 +12,7 @@ package spv.components;
  * Time: 3:03 PM
  */
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -496,6 +497,9 @@ public class IrisVisualizer implements IrisComponent {
                             FunctionFactorySherpaHelper.dispose();
                             return;
                         }
+
+                        URL url = model.getUrl();
+                        function.addURL(url);
 
                         String frozen = model.getParfrozen();
                         if (frozen != null) {
