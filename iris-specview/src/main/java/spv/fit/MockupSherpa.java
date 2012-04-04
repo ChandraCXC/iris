@@ -15,17 +15,17 @@ public class MockupSherpa extends AbstractFittingEngine {
 
     @Override
     public void print(InputStream in) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
     }
 
     @Override
     public void shutdown() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
     }
 
     @Override
     public void run() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
     }
 
 }

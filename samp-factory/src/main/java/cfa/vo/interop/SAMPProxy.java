@@ -216,7 +216,7 @@ class SAMPProxy implements InvocationHandler {
             }
             if(List.class.isAssignableFrom(returnType)) {
                 List list = (List) method.invoke(object);
-                if(list!=null)
+                if(list!=null) {
                     if(!list.isEmpty()) {
                         List<Object> theList = new ArrayList();
                         for(Object el : list) {
@@ -233,7 +233,12 @@ class SAMPProxy implements InvocationHandler {
                             theList.add(serialize(el, innerClass));
                         }
                         map.put(objectName(method).toLowerCase(), theList);
+                    } else {
+                        map.put(objectName(method), new ArrayList());
                     }
+                } else {
+                    map.put(objectName(method), new ArrayList());
+                }
                 continue;
             }
             Object res = method.invoke(object);

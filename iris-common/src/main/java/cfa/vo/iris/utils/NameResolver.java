@@ -62,4 +62,13 @@ public class NameResolver {
         }
         
     }
+
+    private static NameResolver resolver;
+
+    public static NameResolver getInstance() {
+        if(resolver == null)
+            resolver = new NameResolver();
+
+        return resolver;
+    }
 }

@@ -17,7 +17,6 @@ import cfa.vo.sedlib.common.SedParsingException;
 import cfa.vo.sedlib.io.SedFormat;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -112,7 +111,7 @@ public class ExtSed extends Sed {
     @Override
     public ExtSed clone() {
         ExtSed s = (ExtSed) super.clone();
-        s.attachments = new HashMap();
+        s.attachments = new TreeMap();
         return s;
     }
 

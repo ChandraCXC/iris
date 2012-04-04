@@ -51,7 +51,7 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
     private String sherpaDirS;
 
     public SherpaSmokeTest(String testVotable) {
-        this(testVotable, 5);
+        this(testVotable, 10);
     }
 
     public SherpaSmokeTest(String testVotable, int timeout) {

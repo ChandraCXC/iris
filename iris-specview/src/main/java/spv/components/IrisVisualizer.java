@@ -294,6 +294,14 @@ public class IrisVisualizer implements IrisComponent {
 
     @Override
     public void initCli(IrisApplication app) {
+        FittingEngineFactory f = new FittingEngineFactory();
+        try {
+            sherpa = f.get("test");
+            sherpa.start();
+            LogEvent.getInstance().fire(sherpa, new LogEntry("Sherpa started", this));
+        } catch (NoSuchEngineException ex) {
+            Logger.getLogger(IrisVisualizer.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public static JFrame getRootFrame() {
