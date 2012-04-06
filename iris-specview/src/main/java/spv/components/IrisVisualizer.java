@@ -492,29 +492,66 @@ public class IrisVisualizer implements IrisComponent {
                         // Converting a DefaultCustomModel to a SherpaFunction might
                         // require more than this. We'll see as we go further down the road...
 
-                        SherpaFParameter functionParameter = null;
-                        try {
-                            functionParameter = new SherpaFParameter(model.getParnames(),
-                                    Double.valueOf(model.getParvals()),
-                                    Double.valueOf(model.getParmins()),
-                                    Double.valueOf(model.getParmaxs()),
-                                    new NonSupportedUnits(""));
-                        } catch (NumberFormatException e2) {
-                            ExceptionHandler.handleException(e2);
+                        // First, we need to break up the comma-separated string
+                        // parameters into something that can actually be used to
+                        // build instances of Function.
+
+                        String[] parNames  = model.getParnames().split("\\,");
+                        String[] parVals   = model.getParvals().split("\\,");
+                        String[] parMins   = model.getParmins().split("\\,");
+                        String[] parMaxs   = model.getParmaxs().split("\\,");
+                        String[] parFrozen = model.getParfrozen().split("\\,");
+
+                        int npars = parNames.length;
+
+                        if (npars != parVals.length ||
+                            npars != parMins.length ||
+                            npars != parMaxs.length ||
+                            npars != parFrozen.length) {
+                            ExceptionHandler.handleException(new Exception(
+                                    "Parameter lists wih different lengths."));
                             tree.clearSelection();
                             FunctionFactorySherpaHelper.dispose();
                             return;
                         }
 
+                        // now we loop over the parameter lists, building
+                        // each parameter in turn and adding it to the Function.
+
+                        for (int i = 0; i < npars; i++) {
+                            SherpaFParameter functionParameter = null;
+                            try {
+
+                                double value = Double.valueOf(parVals[i]);
+                                double min = Double.valueOf(parMins[i]);
+                                double max = Double.valueOf(parMaxs[i]);
+
+                                functionParameter = new SherpaFParameter(parNames[i],
+                                        value, min, max, new NonSupportedUnits(""));
+
+                                String frozen = parFrozen[i];
+                                if (frozen != null) {
+                                    boolean fixed = (frozen.equalsIgnoreCase("True")) ? true : false;
+                                    functionParameter.setFixed(fixed);
+                                }
+
+                            } catch (NumberFormatException ex) {
+                                ExceptionHandler.handleException(ex);
+                                tree.clearSelection();
+                                FunctionFactorySherpaHelper.dispose();
+                                return;
+                            } catch (ArrayIndexOutOfBoundsException ex) {
+                                ExceptionHandler.handleException(ex);
+                                tree.clearSelection();
+                                FunctionFactorySherpaHelper.dispose();
+                                return;
+                            }
+
+                            function.addParameter(functionParameter);
+                        }
+
                         URL url = model.getUrl();
                         function.addURL(url);
-
-                        String frozen = model.getParfrozen();
-                        if (frozen != null) {
-                            boolean fixed = (frozen.equals("True")) ? true : false;
-                            functionParameter.setFixed(fixed);
-                        }
-                        function.addParameter(functionParameter);
 
                         FunctionFactorySherpaHelper.SetFunction(function);
 
