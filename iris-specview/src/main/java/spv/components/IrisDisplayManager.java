@@ -121,15 +121,17 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
             // here we remove the listeners from the existing plot
             // widget. Then we get its plot status and store it for
             // use later on.
-            getPlotWidget().removeListeners();
+            PlotWidget plotWidget = secondaryController.getPlotWidget();
+            plotWidget.removeListeners();
 
-            PlotStatus plotStatus = getPlotWidget().getPlotStatus();
+            PlotStatus plotStatus = plotWidget.getPlotStatus();
             plotStatusStorage.put(sedDisplaying.getId(), plotStatus);
 
             // if there is a plot status associated with the Sed
             // to be displayed, use it.
             PlotStatus ps = plotStatusStorage.get((id));
             if (ps != null) {
+                ps.invalidateGraphicsAttributes();
                 pw.setPlotStatus(ps);
             }
 
@@ -151,14 +153,6 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
 //                }
 //            }
 //        }
-    }
-
-    public PlotWidget getPlotWidget() {
-        if (secondaryController != null) {
-            return secondaryController.getPlotWidget();
-        } else {
-            return null;
-        }
     }
 
     void setDesktopMode(boolean desktopMode) {
@@ -262,7 +256,7 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
                 // Use this metadata/data browser when not fitting.
 
                 visualEditor = new SEDSegmentedSpectrumVisualEditor(
-                        (PlottableSEDSegmentedSpectrum) arg, null, true, Color.red, null);
+                        (PlottableSEDSegmentedSpectrum) arg, null, true, Color.red, null, false);
 
                 // Attach a listener to the visual editor so Seds
                 // can be extracted from the one being displayed.
