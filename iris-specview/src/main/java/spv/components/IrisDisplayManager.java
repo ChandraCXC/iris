@@ -12,6 +12,7 @@ package spv.components;
  * Date: Nov 18, 2011
  * Time: 9:25:07 AM
  */
+
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
@@ -41,7 +42,6 @@ import spv.util.Command;
 import spv.util.ExceptionHandler;
 import spv.util.Include;
 import spv.util.properties.SpvProperties;
-import spv.view.BasicPlotWidget;
 import spv.view.FittingPlotWidget;
 import spv.view.PlotStatus;
 import spv.view.PlotWidget;
@@ -52,6 +52,7 @@ import spv.view.PlotWidget;
  *
  *  18 Nov 11  -  Implemented (IB)
  */
+
 /**
  * This class provides support for Iris-specific display requirements.
  *
@@ -137,6 +138,10 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
 
             secondaryController.loadWidget(pw);
         }
+    }
+
+    public PlotWidget getPlotWidget() {
+        return secondaryController.getPlotWidget();
     }
 
     public void remove(String name) {

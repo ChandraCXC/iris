@@ -11,6 +11,7 @@ package spv.components;
  * Date: 2/13/12
  * Time: 3:03 PM
  */
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -69,11 +70,13 @@ import spv.util.ExceptionHandler;
 import spv.util.Include;
 import spv.util.NonSupportedUnits;
 import spv.util.properties.SpvProperties;
+import spv.view.AbstractPlotWidget;
 
 /**
  *
  * @author olaurino
  */
+
 public class IrisVisualizer implements IrisComponent {
 
     private IrisDisplayManager idm;
@@ -347,6 +350,18 @@ public class IrisVisualizer implements IrisComponent {
 
                 @Override
                 public void onClick() {
+
+                    // this prevents fitting of error array to be performed. Not a very good
+                    // solution but will make do for now.
+
+                    AbstractPlotWidget plotWidget = (AbstractPlotWidget) idm.getPlotWidget();
+                    if (plotWidget != null) {
+                        String selectedY = plotWidget.selected_y;
+                        if (selectedY.contains("err") || selectedY.contains("Err") || selectedY.contains("ERR")) {
+                            return;
+                        }
+                    }
+
                     if (manager.getSelected() != null) {
 
                         ExtSed sed = manager.getSelected();
@@ -486,8 +501,22 @@ public class IrisVisualizer implements IrisComponent {
                         DefaultCustomModel model = (DefaultCustomModel) node_object;
 
                         SherpaFunction function = new SherpaFunction();
-                        function.setUserID(model.getName());
-                        function.setName(model.getName());
+
+                        URL url = model.getUrl();
+                        String path = url.getPath();
+                        function.addPath(path);
+
+//                        function.setUserID(model.getName());
+//                        function.setName(model.getName());
+
+                        String name = model.getName();
+
+                        if (path.contains("/tables/"))    name = "tablemodel";
+                        if (path.contains("/functions/")) name = "usermodel";
+                        if (path.contains("/templates/")) name = "templatemodel";
+
+                        function.setUserID(name);
+                        function.setName(name);
 
                         // Converting a DefaultCustomModel to a SherpaFunction might
                         // require more than this. We'll see as we go further down the road...
@@ -550,9 +579,6 @@ public class IrisVisualizer implements IrisComponent {
                             function.addParameter(functionParameter);
                         }
 
-                        URL url = model.getUrl();
-                        function.addURL(url);
-
                         FunctionFactorySherpaHelper.SetFunction(function);
 
                     } catch (ClassCastException e2) {
@@ -584,6 +610,11 @@ public class IrisVisualizer implements IrisComponent {
             FunctionFactorySherpaHelper.AddTreeSelectionListener(new ComponentTreeSelectionListener());
         }
     }
+
+
+
+
+
 }
 
 
