@@ -12,6 +12,7 @@ package spv.components;
  * Time: 3:03 PM
  */
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ import cfa.vo.iris.logging.LogEvent;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sedlib.Segment;
-import java.awt.Point;
+
 import java.beans.PropertyVetoException;
 import java.io.File;
 import javax.swing.event.TreeSelectionEvent;
@@ -311,6 +312,44 @@ public class IrisVisualizer implements IrisComponent {
         return ws.getRootFrame();
     }
 
+
+//  CLASSES FOR TESTING PLOT ARTIFACTS:
+   class MyComponent extends JComponent {
+        public void paintComponent(Graphics g) {
+
+            super.paintComponent(g);
+
+//            Graphics2D g2d = (Graphics2D) g.create();
+//            g2d.setColor(Color.black);
+//            Rectangle oldClipBounds = g.getClipBounds();
+//            g2d.setClip(0,0,10000,1000);  // this causes the plot artifacts
+//            g2d.drawLine(0,0, 800, 500);
+//            g2d.setClip(oldClipBounds);
+
+            Rectangle r = this.getBounds();
+            Graphics2D g2d = (Graphics2D) g.create(r.x+100, r.y+100, r.width-200, r.height-200);
+            g2d.setColor(Color.black);
+            g2d.drawLine(0,0, 800, 500);
+            g2d.dispose();
+        }
+    }
+    class MyInternalFrame extends JInternalFrame {
+        public MyInternalFrame() {
+            super();
+            init();
+        }
+        public MyInternalFrame(String string) {
+            super(string);
+            init();
+        }
+        private void init() {
+            putClientProperty("JInternalFrame.frameType", "normal");
+        }
+        public boolean isOpaque() {
+            return true;
+        }
+    }
+
     private class VisualizerMenus extends ArrayList<IMenuItem> {
 
         public VisualizerMenus() {
@@ -319,6 +358,17 @@ public class IrisVisualizer implements IrisComponent {
 
                 @Override
                 public void onClick() {
+
+// TESTING PLOT ARTIFACTS:
+//                    JInternalFrame testFrame = new MyInternalFrame();
+//                    testFrame.setSize(800, 500);
+//                    JComponent pane = (JComponent) testFrame.getRootPane().getContentPane();
+//                    MyComponent myComponent = new MyComponent();
+//                    pane.add(myComponent);
+//                    testFrame.setVisible(true);
+//                    ws.addFrame(testFrame);
+
+
 
                     if (manager.getSeds().isEmpty()) {
                         idm = new IrisDisplayManager(manager, ws);
@@ -610,11 +660,6 @@ public class IrisVisualizer implements IrisComponent {
             FunctionFactorySherpaHelper.AddTreeSelectionListener(new ComponentTreeSelectionListener());
         }
     }
-
-
-
-
-
 }
 
 

@@ -34,7 +34,6 @@ import cfa.vo.iris.sed.ExtSed;
 
 import spv.controller.ManagedSpectrum2;
 import spv.controller.SecondaryController2;
-import spv.controller.display.PlotWidgetFactory;
 import spv.controller.display.SecondaryDisplayManager;
 import spv.glue.*;
 import spv.util.Callback;
@@ -261,7 +260,7 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
                 // Use this metadata/data browser when not fitting.
 
                 visualEditor = new SEDSegmentedSpectrumVisualEditor(
-                        (PlottableSEDSegmentedSpectrum) arg, null, true, Color.red, null, false);
+                        (PlottableSEDSegmentedSpectrum) arg, null, true, Color.red, null, false, secondaryController.getPlotWidget());
 
                 // Attach a listener to the visual editor so Seds
                 // can be extracted from the one being displayed.
