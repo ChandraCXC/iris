@@ -41,6 +41,7 @@ public enum XUnit implements IUnit {
     EV("eV", "em.energy"),
     KEV("KeV", "em.energy"),
     MEV("MeV", "em.energy"),
+    GEV("GeV", "em.energy"),
     ;
 
     private String string;

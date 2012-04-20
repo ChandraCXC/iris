@@ -105,6 +105,8 @@ public final class TestBuilderFrame extends JInternalFrame {
         listPanel = new javax.swing.JScrollPane();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -180,6 +182,20 @@ public final class TestBuilderFrame extends JInternalFrame {
             }
         });
 
+        jButton3.setText("Send NON Compliant FITS through SAMP-SSA");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3sendFITS(evt);
+            }
+        });
+
+        jButton4.setText("Send Meaningless Message through SAMP");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4sendFITS(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -194,7 +210,7 @@ public final class TestBuilderFrame extends JInternalFrame {
                                     .add(newSedButton)
                                     .add(removeButton, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 99, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(listPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE))
+                                .add(listPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE))
                             .add(addUserButton)
                             .add(addNedButton)
                             .add(layout.createSequentialGroup()
@@ -206,7 +222,13 @@ public final class TestBuilderFrame extends JInternalFrame {
                         .add(jButton1))
                     .add(layout.createSequentialGroup()
                         .addContainerGap()
-                        .add(jButton2)))
+                        .add(jButton2))
+                    .add(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jButton3))
+                    .add(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jButton4)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -233,7 +255,11 @@ public final class TestBuilderFrame extends JInternalFrame {
                 .add(jButton1)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jButton2)
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jButton3)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jButton4)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         bindingGroup.bind();
@@ -300,7 +326,7 @@ public final class TestBuilderFrame extends JInternalFrame {
         msg.addParam("url", url.toString());
         msg.addParam("name", "3c066a");
         try {
-            SSATestHandler.getController().sendMessage(new SimpleSAMPMessage(msg));
+            TestSSAServer.getController().sendMessage(new SimpleSAMPMessage(msg));
         } catch (SampException ex) {
             Logger.getLogger(TestBuilderFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -316,16 +342,51 @@ public final class TestBuilderFrame extends JInternalFrame {
         msg.addParam("url", url.toString());
         msg.addParam("name", "3c066a");
         try {
-            SSATestHandler.getController().sendMessage(new SimpleSAMPMessage(msg));
+            TestSSAServer.getController().sendMessage(new SimpleSAMPMessage(msg));
         } catch (SampException ex) {
             Logger.getLogger(TestBuilderFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_sendFITS
+
+    private void jButton3sendFITS(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3sendFITS
+        URL url = getClass().getResource("/lambrate.fits");
+        String format = "application/fits";
+        Message msg = new Message("spectrum.load.ssa-generic");
+        Map map = new HashMap();
+        map.put("Access.Format", format);
+        msg.addParam("meta", map);
+        msg.addParam("url", url.toString());
+        msg.addParam("name", "3c066a");
+        try {
+            TestSSAServer.getController().sendMessage(new SimpleSAMPMessage(msg));
+        } catch (SampException ex) {
+            Logger.getLogger(TestBuilderFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton3sendFITS
+
+    private void jButton4sendFITS(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4sendFITS
+        URL url = getClass().getResource("/gear_small.png");
+        String format = "application/nothing";
+        Message msg = new Message("spectrum.load.ssa-generic");
+        Map map = new HashMap();
+        map.put("Access.Format", format);
+        msg.addParam("meta", map);
+        msg.addParam("url", url.toString());
+//        msg.addParam("name", "3c066a");
+        try {
+            TestSSAServer.getController().sendMessage(new SimpleSAMPMessage(msg));
+        } catch (SampException ex) {
+            Logger.getLogger(TestBuilderFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton4sendFITS
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addNedButton;
     private javax.swing.JButton addUserButton;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JScrollPane listPanel;
     private javax.swing.JButton newSedButton;
     private javax.swing.JButton removeButton;

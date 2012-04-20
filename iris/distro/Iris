@@ -7,9 +7,13 @@ fi
 
 export IRIS_DIR=$bindir
 
-args="-Xms256m -Xmx1024m -Xdock:name=Iris -Dhttp.agent=${project.name}/${project.version}"
+args="-Xms256m -Xmx1024m -Dhttp.agent=${project.name}/${project.version}"
 
-java $args -DIRIS_DIR=$bindir -jar $bindir/${project.name}-${project.version}.jar $@
+if test -x /usr/bin/sw_vers && /usr/bin/sw_vers | grep -q 'OS.X'; then
+  args="$args -Xdock:name=Iris"
+fi
+
+java $args -DIRIS_DIR=$bindir -jar $bindir/${project.name}-${project.version}.jar --ssa $@
 
 
 

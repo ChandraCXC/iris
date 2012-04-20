@@ -33,6 +33,8 @@ import cfa.vo.iris.IMenuItem;
 import cfa.vo.iris.AbstractIrisApplication;
 import cfa.vo.iris.IrisComponent;
 import java.awt.Color;
+import java.awt.GraphicsEnvironment;
+import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URL;
@@ -143,9 +145,10 @@ public class IrisDesktop extends JFrame {
         jLabel2.setIcon(new ImageIcon(app.getDesktopIcon()));
 
         this.setLocationRelativeTo(null);
-        this.setExtendedState(this.getExtendedState() | JFrame.MAXIMIZED_BOTH);
+        Rectangle bounds = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
+        this.setBounds(bounds);
 
-        this.repaint();
+        paintButtons();
 
         int[] bo = getVaoBounds();
         jLabel2.setBounds(bo[0], bo[1], bo[2], bo[3]);
@@ -196,8 +199,8 @@ public class IrisDesktop extends JFrame {
 
     private void paintButtons() {
         int width = this.getWidth();
-        int xl = 150;
-        int yl = 150;
+        int xl = 175;
+        int yl = 175;
         int baseX = 20 - xl;
         int baseY = 20;
         for (DesktopButton b : buttons) {
@@ -208,7 +211,7 @@ public class IrisDesktop extends JFrame {
                     baseX = 20;
                 }
             } else {
-                baseY = baseY + 170;
+                baseY = baseY + 195;
             }
 
 

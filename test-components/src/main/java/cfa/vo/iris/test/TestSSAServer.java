@@ -39,7 +39,7 @@ import org.astrogrid.samp.client.MessageHandler;
  *
  * @author olaurino
  */
-public class SSATestHandler implements IrisComponent {
+public class TestSSAServer implements IrisComponent {
 
     private SedlibSedManager sedManager;
     private JFrame rootFrame;
@@ -65,7 +65,7 @@ public class SSATestHandler implements IrisComponent {
 
     @Override
     public String getDescription() {
-        return "Test SSA handler";
+        return "Test SSA server";
     }
 
     @Override
@@ -81,7 +81,7 @@ public class SSATestHandler implements IrisComponent {
     @Override
     public List<MessageHandler> getSampHandlers() {
         List l = new ArrayList();
-        l.add(new SSAHandler());
+//        l.add(new SSAHandler());
         return l;
     }
 

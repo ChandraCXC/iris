@@ -5,8 +5,10 @@
 
 package cfa.vo.sed.builder.dm;
 
+import cfa.vo.sed.setup.validation.Validation;
 import cfa.vo.sed.builder.photfilters.PhotometryFilter;
 import cfa.vo.sed.quantities.XQuantity;
+import cfa.vo.sedlib.DoubleParam;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedException;
 import cfa.vo.sedlib.common.Utypes;
@@ -117,18 +119,21 @@ public class SpectralAxis extends AbstractAxis<XQuantity> {
             segment.createChar().createSpectralAxis().setUcd(getQuantity().getUCD());
             segment.setSpectralAxisValues(new double[]{getValue()});
             segment.setSpectralAxisUnits(getUnit().getString());
+            segment.createChar().createSpectralAxis().setUnit(getUnit().getString());
         }
 
         if(mode.equals("Energy Bin")) {
             segment.createChar().createSpectralAxis().setUcd(getQuantity().getUCD());
-            segment.setSpectralAxisValues(new double[]{(binmax-binmin)/2});
-            segment.createChar().createSpectralAxis().setValueByUtype(Utypes.SEG_CHAR_SPECTRALAXIS_COV_BOUNDS_MIN, binmin);
-            segment.createChar().createSpectralAxis().setValueByUtype(Utypes.SEG_CHAR_SPECTRALAXIS_COV_BOUNDS_MAX, binmax);
+            segment.createChar().createSpectralAxis().setUnit(getUnit().getString());
+            segment.setSpectralAxisValues(new double[]{(binmax+binmin)/2});
+            segment.createChar().createSpectralAxis().setValueByUtype(Utypes.SEG_CHAR_SPECTRALAXIS_COV_BOUNDS_MIN, new DoubleParam(binmin));
+            segment.createChar().createSpectralAxis().setValueByUtype(Utypes.SEG_CHAR_SPECTRALAXIS_COV_BOUNDS_MAX, new DoubleParam(binmax));
             segment.setSpectralAxisUnits(getUnit().getString());
         }
 
         if(mode.equals("Photometry Filter")) {
             segment.createChar().createSpectralAxis().setUcd(XQuantity.WAVELENGTH.getUCD());
+            segment.createChar().createSpectralAxis().setUnit(filter.getUnit());
             segment.setSpectralAxisValues(new double[]{filter.getWleff()});
             segment.setSpectralAxisUnits(filter.getUnit());
             //TODO Add filter information
@@ -152,7 +157,7 @@ public class SpectralAxis extends AbstractAxis<XQuantity> {
                 v.addError("Missing/Invalid X Axis Bin Min");
             }
 
-            if(mode.equals("Energy Bin") && (binmax==null || Double.isNaN(binmin))) {
+            if(mode.equals("Energy Bin") && (binmax==null || Double.isNaN(binmax))) {
                 v.addError("Missing/Invalid X Axis Bin Max");
             }
 

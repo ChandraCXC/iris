@@ -5,6 +5,7 @@
 
 package cfa.vo.sed.builder.dm;
 
+import cfa.vo.sed.setup.validation.Validable;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedException;
 

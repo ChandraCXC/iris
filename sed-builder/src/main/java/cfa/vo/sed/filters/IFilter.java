@@ -34,6 +34,8 @@ public interface IFilter {
 
     public Number[] getData(int segment, int column) throws IOException, FilterException;
 
+    public Object[] getColumnData(int segment, int column) throws IOException, FilterException;
+
     public List<ISegmentMetadata> getMetadata() throws IOException, FilterException;
 
     public String getDescription();

@@ -22,18 +22,25 @@ import cfa.vo.iris.gui.widgets.SedList;
 import cfa.vo.iris.interop.SedSAMPController;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.utils.NameResolver;
+import cfa.vo.iris.utils.NameResolver.Position;
+import cfa.vo.iris.utils.SkyCoordinates;
 import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sedlib.DoubleParam;
+import cfa.vo.sedlib.PositionParam;
 import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.TextParam;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import java.awt.Component;
 import java.beans.PropertyVetoException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -43,8 +50,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
+import jsky.catalog.Catalog;
 import org.astrogrid.samp.client.SampException;
 import org.jdesktop.application.Action;
+import org.jdesktop.application.Task;
 
 /**
  *
@@ -66,7 +75,7 @@ public class SedBuilderMainView extends JInternalFrame {
         initComponents();
 
         this.manager = manager;
-        
+      
         loadFrame = new LoadSegmentFrame(manager);
         SedBuilder.getWorkspace().addFrame(loadFrame);
 
@@ -79,8 +88,10 @@ public class SedBuilderMainView extends JInternalFrame {
 
             @Override
             public void process(ExtSed source, SedCommand payload) {
-                if(payload!=SedCommand.REMOVED)
+                if(payload!=SedCommand.REMOVED) {
+                    setSed(null);
                     setSed(source);
+                }
                 else
                     setSed(null);
             }
@@ -153,12 +164,6 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton11 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
-        jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton13 = new javax.swing.JButton();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jButton14 = new javax.swing.JButton();
         jSplitPane1 = new javax.swing.JSplitPane();
         jPanel3 = new javax.swing.JPanel();
         sedPanel = new javax.swing.JScrollPane();
@@ -176,6 +181,18 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton6 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jToolBar3 = new javax.swing.JToolBar();
+        jLabel1 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jComboBox1 = new javax.swing.JComboBox();
+        jButton13 = new javax.swing.JButton();
+        jSeparator2 = new javax.swing.JToolBar.Separator();
+        jLabel5 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        jTextField3 = new javax.swing.JTextField();
+        jSeparator3 = new javax.swing.JToolBar.Separator();
+        jButton14 = new javax.swing.JButton();
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -277,37 +294,6 @@ public class SedBuilderMainView extends JInternalFrame {
         jSeparator1.setName("jSeparator1"); // NOI18N
         jToolBar1.add(jSeparator1);
 
-        jLabel1.setText("Target Name:");
-        jLabel1.setName("jLabel1"); // NOI18N
-        jToolBar1.add(jLabel1);
-
-        jTextField1.setName("jTextField1"); // NOI18N
-        jToolBar1.add(jTextField1);
-
-        jButton13.setIcon(new ImageIcon(getClass().getResource("/search.png")));
-        jButton13.setText("Resolve");
-        jButton13.setBorder(null);
-        jButton13.setFocusable(false);
-        jButton13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton13.setName("jButton13"); // NOI18N
-        jButton13.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton13);
-
-        jTextField2.setName("jTextField2"); // NOI18N
-        jToolBar1.add(jTextField2);
-
-        jTextField3.setName("jTextField3"); // NOI18N
-        jToolBar1.add(jTextField3);
-
-        jButton14.setIcon(new ImageIcon(getClass().getResource("/apply.png")));
-        jButton14.setText("Apply");
-        jButton14.setBorder(null);
-        jButton14.setFocusable(false);
-        jButton14.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton14.setName("jButton14"); // NOI18N
-        jButton14.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(jButton14);
-
         jSplitPane1.setBorder(null);
         jSplitPane1.setName("jSplitPane1"); // NOI18N
 
@@ -325,7 +311,7 @@ public class SedBuilderMainView extends JInternalFrame {
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(sedPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
+            .add(sedPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 429, Short.MAX_VALUE)
         );
 
         jSplitPane1.setLeftComponent(jPanel3);
@@ -490,6 +476,73 @@ public class SedBuilderMainView extends JInternalFrame {
         jTable1.getColumnModel().getColumn(2).setPreferredWidth(255);
         jTable1.getColumnModel().getColumn(3).setPreferredWidth(50);
 
+        jToolBar3.setFloatable(false);
+        jToolBar3.setRollover(true);
+        jToolBar3.setName("jToolBar3"); // NOI18N
+
+        jLabel1.setText("Target Name:");
+        jLabel1.setName("jLabel1"); // NOI18N
+        jToolBar3.add(jLabel1);
+
+        jTextField1.setName("jTextField1"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${targetName}"), jTextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        jToolBar3.add(jTextField1);
+
+        jComboBox1.setModel(new DefaultComboBoxModel(resolver.getCatalogs().toArray(new Catalog[resolver.getCatalogs().size()])));
+        jComboBox1.setName("jComboBox1"); // NOI18N
+        jToolBar3.add(jComboBox1);
+
+        jButton13.setAction(actionMap.get("resolve")); // NOI18N
+        jButton13.setFont(new java.awt.Font("Lucida Grande", 0, 10));
+        jButton13.setIcon(new ImageIcon(getClass().getResource("/search.png")));
+        jButton13.setBorderPainted(false);
+        jButton13.setFocusable(false);
+        jButton13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton13.setName("jButton13"); // NOI18N
+        jButton13.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar3.add(jButton13);
+
+        jSeparator2.setName("jSeparator2"); // NOI18N
+        jToolBar3.add(jSeparator2);
+
+        jLabel5.setText("RA:");
+        jLabel5.setName("jLabel5"); // NOI18N
+        jToolBar3.add(jLabel5);
+
+        jTextField2.setName("jTextField2"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${ra}"), jTextField2, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        jToolBar3.add(jTextField2);
+
+        jLabel6.setText("DEC:");
+        jLabel6.setName("jLabel6"); // NOI18N
+        jToolBar3.add(jLabel6);
+
+        jTextField3.setName("jTextField3"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dec}"), jTextField3, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        jToolBar3.add(jTextField3);
+
+        jSeparator3.setName("jSeparator3"); // NOI18N
+        jToolBar3.add(jSeparator3);
+
+        jButton14.setAction(actionMap.get("apply")); // NOI18N
+        jButton14.setFont(new java.awt.Font("Lucida Grande", 0, 10));
+        jButton14.setIcon(new ImageIcon(getClass().getResource("/apply.png")));
+        jButton14.setBorderPainted(false);
+        jButton14.setFocusable(false);
+        jButton14.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton14.setName("jButton14"); // NOI18N
+        jButton14.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar3.add(jButton14);
+
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -498,11 +551,12 @@ public class SedBuilderMainView extends JInternalFrame {
                 .addContainerGap()
                 .add(jLabel2)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(sedName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE)
+                .add(sedName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jButton1))
-            .add(jToolBar2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 641, Short.MAX_VALUE)
-            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 641, Short.MAX_VALUE)
+            .add(jToolBar2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)
+            .add(jToolBar3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -511,10 +565,12 @@ public class SedBuilderMainView extends JInternalFrame {
                     .add(jLabel2)
                     .add(sedName, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jButton1))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jToolBar3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jToolBar2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 46, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE))
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel1);
@@ -523,15 +579,15 @@ public class SedBuilderMainView extends JInternalFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jToolBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 875, Short.MAX_VALUE)
-            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 875, Short.MAX_VALUE)
+            .add(jToolBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 873, Short.MAX_VALUE)
+            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 873, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 51, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 341, Short.MAX_VALUE))
+                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 457, Short.MAX_VALUE))
         );
 
         bindingGroup.bind();
@@ -586,14 +642,19 @@ public class SedBuilderMainView extends JInternalFrame {
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar.Separator jSeparator1;
+    private javax.swing.JToolBar.Separator jSeparator2;
+    private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
@@ -601,6 +662,7 @@ public class SedBuilderMainView extends JInternalFrame {
     private javax.swing.JTextField jTextField3;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToolBar jToolBar2;
+    private javax.swing.JToolBar jToolBar3;
     private javax.swing.JTextField sedName;
     private javax.swing.JScrollPane sedPanel;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
@@ -673,6 +735,11 @@ public class SedBuilderMainView extends JInternalFrame {
         ExtSed s = sed;
         setSed(null);
         setSed(s);
+
+        if(!this.isIcon() && !this.isVisible()) {
+            this.setVisible(true);
+        }
+
     }
 
     private class PosRenderer extends JLabel implements TableCellRenderer {
@@ -738,6 +805,9 @@ public class SedBuilderMainView extends JInternalFrame {
 
     @Action
     public void newSegment() throws PropertyVetoException {
+        loadFrame.setTargetName(targetName);
+        loadFrame.setRa(ra);
+        loadFrame.setDec(dec);
         loadFrame.show();
         if(loadFrame.isIcon())
             loadFrame.setIcon(false);
@@ -746,6 +816,7 @@ public class SedBuilderMainView extends JInternalFrame {
     }
 
     private List<Segment> selectedSegments;
+    public static final String PROP_SELECTEDSEGMENTS = "selectedSegments";
 
     /**
      * Get the value of selectedSegments
@@ -762,7 +833,9 @@ public class SedBuilderMainView extends JInternalFrame {
      * @param selectedSegments new value of selectedSegments
      */
     public void setSelectedSegments(List<Segment> selectedSegments) {
+        List oldSelectedSegments = this.selectedSegments;
         this.selectedSegments = selectedSegments;
+        firePropertyChange(PROP_SELECTEDSEGMENTS, oldSelectedSegments, selectedSegments);
     }
 
     private boolean segmentSelected;
@@ -792,22 +865,29 @@ public class SedBuilderMainView extends JInternalFrame {
     public void editSegment() throws Exception {
         boolean warning = false;
         for(Segment s : selectedSegments) {
-            Map<Segment, JInternalFrame> map = (Map<Segment, JInternalFrame>) sed.getAttachment("builder:configuration");
+            Map<Segment, SegmentFrame> map = (Map<Segment, SegmentFrame>) sed.getAttachment("builder:configuration");
             if(map!=null) {
                 if(map.containsKey(s)) {
-                    JInternalFrame sf = map.get(s);
+                    SegmentFrame sf = map.get(s);
+                    sf.update(s);
                     sf.setVisible(true);
                 } else
                     warning = true;
             } else
                 warning = true;
+
+            if(warning) {
+                EditTargetFrame f = new EditTargetFrame(s);
+                SedBuilder.getWorkspace().addFrame(f);
+                f.setVisible(true);
+            }
         }
-        if(warning) {
-            NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
-                        "The segment was imported 'as is', for example from NED or from file, so it can't be edited.",
-                        "Editing not available for this segment",
-                        NarrowOptionPane.WARNING_MESSAGE);
-        }
+//        if(warning) {
+//            NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
+//                        "The segment was imported 'as is', for example from NED or from file, so it can't be edited.",
+//                        "Editing not available for this segment",
+//                        NarrowOptionPane.WARNING_MESSAGE);
+//        }
     }
 
     @Action
@@ -827,7 +907,7 @@ public class SedBuilderMainView extends JInternalFrame {
         try {
             ExtSed s = new ExtSed(sed.getId()+"Selection", false);
             s.addSegment(selectedSegments);
-            ((SedSAMPController)SedBuilder.getApplication().getSAMPController()).sendSedMessage(sed);
+            ((SedSAMPController)SedBuilder.getApplication().getSAMPController()).sendSedMessage(s);
         } catch (SedInconsistentException ex) {//If the segment is already in the SED this exception can't be thrown.
             Logger.getLogger(SedBuilderMainView.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SedNoDataException ex) {//If the segment is alreadt in the SED this exception can't be thrown.
@@ -857,10 +937,149 @@ public class SedBuilderMainView extends JInternalFrame {
     @Action
     public void newPoint() {
         PhotometryPointFrame f = new PhotometryPointFrame(sed, manager);
+        f.setRa(ra);
+        f.setDec(dec);
+        f.setTargetName(targetName);
         SedBuilder.getWorkspace().addFrame(f);
         f.show();
     }
 
+    private NameResolver resolver = NameResolver.getInstance();
+
+    private String ra;
+    public static final String PROP_RA = "ra";
+
+    /**
+     * Get the value of ra
+     *
+     * @return the value of ra
+     */
+    public String getRa() {
+        return ra;
+    }
+
+    /**
+     * Set the value of ra
+     *
+     * @param ra new value of ra
+     */
+    public void setRa(String ra) {
+        if (ra != null) {
+            if (!ra.isEmpty()) {
+                ra = SkyCoordinates.getRaDegString(ra);
+            }
+        }
+        String oldRa = this.ra;
+        this.ra = ra;
+        firePropertyChange(PROP_RA, oldRa, ra);
+    }
+
+    private String dec;
+    public static final String PROP_DEC = "dec";
+
+    /**
+     * Get the value of dec
+     *
+     * @return the value of dec
+     */
+    public String getDec() {
+        return dec;
+    }
+
+    /**
+     * Set the value of dec
+     *
+     * @param dec new value of dec
+     */
+    public void setDec(String dec) {
+        if (dec != null) {
+            if (!dec.isEmpty()) {
+                dec = SkyCoordinates.getDecDegString(dec);
+            }
+        }
+        String oldDec = this.dec;
+        this.dec = dec;
+        firePropertyChange(PROP_DEC, oldDec, dec);
+    }
+
+    private String targetName;
+    public static final String PROP_TARGETNAME = "targetName";
+
+    /**
+     * Get the value of targetName
+     *
+     * @return the value of targetName
+     */
+    public String getTargetName() {
+        return targetName;
+    }
+
+    /**
+     * Set the value of targetName
+     *
+     * @param targetName new value of targetName
+     */
+    public void setTargetName(String targetName) {
+        String oldTargetName = this.targetName;
+        this.targetName = targetName;
+        firePropertyChange(PROP_TARGETNAME, oldTargetName, targetName);
+    }
+
+    @Action
+    public Task resolve() {
+        return new ResolveTask(org.jdesktop.application.Application.getInstance());
+    }
+
+    private class ResolveTask extends org.jdesktop.application.Task<Object, Void> {
+        private Catalog cat;
+
+        ResolveTask(org.jdesktop.application.Application app) {
+            super(app);
+            cat = (Catalog) jComboBox1.getSelectedItem();
+        }
+
+        @Override protected Object doInBackground() {
+            Object pos = null;
+                try {
+                    pos = resolver.resolve(cat, targetName);
+                } catch (RuntimeException ex) {
+                    return ex.getMessage();
+                } catch (IOException ex) {
+                    return ex.getMessage();
+                }
+            return pos;
+        }
+        @Override protected void succeeded(Object result) {
+            if(result instanceof String)
+                NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(), result, "Error trying to resolve name", NarrowOptionPane.ERROR_MESSAGE);
+            else {
+                Position pos = (Position) result;
+                setRa(pos.getRa().toString());
+                setDec(pos.getDec().toString());
+            }
+        }
+    }
+
+    @Action
+    public void apply() {
+        for(int i=0; i<sed.getNumberOfSegments(); i++) {
+            Segment segment = sed.getSegment(i);
+            segment.getTarget().setName(new TextParam(targetName));
+
+            DoubleParam raD = new DoubleParam(Double.valueOf(ra));
+            DoubleParam decD = new DoubleParam(Double.valueOf(dec));
+
+            PositionParam pos = new PositionParam();
+
+            DoubleParam[] p = new DoubleParam[]{raD, decD};
+
+            pos.setValue(p);
+
+            segment.getTarget().setPos(pos);
+
+            SedBuilder.update();
+        }
+    }
 
 
 

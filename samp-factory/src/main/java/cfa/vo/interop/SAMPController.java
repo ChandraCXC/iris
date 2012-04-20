@@ -104,7 +104,8 @@ public class SAMPController extends GuiHubConnector {
 
         this.declareSubscriptions(computeSubscriptions());
 
-        meta.setIconUrl(iconUrl);
+        if(iconUrl!=null)
+            meta.setIconUrl(iconUrl);
 
         this.addConnectionListener(new SubscriptionListener());
 

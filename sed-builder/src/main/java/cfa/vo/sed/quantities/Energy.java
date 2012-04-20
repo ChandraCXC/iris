@@ -32,6 +32,7 @@ public class Energy extends AbstractQuantity {
         add(XUnit.EV);
         add(XUnit.KEV);
         add(XUnit.MEV);
+        add(XUnit.GEV);
     }
 
 }

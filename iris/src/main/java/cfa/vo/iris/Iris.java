@@ -21,7 +21,8 @@ package cfa.vo.iris;
 
 import cfa.vo.iris.test.TestBuilder;
 import cfa.vo.iris.test.TestLogger;
-import cfa.vo.iris.test.SSATestHandler;
+import cfa.vo.iris.test.TestSSAServer;
+import cfa.vo.sed.builder.SedBuilder;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -89,11 +90,14 @@ public class Iris extends AbstractIrisApplication {
                 components.add(tb);
                 TestLogger tl = new TestLogger();
                 components.add(tl);
-                SSATestHandler th = new SSATestHandler();
+                TestSSAServer th = new TestSSAServer();
                 components.add(th);
             }
             if(prop.equals("debug")) {
                 Logger.getLogger("").setLevel(Level.ALL);
+            }
+            if(prop.equals("ssa")) {
+                SedBuilder.SSA=true;
             }
         }
 

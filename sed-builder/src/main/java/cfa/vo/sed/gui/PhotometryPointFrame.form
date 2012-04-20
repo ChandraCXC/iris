@@ -103,11 +103,10 @@
                 <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
                   <action class="cfa.vo.sed.gui.NewPhotometryPointFrame" id="add" methodName="add"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Add Point to SED"/>
                 <Property name="name" type="java.lang.String" value="jButton6" noResource="true"/>
               </Properties>
               <BindingProperties>
-                <BindingProperty name="enabled" source="Form" sourcePath="${point.validation.valid}" target="jButton6" targetPath="enabled" updateStrategy="0" immediately="false"/>
+                <BindingProperty name="enabled" source="Form" sourcePath="${pointSegment.validator.validation.valid}" target="jButton6" targetPath="enabled" updateStrategy="0" immediately="false"/>
               </BindingProperties>
             </Component>
           </SubComponents>
@@ -313,9 +312,7 @@
                         <Property name="name" type="java.lang.String" value="targetName" noResource="true"/>
                       </Properties>
                       <BindingProperties>
-                        <BindingProperty name="text" source="Form" sourcePath="${point.target.name}" target="jTextField16" targetPath="text" updateStrategy="0" immediately="false">
-                          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
-                        </BindingProperty>
+                        <BindingProperty name="text" source="Form" sourcePath="${pointSegment.target.name}" target="jTextField16" targetPath="text" updateStrategy="0" immediately="false"/>
                       </BindingProperties>
                     </Component>
                     <Component class="javax.swing.JTextField" name="jTextField17">
@@ -363,9 +360,7 @@
                         <Property name="name" type="java.lang.String" value="publisherText" noResource="true"/>
                       </Properties>
                       <BindingProperties>
-                        <BindingProperty name="text" source="Form" sourcePath="${point.target.publisher}" target="jTextField19" targetPath="text" updateStrategy="0" immediately="false">
-                          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
-                        </BindingProperty>
+                        <BindingProperty name="text" source="Form" sourcePath="${pointSegment.target.publisher}" target="jTextField19" targetPath="text" updateStrategy="0" immediately="false"/>
                       </BindingProperties>
                     </Component>
                     <Component class="javax.swing.JComboBox" name="jComboBox8">
@@ -432,7 +427,7 @@
                             <Property name="name" type="java.lang.String" value="validation" noResource="true"/>
                           </Properties>
                           <BindingProperties>
-                            <BindingProperty name="text" source="Form" sourcePath="${point.validation.string}" target="jTextArea4" targetPath="text" updateStrategy="0" immediately="false">
+                            <BindingProperty name="text" source="Form" sourcePath="${pointSegment.validator.validation.string}" target="jTextArea4" targetPath="text" updateStrategy="0" immediately="false">
                               <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
                             </BindingProperty>
                           </BindingProperties>
@@ -464,7 +459,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <Component id="jPanel11" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="52" max="32767" attributes="0"/>
+                          <EmptySpace pref="54" max="32767" attributes="0"/>
                           <Component id="jPanel12" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -575,7 +570,7 @@
                       </Properties>
                       <BindingProperties>
                         <BindingProperty name="elements" source="Form" sourcePath="${theYUnits}" target="xAxisCombo10" targetPath="elements" updateStrategy="0" immediately="false"/>
-                        <BindingProperty name="selectedItem" source="Form" sourcePath="${point.fluxAxis.unit}" target="xAxisCombo10" targetPath="selectedItem" updateStrategy="0" immediately="false">
+                        <BindingProperty name="selectedItem" source="Form" sourcePath="${pointSegment.point.fluxAxis.unit}" target="xAxisCombo10" targetPath="selectedItem" updateStrategy="0" immediately="false">
                           <Property name="converter" type="org.jdesktop.beansbinding.Converter" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                             <Connection code="new YUnitsConverter()" type="code"/>
                           </Property>
@@ -605,8 +600,7 @@
                         <Property name="name" type="java.lang.String" value="jTextField13" noResource="true"/>
                       </Properties>
                       <BindingProperties>
-                        <BindingProperty name="text" source="Form" sourcePath="${point.fluxAxis.value}" target="jTextField13" targetPath="text" updateStrategy="0" immediately="false">
-                          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+                        <BindingProperty name="text" source="Form" sourcePath="${pointSegment.point.fluxAxis.value}" target="jTextField13" targetPath="text" updateStrategy="0" immediately="false">
                           <Property name="converter" type="org.jdesktop.beansbinding.Converter" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                             <Connection code="new StringToDoubleConverter()" type="code"/>
                           </Property>
@@ -624,8 +618,7 @@
                         <Property name="name" type="java.lang.String" value="jTextField14" noResource="true"/>
                       </Properties>
                       <BindingProperties>
-                        <BindingProperty name="text" source="Form" sourcePath="${point.fluxAxis.error}" target="jTextField14" targetPath="text" updateStrategy="0" immediately="false">
-                          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+                        <BindingProperty name="text" source="Form" sourcePath="${pointSegment.point.fluxAxis.error}" target="jTextField14" targetPath="text" updateStrategy="0" immediately="false">
                           <Property name="converter" type="org.jdesktop.beansbinding.Converter" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                             <Connection code="new StringToDoubleConverter()" type="code"/>
                           </Property>
@@ -773,7 +766,7 @@
                         <Property name="name" type="java.lang.String" value="jTextField9" noResource="true"/>
                       </Properties>
                       <BindingProperties>
-                        <BindingProperty name="text" source="Form" sourcePath="${point.spectralAxis.value}" target="jTextField9" targetPath="text" updateStrategy="0" immediately="false">
+                        <BindingProperty name="text" source="Form" sourcePath="${pointSegment.point.spectralAxis.value}" target="jTextField9" targetPath="text" updateStrategy="0" immediately="false">
                           <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
                           <Property name="converter" type="org.jdesktop.beansbinding.Converter" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                             <Connection code="new StringToDoubleConverter()" type="code"/>
@@ -787,8 +780,7 @@
                         <Property name="name" type="java.lang.String" value="jTextField10" noResource="true"/>
                       </Properties>
                       <BindingProperties>
-                        <BindingProperty name="text" source="Form" sourcePath="${point.spectralAxis.binmin}" target="jTextField10" targetPath="text" updateStrategy="0" immediately="false">
-                          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+                        <BindingProperty name="text" source="Form" sourcePath="${pointSegment.point.spectralAxis.binmin}" target="jTextField10" targetPath="text" updateStrategy="0" immediately="false">
                           <Property name="converter" type="org.jdesktop.beansbinding.Converter" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                             <Connection code="new StringToDoubleConverter()" type="code"/>
                           </Property>
@@ -799,11 +791,14 @@
                     <Component class="javax.swing.JTextField" name="jTextField11">
                       <Properties>
                         <Property name="editable" type="boolean" value="false"/>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="null"/>
+                        </Property>
+                        <Property name="enabled" type="boolean" value="false"/>
                         <Property name="name" type="java.lang.String" value="jTextField11" noResource="true"/>
                       </Properties>
                       <BindingProperties>
-                        <BindingProperty name="text" source="Form" sourcePath="${point.spectralAxis.filter}" target="jTextField11" targetPath="text" updateStrategy="1" immediately="false">
-                          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+                        <BindingProperty name="text" source="Form" sourcePath="${pointSegment.point.spectralAxis.filter}" target="jTextField11" targetPath="text" updateStrategy="0" immediately="false">
                           <Property name="converter" type="org.jdesktop.beansbinding.Converter" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                             <Connection code="new PhotometryFilterConverter()" type="code"/>
                           </Property>
@@ -815,7 +810,6 @@
                         <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
                           <action class="cfa.vo.sed.gui.PhotometryPointFrame" id="chooseFilter" methodName="chooseFilter"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="Choose"/>
                         <Property name="name" type="java.lang.String" value="jButton3" noResource="true"/>
                       </Properties>
                       <BindingProperties>
@@ -827,8 +821,7 @@
                         <Property name="name" type="java.lang.String" value="jTextField12" noResource="true"/>
                       </Properties>
                       <BindingProperties>
-                        <BindingProperty name="text" source="Form" sourcePath="${point.spectralAxis.binmax}" target="jTextField12" targetPath="text" updateStrategy="0" immediately="false">
-                          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+                        <BindingProperty name="text" source="Form" sourcePath="${pointSegment.point.spectralAxis.binmax}" target="jTextField12" targetPath="text" updateStrategy="0" immediately="false">
                           <Property name="converter" type="org.jdesktop.beansbinding.Converter" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                             <Connection code="new StringToDoubleConverter()" type="code"/>
                           </Property>
@@ -857,7 +850,7 @@
                       </Properties>
                       <BindingProperties>
                         <BindingProperty name="elements" source="Form" sourcePath="${theXUnits}" target="xAxisCombo4" targetPath="elements" updateStrategy="0" immediately="false"/>
-                        <BindingProperty name="selectedItem" source="Form" sourcePath="${point.spectralAxis.unit}" target="xAxisCombo4" targetPath="selectedItem" updateStrategy="0" immediately="false">
+                        <BindingProperty name="selectedItem" source="Form" sourcePath="${pointSegment.point.spectralAxis.unit}" target="xAxisCombo4" targetPath="selectedItem" updateStrategy="0" immediately="false">
                           <Property name="converter" type="org.jdesktop.beansbinding.Converter" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                             <Connection code="new XUnitsConverter()" type="code"/>
                           </Property>

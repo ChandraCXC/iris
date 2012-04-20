@@ -5,8 +5,9 @@
 
 package cfa.vo.sed.builder.dm;
 
+import cfa.vo.sed.setup.validation.Validation;
 import cfa.vo.sed.quantities.AxisMetadata;
-import cfa.vo.sed.quantities.YQuantity;
+import cfa.vo.sed.quantities.SPVYQuantity;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedException;
 import cfa.vo.sedlib.common.Utypes;
@@ -15,7 +16,7 @@ import cfa.vo.sedlib.common.Utypes;
  *
  * @author olaurino
  */
-public class FluxAxis extends AbstractAxis<YQuantity> {
+public class FluxAxis extends AbstractAxis<SPVYQuantity> {
 
     private Double error;
     public static final String PROP_ERROR = "error";
@@ -46,6 +47,7 @@ public class FluxAxis extends AbstractAxis<YQuantity> {
         AxisMetadata md = new AxisMetadata(getQuantity(), getUnit());
 
         segment.createChar().createFluxAxis().setUcd(md.getUCD());
+        segment.createChar().createFluxAxis().setUnit(md.getUnitString());
         segment.setFluxAxisValues(new double[]{getValue()});
         segment.setFluxAxisUnits(md.getUnitString());
         if(error!=null)

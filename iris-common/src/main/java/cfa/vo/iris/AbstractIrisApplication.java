@@ -203,6 +203,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
                     }
                     ws.setDesktop(desktop);
                     desktop.setVisible(true);
+                    desktop.repaint();
                 }
             });
         }

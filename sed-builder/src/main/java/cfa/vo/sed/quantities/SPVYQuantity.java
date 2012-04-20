@@ -31,6 +31,7 @@ public enum SPVYQuantity implements IQuantity{
     FLUX(new SPVFlux()),
     FLUXDENSITY(new SPVFluxDensity()),
     MAGNITUDE(new SPVMagnitude()),
+    PHOTONFLUX(new SPVPhotonFlux()),
     PHOTONFLUXDENSITY(new SPVPhotonFluxDensity()),
     ;
 

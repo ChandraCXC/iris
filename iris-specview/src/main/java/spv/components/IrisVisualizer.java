@@ -94,7 +94,7 @@ public class IrisVisualizer implements IrisComponent {
 
     @Override
     public void init(IrisApplication app, IWorkspace workspace) {
-
+        
         manager = (SedlibSedManager) workspace.getSedManager();
 
         SpvInitialization spvinit = new SpvInitialization(new String[]{}, null);
@@ -478,7 +478,7 @@ public class IrisVisualizer implements IrisComponent {
                 }
             });
 
-            add(new AbstractMenuItem("Custom Fit Model Components Manager", "Install Custom Components that can be used for fitting SEDs", false,
+            add(new AbstractMenuItem("Custom Models Manager", "Install Custom Components that can be used for fitting SEDs", true,
                     "/ruler_small.png", "/ruler_tiny.png") {
 
                 @Override

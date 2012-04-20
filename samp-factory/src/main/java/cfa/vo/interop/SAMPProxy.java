@@ -33,7 +33,7 @@ import java.util.logging.Logger;
  * Proxy class used by the SAMPFactory to back instantiated objects.
  * @author olaurino
  */
-class SAMPProxy implements InvocationHandler {
+public class SAMPProxy implements InvocationHandler {
 
     private Map map = new HashMap();
 
@@ -163,7 +163,7 @@ class SAMPProxy implements InvocationHandler {
         list.add(args[0]);
     }
 
-    private static boolean returnsPrimitive(Method method) {
+    public static boolean returnsPrimitive(Method method) {
         Class clazz = method.getReturnType();
         if(isPrimitive(clazz))
             return true;
@@ -312,11 +312,11 @@ class SAMPProxy implements InvocationHandler {
         
     }
 
-    private boolean returnsList(Method method) {
+    public static boolean returnsList(Method method) {
         return Collection.class.isAssignableFrom(method.getReturnType());
     }
 
-    private boolean returnsArray(Method method) {
+    public static boolean returnsArray(Method method) {
         return method.getReturnType().isArray();
     }
 

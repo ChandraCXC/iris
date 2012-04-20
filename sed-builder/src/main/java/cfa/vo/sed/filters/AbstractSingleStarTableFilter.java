@@ -67,6 +67,14 @@ public abstract class AbstractSingleStarTableFilter extends AbstractFilter {
         return getData(column);
     }
 
+    @Override
+    public Object[] getColumnData(int segment, int column) throws IOException, FilterException {
+        if(segment>1)
+            throw new IndexOutOfBoundsException("This is a Single Table filter. Trying to access more than one segment.");
+
+        return getColumnData(column);
+    }
+
     public abstract StarTable makeStarTable(DataSource ds) throws TableFormatException, IOException;
 
     @Override
@@ -133,6 +141,23 @@ public abstract class AbstractSingleStarTableFilter extends AbstractFilter {
         return (Number[]) array.toArray(arr);
     }
 
+    public Object[] getColumnData(int column) throws IOException {
+        if(table==null)
+            table = makeStarTable(getDataSource(getUrl()));
+
+        List array = new ArrayList();
+
+        RowSequence rowSequence = table.getRowSequence();
+
+        for(int i = 0; rowSequence.next(); i++) {
+            Object[] row = (Object[]) rowSequence.getRow();
+
+            array.add(row[column]);
+        }
+
+        return array.toArray(new Object[array.size()]);
+    }
+
     protected final DataSource getDataSource(URL url) throws IOException {
         if(url.getProtocol().equals("file"))
             return new FileDataSource(url.getFile());
@@ -148,6 +173,13 @@ public abstract class AbstractSingleStarTableFilter extends AbstractFilter {
     @Override
     public String getVersion() {
         return "2011";
+    }
+
+    public StarTable getStarTable() throws Exception {
+        if(table==null)
+            getMetadata();
+
+        return table;
     }
 
 }

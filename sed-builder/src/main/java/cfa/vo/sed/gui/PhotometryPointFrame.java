@@ -19,15 +19,14 @@ import cfa.vo.iris.utils.NameResolver.Position;
 import cfa.vo.iris.utils.SkyCoordinates;
 import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sed.builder.SedImporterException;
-import cfa.vo.sed.builder.dm.PhotometryPoint;
+import cfa.vo.sed.builder.dm.PhotometryPointSegment;
 import cfa.vo.sed.builder.photfilters.FilterSelectionListener;
 import cfa.vo.sed.builder.photfilters.PhotometryFilter;
 import cfa.vo.sed.quantities.IUnit;
 import cfa.vo.sed.quantities.SPVYQuantity;
+import cfa.vo.sed.quantities.SPVYUnit;
 import cfa.vo.sed.quantities.XQuantity;
 import cfa.vo.sed.quantities.XUnit;
-import cfa.vo.sed.quantities.YQuantity;
-import cfa.vo.sed.quantities.YUnit;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedException;
 import java.awt.BorderLayout;
@@ -52,13 +51,13 @@ import org.jdesktop.beansbinding.Converter;
  *
  * @author olaurino
  */
-public class PhotometryPointFrame extends javax.swing.JInternalFrame {
+public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame {
 
-    private NameResolver resolver = new NameResolver();
+    private NameResolver resolver = NameResolver.getInstance();
 
     private ExtSed sed;
 
-    private PhotometryPoint point = new PhotometryPoint();
+    private PhotometryPointSegment pointSegment = new PhotometryPointSegment();
 
     private SedlibSedManager manager;
 
@@ -73,15 +72,17 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
         return sed;
     }
 
-    public PhotometryPoint getPoint() {
-        return point;
+    public PhotometryPointSegment getPointSegment() {
+        return pointSegment;
     }
 
-    public void setPoint(PhotometryPoint point) {
-        this.point = point;
+    public void setPointSegment(PhotometryPointSegment point) {
+        this.pointSegment = point;
     }
 
-    
+    public void setTargetName(String name) {
+        pointSegment.getTarget().setName(name);
+    }
 
     /** This method is called from within the constructor to
      * initialize the form.
@@ -153,10 +154,9 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
 
         javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance().getContext().getActionMap(PhotometryPointFrame.class, this);
         jButton6.setAction(actionMap.get("add")); // NOI18N
-        jButton6.setText("Add Point to SED");
         jButton6.setName("jButton6"); // NOI18N
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${point.validation.valid}"), jButton6, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${pointSegment.validator.validation.valid}"), jButton6, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
         org.jdesktop.layout.GroupLayout jPanel18Layout = new org.jdesktop.layout.GroupLayout(jPanel18);
@@ -226,7 +226,7 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
 
         jTextField16.setName("targetName"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${point.target.name}"), jTextField16, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${pointSegment.target.name}"), jTextField16, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         jTextField17.setName("targetRa"); // NOI18N
@@ -250,7 +250,7 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
 
         jTextField19.setName("publisherText"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${point.target.publisher}"), jTextField19, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${pointSegment.target.publisher}"), jTextField19, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         jComboBox8.setModel(new DefaultComboBoxModel(resolver.getCatalogs().toArray(new Catalog[resolver.getCatalogs().size()])));
@@ -325,7 +325,7 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
         jTextArea4.setWrapStyleWord(true);
         jTextArea4.setName("validation"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${point.validation.string}"), jTextArea4, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${pointSegment.validator.validation.string}"), jTextArea4, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         jScrollPane4.setViewportView(jTextArea4);
@@ -378,7 +378,7 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
         org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${theYUnits}");
         org.jdesktop.swingbinding.JComboBoxBinding jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, xAxisCombo10);
         bindingGroup.addBinding(jComboBoxBinding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${point.fluxAxis.unit}"), xAxisCombo10, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${pointSegment.point.fluxAxis.unit}"), xAxisCombo10, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
         binding.setConverter(new YUnitsConverter());
         bindingGroup.addBinding(binding);
 
@@ -393,7 +393,7 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
 
         jTextField13.setName("jTextField13"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${point.fluxAxis.value}"), jTextField13, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${pointSegment.point.fluxAxis.value}"), jTextField13, org.jdesktop.beansbinding.BeanProperty.create("text"));
         binding.setConverter(new StringToDoubleConverter());
         bindingGroup.addBinding(binding);
 
@@ -402,7 +402,7 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
 
         jTextField14.setName("jTextField14"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${point.fluxAxis.error}"), jTextField14, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${pointSegment.point.fluxAxis.error}"), jTextField14, org.jdesktop.beansbinding.BeanProperty.create("text"));
         binding.setConverter(new StringToDoubleConverter());
         bindingGroup.addBinding(binding);
 
@@ -493,7 +493,7 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
 
         jTextField9.setName("jTextField9"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${point.spectralAxis.value}"), jTextField9, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${pointSegment.point.spectralAxis.value}"), jTextField9, org.jdesktop.beansbinding.BeanProperty.create("text"));
         binding.setConverter(new StringToDoubleConverter());
         bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jRadioButton7, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jTextField9, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
@@ -501,21 +501,22 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
 
         jTextField10.setName("jTextField10"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${point.spectralAxis.binmin}"), jTextField10, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${pointSegment.point.spectralAxis.binmin}"), jTextField10, org.jdesktop.beansbinding.BeanProperty.create("text"));
         binding.setConverter(new StringToDoubleConverter());
         bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jRadioButton8, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jTextField10, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
         jTextField11.setEditable(false);
+        jTextField11.setBorder(null);
+        jTextField11.setEnabled(false);
         jTextField11.setName("jTextField11"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, this, org.jdesktop.beansbinding.ELProperty.create("${point.spectralAxis.filter}"), jTextField11, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${pointSegment.point.spectralAxis.filter}"), jTextField11, org.jdesktop.beansbinding.BeanProperty.create("text"));
         binding.setConverter(new PhotometryFilterConverter());
         bindingGroup.addBinding(binding);
 
         jButton3.setAction(actionMap.get("chooseFilter")); // NOI18N
-        jButton3.setText("Choose");
         jButton3.setName("jButton3"); // NOI18N
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jRadioButton9, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jButton3, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
@@ -523,7 +524,7 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
 
         jTextField12.setName("jTextField12"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${point.spectralAxis.binmax}"), jTextField12, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${pointSegment.point.spectralAxis.binmax}"), jTextField12, org.jdesktop.beansbinding.BeanProperty.create("text"));
         binding.setConverter(new StringToDoubleConverter());
         bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jRadioButton8, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jTextField12, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
@@ -542,7 +543,7 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
         eLProperty = org.jdesktop.beansbinding.ELProperty.create("${theXUnits}");
         jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, xAxisCombo4);
         bindingGroup.addBinding(jComboBoxBinding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${point.spectralAxis.unit}"), xAxisCombo4, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${pointSegment.point.spectralAxis.unit}"), xAxisCombo4, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
         binding.setConverter(new XUnitsConverter());
         bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jRadioButton9, org.jdesktop.beansbinding.ELProperty.create("${!selected}"), xAxisCombo4, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
@@ -632,7 +633,7 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
                 .add(jPanel11, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 52, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 54, Short.MAX_VALUE)
                 .add(jPanel12, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -676,7 +677,7 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeMode
-        point.getSpectralAxis().setMode(evt.getActionCommand());
+        pointSegment.getPoint().getSpectralAxis().setMode(evt.getActionCommand());
     }//GEN-LAST:event_changeMode
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -756,7 +757,7 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
             strings.add(unit.getString());
         }
         setTheXUnits(strings);
-        point.getSpectralAxis().setQuantity(q);
+        pointSegment.getPoint().getSpectralAxis().setQuantity(q);
     }
     private String yQuantity;
     public static final String PROP_YQUANTITY = "yQuantity";
@@ -780,12 +781,12 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
         this.yQuantity = yQuantity;
         firePropertyChange(PROP_YQUANTITY, oldYQuantity, yQuantity);
         List strings = new ArrayList();
-        YQuantity q = YQuantity.valueOf(yQuantity);
+        SPVYQuantity q = SPVYQuantity.valueOf(yQuantity);
         for (IUnit unit : q.getPossibleUnits()) {
             strings.add(unit.getString());
         }
         setTheYUnits(strings);
-        point.getFluxAxis().setQuantity(q);
+        pointSegment.getPoint().getFluxAxis().setQuantity(q);
     }
     private List<String> theXUnits;
     public static final String PROP_THEXUNITS = "theXUnits";
@@ -847,6 +848,10 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
         return null;
     }
 
+    public String getTargetName() {
+        return pointSegment.getTarget().getName();
+    }
+
     @Action
     public Task resolve() {
         return new ResolveTask(org.jdesktop.application.Application.getInstance());
@@ -863,7 +868,7 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
         @Override protected Object doInBackground() {
             Object pos = null;
                 try {
-                    pos = resolver.resolve(cat, point.getTarget().getName());
+                    pos = resolver.resolve(cat, pointSegment.getTarget().getName());
                 } catch (RuntimeException ex) {
                     return ex.getMessage();
                 } catch (IOException ex) {
@@ -911,7 +916,7 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
         this.ra = ra;
         firePropertyChange(PROP_RA, oldRa, ra);
         if (ra != null) {
-            point.getTarget().setRa(raD);
+            pointSegment.getTarget().setRa(raD);
         }
     }
     private String dec;
@@ -943,7 +948,7 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
         this.dec = dec;
         firePropertyChange(PROP_DEC, oldDec, dec);
         if (dec != null) {
-            point.getTarget().setDec(decD);
+            pointSegment.getTarget().setDec(decD);
         }
     }
 
@@ -977,7 +982,7 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
     private class YUnitsConverter extends UnitsConverter {
         @Override
         protected IUnit getUnitsFromString(String s) throws SedImporterException {
-            return YUnit.getFromUnitString(s);
+            return SPVYUnit.getFromUnitString(s);
         }
     }
 
@@ -1019,12 +1024,12 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
     @Action
     public void add() {
         try {
-            Segment segment = point.get();
+            Segment segment = pointSegment.get();
             int i = sed.indexOf(generated);
             sed.remove(generated);
             sed.addSegment(segment, i >= 0 ? i : sed.getNumberOfSegments());
             this.generated = segment;
-            Map<Segment, JInternalFrame> attach = (Map<Segment, JInternalFrame>) manager.getAttachment(sed.getId(), "builder:configuration");
+            Map<Segment, SegmentFrame> attach = (Map<Segment, SegmentFrame>) manager.getAttachment(sed.getId(), "builder:configuration");
             if (attach == null) {
                 attach = new HashMap();
                 sed.addAttachment("builder:configuration", attach);
@@ -1054,9 +1059,7 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
         private PhotometryFilterBrowsePanel browser = new PhotometryFilterBrowsePanel();
 
         public PhotometryFilterSelector() throws Exception {
-            super();
-
-            browser.addFilterSelectionListener(this);
+            super("Photometry Filter Selector");
 
             JButton button = new JButton("Close");
             button.addActionListener(new ActionListener() {
@@ -1078,8 +1081,6 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
             this.setIconifiable(true);
             this.setMaximizable(true);
 
-
-
             this.pack();
         }
 
@@ -1089,8 +1090,24 @@ public class PhotometryPointFrame extends javax.swing.JInternalFrame {
         }
 
         @Override
+        public void show() {
+            browser.addFilterSelectionListener(this);
+            super.show();
+        }
+
+        @Override
         public void process(PhotometryFilter source, SedCommand payload) {
-            point.getSpectralAxis().setFilter(source);
+            pointSegment.getPoint().getSpectralAxis().setFilter(source);
+        }
+    }
+
+    @Override
+    public void update(Segment segment) {
+        if(segment.createTarget().isSetName())
+            setTargetName(segment.getTarget().getName().getValue());
+        if(segment.getTarget().isSetPos()) {
+            setRa(segment.getTarget().getPos().getValue()[0].getValue());
+            setDec(segment.getTarget().getPos().getValue()[1].getValue());
         }
     }
 

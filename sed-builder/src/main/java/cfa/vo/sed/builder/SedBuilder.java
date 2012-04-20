@@ -18,10 +18,9 @@ import cfa.vo.sed.filters.FileFormatManager;
 import cfa.vo.sed.gui.LoadSetupDialog;
 import cfa.vo.sed.gui.PhotometryFilterBrowser;
 import cfa.vo.sed.gui.PluginManager;
+import cfa.vo.sed.gui.SampChooser;
 import cfa.vo.sed.gui.SedBuilderMainView;
-import cfa.vo.sed.gui.SetupFrame;
 import cfa.vo.sed.setup.ISetup;
-import cfa.vo.sed.setup.SetupBean;
 import cfa.vo.sed.setup.SetupManager;
 import cfa.vo.sedlib.DoubleParam;
 import cfa.vo.sedlib.Sed;
@@ -63,6 +62,8 @@ public class SedBuilder implements IrisComponent {
     private PluginManager pManager;
 
     public static void update() {
+        if(view==null)
+            show();
         view.update();
     }
 
@@ -139,6 +140,8 @@ public class SedBuilder implements IrisComponent {
     public List<MessageHandler> getSampHandlers() {
         List<MessageHandler> list = new ArrayList();
         list.add(new SAMPTableHandler());
+        if(SSA)
+            list.add(new SSAHandler());
         return list;
     }
 
@@ -156,8 +159,10 @@ public class SedBuilder implements IrisComponent {
 
     @Override
     public void initCli(IrisApplication app) {
-        this.iris = app;
+        iris = app;
     }
+
+    public static boolean SSA = false;
 
     private class BuilderMenuItems extends ArrayList<IMenuItem> {
 
@@ -172,7 +177,7 @@ public class SedBuilder implements IrisComponent {
                 }
             });
 
-            add(new AbstractDesktopItem("File|SED Builder", "Load SED data from several different sources", "/tool.png", "/tool_tiny.png") {
+            add(new AbstractDesktopItem("SED Builder", "Load SED data from several different sources", "/tool.png", "/tool_tiny.png") {
 
                 @Override
                 public void onClick() {
@@ -217,7 +222,29 @@ public class SedBuilder implements IrisComponent {
         }
     }
 
-    private class SAMPTableHandler extends AbstractMessageHandler {
+    private static class SSAHandler extends AbstractMessageHandler {
+
+        public SSAHandler() {
+            super("spectrum.load.ssa-generic");
+        }
+
+        @Override
+        public Map processCall(HubConnection hc, String string, Message msg) throws Exception {
+
+            String formatName = (String) ((Map)msg.getParam("meta")).get("Access.Format");
+            formatName = formatName.equals("application/fits") ? "table.load.fits" : "table.load.votable";
+
+            Message m = new Message(formatName);
+            m.setParams(msg.getParams());
+
+            SAMPTableHandler handler = new SAMPTableHandler();
+
+            return handler.processCall(hc, string, m);
+        }
+
+    }
+
+    private static class SAMPTableHandler extends AbstractMessageHandler {
 
         public SAMPTableHandler() {
             super(new String[]{"table.load.votable",
@@ -225,35 +252,39 @@ public class SedBuilder implements IrisComponent {
         }
 
         @Override
-        public Map processCall(HubConnection hc, String string, Message msg) throws MalformedURLException {
+        public Map processCall(HubConnection hc, String senderId, Message msg) throws MalformedURLException {
+            senderId = iris.getSAMPController().getClientMap().get(senderId).toString();
             String formatName = msg.getMType().toLowerCase().equals("table.load.votable") ? "VOT" : "FITS";
+            String tableName = (String) msg.getParam("name");
+            if(tableName==null || tableName.isEmpty())
+                tableName = (String) msg.getParam("table-id");
             URL url = new URL((String) msg.getParam("url"));
             ExtSed sed = sedManager.getSelected() != null ? sedManager.getSelected() : sedManager.newSed("SAMP");
             try {
                 Sed s = Sed.read(url.openStream(), SedFormat.valueOf(formatName));
 
                 if (s.getNumberOfSegments() == 0) {
-                    return doImport(url, formatName, sed);
+                    return doImport(tableName, senderId, url, formatName, sed);
                 }
 
                 List<ValidationError> validErrors = new ArrayList();
                 s.validate(validErrors);
                 for (ValidationError error : validErrors) {
                     if (error.getError().equals(ValidationErrorEnum.MISSING_DATA_FLUXAXIS_VALUE)) {
-                        return doImport(url, formatName, sed);
+                        return doImport(tableName, senderId, url, formatName, sed);
                     }
                     if (error.getError().equals(ValidationErrorEnum.MISSING_DATA_SPECTRALAXIS_VALUE)) {
-                        return doImport(url, formatName, sed);
+                        return doImport(tableName, senderId, url, formatName, sed);
                     }
                     if (error.getError().equals(ValidationErrorEnum.MISSING_CHAR_FLUXAXIS_UCD)) {
-                        return doImport(url, formatName, sed);
+                        return doImport(tableName, senderId, url, formatName, sed);
                     }
                     if (error.getError().equals(ValidationErrorEnum.MISSING_CHAR_FLUXAXIS_UNIT)) {
                         for (int i = 0; i < s.getNumberOfSegments(); i++) {
                             Segment seg = s.getSegment(i);
                             String u = seg.getFluxAxisUnits();
                             if (u == null || u.equals("")) {
-                                return doImport(url, formatName, sed);
+                                return doImport(tableName, senderId, url, formatName, sed);
                             }
                         }
                     }
@@ -273,33 +304,23 @@ public class SedBuilder implements IrisComponent {
                 }
             } catch (Exception ex) {
                 Logger.getLogger(SedBuilder.class.getName()).log(Level.SEVERE, null, ex);
-                NarrowOptionPane.showMessageDialog(rootFrame,
-                        ex.getMessage(),
-                        "Import Error",
-                        NarrowOptionPane.ERROR_MESSAGE);
+                return doImport(tableName, senderId, url, formatName, sed);
+                
+//                NarrowOptionPane.showMessageDialog(rootFrame,
+//                        ex.getMessage(),
+//                        "Import Error",
+//                        NarrowOptionPane.ERROR_MESSAGE);
             }
+
+            update();
 
             return null;
         }
 
-        private Map doImport(URL url, String formatName, ExtSed sed) {
-            try {
-                //SED not valid
-                SetupBean c = new SetupBean();
-                c.setPositionInFile(0);
-                c.setFileLocation(url.toString());
-                formatName = formatName.equals("VOT") ? "VOTABLE" : formatName;
-                c.setFormatName(formatName);
-                SetupFrame sf = new SetupFrame(sedManager, c, sed);
-                workspace.addFrame(sf);
-                sf.setVisible(true);
-            } catch (Exception ex) {
-                Logger.getLogger(SedBuilder.class.getName()).log(Level.SEVERE, null, ex);
-                NarrowOptionPane.showMessageDialog(rootFrame,
-                        ex.getMessage(),
-                        "Import Error",
-                        NarrowOptionPane.ERROR_MESSAGE);
-            }
+        private Map doImport(String tableId, String senderId, URL url, String formatName, ExtSed sed) {
+            SampChooser chooser = new SampChooser(tableId, senderId, url, formatName, sed, workspace);
+            workspace.addFrame(chooser);
+            chooser.setVisible(true);
             return null;
         }
     }

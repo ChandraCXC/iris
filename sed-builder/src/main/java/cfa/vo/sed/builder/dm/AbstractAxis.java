@@ -5,16 +5,15 @@
 
 package cfa.vo.sed.builder.dm;
 
+import cfa.vo.sed.setup.validation.AbstractValidable;
 import cfa.vo.sed.quantities.IQuantity;
 import cfa.vo.sed.quantities.IUnit;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 
 /**
  *
  * @author olaurino
  */
-public abstract class AbstractAxis<QuantityClass extends IQuantity> implements Axis<QuantityClass> {
+public abstract class AbstractAxis<QuantityClass extends IQuantity> extends AbstractValidable implements Axis<QuantityClass> {
 
 //    private QuantityClass quantity;
 //    private IUnit unit;
@@ -95,32 +94,6 @@ public abstract class AbstractAxis<QuantityClass extends IQuantity> implements A
         propertyChangeSupport.firePropertyChange(PROP_VALUE, oldValue, value);
     }
 
-    @Override
-    public boolean isValid() {
-        return validate().isValid();
-    }
-
-
-    protected PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-
-    /**
-     * Add PropertyChangeListener.
-     *
-     * @param listener
-     */
-    @Override
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        propertyChangeSupport.addPropertyChangeListener(listener);
-    }
-
-    /**
-     * Remove PropertyChangeListener.
-     *
-     * @param listener
-     */
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        propertyChangeSupport.removePropertyChangeListener(listener);
-    }
-
+    
 
 }

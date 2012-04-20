@@ -18,7 +18,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package cfa.vo.sed.filters;
 
 import cfa.vo.sed.builder.ISegmentColumn;
@@ -32,8 +31,11 @@ import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.DescribedValue;
+import uk.ac.starlink.table.EmptyStarTable;
 import uk.ac.starlink.table.MultiTableBuilder;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.StoragePolicy;
@@ -49,7 +51,6 @@ import uk.ac.starlink.util.DataSource;
 public abstract class AbstractMultiStarTableFilter extends AbstractSingleStarTableFilter {
 
     private List<StarTable> tableList;
-
     private List<ISegmentMetadata> metaList;
 
     public AbstractMultiStarTableFilter(URL url) {
@@ -71,8 +72,25 @@ public abstract class AbstractMultiStarTableFilter extends AbstractSingleStarTab
     }
 
     @Override
+    public StarTable getStarTable() {
+        if (tableList == null) {
+            try {
+                populateList();
+            } catch (IOException ex) {
+                Logger.getLogger(AbstractMultiStarTableFilter.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        if (tableList != null) {
+            return tableList.get(0);
+        }
+
+        return new EmptyStarTable();
+    }
+
+    @Override
     public Number[] getData(int segment, int column) throws IOException, FilterException {
-        if(tableList==null) {
+        if (tableList == null) {
             populateList();
         }
 
@@ -83,28 +101,32 @@ public abstract class AbstractMultiStarTableFilter extends AbstractSingleStarTab
 
         Class contentClass = table.getColumnInfo(column).getContentClass();
 
-        if(contentClass.isArray()) {
-            if(!contentClass.getComponentType().isPrimitive())
-                return (Number[]) table.getCell(segment,column);
-            else {
+        if (contentClass.isArray()) {
+            if (!contentClass.getComponentType().isPrimitive()) {
+                return (Number[]) table.getCell(segment, column);
+            } else {
 
-                Object arr = table.getCell(segment,column);
+                Object arr = table.getCell(segment, column);
 
-                if(arr instanceof float[])
+                if (arr instanceof float[]) {
                     len = ((float[]) arr).length;
+                }
 
-                if(arr instanceof double[])
+                if (arr instanceof double[]) {
                     len = ((double[]) arr).length;
+                }
 
-                if(arr instanceof short[])
+                if (arr instanceof short[]) {
                     len = ((short[]) arr).length;
+                }
 
-                if(arr instanceof long[])
+                if (arr instanceof long[]) {
                     len = ((long[]) arr).length;
+                }
 
                 Number[] array = (Number[]) Array.newInstance(Number.class, len);
 
-                for(int i=0; i<len; i++) {
+                for (int i = 0; i < len; i++) {
                     array[i] = Array.getDouble(arr, i);
                 }
                 return array;
@@ -113,7 +135,7 @@ public abstract class AbstractMultiStarTableFilter extends AbstractSingleStarTab
 
             Number[] array = (Number[]) Array.newInstance(contentClass, len);
 
-            for(int i=0; i<len; i++) {
+            for (int i = 0; i < len; i++) {
                 array[i] = (Number) table.getCell(i, column);
 
             }
@@ -123,35 +145,58 @@ public abstract class AbstractMultiStarTableFilter extends AbstractSingleStarTab
         }
 
 
+
+    }
+
+    @Override
+    public Object[] getColumnData(int segment, int column) throws IOException, FilterException {
+        if (tableList == null) {
+            populateList();
+        }
+
+        StarTable table = tableList.get(segment);
+
+        int len = Tables.checkedLongToInt(table.getRowCount());
+
+        Class contentClass = table.getColumnInfo(column).getContentClass();
+
+        Object[] array = (Object[]) Array.newInstance(contentClass, len);
+
+        for (int i = 0; i < len; i++) {
+            array[i] = table.getCell(i, column);
+        }
+
+        return array;
+
     }
 
     @Override
     public List<ISegmentMetadata> getMetadata() throws FilterException, IOException {
-        
+
         List<ISegmentMetadata> list = new ArrayList();
 
         list.addAll(getMultipleMetadata());
 
         return list;
     }
-    
-    protected List<ISegmentMetadata> getMultipleMetadata() throws FilterException, IOException {      
-        
+
+    protected List<ISegmentMetadata> getMultipleMetadata() throws FilterException, IOException {
+
         try {
-            if(tableList == null) {
+            if (tableList == null) {
                 populateList();
             }
 
-            if(metaList == null) {
+            if (metaList == null) {
 
                 metaList = new ArrayList();
 
-                for(StarTable table : tableList){
+                for (StarTable table : tableList) {
 
                     List<ISegmentParameter> paramList = new ArrayList();
                     List<ISegmentColumn> columnList = new ArrayList();
 
-                    for(DescribedValue v : (List<DescribedValue>) table.getParameters()) {
+                    for (DescribedValue v : (List<DescribedValue>) table.getParameters()) {
                         paramList.add(new StarTableSegmentParameter(v.getInfo(), v.getValue()));
                     }
 
@@ -169,7 +214,7 @@ public abstract class AbstractMultiStarTableFilter extends AbstractSingleStarTab
                 }
 
             }
-            
+
             return metaList;
 
 
@@ -178,9 +223,9 @@ public abstract class AbstractMultiStarTableFilter extends AbstractSingleStarTab
             throw new FilterException("Error reading StarTable format", ex);
         }
 
-        
+
     }
-    
+
     @Override
     public final StarTable makeStarTable(DataSource ds) {
         throw new UnsupportedOperationException("Unsupported");
@@ -192,4 +237,11 @@ public abstract class AbstractMultiStarTableFilter extends AbstractSingleStarTab
         return getTableBuilder().makeStarTables(ds, StoragePolicy.ADAPTIVE);
     }
 
+    public List<StarTable> getStarTables() throws Exception {
+        if (tableList == null) {
+            populateList();
+        }
+
+        return tableList;
+    }
 }

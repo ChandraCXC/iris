@@ -2,14 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package cfa.vo.sed.builder.dm;
 
+import cfa.vo.sed.setup.validation.AbstractValidable;
+import cfa.vo.sed.setup.validation.AbstractValidableParent;
+import cfa.vo.sedlib.DataID;
 import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.TextParam;
 import cfa.vo.sedlib.common.SedException;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,132 +17,106 @@ import java.util.List;
  *
  * @author olaurino
  */
-public class PhotometryPoint implements Validable {
-    private SpectralAxis spectralAxis = new SpectralAxis();
-    private FluxAxis fluxAxis = new FluxAxis();
-    private Target target = new Target();
-
-    private PointListener pl = new PointListener();
+public class PhotometryPoint extends AbstractValidableParent implements SegmentComponent {
 
     public PhotometryPoint() {
-        pl.add(spectralAxis);
-        pl.add(fluxAxis);
-        pl.add(target);
-        pl.propertyChange(null);
+        super();
+        spectralAxis = new SpectralAxis();
+        fluxAxis = new FluxAxis();
     }
 
-    public Segment get() throws SedException {
-        if(!isValid())
-            throw new SedException("PhotometryPoint is invalid!");
-
-        Segment segment = new Segment();
+    @Override
+    public void addTo(Segment segment) throws SedException {
+        if (!spectralAxis.validate().isValid() || !fluxAxis.validate().isValid()) {
+             throw new SedException("PhotometryPoint is invalid!");
+        }
 
         spectralAxis.addTo(segment);
         fluxAxis.addTo(segment);
-        target.addTo(segment);
-
-        return segment;
-
+        DataID did = new DataID();
+        did.setDatasetID(new TextParam(id));
+        segment.setDataID(did);
     }
 
-    @Override
-    public Validation validate() {
-        pl.propertyChange(null);
-        return validation;
-    }
-
-    @Override
-    public boolean isValid() {
-        return validate().isValid();
-    }
-
-    private Validation validation;
-    public static final String PROP_VALIDATION = "validation";
+    private SpectralAxis spectralAxis;
+    public static final String PROP_SPECTRALAXIS = "spectralAxis";
 
     /**
-     * Get the value of validation
+     * Get the value of spectralAxis
      *
-     * @return the value of validation
+     * @return the value of spectralAxis
      */
-    public Validation getValidation() {
-        return validation;
-    }
-
-    /**
-     * Set the value of validation
-     *
-     * @param validation new value of validation
-     */
-    public void setValidation(Validation validation) {
-        Validation oldValidation = this.validation;
-        this.validation = validation;
-        propertyChangeSupport.firePropertyChange(PROP_VALIDATION, oldValidation, validation);
-    }
-    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-
-    /**
-     * Add PropertyChangeListener.
-     *
-     * @param listener
-     */
-    @Override
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        propertyChangeSupport.addPropertyChangeListener(listener);
-    }
-
-    /**
-     * Remove PropertyChangeListener.
-     *
-     * @param listener
-     */
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        propertyChangeSupport.removePropertyChangeListener(listener);
-    }
-
-
-    public FluxAxis getFluxAxis() {
-        return fluxAxis;
-    }
-
-    public void setFluxAxis(FluxAxis fluxAxis) {
-        this.fluxAxis = fluxAxis;
-    }
-
     public SpectralAxis getSpectralAxis() {
         return spectralAxis;
     }
 
+    /**
+     * Set the value of spectralAxis
+     *
+     * @param spectralAxis new value of spectralAxis
+     */
     public void setSpectralAxis(SpectralAxis spectralAxis) {
+        SpectralAxis oldSpectralAxis = this.spectralAxis;
         this.spectralAxis = spectralAxis;
+        propertyChangeSupport.firePropertyChange(PROP_SPECTRALAXIS, oldSpectralAxis, spectralAxis);
     }
 
-    public Target getTarget() {
-        return target;
+    private FluxAxis fluxAxis;
+    public static final String PROP_FLUXAXIS = "fluxAxis";
+
+    /**
+     * Get the value of fluxAxis
+     *
+     * @return the value of fluxAxis
+     */
+    public FluxAxis getFluxAxis() {
+        return fluxAxis;
     }
 
-    public void setTarget(Target target) {
-        this.target = target;
+    /**
+     * Set the value of fluxAxis
+     *
+     * @param fluxAxis new value of fluxAxis
+     */
+    public void setFluxAxis(FluxAxis fluxAxis) {
+        FluxAxis oldFluxAxis = this.fluxAxis;
+        this.fluxAxis = fluxAxis;
+        propertyChangeSupport.firePropertyChange(PROP_FLUXAXIS, oldFluxAxis, fluxAxis);
     }
 
-    private class PointListener implements PropertyChangeListener {
+    private String id;
+    public static final String PROP_ID = "id";
 
-        public List<Validable> validables = new ArrayList();
+    /**
+     * Get the value of id
+     *
+     * @return the value of id
+     */
+    public String getId() {
+        return id;
+    }
 
-        public void add(Validable validable) {
-            validables.add(validable);
-            validable.addPropertyChangeListener(this);
+    /**
+     * Set the value of id
+     *
+     * @param id new value of id
+     */
+    public void setId(String id) {
+        String oldId = this.id;
+        this.id = id;
+        propertyChangeSupport.firePropertyChange(PROP_ID, oldId, id);
+    }
+
+
+    private List<AbstractValidable> children;
+
+    @Override
+    protected List<AbstractValidable> getValidableChildren() {
+        if (children == null) {
+            children = new ArrayList();
+            children.add(spectralAxis);
+            children.add(fluxAxis);
         }
-
-        @Override
-        public void propertyChange(PropertyChangeEvent pce) {
-            Validation v = new Validation();
-            for(Validable validable : validables) {
-                Validation valid = validable.validate();
-                v.getWarnings().addAll(valid.getWarnings());
-                v.getErrors().addAll(valid.getErrors());
-            }
-            setValidation(v);
-        }
-
+        return children;
     }
 }
