@@ -21,12 +21,14 @@ a plot widget that inherits a plot status object from its predecessor.
 Because we are re-purposing the pan canvas as a residuals plot area when
 fitting, the pan canvas must be forcibly turned off when displaying a
 non-fitted SED.
- */
+*/
 
 public class SEDBasicPlotWidget extends BasicPlotWidget {
 
     public SEDBasicPlotWidget(Plottable pl, boolean no_access) {
         super(pl, no_access);
+
+        hideshow.setVisible(false);
     }
 
     public boolean getFromPlotStatus() {
