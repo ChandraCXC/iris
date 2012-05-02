@@ -334,9 +334,14 @@ public class IrisVisualizer implements IrisComponent {
                         currentFrame = idm.getInternalFrame();
                         currentFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
                         ws.addFrame(currentFrame);
+                        currentFrame.setVisible(true);
+                        try {
+                            currentFrame.setSelected(true);
+                        } catch (java.beans.PropertyVetoException e) {
+                        }
                     }
 
-                    currentFrame.show();
+//                    currentFrame.show();
 
                     if (manager.getSeds().isEmpty()) {
                         NarrowOptionPane.showMessageDialog(ws.getRootFrame(), "No SEDs to display. Please load a file.", "SED Visualizer", NarrowOptionPane.INFORMATION_MESSAGE);
