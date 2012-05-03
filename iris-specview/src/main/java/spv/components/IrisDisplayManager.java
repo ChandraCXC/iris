@@ -148,19 +148,19 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
     }
 
     public void remove(String name) {
-//        if (secondaryController != null) {
-//            secondaryController.remove(name);
-//
-//            PlotWidget plotWidget = secondaryController.getPlotWidget();
-//            Command[] commands = plotWidget.getCommands();
-//            Command command = commands[Callback.META_DATA.ord];
-//            if (command instanceof MetadataDisplay) {
-//                if (visualEditor != null) {
-//                    visualEditor.getFrame().setVisible(false);
-//                    visualEditor = null;
-//                }
-//            }
-//        }
+        if (secondaryController != null) {
+            secondaryController.remove(name);
+
+            PlotWidget plotWidget = secondaryController.getPlotWidget();
+            Command[] commands = plotWidget.getCommands();
+            Command command = commands[Callback.META_DATA.ord];
+            if (command instanceof MetadataDisplay) {
+                if (visualEditor != null) {
+                    visualEditor.getFrame().setVisible(false);
+                    visualEditor = null;
+                }
+            }
+        }
     }
 
     void setDesktopMode(boolean desktopMode) {
