@@ -11,6 +11,8 @@
 
 package cfa.vo.sed.gui;
 
+import cfa.vo.iris.events.MultipleSegmentEvent;
+import cfa.vo.iris.events.MultipleSegmentListener;
 import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SedListener;
@@ -101,6 +103,15 @@ public class SedBuilderMainView extends JInternalFrame {
 
             @Override
             public void process(Segment source, SegmentPayload payload) {
+                ExtSed s = payload.getSed();
+                setSed(s);
+            }
+        });
+
+        MultipleSegmentEvent.getInstance().add(new MultipleSegmentListener() {
+
+            @Override
+            public void process(List<Segment> source, SegmentPayload payload) {
                 ExtSed s = payload.getSed();
                 setSed(s);
             }
@@ -753,11 +764,11 @@ public class SedBuilderMainView extends JInternalFrame {
             if(radec==null) radec = new DoubleParam[]{null, null};
 
             String raS, decS;
-            if(radec[0]==null)
+            if(radec[0]==null || radec[0].getValue().isEmpty())
                 raS = "-";
             else
                 raS = Double.valueOf(radec[0].getValue()).isNaN() ? "-" : roundToSignificantFigures(Double.valueOf(radec[0].getValue()), 5).toString();
-            if(radec[1]==null)
+            if(radec[1]==null || radec[1].getValue().isEmpty())
                 decS = "-";
             else
                 decS = Double.valueOf(radec[1].getValue()).isNaN() ? "-" : roundToSignificantFigures(Double.valueOf(radec[1].getValue()), 5).toString();

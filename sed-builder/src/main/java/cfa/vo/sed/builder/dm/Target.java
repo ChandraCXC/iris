@@ -19,7 +19,7 @@ public class Target extends AbstractValidable implements SegmentComponent {
     public static final String PROP_NAME = "name";
     public static final String PROP_RA = "ra";
 
-    private String name;
+    private String name = "UNKNOWN";
     private Double ra;
     private Double dec;
 
@@ -59,6 +59,9 @@ public class Target extends AbstractValidable implements SegmentComponent {
     }
 
     public void setName(String name) {
+        if(name==null || name.isEmpty())
+            name = "UNKNOWN";
+        
         String oldName = this.name;
         this.name = name;
         propertyChangeSupport.firePropertyChange(ExtendedTarget.PROP_NAME, oldName, name);

@@ -171,7 +171,7 @@ public class SAMPProxy implements InvocationHandler {
         return false;
     }
 
-    private static boolean isPrimitive(Class clazz) {
+    public static boolean isPrimitive(Class clazz) {
         if(clazz.isPrimitive())
             return true;
         if(Number.class.isAssignableFrom(clazz))
@@ -243,7 +243,10 @@ public class SAMPProxy implements InvocationHandler {
             }
             Object res = method.invoke(object);
             if(res!=null)
-                map.put(objectName(method).toLowerCase(), serialize(res, returnType));
+                if(!res.getClass().equals(Class.class))
+                    map.put(objectName(method).toLowerCase(), serialize(res, returnType));
+                else
+                    map.put(objectName(method).toLowerCase(), ((Class)res).getCanonicalName());
         }
         return map;
 

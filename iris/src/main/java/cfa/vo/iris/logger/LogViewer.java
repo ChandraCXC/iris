@@ -7,7 +7,7 @@ import javax.swing.JInternalFrame;
 
 public class LogViewer extends JInternalFrame {
 
-    private static Logger logger = Logger.getLogger(LogViewer.class.getName());
+    private static final Logger logger = Logger.getLogger(LogViewer.class.getName());
 
     /** Creates new form Main
      * @param filename

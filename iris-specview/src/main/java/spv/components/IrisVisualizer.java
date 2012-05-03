@@ -33,6 +33,8 @@ import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.NullCommandLineInterface;
+import cfa.vo.iris.events.MultipleSegmentEvent;
+import cfa.vo.iris.events.MultipleSegmentListener;
 import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SedListener;
@@ -160,6 +162,21 @@ public class IrisVisualizer implements IrisComponent {
 
             @Override
             public void process(Segment source, final SegmentPayload payload) {
+                ExtSed sed = payload.getSed();
+
+                // If the sed structure was modified, invalidate
+                // any model associated with it.
+
+                invalidateModel(sed);
+
+                display(payload.getSed());
+            }
+        });
+
+        MultipleSegmentEvent.getInstance().add(new MultipleSegmentListener() {
+
+            @Override
+            public void process(List<Segment> source, final SegmentPayload payload) {
                 ExtSed sed = payload.getSed();
 
                 // If the sed structure was modified, invalidate

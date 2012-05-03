@@ -21,6 +21,7 @@ public class LazyFileListModel extends AbstractListModel {
     private List<Long> linePositions =
             Collections.synchronizedList(new ArrayList<Long>());
     private RandomAccessFile readerFile;
+    private int last = -1;
 
     /**
      * Create a <tt>LazyFileListModel</tt> that read list item from the specified
@@ -48,7 +49,6 @@ public class LazyFileListModel extends AbstractListModel {
 
             @Override
             public void run() {
-                int last = -1;
                 int current = linePositions.size() - 1;
                 if (last < current) {
                     fireIntervalAdded(LazyFileListModel.this, last + 1, current);

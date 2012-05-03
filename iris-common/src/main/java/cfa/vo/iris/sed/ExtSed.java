@@ -4,6 +4,7 @@
  */
 package cfa.vo.iris.sed;
 
+import cfa.vo.iris.events.MultipleSegmentEvent;
 import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SegmentEvent;
 import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
@@ -53,6 +54,10 @@ public class ExtSed extends Sed {
         }
     }
 
+    private void addSegmentSilently(Segment segment, int offset) throws SedNoDataException, SedInconsistentException{
+        super.addSegment(segment, offset);
+    }
+
     @Override
     public void addSegment(java.util.List<Segment> segments) throws SedInconsistentException, SedNoDataException {
         super.addSegment(segments);
@@ -60,12 +65,12 @@ public class ExtSed extends Sed {
 
     @Override
     public void addSegment(java.util.List<Segment> segments, int offset) throws SedInconsistentException, SedNoDataException {
-        super.addSegment(segments, offset);
+        for(Segment segment : segments) {
+            addSegmentSilently(segment, offset);
+        }
         if (managed) {
-            for (Segment segment : segments) {
-                SegmentEvent.getInstance().fire(segment, new SegmentPayload(this, SedCommand.ADDED));
-                LogEvent.getInstance().fire(this, new LogEntry("Segment added to SED: " + id, this));
-            }
+            MultipleSegmentEvent.getInstance().fire(segments, new SegmentPayload(this, SedCommand.ADDED));
+            LogEvent.getInstance().fire(this, new LogEntry("Segments added to SED: " + id, this));
         }
     }
 

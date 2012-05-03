@@ -746,15 +746,15 @@ public final class LoadSegmentFrame extends JInternalFrame {
         try {
             if (unsuc != null) {
                 if (!segList.isEmpty()) {
-                    for (Segment seg : segList) {
+//                    for (Segment seg : segList) {
                         try {
-                            sed.addSegment(seg);
+                            sed.addSegment(segList);
                         } catch (SedInconsistentException ex) {
                             NarrowOptionPane.showMessageDialog(this, "The segment was found phisically inconsistent with the rest of the SED", "Segment could not be imported", NarrowOptionPane.OK_OPTION);
                         } catch (SedNoDataException ex) {
                             NarrowOptionPane.showMessageDialog(this, "The segment contains no data", "Segment could not be imported", NarrowOptionPane.OK_OPTION);
                         }
-                    }
+//                    }
                 } else {
                     SetupBean conf = new SetupBean();
                     conf.setFileLocation(getURL().toString());
