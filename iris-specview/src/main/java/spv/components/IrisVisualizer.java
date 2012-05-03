@@ -21,6 +21,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 
+import cfa.vo.sedlib.common.SedInconsistentException;
+import cfa.vo.sedlib.common.SedNoDataException;
 import org.astrogrid.samp.client.MessageHandler;
 
 import cfa.vo.iris.AbstractDesktopItem;
@@ -64,6 +66,7 @@ import spv.sherpa.custom.CustomModelsManager;
 import spv.sherpa.custom.CustomModelsManagerView;
 import spv.sherpa.custom.DefaultCustomModel;
 import spv.spectrum.Spectrum;
+import spv.spectrum.SpectrumException;
 import spv.spectrum.factory.SED.SEDFactoryModule;
 import spv.spectrum.function.*;
 import spv.util.Command;
@@ -186,7 +189,8 @@ public class IrisVisualizer implements IrisComponent {
 
             if (managedSpectrum == null) {
 
-                Spectrum sp = factory.readAllSegments(null, sed);
+                Spectrum sp = null;
+                sp = factory.readAllSegments(null, sed);
                 sp.setName(sed.getId());
 
                 SherpaModelManager modelManager = new SherpaModelManager(sp, idm.getSAMPConnector(), ws.getDesktop());
@@ -208,11 +212,16 @@ public class IrisVisualizer implements IrisComponent {
 
             JInternalFrame frame = idm.getInternalFrame();
             if (frame != currentFrame) {
-                lastLocation = currentFrame.getLocation();
-                currentFrame.dispose();
+                lastLocation = null;
+                if (currentFrame != null) {
+                    lastLocation = currentFrame.getLocation();
+                    currentFrame.dispose();
+                }
                 currentFrame = frame;
                 currentFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
-                currentFrame.setLocation(lastLocation);
+                if (lastLocation != null) {
+                    currentFrame.setLocation(lastLocation);
+                }
                 frame.setTitle("Iris Visualizer");
                 ws.addFrame(frame);
             }

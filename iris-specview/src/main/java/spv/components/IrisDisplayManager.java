@@ -15,6 +15,7 @@ package spv.components;
 
 import javax.swing.*;
 import java.awt.*;
+import java.beans.PropertyVetoException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -279,6 +280,10 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
 
             JInternalFrame frame = visualEditor.getJFrame().getInternalFrame();
             ws.addFrame(frame);
+            try {
+                frame.setSelected(true);
+            } catch (PropertyVetoException e) {
+            }
         }
     }
 
