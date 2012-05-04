@@ -18,6 +18,7 @@ import cfa.vo.sedlib.common.SedParsingException;
 import cfa.vo.sedlib.io.SedFormat;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -122,8 +123,19 @@ public class ExtSed extends Sed {
 
     public boolean remove(Segment s) {
         boolean resp = super.segmentList.remove(s);
-        if(managed)
+        if(managed) {
             SegmentEvent.getInstance().fire(s, new SegmentPayload(this, SedCommand.REMOVED));
+            LogEvent.getInstance().fire(this, new LogEntry("Segments removed from SED: " + id, this));
+        }
+        return resp;
+    }
+
+    public boolean remove(List<Segment> segments) {
+        boolean resp = super.segmentList.removeAll(segments);
+        if(managed) {
+            MultipleSegmentEvent.getInstance().fire(segments, new SegmentPayload(this, SedCommand.REMOVED));
+            LogEvent.getInstance().fire(this, new LogEntry("Segments removed from SED: " + id, this));
+        }
         return resp;
     }
 

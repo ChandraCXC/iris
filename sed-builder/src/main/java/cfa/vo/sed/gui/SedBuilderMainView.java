@@ -908,8 +908,7 @@ public class SedBuilderMainView extends JInternalFrame {
                 "Confirm removal",
                 NarrowOptionPane.YES_NO_OPTION);
         if(ans==NarrowOptionPane.YES_OPTION) {
-            for(Segment s : selectedSegments)
-                sed.remove(s);
+            sed.remove(selectedSegments);
         }
     }
 
