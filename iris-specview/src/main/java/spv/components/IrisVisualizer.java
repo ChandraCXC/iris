@@ -96,9 +96,12 @@ public class IrisVisualizer implements IrisComponent {
     private Point lastLocation;
     private CustomModelsManager customManager;
     private CustomModelsManagerView customManagerView;
+    private IrisVisualizer visualizer;  // self-reference for use in inner classes
 
     @Override
     public void init(IrisApplication app, IWorkspace workspace) {
+
+        visualizer = this;
         
         manager = (SedlibSedManager) workspace.getSedManager();
 
@@ -121,7 +124,7 @@ public class IrisVisualizer implements IrisComponent {
         this.app = app;
         ws = workspace;
 
-        idm = new IrisDisplayManager(manager, ws);
+        idm = new IrisDisplayManager(manager, ws, this);
         idm.setDesktopMode(true);
         idm.setConnection(app.getSAMPController());
 
@@ -189,8 +192,32 @@ public class IrisVisualizer implements IrisComponent {
         });
     }
 
+    public void invalidateModel(ExtSed sed) {
+        if (sed != null) {
+            ManagedSpectrum2 msp = (ManagedSpectrum2) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
+            if (msp != null) {
+
+                ModelManager2 mm = msp.getModelManager();
+                if (mm != null && mm.isActive()) {
+                    mm.dispose();
+                }
+
+                sed.removeAttachment(IrisDisplayManager.FIT_MODEL);
+            }
+        }
+    }
+
+    public void disposeCurrentFrame() {
+        if (currentFrame != null) {
+            lastLocation = currentFrame.getLocation();
+            currentFrame.setVisible(false);
+            currentFrame.dispose();
+            currentFrame = null;
+        }
+    }
+
     private void remove(ExtSed source) {
-        invalidateModel(source);
+//        invalidateModel(source);
         idm.remove(source.getId());
     }
 
@@ -230,10 +257,7 @@ public class IrisVisualizer implements IrisComponent {
             JInternalFrame frame = idm.getInternalFrame();
             if (frame != currentFrame) {
                 lastLocation = null;
-                if (currentFrame != null) {
-                    lastLocation = currentFrame.getLocation();
-                    currentFrame.dispose();
-                }
+                disposeCurrentFrame();
                 currentFrame = frame;
                 currentFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
                 if (lastLocation != null) {
@@ -245,6 +269,7 @@ public class IrisVisualizer implements IrisComponent {
 
         } catch (Exception ex) {
             LogEvent.getInstance().fire(this, new LogEntry("Error: " + ex.getMessage(), sed));
+            ex.printStackTrace();
         }
     }
 
@@ -273,21 +298,6 @@ public class IrisVisualizer implements IrisComponent {
                         modelManager.setVisible(modelManager.isActive());
                     }
                 }
-            }
-        }
-    }
-
-    private void invalidateModel(ExtSed sed) {
-        if (sed != null) {
-            ManagedSpectrum2 msp = (ManagedSpectrum2) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
-            if (msp != null) {
-
-                ModelManager2 mm = msp.getModelManager();
-                if (mm != null && mm.isActive()) {
-                    mm.dispose();
-                }
-
-                sed.removeAttachment(IrisDisplayManager.FIT_MODEL);
             }
         }
     }
@@ -347,13 +357,15 @@ public class IrisVisualizer implements IrisComponent {
                 @Override
                 public void onClick() {
                     if (manager.getSeds().isEmpty()) {
-                        idm = new IrisDisplayManager(manager, ws);
+                        idm = new IrisDisplayManager(manager, ws, visualizer);
                         idm.setDesktopMode(true);
                         idm.setConnection(app.getSAMPController());
-                        if (currentFrame != null) {
-                            lastLocation = currentFrame.getLocation();
-                            currentFrame.dispose();
-                        }
+
+                        disposeCurrentFrame();
+                    }
+
+                    if (idm.getDisplaying().getNumberOfSegments() <= 1) {
+                        disposeCurrentFrame();
                     }
 
                     if (currentFrame == null) {

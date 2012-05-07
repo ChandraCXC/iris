@@ -71,10 +71,12 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
     private ExtSed sedDisplaying;
 
     private Map<String,PlotStatus> plotStatusStorage;
+    private IrisVisualizer visualizer;
 
-    public IrisDisplayManager(SedlibSedManager manager, IWorkspace ws) {
+    public IrisDisplayManager(SedlibSedManager manager, IWorkspace ws, IrisVisualizer visualizer) {
         this.manager = manager;
         this.ws = ws;
+        this.visualizer = visualizer;
 
         plotStatusStorage = new HashMap<String, PlotStatus>();
     }
@@ -108,6 +110,13 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
     }
 
     public void display(ManagedSpectrum2 msp, String id) {
+
+        // prevent 1-point data to be displayed. Note that in that case
+        // there are 2 spectral bins because of the segment separators.
+        if (msp.getSpectrum().getNBins() <= 2) {
+            remove(msp.getSpectrum().getName());
+            return;
+        }
 
         // this widget will display the new Sed.
         PlotWidget pw = buildPlotWidget(msp, false, null);
@@ -161,6 +170,9 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
                 }
             }
         }
+
+        visualizer.invalidateModel(sedDisplaying);
+        visualizer.disposeCurrentFrame();
     }
 
     void setDesktopMode(boolean desktopMode) {
