@@ -115,12 +115,19 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
         // there are 2 spectral bins because of the segment separators.
         if (msp.getSpectrum().getNBins() <= 2) {
             remove(msp.getSpectrum().getName());
+            secondaryController = null;
             return;
         }
 
         // this widget will display the new Sed.
         PlotWidget pw = buildPlotWidget(msp, false, null);
 
+        // turn off everything cursor, as per Iris request.
+        pw.setSystemCursor();
+        pw.setCursorArrows(false);
+        SpvProperties.SetProperty(Include.CURSOR_ARROWS, "false");
+
+        // put in callback to invoke metadata browser.
         MetadataDisplay metadataDisplay = new MetadataDisplay();
         pw.setCommand(Callback.META_DATA, metadataDisplay);
 
