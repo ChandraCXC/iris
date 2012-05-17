@@ -2,3 +2,4 @@ cfa.vo.iris.logger.IrisLogger
 cfa.vo.sed.builder.SedBuilder
 spv.components.IrisVisualizer
 cfa.vo.iris.smoketest.SmokeTest
+cfa.vo.iris.ConsistencyChecker

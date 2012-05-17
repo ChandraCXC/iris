@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -228,7 +244,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton8.setFocusable(false);
         jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton8.setMargin(new java.awt.Insets(2, 2, 0, 2));
-        jButton8.setMaximumSize(new java.awt.Dimension(65, 50));
+        jButton8.setMaximumSize(new java.awt.Dimension(100, 50));
         jButton8.setMinimumSize(new java.awt.Dimension(65, 50));
         jButton8.setName("jButton8"); // NOI18N
         jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -241,7 +257,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton2.setFocusable(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton2.setMargin(new java.awt.Insets(2, 2, 0, 2));
-        jButton2.setMaximumSize(new java.awt.Dimension(65, 50));
+        jButton2.setMaximumSize(new java.awt.Dimension(100, 50));
         jButton2.setMinimumSize(new java.awt.Dimension(65, 50));
         jButton2.setName("jButton2"); // NOI18N
         jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -258,7 +274,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton9.setFocusable(false);
         jButton9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton9.setMargin(new java.awt.Insets(2, 2, 0, 2));
-        jButton9.setMaximumSize(new java.awt.Dimension(65, 50));
+        jButton9.setMaximumSize(new java.awt.Dimension(100, 50));
         jButton9.setMinimumSize(new java.awt.Dimension(65, 50));
         jButton9.setName("jButton9"); // NOI18N
         jButton9.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -275,7 +291,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton11.setFocusable(false);
         jButton11.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton11.setMargin(new java.awt.Insets(2, 2, 0, 2));
-        jButton11.setMaximumSize(new java.awt.Dimension(65, 50));
+        jButton11.setMaximumSize(new java.awt.Dimension(100, 50));
         jButton11.setMinimumSize(new java.awt.Dimension(65, 50));
         jButton11.setName("jButton11"); // NOI18N
         jButton11.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -292,7 +308,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton10.setFocusable(false);
         jButton10.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton10.setMargin(new java.awt.Insets(2, 2, 0, 2));
-        jButton10.setMaximumSize(new java.awt.Dimension(65, 50));
+        jButton10.setMaximumSize(new java.awt.Dimension(100, 50));
         jButton10.setMinimumSize(new java.awt.Dimension(65, 50));
         jButton10.setName("jButton10"); // NOI18N
         jButton10.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -306,23 +322,25 @@ public class SedBuilderMainView extends JInternalFrame {
         jToolBar1.add(jSeparator1);
 
         jSplitPane1.setBorder(null);
+        jSplitPane1.setDividerLocation(150);
         jSplitPane1.setName("jSplitPane1"); // NOI18N
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Open SEDs"));
         jPanel3.setName("jPanel3"); // NOI18N
 
         sedPanel.setBorder(null);
+        sedPanel.setMinimumSize(new java.awt.Dimension(100, 20));
         sedPanel.setName("sedPanel"); // NOI18N
 
         org.jdesktop.layout.GroupLayout jPanel3Layout = new org.jdesktop.layout.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, sedPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, sedPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(sedPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 429, Short.MAX_VALUE)
+            .add(sedPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
         );
 
         jSplitPane1.setLeftComponent(jPanel3);
@@ -359,9 +377,10 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton3.setFocusable(false);
         jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton3.setMargin(new java.awt.Insets(2, 2, 0, 2));
-        jButton3.setMaximumSize(new java.awt.Dimension(65, 50));
+        jButton3.setMaximumSize(new java.awt.Dimension(100, 50));
         jButton3.setMinimumSize(new java.awt.Dimension(65, 50));
         jButton3.setName("jButton3"); // NOI18N
+        jButton3.setPreferredSize(new java.awt.Dimension(0, 0));
         jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${isSed}"), jButton3, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
@@ -376,9 +395,10 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton12.setFocusable(false);
         jButton12.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton12.setMargin(new java.awt.Insets(2, 2, 0, 2));
-        jButton12.setMaximumSize(new java.awt.Dimension(65, 50));
+        jButton12.setMaximumSize(new java.awt.Dimension(100, 50));
         jButton12.setMinimumSize(new java.awt.Dimension(65, 50));
         jButton12.setName("jButton12"); // NOI18N
+        jButton12.setPreferredSize(new java.awt.Dimension(0, 0));
         jButton12.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jButton3, org.jdesktop.beansbinding.ELProperty.create("${enabled}"), jButton12, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
@@ -393,7 +413,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton5.setFocusable(false);
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton5.setMargin(new java.awt.Insets(2, 2, 0, 2));
-        jButton5.setMaximumSize(new java.awt.Dimension(65, 50));
+        jButton5.setMaximumSize(new java.awt.Dimension(100, 50));
         jButton5.setMinimumSize(new java.awt.Dimension(65, 50));
         jButton5.setName("jButton5"); // NOI18N
         jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -410,7 +430,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton7.setFocusable(false);
         jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton7.setMargin(new java.awt.Insets(2, 2, 0, 2));
-        jButton7.setMaximumSize(new java.awt.Dimension(65, 50));
+        jButton7.setMaximumSize(new java.awt.Dimension(100, 50));
         jButton7.setMinimumSize(new java.awt.Dimension(65, 50));
         jButton7.setName("jButton7"); // NOI18N
         jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -427,7 +447,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton4.setFocusable(false);
         jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton4.setMargin(new java.awt.Insets(2, 2, 0, 2));
-        jButton4.setMaximumSize(new java.awt.Dimension(65, 50));
+        jButton4.setMaximumSize(new java.awt.Dimension(100, 50));
         jButton4.setMinimumSize(new java.awt.Dimension(65, 50));
         jButton4.setName("jButton4"); // NOI18N
         jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -444,7 +464,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton6.setFocusable(false);
         jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton6.setMargin(new java.awt.Insets(2, 2, 0, 2));
-        jButton6.setMaximumSize(new java.awt.Dimension(65, 50));
+        jButton6.setMaximumSize(new java.awt.Dimension(100, 50));
         jButton6.setMinimumSize(new java.awt.Dimension(65, 50));
         jButton6.setName("jButton6"); // NOI18N
         jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -545,7 +565,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jToolBar3.add(jSeparator3);
 
         jButton14.setAction(actionMap.get("apply")); // NOI18N
-        jButton14.setFont(new java.awt.Font("Lucida Grande", 0, 10));
+        jButton14.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
         jButton14.setIcon(new ImageIcon(getClass().getResource("/apply.png")));
         jButton14.setBorderPainted(false);
         jButton14.setFocusable(false);
@@ -562,12 +582,12 @@ public class SedBuilderMainView extends JInternalFrame {
                 .addContainerGap()
                 .add(jLabel2)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(sedName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE)
+                .add(sedName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jButton1))
-            .add(jToolBar2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)
-            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)
-            .add(jToolBar3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)
+            .add(jToolBar2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+            .add(jToolBar3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -581,7 +601,7 @@ public class SedBuilderMainView extends JInternalFrame {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jToolBar2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 46, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE))
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel1);
@@ -590,15 +610,15 @@ public class SedBuilderMainView extends JInternalFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jToolBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 873, Short.MAX_VALUE)
-            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 873, Short.MAX_VALUE)
+            .add(jToolBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 759, Short.MAX_VALUE)
+            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 759, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 51, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 457, Short.MAX_VALUE))
+                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE))
         );
 
         bindingGroup.bind();

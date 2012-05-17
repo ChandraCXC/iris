@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2011 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -953,10 +953,10 @@ public final class LoadSegmentFrame extends JInternalFrame {
                                     NarrowOptionPane.ERROR_MESSAGE);
                         }
                     }
-                    NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
-                            "Segment added to SED: " + sed.getId(),
-                            "Success",
-                            NarrowOptionPane.INFORMATION_MESSAGE);
+//                    NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
+//                            "Segment added to SED: " + sed.getId(),
+//                            "Success",
+//                            NarrowOptionPane.INFORMATION_MESSAGE);
                     break;
                 case 1:
                     NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),

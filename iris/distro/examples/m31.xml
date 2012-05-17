@@ -83,7 +83,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 <PARAM ID="DatasetType" datatype="char" name="DatasetType" utype="spec:Spectrum.Type" value="Photometry Point" arraysize="*">
 <DESCRIPTION>Dataset or segment type</DESCRIPTION>
 </PARAM>
-<PARAM ID="DataLength" datatype="int" name="DataLength" ucd="meta.number" utype="spec:Spectrum.Length" value="129">
+<PARAM ID="DataLength" datatype="int" name="DataLength" ucd="meta.number" utype="spec:Spectrum.Length" value="138">
 <DESCRIPTION>Number of points</DESCRIPTION>
 </PARAM>
 <GROUP ID="DataID" name="DataID" utype="spec:Spectrum.DataID">
@@ -153,7 +153,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </GROUP>
 <GROUP ID="Char.SpatialAxis" name="Char.SpatialAxis" utype="spec:Spectrum.Char.SpatialAxis">
 <DESCRIPTION>Spatial Axis Characterization</DESCRIPTION>
-<PARAM ID="SpatialAxisCoverageLocation" datatype="char" name="SpatialAxisCoverageLocation"  ucd="pos.eq" utype="spec:Spectrum.Char.SpatialAxis.Coverage.Location.Value" value="194.0465271 -5.789311" arraysize="*">
+<PARAM ID="SpatialAxisCoverageLocation" datatype="char" name="SpatialAxisCoverageLocation"  ucd="pos.eq" utype="spec:Spectrum.Char.SpatialAxis.Coverage.Location.Value" value="10.684793 41.269065" arraysize="*">
 <DESCRIPTION>Position</DESCRIPTION>
 </PARAM>
 <PARAM ID="SpatialAxisCoverageBoundsExtent" datatype="char" name="SpatialAxisCoverageBoundsExtent" utype="spec:Spectrum.Char.SpatialAxis.Coverage.Bounds.Extent" value="" arraysize="*">
@@ -215,7 +215,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 <TABLEDATA>
 <TR>
 <TD>1</TD>
-<TD>0.2-4.5 keV (XMM)   </TD>
+<TD><![CDATA[0.2-4.5 keV (XMM)   ]]></TD>
 <TD> 4.2E-13   </TD>
 <TD>3E-15</TD>
 <TD>milliW/m^2^         </TD>
@@ -234,7 +234,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>2</TD>
-<TD>0.2-4.5 keV (XMM)   </TD>
+<TD><![CDATA[0.2-4.5 keV (XMM)   ]]></TD>
 <TD> 3.9E-13   </TD>
 <TD>4E-15</TD>
 <TD>milliW/m^2^         </TD>
@@ -253,7 +253,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>3</TD>
-<TD>0.2-4.5 keV (XMM)   </TD>
+<TD><![CDATA[0.2-4.5 keV (XMM)   ]]></TD>
 <TD> 4.8E-13   </TD>
 <TD>8E-15</TD>
 <TD>milliW/m^2^         </TD>
@@ -272,7 +272,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>4</TD>
-<TD>0.2-4.5 keV (XMM)   </TD>
+<TD><![CDATA[0.2-4.5 keV (XMM)   ]]></TD>
 <TD> 4.6E-13   </TD>
 <TD>8E-15</TD>
 <TD>milliW/m^2^         </TD>
@@ -291,7 +291,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>5</TD>
-<TD>0.2-4.5 keV (XMM)   </TD>
+<TD><![CDATA[0.2-4.5 keV (XMM)   ]]></TD>
 <TD> 4.18e-13  </TD>
 <TD>3.2e-15</TD>
 <TD> erg/s/cm^2^        </TD>
@@ -310,7 +310,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>6</TD>
-<TD>IUE 1482A           </TD>
+<TD><![CDATA[IUE 1482A           ]]></TD>
 <TD> 0.83E-14  </TD>
 <TD>0.14E-14</TD>
 <TD>ergs cm^-2 s^-1 A^-1</TD>
@@ -329,7 +329,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>7</TD>
-<TD>FUV (GALEX) AB      </TD>
+<TD><![CDATA[FUV (GALEX) AB      ]]></TD>
 <TD> 8.83      </TD>
 <TD>0.01 </TD>
 <TD> mag                </TD>
@@ -348,7 +348,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>8</TD>
-<TD>IUE 1913A           </TD>
+<TD><![CDATA[IUE 1913A           ]]></TD>
 <TD> 0.61E-14  </TD>
 <TD>0.07E-14</TD>
 <TD>ergs cm^-2 s^-1 A^-1</TD>
@@ -367,7 +367,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>9</TD>
-<TD>NUV (GALEX) AB      </TD>
+<TD><![CDATA[NUV (GALEX) AB      ]]></TD>
 <TD> 8.00      </TD>
 <TD>0.01 </TD>
 <TD> mag                </TD>
@@ -386,7 +386,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>10</TD>
-<TD>IUE 2373A           </TD>
+<TD><![CDATA[IUE 2373A           ]]></TD>
 <TD> 0.45E-14  </TD>
 <TD>0.17E-14</TD>
 <TD>ergs cm^-2 s^-1 A^-1</TD>
@@ -405,7 +405,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>11</TD>
-<TD>IUE 2700A           </TD>
+<TD><![CDATA[IUE 2700A           ]]></TD>
 <TD> 1.09E-14  </TD>
 <TD>0.14E-14</TD>
 <TD>ergs cm^-2 s^-1 A^-1</TD>
@@ -424,7 +424,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>12</TD>
-<TD>U (U_T)             </TD>
+<TD><![CDATA[U (U_T)             ]]></TD>
 <TD> 4.86      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -443,7 +443,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>13</TD>
-<TD>U (U_T^0)           </TD>
+<TD><![CDATA[U (U_T^0)           ]]></TD>
 <TD> 3.67      </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -462,7 +462,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>14</TD>
-<TD>B (B_T^0)           </TD>
+<TD><![CDATA[B (B_T^0)           ]]></TD>
 <TD> 3.36      </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -481,7 +481,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>15</TD>
-<TD>B (m_B)             </TD>
+<TD><![CDATA[B (m_B)             ]]></TD>
 <TD> 4.16      </TD>
 <TD>0.19 </TD>
 <TD>mag                 </TD>
@@ -500,7 +500,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>16</TD>
-<TD>B (B_T)             </TD>
+<TD><![CDATA[B (B_T)             ]]></TD>
 <TD> 4.36      </TD>
 <TD>0.02 </TD>
 <TD>mag                 </TD>
@@ -519,7 +519,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>17</TD>
-<TD>m_p                 </TD>
+<TD><![CDATA[m_p                 ]]></TD>
 <TD> 4.3       </TD>
 <TD>0.4  </TD>
 <TD>mag                 </TD>
@@ -538,7 +538,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>18</TD>
-<TD>V (Johnson)         </TD>
+<TD><![CDATA[V (Johnson)         ]]></TD>
 <TD> 9.68      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -557,7 +557,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>19</TD>
-<TD>V (Johnson)         </TD>
+<TD><![CDATA[V (Johnson)         ]]></TD>
 <TD> 8.86      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -576,7 +576,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>20</TD>
-<TD>V (Johnson)         </TD>
+<TD><![CDATA[V (Johnson)         ]]></TD>
 <TD> 7.96      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -595,7 +595,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>21</TD>
-<TD>V (Johnson)         </TD>
+<TD><![CDATA[V (Johnson)         ]]></TD>
 <TD> 8.86      </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -614,7 +614,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>22</TD>
-<TD>V (Johnson)         </TD>
+<TD><![CDATA[V (Johnson)         ]]></TD>
 <TD> 11.34     </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -633,7 +633,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>23</TD>
-<TD>V (Johnson)         </TD>
+<TD><![CDATA[V (Johnson)         ]]></TD>
 <TD> 12.05     </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -652,7 +652,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>24</TD>
-<TD>V (V_T)             </TD>
+<TD><![CDATA[V (V_T)             ]]></TD>
 <TD> 3.44      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -671,7 +671,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>25</TD>
-<TD>V (V_T^0)           </TD>
+<TD><![CDATA[V (V_T^0)           ]]></TD>
 <TD> 2.68      </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -690,7 +690,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>26</TD>
-<TD>R (Johnson)         </TD>
+<TD><![CDATA[R (Johnson)         ]]></TD>
 <TD> 10.42     </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -709,7 +709,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>27</TD>
-<TD>R (Johnson)         </TD>
+<TD><![CDATA[R (Johnson)         ]]></TD>
 <TD> 11.14     </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -728,7 +728,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>28</TD>
-<TD>I (Johnson)         </TD>
+<TD><![CDATA[I (Johnson)         ]]></TD>
 <TD> 7.88      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -747,7 +747,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>29</TD>
-<TD>I (Johnson)         </TD>
+<TD><![CDATA[I (Johnson)         ]]></TD>
 <TD> 7.18      </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -766,7 +766,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>30</TD>
-<TD>I (Johnson)         </TD>
+<TD><![CDATA[I (Johnson)         ]]></TD>
 <TD> 10.1      </TD>
 <TD>0.10 </TD>
 <TD>mag                 </TD>
@@ -785,7 +785,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>31</TD>
-<TD>I (Johnson)         </TD>
+<TD><![CDATA[I (Johnson)         ]]></TD>
 <TD> 6.98      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -804,7 +804,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>32</TD>
-<TD>I (Johnson)         </TD>
+<TD><![CDATA[I (Johnson)         ]]></TD>
 <TD> 6.01      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -823,7 +823,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>33</TD>
-<TD>J (Johnson)         </TD>
+<TD><![CDATA[J (Johnson)         ]]></TD>
 <TD> 4.72      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -842,7 +842,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>34</TD>
-<TD>J (Johnson)         </TD>
+<TD><![CDATA[J (Johnson)         ]]></TD>
 <TD> 5.70      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -861,7 +861,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>35</TD>
-<TD>J (Johnson)         </TD>
+<TD><![CDATA[J (Johnson)         ]]></TD>
 <TD> 5.85      </TD>
 <TD>0.06 </TD>
 <TD>mag                 </TD>
@@ -880,7 +880,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>36</TD>
-<TD>J (Johnson)         </TD>
+<TD><![CDATA[J (Johnson)         ]]></TD>
 <TD> 6.80      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -899,7 +899,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>37</TD>
-<TD>J (Johnson)         </TD>
+<TD><![CDATA[J (Johnson)         ]]></TD>
 <TD> 7.97      </TD>
 <TD>0.06 </TD>
 <TD>mag                 </TD>
@@ -918,7 +918,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>38</TD>
-<TD>J_20 (2MASS LGA)    </TD>
+<TD><![CDATA[J_20 (2MASS LGA)    ]]></TD>
 <TD> 2.149     </TD>
 <TD>0.015</TD>
 <TD>mag                 </TD>
@@ -937,7 +937,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>39</TD>
-<TD>J_Kron (2MASS LGA)  </TD>
+<TD><![CDATA[J_Kron (2MASS LGA)  ]]></TD>
 <TD> 2.191     </TD>
 <TD>0.015</TD>
 <TD>mag                 </TD>
@@ -956,7 +956,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>40</TD>
-<TD>J_tot (2MASS LGA)   </TD>
+<TD><![CDATA[J_tot (2MASS LGA)   ]]></TD>
 <TD> 2.094     </TD>
 <TD>0.016</TD>
 <TD>mag                 </TD>
@@ -975,7 +975,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>41</TD>
-<TD>J_14arcsec (2MASS)  </TD>
+<TD><![CDATA[J_14arcsec (2MASS)  ]]></TD>
 <TD> 8.009     </TD>
 <TD>0.015</TD>
 <TD>mag                 </TD>
@@ -994,7 +994,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>42</TD>
-<TD>1.25 microns        </TD>
+<TD><![CDATA[1.25 microns        ]]></TD>
 <TD> 1.9       </TD>
 <TD>0.1  </TD>
 <TD>Jy                  </TD>
@@ -1013,7 +1013,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>43</TD>
-<TD>J (CIT)             </TD>
+<TD><![CDATA[J (CIT)             ]]></TD>
 <TD> 4.68      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -1032,7 +1032,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>44</TD>
-<TD>J (CIT)             </TD>
+<TD><![CDATA[J (CIT)             ]]></TD>
 <TD> 5.66      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -1051,7 +1051,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>45</TD>
-<TD>J (CIT)             </TD>
+<TD><![CDATA[J (CIT)             ]]></TD>
 <TD> 5.80      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -1070,7 +1070,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>46</TD>
-<TD>J (CIT)             </TD>
+<TD><![CDATA[J (CIT)             ]]></TD>
 <TD> 6.76      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -1089,7 +1089,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>47</TD>
-<TD>J (CIT)             </TD>
+<TD><![CDATA[J (CIT)             ]]></TD>
 <TD> 7.93      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -1108,7 +1108,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>48</TD>
-<TD>J (Johnson)         </TD>
+<TD><![CDATA[J (Johnson)         ]]></TD>
 <TD> 8.4       </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -1127,7 +1127,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>49</TD>
-<TD>J (Johnson)         </TD>
+<TD><![CDATA[J (Johnson)         ]]></TD>
 <TD> 6.57      </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -1146,7 +1146,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>50</TD>
-<TD>H (Johnson)         </TD>
+<TD><![CDATA[H (Johnson)         ]]></TD>
 <TD> 7.6       </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -1165,7 +1165,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>51</TD>
-<TD>H_20 (2MASS LGA)    </TD>
+<TD><![CDATA[H_20 (2MASS LGA)    ]]></TD>
 <TD> 1.331     </TD>
 <TD>0.016</TD>
 <TD>mag                 </TD>
@@ -1184,7 +1184,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>52</TD>
-<TD>H_Kron (2MASS LGA)  </TD>
+<TD><![CDATA[H_Kron (2MASS LGA)  ]]></TD>
 <TD> 1.374     </TD>
 <TD>0.015</TD>
 <TD>mag                 </TD>
@@ -1203,7 +1203,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>53</TD>
-<TD>H_tot (2MASS LGA)   </TD>
+<TD><![CDATA[H_tot (2MASS LGA)   ]]></TD>
 <TD> 1.283     </TD>
 <TD>0.017</TD>
 <TD>mag                 </TD>
@@ -1222,7 +1222,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>54</TD>
-<TD>H_14arcsec (2MASS)  </TD>
+<TD><![CDATA[H_14arcsec (2MASS)  ]]></TD>
 <TD> 7.054     </TD>
 <TD>0.015</TD>
 <TD>mag                 </TD>
@@ -1241,7 +1241,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>55</TD>
-<TD>H (Johnson)         </TD>
+<TD><![CDATA[H (Johnson)         ]]></TD>
 <TD> 3.94      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -1260,7 +1260,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>56</TD>
-<TD>H (Johnson)         </TD>
+<TD><![CDATA[H (Johnson)         ]]></TD>
 <TD> 4.93      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -1279,7 +1279,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>57</TD>
-<TD>H (Johnson)         </TD>
+<TD><![CDATA[H (Johnson)         ]]></TD>
 <TD> 5.06      </TD>
 <TD>0.06 </TD>
 <TD>mag                 </TD>
@@ -1298,7 +1298,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>58</TD>
-<TD>H (Johnson)         </TD>
+<TD><![CDATA[H (Johnson)         ]]></TD>
 <TD> 6.04      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -1317,7 +1317,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>59</TD>
-<TD>H (Johnson)         </TD>
+<TD><![CDATA[H (Johnson)         ]]></TD>
 <TD> 7.19      </TD>
 <TD>0.06 </TD>
 <TD>mag                 </TD>
@@ -1336,7 +1336,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>60</TD>
-<TD>H (HCO)             </TD>
+<TD><![CDATA[H (HCO)             ]]></TD>
 <TD> 1.42      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -1355,7 +1355,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>61</TD>
-<TD>H (HCO)             </TD>
+<TD><![CDATA[H (HCO)             ]]></TD>
 <TD> 1.60      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -1374,7 +1374,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>62</TD>
-<TD>H (HCO)             </TD>
+<TD><![CDATA[H (HCO)             ]]></TD>
 <TD> 1.89      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -1393,7 +1393,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>63</TD>
-<TD>H (HCO)             </TD>
+<TD><![CDATA[H (HCO)             ]]></TD>
 <TD> 2.38      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -1412,7 +1412,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>64</TD>
-<TD>H (HCO)             </TD>
+<TD><![CDATA[H (HCO)             ]]></TD>
 <TD> 2.56      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -1431,7 +1431,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>65</TD>
-<TD>H (HCO)             </TD>
+<TD><![CDATA[H (HCO)             ]]></TD>
 <TD> 2.63      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -1450,7 +1450,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>66</TD>
-<TD>H (HCO)             </TD>
+<TD><![CDATA[H (HCO)             ]]></TD>
 <TD> 3.06      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -1469,7 +1469,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>67</TD>
-<TD>H (HCO)             </TD>
+<TD><![CDATA[H (HCO)             ]]></TD>
 <TD> 3.44      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -1488,7 +1488,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>68</TD>
-<TD>H (HCO)             </TD>
+<TD><![CDATA[H (HCO)             ]]></TD>
 <TD> 4.10      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -1507,7 +1507,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>69</TD>
-<TD>H (CIT)             </TD>
+<TD><![CDATA[H (CIT)             ]]></TD>
 <TD> 3.96      </TD>
 <TD>0.02 </TD>
 <TD>mag                 </TD>
@@ -1526,7 +1526,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>70</TD>
-<TD>H (CIT)             </TD>
+<TD><![CDATA[H (CIT)             ]]></TD>
 <TD> 4.95      </TD>
 <TD>0.02 </TD>
 <TD>mag                 </TD>
@@ -1545,7 +1545,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>71</TD>
-<TD>H (CIT)             </TD>
+<TD><![CDATA[H (CIT)             ]]></TD>
 <TD> 5.07      </TD>
 <TD>0.02 </TD>
 <TD>mag                 </TD>
@@ -1564,7 +1564,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>72</TD>
-<TD>H (CIT)             </TD>
+<TD><![CDATA[H (CIT)             ]]></TD>
 <TD> 6.06      </TD>
 <TD>0.02 </TD>
 <TD>mag                 </TD>
@@ -1583,7 +1583,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>73</TD>
-<TD>H (CIT)             </TD>
+<TD><![CDATA[H (CIT)             ]]></TD>
 <TD> 7.21      </TD>
 <TD>0.02 </TD>
 <TD>mag                 </TD>
@@ -1602,7 +1602,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>74</TD>
-<TD>H (CIT)             </TD>
+<TD><![CDATA[H (CIT)             ]]></TD>
 <TD> 8.22      </TD>
 <TD>0.10 </TD>
 <TD>mag                 </TD>
@@ -1621,7 +1621,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>75</TD>
-<TD>H (CIT)             </TD>
+<TD><![CDATA[H (CIT)             ]]></TD>
 <TD> 6.96      </TD>
 <TD>0.12 </TD>
 <TD>mag                 </TD>
@@ -1640,7 +1640,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>76</TD>
-<TD>H (CIT)             </TD>
+<TD><![CDATA[H (CIT)             ]]></TD>
 <TD> 5.85      </TD>
 <TD>0.10 </TD>
 <TD>mag                 </TD>
@@ -1659,7 +1659,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>77</TD>
-<TD>H (CIT)             </TD>
+<TD><![CDATA[H (CIT)             ]]></TD>
 <TD> 8.88      </TD>
 <TD>0.15 </TD>
 <TD>mag                 </TD>
@@ -1678,7 +1678,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>78</TD>
-<TD>K_20 (2MASS LGA)    </TD>
+<TD><![CDATA[K_20 (2MASS LGA)    ]]></TD>
 <TD> 1.038     </TD>
 <TD>0.016</TD>
 <TD>mag                 </TD>
@@ -1697,7 +1697,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>79</TD>
-<TD>K_Kron (2MASS LGA)  </TD>
+<TD><![CDATA[K_Kron (2MASS LGA)  ]]></TD>
 <TD> 1.087     </TD>
 <TD>0.015</TD>
 <TD>mag                 </TD>
@@ -1716,7 +1716,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>80</TD>
-<TD>K_tot (2MASS LGA)   </TD>
+<TD><![CDATA[K_tot (2MASS LGA)   ]]></TD>
 <TD> 0.984     </TD>
 <TD>0.017</TD>
 <TD>mag                 </TD>
@@ -1735,7 +1735,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>81</TD>
-<TD>K_s_14arcsec (2MASS)</TD>
+<TD><![CDATA[K_s_14arcsec (2MASS)]]></TD>
 <TD> 6.793     </TD>
 <TD>0.015</TD>
 <TD>mag                 </TD>
@@ -1754,7 +1754,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>82</TD>
-<TD>K (CIT)             </TD>
+<TD><![CDATA[K (CIT)             ]]></TD>
 <TD> 5.69      </TD>
 <TD>0.10 </TD>
 <TD>mag                 </TD>
@@ -1773,7 +1773,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>83</TD>
-<TD>K (CIT)             </TD>
+<TD><![CDATA[K (CIT)             ]]></TD>
 <TD> 4.96      </TD>
 <TD>0.08 </TD>
 <TD>mag                 </TD>
@@ -1792,7 +1792,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>84</TD>
-<TD>K (CIT)             </TD>
+<TD><![CDATA[K (CIT)             ]]></TD>
 <TD> 8.57      </TD>
 <TD>0.12 </TD>
 <TD>mag                 </TD>
@@ -1811,7 +1811,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>85</TD>
-<TD>K (CIT)             </TD>
+<TD><![CDATA[K (CIT)             ]]></TD>
 <TD> 8.05      </TD>
 <TD>0.07 </TD>
 <TD>mag                 </TD>
@@ -1830,7 +1830,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>86</TD>
-<TD>K (CIT)             </TD>
+<TD><![CDATA[K (CIT)             ]]></TD>
 <TD> 6.93      </TD>
 <TD>0.15 </TD>
 <TD>mag                 </TD>
@@ -1849,7 +1849,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>87</TD>
-<TD>K (CIT)             </TD>
+<TD><![CDATA[K (CIT)             ]]></TD>
 <TD> 6.82      </TD>
 <TD>0.12 </TD>
 <TD>mag                 </TD>
@@ -1868,7 +1868,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>88</TD>
-<TD>K (CIT)             </TD>
+<TD><![CDATA[K (CIT)             ]]></TD>
 <TD> 3.72      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -1887,7 +1887,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>89</TD>
-<TD>K (CIT)             </TD>
+<TD><![CDATA[K (CIT)             ]]></TD>
 <TD> 4.71      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -1906,7 +1906,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>90</TD>
-<TD>K (CIT)             </TD>
+<TD><![CDATA[K (CIT)             ]]></TD>
 <TD> 4.83      </TD>
 <TD>0.06 </TD>
 <TD>mag                 </TD>
@@ -1925,7 +1925,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>91</TD>
-<TD>K (CIT)             </TD>
+<TD><![CDATA[K (CIT)             ]]></TD>
 <TD> 5.81      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -1944,7 +1944,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>92</TD>
-<TD>K (CIT)             </TD>
+<TD><![CDATA[K (CIT)             ]]></TD>
 <TD> 6.29      </TD>
 <TD>0.05 </TD>
 <TD>mag                 </TD>
@@ -1963,7 +1963,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>93</TD>
-<TD>K (CIT)             </TD>
+<TD><![CDATA[K (CIT)             ]]></TD>
 <TD> 6.95      </TD>
 <TD>0.06 </TD>
 <TD>mag                 </TD>
@@ -1982,7 +1982,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>94</TD>
-<TD>K (CIT)             </TD>
+<TD><![CDATA[K (CIT)             ]]></TD>
 <TD> 7.36      </TD>
 <TD>0.07 </TD>
 <TD>mag                 </TD>
@@ -2001,7 +2001,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>95</TD>
-<TD>K (CIT)             </TD>
+<TD><![CDATA[K (CIT)             ]]></TD>
 <TD> 8.24      </TD>
 <TD>0.07 </TD>
 <TD>mag                 </TD>
@@ -2020,7 +2020,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>96</TD>
-<TD>K (CIT)             </TD>
+<TD><![CDATA[K (CIT)             ]]></TD>
 <TD> 9.11      </TD>
 <TD>0.12 </TD>
 <TD>mag                 </TD>
@@ -2039,7 +2039,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>97</TD>
-<TD>2.2 microns         </TD>
+<TD><![CDATA[2.2 microns         ]]></TD>
 <TD> 2         </TD>
 <TD>0.1  </TD>
 <TD>Jy                  </TD>
@@ -2058,7 +2058,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>98</TD>
-<TD>2.2 microns         </TD>
+<TD><![CDATA[2.2 microns         ]]></TD>
 <TD> 1.4       </TD>
 <TD>0.1  </TD>
 <TD>Jy                  </TD>
@@ -2077,7 +2077,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>99</TD>
-<TD>K (Johnson)         </TD>
+<TD><![CDATA[K (Johnson)         ]]></TD>
 <TD> 5.81      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -2096,7 +2096,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>100</TD>
-<TD>K (Johnson)         </TD>
+<TD><![CDATA[K (Johnson)         ]]></TD>
 <TD> 6.95      </TD>
 <TD>0.06 </TD>
 <TD>mag                 </TD>
@@ -2115,7 +2115,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>101</TD>
-<TD>K (Johnson)         </TD>
+<TD><![CDATA[K (Johnson)         ]]></TD>
 <TD> 7.2       </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -2134,7 +2134,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>102</TD>
-<TD>K (Johnson)         </TD>
+<TD><![CDATA[K (Johnson)         ]]></TD>
 <TD> 5.64      </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -2153,7 +2153,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>103</TD>
-<TD>K (Johnson)         </TD>
+<TD><![CDATA[K (Johnson)         ]]></TD>
 <TD> 4.71      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -2172,7 +2172,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>104</TD>
-<TD>K (Johnson)         </TD>
+<TD><![CDATA[K (Johnson)         ]]></TD>
 <TD> 4.83      </TD>
 <TD>0.06 </TD>
 <TD>mag                 </TD>
@@ -2191,7 +2191,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>105</TD>
-<TD>K (Johnson)         </TD>
+<TD><![CDATA[K (Johnson)         ]]></TD>
 <TD> 3.72      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -2210,7 +2210,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>106</TD>
-<TD>3.4 microns         </TD>
+<TD><![CDATA[3.4 microns         ]]></TD>
 <TD> 1         </TD>
 <TD>0.05 </TD>
 <TD>Jy                  </TD>
@@ -2229,7 +2229,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>107</TD>
-<TD>3.4 microns         </TD>
+<TD><![CDATA[3.4 microns         ]]></TD>
 <TD> 0.65      </TD>
 <TD>.07  </TD>
 <TD>Jy                  </TD>
@@ -2248,7 +2248,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>108</TD>
-<TD>L (CIT)             </TD>
+<TD><![CDATA[L (CIT)             ]]></TD>
 <TD> 6.54      </TD>
 <TD>0.20 </TD>
 <TD>mag                 </TD>
@@ -2267,7 +2267,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>109</TD>
-<TD>L (CIT)             </TD>
+<TD><![CDATA[L (CIT)             ]]></TD>
 <TD> 5.3       </TD>
 <TD>0.17 </TD>
 <TD>mag                 </TD>
@@ -2286,7 +2286,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>110</TD>
-<TD>L (Johnson)         </TD>
+<TD><![CDATA[L (Johnson)         ]]></TD>
 <TD> 7.2       </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -2305,7 +2305,7 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>111</TD>
-<TD>L (Johnson)         </TD>
+<TD><![CDATA[L (Johnson)         ]]></TD>
 <TD> 5.68      </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -2324,7 +2324,26 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>112</TD>
-<TD>5 microns           </TD>
+<TD><![CDATA[3.55 microns (IRAC) ]]></TD>
+<TD> 239       </TD>
+<TD>29   </TD>
+<TD>Jy                  </TD>
+<TD>8.44E+13</TD>
+<TD>  2.39E+02</TD>
+<TD>2.90E+01</TD>
+<TD>Jy</TD>
+<TD>2009A&amp;A...507..283M</TD>
+<TD>uncertainty</TD>
+<TD>      3.55 microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From reprocessed raw data]]></TD>
+</TR>
+<TR>
+<TD>113</TD>
+<TD><![CDATA[5 microns           ]]></TD>
 <TD> 0.059     </TD>
 <TD>0.016</TD>
 <TD>Jy                  </TD>
@@ -2342,8 +2361,27 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>113</TD>
-<TD>10 microns          </TD>
+<TD>114</TD>
+<TD><![CDATA[7.87 microns (IRAC) ]]></TD>
+<TD> 149       </TD>
+<TD>27   </TD>
+<TD>Jy                  </TD>
+<TD>3.81E+13</TD>
+<TD>  1.49E+02</TD>
+<TD>2.70E+01</TD>
+<TD>Jy</TD>
+<TD>2009A&amp;A...507..283M</TD>
+<TD>uncertainty</TD>
+<TD>      7.87 microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From reprocessed raw data]]></TD>
+</TR>
+<TR>
+<TD>115</TD>
+<TD><![CDATA[10 microns          ]]></TD>
 <TD> 0.025     </TD>
 <TD>0.008</TD>
 <TD>Jy                  </TD>
@@ -2361,8 +2399,8 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>114</TD>
-<TD>IRAS 12 microns     </TD>
+<TD>116</TD>
+<TD><![CDATA[IRAS 12 microns     ]]></TD>
 <TD>  1.70E+00</TD>
 <TD>2.21E-01</TD>
 <TD>Jy</TD>
@@ -2380,8 +2418,8 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>115</TD>
-<TD>IRAS 12 microns     </TD>
+<TD>117</TD>
+<TD><![CDATA[IRAS 12 microns     ]]></TD>
 <TD>  1.63E+02</TD>
 <TD>2.45E+01</TD>
 <TD>Jy</TD>
@@ -2399,8 +2437,8 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>116</TD>
-<TD>24 microns (MIPS)   </TD>
+<TD>118</TD>
+<TD><![CDATA[24 microns (MIPS)   ]]></TD>
 <TD> 94        </TD>
 <TD></TD>
 <TD>Jy                  </TD>
@@ -2418,8 +2456,46 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 <TD><![CDATA[Transformed from previously published data]]></TD>
 </TR>
 <TR>
-<TD>117</TD>
-<TD>IRAS 25 microns     </TD>
+<TD>119</TD>
+<TD><![CDATA[24 microns (MIPS)   ]]></TD>
+<TD> 119       </TD>
+<TD>7    </TD>
+<TD>Jy                  </TD>
+<TD>1.27E+13</TD>
+<TD>  1.19E+02</TD>
+<TD>7.00E+00</TD>
+<TD>Jy</TD>
+<TD>2010A&amp;A...509A..91T</TD>
+<TD>uncertainty</TD>
+<TD>    23.68  microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From reprocessed raw data]]></TD>
+</TR>
+<TR>
+<TD>120</TD>
+<TD><![CDATA[23.7 microns (MIPS) ]]></TD>
+<TD> 118       </TD>
+<TD>17   </TD>
+<TD>Jy                  </TD>
+<TD>1.26E+13</TD>
+<TD>  1.18E+02</TD>
+<TD>1.70E+01</TD>
+<TD>Jy</TD>
+<TD>2009A&amp;A...507..283M</TD>
+<TD>uncertainty</TD>
+<TD>      23.7 microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From reprocessed raw data]]></TD>
+</TR>
+<TR>
+<TD>121</TD>
+<TD><![CDATA[IRAS 25 microns     ]]></TD>
 <TD>  1.02E+00</TD>
 <TD>1.02E-01</TD>
 <TD>Jy</TD>
@@ -2437,8 +2513,8 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>118</TD>
-<TD>IRAS 25 microns     </TD>
+<TD>122</TD>
+<TD><![CDATA[IRAS 25 microns     ]]></TD>
 <TD>  1.08E+02</TD>
 <TD>1.62E+01</TD>
 <TD>Jy</TD>
@@ -2456,27 +2532,8 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>119</TD>
-<TD>IRAS 60 microns     </TD>
-<TD>  1.08E+01</TD>
-<TD>6.47E-01</TD>
-<TD>Jy</TD>
-<TD>5.00E+12</TD>
-<TD>  1.08E+01</TD>
-<TD>6.47E-01</TD>
-<TD>Jy</TD>
-<TD>1990IRASF.C...0000M</TD>
-<TD>uncertainty</TD>
-<TD> 60        microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD>004000.6 +405947 (B1950)</TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[IRAS quality flag = 2                   ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>120</TD>
-<TD>IRAS 60 microns     </TD>
+<TD>123</TD>
+<TD><![CDATA[IRAS 60 microns     ]]></TD>
 <TD>  5.36E+02</TD>
 <TD>8.04E+01</TD>
 <TD>Jy</TD>
@@ -2494,8 +2551,65 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>121</TD>
-<TD>IRAS FIR            </TD>
+<TD>124</TD>
+<TD><![CDATA[IRAS 60 microns     ]]></TD>
+<TD>  1.08E+01</TD>
+<TD>6.47E-01</TD>
+<TD>Jy</TD>
+<TD>5.00E+12</TD>
+<TD>  1.08E+01</TD>
+<TD>6.47E-01</TD>
+<TD>Jy</TD>
+<TD>1990IRASF.C...0000M</TD>
+<TD>uncertainty</TD>
+<TD> 60        microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD>004000.6 +405947 (B1950)</TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[IRAS quality flag = 2                   ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>125</TD>
+<TD><![CDATA[71.4 microns (MIPS) ]]></TD>
+<TD> 1086      </TD>
+<TD>256  </TD>
+<TD>Jy                  </TD>
+<TD>4.20E+12</TD>
+<TD>  1.09E+03</TD>
+<TD>2.56E+02</TD>
+<TD>Jy</TD>
+<TD>2009A&amp;A...507..283M</TD>
+<TD>uncertainty</TD>
+<TD>      71.4 microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From reprocessed raw data]]></TD>
+</TR>
+<TR>
+<TD>126</TD>
+<TD><![CDATA[70 microns (MIPS)   ]]></TD>
+<TD> 1200      </TD>
+<TD>110  </TD>
+<TD>Jy                  </TD>
+<TD>4.20E+12</TD>
+<TD>  1.20E+03</TD>
+<TD>1.10E+02</TD>
+<TD>Jy</TD>
+<TD>2010A&amp;A...509A..91T</TD>
+<TD>uncertainty</TD>
+<TD>    71.42  microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From reprocessed raw data]]></TD>
+</TR>
+<TR>
+<TD>127</TD>
+<TD><![CDATA[IRAS FIR            ]]></TD>
 <TD> 5.43E-11  </TD>
 <TD></TD>
 <TD>W m^-2^             </TD>
@@ -2513,8 +2627,8 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>122</TD>
-<TD>IRAS 100 microns    </TD>
+<TD>128</TD>
+<TD><![CDATA[IRAS 100 microns    ]]></TD>
 <TD>  2.93E+03</TD>
 <TD>4.39E+02</TD>
 <TD>Jy</TD>
@@ -2532,8 +2646,46 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>123</TD>
-<TD>4.85 GHz            </TD>
+<TD>129</TD>
+<TD><![CDATA[155.9 microns (MIPS)]]></TD>
+<TD> 7315      </TD>
+<TD>1632 </TD>
+<TD>Jy                  </TD>
+<TD>1.92E+12</TD>
+<TD>  7.32E+03</TD>
+<TD>1.63E+03</TD>
+<TD>Jy</TD>
+<TD>2009A&amp;A...507..283M</TD>
+<TD>uncertainty</TD>
+<TD>     155.9 microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From reprocessed raw data]]></TD>
+</TR>
+<TR>
+<TD>130</TD>
+<TD><![CDATA[160 microns (MIPS)  ]]></TD>
+<TD> 7800      </TD>
+<TD>1000 </TD>
+<TD>Jy                  </TD>
+<TD>1.92E+12</TD>
+<TD>  7.80E+03</TD>
+<TD>1.00E+03</TD>
+<TD>Jy</TD>
+<TD>2010A&amp;A...509A..91T</TD>
+<TD>uncertainty</TD>
+<TD>    155.9  microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From reprocessed raw data]]></TD>
+</TR>
+<TR>
+<TD>131</TD>
+<TD><![CDATA[4.85 GHz            ]]></TD>
 <TD> 32        </TD>
 <TD>6    </TD>
 <TD>milliJy             </TD>
@@ -2551,8 +2703,8 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; Corrected for contaminating sources]]></TD>
 </TR>
 <TR>
-<TD>124</TD>
-<TD>4.85 GHz            </TD>
+<TD>132</TD>
+<TD><![CDATA[4.85 GHz            ]]></TD>
 <TD>  3.60E-02</TD>
 <TD>5.40E-03</TD>
 <TD>Jy</TD>
@@ -2570,27 +2722,27 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; Corrected for contaminating sources]]></TD>
 </TR>
 <TR>
-<TD>125</TD>
-<TD>1.49 GHz (VLA)      </TD>
-<TD> 8400.0    </TD>
+<TD>133</TD>
+<TD><![CDATA[4.8 GHz (Effelsberg)]]></TD>
+<TD> 1863      </TD>
 <TD></TD>
 <TD>milliJy             </TD>
-<TD>1.49E+09</TD>
-<TD>  8.40E+00</TD>
+<TD>4.80E+09</TD>
+<TD>  1.86E+00</TD>
 <TD></TD>
 <TD>Jy</TD>
-<TD>1996ApJS..103...81C</TD>
+<TD>2009ApJ...693.1392S</TD>
 <TD>no uncertainty reported</TD>
-<TD>   1.490   GHz       </TD>
+<TD>       4.8 GHz       </TD>
 <TD> Broad-band measurement</TD>
-<TD>004000.0 +405942 (B1950)</TD>
-<TD> Total flux</TD>
-<TD><![CDATA[Extended source; beamwidth = 48"        ]]></TD>
-<TD><![CDATA[Averaged from previously published data]]></TD>
+<TD></TD>
+<TD> Flux integrated from map</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>126</TD>
-<TD>1.49 GHz (VLA)      </TD>
+<TD>134</TD>
+<TD><![CDATA[1.49 GHz (VLA)      ]]></TD>
 <TD> 14.5      </TD>
 <TD></TD>
 <TD>milliJy             </TD>
@@ -2608,8 +2760,27 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 <TD><![CDATA[Averaged from previously published data]]></TD>
 </TR>
 <TR>
-<TD>127</TD>
-<TD>1.4 GHz (VLA)       </TD>
+<TD>135</TD>
+<TD><![CDATA[1.49 GHz (VLA)      ]]></TD>
+<TD> 8400.0    </TD>
+<TD></TD>
+<TD>milliJy             </TD>
+<TD>1.49E+09</TD>
+<TD>  8.40E+00</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1996ApJS..103...81C</TD>
+<TD>no uncertainty reported</TD>
+<TD>   1.490   GHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>004000.0 +405942 (B1950)</TD>
+<TD> Total flux</TD>
+<TD><![CDATA[Extended source; beamwidth = 48"        ]]></TD>
+<TD><![CDATA[Averaged from previously published data]]></TD>
+</TR>
+<TR>
+<TD>136</TD>
+<TD><![CDATA[1.4 GHz (VLA)       ]]></TD>
 <TD> 8600.0    </TD>
 <TD></TD>
 <TD>milliJy             </TD>
@@ -2627,8 +2798,8 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 <TD><![CDATA[Averaged from previously published data]]></TD>
 </TR>
 <TR>
-<TD>128</TD>
-<TD>408 MHz             </TD>
+<TD>137</TD>
+<TD><![CDATA[408 MHz             ]]></TD>
 <TD> 0.22      </TD>
 <TD>0.02 </TD>
 <TD>Jy                  </TD>
@@ -2646,8 +2817,8 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>129</TD>
-<TD>151 MHz (6C)        </TD>
+<TD>138</TD>
+<TD><![CDATA[151 MHz (6C)        ]]></TD>
 <TD> 0.75      </TD>
 <TD>0.075</TD>
 <TD>Jy                  </TD>
@@ -2669,3 +2840,4 @@ href="/services/accessSED?TARGETNAME=MESSIER 031&amp;REQUEST=getData"/>
 </TABLE>
 </RESOURCE>
 </VOTABLE>
+

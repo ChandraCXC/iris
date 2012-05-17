@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -143,7 +159,7 @@ public class PhotometryCatalogFrame extends ConfirmJInternalFrame implements Seg
         jTextArea1 = new javax.swing.JTextArea();
 
         setClosable(true);
-        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
@@ -473,7 +489,6 @@ public class PhotometryCatalogFrame extends ConfirmJInternalFrame implements Seg
         jToolBar1.add(jButton2);
 
         nameChangeButton.setAction(actionMap.get("changePointName")); // NOI18N
-        nameChangeButton.setText("Change Name");
         nameChangeButton.setFocusable(false);
         nameChangeButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         nameChangeButton.setName("nameChangeButton"); // NOI18N

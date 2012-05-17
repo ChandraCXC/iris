@@ -117,28 +117,6 @@ executable.
 Iris can be shut down by clicking the "File->Exit" option in the File
 menu.
 
-
-The SED Builder
-===============
-
-This component of the VAO Iris SED Tool allows users to convert their data,
-stored in non-standard formats, to IVOA standard documents so that they can be
-used by Iris.
-
-It also allows users to fetch SEDs from the NED SED service.
-
-The user can build a SED out of any number of "segments": each segment
-being a whole spectrum, a single photometric point, or a set of
-photometric points.
-
-SED Builder can be used in GUI mode.  It is also possible to save a "setup
-file" that contains all the information needed by the tool in order to
-convert similar files in "batch mode" from the command line.
-
-In the example folder, please find the files 3c273.dat and 3c273.csv,
-which are an ASCII and a CSV representation of the 3c273.xml file.
-These files can be used to test SED Builder.
-
 To run the SED Builder in batch mode from the command line, provide
 the following arguments, in this order:
 
@@ -157,6 +135,11 @@ For example:
 Batch mode can be used from the command line, to apply the same setup
 to a number of input SED files, and to write out compliant versions of all
 the input files.
+
+Please refer to the Iris documentation for more information and tutorials:
+http://cxc.harvard.edu/iris/index.html
+
+
 
 Analyzing Sample Data from NED
 ==============================
@@ -202,14 +185,16 @@ or, download the SED into a file with wget, and start Iris;
 % <basedir>/Iris
 
 To analyze a SED in Iris, start Iris, as instructed in the section
-above, "Running Iris $project.version}".
+above, "Running Iris ${project.version}".
 
 In this section we will illustrate Iris usage with the SED of 3C 273.
 To read the SED into Iris, click the
-"Build SED" button. Create a new SED, then load a new Segment. Select the "examples"
+"Load File" button. After clicking on "Browse", select the "examples"
 directory, and then select "3c273.xml".
 
-If you click on the View SED, the SED of 3C 273 will be plotted, in
+Click on "Load Spectrum/SED".
+
+The SED of 3C 273 will be plotted, in
 units of Jy vs. Hz.  The plot can be resized by clicking and dragging
 on the lower-right corner of the plot window.  Different units can be
 displayed by clicking the "Units" button.  This opens a menu of
@@ -228,7 +213,7 @@ fit, no matter what units the user has chosen for display.
 
 Fitting in Iris will open up a new set of menu boxes that allow the
 user to define a model, set initial parameter values and ranges, and
-see fit results at the end.  To fit a model to a SED, click the "Fit"
+see fit results at the end.  To fit a model to a SED, click the "Fitting Tool"
 button on the Iris Desktop to open the component dialog box.
 
 The component dialog box is populated with a powerlaw model component
@@ -240,8 +225,12 @@ components from the list will cause remaining components to
 potentially be renamed according to their position in the list.
 
 To see the list of available models, click "Add".  Each time the user
-clicks "Add", the list of models comes up; the user can click on a
-model in the list, and that model is added to the list in the
+clicks "Add", the list of models comes up; models are arranged in two groups:
+preset components and custom models. Custom models can be managed by using the
+Custom Fit Models Manager tool from the desktop or the Tools menu.
+
+When the user clicks on a
+model in the list, that model is added to the list in the
 component dialog box.  For example, to fit a broken power-law to 3C
 273, click "brokenpowerlaw" in the list.  This will add a model
 component in the dialog box, that looks like this:
@@ -293,7 +282,7 @@ these measured errors are fed to the chi-squared statistic to use as
 the variance.
 
 To improve the fit, examine data points that would seem to unduly bias
-the fit; define a filter; add new model components, if necessary; and
+the fit; define a filter by clicking on "Select Range"; add new model components, if necessary; and
 then fit again.  (The fitting method may left at neldermead.  The
 other options are "levmar"--an implementation of the
 Levenberg-Marquardt algorithm; and "moncar"--a Monte Carlo method for

@@ -83,7 +83,7 @@ href="/services/accessSED?TARGETNAME=3C 295&amp;REQUEST=getData"/>
 <PARAM ID="DatasetType" datatype="char" name="DatasetType" utype="spec:Spectrum.Type" value="Photometry Point" arraysize="*">
 <DESCRIPTION>Dataset or segment type</DESCRIPTION>
 </PARAM>
-<PARAM ID="DataLength" datatype="int" name="DataLength" ucd="meta.number" utype="spec:Spectrum.Length" value="141">
+<PARAM ID="DataLength" datatype="int" name="DataLength" ucd="meta.number" utype="spec:Spectrum.Length" value="142">
 <DESCRIPTION>Number of points</DESCRIPTION>
 </PARAM>
 <GROUP ID="DataID" name="DataID" utype="spec:Spectrum.DataID">
@@ -153,7 +153,7 @@ href="/services/accessSED?TARGETNAME=3C 295&amp;REQUEST=getData"/>
 </GROUP>
 <GROUP ID="Char.SpatialAxis" name="Char.SpatialAxis" utype="spec:Spectrum.Char.SpatialAxis">
 <DESCRIPTION>Spatial Axis Characterization</DESCRIPTION>
-<PARAM ID="SpatialAxisCoverageLocation" datatype="char" name="SpatialAxisCoverageLocation"  ucd="pos.eq" utype="spec:Spectrum.Char.SpatialAxis.Coverage.Location.Value" value="194.0465271 -5.789311" arraysize="*">
+<PARAM ID="SpatialAxisCoverageLocation" datatype="char" name="SpatialAxisCoverageLocation"  ucd="pos.eq" utype="spec:Spectrum.Char.SpatialAxis.Coverage.Location.Value" value="212.835495 52.202770" arraysize="*">
 <DESCRIPTION>Position</DESCRIPTION>
 </PARAM>
 <PARAM ID="SpatialAxisCoverageBoundsExtent" datatype="char" name="SpatialAxisCoverageBoundsExtent" utype="spec:Spectrum.Char.SpatialAxis.Coverage.Bounds.Extent" value="" arraysize="*">
@@ -215,7 +215,7 @@ href="/services/accessSED?TARGETNAME=3C 295&amp;REQUEST=getData"/>
 <TABLEDATA>
 <TR>
 <TD>1</TD>
-<TD>2-10 keV (ASCA)     </TD>
+<TD><![CDATA[2-10 keV (ASCA)     ]]></TD>
 <TD> 12.0E-13  </TD>
 <TD></TD>
 <TD> ergs/s/cm^2^       </TD>
@@ -234,7 +234,7 @@ href="/services/accessSED?TARGETNAME=3C 295&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>2</TD>
-<TD>0.7-7 keV (ASCA)    </TD>
+<TD><![CDATA[0.7-7 keV (ASCA)    ]]></TD>
 <TD> 14.7E-13  </TD>
 <TD></TD>
 <TD> ergs/s/cm^2^       </TD>
@@ -253,7 +253,7 @@ href="/services/accessSED?TARGETNAME=3C 295&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>3</TD>
-<TD>0.5-2.5 keV Chandra </TD>
+<TD><![CDATA[0.5-2.5 keV Chandra ]]></TD>
 <TD> 52E-14    </TD>
 <TD>2E-14</TD>
 <TD> erg/s/cm^2^        </TD>
@@ -272,7 +272,7 @@ href="/services/accessSED?TARGETNAME=3C 295&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>4</TD>
-<TD>0.7-2 keV (ASCA)    </TD>
+<TD><![CDATA[0.7-2 keV (ASCA)    ]]></TD>
 <TD> 5.7E-13   </TD>
 <TD></TD>
 <TD> ergs/s/cm^2^       </TD>
@@ -291,7 +291,7 @@ href="/services/accessSED?TARGETNAME=3C 295&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>5</TD>
-<TD>0.5-2 keV (CXO)     </TD>
+<TD><![CDATA[0.5-2 keV (CXO)     ]]></TD>
 <TD> 6.06E-14  </TD>
 <TD>     </TD>
 <TD>ergs cm^-2^ s^-1^   </TD>
@@ -310,7 +310,7 @@ href="/services/accessSED?TARGETNAME=3C 295&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>6</TD>
-<TD>1 keV               </TD>
+<TD><![CDATA[1 keV               ]]></TD>
 <TD> 1.0       </TD>
 <TD>0.5  </TD>
 <TD>nJy                 </TD>
@@ -329,7 +329,7 @@ href="/services/accessSED?TARGETNAME=3C 295&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>7</TD>
-<TD>1 keV               </TD>
+<TD><![CDATA[1 keV               ]]></TD>
 <TD> 82        </TD>
 <TD>172  </TD>
 <TD>nJy                 </TD>
@@ -348,7 +348,7 @@ href="/services/accessSED?TARGETNAME=3C 295&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>8</TD>
-<TD>u (SDSS PSF) AB     </TD>
+<TD><![CDATA[u (SDSS PSF) AB     ]]></TD>
 <TD> 23.188    </TD>
 <TD>0.810</TD>
 <TD>asinh mag           </TD>
@@ -367,7 +367,7 @@ href="/services/accessSED?TARGETNAME=3C 295&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>9</TD>
-<TD>u (SDSS Model) AB   </TD>
+<TD><![CDATA[u (SDSS Model) AB   ]]></TD>
 <TD> 22.934    </TD>
 <TD>1.345</TD>
 <TD>asinh mag           </TD>
@@ -386,7 +386,7 @@ href="/services/accessSED?TARGETNAME=3C 295&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>10</TD>
-<TD>u (SDSS CModel) AB  </TD>
+<TD><![CDATA[u (SDSS CModel) AB  ]]></TD>
 <TD> 22.802    </TD>
 <TD></TD>
 <TD>asinh mag           </TD>
@@ -405,7 +405,7 @@ href="/services/accessSED?TARGETNAME=3C 295&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>11</TD>
-<TD>u (SDSS Petrosian)AB</TD>
+<TD><![CDATA[u (SDSS Petrosian)AB]]></TD>
 <TD> 21.415    </TD>
 <TD>0.966</TD>
 <TD>asinh mag           </TD>
@@ -425,7 +425,7 @@ SDSS flags: CANONICAL_CENTER - used canonical, not local, center; CHILD - object
 </TR>
 <TR>
 <TD>12</TD>
-<TD>u (SDSS PSF) AB     </TD>
+<TD><![CDATA[u (SDSS PSF) AB     ]]></TD>
 <TD> 23.188    </TD>
 <TD>0.810</TD>
 <TD>asinh mag           </TD>
@@ -444,7 +444,7 @@ SDSS flags: CANONICAL_CENTER - used canonical, not local, center; CHILD - object
 </TR>
 <TR>
 <TD>13</TD>
-<TD>u (SDSS CModel) AB  </TD>
+<TD><![CDATA[u (SDSS CModel) AB  ]]></TD>
 <TD> 22.762    </TD>
 <TD></TD>
 <TD>asinh mag           </TD>
@@ -463,7 +463,7 @@ SDSS flags: CANONICAL_CENTER - used canonical, not local, center; CHILD - object
 </TR>
 <TR>
 <TD>14</TD>
-<TD>u (SDSS Model) AB   </TD>
+<TD><![CDATA[u (SDSS Model) AB   ]]></TD>
 <TD> 22.934    </TD>
 <TD>1.345</TD>
 <TD>asinh mag           </TD>
@@ -482,7 +482,7 @@ SDSS flags: CANONICAL_CENTER - used canonical, not local, center; CHILD - object
 </TR>
 <TR>
 <TD>15</TD>
-<TD>g (SDSS PSF) AB     </TD>
+<TD><![CDATA[g (SDSS PSF) AB     ]]></TD>
 <TD> 21.543    </TD>
 <TD>0.061</TD>
 <TD>asinh mag           </TD>
@@ -501,7 +501,7 @@ SDSS flags: CANONICAL_CENTER - used canonical, not local, center; CHILD - object
 </TR>
 <TR>
 <TD>16</TD>
-<TD>g (SDSS Model) AB   </TD>
+<TD><![CDATA[g (SDSS Model) AB   ]]></TD>
 <TD> 20.089    </TD>
 <TD>0.042</TD>
 <TD>asinh mag           </TD>
@@ -520,7 +520,7 @@ SDSS flags: CANONICAL_CENTER - used canonical, not local, center; CHILD - object
 </TR>
 <TR>
 <TD>17</TD>
-<TD>g (SDSS CModel) AB  </TD>
+<TD><![CDATA[g (SDSS CModel) AB  ]]></TD>
 <TD> 19.797    </TD>
 <TD></TD>
 <TD>asinh mag           </TD>
@@ -539,7 +539,7 @@ SDSS flags: CANONICAL_CENTER - used canonical, not local, center; CHILD - object
 </TR>
 <TR>
 <TD>18</TD>
-<TD>g (SDSS Petrosian)AB</TD>
+<TD><![CDATA[g (SDSS Petrosian)AB]]></TD>
 <TD> 19.934    </TD>
 <TD>0.094</TD>
 <TD>asinh mag           </TD>
@@ -559,7 +559,7 @@ SDSS flags: CHILD - object is part of a blended parent object; NOPETRO - no Petr
 </TR>
 <TR>
 <TD>19</TD>
-<TD>g (SDSS PSF) AB     </TD>
+<TD><![CDATA[g (SDSS PSF) AB     ]]></TD>
 <TD> 21.543    </TD>
 <TD>0.061</TD>
 <TD>asinh mag           </TD>
@@ -578,7 +578,7 @@ SDSS flags: CHILD - object is part of a blended parent object; NOPETRO - no Petr
 </TR>
 <TR>
 <TD>20</TD>
-<TD>g (SDSS CModel) AB  </TD>
+<TD><![CDATA[g (SDSS CModel) AB  ]]></TD>
 <TD> 19.797    </TD>
 <TD></TD>
 <TD>asinh mag           </TD>
@@ -597,7 +597,7 @@ SDSS flags: CHILD - object is part of a blended parent object; NOPETRO - no Petr
 </TR>
 <TR>
 <TD>21</TD>
-<TD>g (SDSS Model) AB   </TD>
+<TD><![CDATA[g (SDSS Model) AB   ]]></TD>
 <TD> 20.089    </TD>
 <TD>0.042</TD>
 <TD>asinh mag           </TD>
@@ -616,7 +616,7 @@ SDSS flags: CHILD - object is part of a blended parent object; NOPETRO - no Petr
 </TR>
 <TR>
 <TD>22</TD>
-<TD>V (Johnson)         </TD>
+<TD><![CDATA[V (Johnson)         ]]></TD>
 <TD> 19.74     </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -635,7 +635,7 @@ SDSS flags: CHILD - object is part of a blended parent object; NOPETRO - no Petr
 </TR>
 <TR>
 <TD>23</TD>
-<TD>V (Johnson)         </TD>
+<TD><![CDATA[V (Johnson)         ]]></TD>
 <TD> 19.56     </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -654,7 +654,7 @@ SDSS flags: CHILD - object is part of a blended parent object; NOPETRO - no Petr
 </TR>
 <TR>
 <TD>24</TD>
-<TD>r (SDSS PSF) AB     </TD>
+<TD><![CDATA[r (SDSS PSF) AB     ]]></TD>
 <TD> 20.150    </TD>
 <TD>0.072</TD>
 <TD>asinh mag           </TD>
@@ -673,7 +673,7 @@ SDSS flags: CHILD - object is part of a blended parent object; NOPETRO - no Petr
 </TR>
 <TR>
 <TD>25</TD>
-<TD>r (SDSS Model) AB   </TD>
+<TD><![CDATA[r (SDSS Model) AB   ]]></TD>
 <TD> 18.511    </TD>
 <TD>0.018</TD>
 <TD>asinh mag           </TD>
@@ -692,7 +692,7 @@ SDSS flags: CHILD - object is part of a blended parent object; NOPETRO - no Petr
 </TR>
 <TR>
 <TD>26</TD>
-<TD>r (SDSS CModel) AB  </TD>
+<TD><![CDATA[r (SDSS CModel) AB  ]]></TD>
 <TD> 18.282    </TD>
 <TD></TD>
 <TD>asinh mag           </TD>
@@ -711,7 +711,7 @@ SDSS flags: CHILD - object is part of a blended parent object; NOPETRO - no Petr
 </TR>
 <TR>
 <TD>27</TD>
-<TD>r (SDSS Petrosian)AB</TD>
+<TD><![CDATA[r (SDSS Petrosian)AB]]></TD>
 <TD> 18.391    </TD>
 <TD>0.130</TD>
 <TD>asinh mag           </TD>
@@ -731,7 +731,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>28</TD>
-<TD>r (SDSS PSF) AB     </TD>
+<TD><![CDATA[r (SDSS PSF) AB     ]]></TD>
 <TD> 20.150    </TD>
 <TD>0.072</TD>
 <TD>asinh mag           </TD>
@@ -750,7 +750,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>29</TD>
-<TD>r (SDSS CModel) AB  </TD>
+<TD><![CDATA[r (SDSS CModel) AB  ]]></TD>
 <TD> 18.282    </TD>
 <TD></TD>
 <TD>asinh mag           </TD>
@@ -769,7 +769,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>30</TD>
-<TD>r (SDSS Model) AB   </TD>
+<TD><![CDATA[r (SDSS Model) AB   ]]></TD>
 <TD> 18.511    </TD>
 <TD>0.018</TD>
 <TD>asinh mag           </TD>
@@ -788,7 +788,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>31</TD>
-<TD>i (SDSS PSF) AB     </TD>
+<TD><![CDATA[i (SDSS PSF) AB     ]]></TD>
 <TD> 19.372    </TD>
 <TD>0.025</TD>
 <TD>asinh mag           </TD>
@@ -807,7 +807,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>32</TD>
-<TD>i (SDSS Model) AB   </TD>
+<TD><![CDATA[i (SDSS Model) AB   ]]></TD>
 <TD> 17.707    </TD>
 <TD>0.015</TD>
 <TD>asinh mag           </TD>
@@ -826,7 +826,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>33</TD>
-<TD>i (SDSS CModel) AB  </TD>
+<TD><![CDATA[i (SDSS CModel) AB  ]]></TD>
 <TD> 17.463    </TD>
 <TD></TD>
 <TD>asinh mag           </TD>
@@ -845,7 +845,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>34</TD>
-<TD>i (SDSS Petrosian)AB</TD>
+<TD><![CDATA[i (SDSS Petrosian)AB]]></TD>
 <TD> 17.558    </TD>
 <TD>0.036</TD>
 <TD>asinh mag           </TD>
@@ -865,7 +865,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>35</TD>
-<TD>i (SDSS PSF) AB     </TD>
+<TD><![CDATA[i (SDSS PSF) AB     ]]></TD>
 <TD> 19.372    </TD>
 <TD>0.025</TD>
 <TD>asinh mag           </TD>
@@ -884,7 +884,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>36</TD>
-<TD>i (SDSS CModel) AB  </TD>
+<TD><![CDATA[i (SDSS CModel) AB  ]]></TD>
 <TD> 17.463    </TD>
 <TD></TD>
 <TD>asinh mag           </TD>
@@ -903,7 +903,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>37</TD>
-<TD>i (SDSS Model) AB   </TD>
+<TD><![CDATA[i (SDSS Model) AB   ]]></TD>
 <TD> 17.707    </TD>
 <TD>0.015</TD>
 <TD>asinh mag           </TD>
@@ -922,7 +922,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>38</TD>
-<TD>z (SDSS PSF) AB     </TD>
+<TD><![CDATA[z (SDSS PSF) AB     ]]></TD>
 <TD> 18.945    </TD>
 <TD>0.047</TD>
 <TD>asinh mag           </TD>
@@ -941,7 +941,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>39</TD>
-<TD>z (SDSS Model) AB   </TD>
+<TD><![CDATA[z (SDSS Model) AB   ]]></TD>
 <TD> 17.218    </TD>
 <TD>0.031</TD>
 <TD>asinh mag           </TD>
@@ -960,7 +960,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>40</TD>
-<TD>z (SDSS CModel) AB  </TD>
+<TD><![CDATA[z (SDSS CModel) AB  ]]></TD>
 <TD> 17.122    </TD>
 <TD></TD>
 <TD>asinh mag           </TD>
@@ -979,7 +979,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>41</TD>
-<TD>z (SDSS Petrosian)AB</TD>
+<TD><![CDATA[z (SDSS Petrosian)AB]]></TD>
 <TD> 17.206    </TD>
 <TD>0.080</TD>
 <TD>asinh mag           </TD>
@@ -999,7 +999,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>42</TD>
-<TD>z (SDSS PSF) AB     </TD>
+<TD><![CDATA[z (SDSS PSF) AB     ]]></TD>
 <TD> 18.965    </TD>
 <TD>0.047</TD>
 <TD>asinh mag           </TD>
@@ -1018,7 +1018,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>43</TD>
-<TD>z (SDSS CModel) AB  </TD>
+<TD><![CDATA[z (SDSS CModel) AB  ]]></TD>
 <TD> 17.122    </TD>
 <TD></TD>
 <TD>asinh mag           </TD>
@@ -1037,7 +1037,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>44</TD>
-<TD>z (SDSS Model) AB   </TD>
+<TD><![CDATA[z (SDSS Model) AB   ]]></TD>
 <TD> 17.238    </TD>
 <TD>0.031</TD>
 <TD>asinh mag           </TD>
@@ -1056,7 +1056,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>45</TD>
-<TD>J (UKIRT)           </TD>
+<TD><![CDATA[J (UKIRT)           ]]></TD>
 <TD> 16.08     </TD>
 <TD>0.06 </TD>
 <TD>mag                 </TD>
@@ -1075,7 +1075,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>46</TD>
-<TD>J_total (2MASS)     </TD>
+<TD><![CDATA[J_total (2MASS)     ]]></TD>
 <TD> 15.193    </TD>
 <TD>0.196</TD>
 <TD>mag                 </TD>
@@ -1094,7 +1094,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>47</TD>
-<TD>J_14arcsec (2MASS)  </TD>
+<TD><![CDATA[J_14arcsec (2MASS)  ]]></TD>
 <TD> 15.477    </TD>
 <TD>0.157</TD>
 <TD>mag                 </TD>
@@ -1113,7 +1113,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>48</TD>
-<TD>J_K20 (2MASS)       </TD>
+<TD><![CDATA[J_K20 (2MASS)       ]]></TD>
 <TD> 15.615    </TD>
 <TD>0.157</TD>
 <TD>mag                 </TD>
@@ -1132,7 +1132,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>49</TD>
-<TD>J (2MASS)           </TD>
+<TD><![CDATA[J (2MASS)           ]]></TD>
 <TD> 16.778    </TD>
 <TD>0.176</TD>
 <TD> mag                </TD>
@@ -1151,7 +1151,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>50</TD>
-<TD>J (UKIRT)           </TD>
+<TD><![CDATA[J (UKIRT)           ]]></TD>
 <TD> 16.61     </TD>
 <TD>0.07 </TD>
 <TD>mag                 </TD>
@@ -1170,7 +1170,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>51</TD>
-<TD>H (UKIRT)           </TD>
+<TD><![CDATA[H (UKIRT)           ]]></TD>
 <TD> 15.33     </TD>
 <TD>0.07 </TD>
 <TD>mag                 </TD>
@@ -1189,7 +1189,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>52</TD>
-<TD>H_total (2MASS)     </TD>
+<TD><![CDATA[H_total (2MASS)     ]]></TD>
 <TD> 14.811    </TD>
 <TD>0.223</TD>
 <TD>mag                 </TD>
@@ -1208,7 +1208,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>53</TD>
-<TD>H_14arcsec (2MASS)  </TD>
+<TD><![CDATA[H_14arcsec (2MASS)  ]]></TD>
 <TD> 14.811    </TD>
 <TD>0.223</TD>
 <TD>mag                 </TD>
@@ -1227,7 +1227,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>54</TD>
-<TD>H (2MASS)           </TD>
+<TD><![CDATA[H (2MASS)           ]]></TD>
 <TD> 15.178    </TD>
 <TD></TD>
 <TD> mag                </TD>
@@ -1246,7 +1246,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>55</TD>
-<TD>H (UKIRT)           </TD>
+<TD><![CDATA[H (UKIRT)           ]]></TD>
 <TD> 15.75     </TD>
 <TD>0.06 </TD>
 <TD>mag                 </TD>
@@ -1265,7 +1265,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>56</TD>
-<TD>K_s_total (2MASS)   </TD>
+<TD><![CDATA[K_s_total (2MASS)   ]]></TD>
 <TD> 13.637    </TD>
 <TD>0.183</TD>
 <TD>mag                 </TD>
@@ -1284,7 +1284,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>57</TD>
-<TD>K_s_14arcsec (2MASS)</TD>
+<TD><![CDATA[K_s_14arcsec (2MASS)]]></TD>
 <TD> 13.925    </TD>
 <TD>0.147</TD>
 <TD>mag                 </TD>
@@ -1303,7 +1303,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>58</TD>
-<TD>K_s_K20 (2MASS)     </TD>
+<TD><![CDATA[K_s_K20 (2MASS)     ]]></TD>
 <TD> 14.033    </TD>
 <TD>0.143</TD>
 <TD>mag                 </TD>
@@ -1322,7 +1322,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>59</TD>
-<TD>K (2MASS)           </TD>
+<TD><![CDATA[K (2MASS)           ]]></TD>
 <TD> 15.367    </TD>
 <TD>0.187</TD>
 <TD> mag                </TD>
@@ -1341,7 +1341,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>60</TD>
-<TD>K (UKIRT)           </TD>
+<TD><![CDATA[K (UKIRT)           ]]></TD>
 <TD> 14.49     </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -1360,7 +1360,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>61</TD>
-<TD>K (UKIRT)           </TD>
+<TD><![CDATA[K (UKIRT)           ]]></TD>
 <TD> 15.21     </TD>
 <TD>0.05 </TD>
 <TD>mag                 </TD>
@@ -1379,7 +1379,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>62</TD>
-<TD>4.8 microns (ISO)   </TD>
+<TD><![CDATA[4.8 microns (ISO)   ]]></TD>
 <TD> 16        </TD>
 <TD>4    </TD>
 <TD>milliJy             </TD>
@@ -1398,7 +1398,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>63</TD>
-<TD>6.7 microns (ISOCAM)</TD>
+<TD><![CDATA[6.7 microns (ISOCAM)]]></TD>
 <TD> 1.4       </TD>
 <TD>0.3  </TD>
 <TD>milliJy             </TD>
@@ -1417,7 +1417,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>64</TD>
-<TD>7 microns (ISO)     </TD>
+<TD><![CDATA[7 microns (ISO)     ]]></TD>
 <TD> 1.41      </TD>
 <TD>0.43 </TD>
 <TD>milliJy             </TD>
@@ -1436,7 +1436,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>65</TD>
-<TD>12.8 microns (ISO)  </TD>
+<TD><![CDATA[12.8 microns (ISO)  ]]></TD>
 <TD> 42        </TD>
 <TD>64   </TD>
 <TD>milliJy             </TD>
@@ -1455,7 +1455,26 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>66</TD>
-<TD>60 microns (ISO)    </TD>
+<TD><![CDATA[15 microns (Spitzer)]]></TD>
+<TD> 4.36      </TD>
+<TD>0.05 </TD>
+<TD> milliJy            </TD>
+<TD>2.00E+13</TD>
+<TD>  4.36E-03</TD>
+<TD>5.00E-05</TD>
+<TD>Jy</TD>
+<TD>2009MNRAS.396.1929H</TD>
+<TD>1 sigma</TD>
+<TD>        15 microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux integrated from map</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>67</TD>
+<TD><![CDATA[60 microns (ISO)    ]]></TD>
 <TD> 160       </TD>
 <TD>40   </TD>
 <TD>milliJy             </TD>
@@ -1473,8 +1492,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>67</TD>
-<TD>60 microns (ISO)    </TD>
+<TD>68</TD>
+<TD><![CDATA[60 microns (ISO)    ]]></TD>
 <TD> 157       </TD>
 <TD>26   </TD>
 <TD>milliJy             </TD>
@@ -1492,8 +1511,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>68</TD>
-<TD>90 microns (ISO)    </TD>
+<TD>69</TD>
+<TD><![CDATA[90 microns (ISO)    ]]></TD>
 <TD> 140       </TD>
 <TD>35   </TD>
 <TD>milliJy             </TD>
@@ -1511,8 +1530,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>69</TD>
-<TD>100 microns (ISO)   </TD>
+<TD>70</TD>
+<TD><![CDATA[100 microns (ISO)   ]]></TD>
 <TD> 155       </TD>
 <TD>19   </TD>
 <TD>milliJy             </TD>
@@ -1530,8 +1549,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>70</TD>
-<TD>170 microns (ISO)   </TD>
+<TD>71</TD>
+<TD><![CDATA[170 microns (ISO)   ]]></TD>
 <TD> 106       </TD>
 <TD>37   </TD>
 <TD>milliJy             </TD>
@@ -1549,8 +1568,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>71</TD>
-<TD>1300 microns (IRAM) </TD>
+<TD>72</TD>
+<TD><![CDATA[1300 microns (IRAM) ]]></TD>
 <TD> 19.1      </TD>
 <TD>0.9  </TD>
 <TD>milliJy             </TD>
@@ -1568,8 +1587,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>72</TD>
-<TD>1.25 mm (IRAM)      </TD>
+<TD>73</TD>
+<TD><![CDATA[1.25 mm (IRAM)      ]]></TD>
 <TD> 35.6      </TD>
 <TD>4.0  </TD>
 <TD>milliJy             </TD>
@@ -1587,8 +1606,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>73</TD>
-<TD>Ka (WMAP)           </TD>
+<TD>74</TD>
+<TD><![CDATA[Ka (WMAP)           ]]></TD>
 <TD> 0.3       </TD>
 <TD>0.10 </TD>
 <TD> Jy                 </TD>
@@ -1606,8 +1625,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>74</TD>
-<TD>31400 MHz           </TD>
+<TD>75</TD>
+<TD><![CDATA[31400 MHz           ]]></TD>
 <TD> 0.56      </TD>
 <TD>.11  </TD>
 <TD>Jy                  </TD>
@@ -1625,8 +1644,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[Transformed from previously published data]]></TD>
 </TR>
 <TR>
-<TD>75</TD>
-<TD>K (WMAP)            </TD>
+<TD>76</TD>
+<TD><![CDATA[K (WMAP)            ]]></TD>
 <TD> 0.9       </TD>
 <TD>0.05 </TD>
 <TD> Jy                 </TD>
@@ -1644,8 +1663,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>76</TD>
-<TD>23 GHz (WMAP)       </TD>
+<TD>77</TD>
+<TD><![CDATA[23 GHz (WMAP)       ]]></TD>
 <TD> 695       </TD>
 <TD>136  </TD>
 <TD> milliJy            </TD>
@@ -1663,8 +1682,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>77</TD>
-<TD>14900 MHz           </TD>
+<TD>78</TD>
+<TD><![CDATA[14900 MHz           ]]></TD>
 <TD> 1.600     </TD>
 <TD>0.020</TD>
 <TD>Jy                  </TD>
@@ -1682,8 +1701,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[Homogenized from previously published data]]></TD>
 </TR>
 <TR>
-<TD>78</TD>
-<TD>14900 MHz           </TD>
+<TD>79</TD>
+<TD><![CDATA[14900 MHz           ]]></TD>
 <TD> 1.6       </TD>
 <TD>.02  </TD>
 <TD>Jy                  </TD>
@@ -1701,8 +1720,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[Transformed from previously published data]]></TD>
 </TR>
 <TR>
-<TD>79</TD>
-<TD>10700 MHz           </TD>
+<TD>80</TD>
+<TD><![CDATA[10700 MHz           ]]></TD>
 <TD> 2.589     </TD>
 <TD>0.075</TD>
 <TD>Jy                  </TD>
@@ -1720,8 +1739,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[Homogenized from previously published data]]></TD>
 </TR>
 <TR>
-<TD>80</TD>
-<TD>10.7 GHz (NRAO)     </TD>
+<TD>81</TD>
+<TD><![CDATA[10.7 GHz (NRAO)     ]]></TD>
 <TD> 2.76      </TD>
 <TD>0.08 </TD>
 <TD>Jy                  </TD>
@@ -1739,8 +1758,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>81</TD>
-<TD>10695 MHz           </TD>
+<TD>82</TD>
+<TD><![CDATA[10695 MHz           ]]></TD>
 <TD> 2.76      </TD>
 <TD>.05  </TD>
 <TD>Jy                  </TD>
@@ -1758,8 +1777,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>82</TD>
-<TD>10.45 GHz Effelsberg</TD>
+<TD>83</TD>
+<TD><![CDATA[10.45 GHz Effelsberg]]></TD>
 <TD> 2.62      </TD>
 <TD></TD>
 <TD> Jy                 </TD>
@@ -1777,8 +1796,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>83</TD>
-<TD>8 GHz (VLA)         </TD>
+<TD>84</TD>
+<TD><![CDATA[8 GHz (VLA)         ]]></TD>
 <TD> 3300      </TD>
 <TD></TD>
 <TD> milliJy            </TD>
@@ -1796,8 +1815,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>84</TD>
-<TD>8 GHz (VLA)         </TD>
+<TD>85</TD>
+<TD><![CDATA[8 GHz (VLA)         ]]></TD>
 <TD> 4.64      </TD>
 <TD>0.07 </TD>
 <TD> milliJy            </TD>
@@ -1815,46 +1834,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>85</TD>
-<TD>5000 MHz            </TD>
-<TD> 6.484     </TD>
-<TD>0.079</TD>
-<TD>Jy                  </TD>
-<TD>5.00E+09</TD>
-<TD>  6.48E+00</TD>
-<TD>7.90E-02</TD>
-<TD>Jy</TD>
-<TD>1980MNRAS.190..903L</TD>
-<TD>uncertainty</TD>
-<TD>5000       MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Total flux</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[Homogenized from previously published data]]></TD>
-</TR>
-<TR>
 <TD>86</TD>
-<TD>5000 MHz            </TD>
-<TD>  6.53E+00</TD>
-<TD>3.30E-01</TD>
-<TD>Jy</TD>
-<TD>5.00E+09</TD>
-<TD>  6.53E+00</TD>
-<TD>3.30E-01</TD>
-<TD>Jy</TD>
-<TD>1969ApJ...157....1K</TD>
-<TD>rms uncertainty</TD>
-<TD>5000       MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux integrated from map</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>87</TD>
-<TD>5000 MHz            </TD>
+<TD><![CDATA[5000 MHz            ]]></TD>
 <TD> 6.48      </TD>
 <TD>.32  </TD>
 <TD>Jy                  </TD>
@@ -1872,8 +1853,46 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[Recalibrated data]]></TD>
 </TR>
 <TR>
+<TD>87</TD>
+<TD><![CDATA[5000 MHz            ]]></TD>
+<TD> 6.484     </TD>
+<TD>0.079</TD>
+<TD>Jy                  </TD>
+<TD>5.00E+09</TD>
+<TD>  6.48E+00</TD>
+<TD>7.90E-02</TD>
+<TD>Jy</TD>
+<TD>1980MNRAS.190..903L</TD>
+<TD>uncertainty</TD>
+<TD>5000       MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Total flux</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[Homogenized from previously published data]]></TD>
+</TR>
+<TR>
 <TD>88</TD>
-<TD>4900 MHz            </TD>
+<TD><![CDATA[5000 MHz            ]]></TD>
+<TD>  6.53E+00</TD>
+<TD>3.30E-01</TD>
+<TD>Jy</TD>
+<TD>5.00E+09</TD>
+<TD>  6.53E+00</TD>
+<TD>3.30E-01</TD>
+<TD>Jy</TD>
+<TD>1969ApJ...157....1K</TD>
+<TD>rms uncertainty</TD>
+<TD>5000       MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux integrated from map</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>89</TD>
+<TD><![CDATA[4900 MHz            ]]></TD>
 <TD> 6.6       </TD>
 <TD>.07  </TD>
 <TD>Jy                  </TD>
@@ -1891,8 +1910,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[Transformed from previously published data]]></TD>
 </TR>
 <TR>
-<TD>89</TD>
-<TD>4.85 GHz Effelsberg </TD>
+<TD>90</TD>
+<TD><![CDATA[4.85 GHz Effelsberg ]]></TD>
 <TD> 6.56      </TD>
 <TD></TD>
 <TD> Jy                 </TD>
@@ -1910,8 +1929,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>90</TD>
-<TD>4.85 GHz            </TD>
+<TD>91</TD>
+<TD><![CDATA[4.85 GHz            ]]></TD>
 <TD>  7.37E+00</TD>
 <TD>1.11E+00</TD>
 <TD>Jy</TD>
@@ -1929,8 +1948,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data; Corrected for contaminating sources]]></TD>
 </TR>
 <TR>
-<TD>91</TD>
-<TD>4.85 GHz            </TD>
+<TD>92</TD>
+<TD><![CDATA[4.85 GHz            ]]></TD>
 <TD> 7401      </TD>
 <TD>808  </TD>
 <TD>milliJy             </TD>
@@ -1948,8 +1967,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data; Corrected for contaminating sources]]></TD>
 </TR>
 <TR>
-<TD>92</TD>
-<TD>2700 MHz            </TD>
+<TD>93</TD>
+<TD><![CDATA[2700 MHz            ]]></TD>
 <TD> 12.09     </TD>
 <TD>.61  </TD>
 <TD>Jy                  </TD>
@@ -1967,8 +1986,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[Recalibrated data]]></TD>
 </TR>
 <TR>
-<TD>93</TD>
-<TD>2.70 GHz Effelsberg </TD>
+<TD>94</TD>
+<TD><![CDATA[2.70 GHz Effelsberg ]]></TD>
 <TD> 12.19     </TD>
 <TD></TD>
 <TD> Jy                 </TD>
@@ -1986,8 +2005,27 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>94</TD>
-<TD>2695 MHz            </TD>
+<TD>95</TD>
+<TD><![CDATA[2695 MHz            ]]></TD>
+<TD>  1.18E+01</TD>
+<TD>5.90E-01</TD>
+<TD>Jy</TD>
+<TD>2.70E+09</TD>
+<TD>  1.18E+01</TD>
+<TD>5.90E-01</TD>
+<TD>Jy</TD>
+<TD>1969ApJ...157....1K</TD>
+<TD>rms uncertainty</TD>
+<TD>2695       MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux integrated from map</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>96</TD>
+<TD><![CDATA[2695 MHz            ]]></TD>
 <TD> 11.76     </TD>
 <TD>.09  </TD>
 <TD>Jy                  </TD>
@@ -2005,8 +2043,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>95</TD>
-<TD>2695 MHz            </TD>
+<TD>97</TD>
+<TD><![CDATA[2695 MHz            ]]></TD>
 <TD> 11.960    </TD>
 <TD>0.121</TD>
 <TD>Jy                  </TD>
@@ -2024,8 +2062,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[Homogenized from previously published data]]></TD>
 </TR>
 <TR>
-<TD>96</TD>
-<TD>2695 MHz            </TD>
+<TD>98</TD>
+<TD><![CDATA[2695 MHz            ]]></TD>
 <TD> 12.4      </TD>
 <TD>.99  </TD>
 <TD>Jy                  </TD>
@@ -2043,8 +2081,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[Transformed from previously published data]]></TD>
 </TR>
 <TR>
-<TD>97</TD>
-<TD>2695 MHz            </TD>
+<TD>99</TD>
+<TD><![CDATA[2695 MHz            ]]></TD>
 <TD> 12        </TD>
 <TD>.59  </TD>
 <TD>Jy                  </TD>
@@ -2062,27 +2100,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>98</TD>
-<TD>2695 MHz            </TD>
-<TD>  1.18E+01</TD>
-<TD>5.90E-01</TD>
-<TD>Jy</TD>
-<TD>2.70E+09</TD>
-<TD>  1.18E+01</TD>
-<TD>5.90E-01</TD>
-<TD>Jy</TD>
-<TD>1969ApJ...157....1K</TD>
-<TD>rms uncertainty</TD>
-<TD>2695       MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux integrated from map</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>99</TD>
-<TD>1410 MHz            </TD>
+<TD>100</TD>
+<TD><![CDATA[1410 MHz            ]]></TD>
 <TD> 21.78     </TD>
 <TD>.06  </TD>
 <TD>Jy                  </TD>
@@ -2100,8 +2119,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[Transformed from previously published data]]></TD>
 </TR>
 <TR>
-<TD>100</TD>
-<TD>1.4GHz              </TD>
+<TD>101</TD>
+<TD><![CDATA[1.4GHz              ]]></TD>
 <TD> 22720.6   </TD>
 <TD>681.6</TD>
 <TD>milliJy             </TD>
@@ -2119,8 +2138,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>101</TD>
-<TD>1400 MHz            </TD>
+<TD>102</TD>
+<TD><![CDATA[1400 MHz            ]]></TD>
 <TD> 23.4      </TD>
 <TD>1.20 </TD>
 <TD>Jy                  </TD>
@@ -2138,8 +2157,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[Recalibrated data]]></TD>
 </TR>
 <TR>
-<TD>102</TD>
-<TD>1400 MHz            </TD>
+<TD>103</TD>
+<TD><![CDATA[1400 MHz            ]]></TD>
 <TD> 22.823    </TD>
 <TD>0.401</TD>
 <TD>Jy                  </TD>
@@ -2157,27 +2176,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[Homogenized from previously published data]]></TD>
 </TR>
 <TR>
-<TD>103</TD>
-<TD>1400 MHz            </TD>
-<TD>  2.27E+01</TD>
-<TD>1.14E+00</TD>
-<TD>Jy</TD>
-<TD>1.40E+09</TD>
-<TD>  2.27E+01</TD>
-<TD>1.14E+00</TD>
-<TD>Jy</TD>
-<TD>1969ApJ...157....1K</TD>
-<TD>rms uncertainty</TD>
-<TD>1400       MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux integrated from map</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
 <TD>104</TD>
-<TD>1400 MHz            </TD>
+<TD><![CDATA[1400 MHz            ]]></TD>
 <TD> 23.07     </TD>
 <TD>0.20 </TD>
 <TD>Jy                  </TD>
@@ -2196,7 +2196,26 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>105</TD>
-<TD>1.40 GHz            </TD>
+<TD><![CDATA[1400 MHz            ]]></TD>
+<TD>  2.27E+01</TD>
+<TD>1.14E+00</TD>
+<TD>Jy</TD>
+<TD>1.40E+09</TD>
+<TD>  2.27E+01</TD>
+<TD>1.14E+00</TD>
+<TD>Jy</TD>
+<TD>1969ApJ...157....1K</TD>
+<TD>rms uncertainty</TD>
+<TD>1400       MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux integrated from map</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>106</TD>
+<TD><![CDATA[1.40 GHz            ]]></TD>
 <TD> 21732     </TD>
 <TD></TD>
 <TD>milliJy             </TD>
@@ -2214,8 +2233,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>106</TD>
-<TD>966 MHz             </TD>
+<TD>107</TD>
+<TD><![CDATA[966 MHz             ]]></TD>
 <TD> 27.88     </TD>
 <TD>2.15 </TD>
 <TD>Jy                  </TD>
@@ -2233,46 +2252,27 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[Transformed from previously published data]]></TD>
 </TR>
 <TR>
-<TD>107</TD>
-<TD>750 MHz             </TD>
-<TD> 36.93     </TD>
-<TD>0.22 </TD>
+<TD>108</TD>
+<TD><![CDATA[750 MHz             ]]></TD>
+<TD> 36.930    </TD>
+<TD>0.615</TD>
 <TD>Jy                  </TD>
 <TD>7.50E+08</TD>
 <TD>  3.69E+01</TD>
-<TD>2.20E-01</TD>
+<TD>6.15E-01</TD>
 <TD>Jy</TD>
-<TD>1966ApJS...13...65P</TD>
-<TD>internal error</TD>
+<TD>1980MNRAS.190..903L</TD>
+<TD>uncertainty</TD>
 <TD>750        MHz       </TD>
 <TD> Broad-band measurement</TD>
-<TD>140934.1 +522600. (B1950)</TD>
-<TD> Peak flux</TD>
+<TD></TD>
+<TD> Total flux</TD>
 <TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>108</TD>
-<TD>750 MHz             </TD>
-<TD> 39.11     </TD>
-<TD>.23  </TD>
-<TD>Jy                  </TD>
-<TD>7.50E+08</TD>
-<TD>  3.91E+01</TD>
-<TD>2.30E-01</TD>
-<TD>Jy</TD>
-<TD>1981A&amp;AS...45..367K</TD>
-<TD>uncertainty</TD>
-<TD>     750   MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD>140933.50 +522613.0 (B1950)</TD>
-<TD> Not reported in paper</TD>
-<TD><![CDATA[Recal. to Baars scale by factor of 1.059]]></TD>
-<TD><![CDATA[Recalibrated data]]></TD>
+<TD><![CDATA[Homogenized from previously published data]]></TD>
 </TR>
 <TR>
 <TD>109</TD>
-<TD>750 MHz             </TD>
+<TD><![CDATA[750 MHz             ]]></TD>
 <TD> 36.9      </TD>
 <TD>1.80 </TD>
 <TD>Jy                  </TD>
@@ -2291,26 +2291,26 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>110</TD>
-<TD>750 MHz             </TD>
-<TD> 36.930    </TD>
-<TD>0.615</TD>
+<TD><![CDATA[750 MHz             ]]></TD>
+<TD> 39.11     </TD>
+<TD>.23  </TD>
 <TD>Jy                  </TD>
 <TD>7.50E+08</TD>
-<TD>  3.69E+01</TD>
-<TD>6.15E-01</TD>
+<TD>  3.91E+01</TD>
+<TD>2.30E-01</TD>
 <TD>Jy</TD>
-<TD>1980MNRAS.190..903L</TD>
+<TD>1981A&amp;AS...45..367K</TD>
 <TD>uncertainty</TD>
-<TD>750        MHz       </TD>
+<TD>     750   MHz       </TD>
 <TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Total flux</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[Homogenized from previously published data]]></TD>
+<TD>140933.50 +522613.0 (B1950)</TD>
+<TD> Not reported in paper</TD>
+<TD><![CDATA[Recal. to Baars scale by factor of 1.059]]></TD>
+<TD><![CDATA[Recalibrated data]]></TD>
 </TR>
 <TR>
 <TD>111</TD>
-<TD>750 MHz             </TD>
+<TD><![CDATA[750 MHz             ]]></TD>
 <TD>  3.53E+01</TD>
 <TD>1.77E+00</TD>
 <TD>Jy</TD>
@@ -2329,7 +2329,26 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>112</TD>
-<TD>365 MHz             </TD>
+<TD><![CDATA[750 MHz             ]]></TD>
+<TD> 36.93     </TD>
+<TD>0.22 </TD>
+<TD>Jy                  </TD>
+<TD>7.50E+08</TD>
+<TD>  3.69E+01</TD>
+<TD>2.20E-01</TD>
+<TD>Jy</TD>
+<TD>1966ApJS...13...65P</TD>
+<TD>internal error</TD>
+<TD>750        MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>140934.1 +522600. (B1950)</TD>
+<TD> Peak flux</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>113</TD>
+<TD><![CDATA[365 MHz             ]]></TD>
 <TD> 65.44     </TD>
 <TD>3.75 </TD>
 <TD>Jy                  </TD>
@@ -2347,8 +2366,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[Recalibrated data]]></TD>
 </TR>
 <TR>
-<TD>113</TD>
-<TD>178 MHz             </TD>
+<TD>114</TD>
+<TD><![CDATA[178 MHz             ]]></TD>
 <TD>  8.35E+01</TD>
 <TD>8.35E+00</TD>
 <TD>Jy</TD>
@@ -2366,27 +2385,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>114</TD>
-<TD>178 MHz             </TD>
-<TD> 80.21     </TD>
-<TD>4.40 </TD>
-<TD>Jy                  </TD>
-<TD>1.78E+08</TD>
-<TD>  8.02E+01</TD>
-<TD>4.40E+00</TD>
-<TD>Jy</TD>
-<TD>1981A&amp;AS...45..367K</TD>
-<TD>uncertainty</TD>
-<TD>     178   MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD>140933.50 +522613.0 (B1950)</TD>
-<TD> Not reported in paper</TD>
-<TD><![CDATA[Recal. to Baars scale by factor of 1.19 ]]></TD>
-<TD><![CDATA[Recalibrated data]]></TD>
-</TR>
-<TR>
 <TD>115</TD>
-<TD>178 MHz             </TD>
+<TD><![CDATA[178 MHz             ]]></TD>
 <TD> 91.015    </TD>
 <TD>4.551</TD>
 <TD>Jy                  </TD>
@@ -2405,7 +2405,7 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>116</TD>
-<TD>178 MHz             </TD>
+<TD><![CDATA[178 MHz             ]]></TD>
 <TD> 83.1      </TD>
 <TD>6.70 </TD>
 <TD>Jy                  </TD>
@@ -2424,7 +2424,26 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>117</TD>
-<TD>178 MHz             </TD>
+<TD><![CDATA[178 MHz             ]]></TD>
+<TD> 80.21     </TD>
+<TD>4.40 </TD>
+<TD>Jy                  </TD>
+<TD>1.78E+08</TD>
+<TD>  8.02E+01</TD>
+<TD>4.40E+00</TD>
+<TD>Jy</TD>
+<TD>1981A&amp;AS...45..367K</TD>
+<TD>uncertainty</TD>
+<TD>     178   MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>140933.50 +522613.0 (B1950)</TD>
+<TD> Not reported in paper</TD>
+<TD><![CDATA[Recal. to Baars scale by factor of 1.19 ]]></TD>
+<TD><![CDATA[Recalibrated data]]></TD>
+</TR>
+<TR>
+<TD>118</TD>
+<TD><![CDATA[178 MHz             ]]></TD>
 <TD>  7.49E+01</TD>
 <TD>5.99E+00</TD>
 <TD>Jy</TD>
@@ -2442,27 +2461,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data; Uncorrected for known sources in beam]]></TD>
 </TR>
 <TR>
-<TD>118</TD>
-<TD>151 MHz (6C)        </TD>
-<TD> 90.79     </TD>
-<TD>0.040</TD>
-<TD>Jy                  </TD>
-<TD>1.52E+08</TD>
-<TD>  9.08E+01</TD>
-<TD>4.00E-02</TD>
-<TD>Jy</TD>
-<TD>1990MNRAS.246..256H</TD>
-<TD>typical accuracy</TD>
-<TD>151.5      MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD>140933.3 522613. (B1950)</TD>
-<TD> Peak flux</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
 <TD>119</TD>
-<TD>151 MHz (6C)        </TD>
+<TD><![CDATA[151 MHz (6C)        ]]></TD>
 <TD> 89.51     </TD>
 <TD>0.090</TD>
 <TD>Jy                  </TD>
@@ -2481,7 +2481,26 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>120</TD>
-<TD>86 MHz              </TD>
+<TD><![CDATA[151 MHz (6C)        ]]></TD>
+<TD> 90.79     </TD>
+<TD>0.040</TD>
+<TD>Jy                  </TD>
+<TD>1.52E+08</TD>
+<TD>  9.08E+01</TD>
+<TD>4.00E-02</TD>
+<TD>Jy</TD>
+<TD>1990MNRAS.246..256H</TD>
+<TD>typical accuracy</TD>
+<TD>151.5      MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>140933.3 522613. (B1950)</TD>
+<TD> Peak flux</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>121</TD>
+<TD><![CDATA[86 MHz              ]]></TD>
 <TD> 133.000   </TD>
 <TD>3.000</TD>
 <TD>Jy                  </TD>
@@ -2499,8 +2518,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[Homogenized from previously published data]]></TD>
 </TR>
 <TR>
-<TD>121</TD>
-<TD>74 MHz (VLA)        </TD>
+<TD>122</TD>
+<TD><![CDATA[74 MHz (VLA)        ]]></TD>
 <TD> 107.9     </TD>
 <TD>1.62 </TD>
 <TD> Jy                 </TD>
@@ -2518,8 +2537,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>122</TD>
-<TD>74 MHz (VLA)        </TD>
+<TD>123</TD>
+<TD><![CDATA[74 MHz (VLA)        ]]></TD>
 <TD> 120.27    </TD>
 <TD>12.03</TD>
 <TD> Jy                 </TD>
@@ -2537,8 +2556,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>123</TD>
-<TD>              60 MHz</TD>
+<TD>124</TD>
+<TD><![CDATA[              60 MHz]]></TD>
 <TD> 138       </TD>
 <TD>14   </TD>
 <TD>Jy                  </TD>
@@ -2556,27 +2575,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>124</TD>
-<TD>38 MHz              </TD>
-<TD> 102.34    </TD>
-<TD>4.60 </TD>
-<TD>Jy                  </TD>
-<TD>3.80E+07</TD>
-<TD>  1.02E+02</TD>
-<TD>4.60E+00</TD>
-<TD>Jy</TD>
-<TD>1981A&amp;AS...45..367K</TD>
-<TD>uncertainty</TD>
-<TD>      38   MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD>140933.50 +522613.0 (B1950)</TD>
-<TD> Not reported in paper</TD>
-<TD><![CDATA[Recal. to Baars scale by factor of 1.09 ]]></TD>
-<TD><![CDATA[Recalibrated data]]></TD>
-</TR>
-<TR>
 <TD>125</TD>
-<TD>38 MHz              </TD>
+<TD><![CDATA[38 MHz              ]]></TD>
 <TD> 110.920   </TD>
 <TD>5.546</TD>
 <TD>Jy                  </TD>
@@ -2595,7 +2595,26 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>126</TD>
-<TD>38 MHz              </TD>
+<TD><![CDATA[38 MHz              ]]></TD>
+<TD> 102.34    </TD>
+<TD>4.60 </TD>
+<TD>Jy                  </TD>
+<TD>3.80E+07</TD>
+<TD>  1.02E+02</TD>
+<TD>4.60E+00</TD>
+<TD>Jy</TD>
+<TD>1981A&amp;AS...45..367K</TD>
+<TD>uncertainty</TD>
+<TD>      38   MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>140933.50 +522613.0 (B1950)</TD>
+<TD> Not reported in paper</TD>
+<TD><![CDATA[Recal. to Baars scale by factor of 1.09 ]]></TD>
+<TD><![CDATA[Recalibrated data]]></TD>
+</TR>
+<TR>
+<TD>127</TD>
+<TD><![CDATA[38 MHz              ]]></TD>
 <TD>  9.40E+01</TD>
 <TD>1.41E+01</TD>
 <TD>Jy</TD>
@@ -2613,8 +2632,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>127</TD>
-<TD>26.3 MHz            </TD>
+<TD>128</TD>
+<TD><![CDATA[26.3 MHz            ]]></TD>
 <TD> 72.       </TD>
 <TD>10.  </TD>
 <TD>Jy                  </TD>
@@ -2632,27 +2651,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>128</TD>
-<TD>26.3 MHz            </TD>
-<TD> 72.000    </TD>
-<TD>10.000</TD>
-<TD>Jy                  </TD>
-<TD>2.63E+07</TD>
-<TD>  7.20E+01</TD>
-<TD>1.00E+01</TD>
-<TD>Jy</TD>
-<TD>1980MNRAS.190..903L</TD>
-<TD>uncertainty</TD>
-<TD>26.3       MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Total flux</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[Homogenized from previously published data]]></TD>
-</TR>
-<TR>
 <TD>129</TD>
-<TD>26.3 MHz            </TD>
+<TD><![CDATA[26.3 MHz            ]]></TD>
 <TD> 73        </TD>
 <TD>10.00</TD>
 <TD>Jy                  </TD>
@@ -2671,7 +2671,26 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>130</TD>
-<TD>25 MHz (UTR-1)      </TD>
+<TD><![CDATA[26.3 MHz            ]]></TD>
+<TD> 72.000    </TD>
+<TD>10.000</TD>
+<TD>Jy                  </TD>
+<TD>2.63E+07</TD>
+<TD>  7.20E+01</TD>
+<TD>1.00E+01</TD>
+<TD>Jy</TD>
+<TD>1980MNRAS.190..903L</TD>
+<TD>uncertainty</TD>
+<TD>26.3       MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Total flux</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[Homogenized from previously published data]]></TD>
+</TR>
+<TR>
+<TD>131</TD>
+<TD><![CDATA[25 MHz (UTR-1)      ]]></TD>
 <TD>  1.60E+02</TD>
 <TD>2.56E+01</TD>
 <TD>Jy</TD>
@@ -2689,8 +2708,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>131</TD>
-<TD>25.0 MHz            </TD>
+<TD>132</TD>
+<TD><![CDATA[25.0 MHz            ]]></TD>
 <TD>  1.60E+02</TD>
 <TD>2.60E+01</TD>
 <TD>Jy</TD>
@@ -2708,8 +2727,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>132</TD>
-<TD>22 MHz (DRAO)       </TD>
+<TD>133</TD>
+<TD><![CDATA[22 MHz (DRAO)       ]]></TD>
 <TD> 67        </TD>
 <TD>17   </TD>
 <TD> Jy                 </TD>
@@ -2727,8 +2746,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>133</TD>
-<TD>22.25 MHz           </TD>
+<TD>134</TD>
+<TD><![CDATA[22.25 MHz           ]]></TD>
 <TD> 66.700    </TD>
 <TD>25.000</TD>
 <TD>Jy                  </TD>
@@ -2746,27 +2765,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[Homogenized from previously published data]]></TD>
 </TR>
 <TR>
-<TD>134</TD>
-<TD>20 MHz (UTR-1)      </TD>
-<TD>  1.10E+02</TD>
-<TD>1.98E+01</TD>
-<TD>Jy</TD>
-<TD>2.00E+07</TD>
-<TD>  1.10E+02</TD>
-<TD>1.98E+01</TD>
-<TD>Jy</TD>
-<TD>1969MNRAS.143..289B</TD>
-<TD>uncertainty</TD>
-<TD>      20   MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD>14 09 33.8 +52 23.5 (B1950)</TD>
-<TD> Total flux</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
 <TD>135</TD>
-<TD>20.0 MHz            </TD>
+<TD><![CDATA[20.0 MHz            ]]></TD>
 <TD>  1.10E+02</TD>
 <TD>2.00E+01</TD>
 <TD>Jy</TD>
@@ -2785,26 +2785,26 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>136</TD>
-<TD>16.7 MHz            </TD>
-<TD>  1.50E+02</TD>
-<TD>2.90E+01</TD>
+<TD><![CDATA[20 MHz (UTR-1)      ]]></TD>
+<TD>  1.10E+02</TD>
+<TD>1.98E+01</TD>
 <TD>Jy</TD>
-<TD>1.67E+07</TD>
-<TD>  1.50E+02</TD>
-<TD>2.90E+01</TD>
+<TD>2.00E+07</TD>
+<TD>  1.10E+02</TD>
+<TD>1.98E+01</TD>
 <TD>Jy</TD>
 <TD>1969MNRAS.143..289B</TD>
-<TD>estimated error</TD>
-<TD>16.7       MHz       </TD>
+<TD>uncertainty</TD>
+<TD>      20   MHz       </TD>
 <TD> Broad-band measurement</TD>
-<TD></TD>
+<TD>14 09 33.8 +52 23.5 (B1950)</TD>
 <TD> Total flux</TD>
 <TD><![CDATA[                                        ]]></TD>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
 <TD>137</TD>
-<TD>16.7 MHz (UTR-1)    </TD>
+<TD><![CDATA[16.7 MHz (UTR-1)    ]]></TD>
 <TD>  1.50E+02</TD>
 <TD>2.85E+01</TD>
 <TD>Jy</TD>
@@ -2823,7 +2823,26 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 </TR>
 <TR>
 <TD>138</TD>
-<TD>14.7 MHz (UTR-1)    </TD>
+<TD><![CDATA[16.7 MHz            ]]></TD>
+<TD>  1.50E+02</TD>
+<TD>2.90E+01</TD>
+<TD>Jy</TD>
+<TD>1.67E+07</TD>
+<TD>  1.50E+02</TD>
+<TD>2.90E+01</TD>
+<TD>Jy</TD>
+<TD>1969MNRAS.143..289B</TD>
+<TD>estimated error</TD>
+<TD>16.7       MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Total flux</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>139</TD>
+<TD><![CDATA[14.7 MHz (UTR-1)    ]]></TD>
 <TD>  1.90E+02</TD>
 <TD>3.80E+01</TD>
 <TD>Jy</TD>
@@ -2841,8 +2860,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>139</TD>
-<TD>14.7 MHz            </TD>
+<TD>140</TD>
+<TD><![CDATA[14.7 MHz            ]]></TD>
 <TD>  1.90E+02</TD>
 <TD>3.80E+01</TD>
 <TD>Jy</TD>
@@ -2860,27 +2879,8 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>140</TD>
-<TD>12.6 MHz (UTR-1)    </TD>
-<TD>  2.90E+02</TD>
-<TD>8.12E+01</TD>
-<TD>Jy</TD>
-<TD>1.26E+07</TD>
-<TD>  2.90E+02</TD>
-<TD>8.12E+01</TD>
-<TD>Jy</TD>
-<TD>1969MNRAS.143..289B</TD>
-<TD>uncertainty</TD>
-<TD>    12.6   MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD>14 09 33.8 +52 23.5 (B1950)</TD>
-<TD> Total flux</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
 <TD>141</TD>
-<TD>12.6 MHz            </TD>
+<TD><![CDATA[12.6 MHz            ]]></TD>
 <TD>  2.90E+02</TD>
 <TD>8.10E+01</TD>
 <TD>Jy</TD>
@@ -2897,8 +2897,28 @@ SDSS flags: CHILD - object is part of a blended parent object; BAD_RADIAL - some
 <TD><![CDATA[                                        ]]></TD>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
+<TR>
+<TD>142</TD>
+<TD><![CDATA[12.6 MHz (UTR-1)    ]]></TD>
+<TD>  2.90E+02</TD>
+<TD>8.12E+01</TD>
+<TD>Jy</TD>
+<TD>1.26E+07</TD>
+<TD>  2.90E+02</TD>
+<TD>8.12E+01</TD>
+<TD>Jy</TD>
+<TD>1969MNRAS.143..289B</TD>
+<TD>uncertainty</TD>
+<TD>    12.6   MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>14 09 33.8 +52 23.5 (B1950)</TD>
+<TD> Total flux</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
 </TABLEDATA>
 </DATA>
 </TABLE>
 </RESOURCE>
 </VOTABLE>
+

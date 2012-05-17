@@ -83,7 +83,7 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <PARAM ID="DatasetType" datatype="char" name="DatasetType" utype="spec:Spectrum.Type" value="Photometry Point" arraysize="*">
 <DESCRIPTION>Dataset or segment type</DESCRIPTION>
 </PARAM>
-<PARAM ID="DataLength" datatype="int" name="DataLength" ucd="meta.number" utype="spec:Spectrum.Length" value="313">
+<PARAM ID="DataLength" datatype="int" name="DataLength" ucd="meta.number" utype="spec:Spectrum.Length" value="320">
 <DESCRIPTION>Number of points</DESCRIPTION>
 </PARAM>
 <GROUP ID="DataID" name="DataID" utype="spec:Spectrum.DataID">
@@ -153,7 +153,7 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 </GROUP>
 <GROUP ID="Char.SpatialAxis" name="Char.SpatialAxis" utype="spec:Spectrum.Char.SpatialAxis">
 <DESCRIPTION>Spatial Axis Characterization</DESCRIPTION>
-<PARAM ID="SpatialAxisCoverageLocation" datatype="char" name="SpatialAxisCoverageLocation"  ucd="pos.eq" utype="spec:Spectrum.Char.SpatialAxis.Coverage.Location.Value" value="194.0465271 -5.789311" arraysize="*">
+<PARAM ID="SpatialAxisCoverageLocation" datatype="char" name="SpatialAxisCoverageLocation"  ucd="pos.eq" utype="spec:Spectrum.Char.SpatialAxis.Coverage.Location.Value" value="40.669629 -0.013281" arraysize="*">
 <DESCRIPTION>Position</DESCRIPTION>
 </PARAM>
 <PARAM ID="SpatialAxisCoverageBoundsExtent" datatype="char" name="SpatialAxisCoverageBoundsExtent" utype="spec:Spectrum.Char.SpatialAxis.Coverage.Bounds.Extent" value="" arraysize="*">
@@ -215,7 +215,7 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TABLEDATA>
 <TR>
 <TD>1</TD>
-<TD>40-100 keV INTEGRAL </TD>
+<TD><![CDATA[40-100 keV INTEGRAL ]]></TD>
 <TD> 1.66E-11  </TD>
 <TD>0.48E-11</TD>
 <TD>erg cm^-2^ s^-1^    </TD>
@@ -234,7 +234,7 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>2</TD>
-<TD>40-100 keV INTEGRAL </TD>
+<TD><![CDATA[40-100 keV INTEGRAL ]]></TD>
 <TD> 1.9       </TD>
 <TD>0.4  </TD>
 <TD> milliCrab          </TD>
@@ -253,7 +253,45 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>3</TD>
-<TD>17-60 keV (INTEGRAL)</TD>
+<TD><![CDATA[400-100 keV NTEGRAL ]]></TD>
+<TD> 1.27E-11  </TD>
+<TD></TD>
+<TD>erg/cm^2^/s         </TD>
+<TD>1.69E+19</TD>
+<TD>  7.51E-08</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>2009A&amp;A...505..417B</TD>
+<TD>no uncertainty reported</TD>
+<TD>     70.00 keV       </TD>
+<TD> Broad-band measurement</TD>
+<TD>40.67012 -0.01344 (J2000)</TD>
+<TD> Modelled datum</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data; NED frequency assigned to mid-point ofband in keV]]></TD>
+</TR>
+<TR>
+<TD>4</TD>
+<TD><![CDATA[20-100 keV INTEGRAL ]]></TD>
+<TD> 3.001E-11 </TD>
+<TD></TD>
+<TD> erg/s/cm^2^        </TD>
+<TD>1.45E+19</TD>
+<TD>  2.07E-07</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>2009MNRAS.399..944M</TD>
+<TD>no uncertainty reported</TD>
+<TD>     60.00 keV       </TD>
+<TD> Broad-band measurement</TD>
+<TD>02 42 40.71 -00 00 47.8 (J2000)</TD>
+<TD> Flux integrated from map</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[Averaged from previously published data; NED frequencyassigned to mid-point of band in keV]]></TD>
+</TR>
+<TR>
+<TD>5</TD>
+<TD><![CDATA[17-60 keV (INTEGRAL)]]></TD>
 <TD> 1.90E-11  </TD>
 <TD>0.30E-11</TD>
 <TD>erg s^-1^ cm^-2^    </TD>
@@ -271,8 +309,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Averaged new and previously published data; NED frequencyassigned to mid-point of band in keV]]></TD>
 </TR>
 <TR>
-<TD>4</TD>
-<TD>20-40 keV (INTEGRAL)</TD>
+<TD>6</TD>
+<TD><![CDATA[15-55 keV (Swift)   ]]></TD>
+<TD> 2.00E-11  </TD>
+<TD>0.22E-11</TD>
+<TD>erg/cm^2^/s         </TD>
+<TD>8.46E+18</TD>
+<TD>  2.36E-07</TD>
+<TD>2.60E-08</TD>
+<TD>Jy</TD>
+<TD>2009ApJ...699..603A</TD>
+<TD>uncertainty</TD>
+<TD>     35.00 keV       </TD>
+<TD> Broad-band measurement</TD>
+<TD>040.732 -00.012 (J2000)</TD>
+<TD> Flux integrated from map</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From reprocessed raw data; NED frequency assigned tomid-point of band in keV]]></TD>
+</TR>
+<TR>
+<TD>7</TD>
+<TD><![CDATA[20-40 keV (INTEGRAL)]]></TD>
 <TD> 0.93E-11  </TD>
 <TD>0.27E-11</TD>
 <TD>erg cm^-2^ s^-1^    </TD>
@@ -290,8 +347,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; NED frequency assigned to mid-point ofband in keV]]></TD>
 </TR>
 <TR>
-<TD>5</TD>
-<TD>20-40 keV (INTEGRAL)</TD>
+<TD>8</TD>
+<TD><![CDATA[20-40 keV (INTEGRAL)]]></TD>
 <TD> 1.6       </TD>
 <TD>0.2  </TD>
 <TD> milliCrab          </TD>
@@ -309,8 +366,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data; NED frequency assigned tomid-point of band in keV]]></TD>
 </TR>
 <TR>
-<TD>6</TD>
-<TD>3.5-15 keV (XMM)    </TD>
+<TD>9</TD>
+<TD><![CDATA[20-40 keV (INTEGRAL)]]></TD>
+<TD> 1.16E-11  </TD>
+<TD></TD>
+<TD>erg/cm^2^/s         </TD>
+<TD>7.25E+18</TD>
+<TD>  1.60E-07</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>2009A&amp;A...505..417B</TD>
+<TD>no uncertainty reported</TD>
+<TD>     30.00 keV       </TD>
+<TD> Broad-band measurement</TD>
+<TD>40.67012 -0.01344 (J2000)</TD>
+<TD> Modelled datum</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data; NED frequency assigned to mid-point ofband in keV]]></TD>
+</TR>
+<TR>
+<TD>10</TD>
+<TD><![CDATA[3.5-15 keV (XMM)    ]]></TD>
 <TD> 6.3E-12   </TD>
 <TD></TD>
 <TD>erg cm^-2^ s^-1^    </TD>
@@ -328,8 +404,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; NED frequency assigned to mid-point ofband in keV]]></TD>
 </TR>
 <TR>
-<TD>7</TD>
-<TD>F_2-10_ keV         </TD>
+<TD>11</TD>
+<TD><![CDATA[F_2-10_ keV         ]]></TD>
 <TD>  3.65E-07</TD>
 <TD>3.65E-08</TD>
 <TD>Jy</TD>
@@ -347,8 +423,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; NED frequency assigned to mid-point ofband in keV]]></TD>
 </TR>
 <TR>
-<TD>8</TD>
-<TD>2-10 keV (XMM)      </TD>
+<TD>12</TD>
+<TD><![CDATA[2-10 keV (XMM)      ]]></TD>
 <TD> 46.2E-13  </TD>
 <TD></TD>
 <TD>erg cm^-2^ s^-1^    </TD>
@@ -366,8 +442,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; Uncorrected for known sources in beam; NEDfrequency assigned to mid-point of band in keV]]></TD>
 </TR>
 <TR>
-<TD>9</TD>
-<TD>2-10 keV            </TD>
+<TD>13</TD>
+<TD><![CDATA[2-10 keV            ]]></TD>
 <TD> 0.350E-14 </TD>
 <TD></TD>
 <TD>W/m^2^              </TD>
@@ -385,8 +461,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Averaged from previously published data; NED frequencyassigned to mid-point of band in keV]]></TD>
 </TR>
 <TR>
-<TD>10</TD>
-<TD>2-10 keV (ASCA)     </TD>
+<TD>14</TD>
+<TD><![CDATA[2-10 keV (ASCA)     ]]></TD>
 <TD> 37.4E-13  </TD>
 <TD></TD>
 <TD> ergs/s/cm^2^       </TD>
@@ -404,8 +480,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data; Extinction-corrected for MilkyWay; NED frequency assigned to mid-point of band in keV]]></TD>
 </TR>
 <TR>
-<TD>11</TD>
-<TD>2-8 keV (ASCA)      </TD>
+<TD>15</TD>
+<TD><![CDATA[2-8 keV (ASCA)      ]]></TD>
 <TD> 5.19E-12  </TD>
 <TD></TD>
 <TD> ergs/cm^2^/s       </TD>
@@ -423,8 +499,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Averaged from previously published data; NED frequencyassigned to mid-point of band in keV]]></TD>
 </TR>
 <TR>
-<TD>12</TD>
-<TD>0.7-7 keV (ASCA)    </TD>
+<TD>16</TD>
+<TD><![CDATA[0.7-7 keV (ASCA)    ]]></TD>
 <TD> 88.2E-13  </TD>
 <TD></TD>
 <TD> ergs/s/cm^2^       </TD>
@@ -442,8 +518,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data; Extinction-corrected for MilkyWay; NED frequency assigned to mid-point of band in keV]]></TD>
 </TR>
 <TR>
-<TD>13</TD>
-<TD>EINSTEIN 0.2-4.0 keV</TD>
+<TD>17</TD>
+<TD><![CDATA[EINSTEIN 0.2-4.0 keV]]></TD>
 <TD> 206.50E-13</TD>
 <TD></TD>
 <TD>ergs sec^-1^ cm^-2^ </TD>
@@ -461,8 +537,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data; Extinction-corrected for MilkyWay; NED frequency assigned to mid-point of band in keV]]></TD>
 </TR>
 <TR>
-<TD>14</TD>
-<TD>0.3-3 keV (XMM)     </TD>
+<TD>18</TD>
+<TD><![CDATA[0.3-3 keV (XMM)     ]]></TD>
 <TD> 1.6E-11   </TD>
 <TD></TD>
 <TD>erg cm^-2^ s^-1^    </TD>
@@ -480,8 +556,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; NED frequency assigned to mid-point ofband in keV]]></TD>
 </TR>
 <TR>
-<TD>15</TD>
-<TD>0.7-2 keV (ASCA)    </TD>
+<TD>19</TD>
+<TD><![CDATA[0.7-2 keV (ASCA)    ]]></TD>
 <TD> 58.0E-13  </TD>
 <TD></TD>
 <TD> ergs/s/cm^2^       </TD>
@@ -499,8 +575,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data; Extinction-corrected for MilkyWay; NED frequency assigned to mid-point of band in keV]]></TD>
 </TR>
 <TR>
-<TD>16</TD>
-<TD>ROSAT (0.1-2.4 keV) </TD>
+<TD>20</TD>
+<TD><![CDATA[ROSAT (0.1-2.4 keV) ]]></TD>
 <TD> 3.55E-11  </TD>
 <TD>1.66E-12</TD>
 <TD>ergs sec^-1^ cm^-2^ </TD>
@@ -518,8 +594,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; Extinction-corrected for Milky Way]]></TD>
 </TR>
 <TR>
-<TD>17</TD>
-<TD>0.5-2 keV (XMM)     </TD>
+<TD>21</TD>
+<TD><![CDATA[0.5-2 keV (XMM)     ]]></TD>
 <TD> 111.3E-13 </TD>
 <TD></TD>
 <TD>erg cm^-2^ s^-1^    </TD>
@@ -537,8 +613,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; Uncorrected for known sources in beam; NEDfrequency assigned to mid-point of band in keV]]></TD>
 </TR>
 <TR>
-<TD>18</TD>
-<TD>0.5-2 keV (ASCA)    </TD>
+<TD>22</TD>
+<TD><![CDATA[0.5-2 keV (ASCA)    ]]></TD>
 <TD> 1.02E-11  </TD>
 <TD></TD>
 <TD> ergs/cm^2^/s       </TD>
@@ -556,8 +632,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Averaged from previously published data; NED frequencyassigned to mid-point of band in keV]]></TD>
 </TR>
 <TR>
-<TD>19</TD>
-<TD>1030 A (FUSE)       </TD>
+<TD>23</TD>
+<TD><![CDATA[1030 A (FUSE)       ]]></TD>
 <TD> 2.3E-14   </TD>
 <TD></TD>
 <TD>erg/cm^2^/s/A       </TD>
@@ -575,8 +651,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>20</TD>
-<TD>IUE 1482A           </TD>
+<TD>24</TD>
+<TD><![CDATA[IUE 1482A           ]]></TD>
 <TD> 6.64E-14  </TD>
 <TD>1.06E-14</TD>
 <TD>ergs cm^-2 s^-1 A^-1</TD>
@@ -594,8 +670,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Averaged from new and transformed previously published data]]></TD>
 </TR>
 <TR>
-<TD>21</TD>
-<TD>FUV (GALEX) AB      </TD>
+<TD>25</TD>
+<TD><![CDATA[FUV (GALEX) AB      ]]></TD>
 <TD> 12.79     </TD>
 <TD>0.01 </TD>
 <TD> mag                </TD>
@@ -613,8 +689,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>22</TD>
-<TD>FUV (GALEX) AB      </TD>
+<TD>26</TD>
+<TD><![CDATA[FUV (GALEX) AB      ]]></TD>
 <TD> 15.17     </TD>
 <TD></TD>
 <TD> mag                </TD>
@@ -632,8 +708,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data; Extinction-corrected for Milky Way]]></TD>
 </TR>
 <TR>
-<TD>23</TD>
-<TD>1550 A (OAO)        </TD>
+<TD>27</TD>
+<TD><![CDATA[1550 A (OAO)        ]]></TD>
 <TD> 10.20     </TD>
 <TD>0.64 </TD>
 <TD>mag                 </TD>
@@ -651,8 +727,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>24</TD>
-<TD>1910 A (OAO)        </TD>
+<TD>28</TD>
+<TD><![CDATA[1910 A (OAO)        ]]></TD>
 <TD> 10.40     </TD>
 <TD>0.78 </TD>
 <TD>mag                 </TD>
@@ -670,8 +746,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>25</TD>
-<TD>IUE 1913A           </TD>
+<TD>29</TD>
+<TD><![CDATA[IUE 1913A           ]]></TD>
 <TD> 7.53E-14  </TD>
 <TD>3.00E-14</TD>
 <TD>ergs cm^-2 s^-1 A^-1</TD>
@@ -689,8 +765,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Averaged from new and transformed previously published data]]></TD>
 </TR>
 <TR>
-<TD>26</TD>
-<TD>NUV (GALEX) AB      </TD>
+<TD>30</TD>
+<TD><![CDATA[NUV (GALEX) AB      ]]></TD>
 <TD> 12.22     </TD>
 <TD>0.01 </TD>
 <TD> mag                </TD>
@@ -708,8 +784,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>27</TD>
-<TD>IUE 2373A           </TD>
+<TD>31</TD>
+<TD><![CDATA[IUE 2373A           ]]></TD>
 <TD> 5.51E-14  </TD>
 <TD>1.54E-14</TD>
 <TD>ergs cm^-2 s^-1 A^-1</TD>
@@ -727,8 +803,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Averaged from new and transformed previously published data]]></TD>
 </TR>
 <TR>
-<TD>28</TD>
-<TD>2460 A (OAO)        </TD>
+<TD>32</TD>
+<TD><![CDATA[2460 A (OAO)        ]]></TD>
 <TD> 10.65     </TD>
 <TD>0.54 </TD>
 <TD>mag                 </TD>
@@ -746,8 +822,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>29</TD>
-<TD>IUE 2700A           </TD>
+<TD>33</TD>
+<TD><![CDATA[IUE 2700A           ]]></TD>
 <TD> 4.79E-14  </TD>
 <TD>0.20E-14</TD>
 <TD>ergs cm^-2 s^-1 A^-1</TD>
@@ -765,8 +841,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Averaged from new and transformed previously published data]]></TD>
 </TR>
 <TR>
-<TD>30</TD>
-<TD>2980 A (OAO)        </TD>
+<TD>34</TD>
+<TD><![CDATA[2980 A (OAO)        ]]></TD>
 <TD> 9.98      </TD>
 <TD>0.13 </TD>
 <TD>mag                 </TD>
@@ -784,8 +860,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>31</TD>
-<TD>3320 A (OAO)        </TD>
+<TD>35</TD>
+<TD><![CDATA[3320 A (OAO)        ]]></TD>
 <TD> 9.69      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -803,8 +879,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>32</TD>
-<TD>3390A               </TD>
+<TD>36</TD>
+<TD><![CDATA[3390A               ]]></TD>
 <TD>  1.21E-02</TD>
 <TD>1.21E-03</TD>
 <TD>Jy</TD>
@@ -822,8 +898,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>33</TD>
-<TD>3448A               </TD>
+<TD>37</TD>
+<TD><![CDATA[3448A               ]]></TD>
 <TD>  1.54E-02</TD>
 <TD>1.54E-03</TD>
 <TD>Jy</TD>
@@ -841,8 +917,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>34</TD>
-<TD>3509A               </TD>
+<TD>38</TD>
+<TD><![CDATA[3509A               ]]></TD>
 <TD>  1.21E-02</TD>
 <TD>6.03E-04</TD>
 <TD>Jy</TD>
@@ -860,8 +936,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>35</TD>
-<TD>3571A               </TD>
+<TD>39</TD>
+<TD><![CDATA[3571A               ]]></TD>
 <TD>  1.22E-02</TD>
 <TD>6.12E-04</TD>
 <TD>Jy</TD>
@@ -879,8 +955,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>36</TD>
-<TD>3636A               </TD>
+<TD>40</TD>
+<TD><![CDATA[3636A               ]]></TD>
 <TD>  1.25E-02</TD>
 <TD>6.27E-04</TD>
 <TD>Jy</TD>
@@ -898,27 +974,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>37</TD>
-<TD>U (U_T^0)           </TD>
-<TD> 9.53      </TD>
-<TD></TD>
-<TD>mag                 </TD>
-<TD>8.19E+14</TD>
-<TD>  2.79E-01</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>1991RC3.9.C...0000d</TD>
-<TD>no uncertainty reported</TD>
-<TD>3660       A         </TD>
-<TD> Broad-band measurement</TD>
-<TD>024006.5 -001332 (B1950)</TD>
-<TD> Multiple methods</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[Homogenized from new and previously published data;Extinction-corrected for internal and Milky Way andK-correction applied; Standard Johnson UBVRI filtersassumed]]></TD>
-</TR>
-<TR>
-<TD>38</TD>
-<TD>U (U_T)             </TD>
+<TD>41</TD>
+<TD><![CDATA[U (U_T)             ]]></TD>
 <TD> 9.70      </TD>
 <TD>0.10 </TD>
 <TD>mag                 </TD>
@@ -936,8 +993,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Homogenized from new and previously published data; StandardJohnson UBVRI filters assumed]]></TD>
 </TR>
 <TR>
-<TD>39</TD>
-<TD>3704A               </TD>
+<TD>42</TD>
+<TD><![CDATA[U (U_T^0)           ]]></TD>
+<TD> 9.53      </TD>
+<TD></TD>
+<TD>mag                 </TD>
+<TD>8.19E+14</TD>
+<TD>  2.79E-01</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1991RC3.9.C...0000d</TD>
+<TD>no uncertainty reported</TD>
+<TD>3660       A         </TD>
+<TD> Broad-band measurement</TD>
+<TD>024006.5 -001332 (B1950)</TD>
+<TD> Multiple methods</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[Homogenized from new and previously published data;Extinction-corrected for internal and Milky Way andK-correction applied; Standard Johnson UBVRI filtersassumed]]></TD>
+</TR>
+<TR>
+<TD>43</TD>
+<TD><![CDATA[3704A               ]]></TD>
 <TD>  1.27E-02</TD>
 <TD>6.34E-04</TD>
 <TD>Jy</TD>
@@ -955,8 +1031,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>40</TD>
-<TD>3862A               </TD>
+<TD>44</TD>
+<TD><![CDATA[3862A               ]]></TD>
 <TD>  1.48E-02</TD>
 <TD>7.42E-04</TD>
 <TD>Jy</TD>
@@ -974,8 +1050,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>41</TD>
-<TD>4032A               </TD>
+<TD>45</TD>
+<TD><![CDATA[4032A               ]]></TD>
 <TD>  1.48E-02</TD>
 <TD>7.39E-04</TD>
 <TD>Jy</TD>
@@ -993,8 +1069,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>42</TD>
-<TD>4167A               </TD>
+<TD>46</TD>
+<TD><![CDATA[4167A               ]]></TD>
 <TD>  1.48E-02</TD>
 <TD>7.38E-04</TD>
 <TD>Jy</TD>
@@ -1012,8 +1088,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>43</TD>
-<TD>4255A               </TD>
+<TD>47</TD>
+<TD><![CDATA[4255A               ]]></TD>
 <TD>  1.54E-02</TD>
 <TD>7.72E-04</TD>
 <TD>Jy</TD>
@@ -1031,8 +1107,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>44</TD>
-<TD>4250 A (OAO)        </TD>
+<TD>48</TD>
+<TD><![CDATA[4250 A (OAO)        ]]></TD>
 <TD> 9.01      </TD>
 <TD>0.02 </TD>
 <TD>mag                 </TD>
@@ -1050,8 +1126,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>45</TD>
-<TD>4350A               </TD>
+<TD>49</TD>
+<TD><![CDATA[4350A               ]]></TD>
 <TD>  1.66E-02</TD>
 <TD>8.31E-04</TD>
 <TD>Jy</TD>
@@ -1069,8 +1145,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>46</TD>
-<TD>m_p                 </TD>
+<TD>50</TD>
+<TD><![CDATA[m_p                 ]]></TD>
 <TD> 9.7       </TD>
 <TD>0.4  </TD>
 <TD>mag                 </TD>
@@ -1088,27 +1164,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>47</TD>
-<TD>B (B_T^0)           </TD>
-<TD> 9.47      </TD>
-<TD></TD>
-<TD>mag                 </TD>
-<TD>6.81E+14</TD>
-<TD>  6.94E-01</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>1991RC3.9.C...0000d</TD>
-<TD>no uncertainty reported</TD>
-<TD>4400       A         </TD>
-<TD> Broad-band measurement</TD>
-<TD>024006.5 -001332 (B1950)</TD>
-<TD> Multiple methods</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[Homogenized from new and previously published data;Extinction-corrected for internal and Milky Way andK-correction applied; Standard Johnson UBVRI filtersassumed]]></TD>
-</TR>
-<TR>
-<TD>48</TD>
-<TD>B (B_T)             </TD>
+<TD>51</TD>
+<TD><![CDATA[B (B_T)             ]]></TD>
 <TD> 9.61      </TD>
 <TD>0.10 </TD>
 <TD>mag                 </TD>
@@ -1126,8 +1183,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Homogenized from new and previously published data; StandardJohnson UBVRI filters assumed]]></TD>
 </TR>
 <TR>
-<TD>49</TD>
-<TD>B (m_B)             </TD>
+<TD>52</TD>
+<TD><![CDATA[B (m_B)             ]]></TD>
 <TD> 9.67      </TD>
 <TD>0.15 </TD>
 <TD>mag                 </TD>
@@ -1145,8 +1202,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Homogenized from new and previously published data; StandardJohnson UBVRI filters assumed]]></TD>
 </TR>
 <TR>
-<TD>50</TD>
-<TD>4464A               </TD>
+<TD>53</TD>
+<TD><![CDATA[B (B_T^0)           ]]></TD>
+<TD> 9.47      </TD>
+<TD></TD>
+<TD>mag                 </TD>
+<TD>6.81E+14</TD>
+<TD>  6.94E-01</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1991RC3.9.C...0000d</TD>
+<TD>no uncertainty reported</TD>
+<TD>4400       A         </TD>
+<TD> Broad-band measurement</TD>
+<TD>024006.5 -001332 (B1950)</TD>
+<TD> Multiple methods</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[Homogenized from new and previously published data;Extinction-corrected for internal and Milky Way andK-correction applied; Standard Johnson UBVRI filtersassumed]]></TD>
+</TR>
+<TR>
+<TD>54</TD>
+<TD><![CDATA[4464A               ]]></TD>
 <TD>  1.62E-02</TD>
 <TD>8.09E-04</TD>
 <TD>Jy</TD>
@@ -1164,8 +1240,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>51</TD>
-<TD>4566A               </TD>
+<TD>55</TD>
+<TD><![CDATA[4566A               ]]></TD>
 <TD>  1.66E-02</TD>
 <TD>8.29E-04</TD>
 <TD>Jy</TD>
@@ -1183,8 +1259,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>52</TD>
-<TD>B_J                 </TD>
+<TD>56</TD>
+<TD><![CDATA[B_J                 ]]></TD>
 <TD> 10.2715   </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -1202,8 +1278,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>53</TD>
-<TD>4785A               </TD>
+<TD>57</TD>
+<TD><![CDATA[4785A               ]]></TD>
 <TD>  1.72E-02</TD>
 <TD>8.58E-04</TD>
 <TD>Jy</TD>
@@ -1221,8 +1297,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>54</TD>
-<TD>4900A               </TD>
+<TD>58</TD>
+<TD><![CDATA[4900A               ]]></TD>
 <TD>  1.84E-02</TD>
 <TD>9.21E-04</TD>
 <TD>Jy</TD>
@@ -1240,8 +1316,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>55</TD>
-<TD>4950A               </TD>
+<TD>59</TD>
+<TD><![CDATA[4950A               ]]></TD>
 <TD>  2.05E-02</TD>
 <TD>1.02E-03</TD>
 <TD>Jy</TD>
@@ -1259,8 +1335,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>56</TD>
-<TD>5000A               </TD>
+<TD>60</TD>
+<TD><![CDATA[5000A               ]]></TD>
 <TD>  2.45E-02</TD>
 <TD>1.23E-03</TD>
 <TD>Jy</TD>
@@ -1278,8 +1354,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>57</TD>
-<TD>5050A               </TD>
+<TD>61</TD>
+<TD><![CDATA[5050A               ]]></TD>
 <TD>  2.24E-02</TD>
 <TD>1.12E-03</TD>
 <TD>Jy</TD>
@@ -1297,8 +1373,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>58</TD>
-<TD>5100A               </TD>
+<TD>62</TD>
+<TD><![CDATA[5100A               ]]></TD>
 <TD>  1.76E-02</TD>
 <TD>8.82E-04</TD>
 <TD>Jy</TD>
@@ -1316,8 +1392,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>59</TD>
-<TD>5263A               </TD>
+<TD>63</TD>
+<TD><![CDATA[5263A               ]]></TD>
 <TD>  1.80E-02</TD>
 <TD>9.00E-04</TD>
 <TD>Jy</TD>
@@ -1335,8 +1411,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>60</TD>
-<TD>5350A               </TD>
+<TD>64</TD>
+<TD><![CDATA[5350A               ]]></TD>
 <TD>  1.84E-02</TD>
 <TD>9.19E-04</TD>
 <TD>Jy</TD>
@@ -1354,46 +1430,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>61</TD>
-<TD>V (Johnson)         </TD>
-<TD> 11.37     </TD>
-<TD></TD>
-<TD>mag                 </TD>
-<TD>5.42E+14</TD>
-<TD>  1.03E-01</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>1973ApJ...183..711S</TD>
-<TD>no uncertainty reported</TD>
-<TD>      5530 A         </TD>
-<TD> Broad-band measurement; photometric system transformed</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[7.6" aperture                           ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>62</TD>
-<TD>V (Johnson)         </TD>
-<TD> 11.03     </TD>
-<TD></TD>
-<TD>mag                 </TD>
-<TD>5.42E+14</TD>
-<TD>  1.41E-01</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>1973ApJ...183..711S</TD>
-<TD>no uncertainty reported</TD>
-<TD>      5530 A         </TD>
-<TD> Broad-band measurement; photometric system transformed</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[11.4" aperture                          ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>63</TD>
-<TD>V (Johnson)         </TD>
+<TD>65</TD>
+<TD><![CDATA[V (Johnson)         ]]></TD>
 <TD> 10.95     </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -1411,8 +1449,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>64</TD>
-<TD>V (Johnson)         </TD>
+<TD>66</TD>
+<TD><![CDATA[V (Johnson)         ]]></TD>
 <TD> 10.82     </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -1430,8 +1468,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>65</TD>
-<TD>V (Johnson)         </TD>
+<TD>67</TD>
+<TD><![CDATA[V (Johnson)         ]]></TD>
 <TD> 11.76     </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -1449,8 +1487,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>66</TD>
-<TD>V (Johnson)         </TD>
+<TD>68</TD>
+<TD><![CDATA[V (Johnson)         ]]></TD>
 <TD> 11.02     </TD>
 <TD>0.05 </TD>
 <TD>mag                 </TD>
@@ -1468,8 +1506,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>67</TD>
-<TD>V (Johnson)         </TD>
+<TD>69</TD>
+<TD><![CDATA[V (Johnson)         ]]></TD>
 <TD> 11.24     </TD>
 <TD>0.05 </TD>
 <TD>mag                 </TD>
@@ -1487,8 +1525,46 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>68</TD>
-<TD>V (V_T)             </TD>
+<TD>70</TD>
+<TD><![CDATA[V (Johnson)         ]]></TD>
+<TD> 11.37     </TD>
+<TD></TD>
+<TD>mag                 </TD>
+<TD>5.42E+14</TD>
+<TD>  1.03E-01</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1973ApJ...183..711S</TD>
+<TD>no uncertainty reported</TD>
+<TD>      5530 A         </TD>
+<TD> Broad-band measurement; photometric system transformed</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[7.6" aperture                           ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>71</TD>
+<TD><![CDATA[V (Johnson)         ]]></TD>
+<TD> 11.03     </TD>
+<TD></TD>
+<TD>mag                 </TD>
+<TD>5.42E+14</TD>
+<TD>  1.41E-01</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1973ApJ...183..711S</TD>
+<TD>no uncertainty reported</TD>
+<TD>      5530 A         </TD>
+<TD> Broad-band measurement; photometric system transformed</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[11.4" aperture                          ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>72</TD>
+<TD><![CDATA[V (V_T)             ]]></TD>
 <TD> 8.87      </TD>
 <TD>0.10 </TD>
 <TD>mag                 </TD>
@@ -1506,8 +1582,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Homogenized from new and previously published data; StandardJohnson UBVRI filters assumed]]></TD>
 </TR>
 <TR>
-<TD>69</TD>
-<TD>V (V_T^0)           </TD>
+<TD>73</TD>
+<TD><![CDATA[V (V_T^0)           ]]></TD>
 <TD> 8.77      </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -1525,8 +1601,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Homogenized from new and previously published data;Extinction-corrected for internal and Milky Way andK-correction applied; Standard Johnson UBVRI filtersassumed]]></TD>
 </TR>
 <TR>
-<TD>70</TD>
-<TD>5556A               </TD>
+<TD>74</TD>
+<TD><![CDATA[5556A               ]]></TD>
 <TD>  1.86E-02</TD>
 <TD>9.33E-04</TD>
 <TD>Jy</TD>
@@ -1544,8 +1620,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>71</TD>
-<TD>5840A               </TD>
+<TD>75</TD>
+<TD><![CDATA[5840A               ]]></TD>
 <TD>  1.91E-02</TD>
 <TD>9.53E-04</TD>
 <TD>Jy</TD>
@@ -1563,8 +1639,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>72</TD>
-<TD>6055A               </TD>
+<TD>76</TD>
+<TD><![CDATA[6055A               ]]></TD>
 <TD>  1.93E-02</TD>
 <TD>9.67E-04</TD>
 <TD>Jy</TD>
@@ -1582,8 +1658,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>73</TD>
-<TD>6370A               </TD>
+<TD>77</TD>
+<TD><![CDATA[6370A               ]]></TD>
 <TD>  1.99E-02</TD>
 <TD>9.94E-04</TD>
 <TD>Jy</TD>
@@ -1601,8 +1677,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>74</TD>
-<TD>R                   </TD>
+<TD>78</TD>
+<TD><![CDATA[R                   ]]></TD>
 <TD> 10.1456   </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -1620,8 +1696,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>75</TD>
-<TD>6520A               </TD>
+<TD>79</TD>
+<TD><![CDATA[6520A               ]]></TD>
 <TD>  1.98E-02</TD>
 <TD>9.91E-04</TD>
 <TD>Jy</TD>
@@ -1639,8 +1715,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>76</TD>
-<TD>6540A               </TD>
+<TD>80</TD>
+<TD><![CDATA[6540A               ]]></TD>
 <TD>  2.15E-02</TD>
 <TD>1.08E-03</TD>
 <TD>Jy</TD>
@@ -1658,8 +1734,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>77</TD>
-<TD>6560A               </TD>
+<TD>81</TD>
+<TD><![CDATA[6560A               ]]></TD>
 <TD>  2.49E-02</TD>
 <TD>1.25E-03</TD>
 <TD>Jy</TD>
@@ -1677,8 +1753,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>78</TD>
-<TD>6580A               </TD>
+<TD>82</TD>
+<TD><![CDATA[6580A               ]]></TD>
 <TD>  2.71E-02</TD>
 <TD>1.36E-03</TD>
 <TD>Jy</TD>
@@ -1696,8 +1772,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>79</TD>
-<TD>6600A               </TD>
+<TD>83</TD>
+<TD><![CDATA[6600A               ]]></TD>
 <TD>  2.75E-02</TD>
 <TD>1.37E-03</TD>
 <TD>Jy</TD>
@@ -1715,8 +1791,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>80</TD>
-<TD>6620A               </TD>
+<TD>84</TD>
+<TD><![CDATA[6620A               ]]></TD>
 <TD>  2.59E-02</TD>
 <TD>1.30E-03</TD>
 <TD>Jy</TD>
@@ -1734,8 +1810,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>81</TD>
-<TD>6640A               </TD>
+<TD>85</TD>
+<TD><![CDATA[6640A               ]]></TD>
 <TD>  2.15E-02</TD>
 <TD>1.08E-03</TD>
 <TD>Jy</TD>
@@ -1753,8 +1829,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>82</TD>
-<TD>6726A               </TD>
+<TD>86</TD>
+<TD><![CDATA[6726A               ]]></TD>
 <TD>  2.16E-02</TD>
 <TD>1.08E-03</TD>
 <TD>Jy</TD>
@@ -1772,8 +1848,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>83</TD>
-<TD>6800A               </TD>
+<TD>87</TD>
+<TD><![CDATA[6800A               ]]></TD>
 <TD>  2.00E-02</TD>
 <TD>1.00E-03</TD>
 <TD>Jy</TD>
@@ -1791,103 +1867,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>84</TD>
-<TD>R (Johnson)         </TD>
-<TD> 10.27     </TD>
-<TD>0.05 </TD>
-<TD>mag                 </TD>
-<TD>4.28E+14</TD>
-<TD>  2.17E-01</TD>
-<TD>1.02E-02</TD>
-<TD>Jy</TD>
-<TD>1978ApJS...38..267O</TD>
-<TD>uncertainty</TD>
-<TD>    7000   A         </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[18" aperture                            ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>85</TD>
-<TD>R (Johnson)         </TD>
-<TD> 10.49     </TD>
-<TD>0.05 </TD>
-<TD>mag                 </TD>
-<TD>4.28E+14</TD>
-<TD>  1.77E-01</TD>
-<TD>8.34E-03</TD>
-<TD>Jy</TD>
-<TD>1967ApJ...147..394P</TD>
-<TD>uncertainty</TD>
-<TD>      7000 A         </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[15" aperture                            ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>86</TD>
-<TD>R (Johnson)         </TD>
-<TD> 10.22     </TD>
-<TD></TD>
-<TD>mag                 </TD>
-<TD>4.28E+14</TD>
-<TD>  2.27E-01</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>1973ApJ...183..711S</TD>
-<TD>no uncertainty reported</TD>
-<TD>      7000 A         </TD>
-<TD> Broad-band measurement; photometric system transformed</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[12.2" aperture                          ]]></TD>
-<TD><![CDATA[From new raw data; derived from a flux in a different bandand a color]]></TD>
-</TR>
-<TR>
-<TD>87</TD>
-<TD>R (Johnson)         </TD>
-<TD> 10.02     </TD>
-<TD></TD>
-<TD>mag                 </TD>
-<TD>4.28E+14</TD>
-<TD>  2.73E-01</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>1973ApJ...183..711S</TD>
-<TD>no uncertainty reported</TD>
-<TD>      7000 A         </TD>
-<TD> Broad-band measurement; photometric system transformed</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[15.2" aperture                          ]]></TD>
-<TD><![CDATA[From new raw data; derived from a flux in a different bandand a color]]></TD>
-</TR>
-<TR>
 <TD>88</TD>
-<TD>R (Johnson)         </TD>
-<TD> 11.16     </TD>
-<TD></TD>
-<TD>mag                 </TD>
-<TD>4.28E+14</TD>
-<TD>  9.55E-02</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>1973ApJ...183..711S</TD>
-<TD>no uncertainty reported</TD>
-<TD>      7000 A         </TD>
-<TD> Broad-band measurement; photometric system transformed</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[4.9" aperture                           ]]></TD>
-<TD><![CDATA[From new raw data; derived from a flux in a different bandand a color]]></TD>
-</TR>
-<TR>
-<TD>89</TD>
-<TD>R (Johnson)         </TD>
+<TD><![CDATA[R (Johnson)         ]]></TD>
 <TD> 10.68     </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -1905,8 +1886,46 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; derived from a flux in a different bandand a color]]></TD>
 </TR>
 <TR>
+<TD>89</TD>
+<TD><![CDATA[R (Johnson)         ]]></TD>
+<TD> 10.27     </TD>
+<TD>0.05 </TD>
+<TD>mag                 </TD>
+<TD>4.28E+14</TD>
+<TD>  2.17E-01</TD>
+<TD>1.02E-02</TD>
+<TD>Jy</TD>
+<TD>1978ApJS...38..267O</TD>
+<TD>uncertainty</TD>
+<TD>    7000   A         </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[18" aperture                            ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
 <TD>90</TD>
-<TD>R (Johnson)         </TD>
+<TD><![CDATA[R (Johnson)         ]]></TD>
+<TD> 10.49     </TD>
+<TD>0.05 </TD>
+<TD>mag                 </TD>
+<TD>4.28E+14</TD>
+<TD>  1.77E-01</TD>
+<TD>8.34E-03</TD>
+<TD>Jy</TD>
+<TD>1967ApJ...147..394P</TD>
+<TD>uncertainty</TD>
+<TD>      7000 A         </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[15" aperture                            ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>91</TD>
+<TD><![CDATA[R (Johnson)         ]]></TD>
 <TD> 10.25     </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -1924,8 +1943,65 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; derived from a flux in a different bandand a color]]></TD>
 </TR>
 <TR>
-<TD>91</TD>
-<TD>7100A               </TD>
+<TD>92</TD>
+<TD><![CDATA[R (Johnson)         ]]></TD>
+<TD> 10.22     </TD>
+<TD></TD>
+<TD>mag                 </TD>
+<TD>4.28E+14</TD>
+<TD>  2.27E-01</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1973ApJ...183..711S</TD>
+<TD>no uncertainty reported</TD>
+<TD>      7000 A         </TD>
+<TD> Broad-band measurement; photometric system transformed</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[12.2" aperture                          ]]></TD>
+<TD><![CDATA[From new raw data; derived from a flux in a different bandand a color]]></TD>
+</TR>
+<TR>
+<TD>93</TD>
+<TD><![CDATA[R (Johnson)         ]]></TD>
+<TD> 10.02     </TD>
+<TD></TD>
+<TD>mag                 </TD>
+<TD>4.28E+14</TD>
+<TD>  2.73E-01</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1973ApJ...183..711S</TD>
+<TD>no uncertainty reported</TD>
+<TD>      7000 A         </TD>
+<TD> Broad-band measurement; photometric system transformed</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[15.2" aperture                          ]]></TD>
+<TD><![CDATA[From new raw data; derived from a flux in a different bandand a color]]></TD>
+</TR>
+<TR>
+<TD>94</TD>
+<TD><![CDATA[R (Johnson)         ]]></TD>
+<TD> 11.16     </TD>
+<TD></TD>
+<TD>mag                 </TD>
+<TD>4.28E+14</TD>
+<TD>  9.55E-02</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1973ApJ...183..711S</TD>
+<TD>no uncertainty reported</TD>
+<TD>      7000 A         </TD>
+<TD> Broad-band measurement; photometric system transformed</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[4.9" aperture                           ]]></TD>
+<TD><![CDATA[From new raw data; derived from a flux in a different bandand a color]]></TD>
+</TR>
+<TR>
+<TD>95</TD>
+<TD><![CDATA[7100A               ]]></TD>
 <TD>  2.04E-02</TD>
 <TD>1.02E-03</TD>
 <TD>Jy</TD>
@@ -1943,8 +2019,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>92</TD>
-<TD>7530A               </TD>
+<TD>96</TD>
+<TD><![CDATA[7530A               ]]></TD>
 <TD>  2.09E-02</TD>
 <TD>1.04E-03</TD>
 <TD>Jy</TD>
@@ -1962,8 +2038,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>93</TD>
-<TD>7850A               </TD>
+<TD>97</TD>
+<TD><![CDATA[7850A               ]]></TD>
 <TD>  2.12E-02</TD>
 <TD>1.06E-03</TD>
 <TD>Jy</TD>
@@ -1981,8 +2057,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>94</TD>
-<TD>I                   </TD>
+<TD>98</TD>
+<TD><![CDATA[I                   ]]></TD>
 <TD> 9.9037    </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -2000,8 +2076,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>95</TD>
-<TD>8080A               </TD>
+<TD>99</TD>
+<TD><![CDATA[8080A               ]]></TD>
 <TD>  2.13E-02</TD>
 <TD>2.13E-03</TD>
 <TD>Jy</TD>
@@ -2019,8 +2095,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>96</TD>
-<TD>8400A               </TD>
+<TD>100</TD>
+<TD><![CDATA[8400A               ]]></TD>
 <TD>  2.17E-02</TD>
 <TD>2.17E-03</TD>
 <TD>Jy</TD>
@@ -2038,8 +2114,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>97</TD>
-<TD>I (Johnson)         </TD>
+<TD>101</TD>
+<TD><![CDATA[I (Johnson)         ]]></TD>
 <TD> 9.86      </TD>
 <TD>0.05 </TD>
 <TD>mag                 </TD>
@@ -2057,8 +2133,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>98</TD>
-<TD>J (ESO/SPM)         </TD>
+<TD>102</TD>
+<TD><![CDATA[J (ESO/SPM)         ]]></TD>
 <TD> 560.8     </TD>
 <TD>37.35</TD>
 <TD>milliJy             </TD>
@@ -2076,8 +2152,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>99</TD>
-<TD>J (RGO)             </TD>
+<TD>103</TD>
+<TD><![CDATA[J (RGO)             ]]></TD>
 <TD> 9.11      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -2095,46 +2171,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>100</TD>
-<TD>J (Johnson)         </TD>
-<TD> 7.21      </TD>
-<TD>0.03 </TD>
-<TD>mag                 </TD>
-<TD>2.42E+14</TD>
-<TD>  2.09E+00</TD>
-<TD>5.87E-02</TD>
-<TD>Jy</TD>
-<TD>1977HarvU.T00M....A</TD>
-<TD>uncertainty</TD>
-<TD>   1.24    microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[105" aperture                           ]]></TD>
-<TD><![CDATA[From new raw data; derived from a flux in a different bandand a color]]></TD>
-</TR>
-<TR>
-<TD>101</TD>
-<TD>J (Johnson)         </TD>
-<TD> 7.62      </TD>
-<TD>0.03 </TD>
-<TD>mag                 </TD>
-<TD>2.42E+14</TD>
-<TD>  1.44E+00</TD>
-<TD>4.02E-02</TD>
-<TD>Jy</TD>
-<TD>1977HarvU.T00M....A</TD>
-<TD>uncertainty</TD>
-<TD>   1.24    microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[53.4" aperture                          ]]></TD>
-<TD><![CDATA[From new raw data; derived from a flux in a different bandand a color]]></TD>
-</TR>
-<TR>
-<TD>102</TD>
-<TD>J (Johnson)         </TD>
+<TD>104</TD>
+<TD><![CDATA[J (Johnson)         ]]></TD>
 <TD> 8.14      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -2152,8 +2190,46 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; derived from a flux in a different bandand a color]]></TD>
 </TR>
 <TR>
-<TD>103</TD>
-<TD>F_J (total)         </TD>
+<TD>105</TD>
+<TD><![CDATA[J (Johnson)         ]]></TD>
+<TD> 7.21      </TD>
+<TD>0.03 </TD>
+<TD>mag                 </TD>
+<TD>2.42E+14</TD>
+<TD>  2.09E+00</TD>
+<TD>5.87E-02</TD>
+<TD>Jy</TD>
+<TD>1977HarvU.T00M....A</TD>
+<TD>uncertainty</TD>
+<TD>   1.24    microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[105" aperture                           ]]></TD>
+<TD><![CDATA[From new raw data; derived from a flux in a different bandand a color]]></TD>
+</TR>
+<TR>
+<TD>106</TD>
+<TD><![CDATA[J (Johnson)         ]]></TD>
+<TD> 7.62      </TD>
+<TD>0.03 </TD>
+<TD>mag                 </TD>
+<TD>2.42E+14</TD>
+<TD>  1.44E+00</TD>
+<TD>4.02E-02</TD>
+<TD>Jy</TD>
+<TD>1977HarvU.T00M....A</TD>
+<TD>uncertainty</TD>
+<TD>   1.24    microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[53.4" aperture                          ]]></TD>
+<TD><![CDATA[From new raw data; derived from a flux in a different bandand a color]]></TD>
+</TR>
+<TR>
+<TD>107</TD>
+<TD><![CDATA[F_J (total)         ]]></TD>
 <TD> 3.61      </TD>
 <TD>3.02 </TD>
 <TD>log milliJy         </TD>
@@ -2171,8 +2247,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Homogenized from new and previously published data]]></TD>
 </TR>
 <TR>
-<TD>104</TD>
-<TD>J_20 (2MASS LGA)    </TD>
+<TD>108</TD>
+<TD><![CDATA[J_20 (2MASS LGA)    ]]></TD>
 <TD> 7.014     </TD>
 <TD>0.015</TD>
 <TD>mag                 </TD>
@@ -2190,8 +2266,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; Corrected for contaminating sources]]></TD>
 </TR>
 <TR>
-<TD>105</TD>
-<TD>J_Kron (2MASS LGA)  </TD>
+<TD>109</TD>
+<TD><![CDATA[J_Kron (2MASS LGA)  ]]></TD>
 <TD> 7.124     </TD>
 <TD>0.015</TD>
 <TD>mag                 </TD>
@@ -2209,8 +2285,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; Corrected for contaminating sources]]></TD>
 </TR>
 <TR>
-<TD>106</TD>
-<TD>J_tot (2MASS LGA)   </TD>
+<TD>110</TD>
+<TD><![CDATA[J_tot (2MASS LGA)   ]]></TD>
 <TD> 6.966     </TD>
 <TD>0.015</TD>
 <TD>mag                 </TD>
@@ -2228,8 +2304,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>107</TD>
-<TD>J_14arcsec (2MASS)  </TD>
+<TD>111</TD>
+<TD><![CDATA[J_14arcsec (2MASS)  ]]></TD>
 <TD> 8.734     </TD>
 <TD>0.015</TD>
 <TD>mag                 </TD>
@@ -2247,8 +2323,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>108</TD>
-<TD>1.25 microns        </TD>
+<TD>112</TD>
+<TD><![CDATA[1.25 microns        ]]></TD>
 <TD>  2.60E-01</TD>
 <TD>2.61E-02</TD>
 <TD>Jy</TD>
@@ -2266,8 +2342,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>109</TD>
-<TD>J (Johnson)         </TD>
+<TD>113</TD>
+<TD><![CDATA[J (Johnson)         ]]></TD>
 <TD> 8.77      </TD>
 <TD>0.1  </TD>
 <TD>mag                 </TD>
@@ -2285,27 +2361,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>110</TD>
-<TD>H' (Johnson)        </TD>
-<TD> 9.11      </TD>
-<TD></TD>
-<TD>mag                 </TD>
-<TD>1.93E+14</TD>
-<TD>  2.82E-01</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>1968AJ.....73..866W</TD>
-<TD>no uncertainty reported</TD>
-<TD>      1.55 microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[13" aperture;Low quality data           ]]></TD>
-<TD><![CDATA[Averaged from previously published data]]></TD>
-</TR>
-<TR>
-<TD>111</TD>
-<TD>H' (Johnson)        </TD>
+<TD>114</TD>
+<TD><![CDATA[H' (Johnson)        ]]></TD>
 <TD> 8.17      </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -2323,8 +2380,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Averaged from previously published data]]></TD>
 </TR>
 <TR>
-<TD>112</TD>
-<TD>H (ESO/SPM)         </TD>
+<TD>115</TD>
+<TD><![CDATA[H' (Johnson)        ]]></TD>
+<TD> 9.11      </TD>
+<TD></TD>
+<TD>mag                 </TD>
+<TD>1.93E+14</TD>
+<TD>  2.82E-01</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1968AJ.....73..866W</TD>
+<TD>no uncertainty reported</TD>
+<TD>      1.55 microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[13" aperture;Low quality data           ]]></TD>
+<TD><![CDATA[Averaged from previously published data]]></TD>
+</TR>
+<TR>
+<TD>116</TD>
+<TD><![CDATA[H (ESO/SPM)         ]]></TD>
 <TD> 773.1     </TD>
 <TD>51.49</TD>
 <TD>milliJy             </TD>
@@ -2342,8 +2418,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>113</TD>
-<TD>H (Johnson)         </TD>
+<TD>117</TD>
+<TD><![CDATA[H (Johnson)         ]]></TD>
 <TD> 7.87      </TD>
 <TD>0.1  </TD>
 <TD>mag                 </TD>
@@ -2361,8 +2437,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>114</TD>
-<TD>F_H (total)         </TD>
+<TD>118</TD>
+<TD><![CDATA[F_H (total)         ]]></TD>
 <TD> 3.77      </TD>
 <TD>3.18 </TD>
 <TD>log milliJy         </TD>
@@ -2380,8 +2456,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Homogenized from new and previously published data]]></TD>
 </TR>
 <TR>
-<TD>115</TD>
-<TD>1.6 microns         </TD>
+<TD>119</TD>
+<TD><![CDATA[1.6 microns         ]]></TD>
 <TD>  3.50E-01</TD>
 <TD>3.54E-02</TD>
 <TD>Jy</TD>
@@ -2399,8 +2475,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>116</TD>
-<TD>H (RGO)             </TD>
+<TD>120</TD>
+<TD><![CDATA[H (RGO)             ]]></TD>
 <TD> 8.22      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -2418,8 +2494,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>117</TD>
-<TD>H_20 (2MASS LGA)    </TD>
+<TD>121</TD>
+<TD><![CDATA[H_20 (2MASS LGA)    ]]></TD>
 <TD> 6.286     </TD>
 <TD>0.015</TD>
 <TD>mag                 </TD>
@@ -2437,8 +2513,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; Corrected for contaminating sources]]></TD>
 </TR>
 <TR>
-<TD>118</TD>
-<TD>H_Kron (2MASS LGA)  </TD>
+<TD>122</TD>
+<TD><![CDATA[H_Kron (2MASS LGA)  ]]></TD>
 <TD> 6.376     </TD>
 <TD>0.015</TD>
 <TD>mag                 </TD>
@@ -2456,8 +2532,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; Corrected for contaminating sources]]></TD>
 </TR>
 <TR>
-<TD>119</TD>
-<TD>H_tot (2MASS LGA)   </TD>
+<TD>123</TD>
+<TD><![CDATA[H_tot (2MASS LGA)   ]]></TD>
 <TD> 6.258     </TD>
 <TD>0.015</TD>
 <TD>mag                 </TD>
@@ -2475,8 +2551,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>120</TD>
-<TD>H_14arcsec (2MASS)  </TD>
+<TD>124</TD>
+<TD><![CDATA[H_14arcsec (2MASS)  ]]></TD>
 <TD> 7.861     </TD>
 <TD>0.015</TD>
 <TD>mag                 </TD>
@@ -2494,103 +2570,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>121</TD>
-<TD>H                   </TD>
-<TD> 7.90      </TD>
-<TD>0.06 </TD>
-<TD>mag                 </TD>
-<TD>1.82E+14</TD>
-<TD>  6.85E-01</TD>
-<TD>3.89E-02</TD>
-<TD>Jy</TD>
-<TD>1978ApJS...38..267O</TD>
-<TD>uncertainty</TD>
-<TD>   1.65    microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[18" aperture                            ]]></TD>
-<TD><![CDATA[Averaged new and previously published data]]></TD>
-</TR>
-<TR>
-<TD>122</TD>
-<TD>1.6 microns         </TD>
-<TD> 7.55      </TD>
-<TD>0.10 </TD>
-<TD>mag                 </TD>
-<TD>1.82E+14</TD>
-<TD>  9.36E-01</TD>
-<TD>9.03E-02</TD>
-<TD>Jy</TD>
-<TD>1974MNRAS.169..357P</TD>
-<TD>uncertainty</TD>
-<TD>    1.65   microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[22" aperture;Low quality data           ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>123</TD>
-<TD>1.6 microns         </TD>
-<TD> 7.35      </TD>
-<TD></TD>
-<TD>mag                 </TD>
-<TD>1.82E+14</TD>
-<TD>  1.12E+00</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>1974MNRAS.169..357P</TD>
-<TD>no uncertainty reported</TD>
-<TD>    1.65   microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[32" aperture                            ]]></TD>
-<TD><![CDATA[Averaged new and previously published data]]></TD>
-</TR>
-<TR>
-<TD>124</TD>
-<TD>H (Johnson)         </TD>
-<TD> 6.80      </TD>
-<TD>0.03 </TD>
-<TD>mag                 </TD>
-<TD>1.82E+14</TD>
-<TD>  2.05E+00</TD>
-<TD>5.74E-02</TD>
-<TD>Jy</TD>
-<TD>1977HarvU.T00M....A</TD>
-<TD>uncertainty</TD>
-<TD>   1.65    microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[53.4" aperture                          ]]></TD>
-<TD><![CDATA[From new raw data; derived from a flux in a different bandand a color]]></TD>
-</TR>
-<TR>
 <TD>125</TD>
-<TD>H (Johnson)         </TD>
-<TD> 7.33      </TD>
-<TD>0.03 </TD>
-<TD>mag                 </TD>
-<TD>1.82E+14</TD>
-<TD>  1.26E+00</TD>
-<TD>3.52E-02</TD>
-<TD>Jy</TD>
-<TD>1977HarvU.T00M....A</TD>
-<TD>uncertainty</TD>
-<TD>   1.65    microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[27.4" aperture                          ]]></TD>
-<TD><![CDATA[From new raw data; derived from a flux in a different bandand a color]]></TD>
-</TR>
-<TR>
-<TD>126</TD>
-<TD>H                   </TD>
+<TD><![CDATA[H                   ]]></TD>
 <TD> 8.48      </TD>
 <TD>0.06 </TD>
 <TD>mag                 </TD>
@@ -2608,27 +2589,65 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Averaged new and previously published data]]></TD>
 </TR>
 <TR>
-<TD>127</TD>
-<TD>1.6 microns         </TD>
-<TD> 7.35      </TD>
-<TD></TD>
+<TD>126</TD>
+<TD><![CDATA[H (Johnson)         ]]></TD>
+<TD> 6.45      </TD>
+<TD>0.03 </TD>
 <TD>mag                 </TD>
 <TD>1.82E+14</TD>
-<TD>  1.12E+00</TD>
-<TD></TD>
+<TD>  2.83E+00</TD>
+<TD>7.92E-02</TD>
 <TD>Jy</TD>
-<TD>1974MNRAS.169..357P</TD>
-<TD>no uncertainty reported</TD>
-<TD>    1.65   microns   </TD>
+<TD>1977HarvU.T00M....A</TD>
+<TD>uncertainty</TD>
+<TD>   1.65    microns   </TD>
 <TD> Broad-band measurement</TD>
 <TD></TD>
 <TD> Flux in fixed aperture</TD>
-<TD><![CDATA[28" aperture                            ]]></TD>
-<TD><![CDATA[Averaged new and previously published data]]></TD>
+<TD><![CDATA[105" aperture                           ]]></TD>
+<TD><![CDATA[From new raw data; derived from a flux in a different bandand a color]]></TD>
+</TR>
+<TR>
+<TD>127</TD>
+<TD><![CDATA[H (Johnson)         ]]></TD>
+<TD> 6.80      </TD>
+<TD>0.03 </TD>
+<TD>mag                 </TD>
+<TD>1.82E+14</TD>
+<TD>  2.05E+00</TD>
+<TD>5.74E-02</TD>
+<TD>Jy</TD>
+<TD>1977HarvU.T00M....A</TD>
+<TD>uncertainty</TD>
+<TD>   1.65    microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[53.4" aperture                          ]]></TD>
+<TD><![CDATA[From new raw data; derived from a flux in a different bandand a color]]></TD>
 </TR>
 <TR>
 <TD>128</TD>
-<TD>1.6 microns         </TD>
+<TD><![CDATA[H (Johnson)         ]]></TD>
+<TD> 7.33      </TD>
+<TD>0.03 </TD>
+<TD>mag                 </TD>
+<TD>1.82E+14</TD>
+<TD>  1.26E+00</TD>
+<TD>3.52E-02</TD>
+<TD>Jy</TD>
+<TD>1977HarvU.T00M....A</TD>
+<TD>uncertainty</TD>
+<TD>   1.65    microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[27.4" aperture                          ]]></TD>
+<TD><![CDATA[From new raw data; derived from a flux in a different bandand a color]]></TD>
+</TR>
+<TR>
+<TD>129</TD>
+<TD><![CDATA[1.6 microns         ]]></TD>
 <TD> 7.98      </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -2646,27 +2665,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Averaged new and previously published data]]></TD>
 </TR>
 <TR>
-<TD>129</TD>
-<TD>1.6 microns         </TD>
-<TD> 8.49      </TD>
-<TD>0.07 </TD>
-<TD>mag                 </TD>
-<TD>1.82E+14</TD>
-<TD>  3.94E-01</TD>
-<TD>2.62E-02</TD>
-<TD>Jy</TD>
-<TD>1974MNRAS.169..357P</TD>
-<TD>uncertainty</TD>
-<TD>    1.65   microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[10.0" aperture;Low quality data         ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
 <TD>130</TD>
-<TD>1.6 microns         </TD>
+<TD><![CDATA[1.6 microns         ]]></TD>
 <TD> 7.85      </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -2685,7 +2685,64 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>131</TD>
-<TD>1.6 microns         </TD>
+<TD><![CDATA[1.6 microns         ]]></TD>
+<TD> 7.55      </TD>
+<TD>0.10 </TD>
+<TD>mag                 </TD>
+<TD>1.82E+14</TD>
+<TD>  9.36E-01</TD>
+<TD>9.03E-02</TD>
+<TD>Jy</TD>
+<TD>1974MNRAS.169..357P</TD>
+<TD>uncertainty</TD>
+<TD>    1.65   microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[22" aperture;Low quality data           ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>132</TD>
+<TD><![CDATA[H                   ]]></TD>
+<TD> 7.90      </TD>
+<TD>0.06 </TD>
+<TD>mag                 </TD>
+<TD>1.82E+14</TD>
+<TD>  6.85E-01</TD>
+<TD>3.89E-02</TD>
+<TD>Jy</TD>
+<TD>1978ApJS...38..267O</TD>
+<TD>uncertainty</TD>
+<TD>   1.65    microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[18" aperture                            ]]></TD>
+<TD><![CDATA[Averaged new and previously published data]]></TD>
+</TR>
+<TR>
+<TD>133</TD>
+<TD><![CDATA[1.6 microns         ]]></TD>
+<TD> 7.35      </TD>
+<TD></TD>
+<TD>mag                 </TD>
+<TD>1.82E+14</TD>
+<TD>  1.12E+00</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1974MNRAS.169..357P</TD>
+<TD>no uncertainty reported</TD>
+<TD>    1.65   microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[28" aperture                            ]]></TD>
+<TD><![CDATA[Averaged new and previously published data]]></TD>
+</TR>
+<TR>
+<TD>134</TD>
+<TD><![CDATA[1.6 microns         ]]></TD>
 <TD> 7.54      </TD>
 <TD>0.10 </TD>
 <TD>mag                 </TD>
@@ -2703,27 +2760,46 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>132</TD>
-<TD>H (Johnson)         </TD>
-<TD> 6.45      </TD>
-<TD>0.03 </TD>
+<TD>135</TD>
+<TD><![CDATA[1.6 microns         ]]></TD>
+<TD> 7.35      </TD>
+<TD></TD>
 <TD>mag                 </TD>
 <TD>1.82E+14</TD>
-<TD>  2.83E+00</TD>
-<TD>7.92E-02</TD>
+<TD>  1.12E+00</TD>
+<TD></TD>
 <TD>Jy</TD>
-<TD>1977HarvU.T00M....A</TD>
-<TD>uncertainty</TD>
-<TD>   1.65    microns   </TD>
+<TD>1974MNRAS.169..357P</TD>
+<TD>no uncertainty reported</TD>
+<TD>    1.65   microns   </TD>
 <TD> Broad-band measurement</TD>
 <TD></TD>
 <TD> Flux in fixed aperture</TD>
-<TD><![CDATA[105" aperture                           ]]></TD>
-<TD><![CDATA[From new raw data; derived from a flux in a different bandand a color]]></TD>
+<TD><![CDATA[32" aperture                            ]]></TD>
+<TD><![CDATA[Averaged new and previously published data]]></TD>
 </TR>
 <TR>
-<TD>133</TD>
-<TD>K_20 (2MASS LGA)    </TD>
+<TD>136</TD>
+<TD><![CDATA[1.6 microns         ]]></TD>
+<TD> 8.49      </TD>
+<TD>0.07 </TD>
+<TD>mag                 </TD>
+<TD>1.82E+14</TD>
+<TD>  3.94E-01</TD>
+<TD>2.62E-02</TD>
+<TD>Jy</TD>
+<TD>1974MNRAS.169..357P</TD>
+<TD>uncertainty</TD>
+<TD>    1.65   microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[10.0" aperture;Low quality data         ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>137</TD>
+<TD><![CDATA[K_20 (2MASS LGA)    ]]></TD>
 <TD> 5.812     </TD>
 <TD>0.015</TD>
 <TD>mag                 </TD>
@@ -2741,8 +2817,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; Corrected for contaminating sources]]></TD>
 </TR>
 <TR>
-<TD>134</TD>
-<TD>K_Kron (2MASS LGA)  </TD>
+<TD>138</TD>
+<TD><![CDATA[K_Kron (2MASS LGA)  ]]></TD>
 <TD> 5.885     </TD>
 <TD>0.015</TD>
 <TD>mag                 </TD>
@@ -2760,8 +2836,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; Corrected for contaminating sources]]></TD>
 </TR>
 <TR>
-<TD>135</TD>
-<TD>K_tot (2MASS LGA)   </TD>
+<TD>139</TD>
+<TD><![CDATA[K_tot (2MASS LGA)   ]]></TD>
 <TD> 5.788     </TD>
 <TD>0.016</TD>
 <TD>mag                 </TD>
@@ -2779,8 +2855,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>136</TD>
-<TD>K_s_14arcsec (2MASS)</TD>
+<TD>140</TD>
+<TD><![CDATA[K_s_14arcsec (2MASS)]]></TD>
 <TD> 6.995     </TD>
 <TD>0.015</TD>
 <TD>mag                 </TD>
@@ -2798,8 +2874,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>137</TD>
-<TD>K_s (VLT/NaCo)      </TD>
+<TD>141</TD>
+<TD><![CDATA[K_s (VLT/NaCo)      ]]></TD>
 <TD> 9.9       </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -2817,8 +2893,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>138</TD>
-<TD>K_s (VLT/NaCo)      </TD>
+<TD>142</TD>
+<TD><![CDATA[K_s (VLT/NaCo)      ]]></TD>
 <TD> 9.3       </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -2836,8 +2912,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>139</TD>
-<TD>K_s (VLT/NaCo)      </TD>
+<TD>143</TD>
+<TD><![CDATA[K_s (VLT/NaCo)      ]]></TD>
 <TD> 8.9       </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -2855,8 +2931,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>140</TD>
-<TD>K_s (2MASS)         </TD>
+<TD>144</TD>
+<TD><![CDATA[K_s (2MASS)         ]]></TD>
 <TD> 8.02      </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -2874,8 +2950,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>141</TD>
-<TD>K_s (2MASS)         </TD>
+<TD>145</TD>
+<TD><![CDATA[K_s (2MASS)         ]]></TD>
 <TD> 7.32      </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -2893,8 +2969,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>142</TD>
-<TD>K_s (2MASS)         </TD>
+<TD>146</TD>
+<TD><![CDATA[K_s (2MASS)         ]]></TD>
 <TD> 6.80      </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -2912,8 +2988,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>143</TD>
-<TD>K (VLTI)            </TD>
+<TD>147</TD>
+<TD><![CDATA[K (VLTI)            ]]></TD>
 <TD> 130       </TD>
 <TD>60   </TD>
 <TD>milliJy             </TD>
@@ -2931,8 +3007,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>144</TD>
-<TD>F_K (total)         </TD>
+<TD>148</TD>
+<TD><![CDATA[F_K (total)         ]]></TD>
 <TD> 3.84      </TD>
 <TD>3.25 </TD>
 <TD>log milliJy         </TD>
@@ -2950,8 +3026,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Homogenized from new and previously published data]]></TD>
 </TR>
 <TR>
-<TD>145</TD>
-<TD>K (RGO)             </TD>
+<TD>149</TD>
+<TD><![CDATA[K (RGO)             ]]></TD>
 <TD> 7.47      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -2969,8 +3045,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>146</TD>
-<TD>2.2 microns         </TD>
+<TD>150</TD>
+<TD><![CDATA[2.2 microns         ]]></TD>
 <TD> 0.37      </TD>
 <TD>0.02 </TD>
 <TD>Jy                  </TD>
@@ -2988,8 +3064,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>147</TD>
-<TD>2.2 microns         </TD>
+<TD>151</TD>
+<TD><![CDATA[2.2 microns         ]]></TD>
 <TD> 7.58      </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -3007,27 +3083,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Averaged new and previously published data]]></TD>
 </TR>
 <TR>
-<TD>148</TD>
-<TD>2.2 microns         </TD>
-<TD> 7.32      </TD>
-<TD></TD>
-<TD>mag                 </TD>
-<TD>1.36E+14</TD>
-<TD>  7.32E-01</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>1974MNRAS.169..357P</TD>
-<TD>no uncertainty reported</TD>
-<TD>     2.2   microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[13.5" aperture                          ]]></TD>
-<TD><![CDATA[Averaged new and previously published data]]></TD>
-</TR>
-<TR>
-<TD>149</TD>
-<TD>2.2 microns         </TD>
+<TD>152</TD>
+<TD><![CDATA[2.2 microns         ]]></TD>
 <TD> 7.08      </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -3045,8 +3102,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Averaged new and previously published data]]></TD>
 </TR>
 <TR>
-<TD>150</TD>
-<TD>2.2 microns         </TD>
+<TD>153</TD>
+<TD><![CDATA[2.2 microns         ]]></TD>
 <TD> 7.05      </TD>
 <TD>0.10 </TD>
 <TD>mag                 </TD>
@@ -3064,65 +3121,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>151</TD>
-<TD>2.2 microns         </TD>
-<TD> 6.82      </TD>
-<TD></TD>
-<TD>mag                 </TD>
-<TD>1.36E+14</TD>
-<TD>  1.16E+00</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>1974MNRAS.169..357P</TD>
-<TD>no uncertainty reported</TD>
-<TD>     2.2   microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[28" aperture                            ]]></TD>
-<TD><![CDATA[Averaged new and previously published data]]></TD>
-</TR>
-<TR>
-<TD>152</TD>
-<TD>2.2 microns         </TD>
-<TD> 6.81      </TD>
-<TD></TD>
-<TD>mag                 </TD>
-<TD>1.36E+14</TD>
-<TD>  1.17E+00</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>1974MNRAS.169..357P</TD>
-<TD>no uncertainty reported</TD>
-<TD>     2.2   microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[32" aperture                            ]]></TD>
-<TD><![CDATA[Averaged new and previously published data]]></TD>
-</TR>
-<TR>
-<TD>153</TD>
-<TD>2.2 microns         </TD>
-<TD> 7.25      </TD>
-<TD></TD>
-<TD>mag                 </TD>
-<TD>1.36E+14</TD>
-<TD>  7.81E-01</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>1974MNRAS.169..357P</TD>
-<TD>no uncertainty reported</TD>
-<TD>     2.2   microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[15" aperture                            ]]></TD>
-<TD><![CDATA[Averaged new and previously published data]]></TD>
-</TR>
-<TR>
 <TD>154</TD>
-<TD>2.2 microns         </TD>
+<TD><![CDATA[2.2 microns         ]]></TD>
 <TD> 6.94      </TD>
 <TD>0.10 </TD>
 <TD>mag                 </TD>
@@ -3141,7 +3141,83 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>155</TD>
-<TD>K (ESO/SPM)         </TD>
+<TD><![CDATA[2.2 microns         ]]></TD>
+<TD> 6.81      </TD>
+<TD></TD>
+<TD>mag                 </TD>
+<TD>1.36E+14</TD>
+<TD>  1.17E+00</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1974MNRAS.169..357P</TD>
+<TD>no uncertainty reported</TD>
+<TD>     2.2   microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[32" aperture                            ]]></TD>
+<TD><![CDATA[Averaged new and previously published data]]></TD>
+</TR>
+<TR>
+<TD>156</TD>
+<TD><![CDATA[2.2 microns         ]]></TD>
+<TD> 7.25      </TD>
+<TD></TD>
+<TD>mag                 </TD>
+<TD>1.36E+14</TD>
+<TD>  7.81E-01</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1974MNRAS.169..357P</TD>
+<TD>no uncertainty reported</TD>
+<TD>     2.2   microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[15" aperture                            ]]></TD>
+<TD><![CDATA[Averaged new and previously published data]]></TD>
+</TR>
+<TR>
+<TD>157</TD>
+<TD><![CDATA[2.2 microns         ]]></TD>
+<TD> 6.82      </TD>
+<TD></TD>
+<TD>mag                 </TD>
+<TD>1.36E+14</TD>
+<TD>  1.16E+00</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1974MNRAS.169..357P</TD>
+<TD>no uncertainty reported</TD>
+<TD>     2.2   microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[28" aperture                            ]]></TD>
+<TD><![CDATA[Averaged new and previously published data]]></TD>
+</TR>
+<TR>
+<TD>158</TD>
+<TD><![CDATA[2.2 microns         ]]></TD>
+<TD> 7.32      </TD>
+<TD></TD>
+<TD>mag                 </TD>
+<TD>1.36E+14</TD>
+<TD>  7.32E-01</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1974MNRAS.169..357P</TD>
+<TD>no uncertainty reported</TD>
+<TD>     2.2   microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[13.5" aperture                          ]]></TD>
+<TD><![CDATA[Averaged new and previously published data]]></TD>
+</TR>
+<TR>
+<TD>159</TD>
+<TD><![CDATA[K (ESO/SPM)         ]]></TD>
 <TD> 932.6     </TD>
 <TD>62.11</TD>
 <TD>milliJy             </TD>
@@ -3159,27 +3235,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>156</TD>
-<TD>K (Johnson)         </TD>
-<TD> 7.22      </TD>
-<TD>0.1  </TD>
-<TD>mag                 </TD>
-<TD>1.35E+14</TD>
-<TD>  8.63E-01</TD>
-<TD>8.33E-02</TD>
-<TD>Jy</TD>
-<TD>1967ApJ...147..394P</TD>
-<TD>uncertainty</TD>
-<TD>      2.22 microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[15" aperture                            ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>157</TD>
-<TD>K (Johnson)         </TD>
+<TD>160</TD>
+<TD><![CDATA[K (Johnson)         ]]></TD>
 <TD> 6.05      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -3197,8 +3254,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>158</TD>
-<TD>K (Johnson)         </TD>
+<TD>161</TD>
+<TD><![CDATA[K (Johnson)         ]]></TD>
 <TD> 6.80      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -3216,8 +3273,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>159</TD>
-<TD>2.2 microns         </TD>
+<TD>162</TD>
+<TD><![CDATA[2.2 microns         ]]></TD>
 <TD>  5.40E-01</TD>
 <TD>5.40E-02</TD>
 <TD>Jy</TD>
@@ -3235,8 +3292,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>160</TD>
-<TD>K (Johnson)         </TD>
+<TD>163</TD>
+<TD><![CDATA[K (Johnson)         ]]></TD>
 <TD> 6.34      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -3254,8 +3311,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>161</TD>
-<TD>K                   </TD>
+<TD>164</TD>
+<TD><![CDATA[K (Johnson)         ]]></TD>
+<TD> 7.22      </TD>
+<TD>0.1  </TD>
+<TD>mag                 </TD>
+<TD>1.35E+14</TD>
+<TD>  8.63E-01</TD>
+<TD>8.33E-02</TD>
+<TD>Jy</TD>
+<TD>1967ApJ...147..394P</TD>
+<TD>uncertainty</TD>
+<TD>      2.22 microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[15" aperture                            ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>165</TD>
+<TD><![CDATA[K                   ]]></TD>
 <TD> 7.18      </TD>
 <TD>0.04 </TD>
 <TD>mag                 </TD>
@@ -3273,8 +3349,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Averaged new and previously published data]]></TD>
 </TR>
 <TR>
-<TD>162</TD>
-<TD>K                   </TD>
+<TD>166</TD>
+<TD><![CDATA[K                   ]]></TD>
 <TD> 7.59      </TD>
 <TD>0.04 </TD>
 <TD>mag                 </TD>
@@ -3292,8 +3368,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Averaged new and previously published data]]></TD>
 </TR>
 <TR>
-<TD>163</TD>
-<TD>3.4 microns         </TD>
+<TD>167</TD>
+<TD><![CDATA[3.4 microns         ]]></TD>
 <TD> 2.9       </TD>
 <TD>0.3  </TD>
 <TD>Jy                  </TD>
@@ -3311,8 +3387,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>164</TD>
-<TD>3.4 microns         </TD>
+<TD>168</TD>
+<TD><![CDATA[3.4 microns         ]]></TD>
 <TD> 5.38      </TD>
 <TD>0.10 </TD>
 <TD>mag                 </TD>
@@ -3330,8 +3406,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>165</TD>
-<TD>3.4 microns         </TD>
+<TD>169</TD>
+<TD><![CDATA[3.4 microns         ]]></TD>
+<TD> 5.27      </TD>
+<TD></TD>
+<TD>mag                 </TD>
+<TD>8.82E+13</TD>
+<TD>  2.18E+00</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1974MNRAS.169..357P</TD>
+<TD>no uncertainty reported</TD>
+<TD>     3.4   microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[15" aperture                            ]]></TD>
+<TD><![CDATA[Averaged new and previously published data]]></TD>
+</TR>
+<TR>
+<TD>170</TD>
+<TD><![CDATA[3.4 microns         ]]></TD>
 <TD> 5.31      </TD>
 <TD>0.15 </TD>
 <TD>mag                 </TD>
@@ -3349,65 +3444,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>166</TD>
-<TD>3.4 microns         </TD>
-<TD> 5.38      </TD>
-<TD></TD>
-<TD>mag                 </TD>
-<TD>8.82E+13</TD>
-<TD>  1.97E+00</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>1974MNRAS.169..357P</TD>
-<TD>no uncertainty reported</TD>
-<TD>     3.4   microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[13.5" aperture                          ]]></TD>
-<TD><![CDATA[Averaged new and previously published data]]></TD>
-</TR>
-<TR>
-<TD>167</TD>
-<TD>3.4 microns         </TD>
-<TD> 5.27      </TD>
-<TD></TD>
-<TD>mag                 </TD>
-<TD>8.82E+13</TD>
-<TD>  2.18E+00</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>1974MNRAS.169..357P</TD>
-<TD>no uncertainty reported</TD>
-<TD>     3.4   microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[15" aperture                            ]]></TD>
-<TD><![CDATA[Averaged new and previously published data]]></TD>
-</TR>
-<TR>
-<TD>168</TD>
-<TD>3.4 microns         </TD>
-<TD> 5.27      </TD>
-<TD>0.11 </TD>
-<TD>mag                 </TD>
-<TD>8.82E+13</TD>
-<TD>  2.18E+00</TD>
-<TD>2.33E-01</TD>
-<TD>Jy</TD>
-<TD>1974MNRAS.169..357P</TD>
-<TD>uncertainty</TD>
-<TD>     3.4   microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[32" aperture                            ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>169</TD>
-<TD>3.4 microns         </TD>
+<TD>171</TD>
+<TD><![CDATA[3.4 microns         ]]></TD>
 <TD> 5.23      </TD>
 <TD>0.15 </TD>
 <TD>mag                 </TD>
@@ -3425,27 +3463,46 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>170</TD>
-<TD>3.5 microns         </TD>
-<TD> 1.7       </TD>
-<TD>0.2  </TD>
-<TD>Jy                  </TD>
-<TD>8.57E+13</TD>
-<TD>  1.70E+00</TD>
-<TD>2.00E-01</TD>
+<TD>172</TD>
+<TD><![CDATA[3.4 microns         ]]></TD>
+<TD> 5.38      </TD>
+<TD></TD>
+<TD>mag                 </TD>
+<TD>8.82E+13</TD>
+<TD>  1.97E+00</TD>
+<TD></TD>
 <TD>Jy</TD>
-<TD>1972ApJ...176L..95R</TD>
-<TD>1 sigma</TD>
-<TD>       3.5 microns   </TD>
+<TD>1974MNRAS.169..357P</TD>
+<TD>no uncertainty reported</TD>
+<TD>     3.4   microns   </TD>
 <TD> Broad-band measurement</TD>
 <TD></TD>
 <TD> Flux in fixed aperture</TD>
-<TD><![CDATA[6" aperture                             ]]></TD>
+<TD><![CDATA[13.5" aperture                          ]]></TD>
+<TD><![CDATA[Averaged new and previously published data]]></TD>
+</TR>
+<TR>
+<TD>173</TD>
+<TD><![CDATA[3.4 microns         ]]></TD>
+<TD> 5.27      </TD>
+<TD>0.11 </TD>
+<TD>mag                 </TD>
+<TD>8.82E+13</TD>
+<TD>  2.18E+00</TD>
+<TD>2.33E-01</TD>
+<TD>Jy</TD>
+<TD>1974MNRAS.169..357P</TD>
+<TD>uncertainty</TD>
+<TD>     3.4   microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[32" aperture                            ]]></TD>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>171</TD>
-<TD>L                   </TD>
+<TD>174</TD>
+<TD><![CDATA[L                   ]]></TD>
 <TD> 5.43      </TD>
 <TD>0.07 </TD>
 <TD>mag                 </TD>
@@ -3463,8 +3520,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Averaged new and previously published data]]></TD>
 </TR>
 <TR>
-<TD>172</TD>
-<TD>L (RGO)             </TD>
+<TD>175</TD>
+<TD><![CDATA[L (RGO)             ]]></TD>
 <TD> 5.53      </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -3482,27 +3539,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>173</TD>
-<TD>L                   </TD>
-<TD> 5.43      </TD>
-<TD>0.07 </TD>
-<TD>mag                 </TD>
+<TD>176</TD>
+<TD><![CDATA[3.5 microns         ]]></TD>
+<TD> 1.7       </TD>
+<TD>0.2  </TD>
+<TD>Jy                  </TD>
 <TD>8.57E+13</TD>
-<TD>  1.88E+00</TD>
-<TD>1.26E-01</TD>
+<TD>  1.70E+00</TD>
+<TD>2.00E-01</TD>
 <TD>Jy</TD>
-<TD>1978ApJS...38..267O</TD>
-<TD>uncertainty</TD>
-<TD>   3.5     microns   </TD>
+<TD>1972ApJ...176L..95R</TD>
+<TD>1 sigma</TD>
+<TD>       3.5 microns   </TD>
 <TD> Broad-band measurement</TD>
 <TD></TD>
 <TD> Flux in fixed aperture</TD>
-<TD><![CDATA[18" aperture                            ]]></TD>
-<TD><![CDATA[Averaged new and previously published data]]></TD>
+<TD><![CDATA[6" aperture                             ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>174</TD>
-<TD>3.5 microns         </TD>
+<TD>177</TD>
+<TD><![CDATA[3.5 microns         ]]></TD>
 <TD> 5.45      </TD>
 <TD>0.1  </TD>
 <TD>mag                 </TD>
@@ -3520,8 +3577,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Averaged new and previously published data]]></TD>
 </TR>
 <TR>
-<TD>175</TD>
-<TD>L (Johnson)         </TD>
+<TD>178</TD>
+<TD><![CDATA[L                   ]]></TD>
+<TD> 5.43      </TD>
+<TD>0.07 </TD>
+<TD>mag                 </TD>
+<TD>8.57E+13</TD>
+<TD>  1.88E+00</TD>
+<TD>1.26E-01</TD>
+<TD>Jy</TD>
+<TD>1978ApJS...38..267O</TD>
+<TD>uncertainty</TD>
+<TD>   3.5     microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[18" aperture                            ]]></TD>
+<TD><![CDATA[Averaged new and previously published data]]></TD>
+</TR>
+<TR>
+<TD>179</TD>
+<TD><![CDATA[L (Johnson)         ]]></TD>
 <TD> 5.3       </TD>
 <TD>0.1  </TD>
 <TD>mag                 </TD>
@@ -3539,8 +3615,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>176</TD>
-<TD>3.6 microns Spitzer </TD>
+<TD>180</TD>
+<TD><![CDATA[3.6 microns Spitzer ]]></TD>
 <TD> 3.8       </TD>
 <TD></TD>
 <TD> Jy                 </TD>
@@ -3558,8 +3634,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>177</TD>
-<TD>3.6 microns         </TD>
+<TD>181</TD>
+<TD><![CDATA[3.6 microns         ]]></TD>
 <TD>  1.92E+00</TD>
 <TD>1.93E-01</TD>
 <TD>Jy</TD>
@@ -3577,8 +3653,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>178</TD>
-<TD>L' (VLT/NaCo)       </TD>
+<TD>182</TD>
+<TD><![CDATA[L' (VLT/NaCo)       ]]></TD>
 <TD> 8.8       </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -3596,8 +3672,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data; derived from a flux in a differentband and a color]]></TD>
 </TR>
 <TR>
-<TD>179</TD>
-<TD>L' (VLT/NaCo)       </TD>
+<TD>183</TD>
+<TD><![CDATA[L' (VLT/NaCo)       ]]></TD>
 <TD> 7.7       </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -3615,8 +3691,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data; derived from a flux in a differentband and a color]]></TD>
 </TR>
 <TR>
-<TD>180</TD>
-<TD>L' (VLT/NaCo)       </TD>
+<TD>184</TD>
+<TD><![CDATA[L' (VLT/NaCo)       ]]></TD>
 <TD> 6.6       </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -3634,8 +3710,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data; derived from a flux in a differentband and a color]]></TD>
 </TR>
 <TR>
-<TD>181</TD>
-<TD>4.5 microns Spitzer </TD>
+<TD>185</TD>
+<TD><![CDATA[4.5 microns Spitzer ]]></TD>
 <TD> 5.1       </TD>
 <TD></TD>
 <TD> Jy                 </TD>
@@ -3653,8 +3729,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>182</TD>
-<TD>4.5 microns (ISOCAM)</TD>
+<TD>186</TD>
+<TD><![CDATA[4.5 microns (ISOCAM)]]></TD>
 <TD> 6860      </TD>
 <TD>340  </TD>
 <TD>milliJy             </TD>
@@ -3672,8 +3748,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>183</TD>
-<TD>M' (VLT/NaCo)       </TD>
+<TD>187</TD>
+<TD><![CDATA[M' (VLT/NaCo)       ]]></TD>
 <TD> 6.6       </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -3691,8 +3767,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data; derived from a flux in a differentband and a color]]></TD>
 </TR>
 <TR>
-<TD>184</TD>
-<TD>M' (VLT/NaCo)       </TD>
+<TD>188</TD>
+<TD><![CDATA[M' (VLT/NaCo)       ]]></TD>
 <TD> 5.6       </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -3710,8 +3786,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data; derived from a flux in a differentband and a color]]></TD>
 </TR>
 <TR>
-<TD>185</TD>
-<TD>M' (VLT/NaCo)       </TD>
+<TD>189</TD>
+<TD><![CDATA[M' (VLT/NaCo)       ]]></TD>
 <TD> 4.9       </TD>
 <TD></TD>
 <TD>mag                 </TD>
@@ -3729,27 +3805,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data; derived from a flux in a differentband and a color]]></TD>
 </TR>
 <TR>
-<TD>186</TD>
-<TD>5.0 microns         </TD>
-<TD> 3.2       </TD>
-<TD>0.2  </TD>
-<TD>Jy                  </TD>
-<TD>6.00E+13</TD>
-<TD>  3.20E+00</TD>
-<TD>2.00E-01</TD>
-<TD>Jy</TD>
-<TD>1972ApJ...176L..95R</TD>
-<TD>1 sigma</TD>
-<TD>       5.0 microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[6" aperture                             ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>187</TD>
-<TD>5.0 microns         </TD>
+<TD>190</TD>
+<TD><![CDATA[5.0 microns         ]]></TD>
 <TD> 7.2       </TD>
 <TD>0.3  </TD>
 <TD>Jy                  </TD>
@@ -3767,8 +3824,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>188</TD>
-<TD>5.8 microns Spitzer </TD>
+<TD>191</TD>
+<TD><![CDATA[5.0 microns         ]]></TD>
+<TD> 3.2       </TD>
+<TD>0.2  </TD>
+<TD>Jy                  </TD>
+<TD>6.00E+13</TD>
+<TD>  3.20E+00</TD>
+<TD>2.00E-01</TD>
+<TD>Jy</TD>
+<TD>1972ApJ...176L..95R</TD>
+<TD>1 sigma</TD>
+<TD>       5.0 microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[6" aperture                             ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>192</TD>
+<TD><![CDATA[5.8 microns Spitzer ]]></TD>
 <TD> 13        </TD>
 <TD></TD>
 <TD> Jy                 </TD>
@@ -3786,8 +3862,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>189</TD>
-<TD>6 microns (ISO)     </TD>
+<TD>193</TD>
+<TD><![CDATA[6 microns (ISO)     ]]></TD>
 <TD> 11.2195   </TD>
 <TD></TD>
 <TD>Jy                  </TD>
@@ -3805,8 +3881,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>190</TD>
-<TD>6.8 microns (ISOCAM)</TD>
+<TD>194</TD>
+<TD><![CDATA[6.8 microns (ISOCAM)]]></TD>
 <TD> 14030     </TD>
 <TD>700  </TD>
 <TD>milliJy             </TD>
@@ -3824,8 +3900,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>191</TD>
-<TD>8 microns Spitzer   </TD>
+<TD>195</TD>
+<TD><![CDATA[8 microns Spitzer   ]]></TD>
 <TD> 23        </TD>
 <TD></TD>
 <TD> Jy                 </TD>
@@ -3843,8 +3919,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>192</TD>
-<TD>8.6 microns TIMMI2  </TD>
+<TD>196</TD>
+<TD><![CDATA[8.6 microns TIMMI2  ]]></TD>
 <TD>  1.48E+01</TD>
 <TD>1.48E+00</TD>
 <TD>Jy</TD>
@@ -3862,8 +3938,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>193</TD>
-<TD>8.99 microns (VLT)  </TD>
+<TD>197</TD>
+<TD><![CDATA[8.99 microns (VLT)  ]]></TD>
 <TD> 6.8       </TD>
 <TD>0.2  </TD>
 <TD> Jy                 </TD>
@@ -3881,8 +3957,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>194</TD>
-<TD>8.99 microns (VLT)  </TD>
+<TD>198</TD>
+<TD><![CDATA[8.99 microns (VLT)  ]]></TD>
 <TD> 7.8       </TD>
 <TD>0.4  </TD>
 <TD> Jy                 </TD>
@@ -3900,8 +3976,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>195</TD>
-<TD>10 microns          </TD>
+<TD>199</TD>
+<TD><![CDATA[10 microns          ]]></TD>
 <TD> 25        </TD>
 <TD>3    </TD>
 <TD>Jy                  </TD>
@@ -3919,8 +3995,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>196</TD>
-<TD>10 microns          </TD>
+<TD>200</TD>
+<TD><![CDATA[10 microns          ]]></TD>
 <TD> 25.00     </TD>
 <TD></TD>
 <TD>Jy                  </TD>
@@ -3938,8 +4014,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>197</TD>
-<TD>10.2 microns        </TD>
+<TD>201</TD>
+<TD><![CDATA[10.2 microns        ]]></TD>
 <TD> 30.6      </TD>
 <TD>0.2  </TD>
 <TD>Jy                  </TD>
@@ -3957,8 +4033,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>198</TD>
-<TD>10.4 microns TIMMI2 </TD>
+<TD>202</TD>
+<TD><![CDATA[10.4 microns TIMMI2 ]]></TD>
 <TD>  1.76E+01</TD>
 <TD>1.76E+00</TD>
 <TD>Jy</TD>
@@ -3976,17 +4052,17 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>199</TD>
-<TD>10.5 microns        </TD>
+<TD>203</TD>
+<TD><![CDATA[10.5 microns        ]]></TD>
 <TD> 25        </TD>
-<TD>     </TD>
+<TD></TD>
 <TD>Jy                  </TD>
 <TD>2.86E+13</TD>
 <TD>  2.50E+01</TD>
 <TD></TD>
 <TD>Jy</TD>
 <TD>1972ApJ...176L..95R</TD>
-<TD>1 sigma</TD>
+<TD>no uncertainty reported</TD>
 <TD>      10.5 microns   </TD>
 <TD> Broad-band measurement</TD>
 <TD></TD>
@@ -3995,8 +4071,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>200</TD>
-<TD>10.51 microns (VLT) </TD>
+<TD>204</TD>
+<TD><![CDATA[10.51 microns (VLT) ]]></TD>
 <TD> 8.3       </TD>
 <TD>0.2  </TD>
 <TD> Jy                 </TD>
@@ -4014,8 +4090,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>201</TD>
-<TD>10.51 microns (VLT) </TD>
+<TD>205</TD>
+<TD><![CDATA[10.51 microns (VLT) ]]></TD>
 <TD> 10.2      </TD>
 <TD>0.3  </TD>
 <TD> Jy                 </TD>
@@ -4033,46 +4109,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>202</TD>
-<TD>10.6 microns        </TD>
-<TD> 18.00     </TD>
-<TD></TD>
-<TD>Jy                  </TD>
-<TD>2.83E+13</TD>
-<TD>  1.80E+01</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>1979ApJ...229..111L</TD>
-<TD>no uncertainty reported</TD>
-<TD>  10.6     microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[8.5" aperture                           ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>203</TD>
-<TD>N (Johnson)         </TD>
-<TD> 0.96      </TD>
-<TD>0.16 </TD>
-<TD>mag                 </TD>
-<TD>2.83E+13</TD>
-<TD>  1.49E+01</TD>
-<TD>2.36E+00</TD>
-<TD>Jy</TD>
-<TD>1983ApJ...275..477M</TD>
-<TD>uncertainty</TD>
-<TD>  10.6     microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[9" aperture                             ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>204</TD>
-<TD>10.6 microns        </TD>
+<TD>206</TD>
+<TD><![CDATA[10.6 microns        ]]></TD>
 <TD>  1.80E+01</TD>
 <TD>1.80E+00</TD>
 <TD>Jy</TD>
@@ -4090,8 +4128,46 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>205</TD>
-<TD>10.8 microns MIRLIN </TD>
+<TD>207</TD>
+<TD><![CDATA[10.6 microns        ]]></TD>
+<TD> 18.00     </TD>
+<TD></TD>
+<TD>Jy                  </TD>
+<TD>2.83E+13</TD>
+<TD>  1.80E+01</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1979ApJ...229..111L</TD>
+<TD>no uncertainty reported</TD>
+<TD>  10.6     microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[8.5" aperture                           ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>208</TD>
+<TD><![CDATA[N (Johnson)         ]]></TD>
+<TD> 0.96      </TD>
+<TD>0.16 </TD>
+<TD>mag                 </TD>
+<TD>2.83E+13</TD>
+<TD>  1.49E+01</TD>
+<TD>2.36E+00</TD>
+<TD>Jy</TD>
+<TD>1983ApJ...275..477M</TD>
+<TD>uncertainty</TD>
+<TD>  10.6     microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[9" aperture                             ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>209</TD>
+<TD><![CDATA[10.8 microns MIRLIN ]]></TD>
 <TD> 25588     </TD>
 <TD>3200 </TD>
 <TD>milliJy             </TD>
@@ -4109,8 +4185,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>206</TD>
-<TD>IRAS 12 microns     </TD>
+<TD>210</TD>
+<TD><![CDATA[IRAS 12 microns     ]]></TD>
 <TD> 39.84     </TD>
 <TD>0.076</TD>
 <TD>Jy                  </TD>
@@ -4128,8 +4204,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>207</TD>
-<TD>IRAS 12 microns     </TD>
+<TD>211</TD>
+<TD><![CDATA[IRAS 12 microns     ]]></TD>
 <TD>  3.87E+01</TD>
 <TD>5.80E+00</TD>
 <TD>Jy</TD>
@@ -4147,8 +4223,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>208</TD>
-<TD>IRAS 12 microns     </TD>
+<TD>212</TD>
+<TD><![CDATA[12 microns (VLTI)   ]]></TD>
+<TD> 16.50     </TD>
+<TD></TD>
+<TD>Jy                  </TD>
+<TD>2.50E+13</TD>
+<TD>  1.65E+01</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>2009A&amp;A...502...67T</TD>
+<TD>no uncertainty reported</TD>
+<TD>        12 microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD>02 42 40.70 -00 00 48.0 (J2000)</TD>
+<TD> Total flux</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>213</TD>
+<TD><![CDATA[IRAS 12 microns     ]]></TD>
 <TD>  3.97E+01</TD>
 <TD>1.99E+00</TD>
 <TD>Jy</TD>
@@ -4166,8 +4261,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>209</TD>
-<TD>IRAS 12 microns     </TD>
+<TD>214</TD>
+<TD><![CDATA[IRAS 12 microns     ]]></TD>
 <TD> 36.10     </TD>
 <TD>0.064</TD>
 <TD>Jy                  </TD>
@@ -4185,8 +4280,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>210</TD>
-<TD>12.81 microns (VLT) </TD>
+<TD>215</TD>
+<TD><![CDATA[12.81 microns (VLT) ]]></TD>
 <TD> 12.8      </TD>
 <TD>0.5  </TD>
 <TD> Jy                 </TD>
@@ -4204,8 +4299,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>211</TD>
-<TD>12.81 microns (VLT) </TD>
+<TD>216</TD>
+<TD><![CDATA[12.81 microns (VLT) ]]></TD>
 <TD> 17.2      </TD>
 <TD>1.2  </TD>
 <TD> Jy                 </TD>
@@ -4223,8 +4318,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>212</TD>
-<TD>14.9 microns ISOCAM </TD>
+<TD>217</TD>
+<TD><![CDATA[14.9 microns ISOCAM ]]></TD>
 <TD> 50830     </TD>
 <TD>2540 </TD>
 <TD>milliJy             </TD>
@@ -4242,27 +4337,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>213</TD>
-<TD>21 microns          </TD>
-<TD> 66.00     </TD>
-<TD></TD>
-<TD>Jy                  </TD>
-<TD>1.43E+13</TD>
-<TD>  6.60E+01</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>1979ApJ...229..111L</TD>
-<TD>no uncertainty reported</TD>
-<TD>  21       microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[8.5" aperture                           ]]></TD>
-<TD><![CDATA[Recalibrated data]]></TD>
-</TR>
-<TR>
-<TD>214</TD>
-<TD>21 microns          </TD>
+<TD>218</TD>
+<TD><![CDATA[21 microns          ]]></TD>
 <TD> 56        </TD>
 <TD>4    </TD>
 <TD>Jy                  </TD>
@@ -4280,8 +4356,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>215</TD>
-<TD>22 microns          </TD>
+<TD>219</TD>
+<TD><![CDATA[21 microns          ]]></TD>
+<TD> 66.00     </TD>
+<TD></TD>
+<TD>Jy                  </TD>
+<TD>1.43E+13</TD>
+<TD>  6.60E+01</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1979ApJ...229..111L</TD>
+<TD>no uncertainty reported</TD>
+<TD>  21       microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[8.5" aperture                           ]]></TD>
+<TD><![CDATA[Recalibrated data]]></TD>
+</TR>
+<TR>
+<TD>220</TD>
+<TD><![CDATA[22 microns          ]]></TD>
 <TD> 80        </TD>
 <TD>5    </TD>
 <TD>Jy                  </TD>
@@ -4299,8 +4394,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>216</TD>
-<TD>24 microns (Spitzer)</TD>
+<TD>221</TD>
+<TD><![CDATA[24 microns (Spitzer)]]></TD>
 <TD> 80        </TD>
 <TD></TD>
 <TD> Jy                 </TD>
@@ -4318,8 +4413,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>217</TD>
-<TD>IRAS 25 microns     </TD>
+<TD>222</TD>
+<TD><![CDATA[IRAS 25 microns     ]]></TD>
 <TD> 87.57     </TD>
 <TD>0.171</TD>
 <TD>Jy                  </TD>
@@ -4337,8 +4432,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>218</TD>
-<TD>IRAS 25 microns     </TD>
+<TD>223</TD>
+<TD><![CDATA[IRAS 25 microns     ]]></TD>
 <TD>  8.74E+01</TD>
 <TD>1.31E+01</TD>
 <TD>Jy</TD>
@@ -4356,27 +4451,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>219</TD>
-<TD>IRAS 25 microns     </TD>
-<TD> 84.25     </TD>
-<TD>0.191</TD>
-<TD>Jy                  </TD>
-<TD>1.20E+13</TD>
-<TD>  8.42E+01</TD>
-<TD>1.91E-01</TD>
-<TD>Jy</TD>
-<TD>1989AJ.....98..766S</TD>
-<TD>rms noise</TD>
-<TD>25         microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD>024007.2 -001330 (B1950)</TD>
-<TD> Integrated from scans</TD>
-<TD><![CDATA[Unresolved with 0.78' beam              ]]></TD>
-<TD><![CDATA[From reprocessed raw data]]></TD>
-</TR>
-<TR>
-<TD>220</TD>
-<TD>IRAS 25 microns     </TD>
+<TD>224</TD>
+<TD><![CDATA[IRAS 25 microns     ]]></TD>
 <TD>  8.50E+01</TD>
 <TD>2.38E+00</TD>
 <TD>Jy</TD>
@@ -4394,27 +4470,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>221</TD>
-<TD>IRAS 60 microns     </TD>
-<TD>  1.75E+02</TD>
-<TD>2.62E+01</TD>
+<TD>225</TD>
+<TD><![CDATA[IRAS 25 microns     ]]></TD>
+<TD> 84.25     </TD>
+<TD>0.191</TD>
+<TD>Jy                  </TD>
+<TD>1.20E+13</TD>
+<TD>  8.42E+01</TD>
+<TD>1.91E-01</TD>
 <TD>Jy</TD>
-<TD>5.00E+12</TD>
-<TD>  1.75E+02</TD>
-<TD>2.62E+01</TD>
-<TD>Jy</TD>
-<TD>1988AJ.....95...26G</TD>
-<TD>typical accuracy</TD>
-<TD>60         microns   </TD>
+<TD>1989AJ.....98..766S</TD>
+<TD>rms noise</TD>
+<TD>25         microns   </TD>
 <TD> Broad-band measurement</TD>
-<TD></TD>
+<TD>024007.2 -001330 (B1950)</TD>
 <TD> Integrated from scans</TD>
-<TD><![CDATA[From pointed observations               ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
+<TD><![CDATA[Unresolved with 0.78' beam              ]]></TD>
+<TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>222</TD>
-<TD>60 microns (ISO)    </TD>
+<TD>226</TD>
+<TD><![CDATA[60 microns (ISO)    ]]></TD>
 <TD>  2.06E+02</TD>
 <TD>4.13E+01</TD>
 <TD>Jy</TD>
@@ -4432,8 +4508,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>223</TD>
-<TD>IRAS 60 microns     </TD>
+<TD>227</TD>
+<TD><![CDATA[IRAS 60 microns     ]]></TD>
+<TD>  1.75E+02</TD>
+<TD>2.62E+01</TD>
+<TD>Jy</TD>
+<TD>5.00E+12</TD>
+<TD>  1.75E+02</TD>
+<TD>2.62E+01</TD>
+<TD>Jy</TD>
+<TD>1988AJ.....95...26G</TD>
+<TD>typical accuracy</TD>
+<TD>60         microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Integrated from scans</TD>
+<TD><![CDATA[From pointed observations               ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>228</TD>
+<TD><![CDATA[IRAS 60 microns     ]]></TD>
 <TD> 196.37    </TD>
 <TD>0.108</TD>
 <TD>Jy                  </TD>
@@ -4451,8 +4546,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>224</TD>
-<TD>IRAS 60 microns     </TD>
+<TD>229</TD>
+<TD><![CDATA[IRAS 60 microns     ]]></TD>
 <TD> 181.95    </TD>
 <TD>0.103</TD>
 <TD>Jy                  </TD>
@@ -4470,8 +4565,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>225</TD>
-<TD>IRAS 60 microns     </TD>
+<TD>230</TD>
+<TD><![CDATA[IRAS 60 microns     ]]></TD>
 <TD>  1.76E+02</TD>
 <TD>8.81E+00</TD>
 <TD>Jy</TD>
@@ -4489,8 +4584,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>226</TD>
-<TD>70 microns (Spitzer)</TD>
+<TD>231</TD>
+<TD><![CDATA[70 microns (Spitzer)]]></TD>
 <TD> 180       </TD>
 <TD></TD>
 <TD> Jy                 </TD>
@@ -4508,8 +4603,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>227</TD>
-<TD>88 microns          </TD>
+<TD>232</TD>
+<TD><![CDATA[88 microns          ]]></TD>
 <TD> 330       </TD>
 <TD>74   </TD>
 <TD>Jy                  </TD>
@@ -4527,27 +4622,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>228</TD>
-<TD>IRAS 100 microns    </TD>
-<TD>  2.77E+02</TD>
-<TD>4.16E+01</TD>
-<TD>Jy</TD>
-<TD>3.00E+12</TD>
-<TD>  2.77E+02</TD>
-<TD>4.16E+01</TD>
-<TD>Jy</TD>
-<TD>1988AJ.....95...26G</TD>
-<TD>typical accuracy</TD>
-<TD>100        microns   </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Integrated from scans</TD>
-<TD><![CDATA[From pointed observations               ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>229</TD>
-<TD>IRAS 100 microns    </TD>
+<TD>233</TD>
+<TD><![CDATA[IRAS 100 microns    ]]></TD>
 <TD> 257.37    </TD>
 <TD>0.228</TD>
 <TD>Jy                  </TD>
@@ -4565,27 +4641,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>230</TD>
-<TD>IRAS 100 microns    </TD>
-<TD>  2.24E+02</TD>
-<TD>8.96E+00</TD>
+<TD>234</TD>
+<TD><![CDATA[IRAS 100 microns    ]]></TD>
+<TD>  2.77E+02</TD>
+<TD>4.16E+01</TD>
 <TD>Jy</TD>
 <TD>3.00E+12</TD>
-<TD>  2.24E+02</TD>
-<TD>8.96E+00</TD>
+<TD>  2.77E+02</TD>
+<TD>4.16E+01</TD>
 <TD>Jy</TD>
-<TD>1990IRASF.C...0000M</TD>
-<TD>uncertainty</TD>
-<TD> 100       microns   </TD>
+<TD>1988AJ.....95...26G</TD>
+<TD>typical accuracy</TD>
+<TD>100        microns   </TD>
 <TD> Broad-band measurement</TD>
-<TD>024007.7 -001329 (B1950)</TD>
-<TD> Flux in fixed aperture</TD>
-<TD><![CDATA[IRAS quality flag = 2                   ]]></TD>
+<TD></TD>
+<TD> Integrated from scans</TD>
+<TD><![CDATA[From pointed observations               ]]></TD>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>231</TD>
-<TD>IRAS 100 microns    </TD>
+<TD>235</TD>
+<TD><![CDATA[IRAS 100 microns    ]]></TD>
 <TD> 235.87    </TD>
 <TD>0.218</TD>
 <TD>Jy                  </TD>
@@ -4603,8 +4679,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From reprocessed raw data]]></TD>
 </TR>
 <TR>
-<TD>232</TD>
-<TD>134 microns         </TD>
+<TD>236</TD>
+<TD><![CDATA[IRAS 100 microns    ]]></TD>
+<TD>  2.24E+02</TD>
+<TD>8.96E+00</TD>
+<TD>Jy</TD>
+<TD>3.00E+12</TD>
+<TD>  2.24E+02</TD>
+<TD>8.96E+00</TD>
+<TD>Jy</TD>
+<TD>1990IRASF.C...0000M</TD>
+<TD>uncertainty</TD>
+<TD> 100       microns   </TD>
+<TD> Broad-band measurement</TD>
+<TD>024007.7 -001329 (B1950)</TD>
+<TD> Flux in fixed aperture</TD>
+<TD><![CDATA[IRAS quality flag = 2                   ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>237</TD>
+<TD><![CDATA[134 microns         ]]></TD>
 <TD> 272       </TD>
 <TD>92   </TD>
 <TD>Jy                  </TD>
@@ -4622,8 +4717,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>233</TD>
-<TD>170 microns (ISO)   </TD>
+<TD>238</TD>
+<TD><![CDATA[170 microns (ISO)   ]]></TD>
 <TD>  3.89E+02</TD>
 <TD>5.84E+01</TD>
 <TD>Jy</TD>
@@ -4641,8 +4736,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Averaged from previously published data]]></TD>
 </TR>
 <TR>
-<TD>234</TD>
-<TD>350 microns         </TD>
+<TD>239</TD>
+<TD><![CDATA[350 microns         ]]></TD>
 <TD> 32.54     </TD>
 <TD>0.82 </TD>
 <TD>Jy                  </TD>
@@ -4660,8 +4755,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>235</TD>
-<TD>390 microns         </TD>
+<TD>240</TD>
+<TD><![CDATA[390 microns         ]]></TD>
 <TD> 30        </TD>
 <TD>10   </TD>
 <TD>Jy                  </TD>
@@ -4679,8 +4774,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>236</TD>
-<TD>390 microns         </TD>
+<TD>241</TD>
+<TD><![CDATA[390 microns         ]]></TD>
 <TD> 33        </TD>
 <TD>7    </TD>
 <TD>Jy                  </TD>
@@ -4698,8 +4793,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>237</TD>
-<TD>1 mm (IRAM)         </TD>
+<TD>242</TD>
+<TD><![CDATA[1 mm (IRAM)         ]]></TD>
 <TD> 22        </TD>
 <TD>0.8  </TD>
 <TD>milliJy             </TD>
@@ -4717,8 +4812,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>238</TD>
-<TD>1.3 mm (NRAO)       </TD>
+<TD>243</TD>
+<TD><![CDATA[1.3 mm (NRAO)       ]]></TD>
 <TD> 0.17      </TD>
 <TD>0.03 </TD>
 <TD>Jy                  </TD>
@@ -4736,8 +4831,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>239</TD>
-<TD>3 mm (IRAM)         </TD>
+<TD>244</TD>
+<TD><![CDATA[3 mm (IRAM)         ]]></TD>
 <TD> 36        </TD>
 <TD>0.4  </TD>
 <TD>milliJy             </TD>
@@ -4755,8 +4850,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>240</TD>
-<TD>43 GHz (VLA)        </TD>
+<TD>245</TD>
+<TD><![CDATA[43 GHz (VLA)        ]]></TD>
 <TD> 21.2      </TD>
 <TD>0.6  </TD>
 <TD> milliJy            </TD>
@@ -4774,8 +4869,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>241</TD>
-<TD>33 GHz (WMAP)       </TD>
+<TD>246</TD>
+<TD><![CDATA[33 GHz (WMAP)       ]]></TD>
 <TD> 890       </TD>
 <TD>176  </TD>
 <TD> milliJy            </TD>
@@ -4793,8 +4888,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>242</TD>
-<TD>22 GHz (ATCA)       </TD>
+<TD>247</TD>
+<TD><![CDATA[31 GHz (OVRO)       ]]></TD>
+<TD> 317.00    </TD>
+<TD>16.46</TD>
+<TD>milliJy             </TD>
+<TD>3.10E+10</TD>
+<TD>  3.17E-01</TD>
+<TD>1.65E-02</TD>
+<TD>Jy</TD>
+<TD>2009ApJ...704.1433M</TD>
+<TD>uncertainty</TD>
+<TD>        31 GHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>02 42 40.72 -00 00 47.7 (J2000)</TD>
+<TD> Flux integrated from map</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>248</TD>
+<TD><![CDATA[22 GHz (ATCA)       ]]></TD>
 <TD> 0.342     </TD>
 <TD>0.034</TD>
 <TD>Jy                  </TD>
@@ -4812,8 +4926,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>243</TD>
-<TD>20.0 GHz (OVRO)     </TD>
+<TD>249</TD>
+<TD><![CDATA[20.0 GHz (OVRO)     ]]></TD>
 <TD> 450       </TD>
 <TD>34   </TD>
 <TD>milliJy             </TD>
@@ -4831,8 +4945,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>244</TD>
-<TD>18.5 GHz (ATCA)     </TD>
+<TD>250</TD>
+<TD><![CDATA[20 GHz (ATCA)       ]]></TD>
+<TD> 474       </TD>
+<TD>17   </TD>
+<TD>milliJy             </TD>
+<TD>1.99E+10</TD>
+<TD>  4.74E-01</TD>
+<TD>1.70E-02</TD>
+<TD>Jy</TD>
+<TD>2010MNRAS.402.2403M</TD>
+<TD>rms uncertainty</TD>
+<TD>    19.904 GHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>02 42 40.72 -00 00 46.7 (J2000)</TD>
+<TD> Flux integrated from map</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>251</TD>
+<TD><![CDATA[18.5 GHz (ATCA)     ]]></TD>
 <TD> 0.432     </TD>
 <TD>0.022</TD>
 <TD>Jy                  </TD>
@@ -4850,8 +4983,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>245</TD>
-<TD>14900 MHz           </TD>
+<TD>252</TD>
+<TD><![CDATA[14900 MHz           ]]></TD>
 <TD> 0.68      </TD>
 <TD>.01  </TD>
 <TD>Jy                  </TD>
@@ -4869,8 +5002,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Transformed from previously published data]]></TD>
 </TR>
 <TR>
-<TD>246</TD>
-<TD>10.7 GHz (NRAO)     </TD>
+<TD>253</TD>
+<TD><![CDATA[10.7 GHz (NRAO)     ]]></TD>
 <TD> 1.00      </TD>
 <TD>0.03 </TD>
 <TD>Jy                  </TD>
@@ -4888,8 +5021,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>247</TD>
-<TD>10695 MHz           </TD>
+<TD>254</TD>
+<TD><![CDATA[10695 MHz           ]]></TD>
 <TD> 1.02      </TD>
 <TD>.04  </TD>
 <TD>Jy                  </TD>
@@ -4907,8 +5040,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Transformed from previously published data]]></TD>
 </TR>
 <TR>
-<TD>248</TD>
-<TD>8870 MHz            </TD>
+<TD>255</TD>
+<TD><![CDATA[8870 MHz            ]]></TD>
 <TD> 1.2       </TD>
 <TD>.05  </TD>
 <TD>Jy                  </TD>
@@ -4926,27 +5059,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Transformed from previously published data]]></TD>
 </TR>
 <TR>
-<TD>249</TD>
-<TD>8.4 GHz (VLBA)      </TD>
-<TD> 5.4       </TD>
-<TD>0.5  </TD>
-<TD> milliJy            </TD>
-<TD>8.40E+09</TD>
-<TD>  5.40E-03</TD>
-<TD>5.00E-04</TD>
-<TD>Jy</TD>
-<TD>2004ApJ...613..794G</TD>
-<TD>uncertainty</TD>
-<TD>       8.4 GHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux integrated from map</TD>
-<TD><![CDATA[Nuclear flux                            ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>250</TD>
-<TD>8400 MHz            </TD>
+<TD>256</TD>
+<TD><![CDATA[8400 MHz            ]]></TD>
 <TD> 1.07      </TD>
 <TD></TD>
 <TD>Jy                  </TD>
@@ -4964,8 +5078,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Homogenized from new and previously published data]]></TD>
 </TR>
 <TR>
-<TD>251</TD>
-<TD>8000 MHz            </TD>
+<TD>257</TD>
+<TD><![CDATA[8.4 GHz (VLBA)      ]]></TD>
+<TD> 5.4       </TD>
+<TD>0.5  </TD>
+<TD> milliJy            </TD>
+<TD>8.40E+09</TD>
+<TD>  5.40E-03</TD>
+<TD>5.00E-04</TD>
+<TD>Jy</TD>
+<TD>2004ApJ...613..794G</TD>
+<TD>uncertainty</TD>
+<TD>       8.4 GHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux integrated from map</TD>
+<TD><![CDATA[Nuclear flux                            ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>258</TD>
+<TD><![CDATA[8000 MHz            ]]></TD>
 <TD>  1.48E+00</TD>
 <TD>2.81E-02</TD>
 <TD>Jy</TD>
@@ -4983,8 +5116,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>252</TD>
-<TD>5010 MHz            </TD>
+<TD>259</TD>
+<TD><![CDATA[5010 MHz            ]]></TD>
 <TD> 1.89      </TD>
 <TD>0.189</TD>
 <TD>Jy                  </TD>
@@ -5002,8 +5135,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>253</TD>
-<TD>5009 MHz            </TD>
+<TD>260</TD>
+<TD><![CDATA[5009 MHz            ]]></TD>
 <TD> 2.01      </TD>
 <TD>.04  </TD>
 <TD>Jy                  </TD>
@@ -5021,8 +5154,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Recalibrated data]]></TD>
 </TR>
 <TR>
-<TD>254</TD>
-<TD>5009 MHz            </TD>
+<TD>261</TD>
+<TD><![CDATA[5009 MHz            ]]></TD>
 <TD> 1.98      </TD>
 <TD>.09  </TD>
 <TD>Jy                  </TD>
@@ -5040,65 +5173,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Recalibrated data]]></TD>
 </TR>
 <TR>
-<TD>255</TD>
-<TD>5 GHz (VLA)         </TD>
-<TD> 1342.4    </TD>
-<TD></TD>
-<TD>milliJy             </TD>
-<TD>5.00E+09</TD>
-<TD>  1.34E+00</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>2006AJ....132..546G</TD>
-<TD>no uncertainty reported</TD>
-<TD>       5   GHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD>02 42 40.718 -00 00 46.80 (J2000)</TD>
-<TD> Flux integrated from map</TD>
-<TD><![CDATA[Point source flux                       ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>256</TD>
-<TD>5 GHz (VLA)         </TD>
-<TD> 664.0     </TD>
-<TD></TD>
-<TD>milliJy             </TD>
-<TD>5.00E+09</TD>
-<TD>  6.64E-01</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>2006AJ....132..546G</TD>
-<TD>no uncertainty reported</TD>
-<TD>       5   GHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD>02 42 40.718 -00 00 46.80 (J2000)</TD>
-<TD> Flux integrated from map</TD>
-<TD><![CDATA[Extranuclear KSR emission; 15" extent   ]]></TD>
-<TD><![CDATA[Averaged from previously published data]]></TD>
-</TR>
-<TR>
-<TD>257</TD>
-<TD>5000 MHz            </TD>
-<TD>  1.90E+00</TD>
-<TD>1.00E-01</TD>
-<TD>Jy</TD>
-<TD>5.00E+09</TD>
-<TD>  1.90E+00</TD>
-<TD>1.00E-01</TD>
-<TD>Jy</TD>
-<TD>1969ApJ...157....1K</TD>
-<TD>rms uncertainty</TD>
-<TD>5000       MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux integrated from map</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>258</TD>
-<TD>5000 MHz            </TD>
+<TD>262</TD>
+<TD><![CDATA[5000 MHz            ]]></TD>
 <TD> 1.920     </TD>
 <TD></TD>
 <TD>Jy                  </TD>
@@ -5116,27 +5192,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Homogenized from new and previously published data]]></TD>
 </TR>
 <TR>
-<TD>259</TD>
-<TD>5000 MHz            </TD>
-<TD> 1.89      </TD>
-<TD>.09  </TD>
-<TD>Jy                  </TD>
-<TD>5.00E+09</TD>
-<TD>  1.89E+00</TD>
-<TD>9.00E-02</TD>
-<TD>Jy</TD>
-<TD>1981A&amp;AS...45..367K</TD>
-<TD>uncertainty</TD>
-<TD>    5000   MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD>024007.09 -001330.7 (B1950)</TD>
-<TD> Not reported in paper</TD>
-<TD><![CDATA[Recal. to Baars scale by factor of 0.993]]></TD>
-<TD><![CDATA[Recalibrated data]]></TD>
-</TR>
-<TR>
-<TD>260</TD>
-<TD>5000 MHz            </TD>
+<TD>263</TD>
+<TD><![CDATA[5000 MHz            ]]></TD>
 <TD> 1.83      </TD>
 <TD>.02  </TD>
 <TD>Jy                  </TD>
@@ -5154,8 +5211,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Transformed from previously published data]]></TD>
 </TR>
 <TR>
-<TD>261</TD>
-<TD>5.0 GHz (VLBA)      </TD>
+<TD>264</TD>
+<TD><![CDATA[5000 MHz            ]]></TD>
+<TD> 1.89      </TD>
+<TD>.09  </TD>
+<TD>Jy                  </TD>
+<TD>5.00E+09</TD>
+<TD>  1.89E+00</TD>
+<TD>9.00E-02</TD>
+<TD>Jy</TD>
+<TD>1981A&amp;AS...45..367K</TD>
+<TD>uncertainty</TD>
+<TD>    5000   MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>024007.09 -001330.7 (B1950)</TD>
+<TD> Not reported in paper</TD>
+<TD><![CDATA[Recal. to Baars scale by factor of 0.993]]></TD>
+<TD><![CDATA[Recalibrated data]]></TD>
+</TR>
+<TR>
+<TD>265</TD>
+<TD><![CDATA[5.0 GHz (VLBA)      ]]></TD>
 <TD> 9.1       </TD>
 <TD>0.8  </TD>
 <TD> milliJy            </TD>
@@ -5173,8 +5249,65 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>262</TD>
-<TD>4.89 GHz (VLA)      </TD>
+<TD>266</TD>
+<TD><![CDATA[5 GHz (VLA)         ]]></TD>
+<TD> 1342.4    </TD>
+<TD></TD>
+<TD>milliJy             </TD>
+<TD>5.00E+09</TD>
+<TD>  1.34E+00</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>2006AJ....132..546G</TD>
+<TD>no uncertainty reported</TD>
+<TD>       5   GHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>02 42 40.718 -00 00 46.80 (J2000)</TD>
+<TD> Flux integrated from map</TD>
+<TD><![CDATA[Point source flux                       ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>267</TD>
+<TD><![CDATA[5 GHz (VLA)         ]]></TD>
+<TD> 664.0     </TD>
+<TD></TD>
+<TD>milliJy             </TD>
+<TD>5.00E+09</TD>
+<TD>  6.64E-01</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>2006AJ....132..546G</TD>
+<TD>no uncertainty reported</TD>
+<TD>       5   GHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>02 42 40.718 -00 00 46.80 (J2000)</TD>
+<TD> Flux integrated from map</TD>
+<TD><![CDATA[Extranuclear KSR emission; 15" extent   ]]></TD>
+<TD><![CDATA[Averaged from previously published data]]></TD>
+</TR>
+<TR>
+<TD>268</TD>
+<TD><![CDATA[5000 MHz            ]]></TD>
+<TD>  1.90E+00</TD>
+<TD>1.00E-01</TD>
+<TD>Jy</TD>
+<TD>5.00E+09</TD>
+<TD>  1.90E+00</TD>
+<TD>1.00E-01</TD>
+<TD>Jy</TD>
+<TD>1969ApJ...157....1K</TD>
+<TD>rms uncertainty</TD>
+<TD>5000       MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux integrated from map</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>269</TD>
+<TD><![CDATA[4.89 GHz (VLA)      ]]></TD>
 <TD> 1330      </TD>
 <TD>68   </TD>
 <TD>milliJy             </TD>
@@ -5192,8 +5325,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>263</TD>
-<TD>4.89 GHz (VLA)      </TD>
+<TD>270</TD>
+<TD><![CDATA[4.89 GHz (VLA)      ]]></TD>
 <TD> 1800      </TD>
 <TD>90   </TD>
 <TD>milliJy             </TD>
@@ -5211,8 +5344,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>264</TD>
-<TD>4.85 GHz            </TD>
+<TD>271</TD>
+<TD><![CDATA[4.85 GHz            ]]></TD>
 <TD>  2.19E+00</TD>
 <TD>3.28E-01</TD>
 <TD>Jy</TD>
@@ -5230,8 +5363,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; Corrected for contaminating sources]]></TD>
 </TR>
 <TR>
-<TD>265</TD>
-<TD>4.85 GHz            </TD>
+<TD>272</TD>
+<TD><![CDATA[4.85 GHz            ]]></TD>
 <TD> 2039      </TD>
 <TD>99   </TD>
 <TD>milliJy             </TD>
@@ -5249,27 +5382,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; Corrected for contaminating sources]]></TD>
 </TR>
 <TR>
-<TD>266</TD>
-<TD>4775 MHz (NRAO)     </TD>
+<TD>273</TD>
+<TD><![CDATA[4775 MHz (NRAO)     ]]></TD>
 <TD> 1770      </TD>
-<TD>     </TD>
+<TD></TD>
 <TD>milliJy             </TD>
 <TD>4.78E+09</TD>
 <TD>  1.77E+00</TD>
 <TD></TD>
 <TD>Jy</TD>
 <TD>1986ApJS...61....1B</TD>
-<TD>99 times noise</TD>
+<TD>no uncertainty reported</TD>
 <TD>    4775   MHz       </TD>
 <TD> Broad-band measurement</TD>
 <TD>02 42 40.4 -00 00 53 (J2000)</TD>
 <TD> Flux integrated from map</TD>
-<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[S/N = 99.9                              ]]></TD>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>267</TD>
-<TD>2700 MHz            </TD>
+<TD>274</TD>
+<TD><![CDATA[2700 MHz            ]]></TD>
 <TD> 3.14      </TD>
 <TD>.11  </TD>
 <TD>Jy                  </TD>
@@ -5287,27 +5420,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Transformed from previously published data]]></TD>
 </TR>
 <TR>
-<TD>268</TD>
-<TD>2700 MHz            </TD>
-<TD> 3.19      </TD>
-<TD>.03  </TD>
-<TD>Jy                  </TD>
-<TD>2.70E+09</TD>
-<TD>  3.19E+00</TD>
-<TD>3.00E-02</TD>
-<TD>Jy</TD>
-<TD>1975AuJPA..38....1W</TD>
-<TD>uncertainty</TD>
-<TD>    2700   MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD>024007.09 -001330.7 (B1950)</TD>
-<TD> Not reported in paper</TD>
-<TD><![CDATA[From Kuhr catalog (1981A&AS...45..367K) ]]></TD>
-<TD><![CDATA[Transformed from previously published data]]></TD>
-</TR>
-<TR>
-<TD>269</TD>
-<TD>2700 MHz            </TD>
+<TD>275</TD>
+<TD><![CDATA[2700 MHz            ]]></TD>
 <TD> 3.270     </TD>
 <TD></TD>
 <TD>Jy                  </TD>
@@ -5325,8 +5439,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Homogenized from new and previously published data]]></TD>
 </TR>
 <TR>
-<TD>270</TD>
-<TD>2700 MHz            </TD>
+<TD>276</TD>
+<TD><![CDATA[2700 MHz            ]]></TD>
+<TD> 3.19      </TD>
+<TD>.03  </TD>
+<TD>Jy                  </TD>
+<TD>2.70E+09</TD>
+<TD>  3.19E+00</TD>
+<TD>3.00E-02</TD>
+<TD>Jy</TD>
+<TD>1975AuJPA..38....1W</TD>
+<TD>uncertainty</TD>
+<TD>    2700   MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>024007.09 -001330.7 (B1950)</TD>
+<TD> Not reported in paper</TD>
+<TD><![CDATA[From Kuhr catalog (1981A&AS...45..367K) ]]></TD>
+<TD><![CDATA[Transformed from previously published data]]></TD>
+</TR>
+<TR>
+<TD>277</TD>
+<TD><![CDATA[2700 MHz            ]]></TD>
 <TD> 3.05      </TD>
 <TD>.15  </TD>
 <TD>Jy                  </TD>
@@ -5344,8 +5477,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Recalibrated data]]></TD>
 </TR>
 <TR>
-<TD>271</TD>
-<TD>2695 MHz            </TD>
+<TD>278</TD>
+<TD><![CDATA[2695 MHz            ]]></TD>
 <TD> 3.02      </TD>
 <TD>.05  </TD>
 <TD>Jy                  </TD>
@@ -5363,27 +5496,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Recalibrated data]]></TD>
 </TR>
 <TR>
-<TD>272</TD>
-<TD>2695 MHz            </TD>
-<TD>  2.99E+00</TD>
-<TD>1.50E-01</TD>
-<TD>Jy</TD>
-<TD>2.70E+09</TD>
-<TD>  2.99E+00</TD>
-<TD>1.50E-01</TD>
-<TD>Jy</TD>
-<TD>1969ApJ...157....1K</TD>
-<TD>rms uncertainty</TD>
-<TD>2695       MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux integrated from map</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>273</TD>
-<TD>2695 MHz            </TD>
+<TD>279</TD>
+<TD><![CDATA[2695 MHz            ]]></TD>
 <TD> 2.8       </TD>
 <TD>.22  </TD>
 <TD>Jy                  </TD>
@@ -5401,8 +5515,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Transformed from previously published data]]></TD>
 </TR>
 <TR>
-<TD>274</TD>
-<TD>2650 MHz            </TD>
+<TD>280</TD>
+<TD><![CDATA[2695 MHz            ]]></TD>
+<TD>  2.99E+00</TD>
+<TD>1.50E-01</TD>
+<TD>Jy</TD>
+<TD>2.70E+09</TD>
+<TD>  2.99E+00</TD>
+<TD>1.50E-01</TD>
+<TD>Jy</TD>
+<TD>1969ApJ...157....1K</TD>
+<TD>rms uncertainty</TD>
+<TD>2695       MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux integrated from map</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>281</TD>
+<TD><![CDATA[2650 MHz            ]]></TD>
 <TD> 3.18      </TD>
 <TD>.03  </TD>
 <TD>Jy                  </TD>
@@ -5420,8 +5553,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Transformed from previously published data]]></TD>
 </TR>
 <TR>
-<TD>275</TD>
-<TD>1465 MHz            </TD>
+<TD>282</TD>
+<TD><![CDATA[1465 MHz            ]]></TD>
 <TD> 4960      </TD>
 <TD>230  </TD>
 <TD>milliJy             </TD>
@@ -5439,8 +5572,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>276</TD>
-<TD>1.46 GHz (VLA)      </TD>
+<TD>283</TD>
+<TD><![CDATA[1.46 GHz (VLA)      ]]></TD>
 <TD> 4610      </TD>
 <TD>230  </TD>
 <TD>milliJy             </TD>
@@ -5458,27 +5591,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>277</TD>
-<TD>1410 MHz            </TD>
-<TD> 5.100     </TD>
-<TD></TD>
-<TD>Jy                  </TD>
-<TD>1.41E+09</TD>
-<TD>  5.10E+00</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>1990PKS90.C...0000W</TD>
-<TD>no uncertainty reported</TD>
-<TD>    1410   MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD>02 40 07.1 -00 13 31 (B1950)</TD>
-<TD> Integrated from scans</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[Homogenized from new and previously published data]]></TD>
-</TR>
-<TR>
-<TD>278</TD>
-<TD>1410 MHz            </TD>
+<TD>284</TD>
+<TD><![CDATA[1410 MHz            ]]></TD>
 <TD> 5.44      </TD>
 <TD>.13  </TD>
 <TD>Jy                  </TD>
@@ -5496,122 +5610,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Recalibrated data]]></TD>
 </TR>
 <TR>
-<TD>279</TD>
-<TD>1.40 GHz            </TD>
-<TD> 4845      </TD>
-<TD></TD>
-<TD>milliJy             </TD>
-<TD>1.40E+09</TD>
-<TD>  4.85E+00</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>1992ApJS...79..331W</TD>
-<TD>no uncertainty reported</TD>
-<TD>1.4        GHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD>024006.9 -001345 (B1950)</TD>
-<TD> Peak flux</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>280</TD>
-<TD>1400 MHz            </TD>
-<TD> 4.97      </TD>
-<TD>0.09 </TD>
-<TD>Jy                  </TD>
-<TD>1.40E+09</TD>
-<TD>  4.97E+00</TD>
-<TD>9.00E-02</TD>
-<TD>Jy</TD>
-<TD>1966ApJS...13...65P</TD>
-<TD>internal error</TD>
-<TD>1400       MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD>024006.3 -001337. (B1950)</TD>
-<TD> Peak flux</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>281</TD>
-<TD>1400 MHz            </TD>
-<TD>  4.90E+00</TD>
-<TD>2.40E-01</TD>
-<TD>Jy</TD>
-<TD>1.40E+09</TD>
-<TD>  4.90E+00</TD>
-<TD>2.40E-01</TD>
-<TD>Jy</TD>
-<TD>1969ApJ...157....1K</TD>
-<TD>rms uncertainty</TD>
-<TD>1400       MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux integrated from map</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>282</TD>
-<TD>NRAO 1400 MHz       </TD>
-<TD> 4.9       </TD>
-<TD></TD>
-<TD>Jy                  </TD>
-<TD>1.40E+09</TD>
-<TD>  4.90E+00</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>1964AJ.....69..277H</TD>
-<TD>no uncertainty reported</TD>
-<TD> 1400      MHz       </TD>
-<TD> Broad-band measurement; peak value reported</TD>
-<TD>024007 -0014 (B1950)</TD>
-<TD> Peak flux</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>283</TD>
-<TD>1400 MHz            </TD>
-<TD> 5         </TD>
-<TD>.30  </TD>
-<TD>Jy                  </TD>
-<TD>1.40E+09</TD>
-<TD>  5.00E+00</TD>
-<TD>3.00E-01</TD>
-<TD>Jy</TD>
-<TD>1981A&amp;AS...45..367K</TD>
-<TD>uncertainty</TD>
-<TD>    1400   MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD>024007.09 -001330.7 (B1950)</TD>
-<TD> Not reported in paper</TD>
-<TD><![CDATA[Recal. to Baars scale by factor of 1.029]]></TD>
-<TD><![CDATA[Recalibrated data]]></TD>
-</TR>
-<TR>
-<TD>284</TD>
-<TD>1.4 GHz (VLA)       </TD>
-<TD> 4850.0    </TD>
-<TD></TD>
-<TD>milliJy             </TD>
-<TD>1.40E+09</TD>
-<TD>  4.85E+00</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>2002AJ....124..675C</TD>
-<TD>no uncertainty reported</TD>
-<TD>     1.4   GHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux integrated from map</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[Averaged from previously published data]]></TD>
-</TR>
-<TR>
 <TD>285</TD>
-<TD>1400 MHz            </TD>
+<TD><![CDATA[1410 MHz            ]]></TD>
+<TD> 5.100     </TD>
+<TD></TD>
+<TD>Jy                  </TD>
+<TD>1.41E+09</TD>
+<TD>  5.10E+00</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1990PKS90.C...0000W</TD>
+<TD>no uncertainty reported</TD>
+<TD>    1410   MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>02 40 07.1 -00 13 31 (B1950)</TD>
+<TD> Integrated from scans</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[Homogenized from new and previously published data]]></TD>
+</TR>
+<TR>
+<TD>286</TD>
+<TD><![CDATA[1400 MHz            ]]></TD>
 <TD> 5.04      </TD>
 <TD>.14  </TD>
 <TD>Jy                  </TD>
@@ -5629,8 +5648,122 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Recalibrated data]]></TD>
 </TR>
 <TR>
-<TD>286</TD>
-<TD>960 MHz             </TD>
+<TD>287</TD>
+<TD><![CDATA[1.40 GHz            ]]></TD>
+<TD> 4845      </TD>
+<TD></TD>
+<TD>milliJy             </TD>
+<TD>1.40E+09</TD>
+<TD>  4.85E+00</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1992ApJS...79..331W</TD>
+<TD>no uncertainty reported</TD>
+<TD>1.4        GHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>024006.9 -001345 (B1950)</TD>
+<TD> Peak flux</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>288</TD>
+<TD><![CDATA[NRAO 1400 MHz       ]]></TD>
+<TD> 4.9       </TD>
+<TD></TD>
+<TD>Jy                  </TD>
+<TD>1.40E+09</TD>
+<TD>  4.90E+00</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1964AJ.....69..277H</TD>
+<TD>no uncertainty reported</TD>
+<TD> 1400      MHz       </TD>
+<TD> Broad-band measurement; peak value reported</TD>
+<TD>024007 -0014 (B1950)</TD>
+<TD> Peak flux</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>289</TD>
+<TD><![CDATA[1400 MHz            ]]></TD>
+<TD>  4.90E+00</TD>
+<TD>2.40E-01</TD>
+<TD>Jy</TD>
+<TD>1.40E+09</TD>
+<TD>  4.90E+00</TD>
+<TD>2.40E-01</TD>
+<TD>Jy</TD>
+<TD>1969ApJ...157....1K</TD>
+<TD>rms uncertainty</TD>
+<TD>1400       MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux integrated from map</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>290</TD>
+<TD><![CDATA[1400 MHz            ]]></TD>
+<TD> 5         </TD>
+<TD>.30  </TD>
+<TD>Jy                  </TD>
+<TD>1.40E+09</TD>
+<TD>  5.00E+00</TD>
+<TD>3.00E-01</TD>
+<TD>Jy</TD>
+<TD>1981A&amp;AS...45..367K</TD>
+<TD>uncertainty</TD>
+<TD>    1400   MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>024007.09 -001330.7 (B1950)</TD>
+<TD> Not reported in paper</TD>
+<TD><![CDATA[Recal. to Baars scale by factor of 1.029]]></TD>
+<TD><![CDATA[Recalibrated data]]></TD>
+</TR>
+<TR>
+<TD>291</TD>
+<TD><![CDATA[1.4 GHz (VLA)       ]]></TD>
+<TD> 4850.0    </TD>
+<TD></TD>
+<TD>milliJy             </TD>
+<TD>1.40E+09</TD>
+<TD>  4.85E+00</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>2002AJ....124..675C</TD>
+<TD>no uncertainty reported</TD>
+<TD>     1.4   GHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux integrated from map</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[Averaged from previously published data]]></TD>
+</TR>
+<TR>
+<TD>292</TD>
+<TD><![CDATA[1400 MHz            ]]></TD>
+<TD> 4.97      </TD>
+<TD>0.09 </TD>
+<TD>Jy                  </TD>
+<TD>1.40E+09</TD>
+<TD>  4.97E+00</TD>
+<TD>9.00E-02</TD>
+<TD>Jy</TD>
+<TD>1966ApJS...13...65P</TD>
+<TD>internal error</TD>
+<TD>1400       MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>024006.3 -001337. (B1950)</TD>
+<TD> Peak flux</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>293</TD>
+<TD><![CDATA[960 MHz             ]]></TD>
 <TD> 6.82      </TD>
 <TD>.13  </TD>
 <TD>Jy                  </TD>
@@ -5648,65 +5781,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Recalibrated data]]></TD>
 </TR>
 <TR>
-<TD>287</TD>
-<TD>750 MHz             </TD>
-<TD> 8.09      </TD>
-<TD>.11  </TD>
-<TD>Jy                  </TD>
-<TD>7.50E+08</TD>
-<TD>  8.09E+00</TD>
-<TD>1.10E-01</TD>
-<TD>Jy</TD>
-<TD>1981A&amp;AS...45..367K</TD>
-<TD>uncertainty</TD>
-<TD>     750   MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD>024007.09 -001330.7 (B1950)</TD>
-<TD> Not reported in paper</TD>
-<TD><![CDATA[Recal. to Baars scale by factor of 1.059]]></TD>
-<TD><![CDATA[Recalibrated data]]></TD>
-</TR>
-<TR>
-<TD>288</TD>
-<TD>750 MHz             </TD>
-<TD>  7.30E+00</TD>
-<TD>3.60E-01</TD>
-<TD>Jy</TD>
-<TD>7.50E+08</TD>
-<TD>  7.30E+00</TD>
-<TD>3.60E-01</TD>
-<TD>Jy</TD>
-<TD>1969ApJ...157....1K</TD>
-<TD>rms uncertainty</TD>
-<TD>750        MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux integrated from map</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>289</TD>
-<TD>750 MHz             </TD>
-<TD> 7.64      </TD>
-<TD>0.10 </TD>
-<TD>Jy                  </TD>
-<TD>7.50E+08</TD>
-<TD>  7.64E+00</TD>
-<TD>1.00E-01</TD>
-<TD>Jy</TD>
-<TD>1966ApJS...13...65P</TD>
-<TD>internal error</TD>
-<TD>750        MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD>024006.3 -001337. (B1950)</TD>
-<TD> Peak flux</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>290</TD>
-<TD>NRAO 750 MHz        </TD>
+<TD>294</TD>
+<TD><![CDATA[NRAO 750 MHz        ]]></TD>
 <TD> 7.5       </TD>
 <TD></TD>
 <TD>Jy                  </TD>
@@ -5724,8 +5800,46 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>291</TD>
-<TD>750 MHz             </TD>
+<TD>295</TD>
+<TD><![CDATA[750 MHz             ]]></TD>
+<TD> 7.64      </TD>
+<TD>0.10 </TD>
+<TD>Jy                  </TD>
+<TD>7.50E+08</TD>
+<TD>  7.64E+00</TD>
+<TD>1.00E-01</TD>
+<TD>Jy</TD>
+<TD>1966ApJS...13...65P</TD>
+<TD>internal error</TD>
+<TD>750        MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>024006.3 -001337. (B1950)</TD>
+<TD> Peak flux</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>296</TD>
+<TD><![CDATA[750 MHz             ]]></TD>
+<TD>  7.30E+00</TD>
+<TD>3.60E-01</TD>
+<TD>Jy</TD>
+<TD>7.50E+08</TD>
+<TD>  7.30E+00</TD>
+<TD>3.60E-01</TD>
+<TD>Jy</TD>
+<TD>1969ApJ...157....1K</TD>
+<TD>rms uncertainty</TD>
+<TD>750        MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux integrated from map</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>297</TD>
+<TD><![CDATA[750 MHz             ]]></TD>
 <TD> 7.6       </TD>
 <TD>.40  </TD>
 <TD>Jy                  </TD>
@@ -5743,27 +5857,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Recalibrated data]]></TD>
 </TR>
 <TR>
-<TD>292</TD>
-<TD>635 MHz             </TD>
-<TD> 8.500     </TD>
-<TD></TD>
+<TD>298</TD>
+<TD><![CDATA[750 MHz             ]]></TD>
+<TD> 8.09      </TD>
+<TD>.11  </TD>
 <TD>Jy                  </TD>
-<TD>6.35E+08</TD>
-<TD>  8.50E+00</TD>
-<TD></TD>
+<TD>7.50E+08</TD>
+<TD>  8.09E+00</TD>
+<TD>1.10E-01</TD>
 <TD>Jy</TD>
-<TD>1990PKS90.C...0000W</TD>
-<TD>no uncertainty reported</TD>
-<TD>     635   MHz       </TD>
+<TD>1981A&amp;AS...45..367K</TD>
+<TD>uncertainty</TD>
+<TD>     750   MHz       </TD>
 <TD> Broad-band measurement</TD>
-<TD>02 40 07.1 -00 13 31 (B1950)</TD>
-<TD> Integrated from scans</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[Homogenized from new and previously published data]]></TD>
+<TD>024007.09 -001330.7 (B1950)</TD>
+<TD> Not reported in paper</TD>
+<TD><![CDATA[Recal. to Baars scale by factor of 1.059]]></TD>
+<TD><![CDATA[Recalibrated data]]></TD>
 </TR>
 <TR>
-<TD>293</TD>
-<TD>635 MHz             </TD>
+<TD>299</TD>
+<TD><![CDATA[635 MHz             ]]></TD>
 <TD> 9.43      </TD>
 <TD>.28  </TD>
 <TD>Jy                  </TD>
@@ -5781,8 +5895,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Recalibrated data]]></TD>
 </TR>
 <TR>
-<TD>294</TD>
-<TD>468 MHz             </TD>
+<TD>300</TD>
+<TD><![CDATA[635 MHz             ]]></TD>
+<TD> 8.500     </TD>
+<TD></TD>
+<TD>Jy                  </TD>
+<TD>6.35E+08</TD>
+<TD>  8.50E+00</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1990PKS90.C...0000W</TD>
+<TD>no uncertainty reported</TD>
+<TD>     635   MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>02 40 07.1 -00 13 31 (B1950)</TD>
+<TD> Integrated from scans</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[Homogenized from new and previously published data]]></TD>
+</TR>
+<TR>
+<TD>301</TD>
+<TD><![CDATA[468 MHz             ]]></TD>
 <TD> 11.2      </TD>
 <TD>.85  </TD>
 <TD>Jy                  </TD>
@@ -5800,46 +5933,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Recalibrated data]]></TD>
 </TR>
 <TR>
-<TD>295</TD>
-<TD>408 MHz             </TD>
-<TD> 12.40     </TD>
-<TD></TD>
-<TD>Jy                  </TD>
-<TD>4.08E+08</TD>
-<TD>  1.24E+01</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>1990PKS90.C...0000W</TD>
-<TD>no uncertainty reported</TD>
-<TD>     408   MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD>02 40 07.1 -00 13 31 (B1950)</TD>
-<TD> Integrated from scans</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[Homogenized from new and previously published data]]></TD>
-</TR>
-<TR>
-<TD>296</TD>
-<TD>408 MHz             </TD>
-<TD> 10.1      </TD>
-<TD>2.52 </TD>
-<TD>Jy                  </TD>
-<TD>4.08E+08</TD>
-<TD>  1.01E+01</TD>
-<TD>2.52E+00</TD>
-<TD>Jy</TD>
-<TD>1969AuJPA...7....3E</TD>
-<TD>uncertainty</TD>
-<TD>     408   MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD>024007.09 -001330.7 (B1950)</TD>
-<TD> Not reported in paper</TD>
-<TD><![CDATA[From Kuhr catalog (1981A&AS...45..367K) ]]></TD>
-<TD><![CDATA[Transformed from previously published data]]></TD>
-</TR>
-<TR>
-<TD>297</TD>
-<TD>408 MHz             </TD>
+<TD>302</TD>
+<TD><![CDATA[408 MHz             ]]></TD>
 <TD> 12.36     </TD>
 <TD>0.54 </TD>
 <TD>Jy                  </TD>
@@ -5857,8 +5952,46 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; Corrected for contaminating sources]]></TD>
 </TR>
 <TR>
-<TD>298</TD>
-<TD>Texas 365 MHz       </TD>
+<TD>303</TD>
+<TD><![CDATA[408 MHz             ]]></TD>
+<TD> 10.1      </TD>
+<TD>2.52 </TD>
+<TD>Jy                  </TD>
+<TD>4.08E+08</TD>
+<TD>  1.01E+01</TD>
+<TD>2.52E+00</TD>
+<TD>Jy</TD>
+<TD>1969AuJPA...7....3E</TD>
+<TD>uncertainty</TD>
+<TD>     408   MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>024007.09 -001330.7 (B1950)</TD>
+<TD> Not reported in paper</TD>
+<TD><![CDATA[From Kuhr catalog (1981A&AS...45..367K) ]]></TD>
+<TD><![CDATA[Transformed from previously published data]]></TD>
+</TR>
+<TR>
+<TD>304</TD>
+<TD><![CDATA[408 MHz             ]]></TD>
+<TD> 12.40     </TD>
+<TD></TD>
+<TD>Jy                  </TD>
+<TD>4.08E+08</TD>
+<TD>  1.24E+01</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1990PKS90.C...0000W</TD>
+<TD>no uncertainty reported</TD>
+<TD>     408   MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>02 40 07.1 -00 13 31 (B1950)</TD>
+<TD> Integrated from scans</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[Homogenized from new and previously published data]]></TD>
+</TR>
+<TR>
+<TD>305</TD>
+<TD><![CDATA[Texas 365 MHz       ]]></TD>
 <TD> 11.420    </TD>
 <TD>0.179</TD>
 <TD>Jy                  </TD>
@@ -5876,8 +6009,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>299</TD>
-<TD>318 MHz             </TD>
+<TD>306</TD>
+<TD><![CDATA[318 MHz             ]]></TD>
 <TD> 12.29     </TD>
 <TD>.49  </TD>
 <TD>Jy                  </TD>
@@ -5895,46 +6028,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Recalibrated data]]></TD>
 </TR>
 <TR>
-<TD>300</TD>
-<TD>178 MHz             </TD>
-<TD>  1.61E+01</TD>
-<TD>1.29E+00</TD>
-<TD>Jy</TD>
-<TD>1.78E+08</TD>
-<TD>  1.61E+01</TD>
-<TD>1.29E+00</TD>
-<TD>Jy</TD>
-<TD>1967MmRAS..71...49G</TD>
-<TD>uncertainty</TD>
-<TD>178        MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD>024005.9 -001300 (B1950)</TD>
-<TD> Integrated from scans</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[From new raw data; Uncorrected for known sources in beam]]></TD>
-</TR>
-<TR>
-<TD>301</TD>
-<TD>178 MHz             </TD>
-<TD>  1.61E+01</TD>
-<TD>2.42E+00</TD>
-<TD>Jy</TD>
-<TD>1.78E+08</TD>
-<TD>  1.61E+01</TD>
-<TD>2.42E+00</TD>
-<TD>Jy</TD>
-<TD>1969ApJ...157....1K</TD>
-<TD>rms uncertainty</TD>
-<TD>178        MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD></TD>
-<TD> Flux integrated from map</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>302</TD>
-<TD>178 MHz             </TD>
+<TD>307</TD>
+<TD><![CDATA[178 MHz             ]]></TD>
 <TD> 16.10     </TD>
 <TD></TD>
 <TD>Jy                  </TD>
@@ -5952,8 +6047,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Homogenized from new and previously published data]]></TD>
 </TR>
 <TR>
-<TD>303</TD>
-<TD>178 MHz             </TD>
+<TD>308</TD>
+<TD><![CDATA[178 MHz             ]]></TD>
 <TD> 17.26     </TD>
 <TD>1.70 </TD>
 <TD>Jy                  </TD>
@@ -5971,8 +6066,46 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Recalibrated data]]></TD>
 </TR>
 <TR>
-<TD>304</TD>
-<TD>178 MHz             </TD>
+<TD>309</TD>
+<TD><![CDATA[178 MHz             ]]></TD>
+<TD>  1.61E+01</TD>
+<TD>2.42E+00</TD>
+<TD>Jy</TD>
+<TD>1.78E+08</TD>
+<TD>  1.61E+01</TD>
+<TD>2.42E+00</TD>
+<TD>Jy</TD>
+<TD>1969ApJ...157....1K</TD>
+<TD>rms uncertainty</TD>
+<TD>178        MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux integrated from map</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>310</TD>
+<TD><![CDATA[178 MHz             ]]></TD>
+<TD>  1.61E+01</TD>
+<TD>1.29E+00</TD>
+<TD>Jy</TD>
+<TD>1.78E+08</TD>
+<TD>  1.61E+01</TD>
+<TD>1.29E+00</TD>
+<TD>Jy</TD>
+<TD>1967MmRAS..71...49G</TD>
+<TD>uncertainty</TD>
+<TD>178        MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>024005.9 -001300 (B1950)</TD>
+<TD> Integrated from scans</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data; Uncorrected for known sources in beam]]></TD>
+</TR>
+<TR>
+<TD>311</TD>
+<TD><![CDATA[178 MHz             ]]></TD>
 <TD> 17.9      </TD>
 <TD>1.80 </TD>
 <TD>Jy                  </TD>
@@ -5990,27 +6123,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Recalibrated data]]></TD>
 </TR>
 <TR>
-<TD>305</TD>
-<TD>160 MHz             </TD>
-<TD> 20.5      </TD>
-<TD></TD>
-<TD>Jy                  </TD>
-<TD>1.60E+08</TD>
-<TD>  2.05E+01</TD>
-<TD></TD>
-<TD>Jy</TD>
-<TD>1995AuJPh..48..143S</TD>
-<TD>no uncertainty reported</TD>
-<TD>160        MHz       </TD>
-<TD> Broad-band measurement</TD>
-<TD>024007.8 -001217. (B1950)</TD>
-<TD> Flux integrated from map</TD>
-<TD><![CDATA[                                        ]]></TD>
-<TD><![CDATA[From new raw data]]></TD>
-</TR>
-<TR>
-<TD>306</TD>
-<TD>160 MHz             </TD>
+<TD>312</TD>
+<TD><![CDATA[160 MHz             ]]></TD>
 <TD> 21.4      </TD>
 <TD>3.20 </TD>
 <TD>Jy                  </TD>
@@ -6028,8 +6142,27 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Recalibrated data]]></TD>
 </TR>
 <TR>
-<TD>307</TD>
-<TD>80 MHz              </TD>
+<TD>313</TD>
+<TD><![CDATA[160 MHz             ]]></TD>
+<TD> 20.5      </TD>
+<TD></TD>
+<TD>Jy                  </TD>
+<TD>1.60E+08</TD>
+<TD>  2.05E+01</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>1995AuJPh..48..143S</TD>
+<TD>no uncertainty reported</TD>
+<TD>160        MHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>024007.8 -001217. (B1950)</TD>
+<TD> Flux integrated from map</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[From new raw data]]></TD>
+</TR>
+<TR>
+<TD>314</TD>
+<TD><![CDATA[80 MHz              ]]></TD>
 <TD> 22.00     </TD>
 <TD></TD>
 <TD>Jy                  </TD>
@@ -6047,8 +6180,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Homogenized from new and previously published data]]></TD>
 </TR>
 <TR>
-<TD>308</TD>
-<TD>80 MHz              </TD>
+<TD>315</TD>
+<TD><![CDATA[80 MHz              ]]></TD>
 <TD> 24.       </TD>
 <TD></TD>
 <TD>Jy                  </TD>
@@ -6066,8 +6199,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>309</TD>
-<TD>80 MHz              </TD>
+<TD>316</TD>
+<TD><![CDATA[80 MHz              ]]></TD>
 <TD> 24        </TD>
 <TD>4.00 </TD>
 <TD>Jy                  </TD>
@@ -6085,8 +6218,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[Recalibrated data]]></TD>
 </TR>
 <TR>
-<TD>310</TD>
-<TD>74 MHz (VLA)        </TD>
+<TD>317</TD>
+<TD><![CDATA[74 MHz (VLA)        ]]></TD>
 <TD> 27.26     </TD>
 <TD>2.80 </TD>
 <TD> Jy                 </TD>
@@ -6104,8 +6237,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>311</TD>
-<TD>57.5 MHz            </TD>
+<TD>318</TD>
+<TD><![CDATA[57.5 MHz            ]]></TD>
 <TD> 39.0      </TD>
 <TD>8.0  </TD>
 <TD>Jy                  </TD>
@@ -6123,8 +6256,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>312</TD>
-<TD>38 MHz              </TD>
+<TD>319</TD>
+<TD><![CDATA[38 MHz              ]]></TD>
 <TD>  3.30E+01</TD>
 <TD>8.25E+00</TD>
 <TD>Jy</TD>
@@ -6142,8 +6275,8 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>313</TD>
-<TD>22 MHz (DRAO)       </TD>
+<TD>320</TD>
+<TD><![CDATA[22 MHz (DRAO)       ]]></TD>
 <TD> 83        </TD>
 <TD>8    </TD>
 <TD> Jy                 </TD>
@@ -6165,3 +6298,4 @@ href="/services/accessSED?TARGETNAME=NGC 1068&amp;REQUEST=getData"/>
 </TABLE>
 </RESOURCE>
 </VOTABLE>
+

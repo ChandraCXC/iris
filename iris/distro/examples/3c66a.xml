@@ -83,7 +83,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 <PARAM ID="DatasetType" datatype="char" name="DatasetType" utype="spec:Spectrum.Type" value="Photometry Point" arraysize="*">
 <DESCRIPTION>Dataset or segment type</DESCRIPTION>
 </PARAM>
-<PARAM ID="DataLength" datatype="int" name="DataLength" ucd="meta.number" utype="spec:Spectrum.Length" value="32">
+<PARAM ID="DataLength" datatype="int" name="DataLength" ucd="meta.number" utype="spec:Spectrum.Length" value="34">
 <DESCRIPTION>Number of points</DESCRIPTION>
 </PARAM>
 <GROUP ID="DataID" name="DataID" utype="spec:Spectrum.DataID">
@@ -153,7 +153,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </GROUP>
 <GROUP ID="Char.SpatialAxis" name="Char.SpatialAxis" utype="spec:Spectrum.Char.SpatialAxis">
 <DESCRIPTION>Spatial Axis Characterization</DESCRIPTION>
-<PARAM ID="SpatialAxisCoverageLocation" datatype="char" name="SpatialAxisCoverageLocation"  ucd="pos.eq" utype="spec:Spectrum.Char.SpatialAxis.Coverage.Location.Value" value="194.0465271 -5.789311" arraysize="*">
+<PARAM ID="SpatialAxisCoverageLocation" datatype="char" name="SpatialAxisCoverageLocation"  ucd="pos.eq" utype="spec:Spectrum.Char.SpatialAxis.Coverage.Location.Value" value="35.665048 43.035500" arraysize="*">
 <DESCRIPTION>Position</DESCRIPTION>
 </PARAM>
 <PARAM ID="SpatialAxisCoverageBoundsExtent" datatype="char" name="SpatialAxisCoverageBoundsExtent" utype="spec:Spectrum.Char.SpatialAxis.Coverage.Bounds.Extent" value="" arraysize="*">
@@ -215,7 +215,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 <TABLEDATA>
 <TR>
 <TD>1</TD>
-<TD>EGRET (0.1-5 GeV)   </TD>
+<TD><![CDATA[EGRET (0.1-5 GeV)   ]]></TD>
 <TD> 2.8390E-11</TD>
 <TD>6.2900E-12</TD>
 <TD>Jy                  </TD>
@@ -234,7 +234,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>2</TD>
-<TD>3-9 keV (BeppoSAX)  </TD>
+<TD><![CDATA[3-9 keV (BeppoSAX)  ]]></TD>
 <TD> 2.70E-15  </TD>
 <TD></TD>
 <TD>W m^-2^             </TD>
@@ -253,7 +253,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>3</TD>
-<TD>4-8 keV (BeppoSAX)  </TD>
+<TD><![CDATA[4-8 keV (BeppoSAX)  ]]></TD>
 <TD> 2.20E-15  </TD>
 <TD></TD>
 <TD>W m^-2^             </TD>
@@ -272,7 +272,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>4</TD>
-<TD>0.4-10 keV (XMM)    </TD>
+<TD><![CDATA[0.4-10 keV (XMM)    ]]></TD>
 <TD> 0.21E-11  </TD>
 <TD></TD>
 <TD>erg cm^-2^ s^-1^    </TD>
@@ -291,7 +291,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>5</TD>
-<TD>0.4-10 keV (XMM)    </TD>
+<TD><![CDATA[0.4-10 keV (XMM)    ]]></TD>
 <TD> 0.24E-11  </TD>
 <TD></TD>
 <TD>erg cm^-2^ s^-1^    </TD>
@@ -310,7 +310,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>6</TD>
-<TD>0.1-2.4 keV (ROSAT) </TD>
+<TD><![CDATA[0.1-2.4 keV (ROSAT) ]]></TD>
 <TD> 5.28E-12  </TD>
 <TD>1.86E-12</TD>
 <TD> erg/cm^2^/s        </TD>
@@ -329,7 +329,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>7</TD>
-<TD>B (AIT)             </TD>
+<TD><![CDATA[B (AIT)             ]]></TD>
 <TD> 9.49      </TD>
 <TD></TD>
 <TD>milliJy             </TD>
@@ -348,7 +348,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>8</TD>
-<TD>B (MDM)             </TD>
+<TD><![CDATA[B (MDM)             ]]></TD>
 <TD> 15.35     </TD>
 <TD>0.50 </TD>
 <TD> mag                </TD>
@@ -367,7 +367,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>9</TD>
-<TD>V (Johnson)         </TD>
+<TD><![CDATA[V (Johnson)         ]]></TD>
 <TD> 14.980    </TD>
 <TD>0.02 </TD>
 <TD>mag                 </TD>
@@ -386,7 +386,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>10</TD>
-<TD>V (Johnson)         </TD>
+<TD><![CDATA[V (Johnson)         ]]></TD>
 <TD> 15.38     </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -405,7 +405,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>11</TD>
-<TD>V (Johnson)         </TD>
+<TD><![CDATA[V (Johnson)         ]]></TD>
 <TD> 15.51     </TD>
 <TD>0.03 </TD>
 <TD>mag                 </TD>
@@ -424,7 +424,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>12</TD>
-<TD>V (AIT)             </TD>
+<TD><![CDATA[V (AIT)             ]]></TD>
 <TD> 8.88      </TD>
 <TD></TD>
 <TD>milliJy             </TD>
@@ -443,7 +443,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>13</TD>
-<TD>R (AIT)             </TD>
+<TD><![CDATA[R (AIT)             ]]></TD>
 <TD> 10.61     </TD>
 <TD></TD>
 <TD>milliJy             </TD>
@@ -462,7 +462,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>14</TD>
-<TD>I (AIT)             </TD>
+<TD><![CDATA[I (AIT)             ]]></TD>
 <TD> 13.93     </TD>
 <TD></TD>
 <TD>milliJy             </TD>
@@ -481,7 +481,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>15</TD>
-<TD>J                   </TD>
+<TD><![CDATA[J                   ]]></TD>
 <TD> 13.67     </TD>
 <TD>0.05 </TD>
 <TD>mag                 </TD>
@@ -500,7 +500,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>16</TD>
-<TD>J (2MASS)           </TD>
+<TD><![CDATA[J (2MASS)           ]]></TD>
 <TD> 12.635    </TD>
 <TD>0.023</TD>
 <TD> mag                </TD>
@@ -519,7 +519,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>17</TD>
-<TD>H                   </TD>
+<TD><![CDATA[H                   ]]></TD>
 <TD> 12.85     </TD>
 <TD>0.05 </TD>
 <TD>mag                 </TD>
@@ -538,7 +538,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>18</TD>
-<TD>H (2MASS)           </TD>
+<TD><![CDATA[H (2MASS)           ]]></TD>
 <TD> 11.880    </TD>
 <TD>0.022</TD>
 <TD> mag                </TD>
@@ -557,7 +557,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>19</TD>
-<TD>K_s (2MASS)         </TD>
+<TD><![CDATA[K_s (2MASS)         ]]></TD>
 <TD> 11.151    </TD>
 <TD>0.022</TD>
 <TD> mag                </TD>
@@ -576,7 +576,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>20</TD>
-<TD>K                   </TD>
+<TD><![CDATA[K                   ]]></TD>
 <TD> 12.02     </TD>
 <TD>0.05 </TD>
 <TD>mag                 </TD>
@@ -595,7 +595,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>21</TD>
-<TD>N34                 </TD>
+<TD><![CDATA[N34                 ]]></TD>
 <TD> 10.46     </TD>
 <TD>0.07 </TD>
 <TD>mag                 </TD>
@@ -614,7 +614,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>22</TD>
-<TD>IRAS 12 microns     </TD>
+<TD><![CDATA[IRAS 12 microns     ]]></TD>
 <TD> 49.0      </TD>
 <TD>9.0  </TD>
 <TD>milliJy             </TD>
@@ -633,7 +633,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>23</TD>
-<TD>IRAS 25 microns     </TD>
+<TD><![CDATA[IRAS 25 microns     ]]></TD>
 <TD> 70.0      </TD>
 <TD>14.0 </TD>
 <TD>milliJy             </TD>
@@ -652,7 +652,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>24</TD>
-<TD>IRAS 60 microns     </TD>
+<TD><![CDATA[IRAS 60 microns     ]]></TD>
 <TD> 375.0     </TD>
 <TD>13.0 </TD>
 <TD>milliJy             </TD>
@@ -671,7 +671,7 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>25</TD>
-<TD>IRAS 100 microns    </TD>
+<TD><![CDATA[IRAS 100 microns    ]]></TD>
 <TD> 698.0     </TD>
 <TD>38.0 </TD>
 <TD>milliJy             </TD>
@@ -690,7 +690,26 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TR>
 <TR>
 <TD>26</TD>
-<TD>30 GHz (Torun)      </TD>
+<TD><![CDATA[43 GHz (VLBI)       ]]></TD>
+<TD> 0.593     </TD>
+<TD></TD>
+<TD> Jy                 </TD>
+<TD>4.32E+10</TD>
+<TD>  5.93E-01</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>2009MNRAS.396..984G</TD>
+<TD>no uncertainty reported</TD>
+<TD>      43.2 GHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD></TD>
+<TD> Flux integrated from map</TD>
+<TD><![CDATA[Core flux                               ]]></TD>
+<TD><![CDATA[Averaged from previously published data]]></TD>
+</TR>
+<TR>
+<TD>27</TD>
+<TD><![CDATA[30 GHz (Torun)      ]]></TD>
 <TD> 0.801     </TD>
 <TD>0.043</TD>
 <TD> Jy                 </TD>
@@ -708,8 +727,27 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>27</TD>
-<TD>4.85 GHz            </TD>
+<TD>28</TD>
+<TD><![CDATA[8.4 GHz (VLBI)      ]]></TD>
+<TD> 0.68      </TD>
+<TD></TD>
+<TD>Jy                  </TD>
+<TD>8.40E+09</TD>
+<TD>  6.80E-01</TD>
+<TD></TD>
+<TD>Jy</TD>
+<TD>2009ApJ...707L..56K</TD>
+<TD>no uncertainty reported</TD>
+<TD>       8.4 GHz       </TD>
+<TD> Broad-band measurement</TD>
+<TD>02 22 39.6115 +43 02 07.7988 (J2000)</TD>
+<TD> Total flux</TD>
+<TD><![CDATA[                                        ]]></TD>
+<TD><![CDATA[Averaged from previously published data]]></TD>
+</TR>
+<TR>
+<TD>29</TD>
+<TD><![CDATA[4.85 GHz            ]]></TD>
 <TD>  1.10E+00</TD>
 <TD>1.65E-01</TD>
 <TD>Jy</TD>
@@ -727,8 +765,8 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; Corrected for contaminating sources]]></TD>
 </TR>
 <TR>
-<TD>28</TD>
-<TD>4.85 GHz            </TD>
+<TD>30</TD>
+<TD><![CDATA[4.85 GHz            ]]></TD>
 <TD> 806       </TD>
 <TD>97   </TD>
 <TD>milliJy             </TD>
@@ -746,8 +784,8 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data; Corrected for contaminating sources]]></TD>
 </TR>
 <TR>
-<TD>29</TD>
-<TD>4830 MHz (NRAO)     </TD>
+<TD>31</TD>
+<TD><![CDATA[4830 MHz (NRAO)     ]]></TD>
 <TD> 920       </TD>
 <TD></TD>
 <TD>milliJy             </TD>
@@ -765,8 +803,8 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>30</TD>
-<TD>1.4GHz              </TD>
+<TD>32</TD>
+<TD><![CDATA[1.4GHz              ]]></TD>
 <TD> 2303.6    </TD>
 <TD>69.1 </TD>
 <TD>milliJy             </TD>
@@ -784,8 +822,8 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>31</TD>
-<TD>408 MHz             </TD>
+<TD>33</TD>
+<TD><![CDATA[408 MHz             ]]></TD>
 <TD> 5.05      </TD>
 <TD>0.10 </TD>
 <TD>Jy                  </TD>
@@ -803,8 +841,8 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 <TD><![CDATA[From new raw data]]></TD>
 </TR>
 <TR>
-<TD>32</TD>
-<TD>74 MHz (VLA)        </TD>
+<TD>34</TD>
+<TD><![CDATA[74 MHz (VLA)        ]]></TD>
 <TD> 15.37     </TD>
 <TD>1.57 </TD>
 <TD> Jy                 </TD>
@@ -826,3 +864,4 @@ href="/services/accessSED?TARGETNAME=3C 066A&amp;REQUEST=getData"/>
 </TABLE>
 </RESOURCE>
 </VOTABLE>
+

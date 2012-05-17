@@ -1,5 +1,5 @@
 /**
- * Copyright (C) Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -553,7 +553,7 @@ public final class SetupFrame extends ConfirmJInternalFrame implements SegmentFr
         jButton1 = new javax.swing.JButton();
 
         setClosable(true);
-        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setIconifiable(true);
         setResizable(true);
         setTitle("Import Setup Frame");

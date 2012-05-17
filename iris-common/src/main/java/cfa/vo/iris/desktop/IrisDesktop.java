@@ -1,5 +1,5 @@
 /**
- * Copyright (C) Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -220,7 +220,7 @@ public class IrisDesktop extends JFrame {
         }
 
 
-        sampIcon.setBounds(20, this.getHeight() - sampIcon.getHeight() - 20, sampIcon.getWidth(), sampIcon.getHeight());
+        sampIcon.setBounds(20, this.getHeight() - sampIcon.getHeight() - 60, sampIcon.getWidth(), sampIcon.getHeight());
     }
 
     /** This method is called from within the constructor to
