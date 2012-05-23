@@ -37,6 +37,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 
+import cfa.vo.sedlib.common.SedInconsistentException;
+import cfa.vo.sedlib.common.SedNoDataException;
 import org.astrogrid.samp.client.MessageHandler;
 
 import cfa.vo.iris.AbstractDesktopItem;
@@ -82,6 +84,7 @@ import spv.sherpa.custom.CustomModelsManager;
 import spv.sherpa.custom.CustomModelsManagerView;
 import spv.sherpa.custom.DefaultCustomModel;
 import spv.spectrum.Spectrum;
+import spv.spectrum.SpectrumException;
 import spv.spectrum.factory.SED.SEDFactoryModule;
 import spv.spectrum.function.*;
 import spv.util.Command;
@@ -120,7 +123,8 @@ public class IrisVisualizer implements IrisComponent {
 
         SpvInitialization spvinit = new SpvInitialization(new String[]{}, null);
 
-        SpvProperties.SetProperty(Include.APP_NAME, "Iris");
+        SpvProperties.SetProperty(Include.APP_NAME, Include.IRIS_APP_NAME);
+        SpvProperties.SetProperty(Include.APP_VERSION, Include.IRIS_VERSION);
         SpvProperties.SetProperty(Include.PYTHON_PATH, sherpaDir);
         spvinit.initialize(null, false);
 
@@ -230,6 +234,7 @@ public class IrisVisualizer implements IrisComponent {
     }
 
     private void remove(ExtSed source) {
+//        invalidateModel(source);
         idm.remove(source.getId());
     }
 
@@ -563,6 +568,9 @@ public class IrisVisualizer implements IrisComponent {
                         URL url = model.getUrl();
                         String path = url.getPath();
                         function.addPath(path);
+
+//                        function.setUserID(model.getName());
+//                        function.setName(model.getName());
 
                         String name = model.getName();
 

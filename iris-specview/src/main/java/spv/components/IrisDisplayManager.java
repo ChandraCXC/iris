@@ -196,6 +196,8 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
 
         visualizer.invalidateModel(sedDisplaying);
         visualizer.disposeCurrentFrame();
+
+        secondaryController = null;
     }
 
     void setDesktopMode(boolean desktopMode) {
