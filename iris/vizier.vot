@@ -1,0 +1,2961 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.1"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.1"
+  xmlns:spec="http://www.ivoa.net/xml/Spectrum/Spectrum-1.01.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.ivoa.net/xml/VOTable/v1.1"
+  >
+  <RESOURCE utype="spec:Spectrum.Sed">
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277922 187.277922"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_0"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_1"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_2"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_0" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_1" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_2" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>2.4196E8</TD>
+            <TD>0.03099999949336052</TD>
+            <TD>NaN</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277751 187.277751"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_3"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_4"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_5"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_3" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_4" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_5" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277912 187.277912"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_6"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_7"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_8"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_6" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_7" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_8" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.278468 187.278468"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_9"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_10"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_11"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_9" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_10" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_11" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277896 187.277896"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_12"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_13"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_14"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_12" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_13" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_14" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>8.4903E8</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>1.3689E8</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>1.8392E8</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>2.3983E8</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>5.4143E8</TD>
+            <TD>0.025699999183416367</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>6.749E8</TD>
+            <TD>0.026900000870227814</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>8.4903E8</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>7.4575E8</TD>
+            <TD>0.03420000150799751</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>7.4575E8</TD>
+            <TD>0.02879999950528145</TD>
+            <TD>6.000000284984708E-4</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277897 187.277897"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_15"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_16"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_17"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_15" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_16" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_17" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>1.3855E8</TD>
+            <TD>0.06800000369548798</TD>
+            <TD>0.00139999995008111</TD>
+          </TR>
+          <TR>
+            <TD>1.8175E8</TD>
+            <TD>0.03999999910593033</TD>
+            <TD>0.0010000000474974513</TD>
+          </TR>
+          <TR>
+            <TD>2.4196E8</TD>
+            <TD>0.03099999949336052</TD>
+            <TD>7.999999797903001E-4</TD>
+          </TR>
+          <TR>
+            <TD>1.3855E8</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>1.8175E8</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>2.4196E8</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.278129 187.278129"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_18"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_19"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_20"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_18" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_19" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_20" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.27831 187.27831"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_21"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_22"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_23"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_21" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_22" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_23" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277891 187.277891"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_24"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_25"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_26"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_24" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_25" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_26" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>1.3855E8</TD>
+            <TD>0.06800000369548798</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>1.8175E8</TD>
+            <TD>0.03999999910593033</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>2.4196E8</TD>
+            <TD>0.03099999949336052</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>1.3855E8</TD>
+            <TD>0.06800000369548798</TD>
+            <TD>0.00139999995008111</TD>
+          </TR>
+          <TR>
+            <TD>1.8175E8</TD>
+            <TD>0.03999999910593033</TD>
+            <TD>0.0010000000474974513</TD>
+          </TR>
+          <TR>
+            <TD>2.4196E8</TD>
+            <TD>0.03099999949336052</TD>
+            <TD>7.999999797903001E-4</TD>
+          </TR>
+          <TR>
+            <TD>1.3855E8</TD>
+            <TD>0.06800000369548798</TD>
+            <TD>0.00139999995008111</TD>
+          </TR>
+          <TR>
+            <TD>1.8175E8</TD>
+            <TD>0.03999999910593033</TD>
+            <TD>0.0010000000474974513</TD>
+          </TR>
+          <TR>
+            <TD>2.4196E8</TD>
+            <TD>0.03099999949336052</TD>
+            <TD>7.999999797903001E-4</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277905 187.277905"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_27"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_28"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_29"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_27" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_28" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_29" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>86200.0</TD>
+            <TD>16.0</TD>
+            <TD>0.800000011920929</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.2777 187.2777"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_30"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_31"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_32"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_30" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_31" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_32" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>1465.0</TD>
+            <TD>32.099998474121094</TD>
+            <TD>6.400000095367432</TD>
+          </TR>
+          <TR>
+            <TD>4885.0</TD>
+            <TD>30.5</TD>
+            <TD>6.099999904632568</TD>
+          </TR>
+          <TR>
+            <TD>4885.0</TD>
+            <TD>30.5</TD>
+            <TD>6.099999904632568</TD>
+          </TR>
+          <TR>
+            <TD>4885.0</TD>
+            <TD>30.5</TD>
+            <TD>6.099999904632568</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.2767 187.2767"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_33"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_34"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_35"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_33" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_34" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_35" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>545000.0</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>353000.0</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>217000.0</TD>
+            <TD>0.0</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>353000.0</TD>
+            <TD>8.90999984741211</TD>
+            <TD>0.20999999344348907</TD>
+          </TR>
+          <TR>
+            <TD>353000.0</TD>
+            <TD>8.75</TD>
+            <TD>0.09000000357627869</TD>
+          </TR>
+          <TR>
+            <TD>353000.0</TD>
+            <TD>8.4399995803833</TD>
+            <TD>0.05999999865889549</TD>
+          </TR>
+          <TR>
+            <TD>353000.0</TD>
+            <TD>8.600000381469727</TD>
+            <TD>0.1599999964237213</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277823 187.277823"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_36"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_37"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_38"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_36" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_37" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_38" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.27803 187.27803"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_39"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_40"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_41"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_39" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_40" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_41" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.27779 187.27779"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_42"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_43"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_44"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_42" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_43" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_44" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.8934E7</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277707 187.277707"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_45"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_46"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_47"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_45" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_46" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_47" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.27792 187.27792"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_48"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_49"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_50"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_48" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_49" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_50" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>1.3855E8</TD>
+            <TD>0.06809999793767929</TD>
+            <TD>0.00139999995008111</TD>
+          </TR>
+          <TR>
+            <TD>1.8175E8</TD>
+            <TD>0.04010000079870224</TD>
+            <TD>0.0010000000474974513</TD>
+          </TR>
+          <TR>
+            <TD>2.4196E8</TD>
+            <TD>0.03099999949336052</TD>
+            <TD>7.999999797903001E-4</TD>
+          </TR>
+          <TR>
+            <TD>3.7474E7</TD>
+            <TD>0.2199999988079071</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>15000.0</TD>
+            <TD>29.0</TD>
+            <TD>0.10000000149011612</TD>
+          </TR>
+          <TR>
+            <TD>151.0</TD>
+            <TD>97.9000015258789</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.037300001829862595</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.029400000348687172</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.027499999850988388</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.02969999983906746</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>1.3855E8</TD>
+            <TD>0.06800000369548798</TD>
+            <TD>0.00139999995008111</TD>
+          </TR>
+          <TR>
+            <TD>1.8175E8</TD>
+            <TD>0.03999999910593033</TD>
+            <TD>0.0010000000474974513</TD>
+          </TR>
+          <TR>
+            <TD>2.4196E8</TD>
+            <TD>0.03099999949336052</TD>
+            <TD>7.999999797903001E-4</TD>
+          </TR>
+          <TR>
+            <TD>2.4983E7</TD>
+            <TD>0.47999998927116394</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>1400.0</TD>
+            <TD>37.0</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>4282700.0</TD>
+            <TD>1.809999942779541</TD>
+            <TD>0.009999999776482582</TD>
+          </TR>
+          <TR>
+            <TD>1.2491E7</TD>
+            <TD>0.9409999847412109</TD>
+            <TD>0.027000000700354576</TD>
+          </TR>
+          <TR>
+            <TD>3.7474E7</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>8.3276E7</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277749 187.277749"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_51"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_52"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_53"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_51" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_52" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_53" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.278209 187.278209"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_54"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_55"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_56"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_54" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_55" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_56" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277778 187.277778"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_57"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_58"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_59"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_57" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_58" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_59" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277822 187.277822"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_60"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_61"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_62"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_60" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_61" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_62" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.27791 187.27791"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_63"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_64"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_65"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_63" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_64" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_65" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>1.3855E8</TD>
+            <TD>0.06800000369548798</TD>
+            <TD>0.0013000000035390258</TD>
+          </TR>
+          <TR>
+            <TD>1.8175E8</TD>
+            <TD>0.03999999910593033</TD>
+            <TD>0.0010999999940395355</TD>
+          </TR>
+          <TR>
+            <TD>2.4196E8</TD>
+            <TD>0.03099999949336052</TD>
+            <TD>8.999999845400453E-4</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.2771 187.2771"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_66"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_67"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <PARAM ID="ID_68" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError" value="NaN"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_66" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_67" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>2.4196E8</TD>
+            <TD>0.029999999329447746</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.02290000021457672</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277858 187.277858"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_69"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_70"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_71"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_69" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_70" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_71" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277892 187.277892"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_72"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_73"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <PARAM ID="ID_74" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError" value="NaN"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_72" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_73" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>1.3855E8</TD>
+            <TD>0.06800000369548798</TD>
+          </TR>
+          <TR>
+            <TD>1.8175E8</TD>
+            <TD>0.03999999910593033</TD>
+          </TR>
+          <TR>
+            <TD>2.4196E8</TD>
+            <TD>0.03099999949336052</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.2782 187.2782"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_75"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_76"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_77"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_75" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_76" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_77" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>1.6302E7</TD>
+            <TD>0.45399999618530273</TD>
+            <TD>0.007000000216066837</TD>
+          </TR>
+          <TR>
+            <TD>3.4819E7</TD>
+            <TD>0.2759999930858612</TD>
+            <TD>0.003000000026077032</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.278385 187.278385"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_78"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_79"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_80"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_78" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_79" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_80" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.278027 187.278027"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_81"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_82"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_83"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_81" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_82" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_83" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277712 187.277712"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_84"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_85"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_86"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_84" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_85" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_86" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277941 187.277941"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_87"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_88"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_89"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_87" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_88" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_89" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277989 187.277989"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_90"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_91"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_92"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_90" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_91" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_92" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277758 187.277758"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_93"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_94"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_95"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_93" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_94" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_95" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.27812 187.27812"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_96"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_97"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_98"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_96" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_97" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_98" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>1.3855E8</TD>
+            <TD>0.07029999792575836</TD>
+            <TD>0.0013000000035390258</TD>
+          </TR>
+          <TR>
+            <TD>1.8175E8</TD>
+            <TD>0.0414000004529953</TD>
+            <TD>7.999999797903001E-4</TD>
+          </TR>
+          <TR>
+            <TD>2.4196E8</TD>
+            <TD>0.032099999487400055</TD>
+            <TD>6.000000284984708E-4</TD>
+          </TR>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>2940600.0</TD>
+            <TD>2.890000104904175</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>4847100.0</TD>
+            <TD>2.059999942779541</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>1.2554E7</TD>
+            <TD>0.8960000276565552</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>2.5866E7</TD>
+            <TD>0.5479999780654907</TD>
+            <TD>NaN</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.278097 187.278097"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_99"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_100"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_101"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_99" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_100" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_101" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277777 187.277777"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_102"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_103"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_104"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_102" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_103" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_104" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.2779 187.2779"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_105"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_106"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_107"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_105" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_106" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_107" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>1400.0</TD>
+            <TD>37.0</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>5000.0</TD>
+            <TD>43.400001525878906</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>2700.0</TD>
+            <TD>40.900001525878906</TD>
+            <TD>8.199999809265137</TD>
+          </TR>
+          <TR>
+            <TD>8400.0</TD>
+            <TD>41.70000076293945</TD>
+            <TD>8.300000190734863</TD>
+          </TR>
+          <TR>
+            <TD>4885.0</TD>
+            <TD>43.599998474121094</TD>
+            <TD>8.699999809265137</TD>
+          </TR>
+          <TR>
+            <TD>2700.0</TD>
+            <TD>40.900001525878906</TD>
+            <TD>8.199999809265137</TD>
+          </TR>
+          <TR>
+            <TD>8400.0</TD>
+            <TD>41.70000076293945</TD>
+            <TD>8.300000190734863</TD>
+          </TR>
+          <TR>
+            <TD>4885.0</TD>
+            <TD>43.599998474121094</TD>
+            <TD>8.699999809265137</TD>
+          </TR>
+          <TR>
+            <TD>2700.0</TD>
+            <TD>40.900001525878906</TD>
+            <TD>8.199999809265137</TD>
+          </TR>
+          <TR>
+            <TD>2725.4</TD>
+            <TD>41.400001525878906</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>5000.0</TD>
+            <TD>43.400001525878906</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>2.4196E8</TD>
+            <TD>0.0333000011742115</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>9993100.0</TD>
+            <TD>0.550000011920929</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>2.1414E7</TD>
+            <TD>0.3799999952316284</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>5.9958E7</TD>
+            <TD>0.20999999344348907</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>1400.0</TD>
+            <TD>34.900001525878906</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>670680.0</TD>
+            <TD>4.159999847412109</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>670680.0</TD>
+            <TD>3.940000057220459</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>350630.0</TD>
+            <TD>3.309999942779541</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>350630.0</TD>
+            <TD>3.5299999713897705</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>350630.0</TD>
+            <TD>4.369999885559082</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>670680.0</TD>
+            <TD>4.25</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>670680.0</TD>
+            <TD>3.940000057220459</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>350630.0</TD>
+            <TD>3.259999990463257</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>350630.0</TD>
+            <TD>3.6600000858306885</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>350630.0</TD>
+            <TD>4.199999809265137</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>94000.0</TD>
+            <TD>13.199999809265137</TD>
+            <TD>0.4000000059604645</TD>
+          </TR>
+          <TR>
+            <TD>61000.0</TD>
+            <TD>15.899999618530273</TD>
+            <TD>0.20000000298023224</TD>
+          </TR>
+          <TR>
+            <TD>41000.0</TD>
+            <TD>18.0</TD>
+            <TD>0.20000000298023224</TD>
+          </TR>
+          <TR>
+            <TD>1.3689E8</TD>
+            <TD>0.0689999982714653</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>5.4143E8</TD>
+            <TD>0.036400001496076584</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>6.749E8</TD>
+            <TD>0.025699999183416367</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>1.3689E8</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>5.4143E8</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>6.749E8</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>1.3689E8</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>5.4143E8</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>6.749E8</TD>
+            <TD>NaN</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>1.3689E8</TD>
+            <TD>0.0689999982714653</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>5.4143E8</TD>
+            <TD>0.036400001496076584</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>6.749E8</TD>
+            <TD>0.025200000032782555</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>5000.0</TD>
+            <TD>43.400001525878906</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>4847100.0</TD>
+            <TD>2.059999942779541</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>1.2554E7</TD>
+            <TD>0.8960000276565552</TD>
+            <TD>NaN</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277907 187.277907"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_108"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_109"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_110"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_108" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_109" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_110" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277916 187.277916"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_111"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_112"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <PARAM ID="ID_113" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError" value="NaN"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_111" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_112" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>8000.0</TD>
+            <TD>18.0</TD>
+          </TR>
+          <TR>
+            <TD>30000.0</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>12000.0</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>6000.0</TD>
+            <TD>30.0</TD>
+          </TR>
+          <TR>
+            <TD>3000.0</TD>
+            <TD>31.299999237060547</TD>
+          </TR>
+          <TR>
+            <TD>1500.0</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>1.3689E8</TD>
+            <TD>0.06650000065565109</TD>
+          </TR>
+          <TR>
+            <TD>2.3983E8</TD>
+            <TD>0.03150000050663948</TD>
+          </TR>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>3.331E8</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>4.2766E8</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>4.9965E8</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>5.9875E8</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>7.4948E8</TD>
+            <TD>NaN</TD>
+          </TR>
+          <TR>
+            <TD>86000.0</TD>
+            <TD>10.800000190734863</TD>
+          </TR>
+          <TR>
+            <TD>8600.0</TD>
+            <TD>2.630000114440918</TD>
+          </TR>
+          <TR>
+            <TD>8600.0</TD>
+            <TD>22.5</TD>
+          </TR>
+          <TR>
+            <TD>5000.0</TD>
+            <TD>3.490000009536743</TD>
+          </TR>
+          <TR>
+            <TD>5000.0</TD>
+            <TD>28.700000762939453</TD>
+          </TR>
+          <TR>
+            <TD>2300.0</TD>
+            <TD>2.259999990463257</TD>
+          </TR>
+          <TR>
+            <TD>2300.0</TD>
+            <TD>32.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.278537 187.278537"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_114"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_115"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_116"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_114" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_115" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_116" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.2781 187.2781"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <PARAM ID="ID_117" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value" value="1400.0"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <PARAM ID="ID_118" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value" value="37.0"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <PARAM ID="ID_119" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError" value="7.400000095367432"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277498 187.277498"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_120"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_121"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_122"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_120" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_121" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_122" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="3c273"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="187.277805 187.277805"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Char.SpectralAxis.Name"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Name"/>
+          <GROUP utype="spec:Spectrum.Char.FluxAxis.Accuracy">
+            <PARAM datatype="double" name="StatError" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Char.FluxAxis.Accuracy.StatError"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Curation">
+        <PARAM arraysize="*" datatype="char" name="Publisher" ucd="meta.curation" utype="spec:Spectrum.Curation.Publisher" value="Vizier - CDS"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_123"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_124"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_125"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_123" datatype="double" ucd="em.freq" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_124" datatype="double" ucd="phot.flux.density;em.freq" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_125" datatype="double" ucd="stat.error;phot.flux.density" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>3.3244E8</TD>
+            <TD>0.018300000578165054</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>3.9266E8</TD>
+            <TD>0.03220000118017197</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>4.799E8</TD>
+            <TD>0.025800000876188278</TD>
+            <TD>9.999999747378752E-5</TD>
+          </TR>
+          <TR>
+            <TD>6.2198E8</TD>
+            <TD>0.023099999874830246</TD>
+            <TD>0.0</TD>
+          </TR>
+          <TR>
+            <TD>8.5193E8</TD>
+            <TD>0.010400000028312206</TD>
+            <TD>0.0</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+  </RESOURCE>
+</VOTABLE>

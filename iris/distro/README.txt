@@ -45,8 +45,7 @@ iris-${project.version}-<plat>-<arch>.tar.gz
 where <arch> = "i386" or "x86_64"
       <plat> = "unix" or "macosx"
 
-The tarball includes Sherpa, a new Sherpa SAMP client, Specview, and
-SedImporter.
+The tarball includes Iris, Sherpa and the interoperability layer between the two.
 
 System Requirements:
 ====================
@@ -54,8 +53,8 @@ System Requirements:
 o  Java 6 (preferably Oracle JRE, http://www.java.com)
 
 o  Free Disk Space
-     - tarball    ~64MB
-     - unpacked   150-160MB
+     - tarball    ~50MB
+     - unpacked   ~150MB
 
 
 Installing Iris ${project.version}

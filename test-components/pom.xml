@@ -28,6 +28,31 @@
             <artifactId>beansbinding</artifactId>
             <version>1.2.1</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>sed-builder</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>r</groupId>
+            <artifactId>jri-engine</artifactId>
+            <version>0.5-5</version>
+        </dependency>
+        <dependency>
+            <groupId>r</groupId>
+            <artifactId>r-engine</artifactId>
+            <version>0.5-5</version>
+        </dependency>
+        <dependency>
+            <groupId>r</groupId>
+            <artifactId>jri</artifactId>
+            <version>0.5-5</version>
+        </dependency>
+        <dependency>
+            <groupId>r</groupId>
+            <artifactId>jgr</artifactId>
+            <version>1.7-10</version>
+        </dependency>
     </dependencies>
 
     

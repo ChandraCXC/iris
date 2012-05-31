@@ -187,7 +187,7 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
             Command[] commands = plotWidget.getCommands();
             Command command = commands[Callback.META_DATA.ord];
             if (command instanceof MetadataDisplay) {
-                if (visualEditor != null) {
+                if (visualEditor != null && visualEditor.getFrame()!=null) {
                     visualEditor.getFrame().setVisible(false);
                     visualEditor = null;
                 }

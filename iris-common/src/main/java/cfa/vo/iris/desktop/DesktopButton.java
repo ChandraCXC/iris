@@ -45,6 +45,7 @@ public class DesktopButton extends JLabel {
         this.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         this.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         this.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        this.setSize(64, 64);
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {

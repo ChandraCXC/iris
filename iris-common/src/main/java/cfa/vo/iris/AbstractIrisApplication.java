@@ -197,7 +197,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
 
                 @Override
                 public void run() {
-                    Logger.getLogger("").setLevel(Level.OFF);
+//                    Logger.getLogger("").setLevel(Level.OFF);
                     sampSetup();
                     ws = new IrisWorkspace();
                     for (final IrisComponent component : components.values()) {

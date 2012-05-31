@@ -22,6 +22,8 @@ package cfa.vo.iris;
 import cfa.vo.iris.test.TestBuilder;
 import cfa.vo.iris.test.TestLogger;
 import cfa.vo.iris.test.TestSSAServer;
+import cfa.vo.iris.test.r.RComponent;
+import cfa.vo.iris.test.vizier.VizierClient;
 import cfa.vo.sed.builder.SedBuilder;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -84,6 +86,7 @@ public class Iris extends AbstractIrisApplication {
 
     @Override
     public void setProperties(List<String> properties) {
+        Logger.getLogger("").setLevel(Level.OFF);
         for (String prop : properties) {
             if (prop.equals("test")) {
                 TestBuilder tb = new TestBuilder();
@@ -93,6 +96,14 @@ public class Iris extends AbstractIrisApplication {
                 TestSSAServer th = new TestSSAServer();
                 components.add(th);
             }
+
+            if(prop.equals("r"))
+                components.add(new RComponent());
+
+            if(prop.equals("vizier"))
+                components.add(new VizierClient());
+
+
             if(prop.equals("debug")) {
                 Logger.getLogger("").setLevel(Level.ALL);
             }
