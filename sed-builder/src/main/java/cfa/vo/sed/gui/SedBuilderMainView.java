@@ -380,7 +380,6 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton3.setMaximumSize(new java.awt.Dimension(100, 50));
         jButton3.setMinimumSize(new java.awt.Dimension(65, 50));
         jButton3.setName("jButton3"); // NOI18N
-        jButton3.setPreferredSize(new java.awt.Dimension(54, 20));
         jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${isSed}"), jButton3, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
@@ -398,7 +397,6 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton12.setMaximumSize(new java.awt.Dimension(100, 50));
         jButton12.setMinimumSize(new java.awt.Dimension(65, 50));
         jButton12.setName("jButton12"); // NOI18N
-        jButton12.setPreferredSize(new java.awt.Dimension(54, 20));
         jButton12.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jButton3, org.jdesktop.beansbinding.ELProperty.create("${enabled}"), jButton12, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
