@@ -33,8 +33,7 @@ import cfa.vo.iris.IMenuItem;
 import cfa.vo.iris.AbstractIrisApplication;
 import cfa.vo.iris.IrisComponent;
 import java.awt.Color;
-import java.awt.GraphicsEnvironment;
-import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URL;
@@ -145,8 +144,11 @@ public class IrisDesktop extends JFrame {
         jLabel2.setIcon(new ImageIcon(app.getDesktopIcon()));
 
         this.setLocationRelativeTo(null);
-        Rectangle bounds = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
-        this.setBounds(bounds);
+        Toolkit tk = Toolkit.getDefaultToolkit();
+        int xSize = (int)((int) tk.getScreenSize().getWidth()*0.8);
+        int ySize = (int)((int) tk.getScreenSize().getHeight()*0.8);
+
+        this.setSize(xSize, ySize);
 
         paintButtons();
 
