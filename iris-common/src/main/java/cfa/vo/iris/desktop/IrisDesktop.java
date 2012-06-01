@@ -220,7 +220,7 @@ public class IrisDesktop extends JFrame {
         }
 
 
-        sampIcon.setBounds(20, this.getHeight() - sampIcon.getHeight() - 60, sampIcon.getWidth(), sampIcon.getHeight());
+        sampIcon.setBounds(20, this.getHeight() - sampIcon.getHeight() - 90, sampIcon.getWidth(), sampIcon.getHeight());
     }
 
     /** This method is called from within the constructor to

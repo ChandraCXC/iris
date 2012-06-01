@@ -340,7 +340,7 @@ public class SedBuilderMainView extends JInternalFrame {
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(sedPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+            .add(sedPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
         );
 
         jSplitPane1.setLeftComponent(jPanel3);
@@ -528,6 +528,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton13.setAction(actionMap.get("resolve")); // NOI18N
         jButton13.setFont(new java.awt.Font("Lucida Grande", 0, 10));
         jButton13.setIcon(new ImageIcon(getClass().getResource("/search.png")));
+        jButton13.setToolTipText("Resolve Target Name to coordinates");
         jButton13.setBorderPainted(false);
         jButton13.setFocusable(false);
         jButton13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -566,11 +567,14 @@ public class SedBuilderMainView extends JInternalFrame {
         jToolBar3.add(jSeparator3);
 
         jButton14.setAction(actionMap.get("apply")); // NOI18N
-        jButton14.setFont(new java.awt.Font("Lucida Grande", 0, 10));
+        jButton14.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
         jButton14.setIcon(new ImageIcon(getClass().getResource("/apply.png")));
+        jButton14.setToolTipText("Set Target Information for all Segments in the selected SED");
         jButton14.setBorderPainted(false);
         jButton14.setFocusable(false);
         jButton14.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton14.setMaximumSize(new java.awt.Dimension(50, 25));
+        jButton14.setMinimumSize(new java.awt.Dimension(50, 25));
         jButton14.setName("jButton14"); // NOI18N
         jButton14.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar3.add(jButton14);
@@ -583,12 +587,12 @@ public class SedBuilderMainView extends JInternalFrame {
                 .addContainerGap()
                 .add(jLabel2)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(sedName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
+                .add(sedName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jButton1))
-            .add(jToolBar2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
-            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
-            .add(jToolBar3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+            .add(jToolBar2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 591, Short.MAX_VALUE)
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 591, Short.MAX_VALUE)
+            .add(jToolBar3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 591, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -602,7 +606,7 @@ public class SedBuilderMainView extends JInternalFrame {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jToolBar2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 46, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE))
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel1);
@@ -619,7 +623,7 @@ public class SedBuilderMainView extends JInternalFrame {
             .add(layout.createSequentialGroup()
                 .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 51, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE))
+                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE))
         );
 
         bindingGroup.bind();

@@ -443,7 +443,6 @@ public final class LoadSegmentFrame extends JInternalFrame {
 
         javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance().getContext().getActionMap(LoadSegmentFrame.class, this);
         jButton2.setAction(actionMap.get("loadSegment")); // NOI18N
-        jButton2.setToolTipText("Load Spectrum/SED from file");
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${isLoadable}"), jButton2, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
@@ -465,6 +464,7 @@ public final class LoadSegmentFrame extends JInternalFrame {
         jLabel2.setText("Target Name:");
 
         jButton3.setAction(actionMap.get("importNed")); // NOI18N
+        jButton3.setToolTipText("Fetch SED from the NASA Extragalactic Database");
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${nedVisible}"), jButton3, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
@@ -492,21 +492,21 @@ public final class LoadSegmentFrame extends JInternalFrame {
                 .addContainerGap()
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .add(progressBar, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 305, Short.MAX_VALUE)
+                        .add(progressBar, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(cancelButton))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, jButton3)
                     .add(jPanel1Layout.createSequentialGroup()
                         .add(jLabel3)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE))
+                        .add(jTextField4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE))
                     .add(jPanel1Layout.createSequentialGroup()
                         .add(jCheckBox1)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 259, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 280, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                     .add(jPanel1Layout.createSequentialGroup()
                         .add(jLabel2)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)))
+                        .add(jTextField3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -544,7 +544,6 @@ public final class LoadSegmentFrame extends JInternalFrame {
         sedId.setEditable(false);
 
         jButton5.setAction(actionMap.get("loadCatalog")); // NOI18N
-        jButton5.setToolTipText("Load Photometry Catalog from file");
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jButton2, org.jdesktop.beansbinding.ELProperty.create("${enabled}"), jButton5, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
@@ -572,16 +571,16 @@ public final class LoadSegmentFrame extends JInternalFrame {
                         .add(jLabel4)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(sedId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE))
-                    .add(jSeparator2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
+                    .add(jSeparator2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, jButton1)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(jRadioButton2)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE))
+                        .add(jTextField2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE))
                     .add(layout.createSequentialGroup()
                         .add(jRadioButton1)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE))
+                        .add(jTextField1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 378, Short.MAX_VALUE))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(helpLabel)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -590,7 +589,7 @@ public final class LoadSegmentFrame extends JInternalFrame {
                         .add(jButton2))
                     .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(jRadioButton3)
-                    .add(jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
+                    .add(jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, jButton4))
                 .addContainerGap())
         );
@@ -630,7 +629,7 @@ public final class LoadSegmentFrame extends JInternalFrame {
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jButton4)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         bindingGroup.bind();
@@ -953,10 +952,10 @@ public final class LoadSegmentFrame extends JInternalFrame {
                                     NarrowOptionPane.ERROR_MESSAGE);
                         }
                     }
-//                    NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
-//                            "Segment added to SED: " + sed.getId(),
-//                            "Success",
-//                            NarrowOptionPane.INFORMATION_MESSAGE);
+                    NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
+                            "Segment added to SED: " + sed.getId(),
+                            "Success",
+                            NarrowOptionPane.INFORMATION_MESSAGE);
                     break;
                 case 1:
                     NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),

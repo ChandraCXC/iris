@@ -36,7 +36,7 @@
           <Group type="102" alignment="0" attributes="0">
               <Component id="jToolBar1" min="-2" pref="51" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jSplitPane1" pref="290" max="32767" attributes="0"/>
+              <Component id="jSplitPane1" pref="291" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -249,7 +249,7 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="sedPanel" alignment="0" pref="262" max="32767" attributes="1"/>
+                  <Component id="sedPanel" alignment="0" pref="266" max="32767" attributes="1"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -295,13 +295,13 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="sedName" pref="440" max="32767" attributes="0"/>
+                      <Component id="sedName" pref="483" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="jToolBar2" alignment="0" pref="588" max="32767" attributes="0"/>
-                  <Component id="jScrollPane1" alignment="0" pref="588" max="32767" attributes="0"/>
-                  <Component id="jToolBar3" alignment="0" pref="588" max="32767" attributes="0"/>
+                  <Component id="jToolBar2" alignment="0" pref="591" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" alignment="0" pref="591" max="32767" attributes="0"/>
+                  <Component id="jToolBar3" alignment="0" pref="591" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -317,7 +317,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jToolBar2" min="-2" pref="46" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="137" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="145" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -667,6 +667,7 @@
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                       <Connection code="new ImageIcon(getClass().getResource(&quot;/search.png&quot;))" type="code"/>
                     </Property>
+                    <Property name="toolTipText" type="java.lang.String" value="Resolve Target Name to coordinates"/>
                     <Property name="borderPainted" type="boolean" value="false"/>
                     <Property name="focusable" type="boolean" value="false"/>
                     <Property name="horizontalTextPosition" type="int" value="0"/>
@@ -733,9 +734,16 @@
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                       <Connection code="new ImageIcon(getClass().getResource(&quot;/apply.png&quot;))" type="code"/>
                     </Property>
+                    <Property name="toolTipText" type="java.lang.String" value="Set Target Information for all Segments in the selected SED"/>
                     <Property name="borderPainted" type="boolean" value="false"/>
                     <Property name="focusable" type="boolean" value="false"/>
                     <Property name="horizontalTextPosition" type="int" value="0"/>
+                    <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[50, 25]"/>
+                    </Property>
+                    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                      <Dimension value="[50, 25]"/>
+                    </Property>
                     <Property name="name" type="java.lang.String" value="jButton14" noResource="true"/>
                     <Property name="verticalTextPosition" type="int" value="3"/>
                   </Properties>
