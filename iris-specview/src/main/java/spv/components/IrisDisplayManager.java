@@ -14,11 +14,15 @@ package spv.components;
  */
 
 import javax.swing.*;
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.beans.PropertyVetoException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.io.IOException;
+import java.io.File;
 
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.SedlibSedManager;
@@ -35,12 +39,18 @@ import cfa.vo.iris.sed.ExtSed;
 
 import spv.controller.ManagedSpectrum2;
 import spv.controller.SecondaryController2;
+import spv.controller.SpvImageWriter;
+import spv.controller.output.SaveManager;
 import spv.controller.display.SecondaryDisplayManager;
+import spv.controller.display.DisplayManager;
 import spv.glue.*;
 import spv.util.Callback;
 import spv.util.Command;
 import spv.util.ExceptionHandler;
 import spv.util.Include;
+import spv.util.MemoryJFileChooser;
+import spv.util.SPVFilter;
+import spv.util.ErrorDialog;
 import spv.util.properties.SpvProperties;
 import spv.view.FittingPlotWidget;
 import spv.view.PlotStatus;
@@ -69,14 +79,21 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
     private SedlibSedManager manager;
     private IWorkspace ws;
     private ExtSed sedDisplaying;
+    private DisplayManager self; // for use in innner classes
 
     private Map<String,PlotStatus> plotStatusStorage;
     private IrisVisualizer visualizer;
+
+    private static java.util.List<String> ignoredImageFormats = new ArrayList<String>();
+    static {
+        ignoredImageFormats.add("jpeg");
+    }
 
     public IrisDisplayManager(SedlibSedManager manager, IWorkspace ws, IrisVisualizer visualizer) {
         this.manager = manager;
         this.ws = ws;
         this.visualizer = visualizer;
+        self = this;
 
         plotStatusStorage = new HashMap<String, PlotStatus>();
     }
@@ -171,7 +188,7 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
             Command[] commands = plotWidget.getCommands();
             Command command = commands[Callback.META_DATA.ord];
             if (command instanceof MetadataDisplay) {
-                if (visualEditor != null && visualEditor.getFrame()!=null) {
+                if (visualEditor != null) {
                     JFrame jFrame = visualEditor.getFrame();
                     if (jFrame != null) {
                         jFrame.setVisible(false);
@@ -205,7 +222,13 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
     // GUI stuff.
     JInternalFrame getInternalFrame() {
         if (secondaryController != null) {
-            return secondaryController.getInternalFrame();
+            JInternalFrame internalFrame = secondaryController.getInternalFrame();
+
+            if (internalFrame.getJMenuBar() == null) {
+                addMenuBar(internalFrame);
+            }
+
+            return internalFrame;
         } else {
             // Returns a fake frame since no data is being displayed.
             JInternalFrame fakeFrame = new JInternalFrame(Include.IRIS_APP_NAME, true, true, true, true);
@@ -214,6 +237,69 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
             fakeFrame.setSize(Include.DEFAULT_EMPTY_WINDOW_SIZE);
             return fakeFrame;
         }
+    }
+
+    private void addMenuBar(JInternalFrame internalFrame) {
+        JMenuBar bar = new JMenuBar();
+        JMenu menu = new JMenu("File");
+        JMenu saveMenu = new JMenu("Save plot to image file.");
+
+        populateImageFormatMenu(saveMenu);
+
+        menu.add(saveMenu);
+        bar.add(menu);
+        internalFrame.setJMenuBar(bar);
+    }
+
+    private void populateImageFormatMenu(JMenu menu) {
+
+        String[] suffixes = ImageIO.getWriterFileSuffixes();
+
+        for (int i = 0; i < suffixes.length; i++) {
+            if (! ignoredImageFormats.contains(suffixes[i])) {
+                JMenuItem menuItem = new JMenuItem(suffixes[i]);
+                menu.add(menuItem);
+
+                ActionListener listener = new ImageFileActionListenerAdapter(suffixes[i]);
+                menuItem.addActionListener(listener);
+            }
+        }
+    }
+
+    public void saveAsImage(String suffix) {
+        String filename = getSaveFileName("." + suffix);
+        JComponent component = secondaryController.getPlotWidget().getDisplayComponent();
+        SpvImageWriter writer = new SpvImageWriter();
+        try {
+            writer.write(component, filename, suffix);
+        } catch (IOException e) {
+            ExceptionHandler.handleException(e);
+        }
+    }
+
+    private String getSaveFileName(String suffix1) {
+        String result = null;
+        MemoryJFileChooser chooser = new MemoryJFileChooser();
+        chooser.setFileFilter(new SPVFilter(suffix1, null, null));
+
+        int i = chooser.showSaveDialog(secondaryController.getInternalFrame());
+
+        if (i == MemoryJFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+            if (file == null) {
+                new ErrorDialog("Cannot open file: " + file);
+                return result;
+            }
+
+            result = chooser.getSelectedFile().getPath();
+
+            int j = result.lastIndexOf('.');
+            if (j < 0 || j >= result.length()) {
+                result += suffix1;
+            }
+        }
+
+        return result;
     }
 
     private void makeSpecviewIDPanel(JPanel panel) {
@@ -332,6 +418,18 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
                     }
                 }
             }
+        }
+    }
+
+    class ImageFileActionListenerAdapter implements ActionListener {
+        private String suffix;
+
+        ImageFileActionListenerAdapter(String suffix) {
+            this.suffix = suffix;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            saveAsImage(suffix);
         }
     }
 }

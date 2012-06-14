@@ -258,7 +258,8 @@ public class IrisVisualizer implements IrisComponent {
 
                 sp.setName(sed.getId());
 
-                SherpaModelManager modelManager = new SherpaModelManager(sp, idm.getSAMPConnector(), ws.getDesktop());
+                JDesktopPane desktop = ws.getDesktop();
+                SherpaModelManager modelManager = new SherpaModelManager(sp, idm.getSAMPConnector(), desktop);
                 modelManager.setActive(false);
 
                 managedSpectrum = new ManagedSpectrum2(sp, modelManager);
@@ -385,13 +386,15 @@ public class IrisVisualizer implements IrisComponent {
                         disposeCurrentFrame();
                     }
 
-                    if (idm.getDisplaying().getNumberOfSegments() <= 1) {
+                    ExtSed sed = idm.getDisplaying();
+                    if (sed != null && sed.getNumberOfSegments() <= 1) {
                         disposeCurrentFrame();
                     }
 
                     if (currentFrame == null) {
                         currentFrame = idm.getInternalFrame();
                         currentFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
+
                         ws.addFrame(currentFrame);
                     }
 
