@@ -33,6 +33,7 @@ public enum YUnit implements IUnit {
     FLUXDENSITYWL2("keV cm**(-2) s**(-1) angstrom**(-1)", "em.wl"),
     FLUXDENSITYWL3("Watt m**(-2)"  + '\u03BC' + "m**(-1)", "em.wl"),
     FLUXDENSITYFREQ0("erg cm**(-2) s**(-1) Hz**(-1)", "em.freq"),
+    FLUXDENSITYWL4("erg cm**(-2) s**(-1) Hz**(-1)", "em.freq"),
     FLUXDENSITYFREQ1("Jy", "em.freq"),
     FLUXDENSITYFREQ2("W m**(-2) Hz**(-1)", "em.freq"),
     FLUXDENSITYENERGY0("keV cm**(-2) s**(-1) kev**(-1)", "em.energy"),

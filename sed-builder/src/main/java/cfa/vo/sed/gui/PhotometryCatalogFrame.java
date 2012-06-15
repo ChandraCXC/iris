@@ -231,6 +231,7 @@ public class PhotometryCatalogFrame extends ConfirmJInternalFrame implements Seg
 
         jTextField11.setEditable(false);
         jTextField11.setBorder(null);
+        jTextField11.setDisabledTextColor(new java.awt.Color(67, 67, 67));
         jTextField11.setEnabled(false);
         jTextField11.setName("jTextField11"); // NOI18N
 

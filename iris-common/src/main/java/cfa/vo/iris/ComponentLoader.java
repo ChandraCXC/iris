@@ -20,10 +20,8 @@
  */
 package cfa.vo.iris;
 
-import cfa.vo.sed.filters.FileFormatManager;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -42,7 +40,6 @@ import java.util.logging.Logger;
 public class ComponentLoader {
 
     private static URL componentsURL = ComponentLoader.class.getResource("/components");
-
     private static List<IrisComponent> components = new ArrayList();
     private static List<Class> extComponents = new ArrayList();
 
@@ -83,13 +80,17 @@ public class ComponentLoader {
             return new ArrayList();
         }
 
-        String jarFiles = System.getProperty("compJar");
+//        String jarFiles = System.getProperty("compJar");
+
+        File componentsDir = new File(AbstractIrisApplication.CONFIGURATION_DIR.getAbsolutePath() + "/components");
+
+        File[] jarFiles = componentsDir.listFiles();
 
         if (jarFiles != null) {
-            String[] jars = jarFiles.split(";");
-            for (String jar : jars) {
+//            String[] jars = jarFiles.split(";");
+            for (File jar : jarFiles) {
                 try {
-                    Plugin p = new Plugin(new URL("file:" + jar));
+                    Plugin p = new Plugin(new URL("file:" + jar.getAbsolutePath()));
                     p.load();
                 } catch (Exception ex) {
                     Logger.getLogger(ComponentLoader.class.getName()).log(Level.SEVERE, null, ex);
@@ -97,12 +98,11 @@ public class ComponentLoader {
             }
         }
 
-        for(Class clazz : extComponents) {
+
+        for (Class clazz : extComponents) {
             try {
                 components.add((IrisComponent) clazz.newInstance());
-            } catch (InstantiationException ex) {
-                Logger.getLogger(ComponentLoader.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(ComponentLoader.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -132,7 +132,8 @@ public class ComponentLoader {
         public void load() throws Exception {
             ClassLoader loader = URLClassLoader.newInstance(
                     new URL[]{url},
-                    FileFormatManager.class.getClassLoader());
+                    ComponentLoader.class.getClassLoader());
+
 
             JarInputStream jis = null;
 
@@ -149,18 +150,12 @@ public class ComponentLoader {
                     String name = entry.getName().replace("/", ".");
                     if (name.endsWith(".class")) {
                         name = name.replace(".class", "");
-                        Class clazz;
+                        Class clazz = loader.loadClass(name);
 
-                        try {
-                            clazz = loader.loadClass(name);
-                            
-                            if(IrisComponent.class.isAssignableFrom(clazz))
+                            if (IrisComponent.class.isAssignableFrom(clazz)) {
                                 extComponents.add(clazz);
+                            }
 
-
-                        } catch (ClassNotFoundException ex) {
-                            Logger.getLogger(ComponentLoader.class.getName()).log(Level.SEVERE, null, ex);
-                        }
 
 
                     }
@@ -170,6 +165,8 @@ public class ComponentLoader {
                     jis.close();
                 }
             }
+
+
         }
 
         @Override
@@ -179,4 +176,6 @@ public class ComponentLoader {
             return name;
         }
     }
+
+    
 }

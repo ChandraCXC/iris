@@ -200,8 +200,8 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton1 = new javax.swing.JButton();
         jToolBar2 = new javax.swing.JToolBar();
         jLabel4 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
-        jButton12 = new javax.swing.JButton();
+        jButton15 = new javax.swing.JButton();
+        jButton16 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
@@ -219,7 +219,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jLabel6 = new javax.swing.JLabel();
         jTextField3 = new javax.swing.JTextField();
         jSeparator3 = new javax.swing.JToolBar.Separator();
-        jButton14 = new javax.swing.JButton();
+        jButton17 = new javax.swing.JButton();
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -340,7 +340,7 @@ public class SedBuilderMainView extends JInternalFrame {
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(sedPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE)
+            .add(sedPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
         );
 
         jSplitPane1.setLeftComponent(jPanel3);
@@ -370,39 +370,31 @@ public class SedBuilderMainView extends JInternalFrame {
         jLabel4.setName("jLabel4"); // NOI18N
         jToolBar2.add(jLabel4);
 
-        jButton3.setAction(actionMap.get("newSegment")); // NOI18N
-        jButton3.setIcon(new ImageIcon(getClass().getResource("/list_add.png")));
-        jButton3.setBorderPainted(false);
-        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton3.setFocusable(false);
-        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton3.setMargin(new java.awt.Insets(2, 2, 0, 2));
-        jButton3.setMaximumSize(new java.awt.Dimension(100, 50));
-        jButton3.setMinimumSize(new java.awt.Dimension(65, 50));
-        jButton3.setName("jButton3"); // NOI18N
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton15.setAction(actionMap.get("newSegment")); // NOI18N
+        jButton15.setIcon(new ImageIcon(getClass().getResource("/list_add.png")));
+        jButton15.setBorderPainted(false);
+        jButton15.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton15.setFocusable(false);
+        jButton15.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton15.setMargin(new java.awt.Insets(2, 2, 0, 2));
+        jButton15.setMaximumSize(new java.awt.Dimension(100, 50));
+        jButton15.setMinimumSize(new java.awt.Dimension(65, 50));
+        jButton15.setName("jButton15"); // NOI18N
+        jButton15.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar2.add(jButton15);
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${isSed}"), jButton3, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
-        bindingGroup.addBinding(binding);
-
-        jToolBar2.add(jButton3);
-
-        jButton12.setAction(actionMap.get("newPoint")); // NOI18N
-        jButton12.setIcon(new ImageIcon(getClass().getResource("/list_add.png")));
-        jButton12.setBorderPainted(false);
-        jButton12.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jButton12.setFocusable(false);
-        jButton12.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton12.setMargin(new java.awt.Insets(2, 2, 0, 2));
-        jButton12.setMaximumSize(new java.awt.Dimension(100, 50));
-        jButton12.setMinimumSize(new java.awt.Dimension(65, 50));
-        jButton12.setName("jButton12"); // NOI18N
-        jButton12.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jButton3, org.jdesktop.beansbinding.ELProperty.create("${enabled}"), jButton12, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
-        bindingGroup.addBinding(binding);
-
-        jToolBar2.add(jButton12);
+        jButton16.setAction(actionMap.get("newPoint")); // NOI18N
+        jButton16.setIcon(new ImageIcon(getClass().getResource("/list_add.png")));
+        jButton16.setBorderPainted(false);
+        jButton16.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton16.setFocusable(false);
+        jButton16.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton16.setMargin(new java.awt.Insets(2, 2, 0, 2));
+        jButton16.setMaximumSize(new java.awt.Dimension(100, 50));
+        jButton16.setMinimumSize(new java.awt.Dimension(65, 50));
+        jButton16.setName("jButton16"); // NOI18N
+        jButton16.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar2.add(jButton16);
 
         jButton5.setAction(actionMap.get("removeSegment")); // NOI18N
         jButton5.setIcon(new ImageIcon(getClass().getResource("/list_remove.png")));
@@ -513,8 +505,8 @@ public class SedBuilderMainView extends JInternalFrame {
         jLabel1.setName("jLabel1"); // NOI18N
         jToolBar3.add(jLabel1);
 
+        jTextField1.setColumns(8);
         jTextField1.setName("jTextField1"); // NOI18N
-        jTextField1.setPreferredSize(new java.awt.Dimension(54, 28));
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${targetName}"), jTextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
@@ -526,9 +518,8 @@ public class SedBuilderMainView extends JInternalFrame {
         jToolBar3.add(jComboBox1);
 
         jButton13.setAction(actionMap.get("resolve")); // NOI18N
-        jButton13.setFont(new java.awt.Font("Lucida Grande", 0, 10));
+        jButton13.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
         jButton13.setIcon(new ImageIcon(getClass().getResource("/search.png")));
-        jButton13.setToolTipText("Resolve Target Name to coordinates");
         jButton13.setBorderPainted(false);
         jButton13.setFocusable(false);
         jButton13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -543,8 +534,8 @@ public class SedBuilderMainView extends JInternalFrame {
         jLabel5.setName("jLabel5"); // NOI18N
         jToolBar3.add(jLabel5);
 
+        jTextField2.setColumns(4);
         jTextField2.setName("jTextField2"); // NOI18N
-        jTextField2.setPreferredSize(new java.awt.Dimension(54, 28));
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${ra}"), jTextField2, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
@@ -555,8 +546,8 @@ public class SedBuilderMainView extends JInternalFrame {
         jLabel6.setName("jLabel6"); // NOI18N
         jToolBar3.add(jLabel6);
 
+        jTextField3.setColumns(4);
         jTextField3.setName("jTextField3"); // NOI18N
-        jTextField3.setPreferredSize(new java.awt.Dimension(54, 28));
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dec}"), jTextField3, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
@@ -566,18 +557,15 @@ public class SedBuilderMainView extends JInternalFrame {
         jSeparator3.setName("jSeparator3"); // NOI18N
         jToolBar3.add(jSeparator3);
 
-        jButton14.setAction(actionMap.get("apply")); // NOI18N
-        jButton14.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
-        jButton14.setIcon(new ImageIcon(getClass().getResource("/apply.png")));
-        jButton14.setToolTipText("Set Target Information for all Segments in the selected SED");
-        jButton14.setBorderPainted(false);
-        jButton14.setFocusable(false);
-        jButton14.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton14.setMaximumSize(new java.awt.Dimension(50, 25));
-        jButton14.setMinimumSize(new java.awt.Dimension(50, 25));
-        jButton14.setName("jButton14"); // NOI18N
-        jButton14.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar3.add(jButton14);
+        jButton17.setAction(actionMap.get("apply")); // NOI18N
+        jButton17.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
+        jButton17.setIcon(new ImageIcon(getClass().getResource("/apply.png")));
+        jButton17.setBorderPainted(false);
+        jButton17.setFocusable(false);
+        jButton17.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton17.setName("jButton17"); // NOI18N
+        jButton17.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jToolBar3.add(jButton17);
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -587,12 +575,12 @@ public class SedBuilderMainView extends JInternalFrame {
                 .addContainerGap()
                 .add(jLabel2)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(sedName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
+                .add(sedName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jButton1))
-            .add(jToolBar2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 591, Short.MAX_VALUE)
-            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 591, Short.MAX_VALUE)
-            .add(jToolBar3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 591, Short.MAX_VALUE)
+            .add(jToolBar2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+            .add(jToolBar3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -606,7 +594,7 @@ public class SedBuilderMainView extends JInternalFrame {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jToolBar2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 46, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE))
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel1);
@@ -667,11 +655,11 @@ public class SedBuilderMainView extends JInternalFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton13;
-    private javax.swing.JButton jButton14;
+    private javax.swing.JButton jButton15;
+    private javax.swing.JButton jButton16;
+    private javax.swing.JButton jButton17;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;

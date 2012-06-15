@@ -18,7 +18,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package cfa.vo.iris;
 
 import javax.swing.Icon;
@@ -39,8 +38,26 @@ public class Button implements IButton {
     }
 
     public Button(String iconResourcePath, String thumbnailResourcePath) {
-        icon = new ImageIcon(getClass().getResource(iconResourcePath));
-        thumbnail = new ImageIcon(getClass().getResource(thumbnailResourcePath));
+
+        if (getClass().getResource(iconResourcePath) == null) {
+//            try {
+//                icon = new ImageIcon(ImageIO.read(jcl.getResourceAsStream(iconResourcePath)));
+//            } catch (Exception ex) {
+                icon = new ImageIcon(getClass().getResource("/tool.png"));
+//            }
+        } else {
+            icon = new ImageIcon(getClass().getResource(iconResourcePath));
+        }
+        if (getClass().getResource(thumbnailResourcePath) == null) {
+//            try {
+//                thumbnail = new ImageIcon(ImageIO.read(jcl.getResourceAsStream(thumbnailResourcePath)));
+//            } catch (Exception ex) {
+                thumbnail = new ImageIcon(getClass().getResource("/tool_tiny.png"));
+//            }
+        } else {
+            thumbnail = new ImageIcon(getClass().getResource(thumbnailResourcePath));
+        }
+        
     }
 
     @Override
@@ -52,5 +69,4 @@ public class Button implements IButton {
     public Icon getThumbnail() {
         return thumbnail;
     }
-
 }

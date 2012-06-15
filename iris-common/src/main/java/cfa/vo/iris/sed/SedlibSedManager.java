@@ -121,7 +121,8 @@ public class SedlibSedManager implements ISedManager<ExtSed> {
         while (existsSed(id + (c == 0 ? "" : c))) {
             c++;
         }
-        ExtSed sed = new ExtSed(id + (c == 0 ? "" : c));
+        id = id + (c == 0 ? "" : c);
+        ExtSed sed = new ExtSed(id);
         sedMap.put(id, sed);
         SedEvent.getInstance().fire(sed, SedCommand.ADDED);
         LogEvent.getInstance().fire(this, new LogEntry("SED created: " + id, this));

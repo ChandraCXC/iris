@@ -30,6 +30,7 @@ import cfa.vo.sed.builder.SedImporterException;
 public enum SPVYUnit implements IUnit {
     FLUXDENSITYWL0("erg/s/cm2/Angstrom", "em.wl"),
     FLUXDENSITYWL1("Watt/m2/"  + '\u03BC' + "m", "em.wl"),
+    FLUXDENSITYWL4("erg/s/cm2/Hz", "em.freq"),
     FLUX0("Jy-Hz", "em.wl"),
     FLUX1("erg/s/cm2", "em.freq"),
     FLUXDENSITYFREQ1("Jy", "em.freq"),

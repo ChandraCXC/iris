@@ -34,7 +34,7 @@ public class FluxDensity extends AbstractQuantity {
         add(YUnit.FLUXDENSITYWL0);
         add(YUnit.FLUXDENSITYFREQ1);
         add(YUnit.FLUXDENSITYFREQ2);
-//        add(YUnit.FLUXDENSITYWL1);
+        add(YUnit.FLUXDENSITYWL4);
 //        add(YUnit.FLUXDENSITYWL2);
 //        add(YUnit.FLUXBEAM);
         add(YUnit.FLUXDENSITYWL3);

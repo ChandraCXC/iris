@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
+import javax.swing.UIManager;
 
 /**
  * The main class of the application.
@@ -97,18 +98,30 @@ public class Iris extends AbstractIrisApplication {
                 components.add(th);
             }
 
-            if(prop.equals("r"))
+            if (prop.equals("r")) {
                 components.add(new RComponent());
+            }
 
-            if(prop.equals("vizier"))
+            if (prop.equals("lnf")) {
+                try {
+                    System.out.println("Setting cross platform Look and Feel...");
+                    UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+                } catch (Exception ex) {
+                    System.out.println("Failed to set the Look and Feel");
+                    Logger.getLogger(Iris.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+            if (prop.equals("vizier")) {
                 components.add(new VizierClient());
+            }
 
 
-            if(prop.equals("debug")) {
+            if (prop.equals("debug")) {
                 Logger.getLogger("").setLevel(Level.ALL);
             }
-            if(prop.equals("ssa")) {
-                SedBuilder.SSA=true;
+            if (prop.equals("ssa")) {
+                SedBuilder.SSA = true;
             }
         }
 
