@@ -95,7 +95,8 @@ public final class CustomModelsManager {
 
         File specs = new File(target.getAbsolutePath()+".specs");
 
-        Files.write(model.getParnames()+"\n", specs, Charsets.UTF_8);
+        Files.write(model.getFunctionName()+"\n", specs, Charsets.UTF_8);
+        Files.append(model.getParnames()+"\n", specs, Charsets.UTF_8);
         Files.append(model.getParvals()+"\n", specs, Charsets.UTF_8);
         Files.append(model.getParmins()+"\n", specs, Charsets.UTF_8);
         Files.append(model.getParmaxs()+"\n", specs, Charsets.UTF_8);

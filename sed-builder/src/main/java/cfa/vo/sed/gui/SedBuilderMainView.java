@@ -622,7 +622,10 @@ public class SedBuilderMainView extends JInternalFrame {
     @Action
     public void changeName() {
         if(!sedName.getText().isEmpty())
-            manager.rename(sed, sedName.getText());
+            if(manager.existsSed(sedName.getText()))
+                NarrowOptionPane.showMessageDialog(rootFrame, "This ID already exists. Please use a unique ID.", "Rename error", NarrowOptionPane.ERROR_MESSAGE);
+            else
+                manager.rename(sed, sedName.getText());
     }
 
     @Action

@@ -43,6 +43,8 @@ public interface CustomModel {
     void setParmaxs(String parmaxs);
     String getParfrozen();
     void setParfrozen(String parfozen);
+    String getFunctionName();
+    void setFunctionName(String functionName);
     void addPropertyChangeListener(PropertyChangeListener listener);
     void removePropertyChangeListener(PropertyChangeListener listener);
 }

@@ -53,11 +53,12 @@ public class CustomModelsTreeModel extends DefaultTreeModel {
                     DefaultCustomModel model = new DefaultCustomModel(name, path);
                     File specs = new File(path+".specs");
                     List<String> attrs = Files.readLines(specs, Charsets.UTF_8);
-                    model.setParnames(attrs.get(0));
-                    model.setParvals(attrs.get(1));
-                    model.setParmins(attrs.get(2));
-                    model.setParmaxs(attrs.get(3));
-                    model.setParfrozen(attrs.get(4));
+                    model.setFunctionName(attrs.get(0));
+                    model.setParnames(attrs.get(1));
+                    model.setParvals(attrs.get(2));
+                    model.setParmins(attrs.get(3));
+                    model.setParmaxs(attrs.get(4));
+                    model.setParfrozen(attrs.get(5));
                     ((DefaultMutableTreeNode) root).add(new DefaultMutableTreeNode(model));
                 }
             } catch (MalformedURLException ex) {

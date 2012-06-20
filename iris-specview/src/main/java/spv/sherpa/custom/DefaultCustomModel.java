@@ -112,7 +112,7 @@ public class DefaultCustomModel implements CustomModel {
     @Override
     public void setParnames(String parnames) {
         String oldParnames = this.parnames;
-        this.parnames = parnames;
+        this.parnames = removeSpaces(parnames);
         propertyChangeSupport.firePropertyChange(PROP_PARNAMES, oldParnames, parnames);
     }
 
@@ -137,7 +137,7 @@ public class DefaultCustomModel implements CustomModel {
     @Override
     public void setParvals(String parvals) {
         String oldParvals = this.parvals;
-        this.parvals = parvals;
+        this.parvals = removeSpaces(parvals);
         propertyChangeSupport.firePropertyChange(PROP_PARVALS, oldParvals, parvals);
     }
 
@@ -162,7 +162,7 @@ public class DefaultCustomModel implements CustomModel {
     @Override
     public void setParmins(String parmins) {
         String oldParmins = this.parmins;
-        this.parmins = parmins;
+        this.parmins = removeSpaces(parmins);
         propertyChangeSupport.firePropertyChange(PROP_PARMINS, oldParmins, parmins);
     }
 
@@ -187,7 +187,7 @@ public class DefaultCustomModel implements CustomModel {
     @Override
     public void setParmaxs(String parmaxs) {
         String oldParmaxs = this.parmaxs;
-        this.parmaxs = parmaxs;
+        this.parmaxs = removeSpaces(parmaxs);
         propertyChangeSupport.firePropertyChange(PROP_PARMAXS, oldParmaxs, parmaxs);
     }
 
@@ -212,9 +212,35 @@ public class DefaultCustomModel implements CustomModel {
     @Override
     public void setParfrozen(String parfrozen) {
         String oldParfrozen = this.parfrozen;
-        this.parfrozen = parfrozen;
+        this.parfrozen = removeSpaces(parfrozen);
         propertyChangeSupport.firePropertyChange(PROP_PARFROZEN, oldParfrozen, parfrozen);
     }
+
+    private String functionName;
+    public static final String PROP_FUNCTIONNAME = "functionName";
+
+    /**
+     * Get the value of functionName
+     *
+     * @return the value of functionName
+     */
+    @Override
+    public String getFunctionName() {
+        return functionName;
+    }
+
+    /**
+     * Set the value of functionName
+     *
+     * @param functionName new value of functionName
+     */
+    @Override
+    public void setFunctionName(String functionName) {
+        String oldFunctionName = this.functionName;
+        this.functionName = functionName;
+        propertyChangeSupport.firePropertyChange(PROP_FUNCTIONNAME, oldFunctionName, functionName);
+    }
+
 
 
     private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
@@ -243,6 +269,10 @@ public class DefaultCustomModel implements CustomModel {
     @Override
     public String toString() {
         return name;
+    }
+
+    private String removeSpaces(String input) {
+        return input.replaceAll("\\s+", "");
     }
 
 }

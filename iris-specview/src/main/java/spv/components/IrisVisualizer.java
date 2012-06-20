@@ -18,7 +18,6 @@
  * This software is distributed under a BSD license,
  * as described in the LICENSE file at the top source directory.
  */
-
 package spv.components;
 
 /**
@@ -27,7 +26,6 @@ package spv.components;
  * Date: 2/13/12
  * Time: 3:03 PM
  */
-
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
@@ -98,7 +96,6 @@ import spv.view.AbstractPlotWidget;
  *
  * @author olaurino
  */
-
 public class IrisVisualizer implements IrisComponent {
 
     private IrisDisplayManager idm;
@@ -118,7 +115,7 @@ public class IrisVisualizer implements IrisComponent {
     public void init(IrisApplication app, IWorkspace workspace) {
 
         visualizer = this;
-        
+
         manager = (SedlibSedManager) workspace.getSedManager();
 
         SpvInitialization spvinit = new SpvInitialization(new String[]{}, null);
@@ -145,8 +142,10 @@ public class IrisVisualizer implements IrisComponent {
         idm.setDesktopMode(true);
         idm.setConnection(app.getSAMPController());
 
+        File rootDir = new File(app.getConfigurationDir() + File.separator + "analysis" + File.separator + "custom_models");
+
         try {
-            File rootDir = new File(app.getConfigurationDir() + File.separator + "analysis" + File.separator + "custom_models");
+
             customManager = new CustomModelsManager(rootDir);
             customManagerView = new CustomModelsManagerView(customManager, ws.getFileChooser());
             ws.addFrame(customManagerView);
@@ -155,8 +154,24 @@ public class IrisVisualizer implements IrisComponent {
             treeRefresher.execute(null);
             FunctionFactorySherpaHelper.SetTreeRefresher(treeRefresher);
 
-        } catch (IOException ex) {
-            NarrowOptionPane.showMessageDialog(ws.getRootFrame(), "Error initializing Custom Fit Component Manager: " + ex.getMessage(), "Iris Visualizer", NarrowOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            int ans = NarrowOptionPane.showConfirmDialog(ws.getRootFrame(), "Error initializing Custom Fit Component Manager: " + ex.getMessage()
+                    + "\nDo you want to reset custom models?", "Iris Visualizer", NarrowOptionPane.ERROR_MESSAGE);
+            if (ans == NarrowOptionPane.OK_OPTION) {
+                try {
+                    if (rootDir.isDirectory()) {
+                        deleteDirectory(rootDir);
+                    } else {
+                        rootDir.delete();
+                    }
+                    rootDir.mkdir();
+                    customManager = new CustomModelsManager(rootDir);
+                    customManagerView = new CustomModelsManagerView(customManager, ws.getFileChooser());
+                    ws.addFrame(customManagerView);
+                } catch (IOException ex1) {
+                    Logger.getLogger(IrisVisualizer.class.getName()).log(Level.SEVERE, null, ex1);
+                }
+            }
         }
 
         SedEvent.getInstance().add(new SedListener() {
@@ -500,12 +515,12 @@ public class IrisVisualizer implements IrisComponent {
                 @Override
                 public void onClick() {
 
-                        customManagerView.show();
-                        try {
-                            customManagerView.setIcon(false);
-                        } catch (PropertyVetoException ex) {
-                            Logger.getLogger(IrisVisualizer.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                    customManagerView.show();
+                    try {
+                        customManagerView.setIcon(false);
+                    } catch (PropertyVetoException ex) {
+                        Logger.getLogger(IrisVisualizer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
                 }
             });
@@ -533,14 +548,13 @@ public class IrisVisualizer implements IrisComponent {
     // This class responds to selection actions in the component tree widget.
     // It supports both the traditional Sherpa models, as well as the new
     // templates/tables/functions custom models.
-
     public class ComponentTreeSelectionListener implements TreeSelectionListener {
+
         public void valueChanged(TreeSelectionEvent e) {
 
             JTree tree = FunctionFactorySherpaHelper.GetJTree();
 
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-                    tree.getLastSelectedPathComponent();
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
             if (node == null) {
                 return;
             }
@@ -577,9 +591,15 @@ public class IrisVisualizer implements IrisComponent {
 
                         String name = model.getName();
 
-                        if (path.contains("/tables/"))    name = "tablemodel";
-                        if (path.contains("/functions/")) name = "usermodel";
-                        if (path.contains("/templates/")) name = "templatemodel";
+                        if (path.contains("/tables/")) {
+                            name = "tablemodel";
+                        }
+                        if (path.contains("/functions/")) {
+                            name = "usermodel";
+                        }
+                        if (path.contains("/templates/")) {
+                            name = "templatemodel";
+                        }
 
                         function.setUserID(name);
                         function.setName(name);
@@ -591,18 +611,18 @@ public class IrisVisualizer implements IrisComponent {
                         // parameters into something that can actually be used to
                         // build instances of Function.
 
-                        String[] parNames  = model.getParnames().split("\\,");
-                        String[] parVals   = model.getParvals().split("\\,");
-                        String[] parMins   = model.getParmins().split("\\,");
-                        String[] parMaxs   = model.getParmaxs().split("\\,");
+                        String[] parNames = model.getParnames().split("\\,");
+                        String[] parVals = model.getParvals().split("\\,");
+                        String[] parMins = model.getParmins().split("\\,");
+                        String[] parMaxs = model.getParmaxs().split("\\,");
                         String[] parFrozen = model.getParfrozen().split("\\,");
 
                         int npars = parNames.length;
 
-                        if (npars != parVals.length ||
-                            npars != parMins.length ||
-                            npars != parMaxs.length ||
-                            npars != parFrozen.length) {
+                        if (npars != parVals.length
+                                || npars != parMins.length
+                                || npars != parMaxs.length
+                                || npars != parFrozen.length) {
                             ExceptionHandler.handleException(new Exception(
                                     "Parameter lists wih different lengths."));
                             tree.clearSelection();
@@ -660,7 +680,6 @@ public class IrisVisualizer implements IrisComponent {
     // new tree selection handler to it. It should be used
     // whenever the tree must be refreshed to pick up new
     // models that the user might have opened.
-
     public class TreeRefresher implements Command {
 
         public void execute(Object o) {
@@ -676,6 +695,18 @@ public class IrisVisualizer implements IrisComponent {
             FunctionFactorySherpaHelper.AddTreeSelectionListener(new ComponentTreeSelectionListener());
         }
     }
+
+    private boolean deleteDirectory(File path) {
+        if (path.exists()) {
+            File[] files = path.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].isDirectory()) {
+                    deleteDirectory(files[i]);
+                } else {
+                    files[i].delete();
+                }
+            }
+        }
+        return (path.delete());
+    }
 }
-
-

@@ -33,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.UIManager;
+import spv.components.BarePlotterTestComponent;
 
 /**
  * The main class of the application.
@@ -96,6 +97,7 @@ public class Iris extends AbstractIrisApplication {
                 components.add(tl);
                 TestSSAServer th = new TestSSAServer();
                 components.add(th);
+                components.add(new BarePlotterTestComponent());
             }
 
             if (prop.equals("r")) {
