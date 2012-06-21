@@ -32,7 +32,7 @@ import spv.util.YUnits;
  *
  * @author olaurino
  */
-public class SpecviewPlotter extends JInternalFrame  {
+public class SpecviewPlotter extends JInternalFrame implements Plotter  {
     private ExtSed sed;
     private GraphicsCanvas canvas;
 
