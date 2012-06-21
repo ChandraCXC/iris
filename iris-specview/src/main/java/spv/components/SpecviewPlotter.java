@@ -32,7 +32,7 @@ import spv.util.YUnits;
  *
  * @author olaurino
  */
-public class SpecviewPlotter extends JInternalFrame implements Plotter {
+public class SpecviewPlotter extends JInternalFrame  {
     private ExtSed sed;
     private GraphicsCanvas canvas;
 
@@ -62,12 +62,10 @@ public class SpecviewPlotter extends JInternalFrame implements Plotter {
         return c;
     }
 
-    @Override
     public void addSegment(Segment segment) {
         reset();
     }
 
-    @Override
     public void removeSegment(Segment segment) {
         reset();
     }
@@ -77,7 +75,6 @@ public class SpecviewPlotter extends JInternalFrame implements Plotter {
         
     }
 
-    @Override
     public void reset() {
         try {
             getContentPane().remove(canvas.getJComponent());
@@ -94,7 +91,6 @@ public class SpecviewPlotter extends JInternalFrame implements Plotter {
         }
     }
 
-    @Override
     public void display() {
         if(sed.getNumberOfSegments()>0) {
             int n = 0;
@@ -106,20 +102,17 @@ public class SpecviewPlotter extends JInternalFrame implements Plotter {
         }
     }
 
-    @Override
     public void addSegments(List<Segment> segments) {
         for(Segment segment : segments)
             addSegment(segment);
     }
 
-    @Override
     public void removeSegments(List<Segment> segments) {
         for(Segment segment : segments) {
             removeSegment(segment);
         }
     }
 
-    @Override
     public JInternalFrame getFrame() {
         return this;
     }
