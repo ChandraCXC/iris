@@ -32,6 +32,7 @@ public class SPVFluxDensity extends AbstractQuantity {
         add(SPVYUnit.FLUXDENSITYWL0);
         add(SPVYUnit.FLUXDENSITYWL4);
         add(SPVYUnit.FLUXDENSITYFREQ1);
+        add(SPVYUnit.FLUXDENSITYFREQ3);
         add(SPVYUnit.FLUXDENSITYFREQ2);
         add(SPVYUnit.FLUXDENSITYWL1);
     }

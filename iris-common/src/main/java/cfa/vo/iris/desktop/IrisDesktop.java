@@ -150,10 +150,12 @@ public class IrisDesktop extends JFrame {
 
         this.setSize(xSize, ySize);
 
-        paintButtons();
-
         int[] bo = getVaoBounds();
         jLabel2.setBounds(bo[0], bo[1], bo[2], bo[3]);
+
+        desktopPane.setLayer(jLabel2, -1);
+
+        paintButtons();
 
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 

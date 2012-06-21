@@ -34,6 +34,7 @@ public enum SPVYUnit implements IUnit {
     FLUX0("Jy-Hz", "em.wl"),
     FLUX1("erg/s/cm2", "em.freq"),
     FLUXDENSITYFREQ1("Jy", "em.freq"),
+    FLUXDENSITYFREQ3("mJy", "em.freq"),
     FLUXDENSITYFREQ2("Watt/m2/Hz", "em.freq"),
     PHOTONFLUX("photon/cm2/s", "em.freq"),
     PHOTONFLUXDENSITY0("photon/s/cm2/Hz", "em.freq"),
