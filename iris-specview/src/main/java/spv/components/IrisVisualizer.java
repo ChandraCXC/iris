@@ -580,6 +580,8 @@ public class IrisVisualizer implements IrisComponent {
                     try {
                         DefaultCustomModel model = (DefaultCustomModel) node_object;
 
+                        String functionName = model.getFunctionName();
+
                         SherpaFunction function = new SherpaFunction();
 
                         URL url = model.getUrl();
@@ -603,6 +605,7 @@ public class IrisVisualizer implements IrisComponent {
 
                         function.setUserID(name);
                         function.setName(name);
+                        function.setFunctionName(functionName);
 
                         // Converting a DefaultCustomModel to a SherpaFunction might
                         // require more than this. We'll see as we go further down the road...
