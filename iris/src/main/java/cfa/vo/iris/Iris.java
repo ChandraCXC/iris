@@ -79,7 +79,7 @@ public class Iris extends AbstractIrisApplication {
     @Override
     public URL getHelpURL() {
         try {
-            return new URL("http://cxc.cfa.harvard.edu/iris/");
+            return new URL("http://cxc.cfa.harvard.edu/iris/preview/");
         } catch (MalformedURLException ex) {
             Logger.getLogger(Iris.class.getName()).log(Level.SEVERE, null, ex);
             return null;

@@ -368,3 +368,223 @@ press "Return".  Run the confidence calculation on the new sigma value
 by hitting "Start".  The new confidence limits should appear in the
 confidence table.  The confidence calculation can be aborted by
 hitting the "Stop" button.
+
+
+=============
+CUSTOM MODELS
+=============
+
+Iris 1.1 allows the user to define custom models at runtime, using the
+Custom Model Manager GUI.  This directory contains example files that
+can be read into Iris 1.1 as user, table and template models via the
+GUI.
+
+User Model:
+-----------
+
+Here are example settings for installing the user model in the Custom
+Model Manager.
+
+Component ID:	my_py_powlaw
+
+Click "Python Function" radio button.
+
+<your_path_to_file>/mypowlaw.py
+
+Function Name: mypowlaw
+
+Names: ref,ampl,index
+
+Values: 5000,1.0,-0.5
+
+Mins: 5000,1e-38,-10
+
+Maxs: 5000,3e38,10
+
+Fixed: True,False,False
+
+
+Notes:
+
+The Component ID identifies the custom model for storage in Iris.  Any
+arbitrary string would do in this example.
+
+The "Python Function" radio button identifies the custom model as a
+function that will be imported from Python.
+
+In the next text box, type in "<your_path_to_file>/mypowlaw.py" --
+where <your_path_to_file> is the directory where mypowlaw.py, and the
+other example files, have been installed.
+
+In the "Function Name" box, type the name of the Python function to be
+added as a user model.  For example, within mypowlaw.py, there is a
+function definition:
+
+def mypowlaw(p, x):
+
+that implements the power-law in Python.  So, type "mypowlaw" as the
+name of the user function here.  (p and x are the arrays of parameter
+values and x-values respectively.)
+
+In the "Names" box, type in the names of the parameters, separated by
+commas. 
+
+In the "Values" box, type in the initial parameter values listed
+above, separated by commas.
+
+In the "Mins" box, type in the minimum allowed values, separated by
+commas.
+
+In the "Maxs" box, type in the maximum allowed values, separated by
+commas.
+
+In the "Fixed" box, type in Boolean values, indicating whether
+parameters are fixed at the initial value during the fit.  (True =
+fixed at starting value, False = allowed to vary during the fit.)
+
+Click "Install Model Component" to install the model as a custom
+model.  The next time the Fitting Tool is opened, the model can be
+selected from the menu of custom model components, under Add ->
+Custom Model Components -> functions -> my_py_model
+
+
+Table Model:
+------------
+
+Here are example settings for installing the table model in the Custom
+Model Manager.
+
+Component ID:	my_sedtab
+
+Click "Table" radio button.
+
+<your_path_to_file>/sed_temp_data.dat
+
+Function Name:
+
+Names: ampl
+ 
+Values: 1.0
+
+Mins: 1e-38
+
+Maxs: 3e38
+
+Fixed: False
+
+
+Notes:
+
+The Component ID identifies the custom model for storage in Iris.  Any
+arbitrary string would do in this example.
+
+The "Table" radio button identifies the custom model as a table read
+from file.  An amplitude parameter can be varied during the fit (i.e.,
+a scale factor applied to the tabular data).
+
+In the next text box, type in "<your_path_to_file>/sed_temp_data.dat" --
+where <your_path_to_file> is the directory where sed_temp_data.dat, and the
+other example files, have been installed.  The table should be an
+ASCII file with two columns of numbers as the table.
+
+Leave the "Function Name" box blank.  (In fact, for table models the
+user is not allowed to fill in this box.)
+
+In the "Names" box, type in the names of the parameter(s), separated
+by commas (unless there is only one parameter, of course).
+
+In the "Values" box, type in the initial parameter value(s) listed
+above.
+
+In the "Mins" box, type in the minimum allowed value(s).
+
+In the "Maxs" box, type in the maximum allowed value(s).
+
+In the "Fixed" box, type in Boolean value(s), indicating whether
+parameters are fixed at the initial value during the fit.
+
+Click "Install Model Component" to install the model as a custom
+model.  The next time the Fitting Tool is opened, the model can be
+selected from the menu of custom model components, under Add ->
+Custom Model Components -> tables -> my_sedtab
+
+
+Template Model:
+---------------
+
+Here are example settings for installing the template model in the
+Custom Model Manager.
+
+Component ID:	my_sedtemp
+
+Click "Template Library" radio button.
+
+<your_path_to_file>/sed_templates.dat
+
+Function Name:
+
+Names: index,refer
+ 
+Values: 0.0,5000
+
+Mins: -0.5,5000
+
+Maxs: 0.0,5000
+
+Fixed: False,False
+
+
+Notes:
+
+The Component ID identifies the custom model for storage in Iris.  Any
+arbitrary string would do in this example.
+
+The "Template Library" radio button identifies the custom model as a
+set of templates read from files.  The file sed_templates.dat is a
+"table-of-contents" file, listing parameter values associated with
+each template file.  The files 
+
+sed_temp_index-0.00.dat
+sed_temp_index-0.10.dat
+sed_temp_index-0.25.dat
+sed_temp_index-0.35.dat
+sed_temp_index-0.50.dat
+
+are ASCII files, each with two columns of numbers; each of these files
+contains one template.  During the fit, the data are compared to each
+template, to determine which template is the closest match to the
+data.  The parameters associated with that template are returned as
+the best-fit parameters.
+
+In the next text box, type in "<your_path_to_file>/sed_templates.dat"
+-- where <your_path_to_file> is the directory where sed_templates.dat,
+and the other example files, have been installed.  
+
+Please also edit this file to replace the string <YOUR DIRECTORY PATH
+HERE> with the actual path to the directory where these example files
+have been installed.  Otherwise, the templates will not be found or
+read into Iris.
+
+Leave the "Function Name" box blank.  (In fact, for template models
+the user is not allowed to fill in this box.)
+
+In the "Names" box, type in the names of the parameters, separated by
+commas.  The names should match the names listed as parameters in the
+sed_templates.dat file.  (Note that there must be at least two
+parameters listed as columns in sed_templates.dat.  Also note that the
+MODELFLAG column in this file is *not* a model parameter.)
+
+In the "Values" box, type in the initial parameter values listed
+above.
+
+In the "Mins" box, type in the minimum allowed values.
+
+In the "Maxs" box, type in the maximum allowed values.
+
+In the "Fixed" box, type in Boolean values, indicating whether
+parameters are fixed at the initial value during the fit.
+
+Click "Install Model Component" to install the model as a custom
+model.  The next time the Fitting Tool is opened, the model can be
+selected from the menu of custom model components, under Add ->
+Custom Model Components -> templates -> my_sedtemp

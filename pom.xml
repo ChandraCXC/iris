@@ -8,7 +8,7 @@
     <groupId>cfa.vo</groupId>
     <artifactId>iris2</artifactId>
     <packaging>pom</packaging>
-    <version>1.1-beta7</version>
+    <version>1.1-beta8</version>
     <name>Iris2 Project</name>
 
     <modules>
