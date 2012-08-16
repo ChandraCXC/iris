@@ -64,7 +64,10 @@ public class FluxAxis extends AbstractAxis<SPVYQuantity> {
 
         segment.createChar().createFluxAxis().setUcd(md.getUCD());
         segment.createChar().createFluxAxis().setUnit(md.getUnitString());
-        segment.setFluxAxisValues(new double[]{getValue()});
+        if(getValue()!=null)
+            segment.setFluxAxisValues(new double[]{getValue()});
+        else
+            segment.setFluxAxisValues(new double[]{Double.NaN});
         segment.setFluxAxisUnits(md.getUnitString());
         if(error!=null)
             segment.createData().setDataValues(new double[]{error}, Utypes.SEG_DATA_FLUXAXIS_ACC_STATERR);
@@ -75,8 +78,8 @@ public class FluxAxis extends AbstractAxis<SPVYQuantity> {
     public Validation validate() {
         Validation v = new Validation();
 
-        if(getValue()==null || getValue().isNaN())
-            v.addError("Missing/Invalid Y Axis value");
+//        if(getValue()==null || getValue().isNaN())
+//            v.addError("Missing/Invalid Y Axis value");
 
         if(error!=null && error.isNaN())
             v.addError("Invalid Y Axis Error");

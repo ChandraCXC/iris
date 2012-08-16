@@ -138,10 +138,16 @@ public class FluxAxisBuilder extends AbstractValidable implements Builder<FluxAx
         axis.setQuantity(quantity);
         axis.setUnit(unit);
 
-        axis.setValue(filter.getData(0, valueColumn.getNumber())[row].doubleValue());
+        Number val = filter.getData(0, valueColumn.getNumber())[row];
+        if(val!=null)
+            axis.setValue(val.doubleValue());
 
-        if(errorColumn!=null)
-            axis.setError(filter.getData(0, errorColumn.getNumber())[row].doubleValue());
+        if(errorColumn!=null) {
+            Number errVal = filter.getData(0, errorColumn.getNumber())[row];
+            if(errVal!=null)
+                axis.setError(errVal.doubleValue());
+        }
+            
 
         return axis;
     }

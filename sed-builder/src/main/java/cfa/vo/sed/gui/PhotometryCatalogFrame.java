@@ -68,13 +68,14 @@ import javax.swing.table.AbstractTableModel;
 import org.jdesktop.application.Action;
 import org.jdesktop.beansbinding.Converter;
 import uk.ac.starlink.table.StarTable;
+import uk.ac.starlink.table.Tables;
 
 /**
  *
  * @author olaurino
  */
 public class PhotometryCatalogFrame extends ConfirmJInternalFrame implements SegmentFrame {
-
+    
     /** Creates new form PhotometryCatalogFrame */
     public PhotometryCatalogFrame(final PhotometryCatalogBuilder conf) {
         super("Import Catalog to SED");
@@ -655,6 +656,7 @@ public class PhotometryCatalogFrame extends ConfirmJInternalFrame implements Seg
                 return canEdit [columnIndex];
             }
         });
+        jTable1.setColumnSelectionAllowed(true);
         jTable1.setName("jTable1"); // NOI18N
         jTable1.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jTable1);
@@ -819,6 +821,9 @@ public class PhotometryCatalogFrame extends ConfirmJInternalFrame implements Seg
         ISegmentColumn targetNameColumn = conf.getTargetBuilder().getNameColumn();
         ISegmentColumn targetRaColumn = conf.getTargetBuilder().getRaColumn();
         ISegmentColumn targetDecColumn = conf.getTargetBuilder().getDecColumn();
+        
+        if(!table.isRandom())
+            table = Tables.randomTable(table);
 
         for (int k = 0; k < table.getRowCount(); k++) {
             Target t = new Target();

@@ -78,8 +78,9 @@ public class SedBuilder implements IrisComponent {
     private PluginManager pManager;
 
     public static void update() {
-        if(view==null)
+        if (view == null) {
             show();
+        }
         view.update();
     }
 
@@ -156,8 +157,9 @@ public class SedBuilder implements IrisComponent {
     public List<MessageHandler> getSampHandlers() {
         List<MessageHandler> list = new ArrayList();
         list.add(new SAMPTableHandler());
-        if(SSA)
+        if (SSA) {
             list.add(new SSAHandler());
+        }
         return list;
     }
 
@@ -177,7 +179,6 @@ public class SedBuilder implements IrisComponent {
     public void initCli(IrisApplication app) {
         iris = app;
     }
-
     public static boolean SSA = false;
 
     private class BuilderMenuItems extends ArrayList<IMenuItem> {
@@ -208,6 +209,10 @@ public class SedBuilder implements IrisComponent {
                     if (pManager == null) {
                         pManager = new PluginManager();
                         workspace.addFrame(pManager);
+                        if (view == null) {
+                            view = new SedBuilderMainView(sedManager, workspace.getRootFrame());
+                            workspace.addFrame(view);
+                        }
                         pManager.setLoadFrame(view.getLoadSegmentFrame());
                     }
                     pManager.show();
@@ -247,7 +252,7 @@ public class SedBuilder implements IrisComponent {
         @Override
         public Map processCall(HubConnection hc, String string, Message msg) throws Exception {
 
-            String formatName = (String) ((Map)msg.getParam("meta")).get("Access.Format");
+            String formatName = (String) ((Map) msg.getParam("meta")).get("Access.Format");
             formatName = formatName.equals("application/fits") ? "table.load.fits" : "table.load.votable";
 
             Message m = new Message(formatName);
@@ -257,7 +262,6 @@ public class SedBuilder implements IrisComponent {
 
             return handler.processCall(hc, string, m);
         }
-
     }
 
     private static class SAMPTableHandler extends AbstractMessageHandler {
@@ -272,8 +276,9 @@ public class SedBuilder implements IrisComponent {
             senderId = iris.getSAMPController().getClientMap().get(senderId).toString();
             String formatName = msg.getMType().toLowerCase().equals("table.load.votable") ? "VOT" : "FITS";
             String tableName = (String) msg.getParam("name");
-            if(tableName==null || tableName.isEmpty())
+            if (tableName == null || tableName.isEmpty()) {
                 tableName = (String) msg.getParam("table-id");
+            }
             URL url = new URL((String) msg.getParam("url"));
             ExtSed sed = sedManager.getSelected() != null ? sedManager.getSelected() : sedManager.newSed("SAMP");
             try {
@@ -321,7 +326,7 @@ public class SedBuilder implements IrisComponent {
             } catch (Exception ex) {
                 Logger.getLogger(SedBuilder.class.getName()).log(Level.SEVERE, null, ex);
                 return doImport(tableName, senderId, url, formatName, sed);
-                
+
 //                NarrowOptionPane.showMessageDialog(rootFrame,
 //                        ex.getMessage(),
 //                        "Import Error",

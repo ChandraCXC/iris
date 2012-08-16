@@ -17,7 +17,7 @@
     <parent>
         <groupId>cfa.vo</groupId>
         <artifactId>iris2</artifactId>
-        <version>1.1-beta8</version>
+        <version>1.1</version>
     </parent>
 
     <dependencies>
@@ -287,7 +287,7 @@
         <profile>
             <id>distribution</id>
             <properties>
-                <platforms>macosx-x86_64,macosx-i386,unix-x86_64,unix-i386</platforms>
+                <platforms>macosx-x86_64,macosx-i386,unix-x86_64,unix-i386,macosx-10.5</platforms>
                 <distribution>true</distribution>
             </properties>
             <dependencies>
@@ -317,6 +317,13 @@
                     <artifactId>sherpa</artifactId>
                     <version>${sherpa.version}</version>
                     <classifier>unix-x86_64</classifier>
+                    <type>tgz</type>
+                </dependency>
+                <dependency>
+                    <groupId>sherpa</groupId>
+                    <artifactId>sherpa</artifactId>
+                    <version>${sherpa.version}</version>
+                    <classifier>macosx-10.5</classifier>
                     <type>tgz</type>
                 </dependency>
             </dependencies>
@@ -404,6 +411,27 @@
                     <artifactId>sherpa</artifactId>
                     <version>${sherpa.version}</version>
                     <classifier>unix-x86_64</classifier>
+                    <type>tgz</type>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>macosx-10.5</id>
+            <activation>
+                <property>
+                    <name>platform</name>
+                    <value>macosx-10.5</value>
+                </property>
+            </activation>
+            <properties>
+                <platforms>macosx-10.5</platforms>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>sherpa</groupId>
+                    <artifactId>sherpa</artifactId>
+                    <version>${sherpa.version}</version>
+                    <classifier>macosx-10.5</classifier>
                     <type>tgz</type>
                 </dependency>
             </dependencies>

@@ -9,10 +9,16 @@
     <parent>
         <groupId>cfa.vo</groupId>
         <artifactId>iris2</artifactId>
-        <version>1.1-beta8</version>
+        <version>1.1</version>
     </parent>
 
     <dependencies>
+        <dependency>
+            <groupId>stil</groupId>
+            <artifactId>stil</artifactId>
+            <version>3.0.2</version>
+            <type>jar</type>
+        </dependency>
         <dependency>
             <groupId>cfa.vao.sed</groupId>
             <artifactId>sedlib</artifactId>
