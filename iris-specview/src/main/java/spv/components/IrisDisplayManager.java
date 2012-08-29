@@ -37,13 +37,13 @@ import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
 import cfa.vo.iris.sed.ExtSed;
 
-import spv.controller.ManagedSpectrum2;
+import spv.controller.SpectrumContainer;
 import spv.controller.SecondaryController2;
 import spv.controller.SpvImageWriter;
-import spv.controller.output.SaveManager;
 import spv.controller.display.SecondaryDisplayManager;
 import spv.controller.display.DisplayManager;
 import spv.glue.*;
+import spv.graphics.WCSCursor;
 import spv.util.Callback;
 import spv.util.Command;
 import spv.util.ExceptionHandler;
@@ -96,6 +96,8 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
         self = this;
 
         plotStatusStorage = new HashMap<String, PlotStatus>();
+
+        WCSCursor.getInstance().addObserver(this);
     }
 
     void setConnection(GuiHubConnector connection) {
@@ -112,13 +114,13 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
     void display(ExtSed sed, String name) {
         if (sed != null) {
 
-            ManagedSpectrum2 msp1 = (ManagedSpectrum2) sed.getAttachment(FIT_MODEL);
+            SpectrumContainer container = (SpectrumContainer) sed.getAttachment(FIT_MODEL);
 
-            msp1.getSpectrum().setName(name);
+            container.getSpectrum().setName(name);
 
             removeVisualEditor();
 
-            display(msp1, sed.getId());
+            display(container, sed.getId());
 
             sedDisplaying = sed;
 
@@ -126,18 +128,18 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
         }
     }
 
-    public void display(ManagedSpectrum2 msp, String id) {
+    public void display(SpectrumContainer container, String id) {
 
         // prevent 1-point data to be displayed. Note that in that case
         // there are 2 spectral bins because of the segment separators.
-        if (msp.getSpectrum().getNBins() <= 2) {
-            remove(msp.getSpectrum().getName());
+        if (container.getSpectrum().getNBins() <= 2) {
+            remove(container.getSpectrum().getName());
             secondaryController = null;
             return;
         }
 
         // this widget will display the new Sed.
-        PlotWidget pw = buildPlotWidget(msp, false, null);
+        PlotWidget pw = buildPlotWidget(container, false, null);
 
         // turn off everything cursor, as per Iris request.
         pw.setSystemCursor();
@@ -171,6 +173,11 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
 
             secondaryController.loadWidget(pw);
         }
+
+        // the metadata display needs a reference to the desktop
+        // pane so it can add itself to it. Make it here to ensure
+        // a valid desktop exists.
+        metadataDisplay.setDesktopPane(ws.getDesktop());
     }
 
     public PlotWidget getPlotWidget() {
@@ -361,6 +368,37 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
         return sedDisplaying;
     }
 
+    public void update(Observable originator, Object object) {
+        if (originator instanceof WCSCursor) {
+
+
+//            System.out.println ("IrisDisplayManager  line: 370  - " + object);
+
+
+
+//            String element_name = null;
+//            if (object instanceof String) {
+//                Enumeration enumeration = getSpectrumList();
+//                while (enumeration.hasMoreElements()) {
+//                    Object hold = enumeration.nextElement();
+//                    if (hold instanceof String) {
+//                        element_name = (String)hold;
+//                        if (element_name.equals(object)) {
+//                            break;
+//                        }
+//                    }
+//                }
+//                Color color = spColors.get(element_name);
+//                boolean makeFrame = false;
+//                String desktopMode = SpvProperties.GetProperty(Include.DESKTOP_MODE);
+//                if (desktopMode == null || !desktopMode.equals("true")) {
+//                    makeFrame = true;
+//                }
+//                new SEDSegmentedSpectrumVisualEditor (self, element_name, true, color, null, makeFrame);
+//            }
+        }
+    }
+
     // Metadata button. This button is not present in Iris 1.0. Its
     // purpose is to give access to the table with metadata and data
     // for the entire SED. This function was available in Iris 1.0
@@ -394,6 +432,10 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
                 frame.setSelected(true);
             } catch (PropertyVetoException e) {
             }
+        }
+
+        public void setDesktopPane(JDesktopPane desktop) {
+            SpectrumVisualEditor.SetDesktopPane(desktop);
         }
     }
 

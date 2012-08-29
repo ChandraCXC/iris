@@ -32,15 +32,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+import cfa.vo.iris.*;
 import org.astrogrid.samp.client.MessageHandler;
 
-import cfa.vo.iris.*;
 import cfa.vo.iris.events.*;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.sedlib.Segment;
 
-import spv.controller.ManagedSpectrum2;
+import spv.controller.SpectrumContainer;
 import spv.controller.SherpaModelManager;
 import spv.fit.FittedSpectrum;
 
@@ -67,11 +67,11 @@ public class ModelManagerComponent implements IrisComponent {
 
                         // Retrieve model manager from the attachment.
 
-                        ManagedSpectrum2 managedSpectrum = (ManagedSpectrum2) source.getAttachment(IrisDisplayManager.FIT_MODEL);
+                        SpectrumContainer container = (SpectrumContainer) source.getAttachment(IrisDisplayManager.FIT_MODEL);
 
-                        if (managedSpectrum != null) {
+                        if (container != null) {
 
-                            SherpaModelManager smm = (SherpaModelManager) managedSpectrum.getModelManager();
+                            SherpaModelManager smm = (SherpaModelManager) container.getModelManager();
 
                             // Make the component button responsive only
                             // in case this model manager is inactive.
@@ -183,8 +183,8 @@ public class ModelManagerComponent implements IrisComponent {
 
                         // Now, attach existing model and new FittedSpectrum instance to the Sed.
 
-                        ManagedSpectrum2 msp = new ManagedSpectrum2(fsp, modelManager);
-                        displayedSed.addAttachment(IrisDisplayManager.FIT_MODEL, msp);
+                        SpectrumContainer container = new SpectrumContainer(fsp, modelManager);
+                        displayedSed.addAttachment(IrisDisplayManager.FIT_MODEL, container);
 
                         // And display it.
 

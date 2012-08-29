@@ -28,15 +28,21 @@ package spv.components;
  * Time: 9:54 AM
  */
 
+
+import spv.graphics.LegendCanvas;
+import spv.util.Units;
 import spv.view.BasicPlotWidget;
 import spv.view.Plottable;
 
+
 /**
-The sole purpose of this class is to override the basic behavior of
-a plot widget that inherits a plot status object from its predecessor.
-Because we are re-purposing the pan canvas as a residuals plot area when
-fitting, the pan canvas must be forcibly turned off when displaying a
-non-fitted SED.
+This class overrides the behavior of a basic plot widget in two ways:
+
+  - It add a legend canvas to the canvas stack.
+
+  - Because we are re-purposing the pan canvas as a residuals plot area when
+    fitting, the pan canvas must be forcibly turned off when displaying a
+    non-fitted SED.
 */
 
 public class SEDBasicPlotWidget extends BasicPlotWidget {
@@ -53,5 +59,14 @@ public class SEDBasicPlotWidget extends BasicPlotWidget {
             show_pan = false;
         }
         return use_status;
+    }
+
+    protected void assembleCanvases(String xtitle, String ytitle,
+                                    Units x_units, Units y_units,
+                                    boolean use_status) {
+
+        super.assembleCanvases(xtitle, ytitle, x_units, y_units, use_status);
+
+        canvas = new LegendCanvas(canvas);
     }
 }
