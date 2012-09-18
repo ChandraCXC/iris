@@ -37,11 +37,9 @@ import org.astrogrid.samp.client.MessageHandler;
 
 import cfa.vo.iris.events.*;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.sedlib.Segment;
 
 import spv.controller.SpectrumContainer;
-import spv.controller.SherpaModelManager;
 import spv.fit.FittedSpectrum;
 
 
@@ -71,7 +69,7 @@ public class ModelManagerComponent implements IrisComponent {
 
                         if (container != null) {
 
-                            SherpaModelManager smm = (SherpaModelManager) container.getModelManager();
+                            spv.components.SherpaModelManager smm = (spv.components.SherpaModelManager) container.getModelManager();
 
                             // Make the component button responsive only
                             // in case this model manager is inactive.

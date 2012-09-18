@@ -18,6 +18,7 @@
  * This software is distributed under a BSD license,
  * as described in the LICENSE file at the top source directory.
  */
+
 package spv.components;
 
 /**
@@ -26,6 +27,7 @@ package spv.components;
  * Date: 2/13/12
  * Time: 3:03 PM
  */
+
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
@@ -70,7 +72,6 @@ import javax.swing.tree.DefaultTreeModel;
 import spv.SpvInitialization;
 import spv.controller.SpectrumContainer;
 import spv.controller.ModelManager2;
-import spv.controller.SherpaModelManager;
 import spv.fit.FittedSpectrum;
 import spv.fit.FittingEngine;
 import spv.fit.FittingEngineFactory;
