@@ -109,7 +109,6 @@ public class IrisVisualizer implements IrisComponent {
     private CustomModelsManagerView customManagerView;
     private IrisVisualizer visualizer;  // self-reference for use in inner classes
 
-    @Override
     public void init(IrisApplication app, IWorkspace workspace) {
 
         visualizer = this;
@@ -126,7 +125,6 @@ public class IrisVisualizer implements IrisComponent {
         FittingEngineFactory f = new FittingEngineFactory();
         try {
             sherpa = f.get("sherpa");
-//            sherpa = f.get("test");
             sherpa.start();
             LogEvent.getInstance().fire(sherpa, new LogEntry("Sherpa started", this));
         } catch (NoSuchEngineException ex) {
@@ -166,6 +164,7 @@ public class IrisVisualizer implements IrisComponent {
                     customManager = new CustomModelsManager(rootDir);
                     customManagerView = new CustomModelsManagerView(customManager, ws.getFileChooser());
                     ws.addFrame(customManagerView);
+
                 } catch (IOException ex1) {
                     Logger.getLogger(IrisVisualizer.class.getName()).log(Level.SEVERE, null, ex1);
                 }
@@ -174,7 +173,6 @@ public class IrisVisualizer implements IrisComponent {
 
         SedEvent.getInstance().add(new SedListener() {
 
-            @Override
             public void process(final ExtSed source, SedCommand payload) {
 
                 if (payload == SedCommand.SELECTED) {
@@ -193,7 +191,6 @@ public class IrisVisualizer implements IrisComponent {
 
         SegmentEvent.getInstance().add(new SegmentListener() {
 
-            @Override
             public void process(Segment source, final SegmentPayload payload) {
                 ExtSed sed = payload.getSed();
 
@@ -208,7 +205,6 @@ public class IrisVisualizer implements IrisComponent {
 
         MultipleSegmentEvent.getInstance().add(new MultipleSegmentListener() {
 
-            @Override
             public void process(List<Segment> source, final SegmentPayload payload) {
                 ExtSed sed = payload.getSed();
 
@@ -247,7 +243,7 @@ public class IrisVisualizer implements IrisComponent {
     }
 
     private void remove(ExtSed source) {
-//        invalidateModel(source);
+        // invalidateModel(source);   Might be needed in the future?
         idm.remove(source.getId());
     }
 
@@ -259,7 +255,7 @@ public class IrisVisualizer implements IrisComponent {
 
             SpectrumContainer container = (SpectrumContainer) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
 
-            // There is no Sed attachment, so build a model sedManager and attach it.
+            // There is no Sed attachment, so build a model manager and attach it.
 
             if (container == null) {
 
@@ -279,7 +275,7 @@ public class IrisVisualizer implements IrisComponent {
                 sed.addAttachment(IrisDisplayManager.FIT_MODEL, container);
 
                 // This is needed to capture the 'Quit' button action
-                // that comes from the model sedManager GUI.
+                // that comes from the model manager GUI.
                 modelManager.setCallbackOnDispose(new OnDisposeCommand(sed));
             }
 
@@ -314,20 +310,28 @@ public class IrisVisualizer implements IrisComponent {
 
         if (displaying != null) {
             if (!sed.getId().equals(displaying.getId())) {
-                // displayedSed is exiting: make its model sedManager and metadata windows invisible.
+
+                // displayed Sed is exiting: make its model manager and metadata windows invisible.
+
                 SpectrumContainer container = (SpectrumContainer) displaying.getAttachment(IrisDisplayManager.FIT_MODEL);
+
                 if (container != null) {
+
                     ModelManager2 modelManager = container.getModelManager();
                     modelManager.setVisible(false);
                     SpectrumVisualEditor editor = idm.getVisualEditor();
+
                     if (editor != null) {
                         editor.getJFrame().setVisible(false);
                     }
                 }
 
-                // new Sed is entering display: make its model sedManager window visible if active.
+                // new Sed is entering display: make its model manager window visible if active.
+
                 if (sed != null) {
+
                     container = (SpectrumContainer) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
+
                     if (container != null) {
                         ModelManager2 modelManager = container.getModelManager();
                         modelManager.setVisible(modelManager.isActive());
@@ -337,37 +341,30 @@ public class IrisVisualizer implements IrisComponent {
         }
     }
 
-    @Override
     public String getName() {
         return "Analysis";
     }
 
-    @Override
     public String getDescription() {
         return "Iris Visualization and Analysis";
     }
 
-    @Override
     public ICommandLineInterface getCli() {
         return new NullCommandLineInterface("plot");
     }
 
-    @Override
     public List<IMenuItem> getMenus() {
         return new VisualizerMenus();
     }
 
-    @Override
     public List<MessageHandler> getSampHandlers() {
         return new ArrayList();
     }
 
-    @Override
     public void shutdown() {
         sherpa.shutdown();
     }
 
-    @Override
     public void initCli(IrisApplication app) {
         FittingEngineFactory f = new FittingEngineFactory();
         try {
@@ -431,7 +428,7 @@ public class IrisVisualizer implements IrisComponent {
                 @Override
                 public void onClick() {
 
-                    // this prevents fitting of error array to be performed. Not a very good
+                    // this prevents fitting of error arrays to be performed. Not a very good
                     // solution but will make do for now.
 
                     AbstractPlotWidget plotWidget = (AbstractPlotWidget) idm.getPlotWidget();
@@ -450,7 +447,7 @@ public class IrisVisualizer implements IrisComponent {
                             Spectrum sp = factory.readAllSegments(null, sed);
                             sp.setName(sed.getId());
 
-                            // Get model sedManager from Sed attachment
+                            // Get model manager from Sed attachment
                             // and activate it.
 
                             SpectrumContainer container = (SpectrumContainer) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
@@ -511,7 +508,6 @@ public class IrisVisualizer implements IrisComponent {
             add(new AbstractMenuItem("Custom Models Manager", "Install Custom Components that can be used for fitting SEDs", true,
                     "/ruler_small.png", "/ruler_tiny.png") {
 
-                @Override
                 public void onClick() {
 
                     customManagerView.show();
@@ -526,9 +522,10 @@ public class IrisVisualizer implements IrisComponent {
         }
     }
 
-    // This class responds to the Dispose button in the model sedManager
+    // This class responds to the Dispose button in the model manager
     // and discards the model associated with the Sed, re-displaying
-    // it as a non-fitted Sed.
+    // the Sed as a non-fitted Sed.
+
     public class OnDisposeCommand implements Command {
 
         private ExtSed sed;
@@ -547,6 +544,7 @@ public class IrisVisualizer implements IrisComponent {
     // This class responds to selection actions in the component tree widget.
     // It supports both the traditional Sherpa models, as well as the new
     // templates/tables/functions custom models.
+
     public class ComponentTreeSelectionListener implements TreeSelectionListener {
 
         public void valueChanged(TreeSelectionEvent e) {
@@ -573,8 +571,11 @@ public class IrisVisualizer implements IrisComponent {
                     } catch (CloneNotSupportedException ex) {
                         rf = null;
                     }
+
                     FunctionFactorySherpaHelper.SetFunction(rf);
+
                 } catch (ClassCastException e1) {
+
                     // templates, tables and user files
                     try {
                         DefaultCustomModel model = (DefaultCustomModel) node_object;
@@ -586,9 +587,6 @@ public class IrisVisualizer implements IrisComponent {
                         URL url = model.getUrl();
                         String path = url.getPath();
                         function.addPath(path);
-
-//                        function.setUserID(model.getName());
-//                        function.setName(model.getName());
 
                         String name = model.getName();
 
@@ -607,7 +605,8 @@ public class IrisVisualizer implements IrisComponent {
                         function.setFunctionName(functionName);
 
                         // Converting a DefaultCustomModel to a SherpaFunction might
-                        // require more than this. We'll see as we go further down the road...
+                        // require more than this. We'll see as we go further down
+                        // the road...
 
                         // First, we need to break up the comma-separated string
                         // parameters into something that can actually be used to
@@ -682,6 +681,7 @@ public class IrisVisualizer implements IrisComponent {
     // new tree selection handler to it. It should be used
     // whenever the tree must be refreshed to pick up new
     // models that the user might have opened.
+
     public class TreeRefresher implements Command {
 
         public void execute(Object o) {
