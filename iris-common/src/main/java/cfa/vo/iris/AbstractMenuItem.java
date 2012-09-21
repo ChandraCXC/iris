@@ -21,6 +21,7 @@
 
 package cfa.vo.iris;
 
+import java.io.File;
 import javax.swing.Icon;
 
 /**
@@ -33,6 +34,10 @@ public abstract class AbstractMenuItem implements IMenuItem {
     private String description;
     private boolean isOnDesktop;
     private IButton button;
+    
+    public AbstractMenuItem() {
+        
+    }
 
     public AbstractMenuItem(String title, String description, boolean isOnDesktop, Icon icon, Icon thumbnail) {
         this.title = title;
@@ -74,6 +79,27 @@ public abstract class AbstractMenuItem implements IMenuItem {
     @Override
     public IButton getButton() {
         return button;
+    }
+
+    public void setButton(IButton button) {
+        this.button = button;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setIsOnDesktop(boolean isOnDesktop) {
+        this.isOnDesktop = isOnDesktop;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    
+    @Override
+    public void consolidate(File file) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

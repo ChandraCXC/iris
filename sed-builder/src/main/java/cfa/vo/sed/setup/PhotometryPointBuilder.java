@@ -26,6 +26,8 @@ import cfa.vo.sed.filters.IFilter;
 import cfa.vo.sed.setup.validation.AbstractValidable;
 import cfa.vo.sed.setup.validation.AbstractValidableParent;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
 
@@ -33,7 +35,7 @@ import org.jdesktop.observablecollections.ObservableList;
  *
  * @author olaurino
  */
-public class PhotometryPointBuilder extends AbstractValidableParent implements Builder<PhotometryPoint> {
+public class PhotometryPointBuilder extends AbstractValidableParent implements Builder<PhotometryPoint>, Cloneable {
 
     public PhotometryPointBuilder(String id) {
         this.id = id;
@@ -43,6 +45,23 @@ public class PhotometryPointBuilder extends AbstractValidableParent implements B
         children.add(spectralAxisConfiguration);
         fluxAxisConfiguration = new FluxAxisBuilder();
         children.add(fluxAxisConfiguration);
+    }
+    
+    @Override
+    public Object clone() {
+        try {
+            PhotometryPointBuilder cloned = (PhotometryPointBuilder) super.clone();
+            cloned.children = ObservableCollections.observableList(new ArrayList());
+            cloned.children.addObservableListListener(cloned.getValidator());
+            cloned.spectralAxisConfiguration = (SpectralAxisBuilder) cloned.spectralAxisConfiguration.clone();
+            cloned.fluxAxisConfiguration = (FluxAxisBuilder) cloned.fluxAxisConfiguration.clone();
+            cloned.children.add(cloned.spectralAxisConfiguration);
+            cloned.children.add(cloned.fluxAxisConfiguration);
+            return cloned;
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(PhotometryPointBuilder.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
     private FluxAxisBuilder fluxAxisConfiguration;

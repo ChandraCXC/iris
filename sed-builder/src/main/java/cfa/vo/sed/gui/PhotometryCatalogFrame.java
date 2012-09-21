@@ -1040,7 +1040,14 @@ public class PhotometryCatalogFrame extends ConfirmJInternalFrame implements Seg
     @Action
     public void addPoint() {
         String id = "Point" + (i++);
-        PhotometryPointBuilder ppc = new PhotometryPointBuilder(id);
+        PhotometryPointBuilder ppc;
+        List<PhotometryPointBuilder> builders = conf.getPointBuilders();
+        if(builders.isEmpty())
+            ppc = new PhotometryPointBuilder(id);
+        else {
+            ppc = (PhotometryPointBuilder) builders.get(builders.size()-1).clone();
+            ppc.setId(id);
+        }
         conf.addPointBuilder(ppc);
         jList1.setSelectedValue(ppc, true);
     }
@@ -1342,7 +1349,7 @@ public class PhotometryCatalogFrame extends ConfirmJInternalFrame implements Seg
             setVisible(false);
             SedBuilder.update();
         } catch (Exception ex) {
-            NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(), "Error adding the point: " + ex.getMessage(), "Error", NarrowOptionPane.ERROR_MESSAGE);
+            NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(), "Error adding the segment: " + ex.getMessage(), "Error", NarrowOptionPane.ERROR_MESSAGE);
             Logger.getLogger(PhotometryCatalogFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
 

@@ -29,15 +29,28 @@ import cfa.vo.sed.builder.photfilters.PhotometryFilter;
 import cfa.vo.sed.filters.IFilter;
 import cfa.vo.sed.quantities.IUnit;
 import cfa.vo.sed.quantities.XQuantity;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author olaurino
  */
-public class SpectralAxisBuilder extends AbstractValidable implements Builder<SpectralAxis> {
+public class SpectralAxisBuilder extends AbstractValidable implements Builder<SpectralAxis>, Cloneable {
 
     private SpectralAxis axis;
 
+    @Override
+    public Object clone() {
+        try {
+            SpectralAxisBuilder cloned = (SpectralAxisBuilder) super.clone();
+            return cloned;
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(SpectralAxisBuilder.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+    
     public void setAxis(SpectralAxis axis) {
         this.axis = axis;
     }

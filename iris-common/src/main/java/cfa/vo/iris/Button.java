@@ -20,6 +20,11 @@
  */
 package cfa.vo.iris;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
@@ -40,20 +45,24 @@ public class Button implements IButton {
     public Button(String iconResourcePath, String thumbnailResourcePath) {
 
         if (getClass().getResource(iconResourcePath) == null) {
-//            try {
-//                icon = new ImageIcon(ImageIO.read(jcl.getResourceAsStream(iconResourcePath)));
-//            } catch (Exception ex) {
+            try {
+                icon = new ImageIcon(ImageIO.read(new URL("jar:file:"+iconResourcePath)));
+            } catch (IOException ex) {
+                Logger.getLogger(Button.class.getName()).log(Level.SEVERE, null, ex);
                 icon = new ImageIcon(getClass().getResource("/tool.png"));
+            }
+                
 //            }
         } else {
             icon = new ImageIcon(getClass().getResource(iconResourcePath));
         }
         if (getClass().getResource(thumbnailResourcePath) == null) {
-//            try {
-//                thumbnail = new ImageIcon(ImageIO.read(jcl.getResourceAsStream(thumbnailResourcePath)));
-//            } catch (Exception ex) {
+            try {
+                thumbnail = new ImageIcon(ImageIO.read(new URL("jar:file:"+thumbnailResourcePath)));
+            } catch (Exception ex) {
+                Logger.getLogger(Button.class.getName()).log(Level.SEVERE, null, ex);
                 thumbnail = new ImageIcon(getClass().getResource("/tool_tiny.png"));
-//            }
+            }
         } else {
             thumbnail = new ImageIcon(getClass().getResource(thumbnailResourcePath));
         }

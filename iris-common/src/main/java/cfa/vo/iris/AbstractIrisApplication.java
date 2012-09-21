@@ -26,14 +26,14 @@ import cfa.vo.interop.SimpleSAMPMessage;
 import cfa.vo.iris.desktop.IrisDesktop;
 import cfa.vo.iris.desktop.IrisWorkspace;
 import cfa.vo.iris.interop.SedSAMPController;
+import cfa.vo.iris.sdk.PluginManager;
 import cfa.vo.iris.sed.ExtSed;
-import java.awt.EventQueue;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
@@ -50,7 +50,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
 
     private static SedSAMPController sampController;
     private static boolean isTest = false;
-    private Map<String, IrisComponent> components = new HashMap();
+    private Map<String, IrisComponent> components = new TreeMap();
     private IrisWorkspace ws;
     private IrisDesktop desktop;
     public static final File CONFIGURATION_DIR = new File(System.getProperty("user.home") + "/.vao/iris/");
@@ -193,35 +193,38 @@ public abstract class AbstractIrisApplication extends Application implements Iri
                 System.setProperty("apple.laf.useScreenMenuBar", "true");
             }
             System.out.println("Launching GUI...");
-            EventQueue.invokeLater(new Runnable() {
 
-                @Override
-                public void run() {
-//                    Logger.getLogger("").setLevel(Level.OFF);
-                    sampSetup();
-                    ws = new IrisWorkspace();
-                    for (final IrisComponent component : components.values()) {
-                        EventQueue.invokeLater(new Runnable() {
+            sampSetup();
+            
+            try {
+                desktop = new IrisDesktop(AbstractIrisApplication.this);
+            } catch (Exception ex) {
+                System.out.println("Error initializing components");
+                Logger.getLogger(AbstractIrisApplication.class.getName()).log(Level.SEVERE, null, ex);
+                exitApp();
+            }
+            
+            desktop.setVisible(true);
+            
+            ws = new IrisWorkspace();
+            ws.setDesktop(desktop);
+            desktop.setWorkspace(ws);
+            for (final IrisComponent component : components.values()) {
 
-                            @Override
-                            public void run() {
-                                component.init(AbstractIrisApplication.this, ws);
-                            }
-                        });
+                component.init(AbstractIrisApplication.this, ws);
 
-                    }
-                    try {
-                        desktop = new IrisDesktop(AbstractIrisApplication.this);
-                    } catch (Exception ex) {
-                        System.out.println("Error initializing components");
-                        Logger.getLogger(AbstractIrisApplication.class.getName()).log(Level.SEVERE, null, ex);
-                        exitApp();
-                    }
-                    ws.setDesktop(desktop);
-                    desktop.setVisible(true);
-                    desktop.repaint();
-                }
-            });
+            }
+            
+            PluginManager manager = new PluginManager();
+            
+            components.put(manager.getCli().getName(), manager);
+            
+            manager.init(AbstractIrisApplication.this, ws);
+            
+            desktop.reset(new ArrayList(components.values()));
+            
+            manager.load();
+
         }
     }
 

@@ -26,18 +26,26 @@
  */
 package cfa.vo.iris.desktop;
 
+import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.interop.SAMPConnectionListener;
 import cfa.vo.iris.AbstractDesktopItem;
 import cfa.vo.iris.IMenuItem;
 import cfa.vo.iris.AbstractIrisApplication;
+import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.IrisComponent;
+import cfa.vo.iris.events.PluginJarEvent;
+import cfa.vo.iris.events.PluginListener;
+import cfa.vo.iris.sdk.IrisPlugin;
+import cfa.vo.iris.sdk.PluginJar;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -55,16 +63,23 @@ import org.jdesktop.application.Action;
  *
  * @author olaurino
  */
-public class IrisDesktop extends JFrame {
+public class IrisDesktop extends JFrame implements PluginListener {
 
     private List<DesktopButton> buttons = new ArrayList();
-    private List<IrisComponent> components;
-//    private About aboutBox = new About(IrisDesktop.getInstance(), false);
+    private List<IrisComponent> components = new ArrayList();
     private JDialog aboutBox;
     AbstractIrisApplication app;
+    IWorkspace ws;
+
+    public void setWorkspace(IWorkspace ws) {
+        this.ws = ws;
+    }
 
     /** Creates new form SedImporterMainView */
     public IrisDesktop(final AbstractIrisApplication app) throws Exception {
+
+        PluginJarEvent.getInstance().add(this);
+
         initComponents();
 
         this.app = app;
@@ -73,7 +88,7 @@ public class IrisDesktop extends JFrame {
 
         aboutLabel.setText("About " + app.getName());
 
-        components = app.getComponents();
+        components.addAll(app.getComponents());
 
         setTitle(app.getName());
 
@@ -94,35 +109,21 @@ public class IrisDesktop extends JFrame {
 
         sampIcon.setVisible(app.isSampEnabled());
 
-        int c = 0;
-        for (IrisComponent component : components) {
-            int cf = 0;
-            JMenu cMenu = null;
-            for (IMenuItem item : component.getMenus()) {
-                IrisMenuItem i = new IrisMenuItem(item);
-                if (i.getMenu().equals("File")) {
-                    fileMenu.add(i, c + cf++);
-                } else {
-                    if (cMenu == null) {
-                        cMenu = new JMenu(component.getName());
-                    }
-                    cMenu.add(i);
-                }
-                if (item.isOnDesktop()) {
-                    DesktopButton b = new DesktopButton(item);
-                    buttons.add(b);
-                    desktopPane.add(b, javax.swing.JLayeredPane.DEFAULT_LAYER);
-                }
-            }
-            if (cf > 0) {
-                fileMenu.add(new JSeparator(), (c++) + (cf++));
-            }
-            if (cMenu != null) {
-                toolsMenu.add(cMenu);
-            }
-            paintButtons();
 
-        }
+        jLabel2.setIcon(new ImageIcon(app.getDesktopIcon()));
+
+        this.setLocationRelativeTo(null);
+        Toolkit tk = Toolkit.getDefaultToolkit();
+        int xSize = (int) ((int) tk.getScreenSize().getWidth() * 0.8);
+        int ySize = (int) ((int) tk.getScreenSize().getHeight() * 0.8);
+
+        this.setSize(xSize, ySize);
+
+        int[] bo = getVaoBounds();
+        jLabel2.setBounds(bo[0], bo[1], bo[2], bo[3]);
+
+        desktopPane.setLayer(jLabel2, -1);
+
 
         AbstractDesktopItem help = new AbstractDesktopItem("Help", "Help on " + app.getName(), "/help_contextual.png", "/help_contextual_tiny.png") {
 
@@ -138,22 +139,6 @@ public class IrisDesktop extends JFrame {
         DesktopButton b = new DesktopButton(help);
         buttons.add(b);
         desktopPane.add(b);
-
-        paintButtons();
-
-        jLabel2.setIcon(new ImageIcon(app.getDesktopIcon()));
-
-        this.setLocationRelativeTo(null);
-        Toolkit tk = Toolkit.getDefaultToolkit();
-        int xSize = (int)((int) tk.getScreenSize().getWidth()*0.8);
-        int ySize = (int)((int) tk.getScreenSize().getHeight()*0.8);
-
-        this.setSize(xSize, ySize);
-
-        int[] bo = getVaoBounds();
-        jLabel2.setBounds(bo[0], bo[1], bo[2], bo[3]);
-
-        desktopPane.setLayer(jLabel2, -1);
 
         paintButtons();
 
@@ -182,6 +167,64 @@ public class IrisDesktop extends JFrame {
         }
 
 
+    }
+//    private List<JMenu> menus = new ArrayList();
+    private List<IrisMenuItem> fileMenus = new ArrayList();
+
+    public void reset(List<IrisComponent> components) {
+
+        for (DesktopButton b : buttons) {
+            desktopPane.remove(b);
+        }
+
+        toolsMenu.removeAll();
+
+        for (IrisMenuItem i : fileMenus) {
+            fileMenu.remove(i);
+        }
+
+        fileMenus = new ArrayList();
+
+        buttons = new ArrayList();
+
+        int c = 0;
+        for (IrisComponent component : components) {
+            int cf = 0;
+            JMenu cMenu = null;
+            for (IMenuItem item : component.getMenus()) {
+                IrisMenuItem i = new IrisMenuItem(item);
+
+
+                if (i.getMenu().equals("File")) {
+                    fileMenu.add(i, c + cf++);
+                    fileMenus.add(i);
+                } else {
+                    if (cMenu == null) {
+                        cMenu = new JMenu(component.getName());
+                    }
+                    cMenu.add(i);
+                }
+
+                if (item.isOnDesktop()) {
+                    DesktopButton b = new DesktopButton(item);
+                    buttons.add(b);
+                    desktopPane.add(b, javax.swing.JLayeredPane.DEFAULT_LAYER);
+                }
+
+            }
+            if (cf > 0) {
+                fileMenu.add(new JSeparator(), (c++) + (cf++));
+            }
+            if (cMenu != null) {
+                toolsMenu.add(cMenu);
+            }
+            paintButtons();
+
+        }
+
+        paintButtons();
+
+        repaint();
     }
 
     @Override
@@ -463,8 +506,32 @@ public class IrisDesktop extends JFrame {
     public void setSampAutoHub(boolean sampAutoHub) {
         boolean oldSampAutoHub = this.sampAutoHub;
         this.sampAutoHub = sampAutoHub;
-        app.setAutoRunHub(sampAutoHub);
+        AbstractIrisApplication.setAutoRunHub(sampAutoHub);
         firePropertyChange(PROP_SAMPAUTOHUB, oldSampAutoHub, sampAutoHub);
+    }
+
+    @Override
+    public void process(PluginJar source, SedCommand payload) {
+
+        List<IrisPlugin> plugins = source.getPlugins();
+
+        for (IrisPlugin plugin : plugins) {
+            List<IrisComponent> comps = plugin.getComponents();
+            if (payload.equals(SedCommand.ADDED)) {
+                components.addAll(comps);
+                for (IrisComponent c : comps) {
+                    c.init(app, ws);
+                }
+            }
+            if (payload.equals(SedCommand.REMOVED)) {
+                components.removeAll(comps);
+                for (IrisComponent c : comps) {
+                    c.shutdown();
+                }
+            }
+            reset(components);
+        }
+
     }
 
     private class SampStatusListener implements SAMPConnectionListener {

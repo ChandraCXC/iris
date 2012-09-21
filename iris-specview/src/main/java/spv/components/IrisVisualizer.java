@@ -73,9 +73,6 @@ import spv.SpvInitialization;
 import spv.controller.SpectrumContainer;
 import spv.controller.ModelManager2;
 import spv.fit.FittedSpectrum;
-import spv.fit.FittingEngine;
-import spv.fit.FittingEngineFactory;
-import spv.fit.NoSuchEngineException;
 import spv.glue.SpectrumVisualEditor;
 import spv.sherpa.custom.CustomModelsManager;
 import spv.sherpa.custom.CustomModelsManagerView;
@@ -102,8 +99,8 @@ public class IrisVisualizer implements IrisComponent {
     private JInternalFrame currentFrame;
     private SedlibSedManager sedManager;
     private SEDFactoryModule factory = new SEDFactoryModule();
-    private FittingEngine sherpa;
-    private String sherpaDir = System.getProperty("IRIS_DIR") + "/lib/sherpa";
+//    private FittingEngine sherpa;
+//    private String sherpaDir = System.getProperty("IRIS_DIR") + "/lib/sherpa";
     private Point lastLocation;
     private CustomModelsManager customManager;
     private CustomModelsManagerView customManagerView;
@@ -119,17 +116,17 @@ public class IrisVisualizer implements IrisComponent {
 
         SpvProperties.SetProperty(Include.APP_NAME, Include.IRIS_APP_NAME);
         SpvProperties.SetProperty(Include.APP_VERSION, Include.IRIS_VERSION);
-        SpvProperties.SetProperty(Include.PYTHON_PATH, sherpaDir);
+//        SpvProperties.SetProperty(Include.PYTHON_PATH, sherpaDir);
         spvinit.initialize(null, false);
 
-        FittingEngineFactory f = new FittingEngineFactory();
-        try {
-            sherpa = f.get("sherpa");
-            sherpa.start();
-            LogEvent.getInstance().fire(sherpa, new LogEntry("Sherpa started", this));
-        } catch (NoSuchEngineException ex) {
-            Logger.getLogger(IrisVisualizer.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        FittingEngineFactory f = new FittingEngineFactory();
+//        try {
+//            sherpa = f.get("sherpa");
+//            sherpa.start();
+//            LogEvent.getInstance().fire(sherpa, new LogEntry("Sherpa started", this));
+//        } catch (NoSuchEngineException ex) {
+//            Logger.getLogger(IrisVisualizer.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
         this.app = app;
         ws = workspace;
@@ -143,14 +140,13 @@ public class IrisVisualizer implements IrisComponent {
         try {
 
             customManager = new CustomModelsManager(rootDir);
-            customManagerView = new CustomModelsManagerView(customManager, ws.getFileChooser());
-            ws.addFrame(customManagerView);
 
             TreeRefresher treeRefresher = new TreeRefresher();
             treeRefresher.execute(null);
             FunctionFactorySherpaHelper.SetTreeRefresher(treeRefresher);
 
         } catch (Exception ex) {
+            Logger.getLogger(IrisVisualizer.class.getName()).log(Level.SEVERE, null, ex);
             int ans = NarrowOptionPane.showConfirmDialog(ws.getRootFrame(), "Error initializing Custom Fit Component Manager: " + ex.getMessage()
                     + "\nDo you want to reset custom models?", "Iris Visualizer", NarrowOptionPane.ERROR_MESSAGE);
             if (ans == NarrowOptionPane.OK_OPTION) {
@@ -162,8 +158,7 @@ public class IrisVisualizer implements IrisComponent {
                     }
                     rootDir.mkdir();
                     customManager = new CustomModelsManager(rootDir);
-                    customManagerView = new CustomModelsManagerView(customManager, ws.getFileChooser());
-                    ws.addFrame(customManagerView);
+
 
                 } catch (IOException ex1) {
                     Logger.getLogger(IrisVisualizer.class.getName()).log(Level.SEVERE, null, ex1);
@@ -362,18 +357,18 @@ public class IrisVisualizer implements IrisComponent {
     }
 
     public void shutdown() {
-        sherpa.shutdown();
+//        sherpa.shutdown();
     }
 
     public void initCli(IrisApplication app) {
-        FittingEngineFactory f = new FittingEngineFactory();
-        try {
-            sherpa = f.get("test");
-            sherpa.start();
-            LogEvent.getInstance().fire(sherpa, new LogEntry("Sherpa started", this));
-        } catch (NoSuchEngineException ex) {
-            Logger.getLogger(IrisVisualizer.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        FittingEngineFactory f = new FittingEngineFactory();
+//        try {
+//            sherpa = f.get("test");
+//            sherpa.start();
+//            LogEvent.getInstance().fire(sherpa, new LogEntry("Sherpa started", this));
+//        } catch (NoSuchEngineException ex) {
+//            Logger.getLogger(IrisVisualizer.class.getName()).log(Level.SEVERE, null, ex);
+//        }
     }
 
     public static JFrame getRootFrame() {
@@ -509,6 +504,33 @@ public class IrisVisualizer implements IrisComponent {
                     "/ruler_small.png", "/ruler_tiny.png") {
 
                 public void onClick() {
+
+                    if (customManagerView == null) {
+                        try {
+                            customManagerView = new CustomModelsManagerView(customManager, ws.getFileChooser());
+                        } catch (IOException ex) {
+                            Logger.getLogger(IrisVisualizer.class.getName()).log(Level.SEVERE, null, ex);
+                            int ans = NarrowOptionPane.showConfirmDialog(ws.getRootFrame(), "Error initializing Custom Fit Component Manager: " + ex.getMessage()
+                                    + "\nDo you want to reset custom models?", "Iris Visualizer", NarrowOptionPane.ERROR_MESSAGE);
+                            if (ans == NarrowOptionPane.OK_OPTION) {
+                                File rootDir = new File(app.getConfigurationDir() + File.separator + "analysis" + File.separator + "custom_models");
+                                try {
+                                    if (rootDir.isDirectory()) {
+                                        deleteDirectory(rootDir);
+                                    } else {
+                                        rootDir.delete();
+                                    }
+                                    rootDir.mkdir();
+                                    customManager = new CustomModelsManager(rootDir);
+
+                                } catch (IOException ex1) {
+                                    Logger.getLogger(IrisVisualizer.class.getName()).log(Level.SEVERE, null, ex1);
+                                }
+
+                            }
+                        }
+                        ws.addFrame(customManagerView);
+                    }
 
                     customManagerView.show();
                     try {

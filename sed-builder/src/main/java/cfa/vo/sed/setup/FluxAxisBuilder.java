@@ -28,17 +28,30 @@ import cfa.vo.sed.setup.validation.Validation;
 import cfa.vo.sed.filters.IFilter;
 import cfa.vo.sed.quantities.IUnit;
 import cfa.vo.sed.quantities.SPVYQuantity;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author olaurino
  */
-public class FluxAxisBuilder extends AbstractValidable implements Builder<FluxAxis> {
+public class FluxAxisBuilder extends AbstractValidable implements Builder<FluxAxis>, Cloneable {
 
     private FluxAxis axis;
 
     public void setAxis(FluxAxis axis) {
         this.axis = axis;
+    }
+    
+    @Override
+    public Object clone() {
+        try {
+            FluxAxisBuilder cloned = (FluxAxisBuilder) super.clone();
+            return cloned;
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(SpectralAxisBuilder.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
     private SPVYQuantity quantity;

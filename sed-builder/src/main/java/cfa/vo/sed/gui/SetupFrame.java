@@ -1139,6 +1139,7 @@ public final class SetupFrame extends ConfirmJInternalFrame implements SegmentFr
             this.setVisible(false);
             SedBuilder.update();
         } catch (Exception ex) {
+            NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(), "Error adding the segment: " + ex.getMessage(), "Error", NarrowOptionPane.ERROR_MESSAGE);
             Logger.getLogger(SetupFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
 }//GEN-LAST:event_importSegment

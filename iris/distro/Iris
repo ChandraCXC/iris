@@ -9,13 +9,39 @@ function start_iris {
 
     export IRIS_DIR=$bindir
 
-    args="-Xms256m -Xmx1024m -Dhttp.agent=iris/1.1"
+    args="-Xms256m -Xmx1024m -Dhttp.agent=iris/${project.version}"
 
     if test -x /usr/bin/sw_vers && /usr/bin/sw_vers | grep -q 'OS.X'; then
       args="$args -Xdock:name=Iris"
     fi
 
-    java $args -DIRIS_DIR=$bindir -jar $bindir/iris-1.1.jar --ssa $@
+    if [ ! -d ~/.vao/iris/ ]; then
+          echo "Creating Iris directory in ~/.vao"
+          mkdir -p ~/.vao/iris
+    fi
+
+    java $args -DIRIS_DIR=$bindir -jar $bindir/${project.name}-${project.version}.jar --ssa $@ &
+    irispid=$!
+    echo "Started Iris with pid $irispid"
+
+    sherpagrep=`ps aux | grep sherpa`
+
+    if [[ $sherpagrep == *startsherpa.py* ]]
+    then
+        echo "Sherpa already running\n"
+    else
+        export DYLD_LIBRARY_PATH=$bindir/lib/sherpa/lib
+        export LD_LIBRARY_PATH=$bindir/lib/sherpa/lib
+        export PYTHONPATH
+
+        $bindir/lib/sherpa/bin/python2.6 $bindir/lib/sherpa/startsherpa.py &>~/.vao/iris/sherpa.log&
+        sherpapid=$!
+        echo "Started Sherpa with pid $sherpapid"
+    fi
+
+    wait $irispid
+
+    [ "$sherpapid" ] && kill -2 $sherpapid
 
 }
 
@@ -26,7 +52,7 @@ elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then
     echo Found java executable in JAVA_HOME     
     _java="$JAVA_HOME/bin/java"
 else
-    echo "No java found, quitting. Please follow instructions at http://cxc.cfa.harvard.edu/irisv1.1/download/index.html"
+    echo "No java found, quitting. Please follow instructions at http://cxc.cfa.harvard.edu/${project.name}v${project.version}/download/index.html"
 fi
 
 if [[ "$_java" ]]; then
@@ -36,6 +62,6 @@ if [[ "$_java" ]]; then
         echo "This java version is ok, starting Iris"
         start_iris $@
     else         
-        echo "This java version is too old, quitting. Please follow instructions at http://cxc.cfa.harvard.edu/irisv1.1/download/index.html"
+        echo "This java version is too old, quitting. Please follow instructions at http://cxc.cfa.harvard.edu/${project.name}v${project.version}/download/index.html"
     fi
 fi

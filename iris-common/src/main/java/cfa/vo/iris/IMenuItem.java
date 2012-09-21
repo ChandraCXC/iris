@@ -21,6 +21,8 @@
 
 package cfa.vo.iris;
 
+import java.io.File;
+
 /**
  * Interface describing the menu items contributed by a component.
  *
@@ -55,4 +57,8 @@ public interface IMenuItem {
      * @return an IButton instance representing the item.
      */
     IButton getButton();
+    /**
+     * In some cases (e.g. Plugins) the item has to be consolidated before it can be actually used
+     */
+    void consolidate(File file);
 }
