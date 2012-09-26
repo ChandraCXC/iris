@@ -44,13 +44,7 @@ import spv.controller.display.SecondaryDisplayManager;
 import spv.controller.display.DisplayManager;
 import spv.glue.*;
 import spv.graphics.WCSCursor;
-import spv.util.Callback;
-import spv.util.Command;
-import spv.util.ExceptionHandler;
-import spv.util.Include;
-import spv.util.MemoryJFileChooser;
-import spv.util.SPVFilter;
-import spv.util.ErrorDialog;
+import spv.util.*;
 import spv.util.properties.SpvProperties;
 import spv.view.FittingPlotWidget;
 import spv.view.PlotStatus;
@@ -79,7 +73,7 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
     private SedlibSedManager manager;
     private IWorkspace ws;
     private ExtSed sedDisplaying;
-    private DisplayManager self; // for use in innner classes
+    private IrisDisplayManager self; // for use in innner classes
 
     private Map<String,PlotStatus> plotStatusStorage;
     private IrisVisualizer visualizer;
@@ -248,13 +242,20 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
 
     private void addMenuBar(JInternalFrame internalFrame) {
         JMenuBar bar = new JMenuBar();
-        JMenu menu = new JMenu("File");
+
+        JMenu fileMenu = new JMenu("File");
         JMenu saveMenu = new JMenu("Save plot to image file.");
-
         populateImageFormatMenu(saveMenu);
+        fileMenu.add(saveMenu);
+        bar.add(fileMenu);
 
-        menu.add(saveMenu);
-        bar.add(menu);
+//        JMenu displayMenu = new JMenu("Display");
+//        JMenuItem coplotMenuItem = new JMenuItem("Co-plot");
+//        ActionListener listener = new CoplotListenerAdapter();
+//        coplotMenuItem.addActionListener(listener);
+//        displayMenu.add(coplotMenuItem);
+//        bar.add(displayMenu);
+
         internalFrame.setJMenuBar(bar);
     }
 
@@ -472,6 +473,21 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
 
         public void actionPerformed(ActionEvent e) {
             saveAsImage(suffix);
+        }
+    }
+
+    class CoplotListenerAdapter implements ActionListener {
+
+        public void actionPerformed(ActionEvent ev) {
+
+            IrisCoplotManager coplotManager = new IrisCoplotManager(ws, self, "Co-plot");
+
+            MemoryJFrame memoryFrame = coplotManager.getJFrame();
+
+            JInternalFrame frame = memoryFrame.getInternalFrame();
+            frame.setSize(Include.SPLIST_WINDOW_SIZE);
+            ws.addFrame(frame);
+            frame.setVisible(true);
         }
     }
 }

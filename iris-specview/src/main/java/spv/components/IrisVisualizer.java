@@ -187,6 +187,11 @@ public class IrisVisualizer implements IrisComponent {
         SegmentEvent.getInstance().add(new SegmentListener() {
 
             public void process(Segment source, final SegmentPayload payload) {
+
+                if (payload.getSedCommand() == SedCommand.REMOVED) {
+                    return;
+                }
+
                 ExtSed sed = payload.getSed();
 
                 // If the sed structure was modified, invalidate
