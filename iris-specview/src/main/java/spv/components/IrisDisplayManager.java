@@ -485,7 +485,7 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
             MemoryJFrame memoryFrame = coplotManager.getJFrame();
 
             JInternalFrame frame = memoryFrame.getInternalFrame();
-            frame.setSize(Include.SPLIST_WINDOW_SIZE);
+            frame.setSize(Include.IRIS_SPLIST_WINDOW_SIZE);
             ws.addFrame(frame);
             frame.setVisible(true);
         }

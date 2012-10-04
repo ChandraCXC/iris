@@ -97,7 +97,7 @@ public class Iris extends AbstractIrisApplication {
                 components.add(tl);
                 TestSSAServer th = new TestSSAServer();
                 components.add(th);
-                components.add(new BarePlotterTestComponent());
+//                components.add(new BarePlotterTestComponent());
             }
 
             if (prop.equals("r")) {

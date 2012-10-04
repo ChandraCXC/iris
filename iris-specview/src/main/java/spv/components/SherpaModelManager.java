@@ -163,7 +163,7 @@ public class SherpaModelManager extends SpvModelManager {
 
         sfsp = (SEDFittedSpectrum)fsp;
 
-        buildList();
+        buildGUIDisplays();
 
         buildSampHandlers();
     }

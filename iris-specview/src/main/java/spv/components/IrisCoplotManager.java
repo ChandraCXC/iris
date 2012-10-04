@@ -56,24 +56,26 @@ public class IrisCoplotManager extends MultiplePanelGUI {
 
         SedEvent.getInstance().add(new SedListener() {
             public void process(final ExtSed source, SedCommand payload) {
-                seds = sedManager.getSeds();
-                buildList();
+                refreshList();
             }
         });
 
         SegmentEvent.getInstance().add(new SegmentListener() {
             public void process(Segment source, final SegmentEvent.SegmentPayload payload) {
-                seds = sedManager.getSeds();
-                buildList();
+                refreshList();
             }
         });
 
         MultipleSegmentEvent.getInstance().add(new MultipleSegmentListener() {
             public void process(List< Segment > source, final SegmentEvent.SegmentPayload payload) {
-                seds = sedManager.getSeds();
-                buildList();
+                refreshList();
             }
         });
+    }
+
+    private void refreshList() {
+        seds = sedManager.getSeds();
+        buildList();
     }
 
     private void addPlotButton() {
@@ -88,11 +90,18 @@ public class IrisCoplotManager extends MultiplePanelGUI {
 
     private void goCoPlot() {
 
-        ExtSed multipleSed = sedManager.newSed("Co-plot");
+        ExtSed multipleSed = sedManager.newSed("");
 
+        StringBuffer sbuffer = new StringBuffer("Co-plot: ");
         int[] indices = sedsList.getSelectedIndices();
+
         for (int i = 0; i < indices.length; i++) {
+
             ExtSed sed = seds.get(indices[i]);
+
+            String sedId = sed.getId();
+            sbuffer.append(" ");
+            sbuffer.append(sedId);
 
             int nsegs = sed.getNumberOfSegments();
             List<Segment> segmentList = new ArrayList<Segment>(nsegs);
@@ -101,23 +110,18 @@ public class IrisCoplotManager extends MultiplePanelGUI {
                 Segment segment = sed.getSegment(j);
                 segmentList.add(segment);
             }
-
             try {
+
                 multipleSed.addSegment(segmentList);
+
             } catch (SedInconsistentException e) {
                 e.printStackTrace();
             } catch (SedNoDataException e) {
                 e.printStackTrace();  
             }
-
-
         }
 
-        //todo add attachment with valid spectrum container.
-        // must call  idm.display(container, id);   to prevent
-        // event being fired.
-
-//        idm.display(multipleSed, multipleSed.getId());
+        multipleSed.setId(sbuffer.toString());
     }
 
     private void buildList() {
@@ -131,7 +135,7 @@ public class IrisCoplotManager extends MultiplePanelGUI {
         sedsList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         sedsList.setVisibleRowCount(-1);
         JScrollPane listScroller = new JScrollPane(sedsList);
-        listScroller.setPreferredSize(Include.SPLIST_WINDOW_SIZE);
+        listScroller.setPreferredSize(Include.IRIS_SPLIST_WINDOW_SIZE);
 
         tabbed_pane.removeAll();
 

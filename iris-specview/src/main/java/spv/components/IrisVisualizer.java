@@ -119,6 +119,8 @@ public class IrisVisualizer implements IrisComponent {
 //        SpvProperties.SetProperty(Include.PYTHON_PATH, sherpaDir);
         spvinit.initialize(null, false);
 
+        FunctionFactorySherpaHelper.initialize();
+
 //        FittingEngineFactory f = new FittingEngineFactory();
 //        try {
 //            sherpa = f.get("sherpa");
