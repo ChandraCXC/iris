@@ -38,14 +38,13 @@ import cfa.vo.iris.events.PluginJarEvent;
 import cfa.vo.iris.events.PluginListener;
 import cfa.vo.iris.sdk.IrisPlugin;
 import cfa.vo.iris.sdk.PluginJar;
+import cfa.vo.iris.sdk.PluginManager;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -70,6 +69,7 @@ public class IrisDesktop extends JFrame implements PluginListener {
     private JDialog aboutBox;
     AbstractIrisApplication app;
     IWorkspace ws;
+    DesktopButton helpButton;
 
     public void setWorkspace(IWorkspace ws) {
         this.ws = ws;
@@ -136,9 +136,9 @@ public class IrisDesktop extends JFrame implements PluginListener {
         IrisMenuItem helpItem = new IrisMenuItem(help);
 
         helpMenu.add(helpItem);
-        DesktopButton b = new DesktopButton(help);
-        buttons.add(b);
-        desktopPane.add(b);
+        helpButton = new DesktopButton(help);
+        buttons.add(helpButton);
+        desktopPane.add(helpButton);
 
         paintButtons();
 
@@ -172,6 +172,9 @@ public class IrisDesktop extends JFrame implements PluginListener {
     private List<IrisMenuItem> fileMenus = new ArrayList();
 
     public void reset(List<IrisComponent> components) {
+        
+        if(!components.contains(manager))
+            components.add(manager);
 
         for (DesktopButton b : buttons) {
             desktopPane.remove(b);
@@ -221,6 +224,9 @@ public class IrisDesktop extends JFrame implements PluginListener {
             paintButtons();
 
         }
+        
+        buttons.add(helpButton);
+        desktopPane.add(helpButton, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         paintButtons();
 
@@ -532,6 +538,12 @@ public class IrisDesktop extends JFrame implements PluginListener {
             reset(components);
         }
 
+    }
+    
+    private PluginManager manager;
+
+    public void setPluginManager(PluginManager manager) {
+        this.manager = manager;
     }
 
     private class SampStatusListener implements SAMPConnectionListener {

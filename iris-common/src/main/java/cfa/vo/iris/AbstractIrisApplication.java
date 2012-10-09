@@ -221,6 +221,8 @@ public abstract class AbstractIrisApplication extends Application implements Iri
             
             manager.init(AbstractIrisApplication.this, ws);
             
+            desktop.setPluginManager(manager);
+            
             desktop.reset(new ArrayList(components.values()));
             
             manager.load();

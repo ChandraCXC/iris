@@ -65,7 +65,9 @@ public abstract class AbstractPluginMenuItem extends AbstractMenuItem {
     @Override
     public void consolidate(File file) {
         String path = file.getAbsolutePath();
-        button = new Button(path+"!"+iconPath, path+"!"+thumbnailPath);
+        iconPath = path+"!"+iconPath;
+        thumbnailPath = path+"!"+thumbnailPath;
+        button = new Button(iconPath, thumbnailPath);
     }
     
 }
