@@ -32,7 +32,7 @@ function start_iris {
     else
         export DYLD_LIBRARY_PATH=$bindir/lib/sherpa/lib
         export LD_LIBRARY_PATH=$bindir/lib/sherpa/lib
-        export PYTHONPATH
+        unset PYTHONPATH
 
         $bindir/lib/sherpa/bin/python2.6 $bindir/lib/sherpa/startsherpa.py &>~/.vao/iris/sherpa.log&
         sherpapid=$!

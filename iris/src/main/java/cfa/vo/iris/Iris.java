@@ -33,7 +33,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.UIManager;
-import spv.components.BarePlotterTestComponent;
 
 /**
  * The main class of the application.
