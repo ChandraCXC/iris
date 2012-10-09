@@ -10,7 +10,7 @@
     <parent>
         <groupId>cfa.vo</groupId>
         <artifactId>iris2</artifactId>
-        <version>1.2-beta2</version>
+        <version>1.2-beta3</version>
     </parent>
 
     <dependencies>
