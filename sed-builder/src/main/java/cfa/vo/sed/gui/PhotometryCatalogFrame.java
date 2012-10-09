@@ -1011,6 +1011,8 @@ public class PhotometryCatalogFrame extends ConfirmJInternalFrame implements Seg
             }
 
         }
+        
+        
 
         setPointSelected(selectedPoint != null);
     }
@@ -1042,11 +1044,17 @@ public class PhotometryCatalogFrame extends ConfirmJInternalFrame implements Seg
         String id = "Point" + (i++);
         PhotometryPointBuilder ppc;
         List<PhotometryPointBuilder> builders = conf.getPointBuilders();
-        if(builders.isEmpty())
-            ppc = new PhotometryPointBuilder(id);
-        else {
-            ppc = (PhotometryPointBuilder) builders.get(builders.size()-1).clone();
-            ppc.setId(id);
+        
+        ppc = new PhotometryPointBuilder(id);
+
+            
+        if(!builders.isEmpty()) {
+            PhotometryPointBuilder pb = builders.get(builders.size()-1);
+            ppc.getFluxAxisBuilder().setQuantity(pb.getFluxAxisBuilder().getQuantity());
+            ppc.getFluxAxisBuilder().setUnit(pb.getFluxAxisBuilder().getUnit());
+            ppc.getSpectralAxisBuilder().setMode(pb.getSpectralAxisBuilder().getMode());
+            ppc.getSpectralAxisBuilder().setQuantity(pb.getSpectralAxisBuilder().getQuantity());
+            ppc.getSpectralAxisBuilder().setUnit(pb.getSpectralAxisBuilder().getUnit());
         }
         conf.addPointBuilder(ppc);
         jList1.setSelectedValue(ppc, true);

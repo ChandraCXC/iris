@@ -22,12 +22,14 @@
 package cfa.vo.sed.builder.photfilters;
 
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author olaurino
  */
-public class PhotometryFilter {
+public class PhotometryFilter implements Cloneable {
     private String id;
     private String unit;
     private String band;
@@ -131,5 +133,15 @@ public class PhotometryFilter {
     @Override
     public String toString() {
         return getId().split("/")[1];
+    }
+    
+    @Override
+    public Object clone() {
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(PhotometryFilter.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 }

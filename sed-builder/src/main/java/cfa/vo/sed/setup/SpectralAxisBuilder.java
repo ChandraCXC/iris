@@ -44,6 +44,7 @@ public class SpectralAxisBuilder extends AbstractValidable implements Builder<Sp
     public Object clone() {
         try {
             SpectralAxisBuilder cloned = (SpectralAxisBuilder) super.clone();
+            cloned.filter_ = null;
             return cloned;
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(SpectralAxisBuilder.class.getName()).log(Level.SEVERE, null, ex);
