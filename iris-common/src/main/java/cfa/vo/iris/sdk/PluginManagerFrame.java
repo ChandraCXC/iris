@@ -21,6 +21,7 @@
  */
 package cfa.vo.iris.sdk;
 
+import cfa.vo.iris.AbstractIrisApplication;
 import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import java.awt.event.MouseAdapter;
@@ -80,6 +81,7 @@ public class PluginManagerFrame extends javax.swing.JInternalFrame {
         jars.addAll(manager.getPluginJars());
         refreshTree();
         initComponents();
+        jTextField1.setText(AbstractIrisApplication.CONFIGURATION_DIR.getAbsolutePath()+"/components/");
         jTree1.addMouseListener(ma);
     }
 
@@ -143,9 +145,6 @@ public class PluginManagerFrame extends javax.swing.JInternalFrame {
 
         jTextField1.setEditable(false);
         jTextField1.setName("jTextField1"); // NOI18N
-
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${ffm.pluginDir}"), jTextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
-        bindingGroup.addBinding(binding);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

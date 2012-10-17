@@ -139,11 +139,6 @@
         <Property name="editable" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="jTextField1" noResource="true"/>
       </Properties>
-      <BindingProperties>
-        <BindingProperty name="text" source="Form" sourcePath="${ffm.pluginDir}" target="jTextField1" targetPath="text" updateStrategy="0" immediately="false">
-          <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
-        </BindingProperty>
-      </BindingProperties>
     </Component>
   </SubComponents>
 </Form>
