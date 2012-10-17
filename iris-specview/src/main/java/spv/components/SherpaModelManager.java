@@ -424,7 +424,7 @@ public class SherpaModelManager extends SpvModelManager {
             Map<String,Object> part = new HashMap<String,Object>();
             // Each Map contains two entries: a "name" with the component type and
             // identification in the form "bbody.c1", and a "pars" list of Maps.
-            String name = component.toString() + ".c" + String.valueOf(index);
+            String name = component.getName() + ".c" + String.valueOf(index);
             part.put("name", name);
 
             // Added this to support user-defined components: we store
