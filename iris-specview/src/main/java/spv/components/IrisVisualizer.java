@@ -249,7 +249,7 @@ public class IrisVisualizer implements IrisComponent {
         idm.remove(source.getId());
     }
 
-    private void display(ExtSed sed) {
+    private synchronized void display(ExtSed sed) {
 
         manageAssociatedManagerWindows(sed);
 
