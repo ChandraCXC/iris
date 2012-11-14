@@ -28,6 +28,7 @@ import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 
+import spv.controller.SpectrumContainer;
 import spv.util.Include;
 import spv.util.MultiplePanelGUI;
 
@@ -90,7 +91,7 @@ public class IrisCoplotManager extends MultiplePanelGUI {
 
     private void goCoPlot() {
 
-        ExtSed multipleSed = sedManager.newSed("");
+        ExtSed multipleSed = new ExtSed("");
 
         StringBuffer sbuffer = new StringBuffer("Co-plot: ");
         int[] indices = sedsList.getSelectedIndices();
@@ -121,7 +122,10 @@ public class IrisCoplotManager extends MultiplePanelGUI {
             }
         }
 
-        multipleSed.setId(sbuffer.toString());
+        String sedID = sbuffer.toString();
+        multipleSed.setId(sedID);
+
+        idm.display(multipleSed, sedID);
     }
 
     private void buildList() {

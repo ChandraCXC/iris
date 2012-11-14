@@ -37,6 +37,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 
+import cfa.vo.sedlib.common.SedInconsistentException;
+import cfa.vo.sedlib.common.SedNoDataException;
 import org.astrogrid.samp.client.MessageHandler;
 
 import cfa.vo.iris.AbstractDesktopItem;
@@ -78,6 +80,7 @@ import spv.sherpa.custom.CustomModelsManager;
 import spv.sherpa.custom.CustomModelsManagerView;
 import spv.sherpa.custom.DefaultCustomModel;
 import spv.spectrum.Spectrum;
+import spv.spectrum.SpectrumException;
 import spv.spectrum.factory.SED.SEDFactoryModule;
 import spv.spectrum.function.*;
 import spv.util.Command;
@@ -260,25 +263,9 @@ public class IrisVisualizer implements IrisComponent {
             // There is no Sed attachment, so build a model manager and attach it.
 
             if (container == null) {
-
-                Spectrum sp = factory.readAllSegments(null, sed);
-
-                if (sp == null) {
+                if (buildAttachment(sed)) {
                     return;
                 }
-
-                sp.setName(sed.getId());
-
-                JDesktopPane desktop = ws.getDesktop();
-                SherpaModelManager modelManager = new SherpaModelManager(sp, idm.getSAMPConnector(), desktop);
-                modelManager.setActive(false);
-
-                container = new SpectrumContainer(sp, modelManager);
-                sed.addAttachment(IrisDisplayManager.FIT_MODEL, container);
-
-                // This is needed to capture the 'Quit' button action
-                // that comes from the model manager GUI.
-                modelManager.setCallbackOnDispose(new OnDisposeCommand(sed));
             }
 
             // Now display the Sed.
@@ -304,6 +291,30 @@ public class IrisVisualizer implements IrisComponent {
             LogEvent.getInstance().fire(this, new LogEntry("Error: " + ex.getMessage(), sed));
             ex.printStackTrace();
         }
+    }
+
+    public boolean buildAttachment(ExtSed sed) throws SedNoDataException, SedInconsistentException, SpectrumException {
+
+        Spectrum sp = factory.readAllSegments(null, sed);
+
+        if (sp == null) {
+            return true;
+        }
+
+        sp.setName(sed.getId());
+
+        JDesktopPane desktop = ws.getDesktop();
+        SherpaModelManager modelManager = new SherpaModelManager(sp, idm.getSAMPConnector(), desktop);
+        modelManager.setActive(false);
+
+        SpectrumContainer container = new SpectrumContainer(sp, modelManager);
+        sed.addAttachment(IrisDisplayManager.FIT_MODEL, container);
+
+        // This is needed to capture the 'Quit' button action
+        // that comes from the model manager GUI.
+        modelManager.setCallbackOnDispose(new OnDisposeCommand(sed));
+
+        return false;
     }
 
     private void manageAssociatedManagerWindows(ExtSed sed) {

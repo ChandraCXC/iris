@@ -28,6 +28,7 @@ import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.TextParam;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import org.astrogrid.samp.gui.GuiHubConnector;
@@ -44,6 +45,9 @@ import spv.controller.display.SecondaryDisplayManager;
 import spv.controller.display.DisplayManager;
 import spv.glue.*;
 import spv.graphics.WCSCursor;
+import spv.spectrum.SEDMultiSegmentSpectrum;
+import spv.spectrum.Spectrum;
+import spv.spectrum.SpectrumException;
 import spv.util.*;
 import spv.util.properties.SpvProperties;
 import spv.view.FittingPlotWidget;
@@ -110,11 +114,39 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
 
             SpectrumContainer container = (SpectrumContainer) sed.getAttachment(FIT_MODEL);
 
-            container.getSpectrum().setName(name);
+            // Seds may come without associated data, such as when we build a compisite Sed
+            // to perform a co-plot operation. In those cases we need to attach a valid
+            // container to the Sed.
+            if (container == null) {
+                try {
+                    if (visualizer.buildAttachment(sed)) {
+                        return;
+                    }
+                } catch (SedNoDataException e) {
+                    e.printStackTrace();
+                } catch (SedInconsistentException e) {
+                    e.printStackTrace();
+                } catch (SpectrumException e) {
+                    e.printStackTrace();
+                }
+
+                // now, get the container so we can use it down below.
+
+                container = (SpectrumContainer) sed.getAttachment(FIT_MODEL);
+
+                // force the object ID on the plot to be an empty string. This
+                // is assuming that the sed resulted from a co-plot operation.
+                // This might not be the best for other situations.
+
+                SEDMultiSegmentSpectrum sms = (SEDMultiSegmentSpectrum) container.getSpectrum();
+                sms.getTarget().setName(new TextParam(" "));
+            }
 
             removeVisualEditor();
 
-            display(container, sed.getId());
+            String sedName = sed.getId();
+
+            display(container, sedName);
 
             sedDisplaying = sed;
 
@@ -131,6 +163,9 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
             secondaryController = null;
             return;
         }
+
+        String spectrmName = container.getSpectrum().getName();
+
 
         // this widget will display the new Sed.
         PlotWidget pw = buildPlotWidget(container, false, null);
@@ -248,6 +283,8 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
         populateImageFormatMenu(saveMenu);
         fileMenu.add(saveMenu);
         bar.add(fileMenu);
+
+        //TODO co-plot manager
 
 //        JMenu displayMenu = new JMenu("Display");
 //        JMenuItem coplotMenuItem = new JMenuItem("Co-plot");
