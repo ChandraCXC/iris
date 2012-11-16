@@ -289,7 +289,8 @@ public class IrisVisualizer implements IrisComponent {
 
         } catch (Exception ex) {
             LogEvent.getInstance().fire(this, new LogEntry("Error: " + ex.getMessage(), sed));
-            ex.printStackTrace();
+            Logger.getLogger("IrisVisualizer").log(Level.SEVERE, null, ex);
+//            ex.printStackTrace();
         }
     }
 
