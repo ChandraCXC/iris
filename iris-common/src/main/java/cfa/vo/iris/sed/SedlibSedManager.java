@@ -96,6 +96,8 @@ public class SedlibSedManager implements ISedManager<ExtSed> {
         sedMap.remove(id);
         SedEvent.getInstance().fire(sed, SedCommand.REMOVED);
         LogEvent.getInstance().fire(this, new LogEntry("SED removed: " + id, this));
+        if(this.getSeds().isEmpty())
+            this.newSed("Sed");
     }
 
     @Override

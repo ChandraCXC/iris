@@ -24,6 +24,8 @@ package cfa.vo.iris.events;
 import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -50,7 +52,11 @@ public abstract class GenericEvent<SourceClass, ListenerClass extends IListener<
 
                 @Override
                 public void run() {
-                    listener.process(source, payload);
+                    try {
+                        listener.process(source, payload);
+                    } catch (Throwable ex) {
+                        Logger.getLogger("GenericEvent").log(Level.SEVERE, null, ex);
+                    }
                 }
             });
             
