@@ -829,6 +829,23 @@ public final class LoadSegmentFrame extends JInternalFrame {
                         }
                     }
 
+                    try {
+                        Double ra = (Double) seg.getTarget().getPos().getValue()[0].getCastValue();
+                        Double dec = (Double) seg.getTarget().getPos().getValue()[1].getCastValue();
+                        if(ra==null || dec==null)
+                            throw new Exception();
+                    } catch(Exception ex) {
+                        seg.createTarget().createPos().setValue(new DoubleParam[]{new DoubleParam(Double.NaN), new DoubleParam(Double.NaN)});
+                    }
+                    
+                    try {
+                        Double ra = (Double) seg.getChar().getSpatialAxis().getCoverage().getLocation().getValue()[0].getCastValue();
+                        Double dec = (Double) seg.getChar().getSpatialAxis().getCoverage().getLocation().getValue()[1].getCastValue();
+                        if(ra==null || dec==null)
+                            throw new Exception();
+                    } catch(Exception ex) {
+                        seg.getChar().getSpatialAxis().getCoverage().getLocation().setValue(seg.getTarget().getPos().getValue());
+                    }
 
                     if (errList.isEmpty()) {
                         segList.add(seg);

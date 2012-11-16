@@ -1055,6 +1055,8 @@ public class PhotometryCatalogFrame extends ConfirmJInternalFrame implements Seg
             ppc.getSpectralAxisBuilder().setMode(pb.getSpectralAxisBuilder().getMode());
             ppc.getSpectralAxisBuilder().setQuantity(pb.getSpectralAxisBuilder().getQuantity());
             ppc.getSpectralAxisBuilder().setUnit(pb.getSpectralAxisBuilder().getUnit());
+            ppc.getFluxAxisBuilder().setValueColumn(pb.getFluxAxisBuilder().getValueColumn());
+            ppc.getSpectralAxisBuilder().setValueColumn(pb.getSpectralAxisBuilder().getValueColumn());
         }
         conf.addPointBuilder(ppc);
         jList1.setSelectedValue(ppc, true);

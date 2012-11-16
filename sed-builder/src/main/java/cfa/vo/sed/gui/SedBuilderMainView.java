@@ -780,14 +780,25 @@ public class SedBuilderMainView extends JInternalFrame {
             if(radec==null) radec = new DoubleParam[]{null, null};
 
             String raS, decS;
-            if(radec[0]==null || radec[0].getValue().isEmpty())
+            
+            try {
+            
+                if(radec[0]==null || radec[0].getValue().isEmpty())
+                    raS = "-";
+                else
+                    raS = Double.valueOf(radec[0].getValue()).isNaN() ? "-" : roundToSignificantFigures(Double.valueOf(radec[0].getValue()), 5).toString();
+                if(radec[1]==null || radec[1].getValue().isEmpty())
+                    decS = "-";
+                else
+                    decS = Double.valueOf(radec[1].getValue()).isNaN() ? "-" : roundToSignificantFigures(Double.valueOf(radec[1].getValue()), 5).toString();
+                
+            } catch(Exception ex) {
+                
                 raS = "-";
-            else
-                raS = Double.valueOf(radec[0].getValue()).isNaN() ? "-" : roundToSignificantFigures(Double.valueOf(radec[0].getValue()), 5).toString();
-            if(radec[1]==null || radec[1].getValue().isEmpty())
                 decS = "-";
-            else
-                decS = Double.valueOf(radec[1].getValue()).isNaN() ? "-" : roundToSignificantFigures(Double.valueOf(radec[1].getValue()), 5).toString();
+                
+            }
+            
             String content = raS+", "+decS;
             setText(content);
 
