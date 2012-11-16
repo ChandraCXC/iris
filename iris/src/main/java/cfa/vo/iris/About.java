@@ -59,8 +59,8 @@ public class About extends javax.swing.JDialog {
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
 
-        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
-        jLabel1.setText("Iris v1.1");
+        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 18));
+        jLabel1.setText("Iris v1.2");
         jLabel1.setName("jLabel1"); // NOI18N
 
         jLabel2.setText("Virtual Astronomical Observatory");
@@ -107,11 +107,8 @@ public class About extends javax.swing.JDialog {
                     .add(jLabel4)
                     .add(jLabel3)
                     .add(jLabel5)
-                    .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jLabel7)
-                            .add(jLabel2))
-                        .add(39, 39, 39)))
+                    .add(jLabel7)
+                    .add(jLabel2))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()

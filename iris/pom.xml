@@ -17,7 +17,7 @@
     <parent>
         <groupId>cfa.vo</groupId>
         <artifactId>iris2</artifactId>
-        <version>1.2-beta3</version>
+        <version>1.2-beta5</version>
     </parent>
 
     <dependencies>
@@ -115,6 +115,9 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
+                            <nonFilteredFileExtensions>
+                                <nonFilteredFileExtension>jar</nonFilteredFileExtension>
+                            </nonFilteredFileExtensions>
                             <outputDirectory>${basedir}/target/</outputDirectory>
                             <resources>
                                 <resource>
@@ -221,7 +224,7 @@
                                                 <mkdir dir="${basedir}/target/${project.name}-${project.version}-@{p}"/>
 
                                                 <copy todir="${basedir}/target/${project.name}-${project.version}-@{p}" overwrite="true">
-                                                    <fileset dir="${basedir}/target/" includes="Iris,examples/*,${project.name}-${project.version}-@{p}.tar.gz,${project.name}-${project.version}.jar,LICENSE*,README.txt,README-BETA.txt,COPYING,lib/**/*"/>
+                                                    <fileset dir="${basedir}/target/" includes="Iris,examples/*,${project.name}-${project.version}-@{p}.tar.gz,${project.name}-${project.version}.jar,LICENSE*,README.txt,README-BETA.txt,COPYING,lib/**/*,contrib/*"/>
                                                 </copy>
 
                                                 <chmod file="${basedir}/target/${project.name}-${project.version}-@{p}/Iris" perm="+x"/>
