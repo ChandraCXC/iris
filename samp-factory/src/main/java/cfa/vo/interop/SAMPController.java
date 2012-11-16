@@ -336,7 +336,7 @@ public class SAMPController extends GuiHubConnector {
 
                     if(stateChanged) {
                         state = isConnected();
-                        for(SAMPConnectionListener listener : listeners) {
+                        for(SAMPConnectionListener listener : listeners.toArray(new SAMPConnectionListener[]{})) {
                             listener.run(state);
                         }
                     }

@@ -47,9 +47,9 @@ public class SAMPFactory {
      * @return An instance of a SAMP serializable object.
      */
     public static Object get(Class clazz) {
-        return Proxy.newProxyInstance(SAMPFactory.class.getClassLoader(), new Class[]{clazz}, new SAMPProxy(clazz));
+        return Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, new SAMPProxy(clazz));
     }
-
+    
     /**
      *
      * Given an instance of an object and an interface specification, this method
