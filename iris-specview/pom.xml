@@ -29,7 +29,7 @@
         <dependency>
             <groupId>specview</groupId>
             <artifactId>specview</artifactId>
-            <version>20121206b1</version>
+            <version>20121207b2</version>
         </dependency>
         <dependency>
             <groupId>xml</groupId>

@@ -37,7 +37,11 @@ package spv.components;
  */
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.List;
 import java.lang.reflect.Constructor;
@@ -647,6 +651,21 @@ public class SherpaModelManager extends SpvModelManager {
 
     protected void buildJPanel4() {
         sherpaExpressionField  = new JTextField("c1");
+
+        // Dispose fit manager when expression gets changed.
+        // Note that Return must be hit for it to happen.
+        sherpaExpressionField.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent documentEvent) {
+                disposeFitManager();
+            }
+            public void removeUpdate(DocumentEvent documentEvent) {
+                disposeFitManager();
+            }
+            public void changedUpdate(DocumentEvent documentEvent) {
+                disposeFitManager();
+            }
+        });
+
         GridLayout gridLayout1 = new GridLayout(  );
         gridLayout1.setColumns(1);
         gridLayout1.setRows( 5 );
