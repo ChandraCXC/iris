@@ -11,7 +11,7 @@
     <parent>
         <groupId>cfa.vo</groupId>
         <artifactId>iris2</artifactId>
-        <version>1.2-beta5</version>
+        <version>1.2</version>
     </parent>
 
     <dependencies>
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>specview</groupId>
             <artifactId>specview</artifactId>
-            <version>20121207b2</version>
+            <version>20121206b1</version>
         </dependency>
         <dependency>
             <groupId>xml</groupId>
