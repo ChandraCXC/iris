@@ -32,7 +32,7 @@ import javax.swing.JInternalFrame;
  * @author olaurino
  */
 // A DesktopManager that keeps its frames inside the desktop
-public class BoundDesktopManager implements DesktopManager {
+public class BoundDesktopManager implements DesktopManager {    
     JDesktopPane desk;
     DesktopManager dm;
 
@@ -56,23 +56,23 @@ public class BoundDesktopManager implements DesktopManager {
             // to keep the frame on the desktop
             if (x < 0) { // Too far left?
                 x = 0;// Flush against the left side.
-            }
+                }
             else {
                 if (x + f.getWidth( ) > d.width) {// Too far right?
                 x = d.width - f.getWidth( ); // Flush against right side.
             }
             }
-                if (y < 0) { // Too high?
+            if (y < 0) { // Too high?
                 y=0;// Flush against the top.
-            }
+                }
             else {
             if (y + f.getHeight( ) > d.height) {// Too low?
                 y = d.height - f.getHeight( );// Flush against the bottom.
             }
         }
     }
-    // Pass along the (possibly cropped) values to the normal drag handler.
-    dm.dragFrame(f, x, y);
+        // Pass along the (possibly cropped) values to the normal drag handler.
+        dm.dragFrame(f, x, y);
     }
 
     @Override
@@ -107,6 +107,8 @@ public class BoundDesktopManager implements DesktopManager {
 
     @Override
     public void activateFrame(JInternalFrame jif) {
+        if(outOfBounds(jif))
+            dragFrame(jif, jif.getX(), jif.getY());
         dm.activateFrame(jif);
     }
 
@@ -145,4 +147,27 @@ public class BoundDesktopManager implements DesktopManager {
         dm.setBoundsForFrame(jc, i, i1, i2, i3);
     }
 
+    private boolean outOfBounds(JInternalFrame jif) {
+        int x = jif.getX();
+        int y = jif.getY();
+        
+        Dimension d = desk.getSize();
+        if (x < 0) { // Too far left?
+            return true;
+        } else {
+            if (x + jif.getWidth() > d.width) {// Too far right?
+                return true;
+            }
+        }
+        if (y < 0) { // Too high?
+            return true;
+        } else {
+            if (y + jif.getHeight() > d.height) {// Too low?
+                return true;
+            }
+        }
+        
+        return false;
+
+    }    
 }

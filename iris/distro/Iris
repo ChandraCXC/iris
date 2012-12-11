@@ -7,7 +7,7 @@ function start_iris {
         bindir=$( cd -P "$( dirname "`readlink -n "$0"`" )" && pwd )
     fi
 
-    export IRIS_DIR=$bindir
+    export IRIS_DIR="$bindir"
 
     args="-Xms256m -Xmx1024m -Dhttp.agent=iris/${project.version}"
 
@@ -20,7 +20,7 @@ function start_iris {
           mkdir -p ~/.vao/iris
     fi
 
-    java $args -DIRIS_DIR=$bindir -jar $bindir/${project.name}-${project.version}.jar --ssa $@ &
+    java $args -DIRIS_DIR="$bindir" -jar "$bindir"/${project.name}-${project.version}.jar --ssa $@ &
     irispid=$!
     echo "Started Iris with pid $irispid"
 
@@ -34,7 +34,7 @@ function start_iris {
         export LD_LIBRARY_PATH=$bindir/lib/sherpa/lib
         unset PYTHONPATH
 
-        $bindir/lib/sherpa/bin/python2.6 $bindir/lib/sherpa/startsherpa.py &>~/.vao/iris/sherpa.log&
+        "$bindir"/lib/sherpa/bin/python2.6 "$bindir"/lib/sherpa/startsherpa.py &>~/.vao/iris/sherpa.log&
         sherpapid=$!
         echo "Started Sherpa with pid $sherpapid"
     fi
