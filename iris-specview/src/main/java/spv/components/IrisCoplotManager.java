@@ -91,7 +91,7 @@ public class IrisCoplotManager extends MultiplePanelGUI {
 
     private void goCoPlot() {
 
-        ExtSed multipleSed = new ExtSed("");
+        ExtSed multipleSed = new ExtSed("", false); // non-managed SED
 
         StringBuffer sbuffer = new StringBuffer("Co-plot: ");
         int[] indices = sedsList.getSelectedIndices();
