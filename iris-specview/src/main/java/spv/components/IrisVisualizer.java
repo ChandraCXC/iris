@@ -248,7 +248,7 @@ public class IrisVisualizer implements IrisComponent {
     }
 
     private void remove(ExtSed source) {
-        // invalidateModel(source);   Might be needed in the future?
+        invalidateModel(source);  // Might be needed in the future?
         idm.remove(source.getId());
     }
 

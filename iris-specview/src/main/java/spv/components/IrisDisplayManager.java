@@ -286,12 +286,12 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
 
         //TODO co-plot manager
 
-//        JMenu displayMenu = new JMenu("Display");
-//        JMenuItem coplotMenuItem = new JMenuItem("Co-plot");
-//        ActionListener listener = new CoplotListenerAdapter();
-//        coplotMenuItem.addActionListener(listener);
-//        displayMenu.add(coplotMenuItem);
-//        bar.add(displayMenu);
+        JMenu displayMenu = new JMenu("Display");
+        JMenuItem coplotMenuItem = new JMenuItem("Co-plot");
+        ActionListener listener = new CoplotListenerAdapter();
+        coplotMenuItem.addActionListener(listener);
+        displayMenu.add(coplotMenuItem);
+        bar.add(displayMenu);
 
         internalFrame.setJMenuBar(bar);
     }

@@ -46,13 +46,13 @@ public class IrisCoplotManager extends MultiplePanelGUI {
         this.idm = idm;
 
         sedManager = (SedlibSedManager) ws.getSedManager();
-        seds = sedManager.getSeds();
+
+        refreshList();
 
         addPlotButton();
-        buildList();
 
         // These handlers ensure that the Sed list kept internally
-        // by this class is always in synch with the main Sed
+        // by this class is always in sync with the main Sed
         // storage that lives in the Sed manager.
 
         SedEvent.getInstance().add(new SedListener() {
