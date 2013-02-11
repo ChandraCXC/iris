@@ -17,15 +17,17 @@
 package cfa.vo.sherpa;
 
 import cfa.vo.interop.SAMPFactory;
-import cfa.vo.interop.PingMessage;
 import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SAMPMessage;
+import cfa.vo.iris.gui.NarrowOptionPane;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.astrogrid.samp.Client;
 import org.astrogrid.samp.Response;
-import org.astrogrid.samp.client.ResultHandler;
 import org.astrogrid.samp.client.SampException;
 
 /**
@@ -41,10 +43,12 @@ public class SherpaClient {
 
     public SherpaClient(SAMPController controller) {
         this.sampController = controller;
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException ex) {
-        }
+        Thread t = new SherpaFinderThread();
+        t.start();
+    }
+    
+    public String getSherpaId() {
+        return sherpaPublicId;
     }
 
     public Parameter getParameter(AbstractModel model, String name) {
@@ -92,17 +96,6 @@ public class SherpaClient {
 
     }
 
-    public String createExpression(String expression, Model[] models) {
-
-        expression = expression.replaceAll(" ", "");
-
-        for (Entry<String, AbstractModel> entry : modelMap.entrySet()) {
-            expression = expression.replaceAll(entry.getKey(), entry.getValue().getName());//FIXME naive implementation, works only (maybe) with less than 10 models
-        }
-
-        return expression;
-    }
-
     public Data createData(String name) {
         Data data = (Data) SAMPFactory.get(Data.class);
         data.setName(name);
@@ -138,20 +131,88 @@ public class SherpaClient {
     }
 
     public void findSherpa() throws SampException {
-        sampController.sendMessage(new PingMessage(), new PingResultHandler(), 10);
+        for(Entry<String, Client> entry : (Set<Entry<String, Client>>) sampController.getClientMap().entrySet())
+            if (entry.getValue().getMetadata().getName().toLowerCase().equals("sherpa"))
+                sherpaPublicId = entry.getValue().getId();
     }
 
-    private class PingResultHandler implements ResultHandler {
+    public boolean isException(Response rspns) {
+        return !rspns.isOK();
+    }
+    
+    private Map<String, Class> exceptions = new Exceptions();
+
+    public Exception getException(Response rspns) throws Exception {
+        try {
+//            Class clazz = exceptions.get((String)rspns.getResult().get("exception"));
+            String message = (String) rspns.getResult().get("message");
+            return new SEDException(message);
+        } catch (Exception ex) {
+            Logger.getLogger(SherpaClient.class.getName()).log(Level.SEVERE, null, ex);
+            throw new Exception(ex);
+        } 
+    }
+    
+//    private class PingResultHandler implements ResultHandler {
+//
+//        @Override
+//        public void result(Client client, Response rspns) {
+//            if (client.getMetadata().getName().toLowerCase().equals("sherpa")) {
+//                sherpaPublicId = client.getId();
+//            }
+//        }
+//
+//        @Override
+//        public void done() {
+//        }
+//    }
+    
+    private class SherpaFinderThread extends Thread {
 
         @Override
-        public void result(Client client, Response rspns) {
-            if (client.getMetadata().getName().toLowerCase().equals("sherpa")) {
-                sherpaPublicId = client.getId();
+        public void run() {
+
+            while (true) {
+                try {
+                    findSherpa();
+                } catch (SampException ex) {
+                    NarrowOptionPane.showMessageDialog(null,
+                            "Iris could not find the Sherpa process running in the background. Check the Troubleshooting section in the Iris documentation.",
+                            "Cannot connect to Sherpa",
+                            NarrowOptionPane.ERROR_MESSAGE);
+                }
+
+                try {
+                    Thread.currentThread().wait(2000);
+                    if (sherpaPublicId != null) {
+                        break;
+                    }
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(SherpaClient.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
-
-        @Override
-        public void done() {
+    }
+    
+    private class Exceptions extends HashMap<String, Class> {
+        public Exceptions() {
+            put("SEDException", SEDException.class);
+            put("DataException", SEDException.class);
+            put("ModelException", SEDException.class);
+            put("FitException", SEDException.class);
+            put("ConfidenceException", SEDException.class);
+            put("ParameterException", SEDException.class);
+            put("StatisticException", SEDException.class);
+            put("MethodException", SEDException.class);
         }
     }
+    
+    public class SEDException extends Exception {
+        public SEDException(String msg) {
+            super(msg);
+        }
+    }
+    
+    
+    
 }

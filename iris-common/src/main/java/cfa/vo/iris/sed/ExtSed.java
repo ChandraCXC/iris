@@ -34,9 +34,14 @@ import cfa.vo.sedlib.common.SedParsingException;
 import cfa.vo.sedlib.io.SedFormat;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.lang.ArrayUtils;
 
 /**
  *
@@ -173,5 +178,23 @@ public class ExtSed extends Sed {
         }
 
         return s;
+    }
+    
+    public void checkChar() {
+        for(int i=0; i<this.getNumberOfSegments(); i++) {
+            Segment segment = this.getSegment(i);
+            List<Double> spectral;
+            try {
+                spectral = Arrays.asList(ArrayUtils.toObject(segment.getSpectralAxisValues()));
+                double min = Collections.min(spectral);
+                double max = Collections.max(spectral);
+                segment.createChar().createSpectralAxis().createCoverage().createBounds().createRange().createMin().setValue(min);
+                segment.createChar().createSpectralAxis().createCoverage().createBounds().createRange().createMax().setValue(max);
+                segment.createChar().createSpectralAxis().createCoverage().createBounds().createExtent().setValue(max-min);
+            } catch (SedNoDataException ex) {
+                Logger.getLogger(ExtSed.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+        }
     }
 }
