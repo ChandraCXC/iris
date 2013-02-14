@@ -77,6 +77,7 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
     private SedlibSedManager manager;
     private IWorkspace ws;
     private ExtSed sedDisplaying;
+    private IrisCoplotManager coplotManager;
     private IrisDisplayManager self; // for use in innner classes
 
     private Map<String,PlotStatus> plotStatusStorage;
@@ -283,8 +284,6 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
         populateImageFormatMenu(saveMenu);
         fileMenu.add(saveMenu);
         bar.add(fileMenu);
-
-        //TODO co-plot manager
 
         JMenu displayMenu = new JMenu("Display");
         JMenuItem coplotMenuItem = new JMenuItem("Co-plot");
@@ -517,10 +516,11 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
 
         public void actionPerformed(ActionEvent ev) {
 
-            IrisCoplotManager coplotManager = new IrisCoplotManager(ws, self, "Co-plot");
+            if (coplotManager == null) {
+                coplotManager = new IrisCoplotManager(ws, self, "Co-plot");
+            }
 
             MemoryJFrame memoryFrame = coplotManager.getJFrame();
-
             JInternalFrame frame = memoryFrame.getInternalFrame();
             frame.setSize(Include.IRIS_SPLIST_WINDOW_SIZE);
             ws.addFrame(frame);
