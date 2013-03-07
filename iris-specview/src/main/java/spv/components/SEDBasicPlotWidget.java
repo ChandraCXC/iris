@@ -77,5 +77,23 @@ public class SEDBasicPlotWidget extends BasicPlotWidget {
         canvas = new LegendCanvas(canvas);
 
         ((LegendCanvas)canvas).setCoplotMode(coplot);
+
+        // at this point, plottable.spColors contains the colors used to
+        // draw segments. It's a map, one entry per point, with keys
+        // being the point IDs and the values being instances of Color.
+        //
+        // we should build from that map another map where the key is
+        // the object ID string and the value is the color instance.
+        // That way we will have just one entry per target. That map
+        // should be passed to the canvas so it can build the legend.
+        //
+        // The object name is the full key of the spColors map, stripped
+        // of the file, segment, and point number digits. A typical entry
+        // in spColors looks like:
+        //
+        //      MESSIER 087 -1_2_80  ->  java.awt.COLOR[r=0,g=0,b=0]
+        //
+        // Note that all this must be activated only if in co-plot mode.
+
     }
 }
