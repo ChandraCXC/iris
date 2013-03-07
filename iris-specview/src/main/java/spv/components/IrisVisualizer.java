@@ -37,6 +37,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
 
+import cfa.vo.interop.SAMPController;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import org.astrogrid.samp.client.MessageHandler;
@@ -392,6 +393,10 @@ public class IrisVisualizer implements IrisComponent {
 
     public static JFrame getRootFrame() {
         return ws.getRootFrame();
+    }
+
+    public SAMPController getSAMPConnection() {
+        return app.getSAMPController();
     }
 
     private class VisualizerMenus extends ArrayList<IMenuItem> {

@@ -29,6 +29,7 @@ import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 
 import spv.controller.SpectrumContainer;
+import spv.glue.PlottableSEDSegmentedSpectrum;
 import spv.util.Include;
 import spv.util.MultiplePanelGUI;
 
@@ -93,7 +94,11 @@ public class IrisCoplotManager extends MultiplePanelGUI {
 
         ExtSed multipleSed = new ExtSed("", false); // non-managed SED
 
-        StringBuffer sbuffer = new StringBuffer("Co-plot: ");
+        // The co-plotted SED requires that its name starts with a pre-defined
+        // prefix, so it can be recognized and handled properly downstream.
+
+        StringBuffer sbuffer = new StringBuffer(PlottableSEDSegmentedSpectrum.COPLOT_IDENT);
+
         int[] indices = sedsList.getSelectedIndices();
 
         for (int i = 0; i < indices.length; i++) {

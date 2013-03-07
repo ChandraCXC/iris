@@ -449,7 +449,8 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
                 // Use this metadata/data browser when not fitting.
 
                 visualEditor = new SEDSpectrumVisualEditor (
-                        (PlottableSEDSegmentedSpectrum) arg, null, true, Color.red, null, false, secondaryController.getPlotWidget());
+                        (PlottableSEDSegmentedSpectrum) arg, null, true, Color.red, null, false,
+                        secondaryController.getPlotWidget(), visualizer.getSAMPConnection());
 
                 // Attach a listener to the visual editor so Seds
                 // can be extracted from the one being displayed.

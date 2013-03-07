@@ -29,7 +29,9 @@ package spv.components;
  */
 
 
+import spv.glue.PlottableSEDSegmentedSpectrum;
 import spv.graphics.LegendCanvas;
+import spv.spectrum.SEDMultiSegmentSpectrum;
 import spv.util.Units;
 import spv.view.BasicPlotWidget;
 import spv.view.Plottable;
@@ -47,10 +49,15 @@ This class overrides the behavior of a basic plot widget in two ways:
 
 public class SEDBasicPlotWidget extends BasicPlotWidget {
 
+    private boolean coplot;
+
     public SEDBasicPlotWidget(Plottable pl, boolean no_access) {
         super(pl, no_access);
 
         hideshow.setVisible(false);
+
+        SEDMultiSegmentSpectrum rootObject = (SEDMultiSegmentSpectrum) pl.getRootObject();
+        coplot = rootObject.getName().startsWith(PlottableSEDSegmentedSpectrum.COPLOT_IDENT);
     }
 
     public boolean getFromPlotStatus() {
@@ -68,5 +75,7 @@ public class SEDBasicPlotWidget extends BasicPlotWidget {
         super.assembleCanvases(xtitle, ytitle, x_units, y_units, use_status);
 
         canvas = new LegendCanvas(canvas);
+
+        ((LegendCanvas)canvas).setCoplotMode(coplot);
     }
 }
