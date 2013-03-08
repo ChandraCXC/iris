@@ -140,7 +140,7 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
                 // This might not be the best for other situations.
 
                 SEDMultiSegmentSpectrum sms = (SEDMultiSegmentSpectrum) container.getSpectrum();
-                sms.getTarget().setName(new TextParam(" "));
+//                sms.getTarget().setName(new TextParam(" "));
             }
 
             removeVisualEditor();
