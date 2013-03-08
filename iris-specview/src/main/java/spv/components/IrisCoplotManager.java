@@ -75,6 +75,20 @@ public class IrisCoplotManager extends MultiplePanelGUI {
         });
     }
 
+    // Bug: when co-plotting for the first time, everything works fine. The refreshList() method
+    // is called from the constructor. Inspecting the contents of the 'seds' variable, we see that
+    // all sed objects in the list have their Target name properly set.
+    //
+    // Now, after getting the first co-plot, we select on single Sed in the SedBuilder window. This
+    // causes an event that triggers the SedListener above. The 'source' Sed passed to it has its
+    // Target name already blanked out. The, refreshList gets executed, and if we inspect the 'seds'
+    // list again, we see that one of the Seds in the list, the same that was passed to the event
+    // handler above, has its Target name blanked out.
+    //
+    // From that point on, everything seems to break, since the point IDs become garbled.
+    //
+    // This is leading me to suspect of a bug in the SedManager.
+
     private void refreshList() {
         seds = sedManager.getSeds();
         buildList();

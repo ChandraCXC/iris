@@ -30,11 +30,18 @@ package spv.components;
 
 
 import spv.glue.PlottableSEDSegmentedSpectrum;
+import spv.glue.PlottableSegmentedSpectrum;
 import spv.graphics.LegendCanvas;
 import spv.spectrum.SEDMultiSegmentSpectrum;
 import spv.util.Units;
 import spv.view.BasicPlotWidget;
 import spv.view.Plottable;
+
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -95,5 +102,28 @@ public class SEDBasicPlotWidget extends BasicPlotWidget {
         //
         // Note that all this must be activated only if in co-plot mode.
 
+        if (coplot) {
+            Map targetIDColors = buildTargetIDMap();
+
+            ((LegendCanvas)canvas).setLegendColorMap(targetIDColors);
+        }
+    }
+
+    private Map buildTargetIDMap() {
+
+        Map<String,Color> result = new HashMap<String,Color>();
+        Map pointColors = ((PlottableSegmentedSpectrum) plottable).getColors();
+
+        Set keys = pointColors.keySet();
+        Iterator iterator = keys.iterator();
+
+        while (iterator.hasNext()) {
+            String key = (String) iterator.next();
+            int i1 = key.indexOf("-");
+            String targetID = key.substring(0, i1);
+
+            result.put(targetID, (Color) pointColors.get(key));
+        }
+        return result;
     }
 }
