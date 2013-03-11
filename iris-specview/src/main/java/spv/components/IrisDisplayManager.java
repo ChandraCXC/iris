@@ -115,7 +115,7 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
 
             SpectrumContainer container = (SpectrumContainer) sed.getAttachment(FIT_MODEL);
 
-            // Seds may come without associated data, such as when we build a compisite Sed
+            // Seds may come without associated data, such as when we build a composite Sed
             // to perform a co-plot operation. In those cases we need to attach a valid
             // container to the Sed.
             if (container == null) {
@@ -135,19 +135,28 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
 
                 container = (SpectrumContainer) sed.getAttachment(FIT_MODEL);
 
-                // force the object ID on the plot to be an empty string. This
-                // is assuming that the sed resulted from a co-plot operation.
-                // This might not be the best for other situations.
-
                 SEDMultiSegmentSpectrum sms = (SEDMultiSegmentSpectrum) container.getSpectrum();
-//                sms.getTarget().setName(new TextParam(" "));
+
+//                if (sms.getName().startsWith(PlottableSEDSegmentedSpectrum.COPLOT_IDENT)) {
+//
+//                    // force the object ID on the plot to be an empty string. This
+//                    // is assuming that the sed resulted from a co-plot operation.
+//                    // This breaks the original Sed data held inside the sedlib data
+//                    // structure, since Iris apparently only passes around a reference
+//                    // to it, not copies. the result is that the app misbehaves after
+//                    // that.
+//
+////                    sms.getTarget().setName(new TextParam(" "));
+//
+//                    sed.getSegment(0).getTarget().setName(new TextParam(" "));
+//                }
             }
 
             removeVisualEditor();
 
-            String sedName = sed.getId();
+            String sedId = sed.getId();
 
-            display(container, sedName);
+            display(container, sedId);
 
             sedDisplaying = sed;
 
@@ -165,11 +174,15 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
             return;
         }
 
-        String spectrmName = container.getSpectrum().getName();
-
-
         // this widget will display the new Sed.
         PlotWidget pw = buildPlotWidget(container, false, null);
+
+        // blank the target name in case of co-plot
+        String spectrmName = container.getSpectrum().getName();
+        if (spectrmName.startsWith(PlottableSEDSegmentedSpectrum.COPLOT_IDENT)) {
+            PlottableSEDSegmentedSpectrum plottedObject = (PlottableSEDSegmentedSpectrum) pw.getPlottedObject();
+            plottedObject.setRootObjectCommonName(" ");
+        }
 
         // turn off everything cursor, as per Iris request.
         pw.setSystemCursor();
