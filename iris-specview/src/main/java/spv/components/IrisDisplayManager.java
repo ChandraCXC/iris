@@ -86,6 +86,7 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
     private static java.util.List<String> ignoredImageFormats = new ArrayList<String>();
     static {
         ignoredImageFormats.add("jpeg");
+        ignoredImageFormats.add("wbmp");
     }
 
     public IrisDisplayManager(SedlibSedManager manager, IWorkspace ws, IrisVisualizer visualizer) {
