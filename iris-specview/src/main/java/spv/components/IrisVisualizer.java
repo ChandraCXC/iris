@@ -103,8 +103,6 @@ public class IrisVisualizer implements IrisComponent {
     private JInternalFrame currentFrame;
     private SedlibSedManager sedManager;
     private SEDFactoryModule factory = new SEDFactoryModule();
-//    private FittingEngine sherpa;
-//    private String sherpaDir = System.getProperty("IRIS_DIR") + "/lib/sherpa";
     private Point lastLocation;
     private CustomModelsManager customManager;
     private CustomModelsManagerView customManagerView;
@@ -120,19 +118,9 @@ public class IrisVisualizer implements IrisComponent {
 
         SpvProperties.SetProperty(Include.APP_NAME, Include.IRIS_APP_NAME);
         SpvProperties.SetProperty(Include.APP_VERSION, Include.IRIS_VERSION);
-//        SpvProperties.SetProperty(Include.PYTHON_PATH, sherpaDir);
         spvinit.initialize(null, false);
 
         FunctionFactorySherpaHelper.initialize();
-
-//        FittingEngineFactory f = new FittingEngineFactory();
-//        try {
-//            sherpa = f.get("sherpa");
-//            sherpa.start();
-//            LogEvent.getInstance().fire(sherpa, new LogEntry("Sherpa started", this));
-//        } catch (NoSuchEngineException ex) {
-//            Logger.getLogger(IrisVisualizer.class.getName()).log(Level.SEVERE, null, ex);
-//        }
 
         this.app = app;
         ws = workspace;
@@ -296,7 +284,6 @@ public class IrisVisualizer implements IrisComponent {
         } catch (Exception ex) {
             LogEvent.getInstance().fire(this, new LogEntry("Error: " + ex.getMessage(), sed));
             Logger.getLogger("IrisVisualizer").log(Level.SEVERE, null, ex);
-//            ex.printStackTrace();
         }
     }
 
@@ -382,18 +369,9 @@ public class IrisVisualizer implements IrisComponent {
     }
 
     public void shutdown() {
-//        sherpa.shutdown();
     }
 
     public void initCli(IrisApplication app) {
-//        FittingEngineFactory f = new FittingEngineFactory();
-//        try {
-//            sherpa = f.get("test");
-//            sherpa.start();
-//            LogEvent.getInstance().fire(sherpa, new LogEntry("Sherpa started", this));
-//        } catch (NoSuchEngineException ex) {
-//            Logger.getLogger(IrisVisualizer.class.getName()).log(Level.SEVERE, null, ex);
-//        }
     }
 
     public static JFrame getRootFrame() {
