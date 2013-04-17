@@ -25,6 +25,7 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.utils.IList;
 import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.TextParam;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 
@@ -119,6 +120,20 @@ public class IrisCoplotManager extends MultiplePanelGUI {
             try {
 
                 multipleSed.addSegment(segmentList);
+
+                // manipulating the segment ID in the co-plotted SED..
+                Segment multipleSedSegment = multipleSed.getSegment(multipleSed.getNumberOfSegments() - 1);
+                TextParam targetName = multipleSedSegment.getTarget().getName();
+                String targetNameValue = targetName.getValue();
+
+                int colonIndex = targetNameValue.indexOf(":");
+                if (colonIndex > 0) {
+                    targetNameValue = targetNameValue.substring(0, colonIndex);
+                }
+                if ( ! targetNameValue.contains(sedId)) {
+                    targetNameValue += ":" + sedId;
+                }
+                targetName.setValue(targetNameValue);
 
             } catch (SedInconsistentException e) {
                 e.printStackTrace();

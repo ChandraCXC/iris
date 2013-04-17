@@ -176,7 +176,8 @@ public class IrisVisualizer implements IrisComponent {
 
             public void process(final ExtSed source, SedCommand payload) {
 
-                if (payload == SedCommand.SELECTED) {
+                if (payload == SedCommand.SELECTED ||
+                    payload == SedCommand.CHANGED) {
 
                     if (source.getNumberOfSegments() > 0) {
                         display(source);
@@ -276,6 +277,10 @@ public class IrisVisualizer implements IrisComponent {
             // and add its frame to the workspace.
 
             JInternalFrame frame = idm.getInternalFrame();
+
+            // VAOPD-863
+            frame.setTitle(sed.getId());
+
             if (frame != currentFrame) {
                 lastLocation = null;
                 disposeCurrentFrame();

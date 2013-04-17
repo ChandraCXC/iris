@@ -29,7 +29,27 @@
         <dependency>
             <groupId>specview</groupId>
             <artifactId>specview</artifactId>
-            <version>20130313b1</version>
+            <version>20130417b1</version>
+        </dependency>
+        <dependency>
+            <groupId>cds.savot.common</groupId>
+            <artifactId>cds.savot.common</artifactId>
+            <version>cds.savot.common</version>
+        </dependency>
+        <dependency>
+            <groupId>cds.savot.model</groupId>
+            <artifactId>cds.savot.model</artifactId>
+            <version>cds.savot.model</version>
+        </dependency>
+        <dependency>
+            <groupId>cds.savot.pull</groupId>
+            <artifactId>cds.savot.pull</artifactId>
+            <version>cds.savot.pull</version>
+        </dependency>
+        <dependency>
+            <groupId>cds.savot.writer</groupId>
+            <artifactId>cds.savot.writer</artifactId>
+            <version>cds.savot.writer</version>
         </dependency>
         <dependency>
             <groupId>xml</groupId>
