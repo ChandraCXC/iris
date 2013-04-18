@@ -121,7 +121,7 @@ public class IrisCoplotManager extends MultiplePanelGUI {
 
                 multipleSed.addSegment(segmentList);
 
-                // manipulating the segment ID in the co-plotted SED..
+                // manipulating the segment ID in the co-plotted SED.
                 Segment multipleSedSegment = multipleSed.getSegment(multipleSed.getNumberOfSegments() - 1);
                 TextParam targetName = multipleSedSegment.getTarget().getName();
                 String targetNameValue = targetName.getValue();
