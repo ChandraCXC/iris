@@ -24,10 +24,13 @@ import cfa.vo.iris.events.*;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.utils.IList;
+import cfa.vo.sedlib.ArrayOfPoint;
+import cfa.vo.sedlib.Point;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.TextParam;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
+import cfa.vo.sed.builder.SedBuilder;
 
 import spv.controller.SpectrumContainer;
 import spv.glue.PlottableSEDSegmentedSpectrum;
@@ -93,10 +96,12 @@ public class IrisCoplotManager extends MultiplePanelGUI {
 
     private void goCoPlot() {
 
-        ExtSed multipleSed = new ExtSed("", false); // non-managed SED
+        ExtSed originalSed = new ExtSed("", false); // non-managed SED
+
+        ExtSed multipleSed = originalSed.clone();  // this must be done *after* the object gets populated, I believe.
 
         // The co-plotted SED requires that its name starts with a pre-defined
-        // prefix, so it can be recognized and handled properly downstream.
+        // prefix, so it can be recognized and properly handled downstream.
 
         StringBuffer sbuffer = new StringBuffer(PlottableSEDSegmentedSpectrum.COPLOT_IDENT);
 
@@ -119,7 +124,8 @@ public class IrisCoplotManager extends MultiplePanelGUI {
             }
             try {
 
-                multipleSed.addSegment(segmentList);
+                Segment flatSegment = buildFlatSegment(segmentList);
+                multipleSed.addSegment(flatSegment);
 
                 // manipulating the segment ID in the co-plotted SED.
                 Segment multipleSedSegment = multipleSed.getSegment(multipleSed.getNumberOfSegments() - 1);
@@ -146,6 +152,35 @@ public class IrisCoplotManager extends MultiplePanelGUI {
         multipleSed.setId(sedID);
 
         idm.display(multipleSed, sedID);
+    }
+
+    private Segment buildFlatSegment(List<Segment> segmentList) {
+        Segment firstSegment = segmentList.get(0);
+
+        StringBuffer resultTargetName = new StringBuffer();
+        resultTargetName.append(firstSegment.getTarget().getName().getValue());
+
+        Segment result = (Segment) firstSegment.clone();
+
+        if (segmentList.size() > 1) {
+            for (int i = 1; i < segmentList.size(); i++) {
+                Segment segment = segmentList.get(i);
+
+                List<Point> points = segment.getData().getPoint();
+                result.getData().setPoint(points);
+
+                String addedTargetName = segment.getTarget().getName().getValue();
+
+                if (!resultTargetName.toString().toLowerCase().contains(addedTargetName.toLowerCase())) {
+                    resultTargetName.append("~");
+                    resultTargetName.append(addedTargetName);
+                }
+            }
+        }
+
+        result.getTarget().getName().setValue(resultTargetName.toString());
+        
+        return result;
     }
 
     private void buildList() {
