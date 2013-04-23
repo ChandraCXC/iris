@@ -36,7 +36,7 @@ import uk.ac.starlink.votable.VOTableBuilder;
 public class PhotometryFiltersList extends ArrayList<PhotometryFilter> {
     public PhotometryFiltersList() throws Exception {
         super();
-        DataSource ds = new URLDataSource(getClass().getResource("/filters/svolist.vot"));
+        DataSource ds = new URLDataSource(getClass().getResource("/filters/svolist2.vot"));
         VOTableBuilder b = new VOTableBuilder();
         StarTable table = b.makeStarTable(ds, true, StoragePolicy.ADAPTIVE);
 

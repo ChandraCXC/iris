@@ -28,14 +28,12 @@
 package cfa.vo.sed.gui;
 
 import cfa.vo.iris.gui.NarrowOptionPane;
-import cfa.vo.iris.utils.NameResolver;
+import cfa.vo.iris.utils.HarvardNameResolver;
 import cfa.vo.iris.utils.NameResolver.Position;
 import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sed.builder.dm.ExtendedTarget;
 import cfa.vo.sedlib.Segment;
 import java.io.IOException;
-import javax.swing.DefaultComboBoxModel;
-import jsky.catalog.Catalog;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Task;
 
@@ -44,7 +42,7 @@ import org.jdesktop.application.Task;
  * @author olaurino
  */
 public class EditTargetFrame extends javax.swing.JInternalFrame {
-    private NameResolver resolver = NameResolver.getInstance();
+    private HarvardNameResolver resolver = HarvardNameResolver.getInstance();
 
     private ExtendedTarget target;
     public static final String PROP_TARGET = "target";
@@ -75,10 +73,14 @@ public class EditTargetFrame extends javax.swing.JInternalFrame {
     /** Creates new form EditTargetFrame */
     public EditTargetFrame(Segment segment) {
         target = new ExtendedTarget();
-        target.setName(segment.getTarget().getName().getValue());
-        target.setRa((Double) segment.getTarget().getPos().getValue()[0].getCastValue());
-        target.setDec((Double) segment.getTarget().getPos().getValue()[1].getCastValue());
-        target.setPublisher(segment.getCuration().getPublisher().getValue());
+        if(segment.createTarget().isSetName())
+            target.setName(segment.getTarget().getName().getValue());
+        if(segment.createTarget().isSetPos()) {
+            target.setRa((Double) segment.getTarget().getPos().getValue()[0].getCastValue());
+            target.setDec((Double) segment.getTarget().getPos().getValue()[1].getCastValue());
+        }
+        if(segment.createCuration().isSetPublisher())
+            target.setPublisher(segment.getCuration().getPublisher().getValue());
         this.segment = segment;
         initComponents();
     }
@@ -104,6 +106,7 @@ public class EditTargetFrame extends javax.swing.JInternalFrame {
         jLabel24 = new javax.swing.JLabel();
         jTextField19 = new javax.swing.JTextField();
         jComboBox8 = new javax.swing.JComboBox();
+        busy = new org.jdesktop.swingx.JXBusyLabel();
         jButton1 = new javax.swing.JButton();
 
         setClosable(true);
@@ -150,46 +153,54 @@ public class EditTargetFrame extends javax.swing.JInternalFrame {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${target.publisher}"), jTextField19, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
-        jComboBox8.setModel(new DefaultComboBoxModel(resolver.getCatalogs().toArray(new Catalog[resolver.getCatalogs().size()])));
+        jComboBox8.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "NED", "SIMBAD" }));
         jComboBox8.setName("jComboBox8"); // NOI18N
+
+        busy.setName("busy"); // NOI18N
 
         org.jdesktop.layout.GroupLayout jPanel14Layout = new org.jdesktop.layout.GroupLayout(jPanel14);
         jPanel14.setLayout(jPanel14Layout);
         jPanel14Layout.setHorizontalGroup(
             jPanel14Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel14Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jPanel14Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel14Layout.createSequentialGroup()
-                        .add(jLabel24)
+                .add(jPanel14Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel14Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jPanel14Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel14Layout.createSequentialGroup()
+                                .add(jLabel24)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jTextField19, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 189, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(jPanel14Layout.createSequentialGroup()
+                                .add(jLabel21)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jTextField16, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE))
+                            .add(jPanel14Layout.createSequentialGroup()
+                                .add(jLabel22)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jTextField17, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 95, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jLabel23)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jTextField18, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE))))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel14Layout.createSequentialGroup()
+                        .add(23, 23, 23)
+                        .add(jComboBox8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 112, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField19, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 189, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(jPanel14Layout.createSequentialGroup()
-                        .add(jLabel21)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField16, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE))
-                    .add(jPanel14Layout.createSequentialGroup()
-                        .add(jLabel22)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField17, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 95, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jLabel23)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField18, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel14Layout.createSequentialGroup()
-                        .add(3, 3, 3)
-                        .add(jComboBox8, 0, 160, Short.MAX_VALUE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jButton5)))
+                        .add(jButton5)
+                        .add(18, 18, 18)
+                        .add(busy, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel14Layout.setVerticalGroup(
             jPanel14Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel14Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jPanel14Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jComboBox8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jButton5))
+                .add(jPanel14Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel14Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                        .add(jComboBox8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(jButton5))
+                    .add(busy, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .add(18, 18, 18)
                 .add(jPanel14Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel21)
@@ -245,25 +256,29 @@ public class EditTargetFrame extends javax.swing.JInternalFrame {
     }
 
     private class ResolveTask extends org.jdesktop.application.Task<Object, Void> {
-        private Catalog cat;
+        private String cat;
 
         ResolveTask(org.jdesktop.application.Application app) {
             super(app);
-            cat = (Catalog) jComboBox8.getSelectedItem();
+            cat = (String) jComboBox8.getSelectedItem();
         }
 
         @Override protected Object doInBackground() {
+            busy.setBusy(true);
             Object pos = null;
                 try {
                     pos = resolver.resolve(cat, target.getName());
                 } catch (RuntimeException ex) {
                     return ex.getMessage();
                 } catch (IOException ex) {
+                    if(ex.getMessage().contains("code: 500"))
+                        return "Service didn't respond. Please try choosing a different service";
                     return ex.getMessage();
                 }
             return pos;
         }
         @Override protected void succeeded(Object result) {
+            busy.setBusy(false);
             if(result instanceof String)
                 NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(), result, "Error trying to resolve name", NarrowOptionPane.ERROR_MESSAGE);
             else {
@@ -284,6 +299,7 @@ public class EditTargetFrame extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private org.jdesktop.swingx.JXBusyLabel busy;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton5;
     private javax.swing.JComboBox jComboBox8;

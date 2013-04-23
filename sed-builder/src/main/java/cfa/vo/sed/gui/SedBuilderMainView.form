@@ -27,8 +27,8 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jToolBar1" alignment="0" pref="759" max="32767" attributes="0"/>
-          <Component id="jSplitPane1" alignment="0" pref="759" max="32767" attributes="0"/>
+          <Component id="jToolBar1" alignment="0" pref="907" max="32767" attributes="0"/>
+          <Component id="jSplitPane1" alignment="0" pref="907" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -36,7 +36,7 @@
           <Group type="102" alignment="0" attributes="0">
               <Component id="jToolBar1" min="-2" pref="51" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jSplitPane1" pref="291" max="32767" attributes="0"/>
+              <Component id="jSplitPane1" pref="337" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -174,13 +174,18 @@
             <BindingProperty name="enabled" source="Form" sourcePath="${isSed}" target="jButton11" targetPath="enabled" updateStrategy="0" immediately="false"/>
           </BindingProperties>
         </Component>
+        <Component class="javax.swing.JToolBar$Separator" name="jSeparator4">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="jSeparator4" noResource="true"/>
+          </Properties>
+        </Component>
         <Component class="javax.swing.JButton" name="jButton10">
           <Properties>
             <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
               <action class="cfa.vo.sed.gui.SedBuilderMainView" id="broadcast" methodName="broadcast"/>
             </Property>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-              <Connection code="new ImageIcon(getClass().getResource(&quot;/file_export.png&quot;))" type="code"/>
+              <Connection code="new ImageIcon(getClass().getResource(&quot;/broadcast.gif&quot;))" type="code"/>
             </Property>
             <Property name="borderPainted" type="boolean" value="false"/>
             <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -204,10 +209,67 @@
             <BindingProperty name="enabled" source="Form" sourcePath="${isSed}" target="jButton10" targetPath="enabled" updateStrategy="0" immediately="false"/>
           </BindingProperties>
         </Component>
+        <Component class="javax.swing.JLabel" name="jLabel7">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="( x unit:"/>
+            <Property name="name" type="java.lang.String" value="jLabel7" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JComboBox" name="jComboBox2">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="new DefaultComboBoxModel(loadEnum(XUnit.class))" type="code"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="jComboBox2" noResource="true"/>
+          </Properties>
+          <BindingProperties>
+            <BindingProperty name="selectedItem" source="Form" sourcePath="${xunit}" target="jComboBox2" targetPath="selectedItem" updateStrategy="0" immediately="false"/>
+          </BindingProperties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel8">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="y unit"/>
+            <Property name="name" type="java.lang.String" value="jLabel8" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JComboBox" name="jComboBox3">
+          <Properties>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="new DefaultComboBoxModel(loadEnum(SPVYUnit.class))" type="code"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="jComboBox3" noResource="true"/>
+          </Properties>
+          <BindingProperties>
+            <BindingProperty name="selectedItem" source="Form" sourcePath="${yunit}" target="jComboBox3" targetPath="selectedItem" updateStrategy="0" immediately="false"/>
+          </BindingProperties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel9">
+          <Properties>
+            <Property name="text" type="java.lang.String" value=")"/>
+            <Property name="name" type="java.lang.String" value="jLabel9" noResource="true"/>
+          </Properties>
+        </Component>
         <Component class="javax.swing.JToolBar$Separator" name="jSeparator1">
           <Properties>
             <Property name="name" type="java.lang.String" value="jSeparator1" noResource="true"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.Box$Filler" name="filler1">
+          <Properties>
+            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[300, 32767]"/>
+            </Property>
+            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[200, 0]"/>
+            </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[200, 0]"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="filler1" noResource="true"/>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="classDetails" type="java.lang.String" value="Box.Filler.HorizontalStrut"/>
+          </AuxValues>
         </Component>
       </SubComponents>
     </Container>
@@ -249,7 +311,7 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="sedPanel" alignment="0" pref="263" max="32767" attributes="1"/>
+                  <Component id="sedPanel" alignment="0" pref="309" max="32767" attributes="1"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -295,13 +357,13 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="sedName" pref="440" max="32767" attributes="0"/>
+                      <Component id="sedName" pref="588" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="jToolBar2" alignment="0" pref="588" max="32767" attributes="0"/>
-                  <Component id="jScrollPane1" alignment="0" pref="588" max="32767" attributes="0"/>
-                  <Component id="jToolBar3" alignment="0" pref="588" max="32767" attributes="0"/>
+                  <Component id="jToolBar2" alignment="0" pref="736" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" alignment="0" pref="736" max="32767" attributes="0"/>
+                  <Component id="jToolBar3" alignment="0" pref="736" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -317,7 +379,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jToolBar2" min="-2" pref="46" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="138" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" pref="184" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -516,7 +578,7 @@
                       <action class="cfa.vo.sed.gui.SedBuilderMainView" id="broadcastSegments" methodName="broadcastSegments"/>
                     </Property>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="new ImageIcon(getClass().getResource(&quot;/file_export.png&quot;))" type="code"/>
+                      <Connection code="new ImageIcon(getClass().getResource(&quot;/broadcast.gif&quot;))" type="code"/>
                     </Property>
                     <Property name="borderPainted" type="boolean" value="false"/>
                     <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
@@ -642,8 +704,11 @@
                 </Component>
                 <Component class="javax.swing.JComboBox" name="jComboBox1">
                   <Properties>
-                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                      <Connection code="new DefaultComboBoxModel(resolver.getCatalogs().toArray(new Catalog[resolver.getCatalogs().size()]))" type="code"/>
+                    <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+                      <StringArray count="2">
+                        <StringItem index="0" value="NED"/>
+                        <StringItem index="1" value="SIMBAD"/>
+                      </StringArray>
                     </Property>
                     <Property name="name" type="java.lang.String" value="jComboBox1" noResource="true"/>
                   </Properties>

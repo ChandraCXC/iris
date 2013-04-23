@@ -30,7 +30,7 @@ import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.iris.utils.NameResolver;
+import cfa.vo.iris.utils.HarvardNameResolver;
 import cfa.vo.iris.utils.NameResolver.Position;
 import cfa.vo.iris.utils.SkyCoordinates;
 import cfa.vo.sed.builder.SedBuilder;
@@ -58,23 +58,20 @@ import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JInternalFrame;
-import jsky.catalog.Catalog;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Task;
 import org.jdesktop.beansbinding.Converter;
+import org.jdesktop.swingx.JXBusyLabel;
 
 /**
  *
  * @author olaurino
  */
-public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame {
+public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame, FilterSelectionListener {
 
-    private NameResolver resolver = NameResolver.getInstance();
-
+    private HarvardNameResolver resolver = HarvardNameResolver.getInstance();
     private ExtSed sed;
-
     private PhotometryPointSegment pointSegment = new PhotometryPointSegment();
-
     private SedlibSedManager manager;
 
     /** Creates new form PhotometryPointFrame */
@@ -130,6 +127,7 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
         jLabel24 = new javax.swing.JLabel();
         jTextField19 = new javax.swing.JTextField();
         jComboBox8 = new javax.swing.JComboBox();
+        busy = new org.jdesktop.swingx.JXBusyLabel();
         jPanel17 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTextArea4 = new javax.swing.JTextArea();
@@ -218,7 +216,7 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
                 .addContainerGap()
                 .add(jLabel20)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jTextField15, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                .add(jTextField15, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel13Layout.setVerticalGroup(
@@ -269,46 +267,54 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${pointSegment.target.publisher}"), jTextField19, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
-        jComboBox8.setModel(new DefaultComboBoxModel(resolver.getCatalogs().toArray(new Catalog[resolver.getCatalogs().size()])));
+        jComboBox8.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "NED", "SIMBAD" }));
         jComboBox8.setName("jComboBox8"); // NOI18N
+
+        busy.setName("busy"); // NOI18N
 
         org.jdesktop.layout.GroupLayout jPanel14Layout = new org.jdesktop.layout.GroupLayout(jPanel14);
         jPanel14.setLayout(jPanel14Layout);
         jPanel14Layout.setHorizontalGroup(
             jPanel14Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel14Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jPanel14Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel14Layout.createSequentialGroup()
-                        .add(jLabel24)
+                .add(jPanel14Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel14Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jPanel14Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jPanel14Layout.createSequentialGroup()
+                                .add(jLabel21)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jTextField16, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE))
+                            .add(jPanel14Layout.createSequentialGroup()
+                                .add(jLabel22)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jTextField17, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 95, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jLabel23)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jTextField18, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE))
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel14Layout.createSequentialGroup()
+                                .add(jLabel24)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jTextField19, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 189, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel14Layout.createSequentialGroup()
+                        .add(23, 23, 23)
+                        .add(jComboBox8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 137, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField19, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 189, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(jPanel14Layout.createSequentialGroup()
-                        .add(jLabel21)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField16, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE))
-                    .add(jPanel14Layout.createSequentialGroup()
-                        .add(jLabel22)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField17, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 95, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jLabel23)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField18, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel14Layout.createSequentialGroup()
-                        .add(3, 3, 3)
-                        .add(jComboBox8, 0, 163, Short.MAX_VALUE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jButton5)))
+                        .add(jButton5)
+                        .add(18, 18, 18)
+                        .add(busy, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel14Layout.setVerticalGroup(
             jPanel14Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel14Layout.createSequentialGroup()
                 .addContainerGap()
-                .add(jPanel14Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jComboBox8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jButton5))
+                .add(jPanel14Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel14Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                        .add(jComboBox8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(jButton5))
+                    .add(busy, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .add(18, 18, 18)
                 .add(jPanel14Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel21)
@@ -323,7 +329,7 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
                 .add(jPanel14Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel24)
                     .add(jTextField19, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel17.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Setup Help"));
@@ -350,7 +356,7 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
         jPanel17.setLayout(jPanel17Layout);
         jPanel17Layout.setHorizontalGroup(
             jPanel17Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jScrollPane4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
+            .add(jScrollPane4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 330, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
         );
         jPanel17Layout.setVerticalGroup(
             jPanel17Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -361,18 +367,20 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel17, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel13, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel14, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .add(jPanel2Layout.createSequentialGroup()
+                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel17, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(jPanel14, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(jPanel13, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jPanel2Layout.createSequentialGroup()
                 .add(jPanel13, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel14, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel14, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 27, Short.MAX_VALUE)
                 .add(jPanel17, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -454,7 +462,7 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
             .add(jPanel12Layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jLabel19)
-                .addContainerGap(426, Short.MAX_VALUE))
+                .addContainerGap(406, Short.MAX_VALUE))
         );
         jPanel12Layout.setVerticalGroup(
             jPanel12Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -649,7 +657,7 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
                 .add(jPanel11, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 54, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 71, Short.MAX_VALUE)
                 .add(jPanel12, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -684,7 +692,9 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel9, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 559, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+            .add(layout.createSequentialGroup()
+                .add(jPanel9, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 559, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         bindingGroup.bind();
@@ -695,8 +705,8 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
     private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeMode
         pointSegment.getPoint().getSpectralAxis().setMode(evt.getActionCommand());
     }//GEN-LAST:event_changeMode
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private org.jdesktop.swingx.JXBusyLabel busy;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton5;
@@ -745,7 +755,6 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
     private javax.swing.JComboBox xAxisCombo9;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
-
     private String xQuantity;
     public static final String PROP_XQUANTITY = "xQuantity";
 
@@ -874,35 +883,43 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
     }
 
     private class ResolveTask extends org.jdesktop.application.Task<Object, Void> {
-        private Catalog cat;
+
+        private String cat;
 
         ResolveTask(org.jdesktop.application.Application app) {
             super(app);
-            cat = (Catalog) jComboBox8.getSelectedItem();
+            cat = (String) jComboBox8.getSelectedItem();
         }
 
-        @Override protected Object doInBackground() {
+        @Override
+        protected Object doInBackground() {
+            busy.setBusy(true);
             Object pos = null;
-                try {
-                    pos = resolver.resolve(cat, pointSegment.getTarget().getName());
-                } catch (RuntimeException ex) {
-                    return ex.getMessage();
-                } catch (IOException ex) {
-                    return ex.getMessage();
+            try {
+                pos = resolver.resolve(cat, pointSegment.getTarget().getName());
+            } catch (RuntimeException ex) {
+                return ex.getMessage();
+            } catch (IOException ex) {
+                if (ex.getMessage().contains("code: 500")) {
+                    return "Service error. Please try choosing a different service.";
                 }
+                return ex.getMessage();
+            }
             return pos;
         }
-        @Override protected void succeeded(Object result) {
-            if(result instanceof String)
+
+        @Override
+        protected void succeeded(Object result) {
+            busy.setBusy(false);
+            if (result instanceof String) {
                 NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(), result, "Error trying to resolve name", NarrowOptionPane.ERROR_MESSAGE);
-            else {
+            } else {
                 Position pos = (Position) result;
                 setRa(pos.getRa().toString());
                 setDec(pos.getDec().toString());
             }
         }
     }
-
     private String ra;
     public static final String PROP_RA = "ra";
 
@@ -969,6 +986,7 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
     }
 
     private abstract class UnitsConverter extends Converter {
+
         @Override
         public Object convertForward(Object s) {
             IUnit u = (IUnit) s;
@@ -978,7 +996,7 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
         @Override
         public Object convertReverse(Object t) {
             try {
-                return getUnitsFromString((String)t);
+                return getUnitsFromString((String) t);
             } catch (SedImporterException ex) {
                 Logger.getLogger(PhotometryPointFrame.class.getName()).log(Level.SEVERE, null, ex);
                 return null;
@@ -989,6 +1007,7 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
     }
 
     private class XUnitsConverter extends UnitsConverter {
+
         @Override
         protected IUnit getUnitsFromString(String s) throws SedImporterException {
             return XUnit.getFromUnitString(s);
@@ -996,6 +1015,7 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
     }
 
     private class YUnitsConverter extends UnitsConverter {
+
         @Override
         protected IUnit getUnitsFromString(String s) throws SedImporterException {
             return SPVYUnit.getFromUnitString(s);
@@ -1007,7 +1027,7 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
         @Override
         public Object convertReverse(Object s) {
             try {
-                return Double.valueOf((String)s);
+                return Double.valueOf((String) s);
             } catch (Exception ex) {
                 return Double.NaN;
             }
@@ -1018,7 +1038,6 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
         public Object convertForward(Object t) {
             return ((Double) t).toString();
         }
-
     }
 
     private class PhotometryFilterConverter extends Converter {
@@ -1032,9 +1051,7 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
         public Object convertReverse(Object t) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
-
     }
-
     private Segment generated;
 
     @Action
@@ -1054,30 +1071,35 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
             this.setVisible(false);
             SedBuilder.update();
         } catch (SedException ex) {
-            NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(), "Error adding the point: "+ex.getMessage(), "Error", NarrowOptionPane.ERROR_MESSAGE);
+            NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(), "Error adding the point: " + ex.getMessage(), "Error", NarrowOptionPane.ERROR_MESSAGE);
             Logger.getLogger(PhotometryPointFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
     private PhotometryFilterSelector selector;
 
     @Action
     public void chooseFilter() throws Exception {
-        if(selector==null) {
-            selector = new PhotometryFilterSelector();
+        if (selector == null) {
+            selector = new PhotometryFilterSelector(PhotometryPointFrame.this, false);
             SedBuilder.getWorkspace().addFrame(selector);
         }
 
         selector.show();
     }
 
-    private class PhotometryFilterSelector extends JInternalFrame implements FilterSelectionListener {
-        private PhotometryFilterBrowsePanel browser = new PhotometryFilterBrowsePanel();
+    public static class PhotometryFilterSelector extends JInternalFrame {
 
-        public PhotometryFilterSelector() throws Exception {
+        private PhotometryFilterBrowsePanel browser;
+        private FilterSelectionListener listener;
+
+        public PhotometryFilterSelector(FilterSelectionListener listener, boolean multipleSelection) throws Exception {
             super("Photometry Filter Selector");
 
-            JButton button = new JButton("Close");
+            browser = new PhotometryFilterBrowsePanel(multipleSelection);
+
+            this.listener = listener;
+
+            JButton button = new JButton("Done");
             button.addActionListener(new ActionListener() {
 
                 @Override
@@ -1085,12 +1107,13 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
                     close();
                 }
             });
+
             button.setVisible(true);
 
             this.setLayout(new BorderLayout());
 
             this.add(browser, BorderLayout.NORTH);
-            this.add(button, BorderLayout.SOUTH);
+            this.add(button, BorderLayout.CENTER);
 
             this.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
             this.setClosable(true);
@@ -1101,30 +1124,31 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
         }
 
         private void close() {
-            browser.removeFilterSelectionListener(this);
+            browser.fireEvents();
+            browser.removeFilterSelectionListener(listener);
             this.setVisible(false);
         }
 
         @Override
         public void show() {
-            browser.addFilterSelectionListener(this);
+            browser.addFilterSelectionListener(listener);
             super.show();
-        }
-
-        @Override
-        public void process(PhotometryFilter source, SedCommand payload) {
-            pointSegment.getPoint().getSpectralAxis().setFilter(source);
         }
     }
 
     @Override
+    public void process(PhotometryFilter source, SedCommand payload) {
+        pointSegment.getPoint().getSpectralAxis().setFilter(source);
+    }
+
+    @Override
     public void update(Segment segment) {
-        if(segment.createTarget().isSetName())
+        if (segment.createTarget().isSetName()) {
             setTargetName(segment.getTarget().getName().getValue());
-        if(segment.getTarget().isSetPos()) {
+        }
+        if (segment.getTarget().isSetPos()) {
             setRa(segment.getTarget().getPos().getValue()[0].getValue());
             setDec(segment.getTarget().getPos().getValue()[1].getValue());
         }
     }
-
 }

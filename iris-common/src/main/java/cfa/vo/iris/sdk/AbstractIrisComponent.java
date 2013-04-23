@@ -5,7 +5,6 @@
 package cfa.vo.iris.sdk;
 
 import cfa.vo.iris.ICommandLineInterface;
-import cfa.vo.iris.IMenuItem;
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.IrisComponent;

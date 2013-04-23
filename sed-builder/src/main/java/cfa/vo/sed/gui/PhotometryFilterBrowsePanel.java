@@ -24,7 +24,6 @@
  *
  * Created on Mar 29, 2012, 5:13:27 PM
  */
-
 package cfa.vo.sed.gui;
 
 import cfa.vo.iris.events.SedCommand;
@@ -38,7 +37,9 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Task;
 
@@ -47,18 +48,28 @@ import org.jdesktop.application.Task;
  * @author olaurino
  */
 public class PhotometryFilterBrowsePanel extends javax.swing.JPanel {
+
     private PhotometryFilterTreeModel model = new PhotometryFilterTreeModel(new PhotometryFiltersList());
+    private List<PhotometryFilter> filterList = new ArrayList();
 
     /** Creates new form PhotometryFilterBrowsePanel */
-    public PhotometryFilterBrowsePanel() throws Exception {
+    public PhotometryFilterBrowsePanel(boolean multipleSelection) throws Exception {
         initComponents();
+
+        if (multipleSelection) {
+            jTree1.getSelectionModel().setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
+        } else {
+            jTree1.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        }
+
         jTree1.setPreferredSize(null);
         jTree1.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mousePressed(MouseEvent e) {
+                filterList = new ArrayList();
                 TreePath selPath = jTree1.getPathForLocation(e.getX(), e.getY());
-                if(selPath!=null) {
+                if (selPath != null) {
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode) selPath.getLastPathComponent();
                     if (node.isLeaf()) {
                         PhotometryFilter f = (PhotometryFilter) node.getUserObject();
@@ -72,15 +83,28 @@ public class PhotometryFilterBrowsePanel extends javax.swing.JPanel {
                         meanText.setText(f.getWlmean().toString());
                         effText.setText(f.getWleff().toString());
 
-                        for(FilterSelectionListener listener : listeners) {
-                            listener.process(f, SedCommand.SELECTED);
+
+                        TreePath[] paths = jTree1.getSelectionModel().getSelectionPaths();
+                        for (TreePath path : paths) {
+                            DefaultMutableTreeNode n = (DefaultMutableTreeNode) path.getLastPathComponent();
+                            if (node.isLeaf()) {
+                                PhotometryFilter f2 = (PhotometryFilter) n.getUserObject();
+                                filterList.add(f2);
+                            }
                         }
                     }
                 }
+
             }
         });
     }
 
+    public void fireEvents() {
+        for (FilterSelectionListener listener : listeners) {
+            for(PhotometryFilter filter : filterList)
+                listener.process(filter, SedCommand.SELECTED);
+        }
+    }
     private List<FilterSelectionListener> listeners = new ArrayList();
 
     public void addFilterSelectionListener(FilterSelectionListener listener) {
@@ -90,7 +114,6 @@ public class PhotometryFilterBrowsePanel extends javax.swing.JPanel {
     public void removeFilterSelectionListener(FilterSelectionListener listener) {
         listeners.remove(listener);
     }
-
     private StringPredicate predicate = new StringPredicate("");
 
     public List<PhotometryFilter> filter(String string) {
@@ -105,14 +128,17 @@ public class PhotometryFilterBrowsePanel extends javax.swing.JPanel {
     public List<PhotometryFilter> filter(List<PhotometryFilter> list, IPredicate<PhotometryFilter> predicate) {
         List<PhotometryFilter> sub = new ArrayList();
 
-        for (PhotometryFilter element: list)
-            if (predicate.apply(element))
+        for (PhotometryFilter element : list) {
+            if (predicate.apply(element)) {
                 sub.add(element);
+            }
+        }
 
         return sub;
     }
 
     private class StringPredicate implements IPredicate<PhotometryFilter> {
+
         private String string;
 
         public StringPredicate(String string) {
@@ -126,18 +152,21 @@ public class PhotometryFilterBrowsePanel extends javax.swing.JPanel {
         @Override
         public boolean apply(PhotometryFilter object) {
             boolean resp = false;
-            if(object.getBand()!=null)
+            if (object.getBand() != null) {
                 resp = resp || object.getBand().toLowerCase().contains(string.toLowerCase());
-            if(object.getDescription()!=null)
+            }
+            if (object.getDescription() != null) {
                 resp = resp || object.getDescription().toLowerCase().contains(string.toLowerCase());
-            if(object.getFacility()!=null)
+            }
+            if (object.getFacility() != null) {
                 resp = resp || object.getFacility().toLowerCase().contains(string.toLowerCase());
-            if(object.getInstrument()!=null)
+            }
+            if (object.getInstrument() != null) {
                 resp = resp || object.getInstrument().toLowerCase().contains(string.toLowerCase());
+            }
 
             return resp;
         }
-
     }
 
     /** This method is called from within the constructor to
@@ -426,16 +455,21 @@ public class PhotometryFilterBrowsePanel extends javax.swing.JPanel {
     }
 
     private class SearchTask extends org.jdesktop.application.Task<Object, Void> {
+
         private String string;
 
         SearchTask(org.jdesktop.application.Application app) {
             super(app);
             this.string = searchString.getText();
         }
-        @Override protected Object doInBackground() {
+
+        @Override
+        protected Object doInBackground() {
             return filter(string);
         }
-        @Override protected void succeeded(Object result) {
+
+        @Override
+        protected void succeeded(Object result) {
             jTree1.setModel(new PhotometryFilterTreeModel((List<PhotometryFilter>) result));
             jTree1.updateUI();
         }
@@ -446,9 +480,6 @@ public class PhotometryFilterBrowsePanel extends javax.swing.JPanel {
         jTree1.setModel(model);
         searchString.setText("");
     }
-
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField bandText;
     private javax.swing.JTextField descriptionText;
@@ -478,5 +509,4 @@ public class PhotometryFilterBrowsePanel extends javax.swing.JPanel {
     private javax.swing.JTextField searchString;
     private javax.swing.JLabel unit;
     // End of variables declaration//GEN-END:variables
-
 }

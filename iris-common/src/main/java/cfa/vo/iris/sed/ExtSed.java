@@ -22,6 +22,7 @@ package cfa.vo.iris.sed;
 
 import cfa.vo.iris.events.MultipleSegmentEvent;
 import cfa.vo.iris.events.SedCommand;
+import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SegmentEvent;
 import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
 import cfa.vo.iris.logging.LogEntry;
@@ -72,11 +73,12 @@ public class ExtSed extends Sed {
         super.addSegment(segment, offset);
         if (managed) {
             SegmentEvent.getInstance().fire(segment, new SegmentPayload(this, SedCommand.ADDED));
+            SedEvent.getInstance().fire(this, SedCommand.CHANGED);
             LogEvent.getInstance().fire(this, new LogEntry("Segment added to SED: " + id, this));
         }
     }
 
-    private void addSegmentSilently(Segment segment, int offset) throws SedNoDataException, SedInconsistentException{
+    private void addSegmentSilently(Segment segment, int offset) throws SedNoDataException, SedInconsistentException {
         super.addSegment(segment, offset);
     }
 
@@ -87,11 +89,12 @@ public class ExtSed extends Sed {
 
     @Override
     public void addSegment(java.util.List<Segment> segments, int offset) throws SedInconsistentException, SedNoDataException {
-        for(Segment segment : segments) {
+        for (Segment segment : segments) {
             addSegmentSilently(segment, offset);
         }
         if (managed) {
             MultipleSegmentEvent.getInstance().fire(segments, new SegmentPayload(this, SedCommand.ADDED));
+            SedEvent.getInstance().fire(this, SedCommand.CHANGED);
             LogEvent.getInstance().fire(this, new LogEntry("Segments added to SED: " + id, this));
         }
     }
@@ -144,7 +147,7 @@ public class ExtSed extends Sed {
 
     public boolean remove(Segment s) {
         boolean resp = super.segmentList.remove(s);
-        if(managed) {
+        if (managed) {
             SegmentEvent.getInstance().fire(s, new SegmentPayload(this, SedCommand.REMOVED));
             LogEvent.getInstance().fire(this, new LogEntry("Segments removed from SED: " + id, this));
         }
@@ -153,11 +156,11 @@ public class ExtSed extends Sed {
 
     public boolean remove(List<Segment> segments) {
         boolean resp = true;
-        for(Segment s : segments) {
+        for (Segment s : segments) {
             resp &= super.segmentList.remove(s);
         }
 
-        if(managed) {
+        if (managed) {
             MultipleSegmentEvent.getInstance().fire(segments, new SegmentPayload(this, SedCommand.REMOVED));
             LogEvent.getInstance().fire(this, new LogEntry("Segments removed from SED: " + id, this));
         }
@@ -169,19 +172,23 @@ public class ExtSed extends Sed {
     }
 
     public static ExtSed read(String filename, SedFormat format) throws SedParsingException, SedInconsistentException, IOException, SedNoDataException {
+        return read(filename, format, true);
+    }
+    
+    public static ExtSed read(String filename, SedFormat format, boolean managed) throws SedParsingException, SedInconsistentException, IOException, SedNoDataException {
         Sed sed = Sed.read(filename, format);
         String[] path = filename.split(File.separator);
         String id = path[path.length - 1].split("\\.")[0];
-        ExtSed s = new ExtSed(id);
+        ExtSed s = new ExtSed(id, managed);
         for (int i = 0; i < sed.getNumberOfSegments(); i++) {
             s.addSegment(sed.getSegment(i));
         }
 
         return s;
     }
-    
+
     public void checkChar() {
-        for(int i=0; i<this.getNumberOfSegments(); i++) {
+        for (int i = 0; i < this.getNumberOfSegments(); i++) {
             Segment segment = this.getSegment(i);
             List<Double> spectral;
             try {
@@ -190,11 +197,11 @@ public class ExtSed extends Sed {
                 double max = Collections.max(spectral);
                 segment.createChar().createSpectralAxis().createCoverage().createBounds().createRange().createMin().setValue(min);
                 segment.createChar().createSpectralAxis().createCoverage().createBounds().createRange().createMax().setValue(max);
-                segment.createChar().createSpectralAxis().createCoverage().createBounds().createExtent().setValue(max-min);
+                segment.createChar().createSpectralAxis().createCoverage().createBounds().createExtent().setValue(max - min);
             } catch (SedNoDataException ex) {
                 Logger.getLogger(ExtSed.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
         }
     }
 }

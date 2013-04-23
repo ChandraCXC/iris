@@ -24,7 +24,6 @@
  *
  * Created on Dec 23, 2011, 3:05:23 PM
  */
-
 package cfa.vo.sed.gui;
 
 import cfa.vo.iris.events.MultipleSegmentEvent;
@@ -40,10 +39,13 @@ import cfa.vo.iris.gui.widgets.SedList;
 import cfa.vo.iris.interop.SedSAMPController;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.utils.NameResolver;
+import cfa.vo.iris.utils.HarvardNameResolver;
 import cfa.vo.iris.utils.NameResolver.Position;
 import cfa.vo.iris.utils.SkyCoordinates;
 import cfa.vo.sed.builder.SedBuilder;
+import cfa.vo.sed.quantities.IUnit;
+import cfa.vo.sed.quantities.SPVYUnit;
+import cfa.vo.sed.quantities.XUnit;
 import cfa.vo.sedlib.DoubleParam;
 import cfa.vo.sedlib.PositionParam;
 import cfa.vo.sedlib.Segment;
@@ -68,10 +70,10 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
-import jsky.catalog.Catalog;
 import org.astrogrid.samp.client.SampException;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Task;
+import org.jdesktop.swingx.JXBusyLabel;
 
 /**
  *
@@ -80,11 +82,9 @@ import org.jdesktop.application.Task;
 public class SedBuilderMainView extends JInternalFrame {
 
     private SedlibSedManager manager;
-
     private JFrame rootFrame;
-
     private LoadSegmentFrame loadFrame;
-
+    JXBusyLabel busy = new JXBusyLabel();
     private ExtSed sed;
     public static final String PROP_SED = "sed";
 
@@ -92,8 +92,10 @@ public class SedBuilderMainView extends JInternalFrame {
     public SedBuilderMainView(final SedlibSedManager manager, JFrame rootFrame) {
         initComponents();
 
+        jToolBar3.add(busy);
+
         this.manager = manager;
-      
+
         loadFrame = new LoadSegmentFrame(manager);
         SedBuilder.getWorkspace().addFrame(loadFrame);
 
@@ -106,12 +108,12 @@ public class SedBuilderMainView extends JInternalFrame {
 
             @Override
             public void process(ExtSed source, SedCommand payload) {
-                if(payload!=SedCommand.REMOVED) {
+                if (payload != SedCommand.REMOVED) {
                     setSed(null);
                     setSed(source);
-                }
-                else
+                } else {
                     setSed(null);
+                }
             }
         });
 
@@ -137,10 +139,10 @@ public class SedBuilderMainView extends JInternalFrame {
 
             @Override
             public void valueChanged(ListSelectionEvent lse) {
-                if(!lse.getValueIsAdjusting()) {
+                if (!lse.getValueIsAdjusting()) {
                     int[] selected = jTable1.getSelectedRows();
                     List<Segment> selSegs = new ArrayList();
-                    for(int i=0; i<selected.length; i++) {
+                    for (int i = 0; i < selected.length; i++) {
                         selSegs.add(sed.getSegment(selected[i]));
                     }
                     setSelectedSegments(selSegs);
@@ -148,29 +150,46 @@ public class SedBuilderMainView extends JInternalFrame {
                 }
             }
         });
-        
+
     }
 
     public LoadSegmentFrame getLoadSegmentFrame() {
         return loadFrame;
     }
+    private static String NAME_ATTACH = "builder:name";
+    private static String RA_ATTACH = "builder:ra";
+    private static String DEC_ATTACH = "builder:dec";
 
     private void setSed(ExtSed sed) {
         this.sed = sed;
-        boolean n = sed==null;
-        sedName.setText(n? "" : sed.getId());
+        boolean n = sed == null;
+        sedName.setText(n ? "" : sed.getId());
         setIsSed(!n);
 
         loadFrame.setSed(sed);
 
         List<Segment> list = new ArrayList();
 
-        if(sed!=null)
-            for(int i=0; i<sed.getNumberOfSegments(); i++)
+        if (sed != null) {
+            for (int i = 0; i < sed.getNumberOfSegments(); i++) {
                 list.add(sed.getSegment(i));
+            }
+        }
 
         setSegments(list);
-        
+
+        if (sed != null) {
+            jButton17.setEnabled(sed.getNumberOfSegments() != 0);
+            String _name = (String) sed.getAttachment(NAME_ATTACH);
+            String _ra = (String) sed.getAttachment(RA_ATTACH);
+            String _dec = (String) sed.getAttachment(DEC_ATTACH);
+            jTextField1.setText(_name);
+            jTextField2.setText(_ra);
+            jTextField3.setText(_dec);
+        } else {
+            jButton17.setEnabled(false);
+        }
+
     }
 
     /** This method is called from within the constructor to
@@ -189,8 +208,15 @@ public class SedBuilderMainView extends JInternalFrame {
         jButton2 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
         jButton11 = new javax.swing.JButton();
+        jSeparator4 = new javax.swing.JToolBar.Separator();
         jButton10 = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        jComboBox2 = new javax.swing.JComboBox();
+        jLabel8 = new javax.swing.JLabel();
+        jComboBox3 = new javax.swing.JComboBox();
+        jLabel9 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JToolBar.Separator();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(200, 0), new java.awt.Dimension(200, 0), new java.awt.Dimension(300, 32767));
         jSplitPane1 = new javax.swing.JSplitPane();
         jPanel3 = new javax.swing.JPanel();
         sedPanel = new javax.swing.JScrollPane();
@@ -301,8 +327,11 @@ public class SedBuilderMainView extends JInternalFrame {
 
         jToolBar1.add(jButton11);
 
+        jSeparator4.setName("jSeparator4"); // NOI18N
+        jToolBar1.add(jSeparator4);
+
         jButton10.setAction(actionMap.get("broadcast")); // NOI18N
-        jButton10.setIcon(new ImageIcon(getClass().getResource("/file_export.png")));
+        jButton10.setIcon(new ImageIcon(getClass().getResource("/broadcast.gif")));
         jButton10.setBorderPainted(false);
         jButton10.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton10.setFocusable(false);
@@ -318,8 +347,39 @@ public class SedBuilderMainView extends JInternalFrame {
 
         jToolBar1.add(jButton10);
 
+        jLabel7.setText("( x unit:");
+        jLabel7.setName("jLabel7"); // NOI18N
+        jToolBar1.add(jLabel7);
+
+        jComboBox2.setModel(new DefaultComboBoxModel(loadEnum(XUnit.class)));
+        jComboBox2.setName("jComboBox2"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${xunit}"), jComboBox2, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        bindingGroup.addBinding(binding);
+
+        jToolBar1.add(jComboBox2);
+
+        jLabel8.setText("y unit");
+        jLabel8.setName("jLabel8"); // NOI18N
+        jToolBar1.add(jLabel8);
+
+        jComboBox3.setModel(new DefaultComboBoxModel(loadEnum(SPVYUnit.class)));
+        jComboBox3.setName("jComboBox3"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${yunit}"), jComboBox3, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        bindingGroup.addBinding(binding);
+
+        jToolBar1.add(jComboBox3);
+
+        jLabel9.setText(")");
+        jLabel9.setName("jLabel9"); // NOI18N
+        jToolBar1.add(jLabel9);
+
         jSeparator1.setName("jSeparator1"); // NOI18N
         jToolBar1.add(jSeparator1);
+
+        filler1.setName("filler1"); // NOI18N
+        jToolBar1.add(filler1);
 
         jSplitPane1.setBorder(null);
         jSplitPane1.setDividerLocation(150);
@@ -340,7 +400,7 @@ public class SedBuilderMainView extends JInternalFrame {
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(sedPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE)
+            .add(sedPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
         );
 
         jSplitPane1.setLeftComponent(jPanel3);
@@ -448,7 +508,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jToolBar2.add(jButton4);
 
         jButton6.setAction(actionMap.get("broadcastSegments")); // NOI18N
-        jButton6.setIcon(new ImageIcon(getClass().getResource("/file_export.png")));
+        jButton6.setIcon(new ImageIcon(getClass().getResource("/broadcast.gif")));
         jButton6.setBorderPainted(false);
         jButton6.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton6.setFocusable(false);
@@ -513,12 +573,12 @@ public class SedBuilderMainView extends JInternalFrame {
 
         jToolBar3.add(jTextField1);
 
-        jComboBox1.setModel(new DefaultComboBoxModel(resolver.getCatalogs().toArray(new Catalog[resolver.getCatalogs().size()])));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "NED", "SIMBAD" }));
         jComboBox1.setName("jComboBox1"); // NOI18N
         jToolBar3.add(jComboBox1);
 
         jButton13.setAction(actionMap.get("resolve")); // NOI18N
-        jButton13.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
+        jButton13.setFont(new java.awt.Font("Lucida Grande", 0, 10));
         jButton13.setIcon(new ImageIcon(getClass().getResource("/search.png")));
         jButton13.setBorderPainted(false);
         jButton13.setFocusable(false);
@@ -558,7 +618,7 @@ public class SedBuilderMainView extends JInternalFrame {
         jToolBar3.add(jSeparator3);
 
         jButton17.setAction(actionMap.get("apply")); // NOI18N
-        jButton17.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
+        jButton17.setFont(new java.awt.Font("Lucida Grande", 0, 10));
         jButton17.setIcon(new ImageIcon(getClass().getResource("/apply.png")));
         jButton17.setBorderPainted(false);
         jButton17.setFocusable(false);
@@ -575,12 +635,12 @@ public class SedBuilderMainView extends JInternalFrame {
                 .addContainerGap()
                 .add(jLabel2)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(sedName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
+                .add(sedName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jButton1))
-            .add(jToolBar2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
-            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
-            .add(jToolBar3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+            .add(jToolBar2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
+            .add(jToolBar3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 736, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -594,7 +654,7 @@ public class SedBuilderMainView extends JInternalFrame {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jToolBar2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 46, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE))
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel1);
@@ -603,15 +663,15 @@ public class SedBuilderMainView extends JInternalFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jToolBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 759, Short.MAX_VALUE)
-            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 759, Short.MAX_VALUE)
+            .add(jToolBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 907, Short.MAX_VALUE)
+            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 907, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 51, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE))
+                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE))
         );
 
         bindingGroup.bind();
@@ -621,11 +681,13 @@ public class SedBuilderMainView extends JInternalFrame {
 
     @Action
     public void changeName() {
-        if(!sedName.getText().isEmpty())
-            if(manager.existsSed(sedName.getText()))
+        if (!sedName.getText().isEmpty()) {
+            if (manager.existsSed(sedName.getText())) {
                 NarrowOptionPane.showMessageDialog(rootFrame, "This ID already exists. Please use a unique ID.", "Rename error", NarrowOptionPane.ERROR_MESSAGE);
-            else
+            } else {
                 manager.rename(sed, sedName.getText());
+            }
+        }
     }
 
     @Action
@@ -640,21 +702,20 @@ public class SedBuilderMainView extends JInternalFrame {
 
     @Action
     public void removeSed() {
-        if(sed.getNumberOfSegments()==0) {
+        if (sed.getNumberOfSegments() == 0) {
             manager.remove(sed.getId());
             setSed(null);
         } else {
             int ans = NarrowOptionPane.showConfirmDialog(rootFrame,
-                "Are you sure you want to delete the selected SED?");
-            if(ans==NarrowOptionPane.YES_OPTION) {
+                    "Are you sure you want to delete the selected SED?");
+            if (ans == NarrowOptionPane.YES_OPTION) {
                 manager.remove(sed.getId());
                 setSed(null);
             }
         }
     }
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.Box.Filler filler1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
@@ -670,18 +731,24 @@ public class SedBuilderMainView extends JInternalFrame {
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
     private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JComboBox jComboBox2;
+    private javax.swing.JComboBox jComboBox3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
+    private javax.swing.JToolBar.Separator jSeparator4;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
@@ -694,7 +761,6 @@ public class SedBuilderMainView extends JInternalFrame {
     private javax.swing.JScrollPane sedPanel;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
-
     private boolean isSed = false;
     public static final String PROP_ISSED = "isSed";
 
@@ -717,7 +783,6 @@ public class SedBuilderMainView extends JInternalFrame {
         this.isSed = isSed;
         firePropertyChange(PROP_ISSED, oldIsSed, isSed);
     }
-
     private List<Segment> segments = new ArrayList();
     public static final String PROP_SEGMENTS = "segments";
 
@@ -741,21 +806,84 @@ public class SedBuilderMainView extends JInternalFrame {
         firePropertyChange(PROP_SEGMENTS, oldSegments, segments);
     }
 
-
     @Action
     public void saveSed() {
-        SaveSedDialog ssd = new SaveSedDialog(rootFrame, sed);
+        SaveSedDialog ssd = new SaveSedDialog(rootFrame, sed, false);
         ssd.setVisible(true);
     }
 
     @Action
     public void broadcast() {
         try {
-            ((SedSAMPController)SedBuilder.getApplication().getSAMPController()).sendSedMessage(sed);
-        } catch (SampException ex) {
+
+            //            ((SedSAMPController)SedBuilder.getApplication().getSAMPController()).sendSedMessage(sed);
+            ((SedSAMPController) SedBuilder.getApplication().getSAMPController()).sendSedMessage(SedBuilder.flatten(sed, xunit, yunit));
+
+
+        } catch (Exception ex) {
             NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
                     ex.getMessage(), "Error broadcasting file", NarrowOptionPane.ERROR_MESSAGE);
         }
+    }
+    private String xunit = "Hz";
+    public static final String PROP_XUNIT = "xunit";
+
+    /**
+     * Get the value of xunit
+     *
+     * @return the value of xunit
+     */
+    public String getXunit() {
+        return xunit;
+    }
+
+    /**
+     * Set the value of xunit
+     *
+     * @param xunit new value of xunit
+     */
+    public void setXunit(String xunit) {
+        String oldXunit = this.xunit;
+        this.xunit = xunit;
+        firePropertyChange(PROP_XUNIT, oldXunit, xunit);
+    }
+    private String yunit = "Jy";
+    public static final String PROP_YUNIT = "yunit";
+
+    /**
+     * Get the value of yunit
+     *
+     * @return the value of yunit
+     */
+    public String getYunit() {
+        return yunit;
+    }
+
+    /**
+     * Set the value of yunit
+     *
+     * @param yunit new value of yunit
+     */
+    public void setYunit(String yunit) {
+        String oldYunit = this.yunit;
+        this.yunit = yunit;
+        firePropertyChange(PROP_YUNIT, oldYunit, yunit);
+    }
+
+    private String[] loadEnum(Class<? extends Enum> clazz) {
+        try {
+            Enum[] l;
+            l = (Enum[]) clazz.getMethod("values").invoke(null);
+            String[] s = new String[l.length];
+            for (int i = 0; i < l.length; i++) {
+                IUnit u = (IUnit) l[i];
+                s[i] = u.getString();
+            }
+            return s;
+        } catch (Exception ex) {
+            Logger.getLogger(SaveSedDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     public void update() {
@@ -763,7 +891,7 @@ public class SedBuilderMainView extends JInternalFrame {
         setSed(null);
         setSed(s);
 
-        if(!this.isIcon() && !this.isVisible()) {
+        if (!this.isIcon() && !this.isVisible()) {
             this.setVisible(true);
         }
 
@@ -773,58 +901,58 @@ public class SedBuilderMainView extends JInternalFrame {
 
         @Override
         public Component getTableCellRendererComponent(JTable jtable, Object o, boolean isSelected, boolean hasFocus, int row, int col) {
-            Component c = new DefaultTableCellRenderer()
-                    .getTableCellRendererComponent(jtable, o, isSelected, hasFocus, row, col);
+            Component c = new DefaultTableCellRenderer().getTableCellRendererComponent(jtable, o, isSelected, hasFocus, row, col);
 
             DoubleParam[] radec = ((DoubleParam[]) o);
-            if(radec==null) radec = new DoubleParam[]{null, null};
+            if (radec == null) {
+                radec = new DoubleParam[]{null, null};
+            }
 
             String raS, decS;
-            
+
             try {
-            
-                if(radec[0]==null || radec[0].getValue().isEmpty())
+
+                if (radec[0] == null || radec[0].getValue().isEmpty()) {
                     raS = "-";
-                else
+                } else {
                     raS = Double.valueOf(radec[0].getValue()).isNaN() ? "-" : roundToSignificantFigures(Double.valueOf(radec[0].getValue()), 5).toString();
-                if(radec[1]==null || radec[1].getValue().isEmpty())
+                }
+                if (radec[1] == null || radec[1].getValue().isEmpty()) {
                     decS = "-";
-                else
+                } else {
                     decS = Double.valueOf(radec[1].getValue()).isNaN() ? "-" : roundToSignificantFigures(Double.valueOf(radec[1].getValue()), 5).toString();
-                
-            } catch(Exception ex) {
-                
+                }
+
+            } catch (Exception ex) {
+
                 raS = "-";
                 decS = "-";
-                
+
             }
-            
-            String content = raS+", "+decS;
+
+            String content = raS + ", " + decS;
             setText(content);
 
             this.setBackground(c.getBackground());
             this.setForeground(c.getForeground());
 
             this.setOpaque(true);
-            
+
             return this;
         }
 
         private Double roundToSignificantFigures(double num, int n) {
-            if(num == 0) {
+            if (num == 0) {
                 return 0d;
             }
 
-            final double d = Math.ceil(Math.log10(num < 0 ? -num: num));
+            final double d = Math.ceil(Math.log10(num < 0 ? -num : num));
             final int power = n - (int) d;
 
             final double magnitude = Math.pow(10, power);
-            final long shifted = Math.round(num*magnitude);
-            return shifted/magnitude;
+            final long shifted = Math.round(num * magnitude);
+            return shifted / magnitude;
         }
-
-
-
     }
 
     @Action
@@ -836,7 +964,7 @@ public class SedBuilderMainView extends JInternalFrame {
             c++;
         }
 
-        s.setId(base+"Copy"+c);
+        s.setId(base + "Copy" + c);
 
         manager.add(s);
     }
@@ -847,12 +975,12 @@ public class SedBuilderMainView extends JInternalFrame {
         loadFrame.setRa(ra);
         loadFrame.setDec(dec);
         loadFrame.show();
-        if(loadFrame.isIcon())
+        if (loadFrame.isIcon()) {
             loadFrame.setIcon(false);
+        }
         loadFrame.setSelected(true);
         loadFrame.moveToFront();
     }
-
     private List<Segment> selectedSegments;
     public static final String PROP_SELECTEDSEGMENTS = "selectedSegments";
 
@@ -875,7 +1003,6 @@ public class SedBuilderMainView extends JInternalFrame {
         this.selectedSegments = selectedSegments;
         firePropertyChange(PROP_SELECTEDSEGMENTS, oldSelectedSegments, selectedSegments);
     }
-
     private boolean segmentSelected;
     public static final String PROP_SEGMENTSELECTED = "segmentSelected";
 
@@ -902,19 +1029,21 @@ public class SedBuilderMainView extends JInternalFrame {
     @Action
     public void editSegment() throws Exception {
         boolean warning = false;
-        for(Segment s : selectedSegments) {
+        for (Segment s : selectedSegments) {
             Map<Segment, SegmentFrame> map = (Map<Segment, SegmentFrame>) sed.getAttachment("builder:configuration");
-            if(map!=null) {
-                if(map.containsKey(s)) {
+            if (map != null) {
+                if (map.containsKey(s)) {
                     SegmentFrame sf = map.get(s);
                     sf.update(s);
                     sf.setVisible(true);
-                } else
+                } else {
                     warning = true;
-            } else
+                }
+            } else {
                 warning = true;
+            }
 
-            if(warning) {
+            if (warning) {
                 EditTargetFrame f = new EditTargetFrame(s);
                 SedBuilder.getWorkspace().addFrame(f);
                 f.setVisible(true);
@@ -934,7 +1063,7 @@ public class SedBuilderMainView extends JInternalFrame {
                 "Are you sure you want to remove the selected segments from the SED?",
                 "Confirm removal",
                 NarrowOptionPane.YES_NO_OPTION);
-        if(ans==NarrowOptionPane.YES_OPTION) {
+        if (ans == NarrowOptionPane.YES_OPTION) {
             sed.remove(selectedSegments);
         }
     }
@@ -942,9 +1071,9 @@ public class SedBuilderMainView extends JInternalFrame {
     @Action
     public void broadcastSegments() {
         try {
-            ExtSed s = new ExtSed(sed.getId()+"Selection", false);
+            ExtSed s = new ExtSed(sed.getId() + "Selection", false);
             s.addSegment(selectedSegments);
-            ((SedSAMPController)SedBuilder.getApplication().getSAMPController()).sendSedMessage(s);
+            ((SedSAMPController) SedBuilder.getApplication().getSAMPController()).sendSedMessage(s);
         } catch (SedInconsistentException ex) {//If the segment is already in the SED this exception can't be thrown.
             Logger.getLogger(SedBuilderMainView.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SedNoDataException ex) {//If the segment is alreadt in the SED this exception can't be thrown.
@@ -953,7 +1082,7 @@ public class SedBuilderMainView extends JInternalFrame {
             NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
                     ex.getMessage(), "Error broadcasting file", NarrowOptionPane.ERROR_MESSAGE);
         }
-        
+
 
     }
 
@@ -962,7 +1091,7 @@ public class SedBuilderMainView extends JInternalFrame {
         try {
             ExtSed s = new ExtSed("");
             s.addSegment(selectedSegments);
-            SaveSedDialog ssd = new SaveSedDialog(rootFrame, s);
+            SaveSedDialog ssd = new SaveSedDialog(rootFrame, s, false);
             ssd.setVisible(true);
         } catch (SedInconsistentException ex) {
             Logger.getLogger(SedBuilderMainView.class.getName()).log(Level.SEVERE, null, ex);
@@ -980,9 +1109,7 @@ public class SedBuilderMainView extends JInternalFrame {
         SedBuilder.getWorkspace().addFrame(f);
         f.show();
     }
-
-    private NameResolver resolver = NameResolver.getInstance();
-
+    private HarvardNameResolver resolver = HarvardNameResolver.getInstance();
     private String ra;
     public static final String PROP_RA = "ra";
 
@@ -1008,9 +1135,9 @@ public class SedBuilderMainView extends JInternalFrame {
         }
         String oldRa = this.ra;
         this.ra = ra;
+        sed.addAttachment(RA_ATTACH, ra);
         firePropertyChange(PROP_RA, oldRa, ra);
     }
-
     private String dec;
     public static final String PROP_DEC = "dec";
 
@@ -1036,9 +1163,9 @@ public class SedBuilderMainView extends JInternalFrame {
         }
         String oldDec = this.dec;
         this.dec = dec;
+        sed.addAttachment(DEC_ATTACH, dec);
         firePropertyChange(PROP_DEC, oldDec, dec);
     }
-
     private String targetName;
     public static final String PROP_TARGETNAME = "targetName";
 
@@ -1059,6 +1186,7 @@ public class SedBuilderMainView extends JInternalFrame {
     public void setTargetName(String targetName) {
         String oldTargetName = this.targetName;
         this.targetName = targetName;
+        sed.addAttachment(NAME_ATTACH, targetName);
         firePropertyChange(PROP_TARGETNAME, oldTargetName, targetName);
     }
 
@@ -1068,28 +1196,37 @@ public class SedBuilderMainView extends JInternalFrame {
     }
 
     private class ResolveTask extends org.jdesktop.application.Task<Object, Void> {
-        private Catalog cat;
+
+        private String cat;
 
         ResolveTask(org.jdesktop.application.Application app) {
             super(app);
-            cat = (Catalog) jComboBox1.getSelectedItem();
+            cat = (String) jComboBox1.getSelectedItem();
         }
 
-        @Override protected Object doInBackground() {
+        @Override
+        protected Object doInBackground() {
+            busy.setBusy(true);
             Object pos = null;
-                try {
-                    pos = resolver.resolve(cat, targetName);
-                } catch (RuntimeException ex) {
-                    return ex.getMessage();
-                } catch (IOException ex) {
-                    return ex.getMessage();
+            try {
+                pos = resolver.resolve(cat, targetName);
+            } catch (RuntimeException ex) {
+                return ex.getMessage();
+            } catch (IOException ex) {
+                if (ex.getMessage().contains("code: 500")) {
+                    return "Service didn't respond. Please try choosing a different service";
                 }
+                return ex.getMessage();
+            }
             return pos;
         }
-        @Override protected void succeeded(Object result) {
-            if(result instanceof String)
+
+        @Override
+        protected void succeeded(Object result) {
+            busy.setBusy(false);
+            if (result instanceof String) {
                 NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(), result, "Error trying to resolve name", NarrowOptionPane.ERROR_MESSAGE);
-            else {
+            } else {
                 Position pos = (Position) result;
                 setRa(pos.getRa().toString());
                 setDec(pos.getDec().toString());
@@ -1099,12 +1236,40 @@ public class SedBuilderMainView extends JInternalFrame {
 
     @Action
     public void apply() {
-        for(int i=0; i<sed.getNumberOfSegments(); i++) {
+        for (int i = 0; i < sed.getNumberOfSegments(); i++) {
             Segment segment = sed.getSegment(i);
-            segment.getTarget().setName(new TextParam(targetName));
 
-            DoubleParam raD = new DoubleParam(Double.valueOf(ra));
-            DoubleParam decD = new DoubleParam(Double.valueOf(dec));
+            DoubleParam raD;
+            DoubleParam decD;
+
+            if (targetName == null || ra == null || dec == null || ra.isEmpty() || dec.isEmpty()) {
+                int confirm = NarrowOptionPane.showOptionDialog(this,
+                        "Some value are absent, Do you really want to set them?",
+                        "Confirmation",
+                        NarrowOptionPane.YES_NO_OPTION,
+                        NarrowOptionPane.QUESTION_MESSAGE,
+                        null, null, null);
+
+                if (confirm == 0) {
+
+                    segment.getTarget().setName(new TextParam(""));
+
+                    raD = new DoubleParam(Double.NaN);
+                    decD = new DoubleParam(Double.NaN);
+
+                } else {
+
+                    return;
+                }
+
+            } else {
+                segment.getTarget().setName(new TextParam(targetName));
+
+                raD = new DoubleParam(Double.valueOf(ra));
+                decD = new DoubleParam(Double.valueOf(dec));
+            }
+
+
 
             PositionParam pos = new PositionParam();
 
@@ -1117,7 +1282,4 @@ public class SedBuilderMainView extends JInternalFrame {
             SedBuilder.update();
         }
     }
-
-
-
 }

@@ -11,13 +11,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.build.timestamp.format>yyyy/MM/dd</maven.build.timestamp.format>
         <buildDate>${maven.build.timestamp}</buildDate>
-        <sherpa.version>iris-1.2</sherpa.version>
+        <sherpa.version>iris-2.0b5</sherpa.version>
     </properties>
 
     <parent>
         <groupId>cfa.vo</groupId>
         <artifactId>iris2</artifactId>
-        <version>2.0-beta1</version>
+        <version>2.0-beta4</version>
     </parent>
 
     <dependencies>
@@ -62,6 +62,11 @@
             <groupId>org.swinglabs</groupId>
             <artifactId>swing-layout</artifactId>
             <version>1.0.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.asdc.iris.plugin</groupId>
+            <artifactId>AsdcIrisPlugin</artifactId>
+            <version>1.1.7</version>
         </dependency>
     </dependencies>
 
@@ -215,14 +220,14 @@
                                             <sequential>
                                                 <delete dir="${basedir}/target/lib/sherpa"/>
                                                 <move todir="${basedir}/target/">
-                                                    <fileset dir="${basedir}/target/lib/" includes="sherpa-*.tgz"/>
+                                                    <fileset dir="${basedir}/target/lib/" includes="sherpa-*.tar.gz"/>
                                                 </move>
                                                 <echo>Unpacking Sherpa</echo>
                                                 <exec executable="tar">
                                                     <arg value="-C"/>
                                                     <arg value="${basedir}/target/lib/"/>
                                                     <arg value ="-xzf"/>
-                                                    <arg value="${basedir}/target/sherpa-${sherpa.version}-@{p}.tgz"/>
+                                                    <arg value="${basedir}/target/sherpa-${sherpa.version}-@{p}.tar.gz"/>
                                                 </exec>
                                                 <echo>Building distribution archive for architecture @{p}</echo>
 
@@ -295,7 +300,7 @@
         <profile>
             <id>distribution</id>
             <properties>
-                <platforms>macosx-x86_64,macosx-i386,unix-x86_64,unix-i386,macosx-10.5</platforms>
+                <platforms>macosx-x86_64,macosx-i386,unix-x86_64,unix-i386</platforms>
                 <distribution>true</distribution>
             </properties>
             <dependencies>
@@ -304,36 +309,36 @@
                     <artifactId>sherpa</artifactId>
                     <version>${sherpa.version}</version>
                     <classifier>macosx-x86_64</classifier>
-                    <type>tgz</type>
+                    <type>tar.gz</type>
                 </dependency>
                 <dependency>
                     <groupId>sherpa</groupId>
                     <artifactId>sherpa</artifactId>
                     <version>${sherpa.version}</version>
                     <classifier>macosx-i386</classifier>
-                    <type>tgz</type>
+                    <type>tar.gz</type>
                 </dependency>
                 <dependency>
                     <groupId>sherpa</groupId>
                     <artifactId>sherpa</artifactId>
                     <version>${sherpa.version}</version>
                     <classifier>unix-i386</classifier>
-                    <type>tgz</type>
+                    <type>tar.gz</type>
                 </dependency>
                 <dependency>
                     <groupId>sherpa</groupId>
                     <artifactId>sherpa</artifactId>
                     <version>${sherpa.version}</version>
                     <classifier>unix-x86_64</classifier>
-                    <type>tgz</type>
+                    <type>tar.gz</type>
                 </dependency>
-                <dependency>
+<!--                <dependency>
                     <groupId>sherpa</groupId>
                     <artifactId>sherpa</artifactId>
                     <version>${sherpa.version}</version>
                     <classifier>macosx-10.5</classifier>
                     <type>tgz</type>
-                </dependency>
+                </dependency>-->
             </dependencies>
             <activation>
                 <activeByDefault>true</activeByDefault>
@@ -356,7 +361,7 @@
                     <artifactId>sherpa</artifactId>
                     <version>${sherpa.version}</version>
                     <classifier>macosx-x86_64</classifier>
-                    <type>tgz</type>
+                    <type>tar.gz</type>
                 </dependency>
             </dependencies>
         </profile>
@@ -377,7 +382,7 @@
                     <artifactId>sherpa</artifactId>
                     <version>${sherpa.version}</version>
                     <classifier>macosx-i386</classifier>
-                    <type>tgz</type>
+                    <type>tar.gz</type>
                 </dependency>
             </dependencies>
         </profile>
@@ -398,7 +403,7 @@
                     <artifactId>sherpa</artifactId>
                     <version>${sherpa.version}</version>
                     <classifier>unix-i386</classifier>
-                    <type>tgz</type>
+                    <type>tar.gz</type>
                 </dependency>
             </dependencies>
         </profile>
@@ -419,11 +424,11 @@
                     <artifactId>sherpa</artifactId>
                     <version>${sherpa.version}</version>
                     <classifier>unix-x86_64</classifier>
-                    <type>tgz</type>
+                    <type>tar.gz</type>
                 </dependency>
             </dependencies>
         </profile>
-        <profile>
+<!--        <profile>
             <id>macosx-10.5</id>
             <activation>
                 <property>
@@ -443,7 +448,7 @@
                     <type>tgz</type>
                 </dependency>
             </dependencies>
-        </profile>
+        </profile>-->
     </profiles>
 
 </project>

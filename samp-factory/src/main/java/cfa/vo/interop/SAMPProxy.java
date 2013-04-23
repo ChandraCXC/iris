@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -122,6 +123,9 @@ public class SAMPProxy implements InvocationHandler {
         }
 
     }
+    
+    Random random = new Random();
+    
     @Override
     public Object invoke(Object o, Method method, Object[] os) throws Throwable {
         if(method.getName().startsWith("get")&&!unsupported(method))
@@ -136,6 +140,12 @@ public class SAMPProxy implements InvocationHandler {
         }
         if(method.getName().equals("toString"))
             return toString(o);
+        
+        if(method.getName().equals("equals"))
+            return Boolean.FALSE;
+        
+        if(method.getName().equals("hashCode"))
+            return random.nextInt();
 
         throw new Exception("Unsupported method: " +method.getName());
     }

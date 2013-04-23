@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cfa.vo.sed.builder.science;
+package cfa.vo.sed.science.interpolation;
 
 /**
  *
@@ -40,5 +40,17 @@ public interface InterpolationPayload {
     public double[] getY();
     
     public void setY(double[] y);
+    
+    public Boolean getLog();
+    
+    public void setLog(Boolean log);
+    
+    public Boolean getSmooth();
+    
+    public void setSmooth(Boolean smooth);
+    
+    public Integer getBoxSize();
+    
+    public void setBoxSize(Integer boxSize);
     
 }

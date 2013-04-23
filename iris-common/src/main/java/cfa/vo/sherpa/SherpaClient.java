@@ -43,8 +43,8 @@ public class SherpaClient {
 
     public SherpaClient(SAMPController controller) {
         this.sampController = controller;
-        Thread t = new SherpaFinderThread();
-        t.start();
+//        Thread t = new SherpaFinderThread();
+//        t.start();
     }
     
     public String getSherpaId() {
@@ -131,9 +131,14 @@ public class SherpaClient {
     }
 
     public void findSherpa() throws SampException {
-        for(Entry<String, Client> entry : (Set<Entry<String, Client>>) sampController.getClientMap().entrySet())
-            if (entry.getValue().getMetadata().getName().toLowerCase().equals("sherpa"))
-                sherpaPublicId = entry.getValue().getId();
+        if(sherpaPublicId==null)
+            try {
+                for(Entry<String, Client> entry : (Set<Entry<String, Client>>) sampController.getClientMap().entrySet())
+                    if (entry.getValue().getMetadata().getName().toLowerCase().equals("sherpa"))
+                        sherpaPublicId = entry.getValue().getId();
+            } catch (Exception ex) {
+                throw new SampException("Cannot find Sherpa. If the problem persists, please refer to the troubleshooting section of the documentation.");
+            }
     }
 
     public boolean isException(Response rspns) {

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cfa.vo.sed.builder.science;
+package cfa.vo.sed.science.interpolation;
 
 import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SAMPFactory;
@@ -10,6 +10,8 @@ import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.sed.builder.SedBuilder;
+import cfa.vo.sedlib.Param;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sherpa.SherpaClient;
@@ -53,33 +55,37 @@ public class SherpaRedshifter {
             throw new Exception("Sherpa not found");
         }
 
-        ExtSed newSed = manager.newSed(sed.getId() + "_" + toRedshift);
+//        ExtSed newSed = manager.newSed(sed.getId() + "_" + toRedshift);
 
-        for (int i = 0; i < sed.getNumberOfSegments(); i++) {
-            Segment segment = (Segment) sed.getSegment(i).clone();
-            double[] values = getSpectralValues(segment);
-            RedshiftPayload payload = (RedshiftPayload) SAMPFactory.get(RedshiftPayload.class);
-            payload.setX(values);
-            payload.setY(segment.getFluxAxisValues());
-            payload.setFromRedshift(fromRedshift);
-            payload.setToRedshift(toRedshift);
-            SAMPMessage message = SAMPFactory.createMessage(REDSHIFT_MTYPE, payload, RedshiftPayload.class);
-            newSed.addSegment(segment);
-            Response rspns = controller.callAndWait(sherpaId, message.get(), 10);
-            if (client.isException(rspns)) {
-                Exception ex = client.getException(rspns);
-                throw ex;
-            }
+        ExtSed inputSed = SedBuilder.flatten(sed, "Angstrom", "Jy");
+        
+        inputSed.setId(sed.getId() + "_" + toRedshift);
+        
+        RedshiftPayload payload = (RedshiftPayload) SAMPFactory.get(RedshiftPayload.class);
+        payload.setX(inputSed.getSegment(0).getSpectralAxisValues());
+        payload.setY(inputSed.getSegment(0).getFluxAxisValues());
+        payload.setFromRedshift(fromRedshift);
+        payload.setToRedshift(toRedshift);
+        SAMPMessage message = SAMPFactory.createMessage(REDSHIFT_MTYPE, payload, RedshiftPayload.class);
 
-            RedshiftPayload response = (RedshiftPayload) SAMPFactory.get(rspns.getResult(), RedshiftPayload.class);
-            double[] x = response.getX();
-            segment.setSpectralAxisValues(convertValues(x, "Angstrom", segment.getSpectralAxisUnits()));
-            segment.setFluxAxisValues(response.getY());
+        Response rspns = controller.callAndWait(sherpaId, message.get(), 10);
+        if (client.isException(rspns)) {
+            Exception ex = client.getException(rspns);
+            throw ex;
         }
 
-        newSed.checkChar();
+        RedshiftPayload response = (RedshiftPayload) SAMPFactory.get(rspns.getResult(), RedshiftPayload.class);
+        inputSed.getSegment(0).setSpectralAxisValues(response.getX());
+        inputSed.getSegment(0).setFluxAxisValues(response.getY());
         
-        return newSed;
+        inputSed.checkChar();
+        
+        inputSed.getSegment(0).addCustomParam(new Param(fromRedshift.toString(), "iris:original redshift", ""));
+        inputSed.getSegment(0).addCustomParam(new Param(toRedshift.toString(), "iris:final redshift", ""));
+        
+        manager.add(inputSed);
+        
+        return inputSed;
     }
 
     private double[] getSpectralValues(Segment segment) throws SedNoDataException, UnitsException {

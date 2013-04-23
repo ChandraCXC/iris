@@ -84,6 +84,13 @@ public class SedlibSedManager implements ISedManager<ExtSed> {
 
     @Override
     public void add(ExtSed sed) {
+        String id = sed.getId();
+        int c = 0;
+        while (existsSed(id + (c == 0 ? "" : "." + c))) {
+            c++;
+        }
+        sed.setId(id + (c == 0 ? "" : "." + c));
+        
         sedMap.put(sed.getId(), sed);
         SedEvent.getInstance().fire(sed, SedCommand.ADDED);
         LogEvent.getInstance().fire(this, new LogEntry("SED added: " + sed.getId(), this));
@@ -120,10 +127,10 @@ public class SedlibSedManager implements ISedManager<ExtSed> {
     @Override
     public ExtSed newSed(String id) {
         int c = 0;
-        while (existsSed(id + (c == 0 ? "" : c))) {
+        while (existsSed(id + (c == 0 ? "" : "." + c))) {
             c++;
         }
-        id = id + (c == 0 ? "" : c);
+        id = id + (c == 0 ? "" : "." + c);
         ExtSed sed = new ExtSed(id);
         sedMap.put(id, sed);
         SedEvent.getInstance().fire(sed, SedCommand.ADDED);

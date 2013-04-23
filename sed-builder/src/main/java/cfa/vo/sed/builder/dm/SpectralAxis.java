@@ -131,7 +131,7 @@ public class SpectralAxis extends AbstractAxis<XQuantity> {
     @Override
     public void addTo(Segment segment) throws SedException {
 
-        if(mode.equals("Single Value")) {
+        if(mode.equals("Single Value") || mode.equals("Single Value Column")) {
             segment.createChar().createSpectralAxis().setUcd(getQuantity().getUCD());
             segment.setSpectralAxisValues(new double[]{getValue()});
             segment.setSpectralAxisUnits(getUnit().getString());
@@ -161,11 +161,15 @@ public class SpectralAxis extends AbstractAxis<XQuantity> {
     public Validation validate() {
         Validation v = new Validation();
 
-        if(mode == null || !mode.matches("Single Value|Energy Bin|Photometry Filter"))
+        if(mode == null || !mode.matches("Single Value Column|Single Value|Energy Bin|Photometry Filter"))
             v.addError("Missing X Axis Type. Please select a Type.");
 
         if(mode!=null) {
             if(mode.equals("Single Value") && (getValue()==null || getValue().isNaN())) {
+                v.addError("Missing/Invalid X Axis Value");
+            }
+            
+            if(mode.equals("Single Value Column") && (getValue()==null || getValue().isNaN())) {
                 v.addError("Missing/Invalid X Axis Value");
             }
 

@@ -36,11 +36,17 @@ import cfa.vo.sed.gui.PhotometryFilterBrowser;
 import cfa.vo.sed.gui.PluginManager;
 import cfa.vo.sed.gui.SampChooser;
 import cfa.vo.sed.gui.SedBuilderMainView;
+import cfa.vo.sed.quantities.AxisMetadata;
+import cfa.vo.sed.quantities.SPVYQuantity;
+import cfa.vo.sed.quantities.SPVYUnit;
+import cfa.vo.sed.quantities.XUnit;
 import cfa.vo.sed.setup.ISetup;
 import cfa.vo.sed.setup.SetupManager;
 import cfa.vo.sedlib.DoubleParam;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.Target;
+import cfa.vo.sedlib.common.SedException;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sedlib.common.ValidationError;
@@ -62,6 +68,10 @@ import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.AbstractMessageHandler;
 import org.astrogrid.samp.client.HubConnection;
 import org.astrogrid.samp.client.MessageHandler;
+import spv.spectrum.SEDMultiSegmentSpectrum;
+import spv.util.UnitsException;
+import spv.util.XUnits;
+import spv.util.YUnits;
 
 /**
  *
@@ -191,6 +201,15 @@ public class SedBuilder implements IrisComponent {
                 public void onClick() {
                     SedBuilder.show();
                     view.getLoadSegmentFrame().show();
+                }
+            });
+            
+            add(new AbstractDesktopItem("File|Load NED SED", "Load SED data from the NASA Extragalactic Database", "/ned.png", "/ned.png") {
+
+                @Override
+                public void onClick() {
+                    SedBuilder.show();
+                    view.getLoadSegmentFrame().showNed();
                 }
             });
 
@@ -438,5 +457,91 @@ public class SedBuilder implements IrisComponent {
                 }
             }
         }
+    }
+    
+    public static ExtSed flatten(ExtSed sed, String xunit, String yunit) throws SedException, UnitsException {
+        if(sed.getNumberOfSegments()==0)
+           throw new SedNoDataException();
+        
+        double xvalues[] = {};
+        double yvalues[] = {};
+        double staterr[] = {};
+
+        Target target = new Target();
+        
+        for (int i = 0; i < sed.getNumberOfSegments(); i++) {
+            Segment oldSegment = sed.getSegment(i);
+            if(oldSegment.isSetTarget()) {
+                Target t = oldSegment.getTarget();
+                if(t.isSetName() && !t.getName().getValue().equals("UNKNOWN")) {
+                    target.setName(t.getName());
+                    if(t.isSetPos())
+                        target.setPos(t.getPos());
+                }
+            }
+            double[] xoldvalues = oldSegment.getSpectralAxisValues();
+            double[] yoldvalues = oldSegment.getFluxAxisValues();
+            double[] erroldvalues = (double[]) oldSegment.getDataValues(SEDMultiSegmentSpectrum.E_UTYPE);
+            String xoldunits = oldSegment.getSpectralAxisUnits();
+            String yoldunits = oldSegment.getFluxAxisUnits();
+            double[] ynewvalues = convertYValues(yoldvalues, xoldvalues, yoldunits, xoldunits, yunit);
+            yvalues = concat(yvalues, ynewvalues);
+            if(erroldvalues!=null) {
+                double[] errnewvalues = convertYValues(erroldvalues, xoldvalues, yoldunits, xoldunits, yunit);
+                staterr = concat(staterr, errnewvalues);
+            }
+            double[] xnewvalues = convertXValues(xoldvalues, xoldunits, xunit);
+            xvalues = concat(xvalues, xnewvalues);
+        }
+        
+        Segment segment = new Segment();
+        segment.setSpectralAxisValues(xvalues);
+        segment.setFluxAxisValues(yvalues);
+        segment.setDataValues(staterr, SEDMultiSegmentSpectrum.E_UTYPE);
+        segment.setTarget(target);
+        segment.setSpectralAxisUnits(xunit);
+        segment.setFluxAxisUnits(yunit);
+        String xucd = null;
+        for(XUnit u : XUnit.values())
+            if(u.getString().contains(xunit))
+                xucd = u.getUCD();
+        segment.createChar().createSpectralAxis().setUcd(xucd);
+        
+        String yucd = null;
+        for(SPVYUnit u : SPVYUnit.values()) {
+            if(u.getString().equals(yunit))
+                for(SPVYQuantity q : SPVYQuantity.values())
+                    if(q.getPossibleUnits().contains(u))
+                        yucd = (new AxisMetadata(q, u)).getUCD();
+        }
+        segment.createChar().createFluxAxis().setUcd(yucd);
+        
+        ExtSed newSed = new ExtSed("Exported", false);
+        newSed.addSegment(segment);
+        newSed.checkChar();
+
+        return newSed;
+    }
+
+    private static double[] concat(double[] a, double[] b) {
+        int aLen = a.length;
+        int bLen = b.length;
+        double[] c = new double[aLen + bLen];
+        System.arraycopy(a, 0, c, 0, aLen);
+        System.arraycopy(b, 0, c, aLen, bLen);
+        return c;
+    }
+
+    private static double[] getSpectralValues(Segment segment) throws SedNoDataException, UnitsException {
+        double[] values = segment.getSpectralAxisValues();
+        return convertXValues(values, segment.getSpectralAxisUnits(), "Angstrom");
+    }
+
+    private static double[] convertXValues(double[] values, String fromUnits, String toUnits) throws UnitsException {
+        return XUnits.convert(values, new XUnits(fromUnits), new XUnits(toUnits));
+    }
+
+    private static double[] convertYValues(double[] yvalues, double[] xvalues, String fromYUnits, String fromXUnits, String toUnits) throws UnitsException {
+        return YUnits.convert(yvalues, xvalues, new YUnits(fromYUnits), new XUnits(fromXUnits), new YUnits(toUnits), true);
     }
 }

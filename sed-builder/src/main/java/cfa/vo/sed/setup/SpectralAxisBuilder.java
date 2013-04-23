@@ -124,6 +124,30 @@ public class SpectralAxisBuilder extends AbstractValidable implements Builder<Sp
         this.valueColumn = valueColumn;
         propertyChangeSupport.firePropertyChange(PROP_VALUECOLUMN, oldValueColumn, valueColumn);
     }
+    
+    private Double value;
+    public static final String PROP_VALUE = "value";
+
+    /**
+     * Get the value of value
+     *
+     * @return the value of value
+     */
+    public Double getValue() {
+        return value;
+    }
+
+    /**
+     * Set the value of value
+     *
+     * @param value new value of value
+     */
+    public void setValue(Double value) {
+        Double oldValue = this.value;
+        this.value = value;
+        propertyChangeSupport.firePropertyChange(PROP_VALUE, oldValue, value);
+    }
+
 
     private String mode;
     public static final String PROP_MODE = "mode";
@@ -226,16 +250,20 @@ public class SpectralAxisBuilder extends AbstractValidable implements Builder<Sp
         axis.setFilter(filter_);
         axis.setQuantity(quantity);
         axis.setUnit(unit);
-        Double value = null;
-        if(mode.equals("Single Value")) {
+        Double _value = null;
+        if(mode.equals("Single Value Column")) {
             Number[] data = filter.getData(0, valueColumn.getNumber());
             if(data!=null) {
                 Number v = data[valueColumn.getNumber()];
                 if(v!=null) {
-                    value = v.doubleValue();
-                    axis.setValue(value);
+                    _value = v.doubleValue();
+                    axis.setValue(_value);
                 }
             }
+        }
+        
+        if(mode.equals("Single Value")) {
+            axis.setValue(value);
         }
         
         return axis;
@@ -245,12 +273,16 @@ public class SpectralAxisBuilder extends AbstractValidable implements Builder<Sp
     public Validation validate() {
         Validation v = new Validation();
 
-        if(mode == null || !mode.matches("Single Value|Energy Bin|Photometry Filter"))
+        if(mode == null || !mode.matches("Single Value Column|Single Value|Energy Bin|Photometry Filter"))
             v.addError("Missing X Axis Type. Please select a Type");
 
         if(mode!=null) {
-            if(mode.equals("Single Value") && (getValueColumn()==null)) {
+            if(mode.equals("Single Value Column") && (getValueColumn()==null)) {
                 v.addError("Missing X Axis Value Column");
+            }
+            
+            if(mode.equals("Single Value") && (getValue()==null)) {
+                v.addError("Missing X Axis Value");
             }
 
             if(mode.equals("Energy Bin") && (binmin==null || Double.isNaN(binmin))) {

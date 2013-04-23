@@ -18,18 +18,36 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package cfa.vo.sed.builder.photfilters;
 
+import cfa.vo.iris.gui.NarrowOptionPane;
+import cfa.vo.sed.builder.SedBuilder;
+import cfa.vo.sedlib.common.SedException;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import uk.ac.starlink.table.RowSequence;
+import uk.ac.starlink.table.StarTable;
+import uk.ac.starlink.table.StoragePolicy;
+import uk.ac.starlink.util.DataSource;
+import uk.ac.starlink.util.FileDataSource;
+import uk.ac.starlink.votable.VOTableBuilder;
 
 /**
  *
  * @author olaurino
  */
-public class PhotometryFilter implements Cloneable {
+public class PhotometryFilter implements Cloneable, PassBand {
+
     private String id;
     private String unit;
     private String band;
@@ -41,6 +59,7 @@ public class PhotometryFilter implements Cloneable {
     private Float wlmin;
     private Float wlmax;
     private URL curveURL;
+    private String localFile;
 
     public String getBand() {
         return band;
@@ -130,11 +149,95 @@ public class PhotometryFilter implements Cloneable {
         this.wlmin = wlmin;
     }
 
+    public String getLocalFile() {
+        return localFile;
+    }
+
+    public void setLocalFile(String localFile) {
+        this.localFile = localFile;
+    }
+
+    public boolean getCurve() throws SedException, IOException {
+
+
+        //check the existence of the filters dir
+        File confDir = SedBuilder.getApplication().getConfigurationDir();
+
+        if (confDir.exists() && confDir.isDirectory()) {
+
+            File filtersDir = new File(confDir.getAbsolutePath() + "/" + "filters");;
+
+            //get the filters dir or create it if it doesn't exist
+            List<String> ls = Arrays.asList(confDir.list());
+            if (ls.contains("filters")) {
+                if (!filtersDir.isDirectory()) {
+                    NarrowOptionPane.showMessageDialog(null,
+                            "Cannot read the filters directory\n" + filtersDir.getAbsolutePath(),
+                            "Error reading configuration",
+                            NarrowOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+
+            } else {
+                filtersDir.mkdir();
+            }
+
+            //check file existence
+            String filterFileName = filtersDir.getAbsolutePath() + "/" + id.replaceAll("/", "_");
+
+            File filterFile = new File(filterFileName);
+
+            if (!filterFile.exists()) {
+                try {
+                    ReadableByteChannel rbc = Channels.newChannel(curveURL.openStream());
+                    FileOutputStream fos = new FileOutputStream(filterFile);
+                    fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+                    fos.close();
+                } catch (Exception ex) {
+                    Logger.getLogger(PhotometryFilter.class.getName()).log(Level.SEVERE, null, ex);
+                    NarrowOptionPane.showMessageDialog(null,
+                            "Cannot download file. Please check connection.\n" + curveURL,
+                            "Error downloading file",
+                            NarrowOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+            }
+
+            localFile = filterFileName + ".res";
+            File filterTextFile = new File(localFile);
+
+            if (!filterTextFile.exists()) {
+                VOTableBuilder b = new VOTableBuilder();
+                DataSource ds = new FileDataSource(filterFileName);
+                StarTable table = b.makeStarTable(ds, false, StoragePolicy.ADAPTIVE);
+
+                FileWriter fw = new FileWriter(localFile);
+                BufferedWriter out = new BufferedWriter(fw);
+
+                RowSequence rows = table.getRowSequence();
+                
+                while(rows.next())
+                    out.write(rows.getRow()[0] + " " + rows.getRow()[1] + "\n");
+                
+
+                out.close();
+            }
+        } else {
+            NarrowOptionPane.showMessageDialog(null,
+                    "Cannot read the configuration directory\n" + confDir.getAbsolutePath(),
+                    "Error reading configuration",
+                    NarrowOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        
+        return true;
+    }
+
     @Override
     public String toString() {
         return getId().split("/")[1];
     }
-    
+
     @Override
     public Object clone() {
         try {

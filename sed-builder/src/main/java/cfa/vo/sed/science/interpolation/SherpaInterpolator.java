@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cfa.vo.sed.builder.science;
+package cfa.vo.sed.science.interpolation;
 
 import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SAMPFactory;
@@ -10,6 +10,7 @@ import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sherpa.SherpaClient;
@@ -51,21 +52,8 @@ public class SherpaInterpolator {
                     NarrowOptionPane.ERROR_MESSAGE);
             throw new Exception("Sherpa not found");
         }
-
-        double xvalues[]={};
-        double yvalues[]={};
-
-        for (int i = 0; i < sed.getNumberOfSegments(); i++) {
-            Segment oldSegment = sed.getSegment(i);
-            double[] xoldvalues = oldSegment.getSpectralAxisValues();
-            double[] yoldvalues = oldSegment.getFluxAxisValues();
-            String xoldunits = oldSegment.getSpectralAxisUnits();
-            String yoldunits = oldSegment.getFluxAxisUnits();
-            double [] ynewvalues = convertYValues(yoldvalues, xoldvalues, yoldunits, xoldunits, "Jy");
-            yvalues = concat(yvalues, ynewvalues);
-            double [] xnewvalues = getSpectralValues(oldSegment);
-            xvalues = concat(xvalues, xnewvalues);
-        }
+        
+        ExtSed newsed = SedBuilder.flatten(sed, "Angstrom", "Jy");
         
         String intervUnits = interpConf.getUnits();
         Double xmin = interpConf.getXMin();
@@ -77,8 +65,8 @@ public class SherpaInterpolator {
         if(xmax<Double.POSITIVE_INFINITY)
             interpConf.setXMax(convertXValues(new double[]{xmax}, intervUnits, "Angstrom")[0]);
 
-        interpConf.setX(xvalues);
-        interpConf.setY(yvalues);
+        interpConf.setX(newsed.getSegment(0).getSpectralAxisValues());
+        interpConf.setY(newsed.getSegment(0).getFluxAxisValues());
         SAMPMessage message = SAMPFactory.createMessage(INTERPOLATE_MTYPE, interpConf, InterpolationPayload.class);
         Response rspns = controller.callAndWait(sherpaId, message.get(), 10);
         if (client.isException(rspns)) {

@@ -555,9 +555,11 @@ public class IrisDesktop extends JFrame implements PluginListener {
     }
 
     @Action
-    public void exit() {
+    public boolean exit() {
         if (quit()) {
             app.exitApp();
+            return true;
         }
+        return false;
     }
 }

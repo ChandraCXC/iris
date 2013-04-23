@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cfa.vo.sed.builder.science;
+package cfa.vo.sed.science.interpolation;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -13,6 +13,84 @@ import java.beans.PropertyChangeSupport;
  */
 public class InterpolationConfig implements InterpolationPayload {
 
+    private Integer boxSize = 20;
+    public static final String PROP_BOXSIZE = "boxSize";
+
+    /**
+     * Get the value of boxSize
+     *
+     * @return the value of boxSize
+     */
+    @Override
+    public Integer getBoxSize() {
+        return boxSize;
+    }
+
+    /**
+     * Set the value of boxSize
+     *
+     * @param boxSize new value of boxSize
+     */
+    @Override
+    public void setBoxSize(Integer boxSize) {
+        Integer oldBoxSize = this.boxSize;
+        this.boxSize = boxSize;
+        propertyChangeSupport.firePropertyChange(PROP_BOXSIZE, oldBoxSize, boxSize);
+    }
+
+    
+    private Boolean smooth = Boolean.FALSE;
+    public static final String PROP_SMOOTH = "smooth";
+
+    /**
+     * Get the value of smooth
+     *
+     * @return the value of smooth
+     */
+    @Override
+    public Boolean getSmooth() {
+        return smooth;
+    }
+
+    /**
+     * Set the value of smooth
+     *
+     * @param smooth new value of smooth
+     */
+    @Override
+    public void setSmooth(Boolean smooth) {
+        Boolean oldSmooth = this.smooth;
+        this.smooth = smooth;
+        propertyChangeSupport.firePropertyChange(PROP_SMOOTH, oldSmooth, smooth);
+    }
+
+    
+    private Boolean log = Boolean.TRUE;
+    public static final String PROP_LOG = "log";
+
+    /**
+     * Get the value of log
+     *
+     * @return the value of log
+     */
+    @Override
+    public Boolean getLog() {
+        return log;
+    }
+
+    /**
+     * Set the value of log
+     *
+     * @param log new value of log
+     */
+    @Override
+    public void setLog(Boolean log) {
+        Boolean oldLog = this.log;
+        this.log = log;
+        propertyChangeSupport.firePropertyChange(PROP_LOG, oldLog, log);
+    }
+
+    
     private Boolean normalize = false;
     public static final String PROP_NORMALIZE = "normalize";
 
@@ -39,7 +117,7 @@ public class InterpolationConfig implements InterpolationPayload {
     }
 
     
-    private String method = "Linear";
+    private String method = "Linear Spline";
     public static final String PROP_METHOD = "method";
 
     /**
@@ -113,8 +191,8 @@ public class InterpolationConfig implements InterpolationPayload {
         this.xMax = xMax;
         propertyChangeSupport.firePropertyChange(PROP_XMAX, oldXmax, xMax);
     }
-
-    private Integer nBins = 100;
+    
+    private Integer nBins = 1000;
     public static final String PROP_NBINS = "nBins";
 
     /**
@@ -237,7 +315,11 @@ public class InterpolationConfig implements InterpolationPayload {
     
     @Override
     public String toString() {
-        return "Normalize Method: "+method+", interval: ("+xMin+","+xMax+") "+units+", # bins: "+nBins+", Normalized? "+normalize;
+        return "Interpolation Method: "+method+
+                ", interval: ("+xMin+","+xMax+") "+ units+
+                ", # bins: "+nBins+
+                ", Normalized? "+normalize+
+                ", Smoothed? "+smooth+ (smooth? "BoxSize: "+boxSize : "");
     }
 
 

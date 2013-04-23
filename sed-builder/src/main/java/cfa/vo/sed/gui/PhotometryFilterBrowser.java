@@ -37,7 +37,7 @@ public class PhotometryFilterBrowser extends javax.swing.JInternalFrame {
     /** Creates new form PhotometryFilterBrowser */
     public PhotometryFilterBrowser() throws Exception {
         initComponents();
-        Container panel = new PhotometryFilterBrowsePanel();
+        Container panel = new PhotometryFilterBrowsePanel(false);
         this.setContentPane(panel);
         this.setSize(558, 478);
     }

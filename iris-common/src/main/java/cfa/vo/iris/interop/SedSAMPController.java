@@ -22,7 +22,6 @@ import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sedlib.Sed;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -62,18 +61,18 @@ public class SedSAMPController extends SAMPController {
 
             for (int i = 1; i < sed.getNumberOfSegments()+1; i++) {
 
-                String n = i==1 ? "" : "Segment"+i;
-                String id = sed.getId()+n;
+                String n = i==1 ? "" : String.valueOf(i);
+                String id = "ExportedSegment" +n;
                 Sed s = new Sed();
 
                 s.addSegment(sed.getSegment(i-1));
 
                 VaoMessage msg = (VaoMessage) SAMPFactory.get(VaoMessage.class);
-                msg.setName(id);
+                msg.setName(sed.getId()+"Segment"+n);
                 msg.setTableId(id);
                 msg.getVaoPayload().setMessageType("sed");
                 msg.getVaoPayload().setSenderId("iris");
-                String filename = URLEncoder.encode(id + ".vot", "UTF-8");
+                String filename = id + ".vot";
                 URL url = addResource(filename, new SedServerResource(s));
                 msg.setUrl(url.toString());
 

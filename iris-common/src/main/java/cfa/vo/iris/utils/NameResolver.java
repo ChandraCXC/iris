@@ -21,6 +21,7 @@
 
 package cfa.vo.iris.utils;
 
+import cfa.vo.iris.gui.NarrowOptionPane;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -52,15 +53,23 @@ public class NameResolver {
         return cats;
     }
 
-    public Position resolve(Catalog cat, String name) throws RuntimeException, IOException {
-        QueryArgs args = new BasicQueryArgs(cat);
-        args.setId(name);
-        TableQueryResult result = (TableQueryResult) cat.query(args);
-        WorldCoords coords = (WorldCoords) result.getCoordinates(0);
-        return new Position(coords.getRaDeg(), coords.getDecDeg());
+    public Position resolve(Catalog cat, String name) throws Exception {
+        try {
+            QueryArgs args = new BasicQueryArgs(cat);
+            args.setId(name);
+            TableQueryResult result = (TableQueryResult) cat.query(args);
+            WorldCoords coords = (WorldCoords) result.getCoordinates(0);
+            return new Position(coords.getRaDeg(), coords.getDecDeg());
+        } catch(Exception ex) {
+            String msg = "Unexpected Error";
+            if(ex.getMessage().contains("500 for URL"))
+                msg = "Internal Server Error";
+            NarrowOptionPane.showMessageDialog(null, "There was an error contacting the Name Resolver: "+msg, "Name Resolver Error", NarrowOptionPane.ERROR_MESSAGE);
+            throw ex;
+        }
     }
 
-    public class Position {
+    public static class Position {
         private Double ra;
         private Double dec;
 

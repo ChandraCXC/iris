@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cfa.vo.sed.builder.science;
+package cfa.vo.sed.science;
 
 import cfa.vo.iris.AbstractDesktopItem;
 import cfa.vo.iris.ICommandLineInterface;
@@ -72,7 +72,7 @@ public class ScienceComponent implements IrisComponent {
     private class ScienceMenus extends ArrayList<IMenuItem> {
 
         public ScienceMenus() {
-            add(new AbstractDesktopItem("Science Capabilities", "A collection of Analysis tools", "/scratch.png", "/scratch_tiny.png") {
+            add(new AbstractDesktopItem("Shift, Interpolate, Integrate", "A collection of Analysis tools", "/tools.png", "/tools_tiny.png") {
 
                 @Override
                 public void onClick() {

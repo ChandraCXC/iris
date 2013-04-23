@@ -24,18 +24,29 @@
  *
  * Created on May 25, 2011, 12:03:17 AM
  */
-
 package cfa.vo.sed.gui;
 
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.utils.SpaceTrimmer;
 import cfa.vo.sed.builder.SedBuilder;
+import cfa.vo.sed.quantities.IUnit;
+import cfa.vo.sed.quantities.SPVYUnit;
+import cfa.vo.sed.quantities.XUnit;
+import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
+import org.jdesktop.application.Action;
+import org.jdesktop.application.Task;
 
 /**
  *
@@ -43,6 +54,76 @@ import javax.swing.JFileChooser;
  */
 public final class SaveSedDialog extends javax.swing.JDialog {
 
+    private String xunit;
+    public static final String PROP_XUNIT = "xunit";
+
+    /**
+     * Get the value of xunit
+     *
+     * @return the value of xunit
+     */
+    public String getXunit() {
+        return xunit;
+    }
+
+    /**
+     * Set the value of xunit
+     *
+     * @param xunit new value of xunit
+     */
+    public void setXunit(String xunit) {
+        String oldXunit = this.xunit;
+        this.xunit = xunit;
+        firePropertyChange(PROP_XUNIT, oldXunit, xunit);
+    }
+    private String yunit;
+    public static final String PROP_YUNIT = "yunit";
+
+    /**
+     * Get the value of yunit
+     *
+     * @return the value of yunit
+     */
+    public String getYunit() {
+        return yunit;
+    }
+
+    /**
+     * Set the value of yunit
+     *
+     * @param yunit new value of yunit
+     */
+    public void setYunit(String yunit) {
+        String oldYunit = this.yunit;
+        this.yunit = yunit;
+        firePropertyChange(PROP_YUNIT, oldYunit, yunit);
+    }
+    private boolean single = false;
+    public static final String PROP_SINGLE = "single";
+
+    /**
+     * Get the value of single
+     *
+     * @return the value of single
+     */
+    public boolean isSingle() {
+        return single;
+    }
+
+    /**
+     * Set the value of single
+     *
+     * @param single new value of single
+     */
+    public void setSingle(boolean single) {
+        boolean oldSingle = this.single;
+        this.single = single;
+        firePropertyChange(PROP_SINGLE, oldSingle, single);
+        jComboBox2.setVisible(single);
+        jComboBox3.setVisible(single);
+        jLabel2.setVisible(single);
+        jLabel3.setVisible(single);
+    }
     private boolean savable = false;
     public static final String PROP_SAVABLE = "savable";
 
@@ -65,10 +146,7 @@ public final class SaveSedDialog extends javax.swing.JDialog {
         this.savable = savable;
         firePropertyChange(PROP_SAVABLE, oldSavable, savable);
     }
-
     private ExtSed sed;
-
-
     private String sedName;
 
     /**
@@ -88,9 +166,7 @@ public final class SaveSedDialog extends javax.swing.JDialog {
     public void setSedName(String sedName) {
         this.sedName = sedName;
     }
-
     private List<SedFormat> sedFormats = new ArrayList();
-
     public static final String PROP_SEDFORMATS = "sedFormats";
 
     /**
@@ -112,8 +188,6 @@ public final class SaveSedDialog extends javax.swing.JDialog {
         this.sedFormats = sedFormats;
         firePropertyChange(PROP_SEDFORMATS, oldSedFormats, sedFormats);
     }
-
-
     private SedFormat format;
     public static final String PROP_FORMAT = "format";
 
@@ -135,12 +209,10 @@ public final class SaveSedDialog extends javax.swing.JDialog {
         SedFormat oldFormat = this.format;
         this.format = format;
         firePropertyChange(PROP_FORMAT, oldFormat, format);
-        if(!filePath.isEmpty()) {
-            setFilePath(filePath.replaceAll(getExtension(new File(filePath)), format.exten()));
-        }
+//        if(!filePath.isEmpty()) {
+//            setFilePath(filePath.replaceAll(getExtension(new File(filePath)), format.exten()));
+//        }
     }
-
-
     private String filePath = "";
     public static final String PROP_FILEPATH = "filePath";
 
@@ -166,22 +238,37 @@ public final class SaveSedDialog extends javax.swing.JDialog {
         setSavable(!f.isDirectory());
         firePropertyChange(PROP_FILEPATH, oldFilePath, filePath);
     }
-
+    private boolean ascii_flag = false;
 
     /** Creates new form SaveConfigurationDialog */
-    public SaveSedDialog(java.awt.Frame parent, ExtSed sed) {
+    public SaveSedDialog(java.awt.Frame parent, ExtSed sed, boolean ascii) {
         super(parent, true);
+        this.ascii_flag = ascii;
         this.sed = sed;
         setSedName(sed.getId());
         initComponents();
-        if(sed.getNumberOfSegments()==0)
+        if (sed.getNumberOfSegments() == 0) {
             warningText.setText("Warning: SED is empty");
+        }
         List formats = new ArrayList();
         formats.add(SedFormat.VOT);
         formats.add(SedFormat.FITS);
         setSedFormats(formats);
         this.setLocationRelativeTo(parent);
         this.getRootPane().setDefaultButton(jButton2);
+
+        if (ascii) {
+            jCheckBox1.setSelected(true);
+            jCheckBox1.setEnabled(false);
+            jLabel1.setVisible(false);
+            jComboBox1.setVisible(false);
+        }
+
+        jComboBox2.setVisible(single);
+        jComboBox3.setVisible(single);
+        jLabel2.setVisible(single);
+        jLabel3.setVisible(single);
+
     }
 
     /** This method is called from within the constructor to
@@ -200,6 +287,12 @@ public final class SaveSedDialog extends javax.swing.JDialog {
         jComboBox1 = new javax.swing.JComboBox();
         jLabel1 = new javax.swing.JLabel();
         warningText = new javax.swing.JLabel();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        jComboBox2 = new javax.swing.JComboBox();
+        jComboBox3 = new javax.swing.JComboBox();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        busy = new org.jdesktop.swingx.JXBusyLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Save Sed File");
@@ -214,16 +307,12 @@ public final class SaveSedDialog extends javax.swing.JDialog {
             }
         });
 
+        javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance().getContext().getActionMap(SaveSedDialog.class, this);
+        jButton2.setAction(actionMap.get("saveSed")); // NOI18N
         jButton2.setText("Save");
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${savable}"), jButton2, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
-
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                save(evt);
-            }
-        });
 
         org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${sedFormats}");
         org.jdesktop.swingbinding.JComboBoxBinding jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, jComboBox1);
@@ -235,24 +324,60 @@ public final class SaveSedDialog extends javax.swing.JDialog {
 
         warningText.setForeground(new java.awt.Color(153, 0, 51));
 
+        jCheckBox1.setText("Single Table");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${single}"), jCheckBox1, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        bindingGroup.addBinding(binding);
+
+        jComboBox2.setModel(new DefaultComboBoxModel(loadEnum(XUnit.class)));
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${xunit}"), jComboBox2, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${single}"), jComboBox2, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
+        jComboBox3.setModel(new DefaultComboBoxModel(loadEnum(SPVYUnit.class)));
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${yunit}"), jComboBox3, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${single}"), jComboBox3, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
+        jLabel2.setText("X Units");
+
+        jLabel3.setText("Y Units");
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jTextField2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
+                    .add(layout.createSequentialGroup()
+                        .add(118, 118, 118)
+                        .add(warningText, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jButton1))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(jCheckBox1)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 41, Short.MAX_VALUE)
                         .add(jLabel1)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 106, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(jLabel2)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jButton2))
-                    .add(layout.createSequentialGroup()
-                        .add(jButton1)
-                        .add(18, 18, 18)
-                        .add(warningText, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE))
-                    .add(jTextField2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 301, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(jComboBox2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 109, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jLabel3)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jComboBox3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 116, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(busy, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jButton2)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -260,19 +385,26 @@ public final class SaveSedDialog extends javax.swing.JDialog {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(jTextField2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(8, 8, 8)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(layout.createSequentialGroup()
-                        .add(jButton1)
-                        .add(7, 7, 7))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                        .add(warningText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(13, 13, 13)))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(warningText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jButton1))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jLabel1)
+                    .add(jCheckBox1))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 8, Short.MAX_VALUE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jComboBox3, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jComboBox2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jLabel2)
+                    .add(jLabel3))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jButton2)
-                    .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel1))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .add(busy, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(15, 15, 15))
         );
 
         bindingGroup.bind();
@@ -283,53 +415,52 @@ public final class SaveSedDialog extends javax.swing.JDialog {
     private void jButton1browse(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1browse
         JFileChooser jfc = SedBuilder.getWorkspace().getFileChooser();
         File l = new File(filePath);
-        if(l.isDirectory())
+        if (l.isDirectory()) {
             jfc.setCurrentDirectory(l);
+        }
         jfc.setApproveButtonText("Select");
-        jfc.setSelectedFile(new File(sedName+"."+format.exten()));
+        jfc.setSelectedFile(new File(sedName));
         int returnval = jfc.showSaveDialog(this);
-        if(returnval == JFileChooser.APPROVE_OPTION) {
+        if (returnval == JFileChooser.APPROVE_OPTION) {
             File f = jfc.getSelectedFile();
-            String ext = getExtension(f).isEmpty() ? "."+format.exten() : "";
-            setFilePath(f.getAbsolutePath()+ext);
-            setFilePath(f.getAbsolutePath().replaceAll(getExtension(new File(filePath)), format.exten()));
+//            String ext = getExtension(f).isEmpty() ? "."+format.exten() : "";
+            setFilePath(f.getAbsolutePath());
+//            setFilePath(f.getAbsolutePath().replaceAll(getExtension(new File(filePath)), format.exten()));
         }
 }//GEN-LAST:event_jButton1browse
 
-    private void save(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_save
-        try {
-
-            File f = new File(filePath);
-
-            boolean overwrite = true;
-            int resp = NarrowOptionPane.YES_OPTION;
-                if(f.exists()) {
-                    resp = NarrowOptionPane.showConfirmDialog(SedBuilder.getWorkspace().getRootFrame(),
-                        filePath+" exists, do you want to overwrite it?", "File exists", NarrowOptionPane.YES_NO_OPTION);
-            }
-
-            overwrite = (resp == NarrowOptionPane.YES_OPTION);
-
-            if(overwrite) {
-                sed.write(filePath, format);
-            
-                NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
-                        "Saved file "+filePath, "Saved File", NarrowOptionPane.INFORMATION_MESSAGE);
-            }
-        } catch (Exception ex) {
-            NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
-                    ex.getMessage(), "Error saving file", NarrowOptionPane.ERROR_MESSAGE);
-        } finally {
-            this.dispose();
+    private void writeAscii(ExtSed sed, File f) throws Exception {
+        ExtSed newsed = SedBuilder.flatten(sed, xunit, yunit);
+        Segment segment = newsed.getSegment(0);
+        double[] x = segment.getSpectralAxisValues();
+        double[] y = segment.getFluxAxisValues();
+        FileOutputStream fos = new FileOutputStream(f);
+        PrintWriter out = new PrintWriter(fos);
+        out.write("# Iris Flux Integration output\n");
+        out.write("# This file was generated by Iris, the VAO SED building and analysis tool\n");
+        out.write("#\n#\n");
+        Date d = new Date();
+        out.write("# File created on " + d.toString());
+        out.write("#\n#\n");
+        out.write("# Effective Wavelength in " + xunit + "\n");
+        out.write("# Flux in " + yunit + "\n#\n");
+        out.write("# EffectiveWavelength Flux\n");
+        for (int i = 0; i < x.length; i++) {
+            out.write(x[i] + " " + y[i] + "\n");
         }
-    }//GEN-LAST:event_save
-
-
+        out.close();
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private org.jdesktop.swingx.JXBusyLabel busy;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JComboBox jComboBox2;
+    private javax.swing.JComboBox jComboBox3;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JLabel warningText;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
@@ -338,16 +469,95 @@ public final class SaveSedDialog extends javax.swing.JDialog {
     /*
      * Get the extension of a file.
      */
-    private String getExtension(File f) {
-        String ext = "";
-        String s = f.getName();
-        int i = s.lastIndexOf('.');
-
-        if (i > 0 &&  i < s.length() - 1) {
-            ext = s.substring(i+1).toLowerCase();
+//    private String getExtension(File f) {
+//        String ext = "";
+//        String s = f.getName();
+//        int i = s.lastIndexOf('.');
+//
+//        if (i > 0 &&  i < s.length() - 1) {
+//            ext = s.substring(i+1).toLowerCase();
+//        }
+//
+//        return ext;
+//    }
+    private String[] loadEnum(Class<? extends Enum> clazz) {
+        try {
+            Enum[] l;
+            l = (Enum[]) clazz.getMethod("values").invoke(null);
+            String[] s = new String[l.length];
+            for (int i = 0; i < l.length; i++) {
+                IUnit u = (IUnit) l[i];
+                s[i] = u.getString();
+            }
+            return s;
+        } catch (Exception ex) {
+            Logger.getLogger(SaveSedDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        return ext;
+        return null;
     }
 
+    @Action
+    public Task saveSed() {
+        return new SaveSedTask(org.jdesktop.application.Application.getInstance());
+    }
+
+    private class SaveSedTask extends org.jdesktop.application.Task<Object, Void> {
+
+        SaveSedTask(org.jdesktop.application.Application app) {
+            super(app);
+        }
+
+        @Override
+        protected Object doInBackground() {
+            busy.setBusy(true);
+            if (single && (xunit == null || yunit == null)) {
+                NarrowOptionPane.showMessageDialog(null,
+                        "Please select spectral and flux units!",
+                        "Units Error",
+                        NarrowOptionPane.ERROR_MESSAGE);
+                return null;
+            }
+            try {
+
+                File f = new File(filePath);
+
+                boolean overwrite = true;
+                int resp = NarrowOptionPane.YES_OPTION;
+                if (f.exists()) {
+                    resp = NarrowOptionPane.showConfirmDialog(SedBuilder.getWorkspace().getRootFrame(),
+                            filePath + " exists, do you want to overwrite it?", "File exists", NarrowOptionPane.YES_NO_OPTION);
+                }
+
+                overwrite = (resp == NarrowOptionPane.YES_OPTION);
+
+                if (overwrite) {
+                    if (ascii_flag) {
+                        writeAscii(sed, f);
+                    } else {
+                        if (single) {
+                            ExtSed newsed = SedBuilder.flatten(sed, xunit, yunit);
+                            newsed.write(filePath, format);
+                        } else {
+                            sed.write(filePath, format);
+                        }
+                    }
+
+                    NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
+                            "Saved file " + filePath, "Saved File", NarrowOptionPane.INFORMATION_MESSAGE);
+                }
+            } catch (Exception ex) {
+                NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
+                        ex.getMessage(), "Error saving file", NarrowOptionPane.ERROR_MESSAGE);
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+            return null;
+            }
+            return null;
+        }
+
+        @Override
+        protected void succeeded(Object result) {
+            busy.setBusy(false);
+            SaveSedDialog.this.dispose();
+        }
+    }
 }
