@@ -24,15 +24,12 @@ import cfa.vo.iris.events.*;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.utils.IList;
-import cfa.vo.sedlib.ArrayOfPoint;
 import cfa.vo.sedlib.Point;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.TextParam;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
-import cfa.vo.sed.builder.SedBuilder;
 
-import spv.controller.SpectrumContainer;
 import spv.glue.PlottableSEDSegmentedSpectrum;
 import spv.util.Include;
 import spv.util.MultiplePanelGUI;
@@ -123,7 +120,6 @@ public class IrisCoplotManager extends MultiplePanelGUI {
                 segmentList.add(segment);
             }
             try {
-
                 Segment flatSegment = buildFlatSegment(segmentList);
                 multipleSed.addSegment(flatSegment);
 
@@ -155,31 +151,20 @@ public class IrisCoplotManager extends MultiplePanelGUI {
     }
 
     private Segment buildFlatSegment(List<Segment> segmentList) {
-        Segment firstSegment = segmentList.get(0);
 
-        StringBuffer resultTargetName = new StringBuffer();
-        resultTargetName.append(firstSegment.getTarget().getName().getValue());
+        List<Point> allPoints = new ArrayList<Point>();
 
-        Segment result = (Segment) firstSegment.clone();
+        for (int i = 0; i < segmentList.size(); i++) {
+            Segment segment = segmentList.get(i);
 
-        if (segmentList.size() > 1) {
-            for (int i = 1; i < segmentList.size(); i++) {
-                Segment segment = segmentList.get(i);
-
-                List<Point> points = segment.getData().getPoint();
-                result.getData().setPoint(points);
-
-                String addedTargetName = segment.getTarget().getName().getValue();
-
-                if (!resultTargetName.toString().toLowerCase().contains(addedTargetName.toLowerCase())) {
-                    resultTargetName.append("~");
-                    resultTargetName.append(addedTargetName);
-                }
-            }
+            List<Point> points = segment.getData().getPoint();
+            allPoints.addAll(points);
         }
 
-        result.getTarget().getName().setValue(resultTargetName.toString());
-        
+        Segment firstSegment = segmentList.get(0);
+        Segment result = (Segment) firstSegment.clone();
+        result.getData().setPoint(allPoints);
+
         return result;
     }
 
