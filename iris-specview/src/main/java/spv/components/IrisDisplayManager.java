@@ -44,6 +44,8 @@ import spv.controller.SpvImageWriter;
 import spv.controller.display.SecondaryDisplayManager;
 import spv.controller.display.DisplayManager;
 import spv.glue.*;
+import spv.graphics.Annotation;
+import spv.graphics.GraphicsCanvas;
 import spv.graphics.WCSCursor;
 import spv.spectrum.SEDMultiSegmentSpectrum;
 import spv.spectrum.Spectrum;
@@ -53,6 +55,7 @@ import spv.util.properties.SpvProperties;
 import spv.view.FittingPlotWidget;
 import spv.view.PlotStatus;
 import spv.view.PlotWidget;
+import spv.view.ViewException;
 
 /*
  *  Revision history:
@@ -178,11 +181,18 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
         // this widget will display the new Sed.
         PlotWidget pw = buildPlotWidget(container, false, null);
 
-        // blank the target name in case of co-plot
         String spectrmName = container.getSpectrum().getName();
         if (spectrmName.startsWith(PlottableSEDSegmentedSpectrum.COPLOT_IDENT)) {
+            // blank the target name in case of co-plot
             PlottableSEDSegmentedSpectrum plottedObject = (PlottableSEDSegmentedSpectrum) pw.getPlottedObject();
-            plottedObject.setRootObjectCommonName(" ");
+            plottedObject.setRootObjectCommonName("CO-PLOT");
+        } else {
+            // or make it be the Sed identification string.
+            try {
+                PlottableSEDSegmentedSpectrum plottedObject = (PlottableSEDSegmentedSpectrum) pw.getPlottedObject();
+                plottedObject.setRootObjectCommonName(id);
+            } catch (ClassCastException e) {
+            }
         }
 
         // turn off everything cursor, as per Iris request.
@@ -216,6 +226,13 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
             }
 
             secondaryController.loadWidget(pw);
+        }
+
+        // Force plot title to be the Sed ID string.
+
+        if ( ! spectrmName.startsWith(PlottableSEDSegmentedSpectrum.COPLOT_IDENT)) {
+            GraphicsCanvas canvas = pw.getMainCanvas();
+            canvas.setOriginalObjectGraphicsID(id);
         }
 
         // the metadata display needs a reference to the desktop

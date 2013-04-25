@@ -269,6 +269,13 @@ public class IrisVisualizer implements IrisComponent {
             // VAOPD-863
             frame.setTitle(sed.getId());
 
+            if (container != null) {
+                JFrame modelManagerFrame = container.getModelManager().getFrame();
+                if (modelManagerFrame != null) {
+                    modelManagerFrame.setTitle(sed.getId());
+                }
+            }
+
             if (frame != currentFrame) {
                 lastLocation = null;
                 disposeCurrentFrame();
