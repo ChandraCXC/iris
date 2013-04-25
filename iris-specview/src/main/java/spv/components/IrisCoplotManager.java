@@ -161,6 +161,10 @@ public class IrisCoplotManager extends MultiplePanelGUI {
             allPoints.addAll(points);
         }
 
+        // todo this makes the flat segment inherit all its metadata from
+        // the first segment in the list. This probably has to be
+        // changed, although I don't know how. Is metadata from a
+        // segment directly copiable to a point?
         Segment firstSegment = segmentList.get(0);
         Segment result = (Segment) firstSegment.clone();
         result.getData().setPoint(allPoints);
