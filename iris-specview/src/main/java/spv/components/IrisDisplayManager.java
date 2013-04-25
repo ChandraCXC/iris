@@ -195,6 +195,8 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
             }
         }
 
+
+
         // turn off everything cursor, as per Iris request.
         pw.setSystemCursor();
         pw.setCursorArrows(false);
