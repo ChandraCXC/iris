@@ -258,6 +258,11 @@ public class IrisVisualizer implements IrisComponent {
                 }
             }
 
+            // VAOPD-879: spectrum name must be identical with Sed name.
+            if (container != null) {
+                container.getSpectrum().setName(sed.getId());
+            }
+
             // Now display the Sed.
 
             idm.display(sed, sed.getId());
