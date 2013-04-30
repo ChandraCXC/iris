@@ -31,6 +31,7 @@ import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 
 import spv.glue.PlottableSEDSegmentedSpectrum;
+import spv.util.ErrorDialog;
 import spv.util.Include;
 import spv.util.MultiplePanelGUI;
 
@@ -86,7 +87,11 @@ public class IrisCoplotManager extends MultiplePanelGUI {
         dismissPanel.add(button, 0);
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                goCoPlot();
+                try {
+                    goCoPlot();
+                } catch (Exception e) {
+                    new ErrorDialog(e.toString());
+                }
             }
         });
     }
