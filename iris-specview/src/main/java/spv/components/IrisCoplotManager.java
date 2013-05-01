@@ -85,18 +85,24 @@ public class IrisCoplotManager extends MultiplePanelGUI {
     private void addPlotButton() {
         JButton button = new JButton("Co-plot");
         dismissPanel.add(button, 0);
+
         button.addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
+
                     goCoPlot();
-                } catch (Exception e) {
+
+                } catch (SedNoDataException e) {
+                    new ErrorDialog(e.toString());
+                } catch (SedInconsistentException e) {
                     new ErrorDialog(e.toString());
                 }
             }
         });
     }
 
-    private void goCoPlot() {
+    private void goCoPlot() throws SedNoDataException, SedInconsistentException {
 
         ExtSed originalSed = new ExtSed("", false); // non-managed SED
 
@@ -120,9 +126,15 @@ public class IrisCoplotManager extends MultiplePanelGUI {
             int nsegs = sed.getNumberOfSegments();
             List<Segment> segmentList = new ArrayList<Segment>(nsegs);
 
+            Segment firstSegment = sed.getSegment(0);
+
             for (int j = 0; j < nsegs; j++) {
                 Segment segment = sed.getSegment(j);
                 segmentList.add(segment);
+
+                if ( ! firstSegment.isCompatibleWith(segment)) {
+                    throw new SedInconsistentException();
+                }
             }
             try {
                 Segment flatSegment = buildFlatSegment(segmentList);
