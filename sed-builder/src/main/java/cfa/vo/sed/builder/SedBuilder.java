@@ -1,17 +1,17 @@
 /**
  * Copyright (C) 2012 Smithsonian Astrophysical Observatory
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 /*
@@ -27,9 +27,10 @@ import cfa.vo.iris.IMenuItem;
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.IrisComponent;
+import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.gui.NarrowOptionPane;
-import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.sed.filters.FileFormatManager;
 import cfa.vo.sed.gui.LoadSetupDialog;
 import cfa.vo.sed.gui.PhotometryFilterBrowser;
@@ -43,16 +44,17 @@ import cfa.vo.sed.quantities.XUnit;
 import cfa.vo.sed.setup.ISetup;
 import cfa.vo.sed.setup.SetupManager;
 import cfa.vo.sedlib.DoubleParam;
+import cfa.vo.sedlib.PositionParam;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.Target;
+import cfa.vo.sedlib.TextParam;
 import cfa.vo.sedlib.common.SedException;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sedlib.common.ValidationError;
 import cfa.vo.sedlib.common.ValidationErrorEnum;
 import cfa.vo.sedlib.io.SedFormat;
-import java.beans.PropertyVetoException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -99,12 +101,10 @@ public class SedBuilder implements IrisComponent {
             view = new SedBuilderMainView(sedManager, workspace.getRootFrame());
             workspace.addFrame(view);
         }
-        view.show();
-        try {
-            view.setIcon(false);
-        } catch (PropertyVetoException ex) {
-            Logger.getLogger(SedBuilder.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//        view.show();
+
+        GUIUtils.moveToFront(view);
+
         if (sedManager.getSeds().isEmpty()) {
             view.newSed();
         }
@@ -121,16 +121,18 @@ public class SedBuilder implements IrisComponent {
                 return;
             }
         }
-        pfbrowser.show();
-        if (pfbrowser.isIcon()) {
-            try {
-                pfbrowser.setIcon(false);
-            } catch (PropertyVetoException ex) {
-                Logger.getLogger(SedBuilder.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-
-        pfbrowser.toFront();
+        
+        GUIUtils.moveToFront(pfbrowser);
+//        pfbrowser.show();
+//        if (pfbrowser.isIcon()) {
+//            try {
+//                pfbrowser.setIcon(false);
+//            } catch (PropertyVetoException ex) {
+//                Logger.getLogger(SedBuilder.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+//
+//        pfbrowser.toFront();
     }
 
     @Override
@@ -196,16 +198,15 @@ public class SedBuilder implements IrisComponent {
         public BuilderMenuItems() {
 
             add(new AbstractDesktopItem("File|Load File", "Load SED data from several different sources", "/scratch.png", "/scratch_tiny.png") {
-
                 @Override
                 public void onClick() {
                     SedBuilder.show();
-                    view.getLoadSegmentFrame().show();
+                    GUIUtils.moveToFront(view.getLoadSegmentFrame());
+//                    view.getLoadSegmentFrame().show();
                 }
             });
-            
-            add(new AbstractDesktopItem("File|Load NED SED", "Load SED data from the NASA Extragalactic Database", "/ned.png", "/ned.png") {
 
+            add(new AbstractDesktopItem("File|Load NED SED", "Load SED data from the NASA Extragalactic Database", "/ned.png", "/ned_tiny.png") {
                 @Override
                 public void onClick() {
                     SedBuilder.show();
@@ -214,7 +215,6 @@ public class SedBuilder implements IrisComponent {
             });
 
             add(new AbstractDesktopItem("SED Builder", "Load SED data from several different sources", "/tool.png", "/tool_tiny.png") {
-
                 @Override
                 public void onClick() {
                     SedBuilder.show();
@@ -222,7 +222,6 @@ public class SedBuilder implements IrisComponent {
             });
 
             add(new AbstractMenuItem("Plugins...", "Manage custom file filters plug-ins", false, "/plugin.png", "/plugin.png") {
-
                 @Override
                 public void onClick() {
                     if (pManager == null) {
@@ -234,17 +233,19 @@ public class SedBuilder implements IrisComponent {
                         }
                         pManager.setLoadFrame(view.getLoadSegmentFrame());
                     }
-                    pManager.show();
-                    try {
-                        pManager.setIcon(false);
-                    } catch (PropertyVetoException ex) {
-                        Logger.getLogger(SedBuilder.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    
+                    GUIUtils.moveToFront(pManager);
+                    
+//                    pManager.show();
+//                    try {
+//                        pManager.setIcon(false);
+//                    } catch (PropertyVetoException ex) {
+//                        Logger.getLogger(SedBuilder.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
                 }
             });
 
             add(new AbstractMenuItem("Load setup file...", "Load a SED from a previously saved Setup File", false, "/tool.png", "/tool_tiny.png") {
-
                 @Override
                 public void onClick() {
                     new LoadSetupDialog(rootFrame, sedManager).setVisible(true);
@@ -252,7 +253,6 @@ public class SedBuilder implements IrisComponent {
             });
 
             add(new AbstractMenuItem("Photometry Filters Browser", "Browse Photometry Filters", false, "/tool.png", "/tool_tiny.png") {
-
                 @Override
                 public void onClick() {
                     SedBuilder.showPhotometryFilterBrowser();
@@ -458,27 +458,30 @@ public class SedBuilder implements IrisComponent {
             }
         }
     }
-    
+
     public static ExtSed flatten(ExtSed sed, String xunit, String yunit) throws SedException, UnitsException {
-        if(sed.getNumberOfSegments()==0)
-           throw new SedNoDataException();
-        
+        if (sed.getNumberOfSegments() == 0) {
+            throw new SedNoDataException();
+        }
+
         double xvalues[] = {};
         double yvalues[] = {};
         double staterr[] = {};
 
         Target target = new Target();
-        
+
         for (int i = 0; i < sed.getNumberOfSegments(); i++) {
             Segment oldSegment = sed.getSegment(i);
-            if(oldSegment.isSetTarget()) {
+            if (oldSegment.isSetTarget()) {
                 Target t = oldSegment.getTarget();
-                if(t.isSetName() && !t.getName().getValue().equals("UNKNOWN")) {
-                    target.setName(t.getName());
-                    if(t.isSetPos())
-                        target.setPos(t.getPos());
+                if (t.isSetName() && !t.getName().getValue().equals("UNKNOWN")) {
+                    target.setName((TextParam)t.getName().clone());
+                    if (t.isSetPos()) {
+                        target.setPos((PositionParam)t.getPos().clone());
+                    }
                 }
             }
+
             double[] xoldvalues = oldSegment.getSpectralAxisValues();
             double[] yoldvalues = oldSegment.getFluxAxisValues();
             double[] erroldvalues = (double[]) oldSegment.getDataValues(SEDMultiSegmentSpectrum.E_UTYPE);
@@ -486,14 +489,14 @@ public class SedBuilder implements IrisComponent {
             String yoldunits = oldSegment.getFluxAxisUnits();
             double[] ynewvalues = convertYValues(yoldvalues, xoldvalues, yoldunits, xoldunits, yunit);
             yvalues = concat(yvalues, ynewvalues);
-            if(erroldvalues!=null) {
+            if (erroldvalues != null) {
                 double[] errnewvalues = convertYValues(erroldvalues, xoldvalues, yoldunits, xoldunits, yunit);
                 staterr = concat(staterr, errnewvalues);
             }
             double[] xnewvalues = convertXValues(xoldvalues, xoldunits, xunit);
             xvalues = concat(xvalues, xnewvalues);
         }
-        
+
         Segment segment = new Segment();
         segment.setSpectralAxisValues(xvalues);
         segment.setFluxAxisValues(yvalues);
@@ -502,20 +505,25 @@ public class SedBuilder implements IrisComponent {
         segment.setSpectralAxisUnits(xunit);
         segment.setFluxAxisUnits(yunit);
         String xucd = null;
-        for(XUnit u : XUnit.values())
-            if(u.getString().contains(xunit))
+        for (XUnit u : XUnit.values()) {
+            if (u.getString().contains(xunit)) {
                 xucd = u.getUCD();
+            }
+        }
         segment.createChar().createSpectralAxis().setUcd(xucd);
-        
+
         String yucd = null;
-        for(SPVYUnit u : SPVYUnit.values()) {
-            if(u.getString().equals(yunit))
-                for(SPVYQuantity q : SPVYQuantity.values())
-                    if(q.getPossibleUnits().contains(u))
+        for (SPVYUnit u : SPVYUnit.values()) {
+            if (u.getString().equals(yunit)) {
+                for (SPVYQuantity q : SPVYQuantity.values()) {
+                    if (q.getPossibleUnits().contains(u)) {
                         yucd = (new AxisMetadata(q, u)).getUCD();
+                    }
+                }
+            }
         }
         segment.createChar().createFluxAxis().setUcd(yucd);
-        
+
         ExtSed newSed = new ExtSed("Exported", false);
         newSed.addSegment(segment);
         newSed.checkChar();
@@ -530,11 +538,6 @@ public class SedBuilder implements IrisComponent {
         System.arraycopy(a, 0, c, 0, aLen);
         System.arraycopy(b, 0, c, aLen, bLen);
         return c;
-    }
-
-    private static double[] getSpectralValues(Segment segment) throws SedNoDataException, UnitsException {
-        double[] values = segment.getSpectralAxisValues();
-        return convertXValues(values, segment.getSpectralAxisUnits(), "Angstrom");
     }
 
     private static double[] convertXValues(double[] values, String fromUnits, String toUnits) throws UnitsException {

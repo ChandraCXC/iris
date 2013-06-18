@@ -273,7 +273,7 @@ public class SpectralAxisBuilder extends AbstractValidable implements Builder<Sp
     public Validation validate() {
         Validation v = new Validation();
 
-        if(mode == null || !mode.matches("Single Value Column|Single Value|Energy Bin|Photometry Filter"))
+        if(mode == null || !mode.matches("Single Value Column|Single Value|Passband|Photometry Filter"))
             v.addError("Missing X Axis Type. Please select a Type");
 
         if(mode!=null) {
@@ -285,11 +285,11 @@ public class SpectralAxisBuilder extends AbstractValidable implements Builder<Sp
                 v.addError("Missing X Axis Value");
             }
 
-            if(mode.equals("Energy Bin") && (binmin==null || Double.isNaN(binmin))) {
+            if(mode.equals("Passband") && (binmin==null || Double.isNaN(binmin))) {
                 v.addError("Missing/Invalid X Axis Bin Min");
             }
 
-            if(mode.equals("Energy Bin") && (binmax==null || Double.isNaN(binmax))) {
+            if(mode.equals("Passband") && (binmax==null || Double.isNaN(binmax))) {
                 v.addError("Missing/Invalid X Axis Bin Max");
             }
 

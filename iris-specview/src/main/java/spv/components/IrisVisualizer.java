@@ -58,6 +58,7 @@ import cfa.vo.iris.events.SedListener;
 import cfa.vo.iris.events.SegmentEvent;
 import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
 import cfa.vo.iris.events.SegmentListener;
+import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
@@ -422,7 +423,8 @@ public class IrisVisualizer implements IrisComponent {
                         ws.addFrame(currentFrame);
                     }
 
-                    currentFrame.setVisible(true);
+                    GUIUtils.moveToFront(currentFrame);
+
                     try {
                         currentFrame.setSelected(true);
                     } catch (java.beans.PropertyVetoException e) {
@@ -474,7 +476,8 @@ public class IrisVisualizer implements IrisComponent {
                             JInternalFrame frame = modelManager.getInternalFrame();
                             frame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
                             ws.addFrame(frame);
-                            frame.setVisible(true);
+                            GUIUtils.moveToFront(frame);
+//                            frame.setVisible(true);
                             try {
                                 frame.setSelected(true);
                             } catch (java.beans.PropertyVetoException e) {
@@ -551,12 +554,13 @@ public class IrisVisualizer implements IrisComponent {
                         ws.addFrame(customManagerView);
                     }
 
-                    customManagerView.show();
-                    try {
-                        customManagerView.setIcon(false);
-                    } catch (PropertyVetoException ex) {
-                        Logger.getLogger(IrisVisualizer.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    GUIUtils.moveToFront(customManagerView);
+//                    customManagerView.show();
+//                    try {
+//                        customManagerView.setIcon(false);
+//                    } catch (PropertyVetoException ex) {
+//                        Logger.getLogger(IrisVisualizer.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
 
                 }
             });

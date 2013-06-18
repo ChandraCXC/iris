@@ -765,7 +765,7 @@
                         <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                           <ComponentRef name="buttonGroup1"/>
                         </Property>
-                        <Property name="text" type="java.lang.String" value="Energy Bin"/>
+                        <Property name="text" type="java.lang.String" value="Passband"/>
                         <Property name="name" type="java.lang.String" value="jRadioButton8" noResource="true"/>
                       </Properties>
                       <Events>

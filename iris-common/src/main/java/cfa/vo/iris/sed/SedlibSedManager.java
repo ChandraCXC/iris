@@ -103,8 +103,12 @@ public class SedlibSedManager implements ISedManager<ExtSed> {
         sedMap.remove(id);
         SedEvent.getInstance().fire(sed, SedCommand.REMOVED);
         LogEvent.getInstance().fire(this, new LogEntry("SED removed: " + id, this));
-        if(this.getSeds().isEmpty())
-            this.newSed("Sed");
+        if(this.getSeds().isEmpty()) {
+            ExtSed newsed = this.newSed("Sed");
+            this.select(newsed);
+        } else {
+            this.select(sedMap.lastEntry().getValue());
+        }
     }
 
     @Override
@@ -113,16 +117,6 @@ public class SedlibSedManager implements ISedManager<ExtSed> {
         SedEvent.getInstance().fire(sed, SedCommand.SELECTED);
         LogEvent.getInstance().fire(this, new LogEntry("SED selected: " + sed.getId(), this));
     }
-//
-//    @Override
-//    public void SetDefaultSpectralUnits() {
-//        throw new UnsupportedOperationException("Not supported yet.");
-//    }
-//
-//    @Override
-//    public void SetDefaultFluxUnits() {
-//        throw new UnsupportedOperationException("Not supported yet.");
-//    }
 
     @Override
     public ExtSed newSed(String id) {

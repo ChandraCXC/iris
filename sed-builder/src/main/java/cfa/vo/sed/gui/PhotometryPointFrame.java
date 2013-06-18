@@ -498,7 +498,7 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
         });
 
         buttonGroup1.add(jRadioButton8);
-        jRadioButton8.setText("Energy Bin");
+        jRadioButton8.setText("Passband");
         jRadioButton8.setName("jRadioButton8"); // NOI18N
         jRadioButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

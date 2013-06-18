@@ -3,59 +3,47 @@
  * as described in the LICENSE file at the top
  * source directory in the Specview source code base.
  */
-
 package spv.components;
 
 /**
- * Created by IntelliJ IDEA.
- * User: busko
- * Date: Nov 18, 2011
- * Time: 9:25:07 AM
+ * Created by IntelliJ IDEA. User: busko Date: Nov 18, 2011 Time: 9:25:07 AM
  */
-
-import javax.swing.*;
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.beans.PropertyVetoException;
-import java.net.URL;
-import java.util.*;
-import java.io.IOException;
-import java.io.File;
-
 import cfa.vo.iris.IWorkspace;
-import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.sedlib.Sed;
-import cfa.vo.sedlib.Segment;
-import cfa.vo.sedlib.TextParam;
-import cfa.vo.sedlib.common.SedInconsistentException;
-import cfa.vo.sedlib.common.SedNoDataException;
-import org.astrogrid.samp.gui.GuiHubConnector;
-
 import cfa.vo.iris.events.*;
+import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
 import cfa.vo.iris.sed.ExtSed;
-
-import spv.controller.SpectrumContainer;
+import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.sedlib.Sed;
+import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.common.SedInconsistentException;
+import cfa.vo.sedlib.common.SedNoDataException;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.beans.PropertyVetoException;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.*;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import org.astrogrid.samp.gui.GuiHubConnector;
 import spv.controller.SecondaryController2;
+import spv.controller.SpectrumContainer;
 import spv.controller.SpvImageWriter;
 import spv.controller.display.SecondaryDisplayManager;
-import spv.controller.display.DisplayManager;
 import spv.glue.*;
-import spv.graphics.Annotation;
 import spv.graphics.GraphicsCanvas;
 import spv.graphics.WCSCursor;
 import spv.spectrum.SEDMultiSegmentSpectrum;
-import spv.spectrum.Spectrum;
 import spv.spectrum.SpectrumException;
 import spv.util.*;
 import spv.util.properties.SpvProperties;
 import spv.view.FittingPlotWidget;
 import spv.view.PlotStatus;
 import spv.view.PlotWidget;
-import spv.view.ViewException;
 
 /*
  *  Revision history:
@@ -63,7 +51,6 @@ import spv.view.ViewException;
  *
  *  18 Nov 11  -  Implemented (IB)
  */
-
 /**
  * This class provides support for Iris-specific display requirements.
  *
@@ -82,11 +69,10 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
     private ExtSed sedDisplaying;
     private IrisCoplotManager coplotManager;
     private IrisDisplayManager self; // for use in innner classes
-
-    private Map<String,PlotStatus> plotStatusStorage;
+    private Map<String, PlotStatus> plotStatusStorage;
     private IrisVisualizer visualizer;
-
     private static java.util.List<String> ignoredImageFormats = new ArrayList<String>();
+
     static {
         ignoredImageFormats.add("jpeg");
         ignoredImageFormats.add("wbmp");
@@ -108,11 +94,11 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
     }
 
     /**
-     *  This is the main method used to display Sed instances.
+     * This is the main method used to display Sed instances.
      *
-     * @param sed    the Sed instance. If <code>null</code>, an empty
-     *               frame is loaded on the display.
-     * @param name   the string to be used as frame title.
+     * @param sed the Sed instance. If <code>null</code>, an empty frame is
+     * loaded on the display.
+     * @param name the string to be used as frame title.
      */
     void display(ExtSed sed, String name) {
         if (sed != null) {
@@ -232,7 +218,7 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
 
         // Force plot title to be the Sed ID string.
 
-        if ( ! spectrmName.startsWith(PlottableSEDSegmentedSpectrum.COPLOT_IDENT)) {
+        if (!spectrmName.startsWith(PlottableSEDSegmentedSpectrum.COPLOT_IDENT)) {
             GraphicsCanvas canvas = pw.getMainCanvas();
             canvas.setOriginalObjectGraphicsID(id);
         }
@@ -333,7 +319,7 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
         String[] suffixes = ImageIO.getWriterFileSuffixes();
 
         for (int i = 0; i < suffixes.length; i++) {
-            if (! ignoredImageFormats.contains(suffixes[i])) {
+            if (!ignoredImageFormats.contains(suffixes[i])) {
                 JMenuItem menuItem = new JMenuItem(suffixes[i]);
                 menu.add(menuItem);
 
@@ -440,12 +426,7 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
 
     public void update(Observable originator, Object object) {
         if (originator instanceof WCSCursor) {
-
-
 //            System.out.println ("IrisDisplayManager  line: 370  - " + object);
-
-
-
 //            String element_name = null;
 //            if (object instanceof String) {
 //                Enumeration enumeration = getSpectrumList();
@@ -481,7 +462,7 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
 
                 // Use this metadata/data browser when not fitting.
 
-                visualEditor = new SEDSpectrumVisualEditor (
+                visualEditor = new SEDSpectrumVisualEditor(
                         (PlottableSEDSegmentedSpectrum) arg, null, true, Color.red, null, false,
                         secondaryController.getPlotWidget(), visualizer.getSAMPConnection());
 
@@ -535,6 +516,7 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
     }
 
     class ImageFileActionListenerAdapter implements ActionListener {
+
         private String suffix;
 
         ImageFileActionListenerAdapter(String suffix) {
@@ -558,7 +540,8 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
             JInternalFrame frame = memoryFrame.getInternalFrame();
             frame.setSize(Include.IRIS_SPLIST_WINDOW_SIZE);
             ws.addFrame(frame);
-            frame.setVisible(true);
+
+            GUIUtils.moveToFront(frame);
         }
     }
 }

@@ -9,7 +9,7 @@
     <parent>
         <groupId>cfa.vo</groupId>
         <artifactId>iris2</artifactId>
-        <version>2.0-beta4</version>
+        <version>2.0</version>
     </parent>
 
     <dependencies>
@@ -55,15 +55,15 @@
             <version>1.0</version>
         </dependency>
         <dependency>
-            <groupId>spv</groupId>
-            <artifactId>iris-specview</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.swinglabs</groupId>
             <artifactId>swingx</artifactId>
             <version>0.9.7</version>
             <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>specview</groupId>
+            <artifactId>specview</artifactId>
+            <version>20130425b2</version>
         </dependency>
     </dependencies>
 

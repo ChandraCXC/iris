@@ -10,6 +10,7 @@ import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.events.PluginJarEvent;
 import cfa.vo.iris.events.SedCommand;
+import cfa.vo.iris.gui.GUIUtils;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -118,7 +119,7 @@ public class PluginManager extends AbstractIrisComponent {
                 workspace.addFrame(gui);
             }
 
-            gui.setVisible(true);
+            GUIUtils.moveToFront(gui);
         }
 
         @Override

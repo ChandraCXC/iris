@@ -692,12 +692,7 @@ public class SedBuilderMainView extends JInternalFrame {
 
     @Action
     public void newSed() {
-        int c = 0;
-        while (manager.existsSed("Sed" + c)) {
-            c++;
-        }
-
-        ExtSed newSed = manager.newSed("Sed" + c);
+       manager.newSed("Sed");
     }
 
     @Action

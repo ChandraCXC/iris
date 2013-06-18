@@ -138,7 +138,7 @@ public class SpectralAxis extends AbstractAxis<XQuantity> {
             segment.createChar().createSpectralAxis().setUnit(getUnit().getString());
         }
 
-        if(mode.equals("Energy Bin")) {
+        if(mode.equals("Passband")) {
             segment.createChar().createSpectralAxis().setUcd(getQuantity().getUCD());
             segment.createChar().createSpectralAxis().setUnit(getUnit().getString());
             segment.setSpectralAxisValues(new double[]{(binmax+binmin)/2});
@@ -161,7 +161,7 @@ public class SpectralAxis extends AbstractAxis<XQuantity> {
     public Validation validate() {
         Validation v = new Validation();
 
-        if(mode == null || !mode.matches("Single Value Column|Single Value|Energy Bin|Photometry Filter"))
+        if(mode == null || !mode.matches("Single Value Column|Single Value|Passband|Photometry Filter"))
             v.addError("Missing X Axis Type. Please select a Type.");
 
         if(mode!=null) {
@@ -173,11 +173,11 @@ public class SpectralAxis extends AbstractAxis<XQuantity> {
                 v.addError("Missing/Invalid X Axis Value");
             }
 
-            if(mode.equals("Energy Bin") && (binmin==null || Double.isNaN(binmin))) {
+            if(mode.equals("Passband") && (binmin==null || Double.isNaN(binmin))) {
                 v.addError("Missing/Invalid X Axis Bin Min");
             }
 
-            if(mode.equals("Energy Bin") && (binmax==null || Double.isNaN(binmax))) {
+            if(mode.equals("Passband") && (binmax==null || Double.isNaN(binmax))) {
                 v.addError("Missing/Invalid X Axis Bin Max");
             }
 

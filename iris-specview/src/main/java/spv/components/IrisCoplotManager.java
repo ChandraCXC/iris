@@ -3,20 +3,14 @@
  * as described in the LICENSE file at the top
  * source directory in the Specview source code base.
  */
-
 package spv.components;
 
 /**
- * Created by IntelliJ IDEA.
- * User: busko
- * Date: 9/6/12
- * Time: 2:28 PM
+ * Created by IntelliJ IDEA. User: busko Date: 9/6/12 Time: 2:28 PM
  */
-
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
 
 import cfa.vo.iris.IWorkspace;
@@ -24,17 +18,20 @@ import cfa.vo.iris.events.*;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.utils.IList;
-import cfa.vo.sedlib.Point;
+import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.TextParam;
+import cfa.vo.sedlib.common.SedException;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import spv.glue.PlottableSEDSegmentedSpectrum;
 import spv.util.ErrorDialog;
 import spv.util.Include;
 import spv.util.MultiplePanelGUI;
-
+import spv.util.UnitsException;
 
 public class IrisCoplotManager extends MultiplePanelGUI {
 
@@ -71,7 +68,7 @@ public class IrisCoplotManager extends MultiplePanelGUI {
         });
 
         MultipleSegmentEvent.getInstance().add(new MultipleSegmentListener() {
-            public void process(List< Segment > source, final SegmentEvent.SegmentPayload payload) {
+            public void process(List< Segment> source, final SegmentEvent.SegmentPayload payload) {
                 refreshList();
             }
         });
@@ -87,26 +84,23 @@ public class IrisCoplotManager extends MultiplePanelGUI {
         dismissPanel.add(button, 0);
 
         button.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent actionEvent) {
                 try {
-
                     goCoPlot();
-
-                } catch (SedNoDataException e) {
-                    new ErrorDialog(e.toString());
-                } catch (SedInconsistentException e) {
-                    new ErrorDialog(e.toString());
+                } catch (SedInconsistentException ex) {
+                    new ErrorDialog("SEDs are incompatible and cannot be plotted together");
+                } catch (SedNoDataException ex) {
+                    new ErrorDialog("One of the SEDs is empty. Cannot coplot SEDs.");
+                } catch (SedException ex) {
+                    new ErrorDialog(ex.toString());
                 }
             }
         });
     }
 
-    private void goCoPlot() throws SedNoDataException, SedInconsistentException {
+    private void goCoPlot() throws SedInconsistentException, SedNoDataException, SedException {
 
-        ExtSed originalSed = new ExtSed("", false); // non-managed SED
-
-        ExtSed multipleSed = originalSed.clone();  // this must be done *after* the object gets populated, I believe.
+        ExtSed multipleSed = new ExtSed("", false); // non-managed SED
 
         // The co-plotted SED requires that its name starts with a pre-defined
         // prefix, so it can be recognized and properly handled downstream.
@@ -122,71 +116,22 @@ public class IrisCoplotManager extends MultiplePanelGUI {
             String sedId = sed.getId();
             sbuffer.append(" ");
             sbuffer.append(sedId);
-
-            int nsegs = sed.getNumberOfSegments();
-            List<Segment> segmentList = new ArrayList<Segment>(nsegs);
-
-            Segment firstSegment = sed.getSegment(0);
-
-            for (int j = 0; j < nsegs; j++) {
-                Segment segment = sed.getSegment(j);
-                segmentList.add(segment);
-
-                if ( ! firstSegment.isCompatibleWith(segment)) {
-                    throw new SedInconsistentException();
-                }
-            }
             try {
-                Segment flatSegment = buildFlatSegment(segmentList);
-                multipleSed.addSegment(flatSegment);
-
-                // manipulating the segment ID in the co-plotted SED.
-                Segment multipleSedSegment = multipleSed.getSegment(multipleSed.getNumberOfSegments() - 1);
-                TextParam targetName = multipleSedSegment.getTarget().getName();
-                String targetNameValue = targetName.getValue();
-
-                int colonIndex = targetNameValue.indexOf(":");
-                if (colonIndex > 0) {
-                    targetNameValue = targetNameValue.substring(0, colonIndex);
-                }
-                if ( ! targetNameValue.contains(sedId)) {
-                    targetNameValue += ":" + sedId;
-                }
-                targetName.setValue(targetNameValue);
-
-            } catch (SedInconsistentException e) {
-                e.printStackTrace();
-            } catch (SedNoDataException e) {
-                e.printStackTrace();  
+                Segment newSegment = SedBuilder.flatten(sed, "Angstrom", "Jy").getSegment(0);
+                multipleSed.addSegment(newSegment);
+                newSegment.createTarget().createName().setValue(sedId);
+            } catch (UnitsException ex) {
+                new ErrorDialog("<html>The SEDs seem incompatible because their units are not interconvertible.<br/>They cannot be coplotted.");
+                Logger.getLogger(IrisCoplotManager.class.getName()).log(Level.SEVERE, null, ex);
+                return;
             }
+            
         }
-
         String sedID = sbuffer.toString();
+
         multipleSed.setId(sedID);
 
         idm.display(multipleSed, sedID);
-    }
-
-    private Segment buildFlatSegment(List<Segment> segmentList) {
-
-        List<Point> allPoints = new ArrayList<Point>();
-
-        for (int i = 0; i < segmentList.size(); i++) {
-            Segment segment = segmentList.get(i);
-
-            List<Point> points = segment.getData().getPoint();
-            allPoints.addAll(points);
-        }
-
-        // todo this makes the flat segment inherit all its metadata from
-        // the first segment in the list. This probably has to be
-        // changed, although I don't know how. Is metadata from a
-        // segment directly copiable to a point?
-        Segment firstSegment = segmentList.get(0);
-        Segment result = (Segment) firstSegment.clone();
-        result.getData().setPoint(allPoints);
-
-        return result;
     }
 
     private void buildList() {
@@ -204,6 +149,6 @@ public class IrisCoplotManager extends MultiplePanelGUI {
 
         tabbed_pane.removeAll();
 
-        tabbed_pane.addTab ("SEDs", null, listScroller, "Display SEDs");
+        tabbed_pane.addTab("SEDs", null, listScroller, "Display SEDs");
     }
 }

@@ -254,7 +254,7 @@ public class PhotometryCatalogFrame extends ConfirmJInternalFrame implements Seg
         });
 
         buttonGroup1.add(jRadioButton8);
-        jRadioButton8.setText("Energy Bin");
+        jRadioButton8.setText("Passband");
         jRadioButton8.setName("jRadioButton8"); // NOI18N
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jRadioButton7, org.jdesktop.beansbinding.ELProperty.create("${enabled}"), jRadioButton8, org.jdesktop.beansbinding.BeanProperty.create("enabled"));

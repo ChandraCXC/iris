@@ -11,13 +11,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.build.timestamp.format>yyyy/MM/dd</maven.build.timestamp.format>
         <buildDate>${maven.build.timestamp}</buildDate>
-        <sherpa.version>iris-2.0b5</sherpa.version>
+        <sherpa.version>iris-2.0b7</sherpa.version>
     </properties>
 
     <parent>
         <groupId>cfa.vo</groupId>
         <artifactId>iris2</artifactId>
-        <version>2.0-beta4</version>
+        <version>2.0</version>
     </parent>
 
     <dependencies>

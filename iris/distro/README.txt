@@ -27,7 +27,7 @@ modeling and fitting functions, and also provide easy access to NED's
 extensive database of extragalactic SEDs.
 
 Iris provides interoperability features in input (import data from other VO
-enabled applications) and output (export and SED to VO enabled applications).
+enabled applications) and output (export an SED to VO-enabled applications).
 
 
 Where To Find Iris:
@@ -49,6 +49,12 @@ The tarball includes Iris, Sherpa and the interoperability layer between the two
 
 System Requirements:
 ====================
+
+o Mac OS 10.6, 10.7, 10.8
+  - Iris is known to work on Mac OS 10.5, following instructions in
+http://cxc.harvard.edu/iris/v2.0/download/osx10.5.html
+
+o Linux, both 32 and 64 bit.
 
 o  Java 6 (preferably Oracle JRE, http://www.java.com)
 
@@ -149,7 +155,7 @@ by searching NED for SEDs of the relevant objects (e.g., 3C 273, 3C
 295, etc.)  Iris can retrieve these SEDs from NED, or read them from
 the local disk, when the user has saved the NED SED to file.
 
-The sample ASCII tables in the "examples" directory can be converted
+The sample ASCII and CSV tables in the "examples" directory can be converted
 to an SED using SED Builder:
 
 examples/
@@ -207,7 +213,7 @@ uncertainty are shown as magenta diamonds.
 
 However, to do a fit, it is unnecessary to change units; in fact
 Iris will always do the fit in a set of standard units, of
-photons/s/cm^2/Angstrom vs. Angstrom.  These units are used for the
+erg/s/cm^2/Angstrom vs. Angstrom.  These units are used for the
 fit, no matter what units the user has chosen for display.
 
 Fitting in Iris will open up a new set of menu boxes that allow the
@@ -282,7 +288,7 @@ the variance.
 
 To improve the fit, examine data points that would seem to unduly bias
 the fit; define a filter by clicking on "Select Range"; add new model components, if necessary; and
-then fit again.  (The fitting method may left at neldermead.  The
+then fit again.  (The fitting method may be left at neldermead.  The
 other options are "levmar"--an implementation of the
 Levenberg-Marquardt algorithm; and "moncar"--a Monte Carlo method for
 finding the global minimum.  For typical fits to SED data, either
@@ -307,7 +313,7 @@ return an error message if am attempt is made to calculate limits with
 these statistics.)
 
 When the fit is complete, the model and SED will be overplotted in the
-plot window.  The final statistic value will be shown as "statval" in
+plot window.  The final statistic value will be shown in
 the "Fit" window.
 
 Finally, the parameter values are updated back in the component dialog

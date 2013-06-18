@@ -8,6 +8,7 @@ function start_iris {
     fi
 
     export IRIS_DIR="$bindir"
+    export IRIS_DOC="http://cxc.cfa.harvard.edu/iris/v2.0/"
 
     args="-Xms256m -Xmx1024m -Dhttp.agent=iris/${project.version}"
 
@@ -41,8 +42,27 @@ function start_iris {
 
     wait $irispid
 
+    echo "Killing Sherpa process..."
+
     [ "$sherpapid" ] && kill -2 $sherpapid
 
+    sleep 5
+
+    sherpagrep=`ps aux | grep sherpa`
+
+    if [[ $sherpagrep == *startsherpa.py* ]]
+    then
+        kill -9 "$sherpapid"
+    fi
+
+    sherpagrep=`ps aux | grep sherpa`
+
+    if [[ $sherpagrep == *startsherpa.py* ]]
+    then
+        echo "WARNING: Sherpa process still running with PID $sherpapid. Please kill this process manually"
+    else
+        echo "ALL DONE. Quitting."
+    fi
 }
 
 if type -p java; then

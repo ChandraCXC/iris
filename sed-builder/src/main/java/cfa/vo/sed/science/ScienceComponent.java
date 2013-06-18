@@ -12,6 +12,7 @@ import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.NullCommandLineInterface;
 import cfa.vo.iris.events.SedEvent;
+import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.sed.SedlibSedManager;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,8 +82,9 @@ public class ScienceComponent implements IrisComponent {
                         SedEvent.getInstance().add(frame);
                         workspace.addFrame(frame);
                     }
-                    if(manager.getSelected()!=null)
-                        frame.setVisible(true);
+                    if(manager.getSelected()!=null) {
+                        GUIUtils.moveToFront(frame);
+                    }
                 }
             });
         }

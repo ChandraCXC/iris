@@ -26,6 +26,7 @@
  */
 package cfa.vo.sed.gui;
 
+import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ISedManager;
 import cfa.vo.iris.sed.ExtSed;
@@ -659,7 +660,7 @@ public final class LoadSegmentFrame extends JInternalFrame {
         b.append("<p>A Photometry Catalog is a file in which each row refers to a different astronomical source; ");
         b.append("<br/>each row can contain information about an arbitrary number of photometry points. ");
         b.append("<br/>Spectral coordinate can be expressed by a column, by a photometry filter ");
-        b.append("<br/>or by a spectral range (e.g. Energy bin).</p>");
+        b.append("<br/>or by a spectral range (e.g. Passband).</p>");
 
         NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(), b);
     }//GEN-LAST:event_showHelp
@@ -702,6 +703,7 @@ public final class LoadSegmentFrame extends JInternalFrame {
     public void showNed() {
         super.show();
         jRadioButton3.setSelected(true);
+        GUIUtils.moveToFront(this);
     }
 
     private class FormatRenderer extends BasicComboBoxRenderer {
