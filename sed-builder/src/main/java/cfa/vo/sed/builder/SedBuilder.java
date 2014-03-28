@@ -490,7 +490,8 @@ public class SedBuilder implements IrisComponent {
             double[] ynewvalues = convertYValues(yoldvalues, xoldvalues, yoldunits, xoldunits, yunit);
             yvalues = concat(yvalues, ynewvalues);
             if (erroldvalues != null) {
-                double[] errnewvalues = convertYValues(erroldvalues, xoldvalues, yoldunits, xoldunits, yunit);
+                double[] errnewvalues = YUnits.convertErrors(erroldvalues, yoldvalues, xoldvalues, new YUnits(yoldunits), new XUnits(xoldunits), new YUnits(yunit), true);
+//                double[] errnewvalues = convertYValues(erroldvalues, xoldvalues, yoldunits, xoldunits, yunit);
                 staterr = concat(staterr, errnewvalues);
             }
             double[] xnewvalues = convertXValues(xoldvalues, xoldunits, xunit);

@@ -72,7 +72,7 @@ elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then
     echo Found java executable in JAVA_HOME     
     _java="$JAVA_HOME/bin/java"
 else
-    echo "No java found, quitting. Please follow instructions at http://cxc.cfa.harvard.edu/${project.name}v${project.version}/download/index.html"
+    echo "No java found, quitting. Please follow instructions at http://cxc.cfa.harvard.edu/${project.name}/v${project.version}/download/index.html"
 fi
 
 if [[ "$_java" ]]; then
@@ -82,6 +82,6 @@ if [[ "$_java" ]]; then
         echo "This java version is ok, starting Iris"
         start_iris $@
     else         
-        echo "This java version is too old, quitting. Please follow instructions at http://cxc.cfa.harvard.edu/${project.name}v${project.version}/download/index.html"
+        echo "This java version is too old, quitting. Please follow instructions at http://cxc.cfa.harvard.edu/${project.name}/v${project.version}/download/index.html"
     fi
 fi
