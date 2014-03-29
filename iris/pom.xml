@@ -245,7 +245,9 @@
                                                 <exec executable="tar">
                                                     <arg value="-czf"/>
                                                     <arg value="${basedir}/target/${project.name}-${project.version}-@{p}.tar.gz"/>
-                                                    <arg value="${basedir}/target/${project.name}-${project.version}-@{p}"/>
+                                                    <arg value="-C"/>
+                                                    <arg value="${basedir}/target/"/>
+                                                    <arg value="${project.name}-${project.version}-@{p}"/>
                                                 </exec>
 
                                                 <echo>Created ${project.name}-${project.version}-@{p}.tar.gz</echo>
