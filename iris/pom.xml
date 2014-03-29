@@ -87,7 +87,7 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <phase>install</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>
@@ -120,7 +120,7 @@
                     <execution>
                         <id>copy-resources</id>
             <!-- here the phase you need -->
-                        <phase>install</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
@@ -146,7 +146,7 @@
                 <executions>
                     <execution>
                         <id>sherpa</id>
-                        <phase>install</phase>
+                        <phase>package</phase>
                         <configuration>
                             <target name="sherpa" >
                                 <taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="maven.plugin.classpath" />
@@ -240,6 +240,13 @@
                                                 <chmod file="${basedir}/target/${project.name}-${project.version}-@{p}/Iris" perm="+x"/>
 
                                                 <chmod file="${basedir}/target/${project.name}-${project.version}-@{p}/lib/sherpa/bin/python2.6" perm="+x"/>
+
+						<echo>Packaging ${project.name}-${project.version}-@{p}</echo>
+                                                <exec executable="tar">
+                                                    <arg value="-czf"/>
+                                                    <arg value="${basedir}/target/${project.name}-${project.version}-@{p}.tar.gz"/>
+                                                    <arg value="${basedir}/target/${project.name}-${project.version}-@{p}"/>
+                                                </exec>
 
                                                 <echo>Created ${project.name}-${project.version}-@{p}.tar.gz</echo>
                                             </sequential>
