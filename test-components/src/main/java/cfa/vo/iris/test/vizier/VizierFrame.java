@@ -47,6 +47,9 @@ public class VizierFrame extends javax.swing.JInternalFrame {
 
     private String targetName;
     public static final String PROP_TARGETNAME = "targetName";
+    
+    private String searchRadius;
+    public static final String PROP_SEARCHRADIUS = "searchRadius";
 
     /**
      * Get the value of name
@@ -55,6 +58,10 @@ public class VizierFrame extends javax.swing.JInternalFrame {
      */
     public String getTargetName() {
         return targetName;
+    }
+    
+    public String getSearchRadius() {
+        return searchRadius;
     }
 
     /**
@@ -66,6 +73,12 @@ public class VizierFrame extends javax.swing.JInternalFrame {
         String oldName = this.targetName;
         this.targetName = name;
         firePropertyChange(PROP_TARGETNAME, oldName, name);
+    }
+    
+    public void setSearchRadius(String name) {
+        String oldName = this.searchRadius;
+        this.searchRadius = name;
+        firePropertyChange(PROP_SEARCHRADIUS, oldName, name);
     }
 
 
@@ -88,6 +101,13 @@ public class VizierFrame extends javax.swing.JInternalFrame {
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        jTextField2 = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        sedCreationType = new javax.swing.JComboBox();
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -108,18 +128,81 @@ public class VizierFrame extends javax.swing.JInternalFrame {
         jButton1.setAction(actionMap.get("load")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
 
+        jTextField2.setText("5");
+        jTextField2.setName("jTextField2"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${searchRadius}"), jTextField2, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+
+        jLabel2.setText("(arcseconds)");
+        jLabel2.setName("jLabel2"); // NOI18N
+
+        jLabel3.setText("Search Radius:");
+        jLabel3.setName("jLabel3"); // NOI18N
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("VizieR Photometry Viewer"));
+        jPanel1.setName("jPanel1"); // NOI18N
+
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
+
+        jTextArea1.setBackground(javax.swing.UIManager.getDefaults().getColor("Button.background"));
+        jTextArea1.setColumns(20);
+        jTextArea1.setEditable(false);
+        jTextArea1.setFont(new java.awt.Font("Lucida Grande", 0, 12));
+        jTextArea1.setLineWrap(true);
+        jTextArea1.setRows(4);
+        jTextArea1.setText("For full control over the imported VizieR data, use the Photometry Viewer web service at http://vizier.u-strasbg.fr/vizier/sed/ then SAMP the data to Iris.");
+        jTextArea1.setWrapStyleWord(true);
+        jTextArea1.setName("jTextArea1"); // NOI18N
+        jScrollPane1.setViewportView(jTextArea1);
+
+        org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel1Layout.createSequentialGroup()
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        sedCreationType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Append", "Create" }));
+        sedCreationType.setName("sedCreationType"); // NOI18N
+        sedCreationType.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sedCreationTypeActionPerformed(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(jLabel1)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jButton1))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(jLabel1)
+                            .add(jLabel3))
+                        .add(19, 19, 19)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                            .add(jTextField1)
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                                .add(jButton1)
+                                .add(layout.createSequentialGroup()
+                                    .add(jTextField2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 92, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                    .add(2, 2, 2)
+                                    .add(jLabel2)
+                                    .add(27, 27, 27)
+                                    .add(sedCreationType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -127,10 +210,18 @@ public class VizierFrame extends javax.swing.JInternalFrame {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel1)
-                    .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                    .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jLabel1))
+                .add(18, 18, 18)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jTextField2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jLabel2)
+                    .add(jLabel3)
+                    .add(sedCreationType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(18, 18, 18)
                 .add(jButton1)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -139,13 +230,31 @@ public class VizierFrame extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+private void sedCreationTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sedCreationTypeActionPerformed
+
+}//GEN-LAST:event_sedCreationTypeActionPerformed
+
     @Action
     public void load() {
         try {
-            Collection<Segment> segments = VizierImporter.getSedFromName(targetName);
+            Collection<Segment> segments = VizierImporter.getSedFromName(targetName, searchRadius);
             ExtSed selectedSed = manager.getSelected();
-            if(selectedSed == null)
+            
+            int idx = sedCreationType.getSelectedIndex();
+
+            if (selectedSed == null || idx == 1) {
                 selectedSed = manager.newSed("Vizier");
+            }
+            
+            /* Check for duplicate points.
+             * 
+             * If duplicate point values are in segMap, fire VizierDuplicatePointsFrame
+             * and based on the user input, keep or remove all duplicate points.
+             * 
+             * Check for duplicate points
+             * 
+             * TODO
+             */             
 
             List<Segment> segs = new ArrayList(segments);
 
@@ -159,8 +268,16 @@ public class VizierFrame extends javax.swing.JInternalFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JComboBox sedCreationType;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
 }
+
