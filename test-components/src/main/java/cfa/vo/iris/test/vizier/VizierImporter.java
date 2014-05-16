@@ -40,19 +40,27 @@ import uk.ac.starlink.votable.VOTableBuilder;
  *
  * @author olaurino
  */
-public class VizierImporter {
 
+public class VizierImporter {
+    
     public static final String VIZIER_DATA_DEFAULT_ENDPOINT =
-            "http://cdsarc.u-strasbg.fr/viz-bin/sed?-c=:targetName";
+            "http://cdsarc.u-strasbg.fr/viz-bin/sed?-c=:targetName&-c.rs=:searchRadius";
+    
+    public static final String DEFAULT_SEARCH_RADIUS = "5";
 
     public static Collection<Segment> getSedFromName(String targetName) throws SegmentImporterException {
-        return getSedFromName(targetName, VIZIER_DATA_DEFAULT_ENDPOINT);
+        return getSedFromName(targetName, DEFAULT_SEARCH_RADIUS, VIZIER_DATA_DEFAULT_ENDPOINT);
     }
-
-    public static Collection<Segment> getSedFromName(String targetName, String endpoint) throws SegmentImporterException {
+    
+    public static Collection<Segment> getSedFromName(String targetName, String searchRadius) throws SegmentImporterException {
+        return getSedFromName(targetName, searchRadius, VIZIER_DATA_DEFAULT_ENDPOINT);
+    }
+    
+    public static Collection<Segment> getSedFromName(String targetName, String searchRadius, String endpoint) throws SegmentImporterException {
         try {
             targetName = URLEncoder.encode(targetName, "UTF-8");
-            endpoint = endpoint.replace(":targetName", targetName);
+            searchRadius = URLEncoder.encode(searchRadius, "UTF-8");
+            endpoint = endpoint.replace(":targetName&-c.rs=:searchRadius", targetName+"&-c.rs="+searchRadius);
             URL nedUrl = new URL(endpoint);
 
             VOTableBuilder vob = new VOTableBuilder();
