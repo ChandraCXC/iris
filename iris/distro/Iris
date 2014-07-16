@@ -8,7 +8,7 @@ function start_iris {
     fi
 
     export IRIS_DIR="$bindir"
-    export IRIS_DOC="http://cxc.cfa.harvard.edu/iris/v2.0/"
+    export IRIS_DOC="http://cxc.cfa.harvard.edu/iris/v2.0.1/"
 
     args="-Xms256m -Xmx1024m -Dhttp.agent=iris/${project.version}"
 
