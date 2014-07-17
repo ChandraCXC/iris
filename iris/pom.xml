@@ -37,11 +37,11 @@
             <artifactId>jsky</artifactId>
             <version>3.0</version>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>jel</groupId>
             <artifactId>jel</artifactId>
             <version>1.0</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>spv</groupId>
             <artifactId>iris-specview</artifactId>

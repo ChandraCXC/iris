@@ -23,7 +23,7 @@
         <dependency>
             <groupId>org.ini4j</groupId>
             <artifactId>ini4j</artifactId>
-            <version>0.5.2-SNAPSHOT</version>
+            <version>0.5.2</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -50,9 +50,9 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>AbsoluteLayout</groupId>
+            <groupId>org.netbeans.external</groupId>
             <artifactId>AbsoluteLayout</artifactId>
-            <version>1.0</version>
+            <version>RELEASE701</version>
         </dependency>
         <dependency>
             <groupId>org.swinglabs</groupId>
@@ -63,18 +63,29 @@
         <dependency>
             <groupId>specview</groupId>
             <artifactId>specview</artifactId>
-            <version>20130425b2</version>
+            <version>20131030b1</version>
         </dependency>
     </dependencies>
 
-    <repositories>
+<repositories>
+  <!--These are needed for Swing/Netbeans -->
+  <repository>
+    <id>maven2-repository.netbeans.maven2</id>
+    <name>Netbeans Maven Repository</name>
+    <url>http://bits.netbeans.org/maven2/</url>
+    <layout>default</layout>
+  </repository> 
+</repositories>
+
+
+<!--    <repositories>
         <repository>
             <url>http://download.java.net/maven/2/</url>
             <id>beans-binding</id>
             <layout>default</layout>
             <name>Repository for library Library[beans-binding]</name>
         </repository>
-    </repositories>
+    </repositories>-->
 
     <profiles>
         <profile>
