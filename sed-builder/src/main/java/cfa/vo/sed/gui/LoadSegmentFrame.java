@@ -31,8 +31,10 @@ import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ISedManager;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.utils.SpaceTrimmer;
+import cfa.vo.sed.builder.AsciiConf;
 import cfa.vo.sed.builder.NEDImporter;
 import cfa.vo.sed.builder.SedBuilder;
+import cfa.vo.sed.builder.SegmentImporter;
 import cfa.vo.sed.builder.SegmentImporterException;
 import cfa.vo.sed.filters.AbstractSingleStarTableFilter;
 import cfa.vo.sed.filters.FileFormatManager;
@@ -786,15 +788,22 @@ public final class LoadSegmentFrame extends JInternalFrame {
                 }
 
             } else {
-                SetupBean conf = new SetupBean();
-                conf.setFileLocation(getURL().toString());
-                conf.setFormatName(format.getName());
-                SetupFrame sf = new SetupFrame(manager, conf, sed);
-                sf.setTargetName(targetName);
-                sf.setRa(ra);
-                sf.setDec(dec);
-                SedBuilder.getWorkspace().addFrame(sf);
-                sf.setVisible(true);
+                // if the format is an ASCII-IRIS table, read it in
+                try {
+                    SetupBean conf = new AsciiConf().makeConf(getURL());
+                    Segment seg = SegmentImporter.getSegments(conf).get(0);
+                    sed.addSegment(seg);
+                } catch (Exception ex) {
+                    SetupBean conf = new SetupBean();
+                    conf.setFileLocation(getURL().toString());
+                    conf.setFormatName(format.getName());
+                    SetupFrame sf = new SetupFrame(manager, conf, sed);
+                    sf.setTargetName(targetName);
+                    sf.setRa(ra);
+                    sf.setDec(dec);
+                    SedBuilder.getWorkspace().addFrame(sf);
+                    sf.setVisible(true);
+                }
             }
 
             setVisible(false);
