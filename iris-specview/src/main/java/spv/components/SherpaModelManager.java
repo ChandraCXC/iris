@@ -317,6 +317,10 @@ public class SherpaModelManager extends SpvModelManager {
 
     protected void printFitInfo(PrintWriter pw) {
         if (lastFittingMap != null) {
+	    pw.println("Model Expression:");
+	    pw.println("        " + sherpaExpressionField.getText());
+	    pw.println();
+	    
             pw.println("Fit parameters:");
             for (int i = 0; i < fittingParameterNames.size(); i++) {
                 String name =  fittingParameterNames.get(i);
@@ -326,8 +330,8 @@ public class SherpaModelManager extends SpvModelManager {
             pw.println();
         }
     }
-
-
+    
+    
     ///////////////////////////////////////////////////////////////////
     //
     //                 Fitting via Sherpa.
@@ -505,7 +509,7 @@ public class SherpaModelManager extends SpvModelManager {
     private void storeFitResultParameters(Map map) {
 
         lastFittingMap = map;
-
+	
         String statval = (String) map.get(STATVAL);
         String nfev = (String) map.get(NFEV);
         fitManager.tolfield.setText(statval + "  at function evaluation  " + nfev);
