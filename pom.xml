@@ -158,9 +158,9 @@
     <repositories>
 
         <repository>
-            <id>local-repository</id>
-            <name>local</name>
-            <url>http://192.168.56.101/artifactory/repo</url>
+            <id>cxc</id>
+            <name>cxc</name>
+            <url>http://artifactory.cfa.harvard.edu/artifactory/repo</url>
         </repository>
         <repository>
             <url>https://maven.java.net/content/repositories/public</url>
