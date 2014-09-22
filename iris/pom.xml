@@ -13,6 +13,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.build.timestamp.format>yyyy/MM/dd</maven.build.timestamp.format>
         <buildDate>${maven.build.timestamp}</buildDate>
+	<sherpa>no</sherpa>
         <sherpa.version>iris-2.0b7</sherpa.version>
     </properties>
 
