@@ -16,14 +16,14 @@
         <dependency>
             <groupId>stil</groupId>
             <artifactId>stil</artifactId>
-            <version>3.0.2</version>
+            <version>3.0</version>
+	    <classifier>2</classifier>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>cfa.vao.sed</groupId>
             <artifactId>sedlib</artifactId>
             <version>1.2</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

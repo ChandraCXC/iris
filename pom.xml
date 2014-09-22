@@ -158,30 +158,28 @@
     <repositories>
 
         <repository>
-            <id>vao-deploy-repository</id>
-            <name>vaotest2.tuc.noao.edu-releases</name>
-            <url>http://vaotest2.tuc.noao.edu:8080/artifactory/repo</url>
+            <id>cxc</id>
+            <name>cxc</name>
+            <url>http://artifactory.cfa.harvard.edu/artifactory/repo</url>
         </repository>
         <repository>
-            <url>http://download.java.net/maven/2/</url>
-            <id>beans-binding</id>
+            <url>https://maven.java.net/content/repositories/public</url>
+            <id>java.net</id>
             <layout>default</layout>
-            <name>Repository for library Library[beans-binding]</name>
         </repository>
         <repository>
-            <url>http://download.java.net/maven/2</url>
-            <id>metro</id>
+            <url>http://central.maven.org/maven2/</url>
+            <id>central</id>
             <layout>default</layout>
-            <name>Repository for library[metro]</name>
         </repository>
     </repositories>
 
     <distributionManagement>
-        <repository>
+<!--        <repository>
             <id>vao-deploy-repository</id>
             <name>vaotest2.tuc.noao.edu-releases</name>
             <url>http://vaotest2.tuc.noao.edu:8080/artifactory/libs-snapshot-local</url>
-        </repository>
+        </repository>-->
 <!--        <site>
       <id>test</id>
       <url>file:///Users/olaurino/Desktop/site</url>
