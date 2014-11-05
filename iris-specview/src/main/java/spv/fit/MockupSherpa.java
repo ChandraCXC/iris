@@ -21,18 +21,11 @@
 
 package spv.fit;
 
-import java.io.InputStream;
-
 /**
  *
  * @author olaurino
  */
 public class MockupSherpa extends AbstractFittingEngine {
-
-    @Override
-    public void print(InputStream in) {
-        
-    }
 
     @Override
     public void shutdown() {

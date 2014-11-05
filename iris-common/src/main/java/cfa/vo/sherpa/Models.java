@@ -26,7 +26,8 @@ import java.util.logging.Logger;
  */
 public enum Models {
     PowerLaw1D(PowerLaw1D.class),
-    Gaussian1D(Gaussian1D.class);
+    Gaussian1D(Gaussian1D.class),
+    Polynom1D(Polynom1D.class);
 
     private Class<? extends AbstractModel> modelClass;
 

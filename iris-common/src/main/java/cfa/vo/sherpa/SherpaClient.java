@@ -16,19 +16,20 @@
 
 package cfa.vo.sherpa;
 
-import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPController;
+import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.gui.NarrowOptionPane;
+import org.astrogrid.samp.Client;
+import org.astrogrid.samp.Response;
+import org.astrogrid.samp.client.SampException;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.astrogrid.samp.Client;
-import org.astrogrid.samp.Response;
-import org.astrogrid.samp.client.SampException;
 
 /**
  *
@@ -51,8 +52,12 @@ public class SherpaClient {
         return sherpaPublicId;
     }
 
-    public Parameter getParameter(AbstractModel model, String name) {
-        return model.getParameter(model.getId() + "." + name);
+    public Parameter getParameter(AbstractModel model, String name) throws Exception {
+        Parameter par = model.getParameter(model.getId() + "." + name);
+        if (par == null) {
+            throw new Exception("Parameter "+ name+ " not found in model " + model.getName());
+        }
+        return par;
     }
 
     public FitResults fit(Data dataset, CompositeModel model, Stat stat, Method method) throws Exception {
@@ -113,6 +118,10 @@ public class SherpaClient {
 
     public AbstractModel createModel(Models model) {
         String id = "m" + (++stringCounter).toString();
+        return createModel(model, id);
+    }
+
+    public AbstractModel createModel(Models model, String id) {
         AbstractModel m = model.getModel(id);
         modelMap.put(id, m);
         return m;
