@@ -19,20 +19,22 @@
  * and open the template in the editor.
  */
 
-package cfa.vo.sed.builder.dm;
+package cfa.vo.iris.sed.quantities;
 
-import cfa.vo.iris.sed.quantities.IQuantity;
-import cfa.vo.iris.sed.quantities.IUnit;
+import java.util.List;
 
 /**
  *
  * @author olaurino
  */
-public interface Axis<QuantityClass extends IQuantity>  extends SegmentComponent {
-    QuantityClass getQuantity();
-    void setQuantity(QuantityClass quantity);
-    IUnit getUnit();
-    void setUnit(IUnit unit);
-    Double getValue();
-    void setValue(Double value);
+public interface IQuantity {
+
+    public String getName();
+
+    public String getDescription();
+
+    public String getUCD();
+
+    public List<IUnit> getPossibleUnits();
+
 }

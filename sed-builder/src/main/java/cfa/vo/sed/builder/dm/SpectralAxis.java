@@ -23,7 +23,7 @@ package cfa.vo.sed.builder.dm;
 
 import cfa.vo.sed.setup.validation.Validation;
 import cfa.vo.sed.builder.photfilters.PhotometryFilter;
-import cfa.vo.sed.quantities.XQuantity;
+import cfa.vo.iris.sed.quantities.XQuantity;
 import cfa.vo.sedlib.DoubleParam;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedException;

@@ -21,8 +21,8 @@
 
 package cfa.vo.sed.setup;
 
-import cfa.vo.sed.quantities.SPVYUnit;
-import cfa.vo.sed.quantities.XUnit;
+import cfa.vo.iris.sed.quantities.SPVYUnit;
+import cfa.vo.iris.sed.quantities.XUnit;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Method;

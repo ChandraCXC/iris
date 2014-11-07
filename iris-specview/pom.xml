@@ -70,11 +70,11 @@
             <artifactId>jython</artifactId>
             <version>2.5.3</version>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>cfa.vo</groupId>
             <artifactId>sed-builder</artifactId>
             <version>${project.version}</version>
             <scope>provided</scope>
-        </dependency>
+        </dependency>-->
     </dependencies>
 </project>

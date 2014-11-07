@@ -20,12 +20,13 @@
  */
 package cfa.vo.sed.builder;
 
-import cfa.vo.sed.quantities.IQuantity;
-import cfa.vo.sed.quantities.IUnit;
-import cfa.vo.sed.quantities.SPVYQuantity;
-import cfa.vo.sed.quantities.SPVYUnit;
-import cfa.vo.sed.quantities.XQuantity;
-import cfa.vo.sed.quantities.XUnit;
+import cfa.vo.iris.sed.SedException;
+import cfa.vo.iris.sed.quantities.IQuantity;
+import cfa.vo.iris.sed.quantities.IUnit;
+import cfa.vo.iris.sed.quantities.SPVYQuantity;
+import cfa.vo.iris.sed.quantities.SPVYUnit;
+import cfa.vo.iris.sed.quantities.XQuantity;
+import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.sed.setup.ErrorType;
 import cfa.vo.sed.setup.SetupBean;
 import java.io.BufferedReader;
@@ -53,7 +54,7 @@ public class AsciiConf {
     * @return the SetupBean object describing the SED data in the ASCII file
     */
 	
-    public SetupBean makeConf(URL url) throws SedImporterException, AsciiConfException {
+    public SetupBean makeConf(URL url) throws SedException, AsciiConfException {
         try {
 
             // read-in Iris ASCII header data

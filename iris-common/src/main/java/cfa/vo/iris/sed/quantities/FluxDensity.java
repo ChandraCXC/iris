@@ -19,20 +19,25 @@
  * and open the template in the editor.
  */
 
-package cfa.vo.sed.builder.dm;
-
-import cfa.vo.iris.sed.quantities.IQuantity;
-import cfa.vo.iris.sed.quantities.IUnit;
+package cfa.vo.iris.sed.quantities;
 
 /**
  *
  * @author olaurino
  */
-public interface Axis<QuantityClass extends IQuantity>  extends SegmentComponent {
-    QuantityClass getQuantity();
-    void setQuantity(QuantityClass quantity);
-    IUnit getUnit();
-    void setUnit(IUnit unit);
-    Double getValue();
-    void setValue(Double value);
+public class FluxDensity extends AbstractQuantity {
+
+    public FluxDensity() {
+        super("FluxDensity", "Flux Density", "phot.flux.density");
+//        add(YUnit.FLUXDENSITYENERGY0);
+        add(YUnit.FLUXDENSITYFREQ0);
+        add(YUnit.FLUXDENSITYWL0);
+        add(YUnit.FLUXDENSITYFREQ1);
+        add(YUnit.FLUXDENSITYFREQ2);
+        add(YUnit.FLUXDENSITYWL4);
+//        add(YUnit.FLUXDENSITYWL2);
+//        add(YUnit.FLUXBEAM);
+        add(YUnit.FLUXDENSITYWL3);
+    }
+
 }

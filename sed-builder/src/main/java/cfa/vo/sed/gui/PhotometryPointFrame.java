@@ -34,15 +34,14 @@ import cfa.vo.iris.utils.HarvardNameResolver;
 import cfa.vo.iris.utils.NameResolver.Position;
 import cfa.vo.iris.utils.SkyCoordinates;
 import cfa.vo.sed.builder.SedBuilder;
-import cfa.vo.sed.builder.SedImporterException;
 import cfa.vo.sed.builder.dm.PhotometryPointSegment;
 import cfa.vo.sed.builder.photfilters.FilterSelectionListener;
 import cfa.vo.sed.builder.photfilters.PhotometryFilter;
-import cfa.vo.sed.quantities.IUnit;
-import cfa.vo.sed.quantities.SPVYQuantity;
-import cfa.vo.sed.quantities.SPVYUnit;
-import cfa.vo.sed.quantities.XQuantity;
-import cfa.vo.sed.quantities.XUnit;
+import cfa.vo.iris.sed.quantities.IUnit;
+import cfa.vo.iris.sed.quantities.SPVYQuantity;
+import cfa.vo.iris.sed.quantities.SPVYUnit;
+import cfa.vo.iris.sed.quantities.XQuantity;
+import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedException;
 import java.awt.BorderLayout;
@@ -997,19 +996,19 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
         public Object convertReverse(Object t) {
             try {
                 return getUnitsFromString((String) t);
-            } catch (SedImporterException ex) {
+            } catch (cfa.vo.iris.sed.SedException ex) {
                 Logger.getLogger(PhotometryPointFrame.class.getName()).log(Level.SEVERE, null, ex);
                 return null;
             }
         }
 
-        protected abstract IUnit getUnitsFromString(String s) throws SedImporterException;
+        protected abstract IUnit getUnitsFromString(String s) throws cfa.vo.iris.sed.SedException;
     }
 
     private class XUnitsConverter extends UnitsConverter {
 
         @Override
-        protected IUnit getUnitsFromString(String s) throws SedImporterException {
+        protected IUnit getUnitsFromString(String s) throws cfa.vo.iris.sed.SedException {
             return XUnit.getFromUnitString(s);
         }
     }
@@ -1017,7 +1016,7 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
     private class YUnitsConverter extends UnitsConverter {
 
         @Override
-        protected IUnit getUnitsFromString(String s) throws SedImporterException {
+        protected IUnit getUnitsFromString(String s) throws cfa.vo.iris.sed.SedException {
             return SPVYUnit.getFromUnitString(s);
         }
     }

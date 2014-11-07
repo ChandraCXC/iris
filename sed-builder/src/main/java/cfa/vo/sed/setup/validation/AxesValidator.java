@@ -21,11 +21,11 @@
 
 package cfa.vo.sed.setup.validation;
 
-import cfa.vo.sed.quantities.SPVYQuantity;
-import cfa.vo.sed.quantities.SPVYUnit;
+import cfa.vo.iris.sed.quantities.SPVYQuantity;
+import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.sed.setup.SetupBean;
-import cfa.vo.sed.quantities.XQuantity;
-import cfa.vo.sed.quantities.XUnit;
+import cfa.vo.iris.sed.quantities.XQuantity;
+import cfa.vo.iris.sed.quantities.XUnit;
 
 /**
  *
