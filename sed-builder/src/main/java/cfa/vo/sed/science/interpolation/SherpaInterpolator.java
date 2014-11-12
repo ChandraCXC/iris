@@ -10,7 +10,6 @@ import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sherpa.SherpaClient;
@@ -37,13 +36,12 @@ public class SherpaInterpolator {
     }
 
     public ExtSed interpolate(ExtSed sed, InterpolationConfig interpConf) throws Exception {
-        client.findSherpa();
 
         if (sed.getNumberOfSegments() == 0) {
             throw new SedNoDataException();
         }
 
-        String sherpaId = client.getSherpaId();
+        String sherpaId = client.findSherpa();
 
         if (sherpaId == null) {
             NarrowOptionPane.showMessageDialog(null,
@@ -53,7 +51,7 @@ public class SherpaInterpolator {
             throw new Exception("Sherpa not found");
         }
         
-        ExtSed newsed = SedBuilder.flatten(sed, "Angstrom", "Jy");
+        ExtSed newsed = ExtSed.flatten(sed, "Angstrom", "Jy");
         
         String intervUnits = interpConf.getUnits();
         Double xmin = interpConf.getXMin();
