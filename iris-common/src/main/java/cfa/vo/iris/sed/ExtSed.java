@@ -31,29 +31,22 @@ import cfa.vo.iris.sed.quantities.AxisMetadata;
 import cfa.vo.iris.sed.quantities.SPVYQuantity;
 import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
-import cfa.vo.sedlib.PositionParam;
-import cfa.vo.sedlib.Sed;
-import cfa.vo.sedlib.Segment;
-import cfa.vo.sedlib.Target;
-import cfa.vo.sedlib.TextParam;
+import cfa.vo.sedlib.*;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sedlib.common.SedParsingException;
 import cfa.vo.sedlib.io.SedFormat;
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.lang.ArrayUtils;
 import spv.spectrum.SEDMultiSegmentSpectrum;
 import spv.util.UnitsException;
 import spv.util.XUnits;
 import spv.util.YUnits;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -71,6 +64,14 @@ public class ExtSed extends Sed {
 
     public ExtSed(String id, boolean managed) {
         this(id);
+        this.managed = managed;
+    }
+
+    public boolean isManaged() {
+        return this.managed;
+    }
+
+    public void setManaged(boolean managed) {
         this.managed = managed;
     }
 
