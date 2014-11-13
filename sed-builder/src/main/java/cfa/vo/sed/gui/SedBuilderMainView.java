@@ -26,33 +26,37 @@
  */
 package cfa.vo.sed.gui;
 
-import cfa.vo.iris.events.MultipleSegmentEvent;
-import cfa.vo.iris.events.MultipleSegmentListener;
-import cfa.vo.iris.events.SedCommand;
-import cfa.vo.iris.events.SedEvent;
-import cfa.vo.iris.events.SedListener;
-import cfa.vo.iris.events.SegmentEvent;
+import cfa.vo.iris.events.*;
 import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
-import cfa.vo.iris.events.SegmentListener;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.gui.widgets.SedList;
 import cfa.vo.iris.interop.SedSAMPController;
-import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.iris.sed.quantities.IUnit;
+import cfa.vo.iris.sed.quantities.SPVYUnit;
+import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.utils.HarvardNameResolver;
 import cfa.vo.iris.utils.NameResolver.Position;
 import cfa.vo.iris.utils.SkyCoordinates;
 import cfa.vo.sed.builder.SedBuilder;
-import cfa.vo.sed.quantities.IUnit;
-import cfa.vo.sed.quantities.SPVYUnit;
-import cfa.vo.sed.quantities.XUnit;
 import cfa.vo.sedlib.DoubleParam;
 import cfa.vo.sedlib.PositionParam;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.TextParam;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
-import java.awt.Component;
+import org.astrogrid.samp.client.SampException;
+import org.jdesktop.application.Action;
+import org.jdesktop.application.Task;
+import org.jdesktop.swingx.JXBusyLabel;
+
+import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellRenderer;
+import java.awt.*;
 import java.beans.PropertyVetoException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -60,20 +64,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
-import org.astrogrid.samp.client.SampException;
-import org.jdesktop.application.Action;
-import org.jdesktop.application.Task;
-import org.jdesktop.swingx.JXBusyLabel;
 
 /**
  *
@@ -812,7 +802,7 @@ public class SedBuilderMainView extends JInternalFrame {
         try {
 
             //            ((SedSAMPController)SedBuilder.getApplication().getSAMPController()).sendSedMessage(sed);
-            ((SedSAMPController) SedBuilder.getApplication().getSAMPController()).sendSedMessage(SedBuilder.flatten(sed, xunit, yunit));
+            ((SedSAMPController) SedBuilder.getApplication().getSAMPController()).sendSedMessage(ExtSed.flatten(sed, xunit, yunit));
 
 
         } catch (Exception ex) {

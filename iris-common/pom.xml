@@ -69,6 +69,11 @@
             <artifactId>swingx</artifactId>
             <version>0.9.7</version>
         </dependency>
+        <dependency>
+            <groupId>specview</groupId>
+            <artifactId>specview</artifactId>
+            <version>20131030b1</version>
+        </dependency>
     </dependencies>
 
     <profiles>

@@ -18,7 +18,6 @@ import cfa.vo.iris.events.*;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.utils.IList;
-import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.TextParam;
 import cfa.vo.sedlib.common.SedException;
@@ -117,7 +116,7 @@ public class IrisCoplotManager extends MultiplePanelGUI {
             sbuffer.append(" ");
             sbuffer.append(sedId);
             try {
-                Segment newSegment = SedBuilder.flatten(sed, "Angstrom", "Jy").getSegment(0);
+                Segment newSegment = ExtSed.flatten(sed, "Angstrom", "Jy").getSegment(0);
                 multipleSed.addSegment(newSegment);
                 newSegment.createTarget().createName().setValue(sedId);
             } catch (UnitsException ex) {

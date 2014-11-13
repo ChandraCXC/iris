@@ -21,8 +21,8 @@
 
 package cfa.vo.sed.builder.dm;
 
-import cfa.vo.sed.quantities.IQuantity;
-import cfa.vo.sed.quantities.IUnit;
+import cfa.vo.iris.sed.quantities.IQuantity;
+import cfa.vo.iris.sed.quantities.IUnit;
 
 /**
  *

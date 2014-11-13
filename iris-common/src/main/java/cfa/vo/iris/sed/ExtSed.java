@@ -27,22 +27,26 @@ import cfa.vo.iris.events.SegmentEvent;
 import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
 import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
-import cfa.vo.sedlib.Sed;
-import cfa.vo.sedlib.Segment;
+import cfa.vo.iris.sed.quantities.AxisMetadata;
+import cfa.vo.iris.sed.quantities.SPVYQuantity;
+import cfa.vo.iris.sed.quantities.SPVYUnit;
+import cfa.vo.iris.sed.quantities.XUnit;
+import cfa.vo.sedlib.*;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sedlib.common.SedParsingException;
 import cfa.vo.sedlib.io.SedFormat;
+import org.apache.commons.lang.ArrayUtils;
+import spv.spectrum.SEDMultiSegmentSpectrum;
+import spv.util.UnitsException;
+import spv.util.XUnits;
+import spv.util.YUnits;
+
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.lang.ArrayUtils;
 
 /**
  *
@@ -60,6 +64,14 @@ public class ExtSed extends Sed {
 
     public ExtSed(String id, boolean managed) {
         this(id);
+        this.managed = managed;
+    }
+
+    public boolean isManaged() {
+        return this.managed;
+    }
+
+    public void setManaged(boolean managed) {
         this.managed = managed;
     }
 
@@ -203,5 +215,95 @@ public class ExtSed extends Sed {
             }
 
         }
+    }
+    
+    public static ExtSed flatten(ExtSed sed, String xunit, String yunit) throws cfa.vo.sedlib.common.SedException, UnitsException {
+        if (sed.getNumberOfSegments() == 0) {
+            throw new SedNoDataException();
+        }
+
+        double xvalues[] = {};
+        double yvalues[] = {};
+        double staterr[] = {};
+
+        Target target = new Target();
+
+        for (int i = 0; i < sed.getNumberOfSegments(); i++) {
+            Segment oldSegment = sed.getSegment(i);
+            if (oldSegment.isSetTarget()) {
+                Target t = oldSegment.getTarget();
+                if (t.isSetName() && !t.getName().getValue().equals("UNKNOWN")) {
+                    target.setName((TextParam)t.getName().clone());
+                    if (t.isSetPos()) {
+                        target.setPos((PositionParam)t.getPos().clone());
+                    }
+                }
+            }
+
+            double[] xoldvalues = oldSegment.getSpectralAxisValues();
+            double[] yoldvalues = oldSegment.getFluxAxisValues();
+            double[] erroldvalues = (double[]) oldSegment.getDataValues(SEDMultiSegmentSpectrum.E_UTYPE);
+            String xoldunits = oldSegment.getSpectralAxisUnits();
+            String yoldunits = oldSegment.getFluxAxisUnits();
+            double[] ynewvalues = convertYValues(yoldvalues, xoldvalues, yoldunits, xoldunits, yunit);
+            yvalues = concat(yvalues, ynewvalues);
+            if (erroldvalues != null) {
+                double[] errnewvalues = YUnits.convertErrors(erroldvalues, yoldvalues, xoldvalues, new YUnits(yoldunits), new XUnits(xoldunits), new YUnits(yunit), true);
+//                double[] errnewvalues = convertYValues(erroldvalues, xoldvalues, yoldunits, xoldunits, yunit);
+                staterr = concat(staterr, errnewvalues);
+            }
+            double[] xnewvalues = convertXValues(xoldvalues, xoldunits, xunit);
+            xvalues = concat(xvalues, xnewvalues);
+        }
+
+        Segment segment = new Segment();
+        segment.setSpectralAxisValues(xvalues);
+        segment.setFluxAxisValues(yvalues);
+        segment.setDataValues(staterr, SEDMultiSegmentSpectrum.E_UTYPE);
+        segment.setTarget(target);
+        segment.setSpectralAxisUnits(xunit);
+        segment.setFluxAxisUnits(yunit);
+        String xucd = null;
+        for (XUnit u : XUnit.values()) {
+            if (u.getString().contains(xunit)) {
+                xucd = u.getUCD();
+            }
+        }
+        segment.createChar().createSpectralAxis().setUcd(xucd);
+
+        String yucd = null;
+        for (SPVYUnit u : SPVYUnit.values()) {
+            if (u.getString().equals(yunit)) {
+                for (SPVYQuantity q : SPVYQuantity.values()) {
+                    if (q.getPossibleUnits().contains(u)) {
+                        yucd = (new AxisMetadata(q, u)).getUCD();
+                    }
+                }
+            }
+        }
+        segment.createChar().createFluxAxis().setUcd(yucd);
+
+        ExtSed newSed = new ExtSed("Exported", false);
+        newSed.addSegment(segment);
+        newSed.checkChar();
+
+        return newSed;
+    }
+    
+    private static double[] concat(double[] a, double[] b) {
+        int aLen = a.length;
+        int bLen = b.length;
+        double[] c = new double[aLen + bLen];
+        System.arraycopy(a, 0, c, 0, aLen);
+        System.arraycopy(b, 0, c, aLen, bLen);
+        return c;
+    }
+
+    private static double[] convertXValues(double[] values, String fromUnits, String toUnits) throws UnitsException {
+        return XUnits.convert(values, new XUnits(fromUnits), new XUnits(toUnits));
+    }
+
+    private static double[] convertYValues(double[] yvalues, double[] xvalues, String fromYUnits, String fromXUnits, String toUnits) throws UnitsException {
+        return YUnits.convert(yvalues, xvalues, new YUnits(fromYUnits), new XUnits(fromXUnits), new YUnits(toUnits), true);
     }
 }

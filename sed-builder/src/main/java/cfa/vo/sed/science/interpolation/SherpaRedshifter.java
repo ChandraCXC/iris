@@ -10,7 +10,6 @@ import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sedlib.Param;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedNoDataException;
@@ -39,13 +38,11 @@ public class SherpaRedshifter {
     
 
     public ExtSed shift(ExtSed sed, Double fromRedshift, Double toRedshift) throws Exception {
-
-        client.findSherpa();
         
         if(sed.getNumberOfSegments()==0)
             throw new SedNoDataException();
         
-        String sherpaId = client.getSherpaId();
+        String sherpaId = client.findSherpa();
         
         if (sherpaId == null) {
             NarrowOptionPane.showMessageDialog(null,
@@ -57,7 +54,7 @@ public class SherpaRedshifter {
 
 //        ExtSed newSed = manager.newSed(sed.getId() + "_" + toRedshift);
 
-        ExtSed inputSed = SedBuilder.flatten(sed, "Angstrom", "Jy");
+        ExtSed inputSed = ExtSed.flatten(sed, "Angstrom", "Jy");
         
         inputSed.setId(sed.getId() + "_" + toRedshift);
         

@@ -26,8 +26,8 @@ import cfa.vo.sed.setup.validation.AbstractValidable;
 import cfa.vo.sed.builder.dm.FluxAxis;
 import cfa.vo.sed.setup.validation.Validation;
 import cfa.vo.sed.filters.IFilter;
-import cfa.vo.sed.quantities.IUnit;
-import cfa.vo.sed.quantities.SPVYQuantity;
+import cfa.vo.iris.sed.quantities.IUnit;
+import cfa.vo.iris.sed.quantities.SPVYQuantity;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

@@ -9,7 +9,6 @@ import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sed.builder.photfilters.EnergyBin;
 import cfa.vo.sed.builder.photfilters.PassBand;
 import cfa.vo.sed.builder.photfilters.PhotometryFilter;
@@ -39,9 +38,8 @@ public class SherpaIntegrator {
     }
 
     public synchronized Response integrate(ExtSed sed, List<PassBand> bands) throws Exception {
-        client.findSherpa();
         
-        String sherpaId = client.getSherpaId();
+        String sherpaId = client.findSherpa();
         
         if (sherpaId == null) {
             NarrowOptionPane.showMessageDialog(null,
@@ -75,7 +73,7 @@ public class SherpaIntegrator {
             }
         }
         
-        ExtSed flatten = SedBuilder.flatten(sed, "Angstrom", "Jy");
+        ExtSed flatten = ExtSed.flatten(sed, "Angstrom", "Jy");
         double[] x = flatten.getSegment(0).getSpectralAxisValues();
         double[] y = flatten.getSegment(0).getFluxAxisValues();
         

@@ -28,14 +28,18 @@ package cfa.vo.sed.gui;
 
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.quantities.IUnit;
+import cfa.vo.iris.sed.quantities.SPVYUnit;
+import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.utils.SpaceTrimmer;
 import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sed.filters.NativeFileFormat;
-import cfa.vo.sed.quantities.IUnit;
-import cfa.vo.sed.quantities.SPVYUnit;
-import cfa.vo.sed.quantities.XUnit;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
+import org.jdesktop.application.Action;
+import org.jdesktop.application.Task;
+
+import javax.swing.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
@@ -44,10 +48,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JFileChooser;
-import org.jdesktop.application.Action;
-import org.jdesktop.application.Task;
 
 /**
  *
@@ -468,7 +468,7 @@ public final class SaveSedDialog extends javax.swing.JDialog {
 }//GEN-LAST:event_jButton1browse
 
     public void writeAscii(ExtSed sed, File f, boolean calcFlux) throws Exception {
-        ExtSed newsed = SedBuilder.flatten(sed, xunit, yunit);
+        ExtSed newsed = ExtSed.flatten(sed, xunit, yunit);
         Segment segment = newsed.getSegment(0);
         double[] x = segment.getSpectralAxisValues();
         double[] y = segment.getFluxAxisValues();
@@ -593,7 +593,7 @@ public final class SaveSedDialog extends javax.swing.JDialog {
 			writeAscii(sed, f, false);
                     } else {
                         if ((single) && (!jComboBox1.getSelectedItem().equals(NativeFileFormat.ASCIITABLE))) {
-                            ExtSed newsed = SedBuilder.flatten(sed, xunit, yunit);
+                            ExtSed newsed = ExtSed.flatten(sed, xunit, yunit);
                             newsed.write(filePath, fmt);
                         } else {
                             sed.write(filePath, fmt);
