@@ -193,7 +193,7 @@ public class IrisVisualizer implements IrisComponent {
                 // If the sed structure was modified, invalidate
                 // any model associated with it.
 
-                invalidateModel(sed);
+//                invalidateModel(sed);
 
                 display(payload.getSed());
             }
@@ -207,27 +207,27 @@ public class IrisVisualizer implements IrisComponent {
                 // If the sed structure was modified, invalidate
                 // any model associated with it.
 
-                invalidateModel(sed);
+//                invalidateModel(sed);
 
                 display(payload.getSed());
             }
         });
     }
 
-    public void invalidateModel(ExtSed sed) {
-        if (sed != null) {
-            SpectrumContainer container = (SpectrumContainer) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
-            if (container != null) {
-
-                ModelManager2 mm = container.getModelManager();
-                if (mm != null && mm.isActive()) {
-                    mm.dispose();
-                }
-
-                sed.removeAttachment(IrisDisplayManager.FIT_MODEL);
-            }
-        }
-    }
+//    public void invalidateModel(ExtSed sed) {
+//        if (sed != null) {
+//            SpectrumContainer container = (SpectrumContainer) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
+//            if (container != null) {
+//
+//                ModelManager2 mm = container.getModelManager();
+//                if (mm != null && mm.isActive()) {
+//                    mm.dispose();
+//                }
+//
+//                sed.removeAttachment(IrisDisplayManager.FIT_MODEL);
+//            }
+//        }
+//    }
 
     public void disposeCurrentFrame() {
         if (currentFrame != null) {
@@ -239,7 +239,7 @@ public class IrisVisualizer implements IrisComponent {
     }
 
     private void remove(ExtSed source) {
-        invalidateModel(source);  // Might be needed in the future?
+//        invalidateModel(source);  // Might be needed in the future?
         idm.remove(source.getId());
     }
 
@@ -353,8 +353,8 @@ public class IrisVisualizer implements IrisComponent {
                     container = (SpectrumContainer) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
 
                     if (container != null) {
-                        ModelManager2 modelManager = container.getModelManager();
-                        modelManager.setVisible(modelManager.isActive());
+                        SherpaModelManager modelManager = (SherpaModelManager) container.getModelManager();
+                        modelManager.setVisible(!modelManager.isWantedHidden());
                     }
                 }
             }
@@ -468,13 +468,14 @@ public class IrisVisualizer implements IrisComponent {
 
                             SpectrumContainer container = (SpectrumContainer) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
                             SherpaModelManager modelManager = (SherpaModelManager) container.getModelManager();
+                            modelManager.setWantedHidden(false);
 
                             modelManager.execute(null);
 
                             // Display the model manager frame.
 
                             JInternalFrame frame = modelManager.getInternalFrame();
-                            frame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
+//                            frame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
                             ws.addFrame(frame);
                             GUIUtils.moveToFront(frame);
 //                            frame.setVisible(true);
