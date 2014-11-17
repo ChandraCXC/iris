@@ -15,4 +15,5 @@ public interface SimplePhotometryPoint {
     public void setWavelength(Double wl);
     public Double getFlux();
     public void setFlux(Double flux);
+
 }

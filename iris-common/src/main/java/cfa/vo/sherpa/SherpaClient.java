@@ -51,8 +51,12 @@ public class SherpaClient {
 //        return sherpaPublicId;
 //    }
 
-    public Parameter getParameter(AbstractModel model, String name) {
-        return model.getParameter(model.getId() + "." + name);
+    public Parameter getParameter(AbstractModel model, String name) throws Exception {
+        Parameter par = model.getParameter(model.getId() + "." + name);
+        if (par == null) {
+            throw new Exception("Parameter "+ name+ " not found in model " + model.getName());
+        }
+        return par;
     }
 
     public FitResults fit(Data dataset, CompositeModel model, Stat stat, Method method) throws Exception {
@@ -115,6 +119,10 @@ public class SherpaClient {
 
     public AbstractModel createModel(Models model) {
         String id = "m" + (++stringCounter).toString();
+        return createModel(model, id);
+    }
+
+    public AbstractModel createModel(Models model, String id) {
         AbstractModel m = model.getModel(id);
         modelMap.put(id, m);
         return m;

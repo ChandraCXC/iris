@@ -37,17 +37,17 @@ public interface Parameter {
 
     void setMax(Double max);
 
-    Boolean getFrozen();
+    Integer getFrozen();
 
-    void setFrozen(Boolean frozen);
+    void setFrozen(Integer frozen);
 
-    Boolean getHidden();
+    Integer getHidden();
 
-    void setHidden(Boolean hidden);
+    void setHidden(Integer hidden);
 
-    Boolean getAlwaysfrozen();
+    Integer getAlwaysfrozen();
 
-    void setAlwaysfrozen(Boolean alwaysfrozen);
+    void setAlwaysfrozen(Integer alwaysfrozen);
 
     String getUnits();
 

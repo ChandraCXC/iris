@@ -14,32 +14,20 @@
  * limitations under the License.
  */
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+package cfa.vo.sherpa;
 
-package spv.fit;
+import java.util.Arrays;
 
 /**
  *
  * @author olaurino
  */
-public abstract class AbstractFittingEngine implements FittingEngine {
+public class Polynom1D extends AbstractModel implements Model {
 
-    public AbstractFittingEngine() {
-    }
-
-    @Override
-    public abstract void run();
-
-    @Override
-    public abstract void shutdown();
-
-    @Override
-    public void start() {
-        Thread t = new Thread(this);
-        t.start();
+    public Polynom1D(String id) {
+        super("polynom1d", id);
+        String[] parNames = new String[]{"c0", "c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "offset"};
+        addParams(Arrays.asList(parNames));
     }
 
 }

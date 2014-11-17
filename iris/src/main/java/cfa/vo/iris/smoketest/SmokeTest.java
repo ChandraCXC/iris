@@ -21,16 +21,13 @@
 
 package cfa.vo.iris.smoketest;
 
-import cfa.vo.iris.ICommandLineInterface;
-import cfa.vo.iris.IMenuItem;
-import cfa.vo.iris.IWorkspace;
-import cfa.vo.iris.IrisApplication;
-import cfa.vo.iris.IrisComponent;
+import cfa.vo.iris.*;
+import org.astrogrid.samp.client.MessageHandler;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.astrogrid.samp.client.MessageHandler;
 
 /**
  *
@@ -62,7 +59,6 @@ public class SmokeTest implements IrisComponent {
 
             @Override
             public void call(String[] args) {
-
                 String testFile = System.getProperty("IRIS_DIR")+"/examples/3c273.xml";
                 if(args.length>0) {
                     try{

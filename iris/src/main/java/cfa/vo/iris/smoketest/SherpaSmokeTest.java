@@ -26,32 +26,29 @@ import cfa.vo.iris.interop.AbstractSedMessageHandler;
 import cfa.vo.iris.interop.SedSAMPController;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sed.builder.SegmentImporter;
+import cfa.vo.sed.builder.photfilters.EnergyBin;
+import cfa.vo.sed.builder.photfilters.PassBand;
+import cfa.vo.sed.science.integration.SherpaIntegrator;
+import cfa.vo.sed.science.integration.SimplePhotometryPoint;
 import cfa.vo.sed.setup.ErrorType;
 import cfa.vo.sed.setup.SetupBean;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
-import cfa.vo.sherpa.AbstractModel;
-import cfa.vo.sherpa.CompositeModel;
-import cfa.vo.sherpa.Data;
-import cfa.vo.sherpa.FitResults;
-import cfa.vo.sherpa.Method;
-import cfa.vo.sherpa.Models;
-import cfa.vo.sherpa.OptimizationMethod;
-import cfa.vo.sherpa.SherpaClient;
-import cfa.vo.sherpa.Stat;
-import cfa.vo.sherpa.Stats;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import cfa.vo.sherpa.*;
 import junit.framework.Assert;
 import org.astrogrid.samp.Client;
 import org.astrogrid.samp.Response;
 import org.astrogrid.samp.client.ResultHandler;
-import spv.fit.StartSherpa;
+import spv.util.XUnits;
+import spv.util.YUnits;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+//import org.astrogrid.samp.Response;
 
 /**
  *
@@ -63,8 +60,8 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
     private SedSAMPController controller;
     private boolean working = false;
     protected Boolean control;
-    private StartSherpa sherpa;
-    private String sherpaDirS;
+//    private SherpaSamp sherpa;
+//    private String sherpaDirS;
 
     public SherpaSmokeTest(String testVotable) {
         this(testVotable, 10);
@@ -90,20 +87,20 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
             log("Starting Smoke Test with timeout: "+TIMEOUT);
             log("========================================");
 
-            sherpaDirS = System.getProperty("IRIS_DIR") + "/lib/sherpa";
-
-            File sherpaDir = new File(sherpaDirS);
-
-            boolean isSherpaDir = false;
-
-            //Verify sherpaDir contains sherpa
-            for (File f : sherpaDir.listFiles()) {
-                if (f.getName().equals("startsherpa.py")) {
-                    isSherpaDir = true;
-                }
-            }
-
-            check(isSherpaDir, "The directory does not contain Sherpa");
+//            sherpaDirS = System.getProperty("IRIS_DIR") + "/lib/sherpa";
+//
+//            File sherpaDir = new File(sherpaDirS);
+//
+//            boolean isSherpaDir = false;
+//
+//            //Verify sherpaDir contains sherpa
+//            for (File f : sherpaDir.listFiles()) {
+//                if (f.getName().equals("startsherpa.py")) {
+//                    isSherpaDir = true;
+//                }
+//            }
+//
+//            check(isSherpaDir, "The directory does not contain Sherpa");
 
             //Verify we can read test file.
             File testFile = new File(testVotable);
@@ -119,11 +116,11 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
             waitUntil(controller, "isConnected", "SAMP controller never connected!");
 
             //Start Sherpa
-            log("Starting Sherpa...");
-            sherpa = new StartSherpa();
-            sherpa.start();
-
-            Thread.sleep(10000);//sherpa needs some time to connect to the hub
+//            log("Starting Sherpa...");
+//            sherpa = new SherpaSamp();
+//            sherpa.start();
+//
+//            Thread.sleep(TIMEOUT);//sherpa needs some time to connect to the hub
 
             //check that sherpa can be pinged
             control = Boolean.FALSE;
@@ -193,13 +190,147 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
             log("Verifying Sherpa response...");
             Assert.assertEquals(Boolean.TRUE, fr.getSucceeded());
 
+            log("Running sample model integration...");
+
+            List<PassBand> pbs = new ArrayList();
+
+            EnergyBin b1 = new EnergyBin();
+            EnergyBin b2 = new EnergyBin();
+
+            b1.setMin(0.55);
+            b1.setMax(0.75);
+            b1.setUnits("Angstrom");
+
+
+            b2.setMin(0.6);
+            b2.setMax(0.9);
+            b2.setUnits("Angstrom");
+
+            pbs.add(b2);
+            pbs.add(b1);
+
+            AbstractModel p1 = c.createModel(Models.Polynom1D, "p1");
+            Parameter c0 = c.getParameter(p1, "c0");
+            c0.setFrozen(0);
+            c0.setVal(0.0);
+
+            Parameter c1 = c.getParameter(p1, "c1");
+            c1.setFrozen(0);
+            c1.setVal(1.0);
+
+            AbstractModel p2 = c.createModel(Models.Polynom1D, "p2");
+            c0 = c.getParameter(p2, "c0");
+            c0.setFrozen(1);
+            c0.setVal(0.0);
+
+            Parameter c2 = c.getParameter(p2, "c2");
+            c2.setFrozen(0);
+            c2.setVal(1.0);
+
+
+
+            SherpaIntegrator integrator = new SherpaIntegrator(controller);
+
+            cm = c.createCompositeModel("p1+p2", p1, p2);
+            cfa.vo.sed.science.integration.Response response = integrator.integrateComponents(pbs, cm, null, 10000);
+            for (SimplePhotometryPoint point : response.getPoints()) {
+                if (point.getId().equals("0.6-0.9 Angstrom")) {
+                    Assert.assertEquals(point.getWavelength(), 0.75);
+                    double fluxDensity = YUnits.convert(new double[]{point.getFlux()}, new double[]{point.getWavelength()},
+                            new YUnits("erg/s/cm2"), new XUnits("Angstrom"), new YUnits("photon/s/cm2/Angstrom"), true)[0];
+                    Assert.assertEquals(fluxDensity * 0.75, 0.396, 0.001);
+                }
+            }
+
+            cm = c.createCompositeModel("p1", p1);
+            response = integrator.integrateComponents(pbs, cm, null, 10000);
+            for (SimplePhotometryPoint point : response.getPoints()) {
+                if (point.getId().equals("0.6-0.9 Angstrom")) {
+                    Assert.assertEquals(point.getWavelength(), 0.75);
+                    double fluxDensity = YUnits.convert(new double[]{point.getFlux()}, new double[]{point.getWavelength()},
+                            new YUnits("erg/s/cm2"), new XUnits("Angstrom"), new YUnits("photon/s/cm2/Angstrom"), true)[0];
+                    Assert.assertEquals(fluxDensity * 0.75, 0.225, 0.001);
+                }
+            }
+
+            cm = c.createCompositeModel("p2", p2);
+            response = integrator.integrateComponents(pbs, cm, null, 10000);
+            for (SimplePhotometryPoint point : response.getPoints()) {
+                if (point.getId().equals("0.6-0.9 Angstrom")) {
+                    Assert.assertEquals(point.getWavelength(), 0.75);
+                    double fluxDensity = YUnits.convert(new double[]{point.getFlux()}, new double[]{point.getWavelength()},
+                            new YUnits("erg/s/cm2"), new XUnits("Angstrom"), new YUnits("photon/s/cm2/Angstrom"), true)[0];
+                    Assert.assertEquals(fluxDensity * 0.75, 0.171, 0.001);
+                }
+            }
+
+            cm = c.createCompositeModel("p1", p1);
+            response = integrator.integrateComponents(pbs, cm, null, 10000);
+            for (SimplePhotometryPoint point : response.getPoints()) {
+                if (point.getId().equals("0.6-0.9 Angstrom")) {
+                    Assert.assertEquals(point.getWavelength(), 0.75);
+                    double fluxDensity = YUnits.convert(new double[]{point.getFlux()}, new double[]{point.getWavelength()},
+                            new YUnits("erg/s/cm2"), new XUnits("Angstrom"), new YUnits("photon/s/cm2/Angstrom"), true)[0];
+                    Assert.assertEquals(fluxDensity * 0.75, 0.225, 0.001);
+                } else {
+                    Assert.assertEquals(point.getWavelength(), 0.65);
+                    double fluxDensity = YUnits.convert(new double[]{point.getFlux()}, new double[]{point.getWavelength()},
+                            new YUnits("erg/s/cm2"), new XUnits("Angstrom"), new YUnits("photon/s/cm2/Angstrom"), true)[0];
+                    Assert.assertEquals(fluxDensity * 0.65, 0.13, 0.001);
+                }
+            }
+
+            AbstractModel p3 = c.createModel(Models.Polynom1D, "p3");
+            c0 = c.getParameter(p3, "c0");
+            c0.setFrozen(1);
+            c0.setVal(0.0);
+            c2 = c.getParameter(p3, "c2");
+            c2.setFrozen(0);
+            c2.setVal(3e-19);
+
+            pbs = new ArrayList();
+
+            b1 = new EnergyBin();
+            b2 = new EnergyBin();
+            EnergyBin b3 = new EnergyBin();
+
+            pbs.add(b1);
+            pbs.add(b2);
+            pbs.add(b3);
+
+            b1.setMin(5e11);
+            b1.setMax(1e12);
+            b1.setUnits("Hz");
+
+            b2.setMin(5e16);
+            b2.setMax(10e17);
+            b2.setUnits("Hz");
+
+            b3.setMin(5e16);
+            b3.setMax(6e16);
+            b3.setUnits("Hz");
+
+            cm = c.createCompositeModel("p3", p3);
+            response = integrator.integrateComponents(pbs, cm, null, 10000);
+            for (SimplePhotometryPoint point : response.getPoints()) {
+                if (point.getId().equals("5.0E11-1.0E12 Hz")) {
+                    Assert.assertEquals(point.getWavelength(), 4496888, 1);
+                    double fluxDensity = YUnits.convert(new double[]{point.getFlux()}, new double[]{point.getWavelength()},
+                            new YUnits("erg/s/cm2"), new XUnits("Angstrom"), new YUnits("photon/s/cm2/Angstrom"), true)[0];
+                    Assert.assertEquals(fluxDensity*point.getWavelength(), 18.860, 0.005);
+                }
+            }
+
             working = true;
 
-        } catch (RuntimeException ex) {
+        } catch (Throwable ex) {
             Logger.getLogger(SherpaSmokeTest.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (Exception ex) {
-            Logger.getLogger(SherpaSmokeTest.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
+//        catch (Exception ex) {
+//            Logger.getLogger(SherpaSmokeTest.class.getName()).log(Level.SEVERE, null, ex);
+//            ex.printStackTrace();
+//        }
     }
 
     @Override
@@ -209,14 +340,14 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
             controller.stop();
         }
 
-        if (sherpa != null) {
-            try {
-                sherpa.shutdown();
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(SherpaSmokeTest.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+//        if (sherpa != null) {
+//            try {
+//                sherpa.shutdown();
+//                Thread.sleep(2000);
+//            } catch (InterruptedException ex) {
+//                Logger.getLogger(SherpaSmokeTest.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
 
         String message = working ? "Everything seems to be working!" : "OOPS! Something went wrong!";
 
@@ -226,16 +357,16 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
         System.out.println("===============================");
 
         if(!working) {
-            log("Something went wrong. If a timeout occurred, try re-running the test with a longer timeout (e.g. ./smoketest 20).");
+            log("Something went wrong. If a timeout occurred, try re-running the test with a longer timeout (e.g. iris smoketest 20).");
             log("If the Smoke Test is not working, your system may not be supported, or you have downloaded"
                     + " a distribution that does not match your Operating System.");
-            log("\n\nChecking Architecture");
-            try {
-                checkArch();
-            } catch (Exception ex1) {
-                Logger.getLogger(SherpaSmokeTest.class.getName()).log(Level.SEVERE, null, ex1);
-            }
-            Assert.fail();
+//            log("\n\nChecking Architecture");
+//            try {
+//                checkArch();
+//            } catch (Exception ex1) {
+//                Logger.getLogger(SherpaSmokeTest.class.getName()).log(Level.SEVERE, null, ex1);
+//            }
+//            Assert.fail();
         }
 
 
@@ -277,39 +408,39 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
         }
     }
 
-    private void checkArch() throws IOException, InterruptedException {
-        ProcessBuilder pb = new ProcessBuilder("file", sherpaDirS+"/bin/python2.6");
-
-        Process p = pb.start();
-
-        InputStream is = p.getInputStream();
-
-        p.waitFor();
-
-        String s = new Scanner(is).useDelimiter("\\A").next().toLowerCase();
-
-        String arch = System.getProperty("os.arch").toLowerCase();
-
-        if(arch.equals("amd64"))
-            arch = "x86_64";
-
-        String os = System.getProperty("os.name").toLowerCase();
-
-        if(os.equals("mac os x"))
-            os = "mach-o";
-
-        if(s.contains(os)) {
-            if(!(s.contains(arch) || s.contains(arch.replaceAll("_", "-"))))
-                Logger.getLogger("").log(Level.SEVERE, "\nIris may be installed for the wrong architecture. However, Iris could still work, so the test will continue...");
-        } else {
-            Logger.getLogger("").log(Level.SEVERE, "\nIt seems like you installed Iris for the wrong Operating System. However, the test will continue, since there is the unlikely possibility"
-                    + " that Iris will work anyway or that there was an error probing the running operating system.");
-        }
-
-        log("\nOperating system: "+os);
-        log("Architecture: "+arch);
-        log("Python Executable: "+s);
-    }
+//    private void checkArch() throws IOException, InterruptedException {
+//        ProcessBuilder pb = new ProcessBuilder("file", sherpaDirS+"/bin/python2.6");
+//
+//        Process p = pb.start();
+//
+//        InputStream is = p.getInputStream();
+//
+//        p.waitFor();
+//
+//        String s = new Scanner(is).useDelimiter("\\A").next().toLowerCase();
+//
+//        String arch = System.getProperty("os.arch").toLowerCase();
+//
+//        if(arch.equals("amd64"))
+//            arch = "x86_64";
+//
+//        String os = System.getProperty("os.name").toLowerCase();
+//
+//        if(os.equals("mac os x"))
+//            os = "mach-o";
+//
+//        if(s.contains(os)) {
+//            if(!(s.contains(arch) || s.contains(arch.replaceAll("_", "-"))))
+//                Logger.getLogger("").log(Level.SEVERE, "\nIris may be installed for the wrong architecture. However, Iris could still work, so the test will continue...");
+//        } else {
+//            Logger.getLogger("").log(Level.SEVERE, "\nIt seems like you installed Iris for the wrong Operating System. However, the test will continue, since there is the unlikely possibility"
+//                    + " that Iris will work anyway or that there was an error probing the running operating system.");
+//        }
+//
+//        log("\nOperating system: "+os);
+//        log("Architecture: "+arch);
+//        log("Python Executable: "+s);
+//    }
 
     private class SmokeSedHandler extends AbstractSedMessageHandler {
 
