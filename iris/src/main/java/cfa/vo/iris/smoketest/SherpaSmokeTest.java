@@ -64,7 +64,7 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
 //    private String sherpaDirS;
 
     public SherpaSmokeTest(String testVotable) {
-        this(testVotable, 10);
+        this(testVotable, 20);
     }
 
     public SherpaSmokeTest(String testVotable, int timeout) {
@@ -120,12 +120,12 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
 //            sherpa = new SherpaSamp();
 //            sherpa.start();
 //
-//            Thread.sleep(TIMEOUT);//sherpa needs some time to connect to the hub
+            Thread.sleep(TIMEOUT*1000);//sherpa needs some time to connect to the hub
 
             //check that sherpa can be pinged
             control = Boolean.FALSE;
             log("Pinging Sherpa...");
-            controller.sendMessage(new PingMessage(), new PingResultHandler(), 10);
+            controller.sendMessage(new PingMessage(), new PingResultHandler(), this.TIMEOUT);
             waitUntil("control", true, "Sherpa didn't respond to ping");//give sherpa TIMEOUT seconds to reply
 
             //Import the file using SedImporter
