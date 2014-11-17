@@ -31,9 +31,9 @@ public interface FitConfiguration {
 
     void addModel(CompositeModel model);
 
-    List<CompositeModel> getUsermodels();
+    List<UserModel> getUsermodels();
 
-    void addUsermodel(CompositeModel model);
+    void addUsermodel(UserModel model);
 
     Stat getStat();
 

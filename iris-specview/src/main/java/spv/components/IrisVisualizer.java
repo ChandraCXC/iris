@@ -28,54 +28,23 @@ package spv.components;
  * Time: 3:03 PM
  */
 
-import java.awt.*;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.*;
-
 import cfa.vo.interop.SAMPController;
-import cfa.vo.sedlib.common.SedInconsistentException;
-import cfa.vo.sedlib.common.SedNoDataException;
-import org.astrogrid.samp.client.MessageHandler;
-
-import cfa.vo.iris.AbstractDesktopItem;
-import cfa.vo.iris.AbstractMenuItem;
-import cfa.vo.iris.ICommandLineInterface;
-import cfa.vo.iris.IMenuItem;
-import cfa.vo.iris.IWorkspace;
-import cfa.vo.iris.IrisApplication;
-import cfa.vo.iris.IrisComponent;
-import cfa.vo.iris.NullCommandLineInterface;
-import cfa.vo.iris.events.MultipleSegmentEvent;
-import cfa.vo.iris.events.MultipleSegmentListener;
-import cfa.vo.iris.events.SedCommand;
-import cfa.vo.iris.events.SedEvent;
-import cfa.vo.iris.events.SedListener;
-import cfa.vo.iris.events.SegmentEvent;
+import cfa.vo.iris.*;
+import cfa.vo.iris.events.*;
 import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
-import cfa.vo.iris.events.SegmentListener;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
-import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.sedlib.Segment;
-
-import java.beans.PropertyVetoException;
-import java.io.File;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-
+import cfa.vo.sedlib.common.SedInconsistentException;
+import cfa.vo.sedlib.common.SedNoDataException;
+import org.astrogrid.samp.client.MessageHandler;
 import spv.SpvInitialization;
-import spv.controller.SpectrumContainer;
 import spv.controller.ModelManager2;
+import spv.controller.SpectrumContainer;
 import spv.fit.FittedSpectrum;
 import spv.glue.SpectrumVisualEditor;
 import spv.sherpa.custom.CustomModelsManager;
@@ -91,6 +60,20 @@ import spv.util.Include;
 import spv.util.NonSupportedUnits;
 import spv.util.properties.SpvProperties;
 import spv.view.AbstractPlotWidget;
+
+import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -311,7 +294,7 @@ public class IrisVisualizer implements IrisComponent {
         sp.setName(sed.getId());
 
         JDesktopPane desktop = ws.getDesktop();
-        SherpaModelManager modelManager = new SherpaModelManager(sp, idm.getSAMPConnector(), desktop);
+        SherpaModelManager modelManager = new SherpaModelManager(sp, idm.getSAMPConnector(), desktop, sedManager, sed);
         modelManager.setActive(false);
 
         SpectrumContainer container = new SpectrumContainer(sp, modelManager);
@@ -642,7 +625,7 @@ public class IrisVisualizer implements IrisComponent {
                             name = "usermodel";
                         }
                         if (path.contains("/templates/")) {
-                            name = "templatemodel";
+                            name = "template";
                         }
 
                         function.setUserID(name);

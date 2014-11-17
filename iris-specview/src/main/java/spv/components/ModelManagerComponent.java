@@ -69,7 +69,7 @@ public class ModelManagerComponent implements IrisComponent {
 
                         if (container != null) {
 
-                            spv.components.SherpaModelManager smm = (spv.components.SherpaModelManager) container.getModelManager();
+                            SherpaModelManager smm = (SherpaModelManager) container.getModelManager();
 
                             // Make the component button responsive only
                             // in case this model manager is inactive.

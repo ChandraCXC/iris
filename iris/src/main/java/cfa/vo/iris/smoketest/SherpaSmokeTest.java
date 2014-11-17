@@ -39,7 +39,8 @@ import junit.framework.Assert;
 import org.astrogrid.samp.Client;
 import org.astrogrid.samp.Response;
 import org.astrogrid.samp.client.ResultHandler;
-import spv.fit.SherpaSamp;
+import spv.util.XUnits;
+import spv.util.YUnits;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
     private SedSAMPController controller;
     private boolean working = false;
     protected Boolean control;
-    private SherpaSamp sherpa;
+//    private SherpaSamp sherpa;
 //    private String sherpaDirS;
 
     public SherpaSmokeTest(String testVotable) {
@@ -189,23 +190,24 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
             log("Verifying Sherpa response...");
             Assert.assertEquals(Boolean.TRUE, fr.getSucceeded());
 
-
             log("Running sample model integration...");
 
             List<PassBand> pbs = new ArrayList();
 
             EnergyBin b1 = new EnergyBin();
-            b1.setMin(0.1);
-            b1.setMax(0.4);
+            EnergyBin b2 = new EnergyBin();
+
+            b1.setMin(0.55);
+            b1.setMax(0.75);
             b1.setUnits("Angstrom");
 
-            EnergyBin b2 = new EnergyBin();
+
             b2.setMin(0.6);
             b2.setMax(0.9);
             b2.setUnits("Angstrom");
 
-            pbs.add(b1);
             pbs.add(b2);
+            pbs.add(b1);
 
             AbstractModel p1 = c.createModel(Models.Polynom1D, "p1");
             Parameter c0 = c.getParameter(p1, "c0");
@@ -216,36 +218,119 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
             c1.setFrozen(0);
             c1.setVal(1.0);
 
-            cm = c.createCompositeModel("p1", p1);
+            AbstractModel p2 = c.createModel(Models.Polynom1D, "p2");
+            c0 = c.getParameter(p2, "c0");
+            c0.setFrozen(1);
+            c0.setVal(0.0);
+
+            Parameter c2 = c.getParameter(p2, "c2");
+            c2.setFrozen(0);
+            c2.setVal(1.0);
+
+
 
             SherpaIntegrator integrator = new SherpaIntegrator(controller);
 
-            try {
-                cfa.vo.sed.science.integration.Response response = integrator.integrateComponents(pbs, cm);
-                for (SimplePhotometryPoint point : response.getPoints()) {
-                    if (point.getId().equals("0.6-0.9 Angstrom")) {
-                        Assert.assertEquals(point.getWavelength(), 0.75);
-                        Assert.assertEquals(point.getFlux(), 0.225, 0.001);
-                    } else {
-                        Assert.assertEquals(point.getWavelength(), 0.25);
-                        Assert.assertEquals(point.getFlux(), 0.075, 0.001);
-                    }
+            cm = c.createCompositeModel("p1+p2", p1, p2);
+            cfa.vo.sed.science.integration.Response response = integrator.integrateComponents(pbs, cm, null, 10000);
+            for (SimplePhotometryPoint point : response.getPoints()) {
+                if (point.getId().equals("0.6-0.9 Angstrom")) {
+                    Assert.assertEquals(point.getWavelength(), 0.75);
+                    double fluxDensity = YUnits.convert(new double[]{point.getFlux()}, new double[]{point.getWavelength()},
+                            new YUnits("erg/s/cm2"), new XUnits("Angstrom"), new YUnits("photon/s/cm2/Angstrom"), true)[0];
+                    Assert.assertEquals(fluxDensity * 0.75, 0.396, 0.001);
                 }
-                working = true;
-            } catch(Exception ex) {
-                ex.printStackTrace();
-                working = false;
             }
 
-//            working = true;
+            cm = c.createCompositeModel("p1", p1);
+            response = integrator.integrateComponents(pbs, cm, null, 10000);
+            for (SimplePhotometryPoint point : response.getPoints()) {
+                if (point.getId().equals("0.6-0.9 Angstrom")) {
+                    Assert.assertEquals(point.getWavelength(), 0.75);
+                    double fluxDensity = YUnits.convert(new double[]{point.getFlux()}, new double[]{point.getWavelength()},
+                            new YUnits("erg/s/cm2"), new XUnits("Angstrom"), new YUnits("photon/s/cm2/Angstrom"), true)[0];
+                    Assert.assertEquals(fluxDensity * 0.75, 0.225, 0.001);
+                }
+            }
 
-        } catch (RuntimeException ex) {
-            Logger.getLogger(SherpaSmokeTest.class.getName()).log(Level.SEVERE, null, ex);
-            ex.printStackTrace();
-        } catch (Exception ex) {
+            cm = c.createCompositeModel("p2", p2);
+            response = integrator.integrateComponents(pbs, cm, null, 10000);
+            for (SimplePhotometryPoint point : response.getPoints()) {
+                if (point.getId().equals("0.6-0.9 Angstrom")) {
+                    Assert.assertEquals(point.getWavelength(), 0.75);
+                    double fluxDensity = YUnits.convert(new double[]{point.getFlux()}, new double[]{point.getWavelength()},
+                            new YUnits("erg/s/cm2"), new XUnits("Angstrom"), new YUnits("photon/s/cm2/Angstrom"), true)[0];
+                    Assert.assertEquals(fluxDensity * 0.75, 0.171, 0.001);
+                }
+            }
+
+            cm = c.createCompositeModel("p1", p1);
+            response = integrator.integrateComponents(pbs, cm, null, 10000);
+            for (SimplePhotometryPoint point : response.getPoints()) {
+                if (point.getId().equals("0.6-0.9 Angstrom")) {
+                    Assert.assertEquals(point.getWavelength(), 0.75);
+                    double fluxDensity = YUnits.convert(new double[]{point.getFlux()}, new double[]{point.getWavelength()},
+                            new YUnits("erg/s/cm2"), new XUnits("Angstrom"), new YUnits("photon/s/cm2/Angstrom"), true)[0];
+                    Assert.assertEquals(fluxDensity * 0.75, 0.225, 0.001);
+                } else {
+                    Assert.assertEquals(point.getWavelength(), 0.65);
+                    double fluxDensity = YUnits.convert(new double[]{point.getFlux()}, new double[]{point.getWavelength()},
+                            new YUnits("erg/s/cm2"), new XUnits("Angstrom"), new YUnits("photon/s/cm2/Angstrom"), true)[0];
+                    Assert.assertEquals(fluxDensity * 0.65, 0.13, 0.001);
+                }
+            }
+
+            AbstractModel p3 = c.createModel(Models.Polynom1D, "p3");
+            c0 = c.getParameter(p3, "c0");
+            c0.setFrozen(1);
+            c0.setVal(0.0);
+            c2 = c.getParameter(p3, "c2");
+            c2.setFrozen(0);
+            c2.setVal(3e-19);
+
+            pbs = new ArrayList();
+
+            b1 = new EnergyBin();
+            b2 = new EnergyBin();
+            EnergyBin b3 = new EnergyBin();
+
+            pbs.add(b1);
+            pbs.add(b2);
+            pbs.add(b3);
+
+            b1.setMin(5e11);
+            b1.setMax(1e12);
+            b1.setUnits("Hz");
+
+            b2.setMin(5e16);
+            b2.setMax(10e17);
+            b2.setUnits("Hz");
+
+            b3.setMin(5e16);
+            b3.setMax(6e16);
+            b3.setUnits("Hz");
+
+            cm = c.createCompositeModel("p3", p3);
+            response = integrator.integrateComponents(pbs, cm, null, 10000);
+            for (SimplePhotometryPoint point : response.getPoints()) {
+                if (point.getId().equals("5.0E11-1.0E12 Hz")) {
+                    Assert.assertEquals(point.getWavelength(), 4496888, 1);
+                    double fluxDensity = YUnits.convert(new double[]{point.getFlux()}, new double[]{point.getWavelength()},
+                            new YUnits("erg/s/cm2"), new XUnits("Angstrom"), new YUnits("photon/s/cm2/Angstrom"), true)[0];
+                    Assert.assertEquals(fluxDensity*point.getWavelength(), 18.860, 0.005);
+                }
+            }
+
+            working = true;
+
+        } catch (Throwable ex) {
             Logger.getLogger(SherpaSmokeTest.class.getName()).log(Level.SEVERE, null, ex);
             ex.printStackTrace();
         }
+//        catch (Exception ex) {
+//            Logger.getLogger(SherpaSmokeTest.class.getName()).log(Level.SEVERE, null, ex);
+//            ex.printStackTrace();
+//        }
     }
 
     @Override
@@ -255,14 +340,14 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
             controller.stop();
         }
 
-        if (sherpa != null) {
-            try {
-                sherpa.shutdown();
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {
-                Logger.getLogger(SherpaSmokeTest.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+//        if (sherpa != null) {
+//            try {
+//                sherpa.shutdown();
+//                Thread.sleep(2000);
+//            } catch (InterruptedException ex) {
+//                Logger.getLogger(SherpaSmokeTest.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
 
         String message = working ? "Everything seems to be working!" : "OOPS! Something went wrong!";
 
