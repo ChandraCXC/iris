@@ -169,18 +169,26 @@ public class IrisVisualizer implements IrisComponent {
 
             public void process(Segment source, final SegmentPayload payload) {
 
-                if (payload.getSedCommand() == SedCommand.REMOVED) {
-                    return;
+                ExtSed sed = payload.getSed();
+
+                if (sed.getNumberOfSegments() > 0) {
+                    display(sed);
+                } else {
+                    remove(sed);
                 }
 
-                ExtSed sed = payload.getSed();
+//                if (payload.getSedCommand() == SedCommand.REMOVED) {
+//                    return;
+//                }
+
+//                ExtSed sed = payload.getSed();
 
                 // If the sed structure was modified, invalidate
                 // any model associated with it.
 
 //                invalidateModel(sed);
 
-                display(payload.getSed());
+//                display(payload.getSed());
             }
         });
 
@@ -340,7 +348,9 @@ public class IrisVisualizer implements IrisComponent {
 
                     if (container != null) {
                         SherpaModelManager modelManager = (SherpaModelManager) container.getModelManager();
-                        modelManager.setVisible(!modelManager.isWantedHidden());
+                        if (sed.getNumberOfSegments()>0) {
+                            modelManager.setVisible(!modelManager.isWantedHidden());
+                        }
                     }
                 }
 //            }
@@ -447,6 +457,10 @@ public class IrisVisualizer implements IrisComponent {
 
                         try {
                             Spectrum sp = factory.readAllSegments(null, sed);
+                            if (sp == null) {
+                                NarrowOptionPane.showMessageDialog(ws.getRootFrame(), "No SEDs to fit. Please load a file.", "Fitting Engine", NarrowOptionPane.INFORMATION_MESSAGE);
+                                return;
+                            }
                             sp.setName(sed.getId());
 
                             // Get model manager from Sed attachment
