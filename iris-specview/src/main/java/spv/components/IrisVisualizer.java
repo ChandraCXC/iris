@@ -153,6 +153,8 @@ public class IrisVisualizer implements IrisComponent {
 
                     if (source.getNumberOfSegments() > 0) {
                         display(source);
+                    } else {
+                        remove(source);
                     }
 
                 } else if (payload == SedCommand.REMOVED) {
@@ -223,6 +225,7 @@ public class IrisVisualizer implements IrisComponent {
 
     private void remove(ExtSed source) {
 //        invalidateModel(source);  // Might be needed in the future?
+        manageAssociatedManagerWindows(source);
         idm.remove(source.getId());
     }
 
@@ -312,7 +315,7 @@ public class IrisVisualizer implements IrisComponent {
         ExtSed displaying = idm.getDisplaying();
 
         if (displaying != null) {
-            if (!sed.getId().equals(displaying.getId())) {
+//            if (!sed.getId().equals(displaying.getId())) {
 
                 // displayed Sed is exiting: make its model manager and metadata windows invisible.
 
@@ -340,7 +343,7 @@ public class IrisVisualizer implements IrisComponent {
                         modelManager.setVisible(!modelManager.isWantedHidden());
                     }
                 }
-            }
+//            }
         }
     }
 

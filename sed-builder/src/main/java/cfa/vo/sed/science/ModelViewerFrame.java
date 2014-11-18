@@ -74,7 +74,7 @@ public final class ModelViewerFrame extends javax.swing.JInternalFrame implement
             userModels = smm.getUserModels();
             setModel(m);
             setExpression(m.getName());
-        } catch (Exception ex) {
+        } catch (Throwable ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
             setModel((CompositeModel) SAMPFactory.get(CompositeModel.class));
             setExpression("No Model");
