@@ -30,10 +30,12 @@ public class Wavelength extends AbstractQuantity {
     public Wavelength() {
         super("Wavelength", "Wavelength", "");
         add(XUnit.ANGSTROM);
+	add(XUnit.NM);
+        add(XUnit.MICRON);
+	add(XUnit.MM);
         add(XUnit.CM);
         add(XUnit.M);
-        add(XUnit.MICRON);
-        add(XUnit.NM);
+	//add(XUnit.ARBITRARYXWL);
     }
 
 }

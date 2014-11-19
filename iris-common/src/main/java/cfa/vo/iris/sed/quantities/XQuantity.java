@@ -31,6 +31,8 @@ public enum XQuantity implements IQuantity{
     FREQUENCY(new Frequency()),
     WAVELENGTH(new Wavelength()),
     ENERGY(new Energy()),
+    WAVENUMBER(new Wavenumber()),
+    VELOCITY(new Velocity()),
     ;
 
     private IQuantity quantity;
