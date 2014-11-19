@@ -61,7 +61,7 @@ public class CompositeModelTreeModel extends DefaultTreeModel {
         String ret = m.getName();
         for (UserModel um : userModels) {
             if (ret.equals(um.getName())) {
-                return um.getFunction();
+                return um.getFunction()+"."+ret.split("\\.")[1];
             }
         }
         return ret;
@@ -72,7 +72,7 @@ public class CompositeModelTreeModel extends DefaultTreeModel {
         for (UserModel um : userModels) {
             if (ret.equals(um.getName())) {
                 String[] bits = um.getFile().split("/");
-                return bits[bits.length-1];
+                return bits[bits.length-1]+"."+ret.split("\\.")[1];
             }
         }
         return ret;
