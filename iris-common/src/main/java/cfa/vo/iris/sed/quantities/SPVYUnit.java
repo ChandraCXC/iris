@@ -29,19 +29,23 @@ import cfa.vo.iris.sed.SedException;
  */
 public enum SPVYUnit implements IUnit {
     FLUXDENSITYWL0("erg/s/cm2/Angstrom", "em.wl"),
-    FLUXDENSITYWL1("Watt/m2/"  + '\u03BC' + "m", "em.wl"),
     FLUXDENSITYWL4("erg/s/cm2/Hz", "em.freq"),
+    FLUXDENSITYWL1("Watt/m2/"  + '\u03BC' + "m", "em.wl"),
+    FLUXDENSITYWL5("Watt/m2/nm","em.wl"),
+    FLUXDENSITYWL6("Watt/cm2/" + '\u03BC' + "m","em.wl"),
+    RAYLEIGH0("Rayleigh/Angstrom","em.wl"),
     FLUX0("Jy-Hz", "em.wl"),
     FLUX1("erg/s/cm2", "em.freq"),
     FLUXDENSITYFREQ1("Jy", "em.freq"),
     FLUXDENSITYFREQ3("mJy", "em.freq"),
+    FLUXDENSITYFREQ4('\u03BC'+"Jy","em.freq"),
     FLUXDENSITYFREQ2("Watt/m2/Hz", "em.freq"),
-    PHOTONFLUX("photon/cm2/s", "em.freq"),
+    //PHOTONFLUX("photon/cm2/s", "em.freq"),
     PHOTONFLUXDENSITY0("photon/s/cm2/Hz", "em.freq"),
     PHOTONFLUXDENSITY1("photon/s/cm2/Angstrom", "em.wl"),
     ABMAG("ABMAG", ""),
     STMAG("STMAG", ""),
-    OBMAG("OBMAG", ""),
+    //OBMAG("OBMAG", ""), 
     ;
 
     private String string;

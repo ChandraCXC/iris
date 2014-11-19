@@ -29,19 +29,27 @@ import cfa.vo.iris.sed.SedException;
  */
 public enum XUnit implements IUnit {
     ANGSTROM("Angstrom", "em.wl"),
-    MICRON("micron", "em.wl"),
     NM("nm", "em.wl"),
+    MICRON("\u03bcm", "em.wl"),
+    MM("mm","em.wl"),
     CM("cm", "em.wl"),
     M("m", "em.wl"),
     HERTZ("Hz", "em.freq"),
-    KHZ("KHz", "em.freq"),
+    KHZ("kHz", "em.freq"),
     MHZ("MHz", "em.freq"),
-    GHz("GHz", "em.freq"),
+    GHZ("GHz", "em.freq"),
     THZ("THz", "em.freq"),
     EV("eV", "em.energy"),
     KEV("KeV", "em.energy"),
     MEV("MeV", "em.energy"),
     GEV("GeV", "em.energy"),
+    WNMICRON("1/\u03bcm", "em.wavenumber"),
+	//ARBITRARYXWL("Arbitrary wavelength", "em.wl"),
+	//ARBITRARYXE("Arbitrary energy", "em.energy"),
+	//ARBITRARYXWN("Arbitrary wavenumber", "em.wavenumber"),
+	//ARBITRARYXFREQ("Arbitrary frequency", "em.freq"),
+    KMPSCO("km/s @ 12 CO (11.5GHz)","em.velocity"), //Should be "spect.dopplerVeloc.radio"
+    KMPS21CM("km/s @ 21cm","em.velocity"), 
     ;
 
     private String string;

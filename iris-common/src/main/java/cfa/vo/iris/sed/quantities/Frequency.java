@@ -32,7 +32,7 @@ public class Frequency extends AbstractQuantity {
         add(XUnit.HERTZ);
         add(XUnit.KHZ);
         add(XUnit.MHZ);
-        add(XUnit.GHz);
+        add(XUnit.GHZ);
         add(XUnit.THZ);
     }
 
