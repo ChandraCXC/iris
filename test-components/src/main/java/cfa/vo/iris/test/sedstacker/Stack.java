@@ -11,28 +11,27 @@ import cfa.vo.iris.events.SegmentEvent;
 import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sedlib.Field;
 import cfa.vo.sedlib.Param;
-import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedException;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sedlib.common.SedNullException;
+import spv.util.UnitsException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import spv.util.UnitsException;
 
 /**
  *
  * @author jbudynk
  */
-public class Stack extends ExtSed implements IStack {
+public class Stack extends ExtSed {
 
     private String id = "Stack";
     private Map<String, ExtSed> sedMap = new HashMap();
@@ -43,9 +42,9 @@ public class Stack extends ExtSed implements IStack {
 
     public StackedSed stackedSed; //make private. include getters/setters
 
-    public ExtSed getStackedSed() {
-	return 
-    }
+//    public ExtSed getStackedSed() {
+//	return
+//    }
     
     public Stack(String id) {
 	super(id);
@@ -68,7 +67,7 @@ public class Stack extends ExtSed implements IStack {
 	try {
 	    // Add the SED, then Redo UndoableEdits in UndoManager??
 	    // TODO: add a listener to 'newSed' so that changes made to 'sed' in the Builder are reflected in 'newSed' 
-	    ExtSed newSed = SedBuilder.flatten(sed, sed.getSegment(0).getSpectralAxisUnits(), sed.getSegment(0).getFluxAxisUnits());
+	    ExtSed newSed = ExtSed.flatten(sed, sed.getSegment(0).getSpectralAxisUnits(), sed.getSegment(0).getFluxAxisUnits());
 	    newSed.getSegment(0).getTarget().getName().setName(sed.getId()); // sets the TargetName to the SedID.
 	    sedMap.put(sed.getId(), newSed);
 	    origSedMap.put(sed.getId(), newSed);

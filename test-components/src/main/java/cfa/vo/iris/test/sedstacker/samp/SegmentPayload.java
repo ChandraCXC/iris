@@ -16,10 +16,10 @@ public interface SegmentPayload {
     public void setY(double[] y);
     public double[] getYerr();
     public void setYerr(double[] yerr);
-    public double getRedshift();
-    public void setRedshift(double redshift);
-    public double getNormConstant();
-    public void setNormConstant(double normConstant);
+    public Double getRedshift();
+    public void setRedshift(Double redshift);
+    public Double getNormConstant();
+    public void setNormConstant(Double normConstant);
     public double[] getCounts();
     public void setCounts(double[] counts);
 }

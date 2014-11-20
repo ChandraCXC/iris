@@ -8,26 +8,18 @@ package cfa.vo.iris.test.sedstacker.samp;
 import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
-import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.test.sedstacker.SedStackerManager;
 import cfa.vo.iris.test.sedstacker.Stack;
 import cfa.vo.iris.test.sedstacker.StackConfig;
-import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sedlib.common.SedException;
-import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sherpa.SherpaClient;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.astrogrid.samp.Response;
 import spv.spectrum.SEDMultiSegmentSpectrum;
 import spv.util.UnitsException;
-import spv.util.XUnits;
-import spv.util.YUnits;
+
+import java.util.List;
 
 /**
  *
@@ -49,20 +41,20 @@ public class SedStackerStacker {
 
     public void stack(Stack stack, StackConfig stackConfig) throws Exception {
 
-        client.findSherpa();
+//        client.findSherpa();
         
         if(stack.getNumberOfSegments()==0)
             throw new SedNoDataException();
         
-        String sherpaId = client.getSherpaId();
-        
-        if (sherpaId == null) {
-            NarrowOptionPane.showMessageDialog(null,
-                    "Iris could not find the Sherpa process running in the background. Please check the Troubleshooting section in the Iris documentation.",
-                    "Cannot connect to Sherpa",
-                    NarrowOptionPane.ERROR_MESSAGE);
-            throw new Exception("Sherpa not found");
-	}
+//        String sherpaId = client.getSherpaId();
+//
+//        if (sherpaId == null) {
+//            NarrowOptionPane.showMessageDialog(null,
+//                    "Iris could not find the Sherpa process running in the background. Please check the Troubleshooting section in the Iris documentation.",
+//                    "Cannot connect to Sherpa",
+//                    NarrowOptionPane.ERROR_MESSAGE);
+//            throw new Exception("Sherpa not found");
+//	    }
 	
 	// convert Stack to same units
 	//Stack nstack = stack.copy();
@@ -81,7 +73,7 @@ public class SedStackerStacker {
 	    segment.setRedshift(stack.getRedshift(stack.getSegment(i)));
 	    // 'normConst' and 'redshift' aren't used for stacking
 	    segment.setCounts(null);
-	    segment.setNormConstant(1);
+	    segment.setNormConstant(1.0);
 	    payload.addSegment(segment);
 	}
 	payload.setStatistic(stackConfig.getStatistic());
@@ -93,7 +85,7 @@ public class SedStackerStacker {
 	
         SAMPMessage message = SAMPFactory.createMessage(STACK_MTYPE, payload, SedStackerStackPayload.class);
 
-        Response rspns = controller.callAndWait(sherpaId, message.get(), 10);
+        Response rspns = controller.callAndWait(client.findSherpa(), message.get(), 10);
         if (client.isException(rspns)) {
             Exception ex = client.getException(rspns);
             throw ex;
@@ -117,7 +109,7 @@ public class SedStackerStacker {
 	    ExtSed seg = new ExtSed("seg");
 	    seg.addSegment(stack.getSegment(i));
 	    
-	    ExtSed nseg = SedBuilder.flatten(seg, xUnits, yUnits);
+	    ExtSed nseg = ExtSed.flatten(seg, xUnits, yUnits);
 	    
 	    stack.getSegment(i).setFluxAxisUnits(yUnits);
 	    stack.getSegment(i).setSpectralAxisUnits(xUnits);
@@ -132,7 +124,7 @@ public class SedStackerStacker {
 	    ExtSed seg = new ExtSed("seg");
 	    seg.addSegment(stack.getSegment(i));
 	    
-	    ExtSed nseg = SedBuilder.flatten(seg, xUnits.get(i), yUnits.get(i));
+	    ExtSed nseg = ExtSed.flatten(seg, xUnits.get(i), yUnits.get(i));
 	    
 	    stack.getSegment(i).setFluxAxisUnits(yUnits.get(i));
 	    stack.getSegment(i).setSpectralAxisUnits(yUnits.get(i));

@@ -13,15 +13,13 @@ import java.util.List;
  */
 public interface SedStackerNormalizePayload {
     
-    public boolean getIntegrate();
+    public Boolean getIntegrate();
     
-    public void setIntegrate(boolean integrate);
+    public void setIntegrate(Boolean integrate);
     
-    public boolean getMultiply();
+    public Integer getNormOperator();
     
-    public void setMultiply(boolean multiply);
-    
-    
+    public void setNormOperator(Integer normOperator);
     
     public String getAtPointXUnits();
     
@@ -31,16 +29,6 @@ public interface SedStackerNormalizePayload {
     
     public void setAtPointYUnits(String yunits);
     
-    public String getAtPointYType();
-    
-    public void setAtPointYType(String ytype);
-    
-    public Double getAtPointYValue();
-    
-    public void setAtPointYValue(Double yvalue);
-    
-    
-    
     public String getIntegrateXUnits();
     
     public void setIntegrateXUnits(String xunits);
@@ -49,21 +37,21 @@ public interface SedStackerNormalizePayload {
     
     public void setIntegrateYUnits(String yunits);
     
-    public String getIntegrateYType();
+    public String getStats();
     
-    public void setIntegrateYType(String ytype);
+    public void setStats(String stats);
     
-    public Double getIntegrateYValue();
+    public Double getY0();
     
-    public void setIntegrateYValue(Double ytype);
+    public void setY0(Double y0);
     
-    public String getIntegrateBoundsXMin();
+    public String getXmin();
     
-    public void setIntegrateBoundsXMin(String xmin);
+    public void setXmin(String xmin);
     
-    public String getIntegrateBoundsXMax();
+    public String getXmax();
     
-    public void setIntegrateBoundsXMax(String xmax);
+    public void setXmax(String xmax);
     
     
     
