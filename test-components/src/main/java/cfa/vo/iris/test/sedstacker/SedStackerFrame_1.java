@@ -10,28 +10,28 @@
  */
 package cfa.vo.iris.test.sedstacker;
 
-import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.gui.widgets.SedList;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.quantities.SPVYUnit;
+import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.test.sedstacker.samp.SedStackerNormalizer;
 import cfa.vo.iris.test.sedstacker.samp.SedStackerRedshifter;
 import cfa.vo.iris.test.sedstacker.samp.SedStackerStacker;
-import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.ButtonGroup;
+
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.event.UndoableEditListener;
 import javax.swing.undo.UndoableEdit;
 import javax.swing.undo.UndoableEditSupport;
+import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -149,7 +149,7 @@ public class SedStackerFrame_1 extends javax.swing.JInternalFrame {
             NarrowOptionPane.showMessageDialog(null, "No SEDs open. Please start building SEDs using the SED builder", "Error", NarrowOptionPane.ERROR_MESSAGE);
             return;
         }
-        setSed(_sed);
+//        setSed(_sed);
 	
 	// undo management items
 	ExtendedUndoManager undoManager = new ExtendedUndoManager();
@@ -1013,5 +1013,9 @@ public class SedStackerFrame_1 extends javax.swing.JInternalFrame {
 	
 	manager.newStack("Stack");
     }
-    
+
+    private String[] loadEnum(Class clazz) {
+        return null;
+    };
+
 }
