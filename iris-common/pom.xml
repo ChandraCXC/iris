@@ -72,7 +72,7 @@
         <dependency>
             <groupId>specview</groupId>
             <artifactId>specview</artifactId>
-            <version>20131030b1</version>
+            <version>20141119b1</version>
         </dependency>
     </dependencies>
 
