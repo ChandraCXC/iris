@@ -10,6 +10,14 @@ function start_iris {
     export IRIS_DIR="$bindir"
     export IRIS_DOC="http://cxc.cfa.harvard.edu/iris/v${project.version}/"
 
+    if [ -z "$IRIS_LOG_LOCATION" ]; then
+        export IRIS_LOG_LOCATION="$HOME/.vao/iris/logs"
+    fi
+
+    if [ -z "$IRIS_LOG_NAME" ]; then
+        export IRIS_LOG_Name="IrisLog-"
+    fi
+
     args="-Xms256m -Xmx1024m $IRIS_EXTRA_FLAGS -Dhttp.agent=iris/${project.version}"
 
     if test -x /usr/bin/sw_vers && /usr/bin/sw_vers | grep -q 'OS.X'; then
@@ -19,6 +27,11 @@ function start_iris {
     if [ ! -d ~/.vao/iris/ ]; then
           echo "Creating Iris directory in ~/.vao"
           mkdir -p ~/.vao/iris
+    fi
+
+    if [ ! -d ~/.vao/iris/logs ]; then
+          echo "Creating Iris logs directory in ~/.vao/iris"
+          mkdir -p ~/.vao/iris/logs
     fi
 
     java $args -DIRIS_DIR="$bindir" -jar "$bindir"/${project.name}-${project.version}.jar --ssa $@ &
