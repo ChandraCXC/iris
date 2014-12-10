@@ -17,11 +17,11 @@ public interface SedStackerRedshiftPayload {
 
     public void addSegment(SegmentPayload payload);
 
-    public double getToRedshift();
+    public Double getZ0();
 
-    public void setToRedshift(double redshift);
+    public void setZ0(Double redshift);
     
-    public boolean getCorrectFlux();
+    public Boolean getCorrectFlux();
 
-    public void setCorrectFlux(boolean correctFlux);
+    public void setCorrectFlux(Boolean correctFlux);
 }
