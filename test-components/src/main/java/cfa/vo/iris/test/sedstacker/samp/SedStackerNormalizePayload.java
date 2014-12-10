@@ -21,21 +21,13 @@ public interface SedStackerNormalizePayload {
     
     public void setNormOperator(Integer normOperator);
     
-    public String getAtPointXUnits();
-    
-    public void setAtPointXUnits(String xunits);
-    
-    public String getAtPointYUnits();
-    
-    public void setAtPointYUnits(String yunits);
-    
-    public String getIntegrateXUnits();
-    
-    public void setIntegrateXUnits(String xunits);
-    
-    public String getIntegrateYUnits();
-    
-    public void setIntegrateYUnits(String yunits);
+//    public String getXUnits();
+//    
+//    public void setXUnits(String xunits);
+//    
+//    public String getYUnits();
+//    
+//    public void setYUnits(String yunits);
     
     public String getStats();
     
@@ -44,6 +36,10 @@ public interface SedStackerNormalizePayload {
     public Double getY0();
     
     public void setY0(Double y0);
+    
+    public Double getX0();
+    
+    public void setX0(Double x0);
     
     public String getXmin();
     

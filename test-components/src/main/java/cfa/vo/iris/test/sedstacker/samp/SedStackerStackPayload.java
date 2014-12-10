@@ -13,35 +13,25 @@ import java.util.List;
  */
 public interface SedStackerStackPayload {
     
-    public Double getBinSize();
+    public Double getBinsize();
     
-    public void setBinSize(Double binsize);
+    public void setBinsize(Double binsize);
     
-    public String getBinUnits();
+    public Double getSmoothBinsize();
     
-    public void setBinUnits(String xunits);
-    
-    public int getSmoothBoxSize();
-    
-    public void setSmoothBoxSize(int boxSize);
+    public void setSmoothBinsize(Double boxSize);
     
     public String getStatistic();
     
     public void setStatistic(String statistic);
     
-    public boolean isLogBinning();
+    public Boolean getLogBin();
     
-    public void setLogBinning(boolean logbinning);
+    public void setLogBin(Boolean logBin);
     
-    public boolean isSmooth();
+    public Boolean getSmooth();
     
-    public void setSmooth(boolean smooth);
-    
-    
-    public double[] getCounts();
-    
-    public void setCounts(double[] counts);
-    
+    public void setSmooth(Boolean smooth);    
     
     
     public List<SegmentPayload> getSegments();
