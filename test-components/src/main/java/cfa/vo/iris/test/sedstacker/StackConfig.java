@@ -130,52 +130,52 @@ public class StackConfig {
 	propertyChangeSupport.firePropertyChange(PROP_SMOOTH, oldSmooth, smooth);
     }
 
-    private int smoothBoxSize = 20;
+    private Double smoothBinsize = 20.0;
 
-    public static final String PROP_SMOOTHBOXSIZE = "smoothBoxSize";
+    public static final String PROP_SMOOTHBINSIZE = "smoothBinsize";
 
     /**
-     * Get the value of smoothBoxSize
+     * Get the value of smoothBinsize
      *
-     * @return the value of smoothBoxSize
+     * @return the value of smoothBinsize
      */
-    public int getSmoothBoxSize() {
-	return smoothBoxSize;
+    public Double getSmoothBinsize() {
+	return smoothBinsize;
     }
 
     /**
-     * Set the value of smoothBoxSize
+     * Set the value of smoothBinsize
      *
-     * @param smoothBoxSize new value of smoothBoxSize
+     * @param smoothBinsize new value of smoothBinsize
      */
-    public void setSmoothBoxSize(int smoothBoxSize) {
-	int oldSmoothBoxSize = this.smoothBoxSize;
-	this.smoothBoxSize = smoothBoxSize;
-	propertyChangeSupport.firePropertyChange(PROP_SMOOTHBOXSIZE, oldSmoothBoxSize, smoothBoxSize);
+    public void setSmoothBinsize(Double smoothBinsize) {
+	Double oldSmoothBinsize = this.smoothBinsize;
+	this.smoothBinsize = smoothBinsize;
+	propertyChangeSupport.firePropertyChange(PROP_SMOOTHBINSIZE, oldSmoothBinsize, smoothBinsize);
     }
 
-    private boolean logBinning = false;
+    private boolean logBin = false;
 
-    public static final String PROP_LOGBINNING = "logBinning";
+    public static final String PROP_LOGBIN = "logBin";
 
     /**
-     * Get the value of logBinning
+     * Get the value of logBin
      *
-     * @return the value of logBinning
+     * @return the value of logBin
      */
-    public boolean isLogBinning() {
-	return logBinning;
+    public boolean isLogBin() {
+	return logBin;
     }
 
     /**
-     * Set the value of logBinning
+     * Set the value of logBin
      *
-     * @param logBinning new value of logBinning
+     * @param logBin new value of logBin
      */
-    public void setLogBinning(boolean logBinning) {
-	boolean oldLogBinning = this.logBinning;
-	this.logBinning = logBinning;
-	propertyChangeSupport.firePropertyChange(PROP_LOGBINNING, oldLogBinning, logBinning);
+    public void setLogBin(boolean logBin) {
+	boolean oldLogBin = this.logBin;
+	this.logBin = logBin;
+	propertyChangeSupport.firePropertyChange(PROP_LOGBIN, oldLogBin, logBin);
     }
 
 }

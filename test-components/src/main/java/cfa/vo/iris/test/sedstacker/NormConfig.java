@@ -58,268 +58,172 @@ public class NormConfig {
 	propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
-    private String integrateBoundsXMax = "max";
+    private String xmax = "max";
 
-    public static final String PROP_INTEGRATEBOUNDSXMAX = "integrateBoundsXMax";
+    public static final String PROP_XMAX = "xmax";
 
     /**
-     * Get the value of integrateBoundsXMax
+     * Get the value of xmax
      *
-     * @return the value of integrateBoundsXMax
+     * @return the value of xmax
      */
-    public String getIntegrateBoundsXMax() {
-	return integrateBoundsXMax;
+    public String getXmax() {
+	return xmax;
     }
 
     /**
-     * Set the value of integrateBoundsXMax
+     * Set the value of xmax
      *
-     * @param integrateBoundsXMax new value of integrateBoundsXMax
+     * @param xmax new value of xmax
      */
-    public void setIntegrateBoundsXMax(String integrateBoundsXMax) {
-	String oldIntegrateBoundsXMax = this.integrateBoundsXMax;
-	this.integrateBoundsXMax = integrateBoundsXMax;
-	propertyChangeSupport.firePropertyChange(PROP_INTEGRATEBOUNDSXMAX, oldIntegrateBoundsXMax, integrateBoundsXMax);
+    public void setXmax(String xmax) {
+	String oldXMax = this.xmax;
+	this.xmax = xmax;
+	propertyChangeSupport.firePropertyChange(PROP_XMAX, oldXMax, xmax);
     }
 
-    private String integrateBoundsXMin = "min";
+    private String xmin = "min";
 
-    public static final String PROP_INTEGRATEBOUNDSXMIN = "integrateBoundsXMin";
-
-    /**
-     * Get the value of integrateBoundsXMin
-     *
-     * @return the value of integrateBoundsXMin
-     */
-    public String getIntegrateBoundsXMin() {
-	return integrateBoundsXMin;
-    }
+    public static final String PROP_XMIN = "xmin";
 
     /**
-     * Set the value of integrateBoundsXMin
+     * Get the value of xmin
      *
-     * @param integrateBoundsXMin new value of integrateBoundsXMin
+     * @return the value of xmin
      */
-    public void setIntegrateBoundsXMin(String integrateBoundsXMin) {
-	String oldIntegrateBoundsXMin = this.integrateBoundsXMin;
-	this.integrateBoundsXMin = integrateBoundsXMin;
-	propertyChangeSupport.firePropertyChange(PROP_INTEGRATEBOUNDSXMIN, oldIntegrateBoundsXMin, integrateBoundsXMin);
-    }
-
-    private String integrateYType = "Value";
-
-    public static final String PROP_INTEGRATEYTYPE = "integrateYType";
-
-    /**
-     * Get the value of integrateYType
-     *
-     * @return the value of integrateYType
-     */
-    public String getIntegrateYType() {
-	return integrateYType;
+    public String getXmin() {
+	return xmin;
     }
 
     /**
-     * Set the value of integrateYType
+     * Set the value of xmin
      *
-     * @param integrateYType new value of integrateYType
+     * @param xmin new value of xmin
      */
-    public void setIntegrateYType(String integrateYType) {
-	String oldIntegrateYType = this.integrateYType;
-	this.integrateYType = integrateYType;
-	propertyChangeSupport.firePropertyChange(PROP_INTEGRATEYTYPE, oldIntegrateYType, integrateYType);
+    public void setXmin(String xmin) {
+	String oldXMin = this.xmin;
+	this.xmin = xmin;
+	propertyChangeSupport.firePropertyChange(PROP_XMIN, oldXMin, xmin);
     }
 
-    private Double integrateYValue = 1.0;
+    private String stats = "Value";
 
-    public static final String PROP_INTEGRATEYVALUE = "integrateYValue";
-
-    /**
-     * Get the value of integrateYValue
-     *
-     * @return the value of integrateYValue
-     */
-    public Double getIntegrateYValue() {
-	return integrateYValue;
-    }
+    public static final String PROP_STATS = "stats";
 
     /**
-     * Set the value of integrateYValue
+     * Get the value of stats
      *
-     * @param integrateYValue new value of integrateYValue
+     * @return the value of stats
      */
-    public void setIntegrateYValue(Double integrateYValue) {
-	Double oldIntegrateYValue = this.integrateYValue;
-	this.integrateYValue = integrateYValue;
-	propertyChangeSupport.firePropertyChange(PROP_INTEGRATEYVALUE, oldIntegrateYValue, integrateYValue);
-    }
-
-    private String integrateYUnits = "erg/s/cm2";
-
-    public static final String PROP_INTEGRATEYUNITS = "integrateYUnits";
-
-    /**
-     * Get the value of integrateYUnit
-     *
-     * @return the value of integrateYUnit
-     */
-    public String getIntegrateYUnits() {
-	return integrateYUnits;
+    public String getStats() {
+	return stats;
     }
 
     /**
-     * Set the value of integrateYUnit
+     * Set the value of stats
      *
-     * @param integrateYUnit new value of integrateYUnit
+     * @param stats new value of stats
      */
-    public void setIntegrateYUnits(String integrateYUnit) {
-	String oldIntegrateYUnit = this.integrateYUnits;
-	this.integrateYUnits = integrateYUnit;
-	propertyChangeSupport.firePropertyChange(PROP_INTEGRATEYUNITS, oldIntegrateYUnit, integrateYUnit);
+    public void setStats(String stats) {
+	String oldStats = this.stats;
+	this.stats = stats;
+	propertyChangeSupport.firePropertyChange(PROP_STATS, oldStats, stats);
     }
 
-    private String integrateXUnits = "Angstrom";
+    private Double yValue = 1.0;
 
-    public static final String PROP_INTEGRATEXUNITS = "integrateXUnits";
-
-    /**
-     * Get the value of integrateXUnits
-     *
-     * @return the value of integrateXUnits
-     */
-    public String getIntegrateXUnits() {
-	return integrateXUnits;
-    }
+    public static final String PROP_YVALUE = "yValue";
 
     /**
-     * Set the value of integrateXUnits
+     * Get the value of yValue
      *
-     * @param integrateXUnits new value of integrateXUnits
+     * @return the value of yValue
      */
-    public void setIntegrateXUnits(String integrateXUnits) {
-	String oldIntegrateXUnits = this.integrateXUnits;
-	this.integrateXUnits = integrateXUnits;
-	propertyChangeSupport.firePropertyChange(PROP_INTEGRATEXUNITS, oldIntegrateXUnits, integrateXUnits);
-    }
-
-    private Double atPointXValue = 5000.0;
-
-    public static final String PROP_ATPOINTXVALUE = "atPointXValue";
-
-    /**
-     * Get the value of atPointXValue
-     *
-     * @return the value of atPointXValue
-     */
-    public Double getAtPointXValue() {
-	return atPointXValue;
+    public Double getYValue() {
+	return yValue;
     }
 
     /**
-     * Set the value of atPointXValue
+     * Set the value of yValue
      *
-     * @param atPointXValue new value of atPointXValue
+     * @param yValue new value of yValue
      */
-    public void setAtPointXValue(Double atPointXValue) {
-	Double oldAtPointXValue = this.atPointXValue;
-	this.atPointXValue = atPointXValue;
-	propertyChangeSupport.firePropertyChange(PROP_ATPOINTXVALUE, oldAtPointXValue, atPointXValue);
+    public void setYValue(Double yValue) {
+	Double oldYValue = this.yValue;
+	this.yValue = yValue;
+	propertyChangeSupport.firePropertyChange(PROP_YVALUE, oldYValue, yValue);
     }
 
-    private Double atPointYValue = 1.0;
+    private String yUnits = "erg/s/cm2";
 
-    public static final String PROP_ATPOINTYVALUE = "atPointYValue";
-
-    /**
-     * Get the value of atPointYValue
-     *
-     * @return the value of atPointYValue
-     */
-    public Double getAtPointYValue() {
-	return atPointYValue;
-    }
+    public static final String PROP_YUNITS = "yUnits";
 
     /**
-     * Set the value of atPointYValue
+     * Get the value of yUnit
      *
-     * @param atPointYValue new value of atPointYValue
+     * @return the value of yUnit
      */
-    public void setAtPointYValue(Double atPointYValue) {
-	Double oldAtPointYValue = this.atPointYValue;
-	this.atPointYValue = atPointYValue;
-	propertyChangeSupport.firePropertyChange(PROP_ATPOINTYVALUE, oldAtPointYValue, atPointYValue);
-    }
-
-    private String atPointYUnits = "erg/s/cm2";
-
-    public static final String PROP_ATPOINTYUNITS = "atPointYUnits";
-
-    /**
-     * Get the value of atPointYUnits
-     *
-     * @return the value of atPointYUnits
-     */
-    public String getAtPointYUnits() {
-	return atPointYUnits;
+    public String getYUnits() {
+	return yUnits;
     }
 
     /**
-     * Set the value of atPointYUnits
+     * Set the value of yUnit
      *
-     * @param atPointYUnits new value of atPointYUnits
+     * @param yUnit new value of yUnit
      */
-    public void setAtPointYUnits(String atPointYUnits) {
-	String oldAtPointYUnits = this.atPointYUnits;
-	this.atPointYUnits = atPointYUnits;
-	propertyChangeSupport.firePropertyChange(PROP_ATPOINTYUNITS, oldAtPointYUnits, atPointYUnits);
+    public void setYUnits(String yUnit) {
+	String oldYUnit = this.yUnits;
+	this.yUnits = yUnit;
+	propertyChangeSupport.firePropertyChange(PROP_YUNITS, oldYUnit, yUnit);
     }
 
-    private String atPointXUnits = "Angstrom";
+    private String xUnits = "Angstrom";
 
-    public static final String PROP_ATPOINTXUNITS = "atPointXUnits";
-
-    /**
-     * Get the value of atPointXUnits
-     *
-     * @return the value of atPointXUnits
-     */
-    public String getAtPointXUnits() {
-	return atPointXUnits;
-    }
+    public static final String PROP_XUNITS = "xUnits";
 
     /**
-     * Set the value of atPointXUnits
+     * Get the value of xUnits
      *
-     * @param atPointXUnits new value of atPointXUnits
+     * @return the value of xUnits
      */
-    public void setAtPointXUnits(String atPointXUnits) {
-	String oldAtPointXUnits = this.atPointXUnits;
-	this.atPointXUnits = atPointXUnits;
-	propertyChangeSupport.firePropertyChange(PROP_ATPOINTXUNITS, oldAtPointXUnits, atPointXUnits);
-    }
-
-    private String atPointYType = "Value";
-
-    public static final String PROP_ATPOINTYTYPE = "atPointYType";
-
-    /**
-     * Get the value of atPointYType
-     *
-     * @return the value of atPointYType
-     */
-    public String getAtPointYType() {
-	return atPointYType;
+    public String getXUnits() {
+	return xUnits;
     }
 
     /**
-     * Set the value of atPointYType
+     * Set the value of xUnits
      *
-     * @param atPointYType new value of atPointYType
+     * @param xUnits new value of xUnits
      */
-    public void setAtPointYType(String atPointYType) {
-	String oldAtPointYType = this.atPointYType;
-	this.atPointYType = atPointYType;
-	propertyChangeSupport.firePropertyChange(PROP_ATPOINTYTYPE, oldAtPointYType, atPointYType);
+    public void setXUnits(String xUnits) {
+	String oldXUnits = this.xUnits;
+	this.xUnits = xUnits;
+	propertyChangeSupport.firePropertyChange(PROP_XUNITS, oldXUnits, xUnits);
+    }
+
+    private Double xValue = 5000.0;
+
+    public static final String PROP_XVALUE = "xValue";
+
+    /**
+     * Get the value of xValue
+     *
+     * @return the value of xValue
+     */
+    public Double getXValue() {
+	return xValue;
+    }
+
+    /**
+     * Set the value of xValue
+     *
+     * @param xValue new value of xValue
+     */
+    public void setXValue(Double xValue) {
+	Double oldXValue = this.xValue;
+	this.xValue = xValue;
+	propertyChangeSupport.firePropertyChange(PROP_XVALUE, oldXValue, xValue);
     }
 
     private boolean multiply = true;
@@ -346,4 +250,30 @@ public class NormConfig {
 	propertyChangeSupport.firePropertyChange(PROP_MULTIPLY, oldMultiply, multiply);
     }
 
+    
+    private Integer normOperator = 0;
+
+    public static final String PROP_NORMOPERATOR = "normOperator";
+
+    /**
+     * Get the value of normOperator
+     *
+     * @return the value of normOperator
+     */
+    public Integer getNormOperator() {
+	return normOperator;
+    }
+
+    /**
+     * Set the value of normOperator
+     *
+     * @param normOperator new value of normOperator
+     */
+    public void setNormOperator(Integer normOperator) {
+	Integer oldNormOperator = this.normOperator;
+	this.normOperator = normOperator;
+	propertyChangeSupport.firePropertyChange(PROP_NORMOPERATOR, oldNormOperator, normOperator);
+    }
+
+    
 }
