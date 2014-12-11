@@ -902,7 +902,7 @@ public class SedStackerFrame_1 extends javax.swing.JInternalFrame {
 	@Override
 	public void actionPerformed(ActionEvent evt) {
 	  if (normalizer == null) {
-		normalizer = new SedStackerNormalizer(app.getSAMPController(), manager);
+		normalizer = new SedStackerNormalizer(app.getSAMPController());
 	    }
 	    // record the effect
 	    UndoableEdit edit = new NormalizeEdit(stack, normconf, undoManager);

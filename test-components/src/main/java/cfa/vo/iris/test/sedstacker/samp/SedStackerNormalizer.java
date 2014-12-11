@@ -33,13 +33,11 @@ import java.util.Map;
  */
 public class SedStackerNormalizer {
     private SherpaClient client;
-    private SedStackerManager manager;
     private SAMPController controller;
     private static String NORMALIZE_MTYPE = "stack.normalize";
 
-    public SedStackerNormalizer(SAMPController controller, SedStackerManager manager) {
+    public SedStackerNormalizer(SAMPController controller) {
         this.client = new SherpaClient(controller);
-        this.manager = manager;
         this.controller = controller;
     }
 
@@ -67,7 +65,7 @@ public class SedStackerNormalizer {
 	
 	List<String> xunits = stack.getSpectralUnits();
 	List<String> yunits = stack.getFluxUnits();
-	convertUnits(stack, normConfig.getAtPointXUnits(), normConfig.getAtPointYUnits());
+	convertUnits(stack, normConfig.getXUnits(), normConfig.getYUnits());
 	
 	SedStackerNormalizePayload payload = (SedStackerNormalizePayload) SAMPFactory.get(SedStackerNormalizePayload.class);
 	
@@ -76,23 +74,20 @@ public class SedStackerNormalizer {
 	    segment.setX(stack.getSegment(i).getSpectralAxisValues());
 	    segment.setY(stack.getSegment(i).getFluxAxisValues());
 	    segment.setYerr((double[]) stack.getSegment(i).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE));
-	    segment.setRedshift(stack.getRedshift(stack.getSegment(i)));
+	    //segment.setRedshift(stack.getRedshift(stack.getSegment(i)));
 	    // 'counts' and 'redshift' aren't used for normalization
-	    segment.setCounts(null);
-	    segment.setNormConstant(stack.getNormConstant(stack.getSegment(i)));
+	    //segment.setCounts(null);
+	    //segment.setNormConstant(stack.getNormConstant(stack.getSegment(i)));
 	    payload.addSegment(segment);
 	}
-	payload.setAtPointXUnits(normConfig.getAtPointXUnits());
-	payload.setStats(normConfig.getAtPointYType());
-	payload.setAtPointYUnits(normConfig.getAtPointYUnits());
-	payload.setY0(normConfig.getAtPointYValue());
+	
+	payload.setStats(normConfig.getStats());
+	payload.setY0(normConfig.getYValue());
+	payload.setX0(normConfig.getXValue());
 	payload.setIntegrate(normConfig.isIntegrate());
-	payload.setXmax(normConfig.getIntegrateBoundsXMax());
-	payload.setXmin(normConfig.getIntegrateBoundsXMin());
-	payload.setIntegrateXUnits(normConfig.getIntegrateXUnits());
-//	payload.setIntegrateYType(normConfig.getIntegrateYType());
-//	payload.setIntegrateYValue(normConfig.getIntegrateYValue());
-	payload.setIntegrateYUnits(normConfig.getIntegrateYUnits());
+	payload.setXmax(normConfig.getXmax());
+	payload.setXmin(normConfig.getXmin());
+	payload.setNormOperator(normConfig.getNormOperator());
 	
         SAMPMessage message = SAMPFactory.createMessage(NORMALIZE_MTYPE, payload, SedStackerNormalizePayload.class);
 
@@ -104,13 +99,13 @@ public class SedStackerNormalizer {
 
         SedStackerNormalizePayload response = (SedStackerNormalizePayload) SAMPFactory.get(rspns.getResult(), SedStackerNormalizePayload.class);
 
-	int i=0;
-	for (SegmentPayload segment : response.getSegments()) {
-	    stack.getSegment(i).setSpectralAxisValues(segment.getX());
-	    stack.getSegment(i).setSpectralAxisValues(segment.getY());
-	    stack.getSegment(i).setDataValues(segment.getYerr(), SEDMultiSegmentSpectrum.E_UTYPE);
-	    stack.setNormConstant(stack.getSegment(i), segment.getNormConstant());
-	    i++;
+	double[] y1 = response.getSegments().get(0).getY();
+	//CHANGE LATER. Add this in after refractoring Omar's code (Nov 20)
+	for (int i=0; i<stack.getNumberOfSegments(); i++) {
+	    stack.getSegment(i).setSpectralAxisValues(response.getSegments().get(i).getX());
+	    stack.getSegment(i).setSpectralAxisValues(response.getSegments().get(i).getY());
+	    stack.getSegment(i).setDataValues(response.getSegments().get(i).getYerr(), SEDMultiSegmentSpectrum.E_UTYPE);
+	    stack.setNormConstant(stack.getSegment(i), response.getSegments().get(i).getNormConstant());
 	}
 	convertUnits(stack, xunits, yunits);
 	

@@ -75,14 +75,14 @@ public class SedStackerRedshifter {
 	    System.out.println(Arrays.toString(segment.getX()));
 	    segment.setY(stack.getSegment(i).getFluxAxisValues());
 	    segment.setYerr((double[]) stack.getSegment(i).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE));
-	    segment.setRedshift(stack.getRedshift(stack.getSegment(i)));
-	    System.out.println(segment.getRedshift());
+	    segment.setZ(stack.getRedshift(stack.getSegment(i)));
+	    System.out.println(segment.getZ());
 	    // 'counts' and 'normConstant' aren't used for redshift analysis
 	    segment.setCounts(null);
 	    segment.setNormConstant(stack.getNormConstant(stack.getSegment(i)));
 	    payload.addSegment(segment);
 	}
-        payload.setToRedshift(zconfig.getNewz());
+        payload.setZ0(zconfig.getNewz());
 	payload.setCorrectFlux(zconfig.isCorrectFlux());
 	
         SAMPMessage message = SAMPFactory.createMessage(REDSHIFT_MTYPE, payload, SedStackerRedshiftPayload.class);
@@ -98,7 +98,7 @@ public class SedStackerRedshifter {
 	int i=0;
 	for (SegmentPayload segment : response.getSegments()) {
 	    System.out.println(Arrays.toString(segment.getX())); // REMOVE!!!
-	    System.out.println(segment.getRedshift());
+	    System.out.println(segment.getZ());
 	    stack.getSegment(i).setSpectralAxisValues(segment.getX());
 	    stack.getSegment(i).setSpectralAxisValues(segment.getY());
 	    stack.getSegment(i).setDataValues(segment.getYerr(), SEDMultiSegmentSpectrum.E_UTYPE);

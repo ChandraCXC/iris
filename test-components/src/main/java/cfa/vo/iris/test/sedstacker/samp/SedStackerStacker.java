@@ -70,18 +70,17 @@ public class SedStackerStacker {
 	    segment.setX(stack.getSegment(i).getSpectralAxisValues());
 	    segment.setY(stack.getSegment(i).getFluxAxisValues());
 	    segment.setYerr((double[]) stack.getSegment(i).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE));
-	    segment.setRedshift(stack.getRedshift(stack.getSegment(i)));
+	    segment.setZ(stack.getRedshift(stack.getSegment(i)));
 	    // 'normConst' and 'redshift' aren't used for stacking
 	    segment.setCounts(null);
 	    segment.setNormConstant(1.0);
 	    payload.addSegment(segment);
 	}
 	payload.setStatistic(stackConfig.getStatistic());
-	payload.setBinSize(stackConfig.getBinSize());
-	payload.setBinUnits(stackConfig.getBinUnits());
-	payload.setLogBinning(stackConfig.isLogBinning());
+	payload.setBinsize(stackConfig.getBinSize());
+	payload.setLogBin(stackConfig.isLogBin());
 	payload.setSmooth(stackConfig.isSmooth());
-	payload.setSmoothBoxSize(stackConfig.getSmoothBoxSize());
+	payload.setSmoothBinsize(stackConfig.getSmoothBinsize());
 	
         SAMPMessage message = SAMPFactory.createMessage(STACK_MTYPE, payload, SedStackerStackPayload.class);
 
