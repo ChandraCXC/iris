@@ -70,7 +70,7 @@ public class SherpaIntegrator {
             }
         }
         
-        ExtSed flatten = ExtSed.flatten(sed, "Angstrom", "Jy");
+        ExtSed flatten = ExtSed.flatten(sed, "Angstrom", "erg/s/cm2/Angstrom");
         double[] x = flatten.getSegment(0).getSpectralAxisValues();
         double[] y = flatten.getSegment(0).getFluxAxisValues();
         
