@@ -76,7 +76,7 @@ public class SedStackerComponent implements IrisComponent{
                 @Override
                 public void onClick() {
                     if(frame==null) {
-                        frame = new SedStackerFrame();
+                        frame = new SedStackerFrame(app, ws);
                         ws.addFrame(frame);
                     }
                     GUIUtils.moveToFront(frame);

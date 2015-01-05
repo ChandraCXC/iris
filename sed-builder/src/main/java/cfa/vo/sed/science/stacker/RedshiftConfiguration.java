@@ -21,6 +21,7 @@ public final class RedshiftConfiguration {
 
     public RedshiftConfiguration() {
         setToRedshift(0.0);
+	setCorrectFlux(true);
     }
     
     /**
@@ -42,6 +43,30 @@ public final class RedshiftConfiguration {
         this.toRedshift = toRedshift;
         propertyChangeSupport.firePropertyChange(PROP_TOREDSHIFT, oldToRedshift, toRedshift);
     }
+    
+    private boolean correctFlux;
+
+    public static final String PROP_CORRECTFLUX = "correctFlux";
+
+    /**
+     * Get the value of correctFlux
+     *
+     * @return the value of correctFlux
+     */
+    public boolean isCorrectFlux() {
+	return correctFlux;
+    }
+
+    /**
+     * Set the value of correctFlux
+     *
+     * @param correctFlux new value of correctFlux
+     */
+    public void setCorrectFlux(boolean correctFlux) {
+	boolean oldCorrectFlux = this.correctFlux;
+	this.correctFlux = correctFlux;
+	propertyChangeSupport.firePropertyChange(PROP_CORRECTFLUX, oldCorrectFlux, correctFlux);
+    }
 
     private transient final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
@@ -62,5 +87,5 @@ public final class RedshiftConfiguration {
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
-
+    
 }

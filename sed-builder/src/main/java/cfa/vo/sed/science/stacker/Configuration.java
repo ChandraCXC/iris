@@ -58,5 +58,54 @@ public class Configuration {
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
+    
+    private NormalizationConfiguration normConfiguration = new NormalizationConfiguration();
 
+    public static final String PROP_NORMCONFIGURATION = "normConfiguration";
+
+    /**
+     * Get the value of normConfiguration
+     *
+     * @return the value of normConfiguration
+     */
+    public NormalizationConfiguration getNormConfiguration() {
+	return normConfiguration;
+    }
+
+    /**
+     * Set the value of normConfiguration
+     *
+     * @param normConfiguration new value of normConfiguration
+     */
+    public void setNormConfiguration(NormalizationConfiguration normConfiguration) {
+	NormalizationConfiguration oldNormConfiguration = this.normConfiguration;
+	this.normConfiguration = normConfiguration;
+	propertyChangeSupport.firePropertyChange(PROP_NORMCONFIGURATION, oldNormConfiguration, normConfiguration);
+    }
+
+    private StackConfiguration stackConfiguration = new StackConfiguration();
+
+    public static final String PROP_STACKCONFIGURATION = "stackConfiguration";
+
+    /**
+     * Get the value of stackConfiguration
+     *
+     * @return the value of stackConfiguration
+     */
+    public StackConfiguration getStackConfiguration() {
+	return stackConfiguration;
+    }
+
+    /**
+     * Set the value of stackConfiguration
+     *
+     * @param stackConfiguration new value of stackConfiguration
+     */
+    public void setStackConfiguration(StackConfiguration stackConfiguration) {
+	StackConfiguration oldStackConfiguration = this.stackConfiguration;
+	this.stackConfiguration = stackConfiguration;
+	propertyChangeSupport.firePropertyChange(PROP_STACKCONFIGURATION, oldStackConfiguration, stackConfiguration);
+    }
+
+    
 }
