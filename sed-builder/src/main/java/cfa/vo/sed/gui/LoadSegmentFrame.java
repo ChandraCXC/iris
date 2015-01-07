@@ -64,6 +64,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Task;
@@ -755,7 +756,23 @@ public final class LoadSegmentFrame extends JInternalFrame {
                 if (!segList.isEmpty()) {
 //                    for (Segment seg : segList) {
                         try {
-                            sed.addSegment(segList);
+			    
+			    int numOfPoints = spectraWarning(segList);
+
+			    if(numOfPoints < 2500 && numOfPoints > 1000) {
+				sed.addSegment(segList);
+				NarrowOptionPane.showMessageDialog(this, "Over 1000 data points. Viewer may be slightly slower than usual", "", NarrowOptionPane.INFORMATION_MESSAGE);
+			    }
+			    else if(numOfPoints > 2500) {
+				int answer = NarrowOptionPane.showConfirmDialog(this, "Over 2500 data points. Viewer may be slow. Do you want to continue import?", "", NarrowOptionPane.YES_NO_OPTION);
+				if (answer == JOptionPane.YES_OPTION) {
+				    sed.addSegment(segList);
+				}
+			    }
+			    else {
+				sed.addSegment(segList);
+			    }
+                            //sed.addSegment(segList);
                         } catch (SedInconsistentException ex) {
                             NarrowOptionPane.showMessageDialog(this, "The segment was found physically inconsistent with the rest of the SED", "Segment could not be imported", NarrowOptionPane.OK_OPTION);
                         } catch (SedNoDataException ex) {
@@ -1086,4 +1103,18 @@ public final class LoadSegmentFrame extends JInternalFrame {
             NarrowOptionPane.showMessageDialog(this, "An error occurred. Please check the file", "Error", NarrowOptionPane.ERROR_MESSAGE);
         }
     }
+    
+    /* Given a list of Segments, returns the number of data points in all the
+     * Segments.
+     */
+    private int spectraWarning(List<Segment> segList) {
+        int numOfPoints = 0;
+        
+        for (int i=0; i<segList.size(); i++) {
+            numOfPoints += segList.get(i).getLength();
+        }
+        
+        return numOfPoints;
+    }
+    
 }
