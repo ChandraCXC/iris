@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -20,8 +36,8 @@ public final class NormalizationConfiguration {
 	setMultiply(true);
 	setStats("Value");
 	setXUnits("Angstrom");
-	setXmax("max");
-	setXmin("min");
+	setXmin(Double.NEGATIVE_INFINITY);
+	setXmax(Double.POSITIVE_INFINITY);
 	setYUnits("ergs/s/cm2");
 	setYValue(1.0);
 	setAtPointYValue(1.0);
@@ -29,6 +45,7 @@ public final class NormalizationConfiguration {
 	setAtPointXValue(5000.0);
 	setAtPointXUnits("Angstrom");
 	setAtPointStats("Value");
+	setIntegrateValueYUnits("erg/s/cm2");
     }
     
     private boolean integrate;
@@ -75,7 +92,7 @@ public final class NormalizationConfiguration {
 	propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
-    private String xmax;
+    private Double xmax;
 
     public static final String PROP_XMAX = "xmax";
 
@@ -84,7 +101,7 @@ public final class NormalizationConfiguration {
      *
      * @return the value of xmax
      */
-    public String getXmax() {
+    public Double getXmax() {
 	return xmax;
     }
 
@@ -93,13 +110,13 @@ public final class NormalizationConfiguration {
      *
      * @param xmax new value of xmax
      */
-    public void setXmax(String xmax) {
-	String oldXMax = this.xmax;
+    public void setXmax(Double xmax) {
+	Double oldXMax = this.xmax;
 	this.xmax = xmax;
 	propertyChangeSupport.firePropertyChange(PROP_XMAX, oldXMax, xmax);
     }
 
-    private String xmin;
+    private Double xmin;
 
     public static final String PROP_XMIN = "xmin";
 
@@ -108,7 +125,7 @@ public final class NormalizationConfiguration {
      *
      * @return the value of xmin
      */
-    public String getXmin() {
+    public Double getXmin() {
 	return xmin;
     }
 
@@ -117,8 +134,8 @@ public final class NormalizationConfiguration {
      *
      * @param xmin new value of xmin
      */
-    public void setXmin(String xmin) {
-	String oldXMin = this.xmin;
+    public void setXmin(Double xmin) {
+	Double oldXMin = this.xmin;
 	this.xmin = xmin;
 	propertyChangeSupport.firePropertyChange(PROP_XMIN, oldXMin, xmin);
     }
@@ -364,6 +381,31 @@ public final class NormalizationConfiguration {
 	this.atPointStats = atPointStats;
 	propertyChangeSupport.firePropertyChange(PROP_ATPOINTSTATS, oldAtPointStats, atPointStats);
     }
+
+    private String integrateValueYUnits;
+
+    public static final String PROP_INTEGRATEVALUEYUNITS = "integrateValueYUnits";
+
+    /**
+     * Get the value of integrateValueYUnits
+     *
+     * @return the value of integrateValueYUnits
+     */
+    public String getIntegrateValueYUnits() {
+	return integrateValueYUnits;
+    }
+
+    /**
+     * Set the value of integrateValueYUnits
+     *
+     * @param integrateValueYUnits new value of integrateValueYUnits
+     */
+    public void setIntegrateValueYUnits(String integrateValueYUnits) {
+	String oldIntegrateValueYUnits = this.integrateValueYUnits;
+	this.integrateValueYUnits = integrateValueYUnits;
+	propertyChangeSupport.firePropertyChange(PROP_INTEGRATEVALUEYUNITS, oldIntegrateValueYUnits, integrateValueYUnits);
+    }
+
 
     
 }

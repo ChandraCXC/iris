@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -7,8 +23,10 @@
 package cfa.vo.sed.science.stacker;
 
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.sed.science.stacker.SedStackerAttachments;
+import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedException;
+import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -153,29 +171,29 @@ public class SedStack implements Cloneable{
 	propertyChangeSupport.firePropertyChange(PROP_ORIGSEDS, oldOrigSeds, origSeds);
     }
     
-    private ExtSed sedBuilderStack; //= new ExtSed("Stack", true);
-
-    public static final String PROP_SEDBUILDERSTACK = "sedBuilderStack";
-
-    /**
-     * Get the value of sedBuilderStack
-     *
-     * @return the value of sedBuilderStack
-     */
-    public ExtSed getSedBuilderStack() {
-	return sedBuilderStack;
-    }
-
-    /**
-     * Set the value of sedBuilderStack
-     *
-     * @param sedBuilderStack new value of sedBuilderStack
-     */
-    public void setSedBuilderStack(ExtSed sedBuilderStack) {
-	ExtSed oldSedBuilderStack = this.sedBuilderStack;
-	this.sedBuilderStack = sedBuilderStack;
-	propertyChangeSupport.firePropertyChange(PROP_SEDBUILDERSTACK, oldSedBuilderStack, sedBuilderStack);
-    }
+//    private ExtSed sedBuilderStack = new ExtSed(this.name);
+//
+//    public static final String PROP_SEDBUILDERSTACK = "sedBuilderStack";
+//
+//    /**
+//     * Get the value of sedBuilderStack
+//     *
+//     * @return the value of sedBuilderStack
+//     */
+//    public ExtSed getSedBuilderStack() {
+//	return sedBuilderStack;
+//    }
+//
+//    /**
+//     * Set the value of sedBuilderStack
+//     *
+//     * @param sedBuilderStack new value of sedBuilderStack
+//     */
+//    public void setSedBuilderStack(ExtSed sedBuilderStack) {
+//	ExtSed oldSedBuilderStack = this.sedBuilderStack;
+//	this.sedBuilderStack = sedBuilderStack;
+//	propertyChangeSupport.firePropertyChange(PROP_SEDBUILDERSTACK, oldSedBuilderStack, sedBuilderStack);
+//    }
 
     public List<String> getSpectralUnits() {
 	try {
@@ -208,23 +226,65 @@ public class SedStack implements Cloneable{
     }
     
     public void add(ExtSed sed) throws SedNoDataException, SedException, UnitsException {
-	//ExtSed nsed = ExtSed.flatten(sed, sed.getSegment(0).getSpectralAxisUnits(), sed.getSegment(0).getFluxAxisUnits());
-	//nsed.addAttachment("sedstacker:redshift", sed.getAttachment("sedstacker:redshift"));
-	//nsed.addAttachment("sedstacker:normConst", sed.getAttachment("sedstacker:redshift"));
-	seds.add(sed);
+	ExtSed nsed = ExtSed.flatten(sed, sed.getSegment(0).getSpectralAxisUnits(), sed.getSegment(0).getFluxAxisUnits());
+	nsed.setId(sed.getId());
+	nsed.addAttachment(SedStackerAttachments.ORIG_REDSHIFT, sed.getAttachment(SedStackerAttachments.ORIG_REDSHIFT));
+	nsed.addAttachment(SedStackerAttachments.REDSHIFT, sed.getAttachment(SedStackerAttachments.REDSHIFT));
+	nsed.addAttachment(SedStackerAttachments.NORM_CONSTANT, sed.getAttachment(SedStackerAttachments.NORM_CONSTANT));
+	
+	seds.add(nsed);
 	origSeds.add(sed);
+	//Segment seg = ExtSed.flatten(sed, sed.getSegment(0).getSpectralAxisUnits(), sed.getSegment(0).getFluxAxisUnits()).getSegment(0);
+	//sedBuilderStack.addSegment(seg);
     }
     
     public void add(List<ExtSed> sedList) throws SedNoDataException, SedException, UnitsException {
 	for (ExtSed sed : sedList) {
-	    //ExtSed nsed = ExtSed.flatten(sed, sed.getSegment(0).getSpectralAxisUnits(), sed.getSegment(0).getFluxAxisUnits());
-	    //nsed.
-	    //nsed.addAttachment("sedstacker:redshift", sed.getAttachment("sedstacker:redshift"));
-	    //nsed.addAttachment("sedstacker:normConst", sed.getAttachment("sedstacker:redshift"));
-	    seds.add(sed);
-	    origSeds.add(sed);
+	    this.add(sed);
 	}
     }
+    
+    public void remove(int i) {
+	seds.remove(i);
+	origSeds.remove(i);
+	//sedBuilderStack.removeSegment(i);
+    }
+    
+    public void remove(ExtSed sed) {
+	seds.remove(sed);
+	origSeds.remove(sed);
+//	ExtSed nsed = new ExtSed(this.name);
+//	for (ExtSed sed0 : seds) {
+//	    Segment seg;
+//	    try {
+//		seg = ExtSed.flatten(sed0, sed0.getSegment(0).getSpectralAxisUnits(), sed0.getSegment(0).getFluxAxisUnits()).getSegment(0);
+//		nsed.addSegment(seg);
+//	    } catch (SedException ex) {
+//		Logger.getLogger(SedStack.class.getName()).log(Level.SEVERE, null, ex);
+//	    } catch (UnitsException ex) {
+//		Logger.getLogger(SedStack.class.getName()).log(Level.SEVERE, null, ex);
+//	    }
+//	}
+//	setSedBuilderStack(nsed);
+	//sedBuilderStack.remove(null);
+    }
+    
+//    public void remove(Segment seg) {
+//	sedBuilderStack.remove(seg);
+//	
+//	seds.remove(sed);
+//	origSeds.remove(sed);
+//    }
+    
+//    public void updateSedBuilderStack() {
+//	for (int i=0; i<sedBuilderStack.getNumberOfSegments(); i++) {
+//	    Segment seg = sedBuilderStack.getSegment(i);
+//	    seg.setSpectralAxisValues(values);
+//	    seg.setFluxAxisValues(values);
+//	    seg.setDataValues((double[]) nsed.getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE), 
+//		    SEDMultiSegmentSpectrum.E_UTYPE););
+//	}
+//    }
     
     public SedStack copy() throws CloneNotSupportedException {
 	return (SedStack) this.clone();
@@ -238,4 +298,41 @@ public class SedStack implements Cloneable{
     public void setSed(int i, ExtSed sed) {
 	seds.set(i, sed);
     }
+    
+    public ExtSed createSedFromStack(SedStack stack) throws SedException, UnitsException {
+
+	ExtSed sedBuilderStack = new ExtSed(stack.getName());
+	
+	for (ExtSed sed : stack.getSeds()) {
+	    ExtSed flattenedSed = ExtSed.flatten(sed, sed.getSegment(0).getSpectralAxisUnits(), sed.getSegment(0).getFluxAxisUnits());
+	    Segment seg = flattenedSed.getSegment(0);
+	    String targetName = sed.getId();
+	    seg.getTarget().getName().setValue(targetName);
+	    //seg.getTarget().setPos(flattenedSed.getSegment(0).getTarget().getPos());
+	    sedBuilderStack.addSegment(seg);
+	}
+	
+	return sedBuilderStack;
+    }
+    
+    public void resetStack() {
+	List<ExtSed> nseds = new ArrayList();
+	for (ExtSed sed : this.getOrigSeds()) {
+	    try {
+		ExtSed nsed = ExtSed.flatten(sed, sed.getSegment(0).getSpectralAxisUnits(), sed.getSegment(0).getFluxAxisUnits());
+		nsed.addAttachment(SedStackerAttachments.ORIG_REDSHIFT, sed.getAttachment(SedStackerAttachments.ORIG_REDSHIFT));
+		nsed.addAttachment(SedStackerAttachments.REDSHIFT, sed.getAttachment(SedStackerAttachments.REDSHIFT));
+		nsed.addAttachment(SedStackerAttachments.NORM_CONSTANT, sed.getAttachment(SedStackerAttachments.NORM_CONSTANT));
+		nseds.add(nsed);
+	    } catch (SedNoDataException ex) {
+		Logger.getLogger(SedStack.class.getName()).log(Level.SEVERE, null, ex);
+	    } catch (SedException ex) {
+		Logger.getLogger(SedStack.class.getName()).log(Level.SEVERE, null, ex);
+	    } catch (UnitsException ex) {
+		Logger.getLogger(SedStack.class.getName()).log(Level.SEVERE, null, ex);
+	    }
+	}
+	this.setSeds(nseds);
+    }
+    
 }

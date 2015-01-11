@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -15,9 +31,13 @@ import static cfa.vo.sed.science.stacker.SedStackerAttachments.ORIG_REDSHIFT;
 import cfa.vo.sedlib.Param;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedException;
+import cfa.vo.sedlib.common.SedInconsistentException;
+import cfa.vo.sedlib.common.SedNoDataException;
+import java.beans.PropertyVetoException;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTable;
@@ -33,13 +53,15 @@ public class AddSedsFrame extends javax.swing.JInternalFrame {
     private SedlibSedManager manager;
     private SedStack stack;
     private JTable sedsTable;
+    private SedStackerFrame stackerFrame;
     
-    public AddSedsFrame(SedlibSedManager manager, SedStack stack, JTable sedsTable) {
+    public AddSedsFrame(SedlibSedManager manager, SedStack stack, JTable sedsTable, SedStackerFrame stackerFrame) {
 	
 	this.manager = manager;
 	this.stack = stack;
 	this.sedsTable = sedsTable;
-	setOpenSeds((List) manager.getSeds());
+	this.openSeds = (List) manager.getSeds();
+	this.stackerFrame = stackerFrame;
 	
 	initComponents();
 	
@@ -96,6 +118,13 @@ public class AddSedsFrame extends javax.swing.JInternalFrame {
 	firePropertyChange(PROP_SEGMENTSASSEDS, oldSegmentsAsSeds, segmentsAsSeds);
     }
 
+    public SedStack getStack() {
+	return stack;
+    }
+
+    public void setStack(SedStack stack) {
+	this.stack = stack;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -227,18 +256,53 @@ public class AddSedsFrame extends javax.swing.JInternalFrame {
 	    jTable1.getCellEditor().stopCellEditing();
 	}
 	
+	if (jTable1.getSelectedRowCount() == 0) {
+	    NarrowOptionPane.showMessageDialog(null, "No SEDs selected.", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
+	    return;
+	}
+	
 	try {
+	    
+	    // find any empty seds
+	    int c = 0;
+	    java.util.List<String> emptySeds = new ArrayList();
 	    for (int i : jTable1.getSelectedRows()) {
-
-//		// Check for invalid redshift values
-//		if (isNumeric(jTable1.getValueAt(i, 1).toString()) && (Double)  jTable1.getValueAt(i, 1) < 0) {// || !isNumeric(jTable1.getValueAt(i, 1).toString())) {
-//		    NarrowOptionPane.showMessageDialog(null, "Invalid redshift values", "WARNING", NarrowOptionPane.WARNING_MESSAGE);
-//		    return;
-//		}
+		
+		    ExtSed sed = openSeds.get(i);
+		    if (sed.getNumberOfSegments() == 0) {
+			emptySeds.add(sed.getId());
+			c--;
+		    }
+		c++;
+	    }
+	    
+	    for (int i : jTable1.getSelectedRows()) {
 		
 		try {
-
+		    
 		    ExtSed sed = openSeds.get(i);
+		    
+		    // Check for invalid redshift values
+		    if (jTable1.getValueAt(i, 1) != null && isNumeric(jTable1.getValueAt(i, 1).toString()) && Double.valueOf((String) jTable1.getValueAt(i, 1)) < 0) {
+			
+			NarrowOptionPane.showMessageDialog(null, "Invalid redshift values", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
+			throw new StackException();
+			
+		    } else if (jTable1.getValueAt(i, 1) == null) {
+			
+			;
+			
+		    } else if (!isNumeric(jTable1.getValueAt(i, 1))) {
+			
+			NarrowOptionPane.showMessageDialog(null, "Invalid redshift values", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
+			throw new StackException();
+			
+		    } else {}
+		    
+		    // if an SED is empty, do not add it to Stack.
+		    if (sed.getNumberOfSegments() == 0) {
+			throw new StackException();
+		    }
 
 		    if (!isSegmentsAsSeds()) {
 
@@ -255,7 +319,7 @@ public class AddSedsFrame extends javax.swing.JInternalFrame {
 			    ExtSed nsed = new ExtSed(sed.getId()+": "+seg.getTarget().getName().getValue(), false);
 			    nsed.addSegment(seg);
 			    nsed.addAttachment(ORIG_REDSHIFT, jTable1.getValueAt(i, 1));
-			    nsed.addAttachment(REDSHIFT, sed.getAttachment(ORIG_REDSHIFT));
+			    nsed.addAttachment(REDSHIFT, nsed.getAttachment(ORIG_REDSHIFT));
 			    nsed.addAttachment(NORM_CONSTANT, 1.0);
 			    stack.add(nsed);
 
@@ -266,23 +330,62 @@ public class AddSedsFrame extends javax.swing.JInternalFrame {
 		    Logger.getLogger(AddSedsFrame.class.getName()).log(Level.SEVERE, null, ex);
 		} catch (UnitsException ex) {
 		    Logger.getLogger(AddSedsFrame.class.getName()).log(Level.SEVERE, null, ex);
+		} catch (StackException ex) {
+		    ; 
+		    // TODO: is this really what i want to do here?? it works the way i expect... i want to "pass," 
+		    // and let the code continue, without adding the SEDs to the Stack.
 		}
 	    }
-	} catch (java.lang.NullPointerException ex) {
-	    Logger.getLogger(AddSedsFrame.class.getName()).log(Level.SEVERE, null, ex);;
-	}
-	try {
-	    // TODO: add a new Sed to the SedBuilder that represents the new Stack
-	    //stack.setSedBuilderStack(manager.newSed(stack.getName()));
-	    sedsTable.setModel(new StackTableModel(stack));
-	    this.setVisible(false);
+	    
+	    // inform the user that if one or more of the SEDs selected were empty,
+	    // that they were not added to the Stack.
+	    if (c != jTable1.getSelectedRowCount()) {
+//		StringBuilder seds = new StringBuilder();
+//		for (String s : emptySeds) {
+//		    seds.append(s);
+//		    if (emptySeds.size() > 1) {
+//			if (s.equals(emptySeds.get(c))) {
+//			    seds.append("and " + s);
+//			} else {
+//			    seds.append(s + ", ");
+//			}
+//		    } else {
+//			seds.append(s);
+//		    }
+//		}
+		
+		NarrowOptionPane.showMessageDialog(null, 
+			"SEDs '"+emptySeds+"' are empty. These SEDs were not added to the Stack.", 
+			"WARNING", 
+			NarrowOptionPane.WARNING_MESSAGE);
+		return;
+	    }
+	    
 	} catch (java.lang.NullPointerException ex) {
 	    Logger.getLogger(AddSedsFrame.class.getName()).log(Level.SEVERE, null, ex);
+	}
+	
+	try {
+	    sedsTable.setModel(new StackTableModel(stack));
+	} catch (java.lang.NullPointerException ex) {
+	    Logger.getLogger(AddSedsFrame.class.getName()).log(Level.SEVERE, null, ex);
+	}
+	
+	this.setVisible(false);
+	try {
+	    stackerFrame.setSelected(true);
+	} catch (PropertyVetoException ex) {
+	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
 	}
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
 	this.setVisible(false);
+	try {
+	    stackerFrame.setSelected(true);
+	} catch (PropertyVetoException ex) {
+	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+	}
     }//GEN-LAST:event_cancelButtonActionPerformed
 
 
@@ -298,10 +401,30 @@ public class AddSedsFrame extends javax.swing.JInternalFrame {
     // End of variables declaration//GEN-END:variables
 
     
-    public void updateSeds() {
+    public void updateSeds(SedStack stack) {
+	setStack(stack);
 	setOpenSeds((List) manager.getSeds());
 	jTable1.setModel(new AddSedsTableModel(openSeds));
     }
+    
+//    public void updateSedBuilderStack() throws SedInconsistentException, SedNoDataException, SedException, UnitsException {
+//	// get the representative Sed in the SedBuilder
+//	ExtSed sed = null;
+//	if (manager.existsSed(stack.getName())) {
+//	    sed = manager.getSelected(); // FIXME
+//	} else {
+//	    manager.newSed(stack.getName());
+//	    sed = manager.getSelected();
+//	}
+//	// update the Sed with the latest version of the currently selected Stack
+//	for (int i=0; i<sed.getNumberOfSegments(); i++) {
+//	    sed.removeSegment(i);
+//	}
+//	for (int i=0; i<stack.getSeds().size(); i++) {
+//	    Segment seg = stack.getSedBuilderStack().getSegment(i);
+//	    sed.addSegment(seg);
+//	}
+//    }
     
     
     public class AddSedsTableModel extends AbstractTableModel {
@@ -312,30 +435,24 @@ public class AddSedsFrame extends javax.swing.JInternalFrame {
 	public AddSedsTableModel(List seds) {
 	    
 	    //if (isSegmentsAsSeds() == false) {
-		int c = 0;
-		ArrayList<Integer> gdIndices = new ArrayList();
-		for (int i=0; i<openSeds.size(); i++) {
-		    ExtSed sed = openSeds.get(i);
-		    if (sed.getNumberOfSegments() != 0) {
-			c++;
-			gdIndices.add(i);
-		    }
-		}
 	    
-		data = new String[c][2];
+		data = new String[openSeds.size()][2];
 
 		// populate the table with the Sed ID's and redshifts
-		//for (int i=0; i<openSeds.size(); i++) {
-		for (Integer i : gdIndices) {
-
+		for (int i=0; i<openSeds.size(); i++) {
+		    
 		    String redshift = null;
 		    
-		    java.util.List<? extends Param> params = openSeds.get(i).getSegment(0).getCustomParams();
-		    for (Param param : params) {
-			if (param.getName().equals("iris:final redshift")) {
-				redshift = param.getValue();
+		    try {
+			java.util.List<? extends Param> params = openSeds.get(i).getSegment(0).getCustomParams();
+			for (Param param : params) {
+			    if (param.getName().equals("iris:final redshift")) {
+				    redshift = param.getValue();
+			    }
 			}
-		    }
+		    } catch (IndexOutOfBoundsException ex) {
+			Logger.getLogger(AddSedsFrame.class.getName()).log(Level.WARNING, null, ex);
+		    } 
 
 		    if (redshift == null) {
 			redshift = (String) openSeds.get(i).getAttachment(ORIG_REDSHIFT);
@@ -344,6 +461,39 @@ public class AddSedsFrame extends javax.swing.JInternalFrame {
 		    data[i][0] = openSeds.get(i).getId();
 		    data[i][1] = redshift;
 		}
+//		int c = 0;
+//		ArrayList<Integer> gdIndices = new ArrayList();
+//		for (int i=0; i<openSeds.size(); i++) {
+//		    ExtSed sed = openSeds.get(i);
+//		    if (sed.getNumberOfSegments() != 0) {
+//			c++;
+//			gdIndices.add(i);
+//		    }
+//		}
+//	    
+//		data = new String[c][2];
+//
+//		// populate the table with the Sed ID's and redshifts
+//		//for (int i=0; i<openSeds.size(); i++) {
+//		for (int i=0; i<c; i++) {
+//		    
+//		    Integer gd = gdIndices.get(i);
+//		    String redshift = null;
+//		    
+//		    java.util.List<? extends Param> params = openSeds.get(gd).getSegment(0).getCustomParams();
+//		    for (Param param : params) {
+//			if (param.getName().equals("iris:final redshift")) {
+//				redshift = param.getValue();
+//			}
+//		    }
+//
+//		    if (redshift == null) {
+//			redshift = (String) openSeds.get(gd).getAttachment(ORIG_REDSHIFT);
+//		    }
+//
+//		    data[i][0] = openSeds.get(gd).getId();
+//		    data[i][1] = redshift;
+//		}
 //	    } else {
 //		
 //		// count the number of rows for the data table
@@ -417,11 +567,11 @@ public class AddSedsFrame extends javax.swing.JInternalFrame {
 	
     }
     
-    private static boolean isNumeric(String str) {
+    private static boolean isNumeric(Object str) {
 	NumberFormat formatter = NumberFormat.getInstance();
 	ParsePosition pos = new ParsePosition(0);
-	formatter.parse(str, pos);
-	return str.length() == pos.getIndex();
+	formatter.parse((String) str, pos);
+	return str.toString().length() == pos.getIndex();
     }
 
 }
