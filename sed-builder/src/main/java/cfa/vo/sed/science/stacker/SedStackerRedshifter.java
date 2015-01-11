@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -19,6 +35,7 @@ import spv.spectrum.SEDMultiSegmentSpectrum;
 import spv.util.UnitsException;
 
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -55,26 +72,36 @@ public class SedStackerRedshifter {
             throw new Exception("Sherpa not found");
 	}
 	
-	// convert Stack to same units. First save the original units
+	// Create copy of stack and convert new stack to same units. First save the original units for later.
 	List<String> xunits = stack.getSpectralUnits();
 	List<String> yunits = stack.getFluxUnits();
+	SedStack nstack = stack.copy();
 	//convertUnits(stack, "Angstrom", "Jy");  //TODO: chose which method to use here.
-	convertUnits(stack, "Angstrom");
+	convertUnits(nstack, "Angstrom");
 	
 	SedStackerRedshiftPayload payload = (SedStackerRedshiftPayload) SAMPFactory.get(SedStackerRedshiftPayload.class);
 	
-	for (int i=0; i<stack.getSeds().size(); i++) {
+	for (int i=0; i<nstack.getSeds().size(); i++) {
+	    
 	    SegmentPayload segment = (SegmentPayload) SAMPFactory.get(SegmentPayload.class);
-	    segment.setX(stack.getSeds().get(i).getSegment(0).getSpectralAxisValues());
-	    segment.setY(stack.getSeds().get(i).getSegment(0).getFluxAxisValues());
-	    segment.setYerr((double[]) stack.getSeds().get(i).getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE));
-	    if (stack.getSeds().get(i).getAttachment(REDSHIFT) != "") {
-		segment.setZ((Double) stack.getSeds().get(i).getAttachment(REDSHIFT));
+	    
+	    segment.setX(nstack.getSeds().get(i).getSegment(0).getSpectralAxisValues());
+	    segment.setY(nstack.getSeds().get(i).getSegment(0).getFluxAxisValues());
+	    segment.setYerr((double[]) nstack.getSeds().get(i).getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE));
+	    
+	    if (nstack.getSeds().get(i).getAttachment(REDSHIFT) != "") {
+		
+		segment.setZ(Double.valueOf(nstack.getSeds().get(i).getAttachment(REDSHIFT).toString()));
+		
 	    } else {
+		
 		segment.setZ(Double.NaN);
+		
 	    }
+	    
 	    payload.addSegment(segment);
 	}
+	
         payload.setZ0(zconfig.getToRedshift());
 	payload.setCorrectFlux(zconfig.isCorrectFlux());
 	
@@ -88,17 +115,29 @@ public class SedStackerRedshifter {
 
         SedStackerRedshiftPayload response = (SedStackerRedshiftPayload) SAMPFactory.get(rspns.getResult(), SedStackerRedshiftPayload.class);
 
-	int i=0;
+	int c=0;
 	for (SegmentPayload segment : response.getSegments()) {
-	    stack.getSeds().get(i).getSegment(0).setSpectralAxisValues(segment.getX());
-	    stack.getSeds().get(i).getSegment(0).setFluxAxisValues(segment.getY());
-	    stack.getSeds().get(i).getSegment(0).setDataValues(segment.getYerr(), SEDMultiSegmentSpectrum.E_UTYPE);
-	    stack.getSeds().get(i).addAttachment(REDSHIFT, zconfig.getToRedshift());
-	    i++;
+	    
+	    nstack.getSeds().get(c).getSegment(0).setSpectralAxisValues(segment.getX());
+	    nstack.getSeds().get(c).getSegment(0).setFluxAxisValues(segment.getY());
+	    nstack.getSeds().get(c).getSegment(0).setDataValues(segment.getYerr(), SEDMultiSegmentSpectrum.E_UTYPE);
+	    c++;
+	    
 	}
-	convertUnits(stack, xunits, yunits);
-        
-        //return stack;
+	
+	// convert back to the original units of the Stack
+	convertUnits(nstack, xunits, yunits);
+	
+	// store the new values in the original stack
+	for (int i=0; i<nstack.getSeds().size(); i++) {
+	    stack.getSeds().get(i).getSegment(0).setSpectralAxisValues(nstack.getSeds().get(i).getSegment(0).getSpectralAxisValues());
+	    stack.getSeds().get(i).getSegment(0).setFluxAxisValues(nstack.getSeds().get(i).getSegment(0).getFluxAxisValues());
+	    stack.getSeds().get(i).getSegment(0).setDataValues(nstack.getSeds().get(i).getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE),
+		    SEDMultiSegmentSpectrum.E_UTYPE);
+	    stack.getSeds().get(i).addAttachment(REDSHIFT, zconfig.getToRedshift());
+	}
+	
+	NarrowOptionPane.showMessageDialog(null, "Successfully redshifted stack.", "SED Stacker Message", JOptionPane.INFORMATION_MESSAGE);
     }
     
     
@@ -116,6 +155,7 @@ public class SedStackerRedshifter {
 	    stack.getSeds().get(i).getSegment(0).setSpectralAxisValues(nsed.getSegment(0).getSpectralAxisValues());
 	    stack.getSeds().get(i).getSegment(0).setDataValues((double[]) nsed.getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE), 
 		    SEDMultiSegmentSpectrum.E_UTYPE);
+	    
 	}
     }
     
@@ -133,6 +173,7 @@ public class SedStackerRedshifter {
 	    stack.getSeds().get(i).getSegment(0).setSpectralAxisValues(nsed.getSegment(0).getSpectralAxisValues());
 	    stack.getSeds().get(i).getSegment(0).setDataValues((double[]) nsed.getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE), 
 		    SEDMultiSegmentSpectrum.E_UTYPE);
+	    
 	}
     }
     
@@ -141,7 +182,7 @@ public class SedStackerRedshifter {
 	    
 	    // convert the units with ExtSed.flatten()
 	    ExtSed sed = stack.getSeds().get(i);
-	    ExtSed nsed = ExtSed.flatten(sed, xUnits.get(i), yUnits.get(i)); // PROBLEM HERE!!!
+	    ExtSed nsed = ExtSed.flatten(sed, xUnits.get(i), yUnits.get(i));
 	    
 	    // set the converted spectral and flux values of each SED
 	    stack.getSeds().get(i).getSegment(0).setFluxAxisUnits(yUnits.get(i));

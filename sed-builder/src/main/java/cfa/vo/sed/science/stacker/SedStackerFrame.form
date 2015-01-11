@@ -80,7 +80,7 @@
                           <Group type="102" attributes="0">
                               <Component id="jButton9" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jButton4" min="-2" max="-2" attributes="0"/>
+                              <Component id="createSedButton" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" attributes="0">
@@ -92,7 +92,7 @@
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Component id="redoButton" min="-2" max="-2" attributes="0"/>
                                           <EmptySpace max="32767" attributes="0"/>
-                                          <Component id="jButton10" min="-2" max="-2" attributes="0"/>
+                                          <Component id="resetButton" min="-2" max="-2" attributes="0"/>
                                       </Group>
                                       <Component id="jPanel6" min="-2" max="-2" attributes="0"/>
                                   </Group>
@@ -124,12 +124,12 @@
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="undoButton" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="redoButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButton10" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="resetButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="55" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jButton9" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButton4" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="createSedButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="deleteButton" min="-2" max="-2" attributes="0"/>
@@ -324,7 +324,7 @@
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                          <Component id="jButton7" min="-2" max="-2" attributes="0"/>
+                          <Component id="normalizeButton" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -387,7 +387,7 @@
                       </Group>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="jButton7" min="-2" max="-2" attributes="0"/>
+                  <Component id="normalizeButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -428,7 +428,6 @@
         <Component class="javax.swing.JButton" name="redshiftButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="Redshift"/>
-            <Property name="enabled" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="redshiftButton" noResource="true"/>
           </Properties>
           <Events>
@@ -498,25 +497,32 @@
             <BindingProperty name="enabled" source="jRadioButton1" sourcePath="${selected}" target="integrationMinMaxUnit" targetPath="enabled" updateStrategy="0" immediately="false"/>
           </BindingProperties>
           <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new WiderJComboBox()"/>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="false"/>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
           </AuxValues>
         </Component>
         <Component class="javax.swing.JComboBox" name="integrationYUnit">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="2">
+              <StringArray count="5">
                 <StringItem index="0" value="erg/s/cm2"/>
                 <StringItem index="1" value="Jy-Hz"/>
+                <StringItem index="2" value="Watt/m2"/>
+                <StringItem index="3" value="erg/s"/>
+                <StringItem index="4" value="Watt"/>
               </StringArray>
             </Property>
             <Property name="name" type="java.lang.String" value="integrationYUnit" noResource="true"/>
           </Properties>
           <BindingProperties>
-            <BindingProperty name="selectedItem" source="Form" sourcePath="${selectedConfig.normConfiguration.YUnits}" target="integrationYUnit" targetPath="selectedItem" updateStrategy="0" immediately="false"/>
+            <BindingProperty name="selectedItem" source="Form" sourcePath="${selectedConfig.normConfiguration.integrateValueYUnits}" target="integrationYUnit" targetPath="selectedItem" updateStrategy="0" immediately="false"/>
             <BindingProperty name="enabled" source="jRadioButton1" sourcePath="${selected}" target="integrationYUnit" targetPath="enabled" updateStrategy="0" immediately="false"/>
           </BindingProperties>
           <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new WiderJComboBox()"/>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="false"/>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="0"/>
           </AuxValues>
         </Component>
         <Component class="javax.swing.JTextField" name="integrationValueText">
@@ -545,7 +551,7 @@
             <Property name="name" type="java.lang.String" value="integrationNormType" noResource="true"/>
           </Properties>
           <BindingProperties>
-            <BindingProperty name="selectedItem" source="Form" sourcePath="${normconf.integrateYType}" target="integrationNormType" targetPath="selectedItem" updateStrategy="0" immediately="false"/>
+            <BindingProperty name="selectedItem" source="Form" sourcePath="${selectedConfig.normConfiguration.stats}" target="integrationNormType" targetPath="selectedItem" updateStrategy="0" immediately="false"/>
             <BindingProperty name="enabled" source="jRadioButton1" sourcePath="${selected}" target="integrationNormType" targetPath="enabled" updateStrategy="0" immediately="false"/>
           </BindingProperties>
           <AuxValues>
@@ -706,12 +712,14 @@
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="false"/>
           </AuxValues>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton7">
+        <Component class="javax.swing.JButton" name="normalizeButton">
           <Properties>
             <Property name="text" type="java.lang.String" value="Normalize"/>
-            <Property name="enabled" type="boolean" value="false"/>
-            <Property name="name" type="java.lang.String" value="jButton7" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="normalizeButton" noResource="true"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="normalizeButtonActionPerformed"/>
+          </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="false"/>
           </AuxValues>
@@ -1082,13 +1090,15 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JButton" name="jButton4">
+    <Component class="javax.swing.JButton" name="createSedButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Create SED"/>
         <Property name="toolTipText" type="java.lang.String" value="Create new SED of the current Stack."/>
-        <Property name="enabled" type="boolean" value="false"/>
-        <Property name="name" type="java.lang.String" value="jButton4" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="createSedButton" noResource="true"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="createSedButtonActionPerformed"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="false"/>
       </AuxValues>
@@ -1135,12 +1145,14 @@
         <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="false"/>
       </AuxValues>
     </Component>
-    <Component class="javax.swing.JButton" name="jButton10">
+    <Component class="javax.swing.JButton" name="resetButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Reset"/>
-        <Property name="enabled" type="boolean" value="false"/>
-        <Property name="name" type="java.lang.String" value="jButton10" noResource="true"/>
+        <Property name="name" type="java.lang.String" value="resetButton" noResource="true"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="resetButtonActionPerformed"/>
+      </Events>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="false"/>
       </AuxValues>

@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -15,8 +31,10 @@ import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.gui.NarrowOptionPane;
+import cfa.vo.iris.gui.WiderJComboBox;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.iris.sed.quantities.IUnit;
 import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.sedlib.Segment;
@@ -25,6 +43,7 @@ import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.beans.PropertyVetoException;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.ArrayList;
@@ -72,6 +91,11 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
             setStacks(newStacks);
             setSelectedStack(stack);
             jList1.setSelectedValue(stack, true);
+	    
+//	    // add stack to SedBuilder
+//	    ExtSed sed = new ExtSed(stack.getName());
+//	    stack.setSedBuilderStack(sed);
+//	    manager.add(stack.getSedBuilderStack());
 	}
 	
 //	// undo management items
@@ -113,8 +137,8 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         jRadioButton3 = new javax.swing.JRadioButton();
         jRadioButton4 = new javax.swing.JRadioButton();
         integrationXMaxText = new javax.swing.JTextField();
-        integrationMinMaxUnit = new javax.swing.JComboBox();
-        integrationYUnit = new javax.swing.JComboBox();
+        integrationMinMaxUnit = new WiderJComboBox();
+        integrationYUnit = new WiderJComboBox();
         integrationValueText = new javax.swing.JTextField();
         integrationNormType = new javax.swing.JComboBox();
         javax.swing.JLabel integrationNormToLabel = new javax.swing.JLabel();
@@ -129,7 +153,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         atPointXUnit = new javax.swing.JComboBox();
         atPointYText = new javax.swing.JTextField();
         atPointYUnit = new javax.swing.JComboBox();
-        jButton7 = new javax.swing.JButton();
+        normalizeButton = new javax.swing.JButton();
         javax.swing.JSeparator jSeparator1 = new javax.swing.JSeparator();
         javax.swing.JLabel integrationXMaxLabel = new javax.swing.JLabel();
         javax.swing.JPanel jPanel4 = new javax.swing.JPanel();
@@ -151,12 +175,12 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         jButton5 = new javax.swing.JButton();
         javax.swing.JComboBox stackYUnitComboBox = new javax.swing.JComboBox();
         javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
-        jButton4 = new javax.swing.JButton();
+        createSedButton = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
         undoButton = new javax.swing.JButton();
         redoButton = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
-        jButton10 = new javax.swing.JButton();
+        resetButton = new javax.swing.JButton();
         javax.swing.JButton deleteButton = new javax.swing.JButton();
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
@@ -243,7 +267,6 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         jLabel11.setName("jLabel11"); // NOI18N
 
         redshiftButton.setText("Redshift");
-        redshiftButton.setEnabled(false);
         redshiftButton.setName("redshiftButton"); // NOI18N
         redshiftButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -281,10 +304,10 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jRadioButton1, org.jdesktop.beansbinding.ELProperty.create("${selected}"), integrationMinMaxUnit, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
-        integrationYUnit.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "erg/s/cm2", "Jy-Hz" }));
+        integrationYUnit.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "erg/s/cm2", "Jy-Hz", "Watt/m2", "erg/s", "Watt" }));
         integrationYUnit.setName("integrationYUnit"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedConfig.normConfiguration.YUnits}"), integrationYUnit, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedConfig.normConfiguration.integrateValueYUnits}"), integrationYUnit, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
         bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jRadioButton1, org.jdesktop.beansbinding.ELProperty.create("${selected}"), integrationYUnit, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
@@ -299,7 +322,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         integrationNormType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Value", "Average", "Median" }));
         integrationNormType.setName("integrationNormType"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${normconf.integrateYType}"), integrationNormType, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedConfig.normConfiguration.stats}"), integrationNormType, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
         bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jRadioButton1, org.jdesktop.beansbinding.ELProperty.create("${selected}"), integrationNormType, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
@@ -384,9 +407,13 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jRadioButton2, org.jdesktop.beansbinding.ELProperty.create("${selected}"), atPointYUnit, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
-        jButton7.setText("Normalize");
-        jButton7.setEnabled(false);
-        jButton7.setName("jButton7"); // NOI18N
+        normalizeButton.setText("Normalize");
+        normalizeButton.setName("normalizeButton"); // NOI18N
+        normalizeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                normalizeButtonActionPerformed(evt);
+            }
+        });
 
         jSeparator1.setName("jSeparator1"); // NOI18N
 
@@ -469,7 +496,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
                         .add(0, 0, Short.MAX_VALUE))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel5Layout.createSequentialGroup()
                         .add(0, 0, Short.MAX_VALUE)
-                        .add(jButton7)))
+                        .add(normalizeButton)))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -518,7 +545,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
                             .add(atPointYText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                             .add(atPointYUnit, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(jButton7)
+                .add(normalizeButton)
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -714,10 +741,14 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
                 .add(18, 18, 18))
         );
 
-        jButton4.setText("Create SED");
-        jButton4.setToolTipText("Create new SED of the current Stack.");
-        jButton4.setEnabled(false);
-        jButton4.setName("jButton4"); // NOI18N
+        createSedButton.setText("Create SED");
+        createSedButton.setToolTipText("Create new SED of the current Stack.");
+        createSedButton.setName("createSedButton"); // NOI18N
+        createSedButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                createSedButtonActionPerformed(evt);
+            }
+        });
 
         jButton8.setText("Update");
         jButton8.setToolTipText("Update the Stack with the current SEDs in the Builder.");
@@ -737,9 +768,13 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         jButton9.setEnabled(false);
         jButton9.setName("jButton9"); // NOI18N
 
-        jButton10.setText("Reset");
-        jButton10.setEnabled(false);
-        jButton10.setName("jButton10"); // NOI18N
+        resetButton.setText("Reset");
+        resetButton.setName("resetButton"); // NOI18N
+        resetButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                resetButtonActionPerformed(evt);
+            }
+        });
 
         deleteButton.setText("Delete");
         deleteButton.setName("deleteButton"); // NOI18N
@@ -774,7 +809,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
                             .add(layout.createSequentialGroup()
                                 .add(jButton9)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jButton4)
+                                .add(createSedButton)
                                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .add(layout.createSequentialGroup()
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -785,7 +820,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
                                             .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                             .add(redoButton)
                                             .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .add(jButton10))
+                                            .add(resetButton))
                                         .add(jPanel6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
                                 .add(0, 0, Short.MAX_VALUE))))))
         );
@@ -806,11 +841,11 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(undoButton)
                             .add(redoButton)
-                            .add(jButton10))
+                            .add(resetButton))
                         .add(55, 55, 55)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(jButton9)
-                            .add(jButton4))
+                            .add(createSedButton))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(deleteButton)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -834,6 +869,11 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
                 setStacks(newStacks);
                 setSelectedStack(stack);
                 jList1.setSelectedValue(stack, true);
+		
+//		// add stack to SedBuilder
+//		ExtSed sed = new ExtSed(stack.getName());
+//		stack.setSedBuilderStack(sed);
+//		manager.add(stack.getSedBuilderStack());
             }
         });
     }//GEN-LAST:event_newStack
@@ -841,41 +881,21 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
     private AddSedsFrame addSedsFrame;
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
 	
+	// TODO: remove this when I add "Load From File" option in the AddSedsFrame.
+	if (manager.getSeds().isEmpty()) {
+	    NarrowOptionPane.showMessageDialog(this, 
+		    "There are no open SEDs. Create SEDs using the SED Builder first.",
+		    "Error: No Open SEDs", JOptionPane.OK_OPTION);
+	    return;
+	}
+	
 	if (addSedsFrame == null) {
-	    addSedsFrame = new AddSedsFrame(manager, selectedStack, sedsTable);
+	    addSedsFrame = new AddSedsFrame(manager, selectedStack, sedsTable, this);
 	    ws.addFrame(addSedsFrame);
 	}
-	//addSedsFrame.setOpenSeds((cfa.vo.iris.utils.List<ExtSed>) manager.getSeds());
-	//addSedsFrame.jTable1.setModel(new AddSedsTableModel(manager));
-	addSedsFrame.updateSeds();
+	addSedsFrame.updateSeds(selectedStack);
 	GUIUtils.moveToFront(addSedsFrame);
 	
-//	ExtSed sed = new ExtSed("Sed");
-//	ExtSed sed2 = new ExtSed("Sed 2");
-//	try {
-//	    Segment seg = new Segment();
-//	    seg.setFluxAxisValues(new double[]{1.0, 2.0, 3.0});
-//	    seg.setFluxAxisUnits("Jy");
-//	    seg.setSpectralAxisValues(new double[]{1.0, 2.0, 3.0});
-//	    seg.setSpectralAxisUnits("Angstrom");
-//	    sed.addSegment(seg);
-//	    sed2.addSegment(seg);
-//	} catch (SedInconsistentException ex) {
-//	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
-//	} catch (SedNoDataException ex) {
-//	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
-//	}
-//	
-//	sed.addAttachment("sedstacker:redshift", 0.5);
-//	sed.addAttachment("sedstacker:normConst", 1.0);
-//	sed2.addAttachment("sedstacker:redshift", 0.5);
-//	sed2.addAttachment("sedstacker:normConst", 1.0);
-	
-//	final List sedList = selectedStack.getSeds();
-//	sedList.add(sed);
-//	sedList.add(sed2);
-	
-	//sedsTable.setModel(new StackTableModel(selectedStack));
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
@@ -891,6 +911,15 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 	    sedList.remove(i);
 	    origSedList.remove(i);
 	}
+//	try {
+//	    updateSedBuilderStack();
+//	} catch (SedNoDataException ex) {
+//	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+//	} catch (SedException ex) {
+//	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+//	} catch (UnitsException ex) {
+//	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+//	}
 	sedsTable.setModel(new StackTableModel(selectedStack));
 	
     }//GEN-LAST:event_removeButtonActionPerformed
@@ -903,6 +932,11 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 	// Check for invalid redshift values
 	if (redshiftConf.getToRedshift() == null ||  redshiftConf.getToRedshift() < 0 || !isNumeric(redshiftConf.getToRedshift().toString())) {
             NarrowOptionPane.showMessageDialog(null, "Invalid redshift values", "WARNING", NarrowOptionPane.WARNING_MESSAGE);
+	    try {
+		this.setSelected(true);
+	    } catch (PropertyVetoException ex) {
+		Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+	    }
             return;
 	}
 	
@@ -914,7 +948,17 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 	} catch (Exception ex) {
 	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
 	}
-	sedsTable.setModel(new StackTableModel(selectedStack));
+	
+//	try {
+//	    updateSedBuilderStack();
+//	} catch (SedNoDataException ex) {
+//	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+//	} catch (SedException ex) {
+//	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+//	} catch (UnitsException ex) {
+//	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+//	}
+	//sedsTable.setModel(new StackTableModel(selectedStack));
     }//GEN-LAST:event_redshiftButtonActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -926,7 +970,10 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 	if (names.contains(newName)) {
 	    NarrowOptionPane.showMessageDialog(rootFrame, "This Stack ID already exists. Please use a unique ID.", "Rename error", NarrowOptionPane.ERROR_MESSAGE);
 	} else {
-	    selectedStack.setName(newName);
+	    SedStack stack = getSelectedStack();
+	    stack.setName(newName);
+	    setSelectedStack(stack);
+	    jList1.setSelectedValue(stack, true);
 	}
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
@@ -955,9 +1002,63 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 		SedStack newStack = getStacks().get(newStacks.size()-1);
                 setSelectedStack(newStack);
                 jList1.setSelectedValue(newStack, true);
+		
+//		try {
+//		    updateSedBuilderStack();
+//		} catch (SedNoDataException ex) {
+//		    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+//		} catch (SedException ex) {
+//		    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+//		} catch (UnitsException ex) {
+//		    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+//		}
             }
         });
     }//GEN-LAST:event_deleteButtonActionPerformed
+
+    private void createSedButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createSedButtonActionPerformed
+	try {
+	    ExtSed sed = selectedStack.createSedFromStack(selectedStack);
+	    
+	    manager.add(sed);
+	    
+	} catch (SedException ex) {
+	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+	} catch (UnitsException ex) {
+	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+	}
+    }//GEN-LAST:event_createSedButtonActionPerformed
+
+    private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
+        selectedStack.resetStack();
+	sedsTable.setModel(new StackTableModel(selectedStack));
+    }//GEN-LAST:event_resetButtonActionPerformed
+
+    private SedStackerNormalizer normalizer;
+    private void normalizeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_normalizeButtonActionPerformed
+	NormalizationConfiguration normConfig = selectedStack.getConf().getNormConfiguration();
+	
+	// Check for invalid values
+	if (!checkNormParameters(normConfig)) {
+	    try {
+		this.setSelected(true);
+	    } catch (PropertyVetoException ex) {
+		Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+	    }
+	    return;
+	}
+	
+	if (normalizer == null) {
+	    normalizer = new SedStackerNormalizer(controller);
+	}
+	try {
+	    normalizer.normalize(selectedStack, normConfig);
+	} catch (Exception ex) {
+	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+	    //NarrowOptionPane.showMessageDialog(this, ex, "ERROR", JOptionPane.WARNING_MESSAGE);
+	}
+	sedsTable.setModel(new StackTableModel(selectedStack));
+    }//GEN-LAST:event_normalizeButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     javax.swing.JButton addButton;
@@ -967,6 +1068,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
     javax.swing.JComboBox atPointYType;
     javax.swing.JComboBox atPointYUnit;
     javax.swing.JCheckBox correctFlux;
+    javax.swing.JButton createSedButton;
     javax.swing.JComboBox integrationMinMaxUnit;
     javax.swing.JComboBox integrationNormType;
     javax.swing.JTextField integrationValueText;
@@ -974,10 +1076,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
     javax.swing.JTextField integrationXMinText;
     javax.swing.JComboBox integrationYUnit;
     javax.swing.JButton jButton1;
-    javax.swing.JButton jButton10;
-    javax.swing.JButton jButton4;
     javax.swing.JButton jButton5;
-    javax.swing.JButton jButton7;
     javax.swing.JButton jButton8;
     javax.swing.JButton jButton9;
     javax.swing.JComboBox jComboBox5;
@@ -992,9 +1091,11 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
     javax.swing.JTextField jTextField7;
     javax.swing.JTextField jTextField8;
     javax.swing.JCheckBox logBinningCheckBox;
+    javax.swing.JButton normalizeButton;
     javax.swing.JButton redoButton;
     javax.swing.JButton redshiftButton;
     javax.swing.JButton removeButton;
+    javax.swing.JButton resetButton;
     public javax.swing.JTable sedsTable;
     javax.swing.JCheckBox smoothCheckBox;
     javax.swing.JScrollPane stackPanel;
@@ -1131,7 +1232,8 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
             l = (Enum[]) clazz.getMethod("values").invoke(null);
             String[] s = new String[l.length];
             for (int i = 0; i < l.length; i++) {
-                s[i] = l[i].toString();
+                IUnit u = (IUnit) l[i];
+                s[i] = u.getString();
             }
             return s;
         } catch (Exception ex) {
@@ -1152,23 +1254,23 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 	} catch (Exception ex) {
 	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
 	}
-    }
     
-    public void updateStackInSedBuilder() throws SedInconsistentException, SedNoDataException, SedException, UnitsException {
-	// get the representative Sed in the SedBuilder
-	if (manager.existsSed(selectedStack.getName())) {
-	    ExtSed sed = manager.getSelected(); // FIXME
-	} else {
-	    manager.newSed(selectedStack.getName());
-	    ExtSed sed = manager.getSelected();
-	}
-	// update the Sed with the latest version of the currently selected Stack
+    
+//    public void updateSedBuilderStack() throws SedInconsistentException, SedNoDataException, SedException, UnitsException {
+//	// get the representative Sed in the SedBuilder
+//	ExtSed sed = null;
+//	if (manager.existsSed(selectedStack.getName())) {
+//	    sed = manager.getSelected(); // FIXME
+//	} else {
+//	    manager.newSed(selectedStack.getName());
+//	    sed = manager.getSelected();
+//	}
+//	// update the Sed with the latest version of the currently selected Stack
 //	for (int i=0; i<sed.getNumberOfSegments(); i++) {
 //	    sed.removeSegment(i);
 //	}
-//	for (ExtSed sed1 : selectedStack.getSeds()) {
-//	    ExtSed.flatten(sed1, sed1.getSegment(0).getSpectralAxisUnits(), sed1.getSegment(0).getFluxAxisUnits());
-//	    Segment seg = sed1.getSegment(0);
+//	for (int i=0; i<selectedStack.getSeds().size(); i++) {
+//	    Segment seg = selectedStack.getSedBuilderStack().getSegment(i);
 //	    sed.addSegment(seg);
 //	}
     }
@@ -1325,5 +1427,65 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 	  formatter.parse(str, pos);
 	  return str.length() == pos.getIndex();
 	}
+    
+    private Boolean checkNormParameters(NormalizationConfiguration normConfig) {
+	if (!normConfig.isIntegrate()) {
+	    if (
+		    normConfig.getAtPointXValue() == null ||
+		    normConfig.getAtPointYValue() == null ||
+		    !isNumeric(normConfig.getAtPointXValue().toString()) ||
+		    !isNumeric(normConfig.getAtPointYValue().toString()) ||
+		    normConfig.getAtPointXValue() <= 0 ||
+		    normConfig.getAtPointYValue() <= 0
+		) {
+		NarrowOptionPane.showMessageDialog(null, "Invalid (X, Y) values.", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
+		return false;
+	    }
+	    
+	} else {
+	    if (
+		    normConfig.getYValue() == null ||
+		    !isNumeric(normConfig.getYValue().toString()) ||
+		    normConfig.getYValue() <= 0
+		) {
+		NarrowOptionPane.showMessageDialog(null, "Invalid Y value.", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
+		return false;
+	    }
+	    
+	    if (
+		    normConfig.getXmax() == null ||
+		    normConfig.getXmin() == null ||
+		    normConfig.getXmax() <= 0 ||
+		    normConfig.getXmax() <= normConfig.getXmin()
+	    ) {
+		NarrowOptionPane.showMessageDialog(null, "Invalid range values.", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
+		return false;
+	    }
+	    if (!normConfig.getXmin().equals(Double.NEGATIVE_INFINITY) && normConfig.getXmin() <= 0) {
+		NarrowOptionPane.showMessageDialog(null, "Invalid range values.", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
+		return false;
+	    }
+//	    }
+//	    
+//	    if ( isNumeric(normConfig.getXmax()) || isNumeric(normConfig.getXmax())) {
+//		if (
+//		    normConfig.getXmax() <= 0 ||
+//		    normConfig.getXmin() <= 0 ||
+//		    normConfig.getXmax() <= normConfig.getXmin()
+//		) {
+//		    NarrowOptionPane.showMessageDialog(null, "Invalid range values.", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
+//		    return false;
+//		}
+		
+//	    } else {
+//		if (!normConfig.getXmax().equals("max") || !normConfig.getXmin().equals("min")) {
+//		    NarrowOptionPane.showMessageDialog(null, "Invalid range values.", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
+//		    return false;
+//		}
+//	    }
+	}
+	
+	return true;
+    }
     
 }
