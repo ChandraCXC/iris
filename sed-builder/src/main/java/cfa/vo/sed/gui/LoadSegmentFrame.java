@@ -561,46 +561,48 @@ public final class LoadSegmentFrame extends JInternalFrame {
         });
 
         jLabel5.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
-        jLabel5.setText("<html>Iris does not support high-resolution spectra. While Iris ingests data files of any length, <br/>visualization tools will be slow for SEDs with more than 2500 points.</html>");
+        jLabel5.setText("<html>While most Iris tools support data of any length, visualization tools will be slow for SEDs and<br/>spectra with more than 2500 points.</html>");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(layout.createSequentialGroup()
-                        .add(jLabel1)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 127, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                        .add(jLabel4)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(sedId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jSeparator2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
-                    .add(jButton1)
-                    .add(layout.createSequentialGroup()
-                        .add(jRadioButton2)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                        .add(jRadioButton1)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE))
-                    .add(layout.createSequentialGroup()
-                        .add(helpLabel)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jButton5)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jButton2))
-                    .add(jButton4)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jRadioButton3)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
-                    .add(layout.createSequentialGroup()
-                        .add(jLabel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(29, 29, 29)))
+            .add(layout.createSequentialGroup()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(layout.createSequentialGroup()
+                                .add(jLabel1)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 127, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                                .add(jLabel4)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(sedId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE))
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, jSeparator2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
+                            .add(jButton1)
+                            .add(layout.createSequentialGroup()
+                                .add(jRadioButton2)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jTextField2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE))
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                                .add(jRadioButton1)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jTextField1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE))
+                            .add(layout.createSequentialGroup()
+                                .add(helpLabel)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jButton5)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jButton2))
+                            .add(jButton4)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, jRadioButton3)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(28, 28, 28)
+                        .add(jLabel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 469, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -796,18 +798,20 @@ public final class LoadSegmentFrame extends JInternalFrame {
 	    if(numOfPoints < 2500 && numOfPoints > 1000) {
 		NarrowOptionPane.showMessageDialog(this, 
 			"There are over 1000 data points in this file.\n"+
-				"The Viewer and Fitting Tool may be slightly slower for this SED.", 
+				"Visualization tools may be slightly slower than usual for this SED.", 
 			"Large File Detected", 
 			NarrowOptionPane.INFORMATION_MESSAGE);
 	    }
 	    else if(numOfPoints > 2500) {
-		int answer = NarrowOptionPane.showConfirmDialog(this, 
-			"There are over 2500 points in this file (number detected: "+String.valueOf(numOfPoints)+").\n"+
-				"The Iris display does not handle spectra, which means"+
-				" the Viewer and Fitting Tool may be slow for this SED.\n"+
+		int answer = NarrowOptionPane.showOptionDialog(this, 
+			"The number of data points exceeds the limit supported by Iris visualization tools (number of points detected: "+String.valueOf(numOfPoints)+").\n"+
+			//"There are over 2500 points in this file (number detected: "+String.valueOf(numOfPoints)+").\n"+
+				//"Iris visualization tools do not support spectra, meaning"+
+				"Visualization tools will be slow for this SED.\n\n"+
 				"Do you want to continue import?", 
-			"Possible Spectrum Detected", 
-			NarrowOptionPane.YES_NO_OPTION);
+			"Large Segment Detected", 
+			NarrowOptionPane.YES_NO_OPTION, 
+			NarrowOptionPane.WARNING_MESSAGE, null, new String[]{"Yes", "No"}, "No");
 		if (answer == JOptionPane.NO_OPTION) {
 		    return;
 		}
@@ -1099,17 +1103,19 @@ public final class LoadSegmentFrame extends JInternalFrame {
 	    if(numOfPoints < 2500 && numOfPoints > 1000) {
 		NarrowOptionPane.showMessageDialog(this, 
 			"There are over 1000 data points in this file.\n"+
-				"The Viewer and Fitting Tool may be slightly slower than usual for this SED.", 
+				"Visualization tools may be slightly slower than usual for this SED.", 
 			"Large File Detected", 
 			NarrowOptionPane.INFORMATION_MESSAGE);
 	    } else if(numOfPoints > 2500) {
-		int answer = NarrowOptionPane.showConfirmDialog(this, 
-			"There are over 2500 points in this file (number detected: "+String.valueOf(numOfPoints)+").\n"+
-				    "The Iris display does not handle spectra, which means"+
-				    " the Viewer and Fitting Tool may be slow for this SED.\n"+
-				    "Do you want to continue import?", 
-			    "Possible Spectrum Detected",
-			NarrowOptionPane.YES_NO_OPTION);
+		int answer = NarrowOptionPane.showOptionDialog(this, 
+			"The number of data points exceeds the limit supported by Iris visualization tools (number of points detected: "+String.valueOf(numOfPoints)+").\n"+
+			//"There are over 2500 points in this file (number detected: "+String.valueOf(numOfPoints)+").\n"+
+				//"Iris visualization tools do not support spectra, meaning"+
+				"Visualization tools will be slow for this SED.\n\n"+
+				"Do you want to continue import?",
+			"Large Segment Detected", 
+			NarrowOptionPane.YES_NO_OPTION, 
+			NarrowOptionPane.WARNING_MESSAGE, null, new String[]{"Yes", "No"}, "No");
 		if (answer == JOptionPane.NO_OPTION) {
 		    return;
 		}

@@ -187,18 +187,20 @@ public class SampChooser extends javax.swing.JInternalFrame {
 	    if(numOfPoints < 2500 && numOfPoints > 1000) {
 		NarrowOptionPane.showMessageDialog(this, 
 			"There are over 1000 data points in this file.\n"+
-				"The Viewer and Fitting Tool may be slightly slower for this SED.", 
-			"Large File Detected", 
+				"Visualization tools may be slightly slower than usual for this SED.", 
+			"Large Segment Detected", 
 			NarrowOptionPane.INFORMATION_MESSAGE);
 	    }
 	    else if(numOfPoints > 2500) {
-		int answer = NarrowOptionPane.showConfirmDialog(this, 
-			"There are over 2500 points in this file (number detected: "+String.valueOf(numOfPoints)+").\n"+
-				"The Iris display does not support spectra, which means"+
-				" the Viewer and Fitting Tool may be slow for this SED.\n"+
+		int answer = NarrowOptionPane.showOptionDialog(this, 
+			"The number of data points exceeds the limit supported by Iris visualization tools (number of points detected: "+String.valueOf(numOfPoints)+").\n"+
+			//"There are over 2500 points in this file (number detected: "+String.valueOf(numOfPoints)+").\n"+
+				//"Iris visualization tools do not support spectra, meaning"+
+				"Visualization tools will be slow for this SED.\n\n"+
 				"Do you want to continue import?", 
-			"Possible Spectrum Detected", 
-			NarrowOptionPane.YES_NO_OPTION);
+			"Large Segment Detected", 
+			NarrowOptionPane.YES_NO_OPTION, 
+			NarrowOptionPane.WARNING_MESSAGE, null, new String[]{"Yes", "No"}, "No");
 		if (answer == JOptionPane.NO_OPTION) {
 		    return;
 		}
@@ -238,18 +240,21 @@ public class SampChooser extends javax.swing.JInternalFrame {
 	    int numOfPoints = NativeFileFormat.valueOf(formatName).getFilter(url).getColumnData(0,0).length;
 	    if(numOfPoints < 2500 && numOfPoints > 1000) {
 		NarrowOptionPane.showMessageDialog(this, 
-			"There are over 1000 data points in this file. The Viewer and Fitting Tool may be slightly slower for this SED.", 
-			"Large File Detected", 
+			"There are over 1000 data points in this file.\n"+
+				"Visualization tools may be slightly slower than usual for this SED.", 
+			"Large Segment Detected", 
 			NarrowOptionPane.INFORMATION_MESSAGE);
 	    }
 	    else if(numOfPoints > 2500) {
-		int answer = NarrowOptionPane.showConfirmDialog(this, 
-			"There are over 2500 points in this file (number detected: "+String.valueOf(numOfPoints)+").\n"+
-				"The Iris display does not handle spectra, which means"+
-				" the Viewer and Fitting Tool may be slow for this SED.\n"+
+		int answer = NarrowOptionPane.showOptionDialog(this,
+			"The number of data points exceeds the limit supported by Iris visualization tools (number of points detected: "+String.valueOf(numOfPoints)+").\n"+
+			//"There are over 2500 points in this file (number detected: "+String.valueOf(numOfPoints)+").\n"+
+				//"Iris visualization tools do not support spectra, meaning"+
+				"Visualization tools will be slow for this SED.\n\n"+
 				"Do you want to continue import?", 
-			"Possible Spectrum Detected", 
-			NarrowOptionPane.YES_NO_OPTION);
+			"Large Segment Detected", 
+			NarrowOptionPane.YES_NO_OPTION, 
+			NarrowOptionPane.WARNING_MESSAGE, null, new String[]{"Yes", "No"}, "No");
 		if (answer == JOptionPane.NO_OPTION) {
 		    return;
 		}
