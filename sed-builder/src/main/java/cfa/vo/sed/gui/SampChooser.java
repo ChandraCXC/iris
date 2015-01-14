@@ -32,6 +32,7 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sed.filters.AbstractSingleStarTableFilter;
+import cfa.vo.sed.filters.IFileFormat;
 import cfa.vo.sed.filters.NativeFileFormat;
 import cfa.vo.sed.setup.PhotometryCatalogBuilder;
 import cfa.vo.sed.setup.SetupBean;
@@ -39,6 +40,7 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import org.jdesktop.application.Action;
 
 /**
@@ -176,6 +178,32 @@ public class SampChooser extends javax.swing.JInternalFrame {
     public void importCatalog() {
         try {
             AbstractSingleStarTableFilter filter = (AbstractSingleStarTableFilter) NativeFileFormat.valueOf(formatName).getFilter(url);
+	    
+	    /* Spectra warning. If there are 1000 < points < 2500, just warn user that
+	    * visualizer may be slow.
+	    * If there are over 2500 points, give user decision to add to Iris or not.
+	    */
+	    int numOfPoints = filter.getColumnData(0, 0).length;
+	    if(numOfPoints < 2500 && numOfPoints > 1000) {
+		NarrowOptionPane.showMessageDialog(this, 
+			"There are over 1000 data points in this file.\n"+
+				"The Viewer and Fitting Tool may be slightly slower for this SED.", 
+			"Large File Detected", 
+			NarrowOptionPane.INFORMATION_MESSAGE);
+	    }
+	    else if(numOfPoints > 2500) {
+		int answer = NarrowOptionPane.showConfirmDialog(this, 
+			"There are over 2500 points in this file (number detected: "+String.valueOf(numOfPoints)+").\n"+
+				"The Iris display does not support spectra, which means"+
+				" the Viewer and Fitting Tool may be slow for this SED.\n"+
+				"Do you want to continue import?", 
+			"Possible Spectrum Detected", 
+			NarrowOptionPane.YES_NO_OPTION);
+		if (answer == JOptionPane.NO_OPTION) {
+		    return;
+		}
+	    }
+	    
             PhotometryCatalogFrame catFrame = new PhotometryCatalogFrame(new PhotometryCatalogBuilder(filter, sed, 0));
             workspace.addFrame(catFrame);
             catFrame.setVisible(true);
@@ -202,6 +230,31 @@ public class SampChooser extends javax.swing.JInternalFrame {
     @Action
     public void importSpectrum() {
         try {
+	    
+	    /* Spectra warning. If there are 1000 < points < 2500, just warn user that
+	    * visualizer may be slow.
+	    * If there are over 2500 points, give user decision to add to Iris or not.
+	    */
+	    int numOfPoints = NativeFileFormat.valueOf(formatName).getFilter(url).getColumnData(0,0).length;
+	    if(numOfPoints < 2500 && numOfPoints > 1000) {
+		NarrowOptionPane.showMessageDialog(this, 
+			"There are over 1000 data points in this file. The Viewer and Fitting Tool may be slightly slower for this SED.", 
+			"Large File Detected", 
+			NarrowOptionPane.INFORMATION_MESSAGE);
+	    }
+	    else if(numOfPoints > 2500) {
+		int answer = NarrowOptionPane.showConfirmDialog(this, 
+			"There are over 2500 points in this file (number detected: "+String.valueOf(numOfPoints)+").\n"+
+				"The Iris display does not handle spectra, which means"+
+				" the Viewer and Fitting Tool may be slow for this SED.\n"+
+				"Do you want to continue import?", 
+			"Possible Spectrum Detected", 
+			NarrowOptionPane.YES_NO_OPTION);
+		if (answer == JOptionPane.NO_OPTION) {
+		    return;
+		}
+	    }
+	    
             SetupBean c = new SetupBean();
             c.setPositionInFile(0);
             c.setFileLocation(url.toString());

@@ -397,6 +397,7 @@ public final class LoadSegmentFrame extends JInternalFrame {
         jSeparator2 = new javax.swing.JSeparator();
         jButton5 = new javax.swing.JButton();
         helpLabel = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -559,41 +560,47 @@ public final class LoadSegmentFrame extends JInternalFrame {
             }
         });
 
+        jLabel5.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
+        jLabel5.setText("<html>Iris does not support high-resolution spectra. While Iris ingests data files of any length, <br/>visualization tools will be slow for SEDs with more than 2500 points.</html>");
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(layout.createSequentialGroup()
                         .add(jLabel1)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jComboBox1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 127, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(layout.createSequentialGroup()
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .add(jLabel4)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(sedId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE))
-                    .add(jSeparator2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jButton1)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jSeparator2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
+                    .add(jButton1)
+                    .add(layout.createSequentialGroup()
                         .add(jRadioButton2)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jTextField2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 327, Short.MAX_VALUE))
-                    .add(layout.createSequentialGroup()
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .add(jRadioButton1)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jTextField1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                    .add(layout.createSequentialGroup()
                         .add(helpLabel)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jButton5)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jButton2))
-                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(jRadioButton3)
-                    .add(jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jButton4))
+                    .add(jButton4)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jRadioButton3)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
+                    .add(layout.createSequentialGroup()
+                        .add(jLabel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(29, 29, 29)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -625,14 +632,16 @@ public final class LoadSegmentFrame extends JInternalFrame {
                     .add(jButton5)
                     .add(helpLabel))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jLabel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(jSeparator1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(jRadioButton3)
-                .add(17, 17, 17)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jButton4)
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         bindingGroup.bind();
@@ -683,6 +692,7 @@ public final class LoadSegmentFrame extends JInternalFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
@@ -707,6 +717,31 @@ public final class LoadSegmentFrame extends JInternalFrame {
         super.show();
         jRadioButton3.setSelected(true);
         GUIUtils.moveToFront(this);
+    }
+
+    private void spectralWarningCheck(Segment seg) throws SedInconsistentException, SedNoDataException {
+	int numOfPoints = spectraWarning(seg);
+	if(numOfPoints < 2500 && numOfPoints > 1000) {
+	    sed.addSegment(seg);
+	    NarrowOptionPane.showMessageDialog(this, 
+		    "Over 1000 data points. Viewer may be slightly slower than usual", 
+		    "", 
+		    NarrowOptionPane.INFORMATION_MESSAGE);
+	}
+	else if(numOfPoints > 2500) {
+	    int answer = NarrowOptionPane.showConfirmDialog(this, 
+		    "Over 2500 data points. Viewer may be slow. Do you want to continue import?", 
+		    "", 
+		    NarrowOptionPane.YES_NO_OPTION);
+	    if (answer == JOptionPane.NO_OPTION) {
+		return;
+	    } else {
+		sed.addSegment(seg);
+	    }
+	}
+	else {
+	    sed.addSegment(seg);
+	}
     }
 
     private class FormatRenderer extends BasicComboBoxRenderer {
@@ -752,27 +787,44 @@ public final class LoadSegmentFrame extends JInternalFrame {
         List<Integer> unsuc = readCompliant();
 
         try {
+	    
+	    /* Spectra warning. If there are 1000 < points < 2500, just warn user that
+	    * visualizer may be slow.
+	    * If there are over 2500 points, give user decision to add to Iris or not.
+	    */
+	    int numOfPoints = format.getFilter(getURL()).getColumnData(0,0).length;
+	    if(numOfPoints < 2500 && numOfPoints > 1000) {
+		NarrowOptionPane.showMessageDialog(this, 
+			"There are over 1000 data points in this file.\n"+
+				"The Viewer and Fitting Tool may be slightly slower for this SED.", 
+			"Large File Detected", 
+			NarrowOptionPane.INFORMATION_MESSAGE);
+	    }
+	    else if(numOfPoints > 2500) {
+		int answer = NarrowOptionPane.showConfirmDialog(this, 
+			"There are over 2500 points in this file (number detected: "+String.valueOf(numOfPoints)+").\n"+
+				"The Iris display does not handle spectra, which means"+
+				" the Viewer and Fitting Tool may be slow for this SED.\n"+
+				"Do you want to continue import?", 
+			"Possible Spectrum Detected", 
+			NarrowOptionPane.YES_NO_OPTION);
+		if (answer == JOptionPane.NO_OPTION) {
+		    return;
+		}
+//			    } else if (numOfPoints > 7500) {
+//				int answer = NarrowOptionPane.showConfirmDialog(this, 
+//					"There are over 7500 data points in this file. The Viewer and Fitting Tool WILL be slow for this SED! \nDo you want to continue import?", 
+//					"Large File Detected", 
+//					NarrowOptionPane.YES_NO_OPTION);
+//				if (answer == JOptionPane.YES_OPTION) {
+//				}
+	    }
+	    
             if (unsuc != null) {
                 if (!segList.isEmpty()) {
 //                    for (Segment seg : segList) {
                         try {
-			    
-			    int numOfPoints = spectraWarning(segList);
-
-			    if(numOfPoints < 2500 && numOfPoints > 1000) {
-				sed.addSegment(segList);
-				NarrowOptionPane.showMessageDialog(this, "Over 1000 data points. Viewer may be slightly slower than usual", "", NarrowOptionPane.INFORMATION_MESSAGE);
-			    }
-			    else if(numOfPoints > 2500) {
-				int answer = NarrowOptionPane.showConfirmDialog(this, "Over 2500 data points. Viewer may be slow. Do you want to continue import?", "", NarrowOptionPane.YES_NO_OPTION);
-				if (answer == JOptionPane.YES_OPTION) {
-				    sed.addSegment(segList);
-				}
-			    }
-			    else {
-				sed.addSegment(segList);
-			    }
-                            //sed.addSegment(segList);
+                            sed.addSegment(segList);
                         } catch (SedInconsistentException ex) {
                             NarrowOptionPane.showMessageDialog(this, "The segment was found physically inconsistent with the rest of the SED", "Segment could not be imported", NarrowOptionPane.OK_OPTION);
                         } catch (SedNoDataException ex) {
@@ -809,6 +861,7 @@ public final class LoadSegmentFrame extends JInternalFrame {
                 try {
                     SetupBean conf = new AsciiConf().makeConf(getURL());
                     Segment seg = SegmentImporter.getSegments(conf).get(0);
+		    
                     sed.addSegment(seg);
                 } catch (Exception ex) {
                     SetupBean conf = new SetupBean();
@@ -1035,10 +1088,35 @@ public final class LoadSegmentFrame extends JInternalFrame {
     public void loadCatalog() {
         segList = new ArrayList();
         List<Integer> unsuc = readCompliant();
-
+	
         try {
+	    
+	    /* Spectra warning. If there are 1000 < points < 2500, just warn user that
+	    * visualizer may be slow.
+	    * If there are over 2500 points, give user decision to add to Iris or not.
+	    */
+	    int numOfPoints = format.getFilter(getURL()).getColumnData(0,0).length;
+	    if(numOfPoints < 2500 && numOfPoints > 1000) {
+		NarrowOptionPane.showMessageDialog(this, 
+			"There are over 1000 data points in this file.\n"+
+				"The Viewer and Fitting Tool may be slightly slower than usual for this SED.", 
+			"Large File Detected", 
+			NarrowOptionPane.INFORMATION_MESSAGE);
+	    } else if(numOfPoints > 2500) {
+		int answer = NarrowOptionPane.showConfirmDialog(this, 
+			"There are over 2500 points in this file (number detected: "+String.valueOf(numOfPoints)+").\n"+
+				    "The Iris display does not handle spectra, which means"+
+				    " the Viewer and Fitting Tool may be slow for this SED.\n"+
+				    "Do you want to continue import?", 
+			    "Possible Spectrum Detected",
+			NarrowOptionPane.YES_NO_OPTION);
+		if (answer == JOptionPane.NO_OPTION) {
+		    return;
+		}
+	    }
+	    
             if (unsuc != null) {
-                if (!segList.isEmpty()) {
+                if (!segList.isEmpty()) {		    
                     for (Segment seg : segList) {
                         try {
                             sed.addSegment(seg);
@@ -1072,7 +1150,7 @@ public final class LoadSegmentFrame extends JInternalFrame {
                         if (!(filter instanceof AbstractSingleStarTableFilter)) {
                             throw new Exception("Plugins are not supported yet for Photometry Catalogs. Only native file formats are supported");
                         }
-
+			
                         PhotometryCatalogBuilder conf = new PhotometryCatalogBuilder((AbstractSingleStarTableFilter) filter, sed, i);
                         PhotometryCatalogFrame frame = new PhotometryCatalogFrame(conf);
 
@@ -1088,7 +1166,7 @@ public final class LoadSegmentFrame extends JInternalFrame {
                 if (!(filter instanceof AbstractSingleStarTableFilter)) {
                     throw new Exception("Plugins are not supported yet for Photometry Catalogs. Only native file formats are supported");
                 }
-
+		
                 PhotometryCatalogBuilder conf = new PhotometryCatalogBuilder((AbstractSingleStarTableFilter) filter, sed, 0);
                 PhotometryCatalogFrame frame = new PhotometryCatalogFrame(conf);
 
@@ -1110,11 +1188,14 @@ public final class LoadSegmentFrame extends JInternalFrame {
     private int spectraWarning(List<Segment> segList) {
         int numOfPoints = 0;
         
-        for (int i=0; i<segList.size(); i++) {
-            numOfPoints += segList.get(i).getLength();
-        }
+	for (Segment segList1 : segList) {
+	    numOfPoints += segList1.getLength();
+	}
         
         return numOfPoints;
+    }
+    private int spectraWarning(Segment seg) {
+            return seg.getLength();
     }
     
 }
