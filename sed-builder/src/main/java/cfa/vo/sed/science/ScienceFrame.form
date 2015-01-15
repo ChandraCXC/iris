@@ -1,4 +1,4 @@
-<?xml version="1.1" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JInternalFrameFormInfo">
   <NonVisualComponents>
@@ -170,7 +170,7 @@
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jPanel5" alignment="1" max="32767" attributes="1"/>
-                          <Component id="jPanel2" alignment="0" min="-2" pref="96" max="-2" attributes="1"/>
+                          <Component id="jPanel2" alignment="0" min="-2" max="-2" attributes="1"/>
                       </Group>
                     </DimensionLayout>
                   </Layout>
@@ -264,7 +264,7 @@
                                       <Component id="jFormattedTextField1" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace pref="23" max="32767" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -672,7 +672,7 @@
                                   </Group>
                               </Group>
                               <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
-                              <Component id="jPanel9" pref="99" max="32767" attributes="0"/>
+                              <Component id="jPanel9" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -820,7 +820,7 @@
                                       <Component id="modelExpressionField" alignment="3" min="-2" max="-2" attributes="0"/>
                                       <Component id="jLabel9" alignment="3" min="-2" pref="28" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace max="32767" attributes="0"/>
+                                  <EmptySpace pref="8" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -882,7 +882,6 @@
                             <Property name="action" type="javax.swing.Action" editor="org.netbeans.modules.swingapp.ActionEditor">
                               <action class="cfa.vo.sed.science.ScienceFrame" id="showModel" methodName="showModel"/>
                             </Property>
-                            <Property name="text" type="java.lang.String" value="Show Model"/>
                             <Property name="name" type="java.lang.String" value="jButton7" noResource="true"/>
                           </Properties>
                           <BindingProperties>

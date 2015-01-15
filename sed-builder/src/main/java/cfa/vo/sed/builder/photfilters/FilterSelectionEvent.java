@@ -23,12 +23,13 @@ package cfa.vo.sed.builder.photfilters;
 
 import cfa.vo.iris.events.GenericEvent;
 import cfa.vo.iris.events.SedCommand;
+import java.util.List;
 
 /**
  *
  * @author olaurino
  */
-public class FilterSelectionEvent extends GenericEvent<PhotometryFilter, FilterSelectionListener, SedCommand>{
+public class FilterSelectionEvent extends GenericEvent<List<PhotometryFilter>, FilterSelectionListener, SedCommand>{
     private static class Holder {
         private static final FilterSelectionEvent INSTANCE = new FilterSelectionEvent();
     }

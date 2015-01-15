@@ -28,23 +28,54 @@ package spv.components;
  * Time: 3:03 PM
  */
 
+import java.awt.*;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.*;
+
 import cfa.vo.interop.SAMPController;
-import cfa.vo.iris.*;
-import cfa.vo.iris.events.*;
+import cfa.vo.sedlib.common.SedInconsistentException;
+import cfa.vo.sedlib.common.SedNoDataException;
+import org.astrogrid.samp.client.MessageHandler;
+
+import cfa.vo.iris.AbstractDesktopItem;
+import cfa.vo.iris.AbstractMenuItem;
+import cfa.vo.iris.ICommandLineInterface;
+import cfa.vo.iris.IMenuItem;
+import cfa.vo.iris.IWorkspace;
+import cfa.vo.iris.IrisApplication;
+import cfa.vo.iris.IrisComponent;
+import cfa.vo.iris.NullCommandLineInterface;
+import cfa.vo.iris.events.MultipleSegmentEvent;
+import cfa.vo.iris.events.MultipleSegmentListener;
+import cfa.vo.iris.events.SedCommand;
+import cfa.vo.iris.events.SedEvent;
+import cfa.vo.iris.events.SedListener;
+import cfa.vo.iris.events.SegmentEvent;
 import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
+import cfa.vo.iris.events.SegmentListener;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
-import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sedlib.Segment;
-import cfa.vo.sedlib.common.SedInconsistentException;
-import cfa.vo.sedlib.common.SedNoDataException;
-import org.astrogrid.samp.client.MessageHandler;
+
+import java.beans.PropertyVetoException;
+import java.io.File;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+
 import spv.SpvInitialization;
-import spv.controller.ModelManager2;
 import spv.controller.SpectrumContainer;
+import spv.controller.ModelManager2;
 import spv.fit.FittedSpectrum;
 import spv.glue.SpectrumVisualEditor;
 import spv.sherpa.custom.CustomModelsManager;
@@ -60,20 +91,6 @@ import spv.util.Include;
 import spv.util.NonSupportedUnits;
 import spv.util.properties.SpvProperties;
 import spv.view.AbstractPlotWidget;
-
-import javax.swing.*;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -153,8 +170,6 @@ public class IrisVisualizer implements IrisComponent {
 
                     if (source.getNumberOfSegments() > 0) {
                         display(source);
-                    } else {
-                        remove(source);
                     }
 
                 } else if (payload == SedCommand.REMOVED) {
@@ -169,26 +184,18 @@ public class IrisVisualizer implements IrisComponent {
 
             public void process(Segment source, final SegmentPayload payload) {
 
-                ExtSed sed = payload.getSed();
-
-                if (sed.getNumberOfSegments() > 0) {
-                    display(sed);
-                } else {
-                    remove(sed);
+                if (payload.getSedCommand() == SedCommand.REMOVED) {
+                    return;
                 }
 
-//                if (payload.getSedCommand() == SedCommand.REMOVED) {
-//                    return;
-//                }
-
-//                ExtSed sed = payload.getSed();
+                ExtSed sed = payload.getSed();
 
                 // If the sed structure was modified, invalidate
                 // any model associated with it.
 
-//                invalidateModel(sed);
+                invalidateModel(sed);
 
-//                display(payload.getSed());
+                display(payload.getSed());
             }
         });
 
@@ -200,27 +207,27 @@ public class IrisVisualizer implements IrisComponent {
                 // If the sed structure was modified, invalidate
                 // any model associated with it.
 
-//                invalidateModel(sed);
+                invalidateModel(sed);
 
                 display(payload.getSed());
             }
         });
     }
 
-//    public void invalidateModel(ExtSed sed) {
-//        if (sed != null) {
-//            SpectrumContainer container = (SpectrumContainer) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
-//            if (container != null) {
-//
-//                ModelManager2 mm = container.getModelManager();
-//                if (mm != null && mm.isActive()) {
-//                    mm.dispose();
-//                }
-//
-//                sed.removeAttachment(IrisDisplayManager.FIT_MODEL);
-//            }
-//        }
-//    }
+    public void invalidateModel(ExtSed sed) {
+        if (sed != null) {
+            SpectrumContainer container = (SpectrumContainer) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
+            if (container != null) {
+
+                ModelManager2 mm = container.getModelManager();
+                if (mm != null && mm.isActive()) {
+                    mm.dispose();
+                }
+
+                sed.removeAttachment(IrisDisplayManager.FIT_MODEL);
+            }
+        }
+    }
 
     public void disposeCurrentFrame() {
         if (currentFrame != null) {
@@ -232,8 +239,7 @@ public class IrisVisualizer implements IrisComponent {
     }
 
     private void remove(ExtSed source) {
-//        invalidateModel(source);  // Might be needed in the future?
-        manageAssociatedManagerWindows(source);
+        invalidateModel(source);  // Might be needed in the future?
         idm.remove(source.getId());
     }
 
@@ -280,7 +286,7 @@ public class IrisVisualizer implements IrisComponent {
                 lastLocation = null;
                 disposeCurrentFrame();
                 currentFrame = frame;
-                currentFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
+//                currentFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
                 if (lastLocation != null) {
                     currentFrame.setLocation(lastLocation);
                 }
@@ -305,7 +311,7 @@ public class IrisVisualizer implements IrisComponent {
         sp.setName(sed.getId());
 
         JDesktopPane desktop = ws.getDesktop();
-        SherpaModelManager modelManager = new SherpaModelManager(sp, idm.getSAMPConnector(), desktop, sedManager, sed);
+        SherpaModelManager modelManager = new SherpaModelManager(sp, idm.getSAMPConnector(), desktop, sed);
         modelManager.setActive(false);
 
         SpectrumContainer container = new SpectrumContainer(sp, modelManager);
@@ -323,7 +329,7 @@ public class IrisVisualizer implements IrisComponent {
         ExtSed displaying = idm.getDisplaying();
 
         if (displaying != null) {
-//            if (!sed.getId().equals(displaying.getId())) {
+            if (!sed.getId().equals(displaying.getId())) {
 
                 // displayed Sed is exiting: make its model manager and metadata windows invisible.
 
@@ -347,13 +353,11 @@ public class IrisVisualizer implements IrisComponent {
                     container = (SpectrumContainer) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
 
                     if (container != null) {
-                        SherpaModelManager modelManager = (SherpaModelManager) container.getModelManager();
-                        if (sed.getNumberOfSegments()>0) {
-                            modelManager.setVisible(!modelManager.isWantedHidden());
-                        }
+                        ModelManager2 modelManager = container.getModelManager();
+                        modelManager.setVisible(modelManager.isActive());
                     }
                 }
-//            }
+            }
         }
     }
 
@@ -414,7 +418,6 @@ public class IrisVisualizer implements IrisComponent {
 
                     if (currentFrame == null) {
                         currentFrame = idm.getInternalFrame();
-                        currentFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
 
                         ws.addFrame(currentFrame);
                     }
@@ -457,10 +460,6 @@ public class IrisVisualizer implements IrisComponent {
 
                         try {
                             Spectrum sp = factory.readAllSegments(null, sed);
-                            if (sp == null) {
-                                NarrowOptionPane.showMessageDialog(ws.getRootFrame(), "No SEDs to fit. Please load a file.", "Fitting Engine", NarrowOptionPane.INFORMATION_MESSAGE);
-                                return;
-                            }
                             sp.setName(sed.getId());
 
                             // Get model manager from Sed attachment
@@ -468,14 +467,13 @@ public class IrisVisualizer implements IrisComponent {
 
                             SpectrumContainer container = (SpectrumContainer) sed.getAttachment(IrisDisplayManager.FIT_MODEL);
                             SherpaModelManager modelManager = (SherpaModelManager) container.getModelManager();
-                            modelManager.setWantedHidden(false);
 
                             modelManager.execute(null);
 
                             // Display the model manager frame.
 
                             JInternalFrame frame = modelManager.getInternalFrame();
-//                            frame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
+                            frame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
                             ws.addFrame(frame);
                             GUIUtils.moveToFront(frame);
 //                            frame.setVisible(true);
