@@ -33,12 +33,13 @@ public final class NormalizationConfiguration {
     
     public NormalizationConfiguration() {
 	setIntegrate(true);
+	setAtPoint(false);
 	setMultiply(true);
+	setAdd(false);
 	setStats("Value");
 	setXUnits("Angstrom");
 	setXmin(Double.NEGATIVE_INFINITY);
 	setXmax(Double.POSITIVE_INFINITY);
-	setYUnits("ergs/s/cm2");
 	setYValue(1.0);
 	setAtPointYValue(1.0);
 	setAtPointYUnits("erg/s/cm2/A");
@@ -186,30 +187,6 @@ public final class NormalizationConfiguration {
 	Double oldYValue = this.yValue;
 	this.yValue = yValue;
 	propertyChangeSupport.firePropertyChange(PROP_YVALUE, oldYValue, yValue);
-    }
-
-    private String yUnits;
-
-    public static final String PROP_YUNITS = "yUnits";
-
-    /**
-     * Get the value of yUnit
-     *
-     * @return the value of yUnit
-     */
-    public String getYUnits() {
-	return yUnits;
-    }
-
-    /**
-     * Set the value of yUnit
-     *
-     * @param yUnit new value of yUnit
-     */
-    public void setYUnits(String yUnit) {
-	String oldYUnit = this.yUnits;
-	this.yUnits = yUnit;
-	propertyChangeSupport.firePropertyChange(PROP_YUNITS, oldYUnit, yUnit);
     }
 
     private String xUnits;
@@ -380,6 +357,54 @@ public final class NormalizationConfiguration {
 	String oldAtPointStats = this.atPointStats;
 	this.atPointStats = atPointStats;
 	propertyChangeSupport.firePropertyChange(PROP_ATPOINTSTATS, oldAtPointStats, atPointStats);
+    }
+
+        private boolean add;
+
+    public static final String PROP_ADD = "add";
+
+    /**
+     * Get the value of add
+     *
+     * @return the value of add
+     */
+    public boolean isAdd() {
+	return add;
+    }
+
+    /**
+     * Set the value of add
+     *
+     * @param add new value of add
+     */
+    public void setAdd(boolean add) {
+	boolean oldAdd = this.add;
+	this.add = add;
+	propertyChangeSupport.firePropertyChange(PROP_ADD, oldAdd, add);
+    }
+
+        private boolean atPoint;
+
+    public static final String PROP_ATPOINT = "atPoint";
+
+    /**
+     * Get the value of atPoint
+     *
+     * @return the value of atPoint
+     */
+    public boolean isAtPoint() {
+	return atPoint;
+    }
+
+    /**
+     * Set the value of atPoint
+     *
+     * @param atPoint new value of atPoint
+     */
+    public void setAtPoint(boolean atPoint) {
+	boolean oldAtPoint = this.atPoint;
+	this.atPoint = atPoint;
+	propertyChangeSupport.firePropertyChange(PROP_ATPOINT, oldAtPoint, atPoint);
     }
 
     private String integrateValueYUnits;

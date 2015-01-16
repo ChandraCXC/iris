@@ -13,6 +13,8 @@ import cfa.vo.iris.sed.ExtSed;
 import static cfa.vo.sed.science.stacker.SedStackerAttachments.REDSHIFT;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sherpa.SherpaClient;
+import java.util.ArrayList;
+import java.util.List;
 import org.astrogrid.samp.Response;
 import org.junit.After;
 import org.junit.Before;
@@ -225,20 +227,24 @@ public class SedStackerRedshifterTest {
 	redshifter = new SedStackerRedshifter(controller);
 	redshifter.shift(stack);
 	
+	List<double[]> xs = new ArrayList();
+	List<double[]> ys = new ArrayList();
+	xs.add(x1); xs.add(x2); xs.add(x3);
+	ys.add(y1); ys.add(y2); ys.add(y3);
+	
 	// stack.getOrigSeds() should return original seds
 	for (int j=0; j<stack.getOrigSeds().size(); j++) {
 	    ExtSed origSed = stack.getOrigSeds().get(j);
-	    ExtSed copySed = origStack.getSeds().get(j);
+	    double[] x = xs.get(j);
+	    double[] y = ys.get(j);
+	    
 	    for (int i=0; i<stack.getOrigSeds().get(j).getSegment(0).getLength(); i++) {
 		double xOrigValue = origSed.getSegment(0).getSpectralAxisValues()[i];
-		double yOrigValue = origSed.getSegment(0).getSpectralAxisValues()[i];
-		double xCopyValue = copySed.getSegment(0).getSpectralAxisValues()[i];
-		double yCopyValue = copySed.getSegment(0).getSpectralAxisValues()[i];
-		assertEquals(xOrigValue, xCopyValue);
-		assertEquals(yOrigValue, yCopyValue);
+		double yOrigValue = origSed.getSegment(0).getFluxAxisValues()[i];
+		assertEquals(xOrigValue, x[i]);
+		assertEquals(yOrigValue, y[i]);
 	    }
 	}
-	// the Stack Sed in the Builder/Viewer should update
 	
 	// stack.getSeds() should return redshifted seds
 	ExtSed shiftedSed1 = stack.getSeds().get(0);
@@ -308,7 +314,6 @@ public class SedStackerRedshifterTest {
 	
 	SedStack stack = new SedStack("Stack");
 	stack.add(sed1); stack.add(sed2); stack.add(sed3);
-	SedStack origStack = stack.copy(); // make a copy for testing
 	
 	// setup the redshift configuration
 	RedshiftConfiguration redshiftConf = new RedshiftConfiguration();
@@ -320,20 +325,23 @@ public class SedStackerRedshifterTest {
 	redshifter = new SedStackerRedshifter(controller);
 	redshifter.shift(stack);
 	
-	// stack.getOrigSeds() should return original seds
+	// original values. make sure stack.getOrigSeds() returns original seds
+	List<double[]> xs = new ArrayList();
+	List<double[]> ys = new ArrayList();
+	xs.add(x1); xs.add(x2); xs.add(x3);
+	ys.add(y1); ys.add(y2); ys.add(y3);
+	
 	for (int j=0; j<stack.getOrigSeds().size(); j++) {
 	    ExtSed origSed = stack.getOrigSeds().get(j);
-	    ExtSed copySed = origStack.getSeds().get(j);
+	    double[] x = xs.get(j);
+	    double[] y = ys.get(j);
 	    for (int i=0; i<stack.getOrigSeds().get(j).getSegment(0).getLength(); i++) {
 		double xOrigValue = origSed.getSegment(0).getSpectralAxisValues()[i];
-		double yOrigValue = origSed.getSegment(0).getSpectralAxisValues()[i];
-		double xCopyValue = copySed.getSegment(0).getSpectralAxisValues()[i];
-		double yCopyValue = copySed.getSegment(0).getSpectralAxisValues()[i];
-		assertEquals(xOrigValue, xCopyValue);
-		assertEquals(yOrigValue, yCopyValue);
+		double yOrigValue = origSed.getSegment(0).getFluxAxisValues()[i];
+		assertEquals(xOrigValue, x[i]);
+		assertEquals(yOrigValue, y[i]);
 	    }
 	}
-	// the Stack Sed in the Builder/Viewer should update
 	
 	// stack.getSeds() should return redshifted seds
 	ExtSed shiftedSed1 = stack.getSeds().get(0);

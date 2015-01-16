@@ -8,7 +8,10 @@ package cfa.vo.sed.science.stacker;
 import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
+import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
+import static cfa.vo.sed.science.stacker.SedStackerAttachments.COUNTS;
+import cfa.vo.sedlib.Segment;
 
 import cfa.vo.sedlib.common.SedException;
 import cfa.vo.sedlib.common.SedNoDataException;
@@ -18,6 +21,9 @@ import spv.spectrum.SEDMultiSegmentSpectrum;
 import spv.util.UnitsException;
 
 import java.util.List;
+import javax.swing.JOptionPane;
+import org.astrogrid.samp.client.SampException;
+import spv.util.XUnits;
 
 /**
  *
@@ -33,48 +39,64 @@ public class SedStackerStacker {
         this.controller = controller;
     }
 
-    
+    public ExtSed stack(SedStack stack) throws Exception {
+	return stack(stack, stack.getConf().getStackConfiguration());
+    }
 
-    public void stack(SedStack stack, StackConfig stackConfig) throws Exception {
+    public ExtSed stack(SedStack stack, StackConfiguration stackConfig) throws Exception {
 
-//        client.findSherpa();
-        
-        if(stack.getNumberOfSegments()==0)
+	if(stack.getSeds().isEmpty()) {
+	    NarrowOptionPane.showMessageDialog(null,
+                    "Stack is empty. Please add SEDs to the stack to normalize.",
+                    "Empty Stack",
+                    NarrowOptionPane.ERROR_MESSAGE);
             throw new SedNoDataException();
+	}
         
-//        String sherpaId = client.getSherpaId();
-//
-//        if (sherpaId == null) {
-//            NarrowOptionPane.showMessageDialog(null,
-//                    "Iris could not find the Sherpa process running in the background. Please check the Troubleshooting section in the Iris documentation.",
-//                    "Cannot connect to Sherpa",
-//                    NarrowOptionPane.ERROR_MESSAGE);
-//            throw new Exception("Sherpa not found");
-//	    }
+	try {
+	    client.findSherpa();
+	} catch (SampException ex) {
+            NarrowOptionPane.showMessageDialog(null,
+		    "Error stacking: "+
+                    "Iris could not find the Sherpa process running in the background. Please check the Troubleshooting section in the Iris documentation.",
+                    "Cannot connect to Sherpa",
+                    NarrowOptionPane.ERROR_MESSAGE);
+            throw new Exception("Sherpa not found");
+	}
 	
-	// convert Stack to same units
-	//Stack nstack = stack.copy();
+	// Create copy of stack and convert new stack to same units.
+	//SedStack nstack = stack.copy();
+	convertUnits(stack, stackConfig.getBinsizeUnit(), stackConfig.getYUnits());
 	
-	List<String> xunits = stack.getSpectralUnits();
-	List<String> yunits = stack.getFluxUnits();
-	convertUnits(stack, "Angstrom", "Jy");
+	/* calculate number of bins. If there are too many bins 
+	* (i.e., so many that it will cause a Memory Exception in Python), 
+	* warn the user
+	*/
+	int numOfBins = calculateNumberOfBins(stack);
+	if (numOfBins > 500000) {
+	    NarrowOptionPane.showMessageDialog(null, 
+		    "Too many bins (number of bins calculated: "+numOfBins+"). "+
+			    "Make the binsize smaller, or use logarithmic binning.", 
+		    "ERROR", 
+		    JOptionPane.ERROR_MESSAGE);
+	    throw new StackException();
+	}
 	
 	SedStackerStackPayload payload = (SedStackerStackPayload) SAMPFactory.get(SedStackerStackPayload.class);
 	
-	for (int i=0; i<stack.getNumberOfSegments(); i++) {
+	for (int i=0; i<stack.getSeds().size(); i++) {
+	    
 	    SegmentPayload segment = (SegmentPayload) SAMPFactory.get(SegmentPayload.class);
-	    segment.setX(stack.getSegment(i).getSpectralAxisValues());
-	    segment.setY(stack.getSegment(i).getFluxAxisValues());
-	    segment.setYerr((double[]) stack.getSegment(i).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE));
-	    segment.setZ(stack.getRedshift(stack.getSegment(i)));
-	    // 'normConst' and 'redshift' aren't used for stacking
-	    segment.setCounts(null);
-	    segment.setNormConstant(1.0);
+	    
+	    segment.setX(stack.getSed(i).getSegment(0).getSpectralAxisValues());
+	    segment.setY(stack.getSed(i).getSegment(0).getFluxAxisValues());
+	    segment.setYerr((double[]) stack.getSed(i).getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE));
+	    
 	    payload.addSegment(segment);
-	}
+	}	
 	payload.setStatistic(stackConfig.getStatistic());
-	payload.setBinsize(stackConfig.getBinSize());
-	payload.setLogBin(stackConfig.isLogBin());
+	payload.setBinsize(stackConfig.getBinsize());
+	payload.setLogBin(stackConfig.isLogbin());
 	payload.setSmooth(stackConfig.isSmooth());
 	payload.setSmoothBinsize(stackConfig.getSmoothBinsize());
 	
@@ -83,126 +105,87 @@ public class SedStackerStacker {
         Response rspns = controller.callAndWait(client.findSherpa(), message.get(), 10);
         if (client.isException(rspns)) {
             Exception ex = client.getException(rspns);
+	    NarrowOptionPane.showMessageDialog(null, 
+		    "A stacking error has occured. Please check the Iris documentation.", 
+		    "ERROR", 
+		    JOptionPane.ERROR_MESSAGE);
             throw ex;
         }
 
-        SedStackerRedshiftPayload response = (SedStackerRedshiftPayload) SAMPFactory.get(rspns.getResult(), SedStackerRedshiftPayload.class);
+        SedStackerStackPayload response = (SedStackerStackPayload) SAMPFactory.get(rspns.getResult(), SedStackerStackPayload.class);
 
-	int i=0;
-	for (SegmentPayload segment : response.getSegments()) {
-	    stack.getSegment(i).setSpectralAxisValues(segment.getX());
-	    stack.getSegment(i).setSpectralAxisValues(segment.getY());
-	    stack.getSegment(i).setDataValues(segment.getYerr(), SEDMultiSegmentSpectrum.E_UTYPE);
-	    i++;
-	}
-	convertUnits(stack, xunits, yunits);
+	SegmentPayload segment = response.getSegments().get(0);
+	
+	// create a Sed from the response
+	Segment seg = new Segment();
+	seg.setFluxAxisValues(segment.getY());
+	seg.setSpectralAxisValues(segment.getX());
+	seg.setDataValues(segment.getYerr(), SEDMultiSegmentSpectrum.E_UTYPE);
+	seg.setFluxAxisUnits(stackConfig.getYUnits());
+	seg.setSpectralAxisUnits(stackConfig.getBinsizeUnit());
+	
+	ExtSed stackedSed = new ExtSed(stack.getName()+"_stacked_"+stackConfig.getStatistic());
+	stackedSed.addSegment(seg);
+	stackedSed.addAttachment(COUNTS, segment.getCounts());
+	
+	return stackedSed;
+	
     }
 	
 	
-	private void convertUnits(Stack stack, String xUnits, String yUnits) throws SedException, UnitsException {
-	for(int i=0; i<stack.getNumberOfSegments(); i++) {
-	    ExtSed seg = new ExtSed("seg");
-	    seg.addSegment(stack.getSegment(i));
+	private void convertUnits(SedStack stack, String xUnits, String yUnits) throws SedException, UnitsException {
+	
+	for(int i=0; i<stack.getSeds().size(); i++) {
 	    
-	    ExtSed nseg = ExtSed.flatten(seg, xUnits, yUnits);
+	    ExtSed sed = stack.getSeds().get(i);
+	    ExtSed nsed = ExtSed.flatten(sed, xUnits, yUnits);
+
+	    stack.getSeds().get(i).getSegment(0).setFluxAxisUnits(yUnits);
+	    stack.getSeds().get(i).getSegment(0).setSpectralAxisUnits(xUnits);
+	    stack.getSeds().get(i).getSegment(0).setFluxAxisValues(nsed.getSegment(0).getFluxAxisValues());
+	    stack.getSeds().get(i).getSegment(0).setSpectralAxisValues(nsed.getSegment(0).getSpectralAxisValues());
+	    stack.getSeds().get(i).getSegment(0).setDataValues((double[]) nsed.getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE), 
+		    SEDMultiSegmentSpectrum.E_UTYPE);
 	    
-	    stack.getSegment(i).setFluxAxisUnits(yUnits);
-	    stack.getSegment(i).setSpectralAxisUnits(xUnits);
-	    stack.getSegment(i).setFluxAxisValues(nseg.getSegment(0).getFluxAxisValues());
-	    stack.getSegment(i).setSpectralAxisValues(nseg.getSegment(0).getSpectralAxisValues());
-	    stack.getSegment(i).setDataValues((double[]) nseg.getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE), SEDMultiSegmentSpectrum.E_UTYPE);
 	}
     }
     
-    private void convertUnits(Stack stack, List<String> xUnits, List<String> yUnits) throws SedException, UnitsException {
-	for(int i=0; i<stack.getNumberOfSegments(); i++) {
-	    ExtSed seg = new ExtSed("seg");
-	    seg.addSegment(stack.getSegment(i));
+    private void convertUnits(SedStack stack, List<String> xUnits, List<String> yUnits) throws SedException, UnitsException {
+	for(int i=0; i<stack.getSeds().size(); i++) {
 	    
-	    ExtSed nseg = ExtSed.flatten(seg, xUnits.get(i), yUnits.get(i));
+	    // convert the units with ExtSed.flatten()
+	    ExtSed sed = stack.getSeds().get(i);
+	    ExtSed nsed = ExtSed.flatten(sed, xUnits.get(i), yUnits.get(i)); // PROBLEM HERE!!!
 	    
-	    stack.getSegment(i).setFluxAxisUnits(yUnits.get(i));
-	    stack.getSegment(i).setSpectralAxisUnits(yUnits.get(i));
-	    stack.getSegment(i).setFluxAxisValues(nseg.getSegment(0).getFluxAxisValues());
-	    stack.getSegment(i).setSpectralAxisValues(nseg.getSegment(0).getSpectralAxisValues());
-	    stack.getSegment(i).setDataValues((double[]) nseg.getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE), SEDMultiSegmentSpectrum.E_UTYPE);
+	    // set the converted spectral and flux values of each SED
+	    stack.getSeds().get(i).getSegment(0).setFluxAxisUnits(yUnits.get(i));
+	    stack.getSeds().get(i).getSegment(0).setSpectralAxisUnits(xUnits.get(i));
+	    stack.getSeds().get(i).getSegment(0).setFluxAxisValues(nsed.getSegment(0).getFluxAxisValues());
+	    stack.getSeds().get(i).getSegment(0).setSpectralAxisValues(nsed.getSegment(0).getSpectralAxisValues());
+	    stack.getSeds().get(i).getSegment(0).setDataValues((double[]) nsed.getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE), 
+		    SEDMultiSegmentSpectrum.E_UTYPE);
+	    
 	}
     }
-	
-	
-	
-//	stack.setFluxValues(convertFluxValues(stack, "erg/s/cm2").get("y"));
-//	stack.setFluxErrorValues(convertFluxValues(stack, "erg/s/cm2").get("err"));
-//	stack.setSpectralValues(convertSpectralValues(stack, "Angstrom"));
-//        
-//        SedStackerStackPayload payload = (SedStackerStackPayload) SAMPFactory.get(SedStackerStackPayload.class);
-//        payload.setX(stack.getSpectralValues());
-//        payload.setY(stack.getFluxValues());
-//	payload.setYErr(stack.getFluxErrorValues());
-//	
-//	payload.setStatistic(stackConfig.getStatistic());
-//	payload.setBinSize(stackConfig.getBinSize());
-//	payload.setBinUnits(stackConfig.getBinUnits());
-//	payload.setLogBinning(stackConfig.isLogBinning());
-//	payload.setSmooth(stackConfig.isSmooth());
-//	payload.setSmoothBoxSize(stackConfig.getSmoothBoxSize());
-//	payload.setCounts(new double[stack.getNumberOfSegments()]);
-//	
-//        SAMPMessage message = SAMPFactory.createMessage(STACK_MTYPE, payload, SedStackerStackPayload.class);
-//
-//        Response rspns = controller.callAndWait(sherpaId, message.get(), 10);
-//        if (client.isException(rspns)) {
-//            Exception ex = client.getException(rspns);
-//            throw ex;
-//        }
-//
-//        SedStackerStackPayload response = (SedStackerStackPayload) SAMPFactory.get(rspns.getResult(), SedStackerStackPayload.class);
-//        stack.stackedSed.setSpectralValues(response.getX());
-//        stack.stackedSed.setFluxValues(response.getY());
-//	stack.stackedSed.setFluxErrorValues(response.getYErr());
-//	stack.stackedSed.setCounts(response.getCounts());
-//	
-//	//Set the units back to the original units
-//	for (int i=0; i<stack.getNumberOfSegments(); i++) {
-//	    stack.setFluxValues(convertFluxValues(stack, yunits.get(i)).get("y"));
-//	    stack.setFluxErrorValues(convertFluxValues(stack, yunits.get(i)).get("err"));
-//	    stack.setSpectralValues(convertSpectralValues(stack, xunits.get(i)));
-//	    stack.setFluxUnits(yunits);
-//	    stack.setSpectralUnits(xunits);
-//	}
-//        
-//        //stack.checkChar();
-//        
-//        //manager.add(inputSed);
-//        
-//        //return stack;
-//    }
-//
-//    private List<double[]> convertSpectralValues(Stack stack, String toUnits) throws UnitsException, SedNoDataException {
-//	List<double[]> conversions = new ArrayList<double[]>();
-//	for (int i=0; i<stack.getNumberOfSegments(); i++) {
-//	    double[] value = stack.getSegment(i).getSpectralAxisValues();
-//	    String fromUnits = stack.getSegment(i).getSpectralAxisUnits();
-//	    conversions.set(i, XUnits.convert(value, new XUnits(fromUnits), new XUnits(toUnits)));
-//	}
-//	return conversions;
-//    }
-//    
-//    private Map<String, List<double[]>> convertFluxValues(Stack stack, String toUnits) throws UnitsException, SedNoDataException, SedInconsistentException {
-//	Map<String, List<double[]>> fluxMap = new HashMap();
-//	List<double[]> yconversions = new ArrayList<double[]>();
-//	List<double[]> errconversions = new ArrayList<double[]>();
-//	for (int i=0; i<stack.getNumberOfSegments(); i++) {
-//	    double[] y = stack.getSegment(i).getFluxAxisValues();
-//	    double[] x = stack.getSegment(i).getSpectralAxisValues();
-//	    double[] err = (double[]) stack.getSegment(i).getDataValues("Spectrum.Data.FluxAxis.Accuracy.StatError");
-//	    String fromUnits = stack.getSegment(i).getFluxAxisUnits();
-//	    String xUnits = stack.getSegment(i).getSpectralAxisUnits();
-//	    yconversions.set(i, YUnits.convert(y, x, new YUnits(fromUnits), new XUnits(xUnits), new YUnits(toUnits), true));
-//	    errconversions.set(i, YUnits.convertErrors(err, y, x, new YUnits(fromUnits), new XUnits(xUnits), new YUnits(toUnits), true));
-//	}
-//	fluxMap.put("y", yconversions);
-//	fluxMap.put("err", errconversions);
-//	return fluxMap;
-//    }
+    
+    private static double[] convertXValues(double[] values, String fromUnits, String toUnits) throws UnitsException {
+        return XUnits.convert(values, new XUnits(fromUnits), new XUnits(toUnits));
+    }
+
+    private int calculateNumberOfBins(SedStack stack) throws SedNoDataException {
+	double max = stack.getSed(0).getSegment(0).getSpectralAxisValues()[0];
+	double min = stack.getSed(0).getSegment(0).getSpectralAxisValues()[0];
+	for (int i=0; i<stack.getSeds().size(); i++) {
+	    double[] x = stack.getSed(i).getSegment(0).getSpectralAxisValues();
+	    for (int j=0; j<x.length; j++) {
+		if (x[j] > max)
+		    max = x[j];
+		if (x[j] < min)
+		    min = x[j];
+	    }
+	}
+	Double num = (max-min)/stack.getConf().getStackConfiguration().getBinsize();
+	return num.intValue();
+    }
+    
 }

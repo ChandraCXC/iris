@@ -26,26 +26,16 @@ import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.sed.science.stacker.SedStackerAttachments;
 
 import cfa.vo.sedlib.common.SedException;
-import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sherpa.SherpaClient;
-import java.text.NumberFormat;
-import java.text.ParsePosition;
 import org.astrogrid.samp.Response;
 import spv.spectrum.SEDMultiSegmentSpectrum;
 import spv.util.UnitsException;
 import spv.util.XUnits;
-import spv.util.YUnits;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import javax.swing.JOptionPane;
+import org.astrogrid.samp.client.SampException;
 
 /**
  *
@@ -61,7 +51,9 @@ public class SedStackerNormalizer {
         this.controller = controller;
     }
 
-    
+    public void normalize(SedStack stack) throws Exception {
+	normalize(stack, stack.getConf().getNormConfiguration());
+    }
 
     public void normalize(SedStack stack, NormalizationConfiguration normConfig) throws Exception {
 
@@ -73,10 +65,11 @@ public class SedStackerNormalizer {
             throw new SedNoDataException();
 	}
 	
-	String sherpaId = client.findSherpa();
-
-        if (sherpaId == null) {
+	try {
+	    client.findSherpa();
+	} catch (SampException ex) {
             NarrowOptionPane.showMessageDialog(null,
+		    "Error normalizing: "+
                     "Iris could not find the Sherpa process running in the background. Please check the Troubleshooting section in the Iris documentation.",
                     "Cannot connect to Sherpa",
                     NarrowOptionPane.ERROR_MESSAGE);
@@ -86,10 +79,10 @@ public class SedStackerNormalizer {
 	// Create copy of stack and convert new stack to same units. First save the original units for later.
 	List<String> xunits = stack.getSpectralUnits();
 	List<String> yunits = stack.getFluxUnits();
-	SedStack nstack = stack.copy();
+	//SedStack nstack = stack.copy();
 	
-	String xunit = "";
-	String yunit = "";
+	String xunit = null;
+	String yunit = null;
 	if (normConfig.isIntegrate()) {
 	    if (normConfig.getStats().toLowerCase().equals("value")) {
 		String val = normConfig.getIntegrateValueYUnits();
@@ -113,6 +106,9 @@ public class SedStackerNormalizer {
 		    yunit = "Jy-Hz";
 		    xunit = "Hz";
 		}
+	    } else {
+		yunit = normConfig.getIntegrateValueYUnits();
+		xunit = normConfig.getXUnits();
 	    }
 	} else {
 	    xunit = normConfig.getAtPointXUnits();
@@ -122,13 +118,13 @@ public class SedStackerNormalizer {
 	
 	SedStackerNormalizePayload payload = (SedStackerNormalizePayload) SAMPFactory.get(SedStackerNormalizePayload.class);
 	
-	for (int i=0; i<nstack.getSeds().size(); i++) {
+	for (int i=0; i<stack.getSeds().size(); i++) {
 	    
 	    SegmentPayload segment = (SegmentPayload) SAMPFactory.get(SegmentPayload.class);
 	    
-	    segment.setX(nstack.getSeds().get(i).getSegment(0).getSpectralAxisValues());
-	    segment.setY(nstack.getSeds().get(i).getSegment(0).getFluxAxisValues());
-	    segment.setYerr((double[]) nstack.getSeds().get(i).getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE));
+	    segment.setX(stack.getSed(i).getSegment(0).getSpectralAxisValues());
+	    segment.setY(stack.getSed(i).getSegment(0).getFluxAxisValues());
+	    segment.setYerr((double[]) stack.getSed(i).getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE));
 	    payload.addSegment(segment);
 	    
 	}
@@ -151,13 +147,31 @@ public class SedStackerNormalizer {
 		payload.setXmin("min");
 	    }
 	    
-	    payload.setStats(normConfig.getStats().toLowerCase());
+	    // control normalization statistic (median, average, or value)
+	    if (normConfig.getStats().equals("Median")) {
+		payload.setStats("median");
+	    } else if (normConfig.getStats().equals("Average")) {
+		payload.setStats("avg");
+	    } else {
+		payload.setStats("value");
+	    }
 	    payload.setY0(normConfig.getYValue());
+	    
 	} else {
+	    
 	    payload.setX0(normConfig.getAtPointXValue());
-	    payload.setStats(normConfig.getAtPointStats());
 	    payload.setY0(normConfig.getAtPointYValue());
+	    
+	    // control normalization statistic (median, average, or value)
+	    if (normConfig.getAtPointStats().equals("Median")) {
+		payload.setStats("median");
+	    } else if (normConfig.getAtPointStats().equals("Average")) {
+		payload.setStats("avg");
+	    } else {
+		payload.setStats("value");
+	    }
 	}
+	
 	if (normConfig.isMultiply()) {
 	    payload.setNormOperator(0);
 	} else {
@@ -177,26 +191,16 @@ public class SedStackerNormalizer {
 	int c=0;
 	for (SegmentPayload segment : response.getSegments()) {
 	    
-	    nstack.getSeds().get(c).getSegment(0).setSpectralAxisValues(segment.getX());
-	    nstack.getSeds().get(c).getSegment(0).setFluxAxisValues(segment.getY());
-	    nstack.getSeds().get(c).getSegment(0).setDataValues(segment.getYerr(), SEDMultiSegmentSpectrum.E_UTYPE);
+	    stack.getSeds().get(c).getSegment(0).setSpectralAxisValues(segment.getX());
+	    stack.getSeds().get(c).getSegment(0).setFluxAxisValues(segment.getY());
+	    stack.getSeds().get(c).getSegment(0).setDataValues(segment.getYerr(), SEDMultiSegmentSpectrum.E_UTYPE);
 	    stack.getSeds().get(c).addAttachment(SedStackerAttachments.NORM_CONSTANT, segment.getNormConstant());
 	    c++;
 	    
 	}
 	
 	// convert back to the original units of the Stack
-	convertUnits(nstack, xunits, yunits);
-	
-	// store the new values in the original stack
-	for (int i=0; i<nstack.getSeds().size(); i++) {
-	    stack.getSeds().get(i).getSegment(0).setSpectralAxisValues(nstack.getSeds().get(i).getSegment(0).getSpectralAxisValues());
-	    stack.getSeds().get(i).getSegment(0).setFluxAxisValues(nstack.getSeds().get(i).getSegment(0).getFluxAxisValues());
-	    stack.getSeds().get(i).getSegment(0).setDataValues(nstack.getSeds().get(i).getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE),
-		    SEDMultiSegmentSpectrum.E_UTYPE);
-	}
-	
-	NarrowOptionPane.showMessageDialog(null, "Successfully normalized stack.", "SED Stacker Message", JOptionPane.INFORMATION_MESSAGE);
+	convertUnits(stack, xunits, yunits);
     }
     
     
