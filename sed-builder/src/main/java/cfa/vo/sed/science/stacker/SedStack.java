@@ -23,10 +23,8 @@
 package cfa.vo.sed.science.stacker;
 
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.sed.science.stacker.SedStackerAttachments;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedException;
-import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -42,7 +40,7 @@ import spv.util.UnitsException;
  *
  * @author olaurino
  */
-public class SedStack implements Cloneable{
+public class SedStack implements Cloneable {
     private String name;
    
     public SedStack(String name) {
@@ -288,6 +286,47 @@ public class SedStack implements Cloneable{
     
     public SedStack copy() throws CloneNotSupportedException {
 	return (SedStack) this.clone();
+	
+//	ObjectOutputStream oos = null;
+//        ObjectInputStream ois = null;
+//
+//        try {
+//
+//            SedStack copy = null;
+//
+//            // deep copy
+//            ByteArrayOutputStream bos = new ByteArrayOutputStream(); 
+//            oos = new ObjectOutputStream(bos); 
+//            // serialize and pass the object
+//            oos.writeObject(this);   
+//            oos.flush();               
+//            ByteArrayInputStream bin = 
+//			        new ByteArrayInputStream(bos.toByteArray()); 
+//            ois = new ObjectInputStream(bin);                  
+//            // return the new object
+//            copy = (SedStack) ois.readObject(); 
+//
+//            return copy;
+//        }
+//        catch(Exception e)
+//        {
+//            System.out.println("Exception in main = " +  e);
+//        }
+//        finally
+//        {        
+//	    try {
+//		oos.close();
+//		ois.close();
+//	    } catch (IOException ex) {
+//		Logger.getLogger(SedStack.class.getName()).log(Level.SEVERE, null, ex);
+//	    }
+//        }
+//	
+//	return null;
+    }
+    
+    public ExtSed getSed(int i) {
+	return seds.get(i);
     }
     
     @Override
@@ -301,12 +340,19 @@ public class SedStack implements Cloneable{
     
     public ExtSed createSedFromStack(SedStack stack) throws SedException, UnitsException {
 
-	ExtSed sedBuilderStack = new ExtSed(stack.getName());
+	return createSedFromStack(stack, stack.getName());
+    }
+    
+    public ExtSed createSedFromStack(SedStack stack, String name) throws SedException, UnitsException {
+
+	ExtSed sedBuilderStack = new ExtSed(name);
 	
 	for (ExtSed sed : stack.getSeds()) {
 	    ExtSed flattenedSed = ExtSed.flatten(sed, sed.getSegment(0).getSpectralAxisUnits(), sed.getSegment(0).getFluxAxisUnits());
 	    Segment seg = flattenedSed.getSegment(0);
 	    String targetName = sed.getId();
+	    if (!seg.getTarget().isSetName())
+		seg.createTarget().createName();
 	    seg.getTarget().getName().setValue(targetName);
 	    //seg.getTarget().setPos(flattenedSed.getSegment(0).getTarget().getPos());
 	    sedBuilderStack.addSegment(seg);
@@ -323,6 +369,7 @@ public class SedStack implements Cloneable{
 		nsed.addAttachment(SedStackerAttachments.ORIG_REDSHIFT, sed.getAttachment(SedStackerAttachments.ORIG_REDSHIFT));
 		nsed.addAttachment(SedStackerAttachments.REDSHIFT, sed.getAttachment(SedStackerAttachments.REDSHIFT));
 		nsed.addAttachment(SedStackerAttachments.NORM_CONSTANT, sed.getAttachment(SedStackerAttachments.NORM_CONSTANT));
+		nsed.setId(sed.getId());
 		nseds.add(nsed);
 	    } catch (SedNoDataException ex) {
 		Logger.getLogger(SedStack.class.getName()).log(Level.SEVERE, null, ex);

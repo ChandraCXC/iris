@@ -35,7 +35,7 @@ import spv.spectrum.SEDMultiSegmentSpectrum;
 import spv.util.UnitsException;
 
 import java.util.List;
-import javax.swing.JOptionPane;
+import org.astrogrid.samp.client.SampException;
 
 /**
  *
@@ -62,10 +62,11 @@ public class SedStackerRedshifter {
         if(stack.getSeds().isEmpty())
             throw new SedNoDataException();
 	
-	String sherpaId = client.findSherpa();
-
-        if (sherpaId == null) {
+	try {
+	    client.findSherpa();
+	} catch (SampException ex) {
             NarrowOptionPane.showMessageDialog(null,
+		    "Error redshifting: "+
                     "Iris could not find the Sherpa process running in the background. Please check the Troubleshooting section in the Iris documentation.",
                     "Cannot connect to Sherpa",
                     NarrowOptionPane.ERROR_MESSAGE);
@@ -75,23 +76,23 @@ public class SedStackerRedshifter {
 	// Create copy of stack and convert new stack to same units. First save the original units for later.
 	List<String> xunits = stack.getSpectralUnits();
 	List<String> yunits = stack.getFluxUnits();
-	SedStack nstack = stack.copy();
+	//SedStack nstack = stack.copy();
 	//convertUnits(stack, "Angstrom", "Jy");  //TODO: chose which method to use here.
-	convertUnits(nstack, "Angstrom");
+	convertUnits(stack, "Angstrom");
 	
 	SedStackerRedshiftPayload payload = (SedStackerRedshiftPayload) SAMPFactory.get(SedStackerRedshiftPayload.class);
 	
-	for (int i=0; i<nstack.getSeds().size(); i++) {
+	for (int i=0; i<stack.getSeds().size(); i++) {
 	    
 	    SegmentPayload segment = (SegmentPayload) SAMPFactory.get(SegmentPayload.class);
 	    
-	    segment.setX(nstack.getSeds().get(i).getSegment(0).getSpectralAxisValues());
-	    segment.setY(nstack.getSeds().get(i).getSegment(0).getFluxAxisValues());
-	    segment.setYerr((double[]) nstack.getSeds().get(i).getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE));
+	    segment.setX(stack.getSed(i).getSegment(0).getSpectralAxisValues());
+	    segment.setY(stack.getSed(i).getSegment(0).getFluxAxisValues());
+	    segment.setYerr((double[]) stack.getSed(i).getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE));
 	    
-	    if (nstack.getSeds().get(i).getAttachment(REDSHIFT) != "") {
+	    if (stack.getSed(i).getAttachment(REDSHIFT) != null) {
 		
-		segment.setZ(Double.valueOf(nstack.getSeds().get(i).getAttachment(REDSHIFT).toString()));
+		segment.setZ(Double.valueOf(stack.getSed(i).getAttachment(REDSHIFT).toString()));
 		
 	    } else {
 		
@@ -107,7 +108,7 @@ public class SedStackerRedshifter {
 	
         SAMPMessage message = SAMPFactory.createMessage(REDSHIFT_MTYPE, payload, SedStackerRedshiftPayload.class);
 
-        Response rspns = controller.callAndWait(sherpaId, message.get(), 10);
+        Response rspns = controller.callAndWait(client.findSherpa(), message.get(), 10);
         if (client.isException(rspns)) {
             Exception ex = client.getException(rspns);
             throw ex;
@@ -118,26 +119,15 @@ public class SedStackerRedshifter {
 	int c=0;
 	for (SegmentPayload segment : response.getSegments()) {
 	    
-	    nstack.getSeds().get(c).getSegment(0).setSpectralAxisValues(segment.getX());
-	    nstack.getSeds().get(c).getSegment(0).setFluxAxisValues(segment.getY());
-	    nstack.getSeds().get(c).getSegment(0).setDataValues(segment.getYerr(), SEDMultiSegmentSpectrum.E_UTYPE);
+	    stack.getSed(c).getSegment(0).setSpectralAxisValues(segment.getX());
+	    stack.getSed(c).getSegment(0).setFluxAxisValues(segment.getY());
+	    stack.getSed(c).getSegment(0).setDataValues(segment.getYerr(), SEDMultiSegmentSpectrum.E_UTYPE);
 	    c++;
 	    
 	}
 	
 	// convert back to the original units of the Stack
-	convertUnits(nstack, xunits, yunits);
-	
-	// store the new values in the original stack
-	for (int i=0; i<nstack.getSeds().size(); i++) {
-	    stack.getSeds().get(i).getSegment(0).setSpectralAxisValues(nstack.getSeds().get(i).getSegment(0).getSpectralAxisValues());
-	    stack.getSeds().get(i).getSegment(0).setFluxAxisValues(nstack.getSeds().get(i).getSegment(0).getFluxAxisValues());
-	    stack.getSeds().get(i).getSegment(0).setDataValues(nstack.getSeds().get(i).getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE),
-		    SEDMultiSegmentSpectrum.E_UTYPE);
-	    stack.getSeds().get(i).addAttachment(REDSHIFT, zconfig.getToRedshift());
-	}
-	
-	NarrowOptionPane.showMessageDialog(null, "Successfully redshifted stack.", "SED Stacker Message", JOptionPane.INFORMATION_MESSAGE);
+	convertUnits(stack, xunits, yunits);
     }
     
     
