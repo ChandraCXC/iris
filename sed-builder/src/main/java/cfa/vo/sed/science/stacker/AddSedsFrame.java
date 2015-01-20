@@ -31,13 +31,10 @@ import static cfa.vo.sed.science.stacker.SedStackerAttachments.ORIG_REDSHIFT;
 import cfa.vo.sedlib.Param;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedException;
-import cfa.vo.sedlib.common.SedInconsistentException;
-import cfa.vo.sedlib.common.SedNoDataException;
 import java.beans.PropertyVetoException;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTable;
@@ -282,31 +279,37 @@ public class AddSedsFrame extends javax.swing.JInternalFrame {
 		    
 		    ExtSed sed = openSeds.get(i);
 		    
-		    // Check for invalid redshift values
-		    if (jTable1.getValueAt(i, 1) != null && isNumeric(jTable1.getValueAt(i, 1).toString()) && Double.valueOf((String) jTable1.getValueAt(i, 1)) < 0) {
-			
-			NarrowOptionPane.showMessageDialog(null, "Invalid redshift values", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
-			throw new StackException();
-			
-		    } else if (jTable1.getValueAt(i, 1) == null) {
-			
-			;
-			
-		    } else if (!isNumeric(jTable1.getValueAt(i, 1))) {
-			
-			NarrowOptionPane.showMessageDialog(null, "Invalid redshift values", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
-			throw new StackException();
-			
-		    } else {}
-		    
 		    // if an SED is empty, do not add it to Stack.
 		    if (sed.getNumberOfSegments() == 0) {
 			throw new StackException();
 		    }
+		    Object redshift = jTable1.getValueAt(i, 1);
+		    
+		    // Check for invalid redshift values
+		    try {
+			if (redshift != null && isNumeric(redshift.toString()) && Double.valueOf((String) redshift) < 0) {
 
+			    NarrowOptionPane.showMessageDialog(null, "Invalid redshift values", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
+			    throw new StackException();
+
+			} else if (redshift == null) {
+
+			    ;
+
+			} else if (!isNumeric(redshift)) {
+
+			    NarrowOptionPane.showMessageDialog(null, "Invalid redshift values", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
+			    throw new StackException();
+
+			} else {}
+		    } catch (NumberFormatException ex) {
+			if (redshift.toString().length() == 0)
+			    redshift = null;
+		    }
+		    
 		    if (!isSegmentsAsSeds()) {
 
-			sed.addAttachment(ORIG_REDSHIFT, jTable1.getValueAt(i, 1));
+			sed.addAttachment(ORIG_REDSHIFT, redshift);
 			sed.addAttachment(REDSHIFT, sed.getAttachment(ORIG_REDSHIFT));
 			sed.addAttachment(NORM_CONSTANT, 1.0);
 			stack.add(sed);
@@ -318,7 +321,7 @@ public class AddSedsFrame extends javax.swing.JInternalFrame {
 			    Segment seg = sed.getSegment(j);
 			    ExtSed nsed = new ExtSed(sed.getId()+": "+seg.getTarget().getName().getValue(), false);
 			    nsed.addSegment(seg);
-			    nsed.addAttachment(ORIG_REDSHIFT, jTable1.getValueAt(i, 1));
+			    nsed.addAttachment(ORIG_REDSHIFT, redshift);
 			    nsed.addAttachment(REDSHIFT, nsed.getAttachment(ORIG_REDSHIFT));
 			    nsed.addAttachment(NORM_CONSTANT, 1.0);
 			    stack.add(nsed);
@@ -340,19 +343,6 @@ public class AddSedsFrame extends javax.swing.JInternalFrame {
 	    // inform the user that if one or more of the SEDs selected were empty,
 	    // that they were not added to the Stack.
 	    if (c != jTable1.getSelectedRowCount()) {
-//		StringBuilder seds = new StringBuilder();
-//		for (String s : emptySeds) {
-//		    seds.append(s);
-//		    if (emptySeds.size() > 1) {
-//			if (s.equals(emptySeds.get(c))) {
-//			    seds.append("and " + s);
-//			} else {
-//			    seds.append(s + ", ");
-//			}
-//		    } else {
-//			seds.append(s);
-//		    }
-//		}
 		
 		NarrowOptionPane.showMessageDialog(null, 
 			"SEDs '"+emptySeds+"' are empty. These SEDs were not added to the Stack.", 
@@ -400,31 +390,12 @@ public class AddSedsFrame extends javax.swing.JInternalFrame {
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
-    
+    // update the SEDs in the AddSedsFrame table for changes in the SED Builder SEDs.
     public void updateSeds(SedStack stack) {
 	setStack(stack);
 	setOpenSeds((List) manager.getSeds());
 	jTable1.setModel(new AddSedsTableModel(openSeds));
     }
-    
-//    public void updateSedBuilderStack() throws SedInconsistentException, SedNoDataException, SedException, UnitsException {
-//	// get the representative Sed in the SedBuilder
-//	ExtSed sed = null;
-//	if (manager.existsSed(stack.getName())) {
-//	    sed = manager.getSelected(); // FIXME
-//	} else {
-//	    manager.newSed(stack.getName());
-//	    sed = manager.getSelected();
-//	}
-//	// update the Sed with the latest version of the currently selected Stack
-//	for (int i=0; i<sed.getNumberOfSegments(); i++) {
-//	    sed.removeSegment(i);
-//	}
-//	for (int i=0; i<stack.getSeds().size(); i++) {
-//	    Segment seg = stack.getSedBuilderStack().getSegment(i);
-//	    sed.addSegment(seg);
-//	}
-//    }
     
     
     public class AddSedsTableModel extends AbstractTableModel {

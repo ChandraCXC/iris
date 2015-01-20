@@ -8,7 +8,8 @@ package cfa.vo.sed.science.stacker;
 import cfa.vo.iris.sed.ExtSed;
 import static cfa.vo.sed.science.stacker.SedStackerAttachments.NORM_CONSTANT;
 import static cfa.vo.sed.science.stacker.SedStackerAttachments.ORIG_REDSHIFT;
-import java.util.ArrayList;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -24,7 +25,7 @@ public class StackTableModel extends AbstractTableModel {
 	
     }
 
-    public StackTableModel(SedStack stack) {
+    public StackTableModel(final SedStack stack) {
 	data = new String[stack.getSeds().size()][4];
 	int i =0;
 	for (ExtSed sed : stack.getSeds()) {
@@ -34,6 +35,22 @@ public class StackTableModel extends AbstractTableModel {
 	    data[i][3] = getNumOfPoints(sed).toString();
 	    i++;
 	}
+	
+	this.addTableModelListener(new TableModelListener() {
+
+	    @Override
+	    public void tableChanged(TableModelEvent e) {
+		if (e.getType() == TableModelEvent.UPDATE) {
+		    int row = e.getFirstRow();
+		    int column = e.getColumn();
+		    Object value = ((StackTableModel) e.getSource()).getValueAt(row, column);
+		    stack.getSed(row).addAttachment(SedStackerAttachments.REDSHIFT, value);
+		    stack.getSed(row).addAttachment(SedStackerAttachments.ORIG_REDSHIFT, value);
+		    stack.getOrigSeds().get(row).addAttachment(SedStackerAttachments.REDSHIFT, value);
+		    stack.getOrigSeds().get(row).addAttachment(SedStackerAttachments.ORIG_REDSHIFT, value);
+		}
+	    }
+	});
     }
     
     @Override
@@ -56,8 +73,17 @@ public class StackTableModel extends AbstractTableModel {
 	return columnNames[col];
     }
     
-    public void setValueAt(String value, int row, int col) {
-	data[row][col] = value;
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+	if (this.getValueAt(rowIndex, 1) == null || this.getValueAt(rowIndex, 1) == "")
+	    return (columnIndex == 1);
+	else 
+	    return false;
+    }
+    
+    @Override
+    public void setValueAt(Object value, int row, int col) {
+	data[row][col] = (String) value;
 	fireTableCellUpdated(row, col);
     }
 
