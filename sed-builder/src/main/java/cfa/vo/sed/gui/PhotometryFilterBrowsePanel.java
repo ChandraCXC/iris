@@ -106,9 +106,9 @@ public class PhotometryFilterBrowsePanel extends javax.swing.JPanel {
             }
         }
         for (FilterSelectionListener listener : listeners) {
-            for (PhotometryFilter filter : filterList) {
-                listener.process(filter, SedCommand.SELECTED);
-            }
+//            for (PhotometryFilter filter : filterList) {
+                listener.process(filterList, SedCommand.SELECTED);
+//            }
         }
     }
     private List<FilterSelectionListener> listeners = new ArrayList();

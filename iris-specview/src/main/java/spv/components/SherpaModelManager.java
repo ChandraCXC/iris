@@ -40,17 +40,24 @@ import cfa.vo.interop.SAMPFactory;
 import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.sherpa.CompositeModel;
 import cfa.vo.sherpa.Model;
 import cfa.vo.sherpa.UserModel;
 import com.sun.xml.tree.ElementNode;
 import com.sun.xml.tree.XmlDocument;
-import org.astrogrid.samp.Client;
+import java.awt.*;
+import java.io.PrintWriter;
+import java.lang.reflect.Constructor;
+import java.util.*;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import org.astrogrid.samp.*;
 import org.astrogrid.samp.Message;
-import org.astrogrid.samp.Response;
-import org.astrogrid.samp.client.ResultHandler;
-import org.astrogrid.samp.client.SampException;
+import org.astrogrid.samp.client.*;
 import org.astrogrid.samp.gui.GuiHubConnector;
 import org.astrogrid.samp.gui.SubscribedClientListModel;
 import org.w3c.dom.Node;
@@ -68,17 +75,6 @@ import spv.util.*;
 import spv.util.sed.SEDException;
 import spv.view.AbstractPlotWidget;
 import spv.view.PlotStatus;
-
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import java.awt.*;
-import java.io.PrintWriter;
-import java.lang.reflect.Constructor;
-import java.util.*;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /*
  *  This is the controller for Sherpa fitting-related operations.
@@ -117,7 +113,7 @@ public class SherpaModelManager extends SpvModelManager {
     private static List<String> fittingParameterNames = new ArrayList<String>();
     private static List<String> fittingParameterDescriptions = new ArrayList<String>();
     private Command callbackOnDispose;
-    private SedlibSedManager manager;
+    
     private ExtSed sed;
 
     static {
@@ -143,19 +139,23 @@ public class SherpaModelManager extends SpvModelManager {
      *  @param  conn     the connection to the SAMP hub
      *  @param  desktop  desktop to work with
      */
-    public SherpaModelManager(Spectrum sp, GuiHubConnector conn, JDesktopPane desktop, SedlibSedManager manager, ExtSed sed) {
+    public SherpaModelManager(Spectrum sp, GuiHubConnector conn, JDesktopPane desktop, ExtSed sed) {
         super(sp, null);
-        this.sed = sed;
+
         this.conn = conn;
-        this.manager = manager;
 
         super.setDesktop(desktop);
 
         sfsp = (SEDFittedSpectrum)fsp;
-
+        this.sed = sed;
         pathMap = new HashMap<String,String>();
         functionNameMap = new HashMap<String,String>();
-        getInternalFrame().setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
+//        this.getInternalFrame().setClosable(false);
+        this.getInternalFrame().setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
+    }
+    
+    public boolean lastFitted(){
+        return this.lastFittingMap != null;
     }
 
     // .execute() is the main method used by the caller to activate the fit.
@@ -261,21 +261,13 @@ public class SherpaModelManager extends SpvModelManager {
         }
     }
 
-    private boolean wantedHidden = false;
-
-    public boolean isWantedHidden() {
-        return wantedHidden;
-    }
-
-    public void setWantedHidden(boolean wantedHidden) {
-        this.wantedHidden = wantedHidden;
-    }
-
     public void dispose() {
-        int option = JOptionPane.showConfirmDialog(frame.getFrame(),
-                "Would you like to keep the model for the SED?", "Confirm",
-                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-        if (option == JOptionPane.NO_OPTION) {
+//        this.getInternalFrame().setClosable(false);
+        this.getInternalFrame().setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
+        if (JOptionPane.showConfirmDialog(frame.getFrame(),
+                "If you close this frame the model will be lost and some Iris components may not be able to work with models anymore.", "Confirm",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) ==
+                JOptionPane.OK_OPTION) {
 
             if (fitManager != null) {
                 fitManager.dispose();
@@ -288,9 +280,8 @@ public class SherpaModelManager extends SpvModelManager {
             }
 
             super.dispose();
-        } else if (option == JOptionPane.YES_OPTION) {
-            this.getInternalFrame().hide();
-            this.wantedHidden = true;
+            
+            SedEvent.getInstance().fire(sed, SedCommand.CHANGED);
         }
     }
 
@@ -942,7 +933,7 @@ public class SherpaModelManager extends SpvModelManager {
                 SherpaFunction f = components.nextElement();
                 Model m = this.createSherpaModel(f);
                 model.addPart(m);
-            }
+}
         } catch (Exception ex) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
         }

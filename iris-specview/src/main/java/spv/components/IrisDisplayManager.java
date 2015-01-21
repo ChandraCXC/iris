@@ -254,7 +254,7 @@ public class IrisDisplayManager extends SecondaryDisplayManager implements SedLi
             }
         }
 
-//        visualizer.invalidateModel(sedDisplaying);
+        visualizer.invalidateModel(sedDisplaying);
         visualizer.disposeCurrentFrame();
 
         secondaryController = null;

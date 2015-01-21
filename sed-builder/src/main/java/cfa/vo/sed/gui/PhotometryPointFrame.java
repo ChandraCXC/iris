@@ -1136,8 +1136,8 @@ public class PhotometryPointFrame extends JInternalFrame implements SegmentFrame
     }
 
     @Override
-    public void process(PhotometryFilter source, SedCommand payload) {
-        pointSegment.getPoint().getSpectralAxis().setFilter(source);
+    public void process(List<PhotometryFilter> source, SedCommand payload) {
+        pointSegment.getPoint().getSpectralAxis().setFilter(source.get(0));
     }
 
     @Override

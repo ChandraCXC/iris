@@ -23,11 +23,12 @@ package cfa.vo.sed.builder.photfilters;
 
 import cfa.vo.iris.events.IListener;
 import cfa.vo.iris.events.SedCommand;
+import java.util.List;
 
 /**
  *
  * @author olaurino
  */
-public interface FilterSelectionListener extends IListener<PhotometryFilter, SedCommand>{
+public interface FilterSelectionListener extends IListener<List<PhotometryFilter>, SedCommand>{
 
 }
