@@ -22,4 +22,6 @@ public interface SegmentPayload {
     public void setNormConstant(Double normConstant);
     public double[] getCounts();
     public void setCounts(double[] counts);
+    public String getId();
+    public void setId(String id);
 }

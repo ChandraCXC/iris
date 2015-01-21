@@ -35,6 +35,7 @@ import spv.spectrum.SEDMultiSegmentSpectrum;
 import spv.util.UnitsException;
 import spv.util.XUnits;
 import java.util.List;
+import javax.swing.JOptionPane;
 import org.astrogrid.samp.client.SampException;
 
 /**
@@ -125,6 +126,7 @@ public class SedStackerNormalizer {
 	    segment.setX(stack.getSed(i).getSegment(0).getSpectralAxisValues());
 	    segment.setY(stack.getSed(i).getSegment(0).getFluxAxisValues());
 	    segment.setYerr((double[]) stack.getSed(i).getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE));
+	    segment.setId(stack.getSed(i).getId());
 	    payload.addSegment(segment);
 	    
 	}
@@ -145,6 +147,15 @@ public class SedStackerNormalizer {
 		payload.setXmin(xmin.toString());
 	    } else {
 		payload.setXmin("min");
+	    }
+	    
+	    // If we switch from wavelength to frequency or energy space, we need
+	    // to switch xmin and xmax. We already check that the user-input
+	    // xmin is smaller than xmax in SedStackerFrame, so switching it here shouldn't
+	    // be a problem.
+	    if (xmin > xmax) {
+		payload.setXmin(xmax.toString());
+		payload.setXmax(xmin.toString());
 	    }
 	    
 	    // control normalization statistic (median, average, or value)
@@ -201,6 +212,16 @@ public class SedStackerNormalizer {
 	
 	// convert back to the original units of the Stack
 	convertUnits(stack, xunits, yunits);
+	
+	/* if some SEDs were skipped during shifting because they had no 
+	* redshift, tell the user which SEDs weren't redshifted.
+	*/
+	if (response.getExcluded() !=null && response.getExcluded().size() > 0) {
+	    NarrowOptionPane.showMessageDialog(null, 
+		    "SEDs "+response.getExcluded()+" were not normalized because the normalization parameters fall outside the SEDs' spectral range.", 
+		    "Unnormalized SEDs", 
+		    JOptionPane.INFORMATION_MESSAGE);
+	}
     }
     
     

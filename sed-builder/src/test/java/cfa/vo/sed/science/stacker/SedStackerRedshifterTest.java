@@ -73,18 +73,21 @@ public class SedStackerRedshifterTest {
 	segment1.setY(y1);
 	segment1.setYerr(yerr1);
 	segment1.setZ(0.1);
+	segment1.setId("Sed1");
 
 	segment2 = (SegmentPayload) SAMPFactory.get(SegmentPayload.class);
 	segment2.setX(x2);
 	segment2.setY(y2);
 	segment2.setYerr(yerr2);
 	segment2.setZ(0.2);
+	segment2.setId("Sed2");
 
 	segment3 = (SegmentPayload) SAMPFactory.get(SegmentPayload.class);
 	segment3.setX(x3);
 	segment3.setY(y3);
 	segment3.setYerr(yerr3);
 	segment3.setZ(0.3);
+	segment3.setId("Sed3");
 	
 	controlY1 = new double[] { 0.1, 0.5, 1.0, 1.5, 5.0, 10.0};
 	controlX1 = new double[] {0.90909091, 4.54545455, 9.09090909, 13.63636364, 45.45454545, 90.90909091};
