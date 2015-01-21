@@ -348,7 +348,6 @@ public class AddSedsFrame extends javax.swing.JInternalFrame {
 			"SEDs '"+emptySeds+"' are empty. These SEDs were not added to the Stack.", 
 			"WARNING", 
 			NarrowOptionPane.WARNING_MESSAGE);
-		return;
 	    }
 	    
 	} catch (java.lang.NullPointerException ex) {
@@ -422,7 +421,7 @@ public class AddSedsFrame extends javax.swing.JInternalFrame {
 			    }
 			}
 		    } catch (IndexOutOfBoundsException ex) {
-			Logger.getLogger(AddSedsFrame.class.getName()).log(Level.WARNING, null, ex);
+			
 		    } 
 
 		    if (redshift == null) {
