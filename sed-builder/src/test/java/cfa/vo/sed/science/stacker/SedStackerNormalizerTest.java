@@ -65,18 +65,21 @@ public class SedStackerNormalizerTest {
 	segment1.setY(y1);
 	segment1.setYerr(yerr1);
 	segment1.setZ(0.1);
+	segment1.setId("Sed1");
 
 	segment2 = (SegmentPayload) SAMPFactory.get(SegmentPayload.class);
 	segment2.setX(x2);
 	segment2.setY(y2);
 	segment2.setYerr(yerr2);
 	segment2.setZ(0.2);
+	segment2.setId("Sed2");
 
 	segment3 = (SegmentPayload) SAMPFactory.get(SegmentPayload.class);
 	segment3.setX(x3);
 	segment3.setY(y3);
 	segment3.setYerr(yerr3);
 	segment3.setZ(0.3);
+	segment3.setId("Sed3");
     }
     
     @After
@@ -215,7 +218,7 @@ public class SedStackerNormalizerTest {
 	config.setIntegrateValueYUnits("erg/s/cm2/Hz");
 	config.setYValue(1.0);
 	
-	// redshift the Stack 
+	// normalize the Stack 
 	SedStackerNormalizer normalizer = new SedStackerNormalizer(controller);
 	normalizer.normalize(stack, config);
 	
@@ -244,6 +247,106 @@ public class SedStackerNormalizerTest {
 	    assertEquals(9.846 * y2[j], stack.getSed(1).getSegment(0).getFluxAxisValues()[j], 0.00001);
 	   
 	assertEquals(1.1529274, Double.valueOf(stack.getSed(2).getAttachment(NORM_CONSTANT).toString()), 0.00001);
+	    
+	controller.stop();
+    }
+    
+    @Test
+    public void testNormalizerOutsideRange() throws Exception {
+	// Start the SAMP controller
+	controller = new SedSAMPController("SEDStacker", "SEDStacker", null);
+        controller.setAutoRunHub(false);
+        controller.start(false);
+
+	Thread.sleep(2000);
+	System.out.println();
+
+	while (!controller.isConnected()) {
+	    System.out.println("waiting connection");
+	    Thread.sleep(1000);
+	}
+	
+	ExtSed sed1 = new ExtSed("Sed1");
+	ExtSed sed2 = new ExtSed("Sed2");
+	ExtSed sed3 = new ExtSed("Sed3");
+	
+	Segment seg1 = new Segment();
+	
+//	for (int k=0; k<x1.length; k++) {
+//	    y1[k] = y1[k]*1e23;
+//	    yerr1[k] = yerr1[k]*1e23;
+//	}
+	seg1.setFluxAxisValues(y1);
+	seg1.setSpectralAxisValues(x1);
+	seg1.setFluxAxisUnits("erg/s/cm2/Angstrom");
+	seg1.setSpectralAxisUnits("Angstrom");
+	seg1.setDataValues(yerr1, SEDMultiSegmentSpectrum.E_UTYPE);
+	sed1.addSegment(seg1);
+	
+	Segment seg2 = new Segment();
+	seg2.setFluxAxisValues(y2);
+	seg2.setSpectralAxisValues(x2);
+	seg2.setFluxAxisUnits("erg/s/cm2/Angstrom");
+	seg2.setSpectralAxisUnits("Angstrom");
+	seg2.setDataValues(yerr2, SEDMultiSegmentSpectrum.E_UTYPE);
+	sed2.addSegment(seg2);
+	
+	Segment seg3 = new Segment();
+	seg3.setFluxAxisValues(y3);
+	
+	//convert the values in x3 to nm so I can test the unit conversions too.
+	for (int k=0; k<x3.length; k++) {
+	    x3[k] = x3[k]*0.1;
+	}
+	seg3.setSpectralAxisValues(x3);
+	seg3.setFluxAxisUnits("erg/s/cm2/Angstrom");
+	seg3.setSpectralAxisUnits("nm");
+	seg3.setDataValues(yerr3, SEDMultiSegmentSpectrum.E_UTYPE);
+	sed3.addSegment(seg3);
+	
+	SedStack stack = new SedStack("Stack");
+	stack.add(sed1); stack.add(sed2); stack.add(sed3);
+	
+	// setup the redshift configuration
+	NormalizationConfiguration config = new NormalizationConfiguration();
+	config.setMultiply(true);
+	config.setIntegrate(true);
+	config.setStats("Value");
+	config.setXUnits("Angstrom");
+	config.setXmax(9.0);
+	config.setXmin(1.5);
+	config.setIntegrateValueYUnits("erg/s/cm2");
+	config.setYValue(1.0);
+	
+	// normalize the Stack 
+	SedStackerNormalizer normalizer = new SedStackerNormalizer(controller);
+	normalizer.normalize(stack, config);
+	
+	List<double[]> xs = new ArrayList();
+	List<double[]> ys = new ArrayList();
+	xs.add(x1); xs.add(x2); xs.add(x3);
+	ys.add(y1); ys.add(y2); ys.add(y3);
+	
+	// stack.getOrigSeds() should return original seds
+	for (int j=0; j<stack.getOrigSeds().size(); j++) {
+	    ExtSed origSed = stack.getOrigSeds().get(j);
+	    double[] x = xs.get(j);
+	    double[] y = ys.get(j);
+	    
+	    for (int i=0; i<stack.getOrigSeds().get(j).getSegment(0).getLength(); i++) {
+		double xOrigValue = origSed.getSegment(0).getSpectralAxisValues()[i];
+		double yOrigValue = origSed.getSegment(0).getFluxAxisValues()[i];
+		assertEquals(xOrigValue, x[i]);
+		assertEquals(yOrigValue, y[i]);
+	    }
+	}
+	
+	for (int j=0; j<stack.getSed(0).getSegment(0).getLength(); j++) 
+	    assertEquals(y1[j], stack.getSed(0).getSegment(0).getFluxAxisValues()[j], 0.00001 * y1[j]);
+	for (int j=0; j<stack.getSed(1).getSegment(0).getLength(); j++)
+	    assertEquals(0.0625 * y2[j], stack.getSed(1).getSegment(0).getFluxAxisValues()[j], 0.00001);
+	   
+	assertEquals(0.035714285714, Double.valueOf(stack.getSed(2).getAttachment(NORM_CONSTANT).toString()), 0.00001);
 	    
 	controller.stop();
     }

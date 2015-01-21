@@ -50,4 +50,11 @@ public interface SedStackerNormalizePayload {
     public List<SegmentPayload> getSegments();
     public void addSegment(SegmentPayload segment);
     
+    /** get SEDs that were excluded from normalization
+     * 
+     * @return list of Strings of SED ID's that were excluded from normalizing 
+     */
+    public List<String> getExcluded();
+    public void addExcluded(List<String> excluded);
+    
 }

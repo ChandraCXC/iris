@@ -16,6 +16,14 @@ public interface SedStackerRedshiftPayload {
     public List<SegmentPayload> getSegments();
 
     public void addSegment(SegmentPayload payload);
+    
+    /** get SEDs that were excluded from redshifting
+     * 
+     * @return list of Strings of SED ID's that were excluded from shifting 
+     */
+    public List<String> getExcluded();
+    
+    public void addExcluded(List<String> excludedIds);
 
     public Double getZ0();
 

@@ -30,11 +30,13 @@ import static cfa.vo.sed.science.stacker.SedStackerAttachments.REDSHIFT;
 import cfa.vo.sedlib.common.SedException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sherpa.SherpaClient;
+import java.util.Arrays;
 import org.astrogrid.samp.Response;
 import spv.spectrum.SEDMultiSegmentSpectrum;
 import spv.util.UnitsException;
 
 import java.util.List;
+import javax.swing.JOptionPane;
 import org.astrogrid.samp.client.SampException;
 
 /**
@@ -90,6 +92,8 @@ public class SedStackerRedshifter {
 	    segment.setY(stack.getSed(i).getSegment(0).getFluxAxisValues());
 	    segment.setYerr((double[]) stack.getSed(i).getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE));
 	    
+	    segment.setId(stack.getSed(i).getId());
+	    
 	    if (stack.getSed(i).getAttachment(REDSHIFT) != null) {
 		
 		segment.setZ(Double.valueOf(stack.getSed(i).getAttachment(REDSHIFT).toString()));
@@ -128,6 +132,16 @@ public class SedStackerRedshifter {
 	
 	// convert back to the original units of the Stack
 	convertUnits(stack, xunits, yunits);
+	
+	/* if some SEDs were skipped during shifting because they had no 
+	* redshift, tell the user which SEDs weren't redshifted.
+	*/
+	if (response.getExcluded() !=null && response.getExcluded().size() > 0) {
+	    NarrowOptionPane.showMessageDialog(null, 
+		    "SEDs "+response.getExcluded()+" were not redshifted because they do not have redshifts.", 
+		    "Unshifted SEDs", 
+		    JOptionPane.INFORMATION_MESSAGE);
+	}
     }
     
     
