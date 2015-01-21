@@ -15,5 +15,5 @@ public class SedStackerAttachments {
     public static String REDSHIFT = "sedstacker:latest redshift";
     public static String NORM_CONSTANT = "sedstacker:norm constant";
     public static String COUNTS = "sedstacker: counts";
-    
+    public static String NORM_CONF_HASH = "sedstacker: normConfHash";
 }

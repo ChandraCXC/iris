@@ -205,7 +205,11 @@ public class SedStackerNormalizer {
 	    stack.getSeds().get(c).getSegment(0).setSpectralAxisValues(segment.getX());
 	    stack.getSeds().get(c).getSegment(0).setFluxAxisValues(segment.getY());
 	    stack.getSeds().get(c).getSegment(0).setDataValues(segment.getYerr(), SEDMultiSegmentSpectrum.E_UTYPE);
-	    stack.getSeds().get(c).addAttachment(SedStackerAttachments.NORM_CONSTANT, segment.getNormConstant());
+	    
+	    if (Integer.parseInt(stack.getSed(c).getAttachment(SedStackerAttachments.NORM_CONF_HASH).toString()) != normConfig.hashCode()) {
+		stack.getSeds().get(c).addAttachment(SedStackerAttachments.NORM_CONSTANT, segment.getNormConstant());
+		stack.getSeds().get(c).addAttachment(SedStackerAttachments.NORM_CONF_HASH, normConfig.hashCode());
+	    }
 	    c++;
 	    
 	}

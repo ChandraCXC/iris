@@ -229,6 +229,7 @@ public class SedStack implements Cloneable {
 	nsed.addAttachment(SedStackerAttachments.ORIG_REDSHIFT, sed.getAttachment(SedStackerAttachments.ORIG_REDSHIFT));
 	nsed.addAttachment(SedStackerAttachments.REDSHIFT, sed.getAttachment(SedStackerAttachments.REDSHIFT));
 	nsed.addAttachment(SedStackerAttachments.NORM_CONSTANT, sed.getAttachment(SedStackerAttachments.NORM_CONSTANT));
+	nsed.addAttachment(SedStackerAttachments.NORM_CONF_HASH, 1);
 	
 	seds.add(nsed);
 	origSeds.add(sed);
@@ -369,6 +370,7 @@ public class SedStack implements Cloneable {
 		nsed.addAttachment(SedStackerAttachments.ORIG_REDSHIFT, sed.getAttachment(SedStackerAttachments.ORIG_REDSHIFT));
 		nsed.addAttachment(SedStackerAttachments.REDSHIFT, sed.getAttachment(SedStackerAttachments.REDSHIFT));
 		nsed.addAttachment(SedStackerAttachments.NORM_CONSTANT, sed.getAttachment(SedStackerAttachments.NORM_CONSTANT));
+		nsed.addAttachment(SedStackerAttachments.NORM_CONF_HASH, 1);
 		nsed.setId(sed.getId());
 		nseds.add(nsed);
 	    } catch (SedNoDataException ex) {
