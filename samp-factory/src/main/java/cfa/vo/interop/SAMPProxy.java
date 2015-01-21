@@ -106,11 +106,7 @@ public class SAMPProxy implements InvocationHandler {
                                 }
                                 Object res;
                                 if(!isPrimitive(objClass))
-				    try {
-					res = Proxy.newProxyInstance(SAMPProxy.class.getClassLoader(), new Class[]{objClass}, new SAMPProxy((Map)el, objClass));
-				    } catch (ClassCastException ex) {
-					res = el;
-				    }
+                                    res = Proxy.newProxyInstance(SAMPProxy.class.getClassLoader(), new Class[]{objClass}, new SAMPProxy((Map)el, objClass));
                                 else
                                     res = el;
 

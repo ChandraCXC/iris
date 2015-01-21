@@ -21,9 +21,9 @@ public interface SedStackerRedshiftPayload {
      * 
      * @return list of Strings of SED ID's that were excluded from shifting 
      */
-    public List<String> getExcluded();
+    public List<String> getExcludeds();
     
-    public void addExcluded(List<String> excludedIds);
+    public void addExcluded(String excludedIds);
 
     public Double getZ0();
 

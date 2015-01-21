@@ -216,9 +216,9 @@ public class SedStackerNormalizer {
 	/* if some SEDs were skipped during shifting because they had no 
 	* redshift, tell the user which SEDs weren't redshifted.
 	*/
-	if (response.getExcluded() !=null && response.getExcluded().size() > 0) {
+	if (response.getExcludeds() !=null && response.getExcludeds().size() > 0) {
 	    NarrowOptionPane.showMessageDialog(null, 
-		    "SEDs "+response.getExcluded()+" were not normalized because the normalization parameters fall outside the SEDs' spectral range.", 
+		    "SEDs "+response.getExcludeds()+" were not normalized because the normalization parameters fall outside the SEDs' spectral range.", 
 		    "Unnormalized SEDs", 
 		    JOptionPane.INFORMATION_MESSAGE);
 	}

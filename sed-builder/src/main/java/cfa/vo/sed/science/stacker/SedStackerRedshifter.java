@@ -136,9 +136,9 @@ public class SedStackerRedshifter {
 	/* if some SEDs were skipped during shifting because they had no 
 	* redshift, tell the user which SEDs weren't redshifted.
 	*/
-	if (response.getExcluded() !=null && response.getExcluded().size() > 0) {
+	if (response.getExcludeds() !=null && response.getExcludeds().size() > 0) {
 	    NarrowOptionPane.showMessageDialog(null, 
-		    "SEDs "+response.getExcluded()+" were not redshifted because they do not have redshifts.", 
+		    "SEDs "+response.getExcludeds()+" were not redshifted because they do not have redshifts.", 
 		    "Unshifted SEDs", 
 		    JOptionPane.INFORMATION_MESSAGE);
 	}

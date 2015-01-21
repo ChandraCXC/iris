@@ -54,7 +54,7 @@ public interface SedStackerNormalizePayload {
      * 
      * @return list of Strings of SED ID's that were excluded from normalizing 
      */
-    public List<String> getExcluded();
-    public void addExcluded(List<String> excluded);
+    public List<String> getExcludeds();
+    public void addExcluded(String excluded);
     
 }
