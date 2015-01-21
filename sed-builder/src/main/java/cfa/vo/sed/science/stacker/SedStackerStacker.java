@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -65,21 +81,20 @@ public class SedStackerStacker {
 	}
 	
 	// Create copy of stack and convert new stack to same units.
-	//SedStack nstack = stack.copy();
 	convertUnits(stack, stackConfig.getBinsizeUnit(), stackConfig.getYUnits());
 	
 	/* calculate number of bins. If there are too many bins 
 	* (i.e., so many that it will cause a Memory Exception in Python), 
 	* warn the user
 	*/
-	int numOfBins = calculateNumberOfBins(stack);
+	int numOfBins = calculateNumberOfBins(stack, stack.getConf().getStackConfiguration().isLogbin());
 	if (numOfBins > 500000) {
 	    NarrowOptionPane.showMessageDialog(null, 
 		    "Too many bins (number of bins calculated: "+numOfBins+"). "+
 			    "Make the binsize smaller, or use logarithmic binning.", 
 		    "ERROR", 
 		    JOptionPane.ERROR_MESSAGE);
-	    throw new StackException();
+//	    throw new StackException("Too many bins (number of bins calculated: "+numOfBins+"). Make the binsize smaller or use log binning.");
 	}
 	
 	SedStackerStackPayload payload = (SedStackerStackPayload) SAMPFactory.get(SedStackerStackPayload.class);
@@ -172,19 +187,39 @@ public class SedStackerStacker {
         return XUnits.convert(values, new XUnits(fromUnits), new XUnits(toUnits));
     }
 
-    private int calculateNumberOfBins(SedStack stack) throws SedNoDataException {
+    private int calculateNumberOfBins(SedStack stack, Boolean log) throws SedNoDataException {
+	
 	double max = stack.getSed(0).getSegment(0).getSpectralAxisValues()[0];
 	double min = stack.getSed(0).getSegment(0).getSpectralAxisValues()[0];
-	for (int i=0; i<stack.getSeds().size(); i++) {
-	    double[] x = stack.getSed(i).getSegment(0).getSpectralAxisValues();
-	    for (int j=0; j<x.length; j++) {
-		if (x[j] > max)
-		    max = x[j];
-		if (x[j] < min)
-		    min = x[j];
+	double binsize = stack.getConf().getStackConfiguration().getBinsize();
+	
+	if (!log) {
+	
+	    for (int i=0; i<stack.getSeds().size(); i++) {
+		double[] x = stack.getSed(i).getSegment(0).getSpectralAxisValues();
+		for (int j=0; j<x.length; j++) {
+		    if (x[j] > max)
+			max = x[j];
+		    if (x[j] < min)
+			min = x[j];
+		}
+	    }
+	
+	} else {
+	    max = Math.log10(max);
+	    min = Math.log10(max);
+	    for (int i=0; i<stack.getSeds().size(); i++) {
+		double[] x = stack.getSed(i).getSegment(0).getSpectralAxisValues();
+		for (int j=0; j<x.length; j++) {
+		    if (Math.log10(x[j]) > max)
+			max = Math.log10(x[j]);
+		    if (Math.log10(x[j]) < min)
+			min = Math.log10(x[j]);
+		}
 	    }
 	}
-	Double num = (max-min)/stack.getConf().getStackConfiguration().getBinsize();
+	
+	Double num = (max-min)/binsize;
 	return num.intValue();
     }
     
