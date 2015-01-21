@@ -431,6 +431,76 @@ public final class NormalizationConfiguration {
 	propertyChangeSupport.firePropertyChange(PROP_INTEGRATEVALUEYUNITS, oldIntegrateValueYUnits, integrateValueYUnits);
     }
 
+    @Override
+    public int hashCode() {
+	int hash = 7;
+	hash = 41 * hash + (this.integrate ? 1 : 0);
+	hash = 41 * hash + (this.xmax != null ? this.xmax.hashCode() : 0);
+	hash = 41 * hash + (this.xmin != null ? this.xmin.hashCode() : 0);
+	hash = 41 * hash + (this.stats != null ? this.stats.hashCode() : 0);
+	hash = 41 * hash + (this.yValue != null ? this.yValue.hashCode() : 0);
+	hash = 41 * hash + (this.xUnits != null ? this.xUnits.hashCode() : 0);
+	hash = 41 * hash + (this.atPointXValue != null ? this.atPointXValue.hashCode() : 0);
+	hash = 41 * hash + (this.multiply ? 1 : 0);
+	hash = 41 * hash + (this.atPointYValue != null ? this.atPointYValue.hashCode() : 0);
+	hash = 41 * hash + (this.atPointYUnits != null ? this.atPointYUnits.hashCode() : 0);
+	hash = 41 * hash + (this.atPointXUnits != null ? this.atPointXUnits.hashCode() : 0);
+	hash = 41 * hash + (this.atPointStats != null ? this.atPointStats.hashCode() : 0);
+	hash = 41 * hash + (this.integrateValueYUnits != null ? this.integrateValueYUnits.hashCode() : 0);
+	return hash;
+    }
 
+    @Override
+    public boolean equals(Object obj) {
+	if (obj == null) {
+	    return false;
+	}
+	if (getClass() != obj.getClass()) {
+	    return false;
+	}
+	final NormalizationConfiguration other = (NormalizationConfiguration) obj;
+	if (this.integrate != other.integrate) {
+	    return false;
+	}
+	if (this.xmax != other.xmax && (this.xmax == null || !this.xmax.equals(other.xmax))) {
+	    return false;
+	}
+	if (this.xmin != other.xmin && (this.xmin == null || !this.xmin.equals(other.xmin))) {
+	    return false;
+	}
+	if ((this.stats == null) ? (other.stats != null) : !this.stats.equals(other.stats)) {
+	    return false;
+	}
+	if (this.yValue != other.yValue && (this.yValue == null || !this.yValue.equals(other.yValue))) {
+	    return false;
+	}
+	if ((this.xUnits == null) ? (other.xUnits != null) : !this.xUnits.equals(other.xUnits)) {
+	    return false;
+	}
+	if (this.atPointXValue != other.atPointXValue && (this.atPointXValue == null || !this.atPointXValue.equals(other.atPointXValue))) {
+	    return false;
+	}
+	if (this.multiply != other.multiply) {
+	    return false;
+	}
+	if (this.atPointYValue != other.atPointYValue && (this.atPointYValue == null || !this.atPointYValue.equals(other.atPointYValue))) {
+	    return false;
+	}
+	if ((this.atPointYUnits == null) ? (other.atPointYUnits != null) : !this.atPointYUnits.equals(other.atPointYUnits)) {
+	    return false;
+	}
+	if ((this.atPointXUnits == null) ? (other.atPointXUnits != null) : !this.atPointXUnits.equals(other.atPointXUnits)) {
+	    return false;
+	}
+	if ((this.atPointStats == null) ? (other.atPointStats != null) : !this.atPointStats.equals(other.atPointStats)) {
+	    return false;
+	}
+	if ((this.integrateValueYUnits == null) ? (other.integrateValueYUnits != null) : !this.integrateValueYUnits.equals(other.integrateValueYUnits)) {
+	    return false;
+	}
+	return true;
+    }
+
+    
     
 }

@@ -8,18 +8,18 @@ package cfa.vo.sed.science.stacker;
 import cfa.vo.iris.interop.SedSAMPController;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sed.builder.AsciiConf;
+import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sed.builder.SegmentImporter;
 import cfa.vo.sed.setup.SetupBean;
+import cfa.vo.sed.test.App;
+import cfa.vo.sed.test.Ws;
 import cfa.vo.sedlib.Segment;
-import cfa.vo.sedlib.io.SedFormat;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import static org.junit.Assert.*;
 import org.apache.commons.lang.StringUtils;
 import org.junit.After;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,6 +35,10 @@ public class SedStackTest {
     
     @Before
     public void setUp() throws Exception {
+	
+	SedBuilder builder = new SedBuilder();
+        builder.init(new App(), new Ws());
+	
 	URL filename1 = AsciiConf.class.getResource("/test_data/ascii-conf-test.dat");
 	SetupBean result1 = new AsciiConf().makeConf(filename1);
 	seg1 = SegmentImporter.getSegments(result1).get(0);
@@ -85,6 +89,36 @@ public class SedStackTest {
 	addSedsFrame(stack, newSedList, false);
 	
 	System.out.println("");
+    }
+    
+    @Test
+    public void testNormHashCodeChanged() throws Exception {
+	
+	SedStack stack = new SedStack("Stack");
+	ExtSed sed = new ExtSed("Sed");
+	sed.addSegment(seg1);
+	sed.addSegment(seg2);
+	ExtSed sed2 = new ExtSed("Sed2");
+	sed2.addSegment(seg1);
+	sed2.addSegment(seg2);
+	stack.add(sed);
+	stack.add(sed2);
+	ExtSed sed3 = new ExtSed("Sed3");
+	sed3.addSegment(seg1);
+	sed3.addSegment(seg2);
+	
+	NormalizationConfiguration normConf = new NormalizationConfiguration();
+	
+	sed3.addAttachment("sedstacker: normConfHash", normConf.hashCode());
+	sed.addAttachment("sedstacker: normConfHash", normConf.hashCode());
+	sed2.addAttachment("sedstacker: normConfHash", normConf.hashCode());
+	
+	normConf.setIntegrate(true);
+	normConf.setIntegrate(false);
+	normConf.setIntegrate(true);
+	normConf.setIntegrate(false);
+	
+	assertFalse(Integer.parseInt(sed3.getAttachment("sedstacker: normConfHash").toString()) == normConf.hashCode());
     }
     
     public void add(List<String> names, String newName) {
