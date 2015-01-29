@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,10 +91,7 @@ public class StackTableModel extends AbstractTableModel {
     
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-	if (this.getValueAt(rowIndex, 1) == null || this.getValueAt(rowIndex, 1) == "")
 	    return (columnIndex == 1);
-	else 
-	    return false;
     }
     
     @Override
