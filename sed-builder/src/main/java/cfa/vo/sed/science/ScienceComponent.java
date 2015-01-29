@@ -106,7 +106,7 @@ public class ScienceComponent implements IrisComponent {
                 }
             });
 	    
-	    add(new AbstractDesktopItem("SEDStacker", "Redshift, normalize, and statistically combine SEDs", "/coplot2.png", "/coplot_tiny.png") {
+	    add(new AbstractDesktopItem("SEDStacker", "Redshift, normalize, and statistically combine SEDs", "/coplot.png", "/coplot_tiny.png") {
 
                 @Override
                 public void onClick() {
