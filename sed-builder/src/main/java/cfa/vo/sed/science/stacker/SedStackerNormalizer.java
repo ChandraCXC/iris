@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ public class SedStackerNormalizer {
     private SherpaClient client;
     private SAMPController controller;
     private static String NORMALIZE_MTYPE = "stack.normalize";
+    private boolean normConfigChanged;
 
     public SedStackerNormalizer(SAMPController controller) {
         this.client = new SherpaClient(controller);
@@ -57,6 +58,8 @@ public class SedStackerNormalizer {
     }
 
     public void normalize(SedStack stack, NormalizationConfiguration normConfig) throws Exception {
+	
+	this.normConfigChanged = false;
 
 	if(stack.getSeds().isEmpty()) {
 	    NarrowOptionPane.showMessageDialog(null,
@@ -200,19 +203,25 @@ public class SedStackerNormalizer {
         SedStackerNormalizePayload response = (SedStackerNormalizePayload) SAMPFactory.get(rspns.getResult(), SedStackerNormalizePayload.class);
 
 	int c=0;
+	int ct=0; 
 	for (SegmentPayload segment : response.getSegments()) {
 	    
 	    stack.getSeds().get(c).getSegment(0).setSpectralAxisValues(segment.getX());
 	    stack.getSeds().get(c).getSegment(0).setFluxAxisValues(segment.getY());
 	    stack.getSeds().get(c).getSegment(0).setDataValues(segment.getYerr(), SEDMultiSegmentSpectrum.E_UTYPE);
 	    
+	    // If any SEDs were normalized with new normalization paramters, update the norm constant and hashcode.
 	    if (Integer.parseInt(stack.getSed(c).getAttachment(SedStackerAttachments.NORM_CONF_HASH).toString()) != normConfig.hashCode()) {
 		stack.getSeds().get(c).addAttachment(SedStackerAttachments.NORM_CONSTANT, segment.getNormConstant());
 		stack.getSeds().get(c).addAttachment(SedStackerAttachments.NORM_CONF_HASH, normConfig.hashCode());
+		ct++;
 	    }
 	    c++;
 	    
 	}
+	
+	if (ct>0)
+	    this.normConfigChanged = true;
 	
 	// convert back to the original units of the Stack
 	convertUnits(stack, xunits, yunits);
@@ -284,6 +293,11 @@ public class SedStackerNormalizer {
     
     private static double[] convertXValues(double[] values, String fromUnits, String toUnits) throws UnitsException {
         return XUnits.convert(values, new XUnits(fromUnits), new XUnits(toUnits));
+    }
+
+    public boolean normConfigChanged() {
+	
+	return this.normConfigChanged;
     }
     
 }
