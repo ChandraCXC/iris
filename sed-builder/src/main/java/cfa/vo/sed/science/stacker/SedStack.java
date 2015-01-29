@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@
 package cfa.vo.sed.science.stacker;
 
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.sedlib.Param;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedException;
 import cfa.vo.sedlib.common.SedNoDataException;
@@ -230,6 +231,7 @@ public class SedStack implements Cloneable {
 	nsed.addAttachment(SedStackerAttachments.REDSHIFT, sed.getAttachment(SedStackerAttachments.REDSHIFT));
 	nsed.addAttachment(SedStackerAttachments.NORM_CONSTANT, sed.getAttachment(SedStackerAttachments.NORM_CONSTANT));
 	nsed.addAttachment(SedStackerAttachments.NORM_CONF_HASH, 1);
+	nsed.addAttachment(SedStackerAttachments.REDSHIFT_CONF_HASH, 1);
 	
 	seds.add(nsed);
 	origSeds.add(sed);
@@ -339,12 +341,12 @@ public class SedStack implements Cloneable {
 	seds.set(i, sed);
     }
     
-    public ExtSed createSedFromStack(SedStack stack) throws SedException, UnitsException {
+    public static ExtSed createSedFromStack(SedStack stack) throws SedException, UnitsException {
 
 	return createSedFromStack(stack, stack.getName());
     }
     
-    public ExtSed createSedFromStack(SedStack stack, String name) throws SedException, UnitsException {
+    public static ExtSed createSedFromStack(SedStack stack, String name) throws SedException, UnitsException {
 
 	ExtSed sedBuilderStack = new ExtSed(name);
 	
@@ -355,7 +357,13 @@ public class SedStack implements Cloneable {
 	    if (!seg.getTarget().isSetName())
 		seg.createTarget().createName();
 	    seg.getTarget().getName().setValue(targetName);
-	    //seg.getTarget().setPos(flattenedSed.getSegment(0).getTarget().getPos());
+	    // Store the redshift in
+	    Param redshift = new Param();
+	    redshift.setName("iris:final redshift");
+	    redshift.setValue((String) sed.getAttachment(SedStackerAttachments.REDSHIFT));
+	    List<Param> params = (List<Param>) sed.getSegment(0).getCustomParams();
+	    params.add(redshift);
+	    seg.setCustomParams((List<? extends Param>) params);
 	    sedBuilderStack.addSegment(seg);
 	}
 	
@@ -371,6 +379,7 @@ public class SedStack implements Cloneable {
 		nsed.addAttachment(SedStackerAttachments.REDSHIFT, sed.getAttachment(SedStackerAttachments.REDSHIFT));
 		nsed.addAttachment(SedStackerAttachments.NORM_CONSTANT, sed.getAttachment(SedStackerAttachments.NORM_CONSTANT));
 		nsed.addAttachment(SedStackerAttachments.NORM_CONF_HASH, 1);
+		nsed.addAttachment(SedStackerAttachments.REDSHIFT_CONF_HASH, 1);
 		nsed.setId(sed.getId());
 		nseds.add(nsed);
 	    } catch (SedNoDataException ex) {

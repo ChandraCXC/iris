@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,6 +49,7 @@ public class SedStackerRedshifter {
     private SherpaClient client;
     private SAMPController controller;
     private static String REDSHIFT_MTYPE = "stack.redshift";
+    private boolean redshiftConfigChanged;
 
     public SedStackerRedshifter(SAMPController controller) {
         this.client = new SherpaClient(controller);
@@ -61,6 +62,8 @@ public class SedStackerRedshifter {
 
     public void shift(SedStack stack, RedshiftConfiguration zconfig) throws Exception {
         
+	this.redshiftConfigChanged = false;
+	
         if(stack.getSeds().isEmpty())
             throw new SedNoDataException();
 	
@@ -121,14 +124,26 @@ public class SedStackerRedshifter {
         SedStackerRedshiftPayload response = (SedStackerRedshiftPayload) SAMPFactory.get(rspns.getResult(), SedStackerRedshiftPayload.class);
 
 	int c=0;
+	int ct=0;
 	for (SegmentPayload segment : response.getSegments()) {
 	    
 	    stack.getSed(c).getSegment(0).setSpectralAxisValues(segment.getX());
 	    stack.getSed(c).getSegment(0).setFluxAxisValues(segment.getY());
 	    stack.getSed(c).getSegment(0).setDataValues(segment.getYerr(), SEDMultiSegmentSpectrum.E_UTYPE);
+	    stack.getSed(c).addAttachment(REDSHIFT, zconfig.getToRedshift());
+	    
+	    // If any SEDs were normalized with new normalization paramters, update the norm constant and hashcode.
+	    if (Integer.parseInt(stack.getSed(c).getAttachment(SedStackerAttachments.REDSHIFT_CONF_HASH).toString()) != zconfig.hashCode()) {
+		stack.getSeds().get(c).addAttachment(SedStackerAttachments.REDSHIFT_CONF_HASH, zconfig.hashCode());
+		ct++;
+	    }
+	    
 	    c++;
 	    
 	}
+	
+	if (ct>0)
+	    this.redshiftConfigChanged = true;
 	
 	// convert back to the original units of the Stack
 	convertUnits(stack, xunits, yunits);
@@ -197,6 +212,11 @@ public class SedStackerRedshifter {
 		    SEDMultiSegmentSpectrum.E_UTYPE);
 	    
 	}
+    }
+    
+    public boolean redshiftConfigChanged() {
+	
+	return this.redshiftConfigChanged;
     }
 
 }

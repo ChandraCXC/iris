@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1059,8 +1059,8 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 	try {
 	    redshifter.shift(selectedStack, redshiftConf);
 	    NarrowOptionPane.showMessageDialog(this, "Successfully redshifted stack.", "SED Stacker Message", JOptionPane.INFORMATION_MESSAGE);
-	    if (isCreateSedAfterRedshift()) {
-		ExtSed sed = selectedStack.createSedFromStack(selectedStack, selectedStack.getName()+"_z="+redshiftConf.getToRedshift().toString()+"_");
+	    if (isCreateSedAfterRedshift() && redshifter.redshiftConfigChanged()) {
+		ExtSed sed = SedStack.createSedFromStack(selectedStack, selectedStack.getName()+"_z="+redshiftConf.getToRedshift().toString()+"_");
 		manager.add(sed);
 	    }
 	} catch (Exception ex) {
@@ -1122,7 +1122,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 
     private void createSedButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createSedButtonActionPerformed
 	try {
-	    ExtSed sed = selectedStack.createSedFromStack(selectedStack);
+	    ExtSed sed = SedStack.createSedFromStack(selectedStack);
 	    
 	    manager.add(sed);
 	    
@@ -1158,8 +1158,8 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 	try {
 	    normalizer.normalize(selectedStack, normConfig);
 	    NarrowOptionPane.showMessageDialog(this, "Successfully normalized stack.", "SED Stacker Message", JOptionPane.INFORMATION_MESSAGE);
-	    if (isCreateSedAfterNormalize()) {
-		ExtSed sed = selectedStack.createSedFromStack(selectedStack, selectedStack.getName()+"_normalized");
+	    if (isCreateSedAfterNormalize() && normalizer.normConfigChanged()) {
+		ExtSed sed = SedStack.createSedFromStack(selectedStack, selectedStack.getName()+"_normalized");
 		manager.add(sed);
 	    }
 	} catch (Exception ex) {
