@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2013, 2015 Smithsonian Astrophysical Observatory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -14,6 +30,7 @@ import cfa.vo.iris.NullCommandLineInterface;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.sed.science.stacker.SedStackerFrame;
 import java.util.ArrayList;
 import java.util.List;
 import org.astrogrid.samp.client.MessageHandler;
@@ -27,6 +44,7 @@ public class ScienceComponent implements IrisComponent {
     IWorkspace workspace;
     IrisApplication app;
     private ScienceFrame frame;
+    private SedStackerFrame sedStacker;
 
     @Override
     public void init(IrisApplication app, IWorkspace workspace) {
@@ -85,6 +103,18 @@ public class ScienceComponent implements IrisComponent {
                     if(manager.getSelected()!=null) {
                         GUIUtils.moveToFront(frame);
                     }
+                }
+            });
+	    
+	    add(new AbstractDesktopItem("SEDStacker", "Redshift, normalize, and statistically combine SEDs", "/coplot2.png", "/coplot_tiny.png") {
+
+                @Override
+                public void onClick() {
+                    if(sedStacker==null) {
+                        sedStacker = new SedStackerFrame(app, workspace);
+                        workspace.addFrame(sedStacker);
+                    }
+                    GUIUtils.moveToFront(sedStacker);
                 }
             });
         }

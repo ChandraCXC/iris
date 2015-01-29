@@ -5,4 +5,3 @@ cfa.vo.iris.smoketest.SmokeTest
 cfa.vo.iris.ConsistencyChecker
 org.asdc.iris.plugin.asdcirisplugin.AsdcComponent
 cfa.vo.sed.science.ScienceComponent
-cfa.vo.sed.science.stacker.SedStackerComponent
