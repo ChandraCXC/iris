@@ -357,13 +357,6 @@ public class SedStack implements Cloneable {
 	    if (!seg.getTarget().isSetName())
 		seg.createTarget().createName();
 	    seg.getTarget().getName().setValue(targetName);
-	    // Store the redshift in
-	    Param redshift = new Param();
-	    redshift.setName("iris:final redshift");
-	    redshift.setValue((String) sed.getAttachment(SedStackerAttachments.REDSHIFT));
-	    List<Param> params = (List<Param>) sed.getSegment(0).getCustomParams();
-	    params.add(redshift);
-	    seg.setCustomParams((List<? extends Param>) params);
 	    sedBuilderStack.addSegment(seg);
 	}
 	
