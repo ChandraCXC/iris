@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VOTABLE version="1.1"
+  xmlns="http://www.ivoa.net/xml/VOTable/v1.1"
+  xmlns:spec="http://www.ivoa.net/xml/Spectrum/Spectrum-1.01.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:noNamespaceSchemaLocation="http://www.ivoa.net/xml/VOTable/v1.1"
+  >
+  <RESOURCE utype="spec:Spectrum.Sed">
+    <TABLE utype="spec:Segment">
+      <PARAM arraysize="*" datatype="char" name="DataModel" utype="spec:Spectrum.DataModel" value="Spectrum-1.0"/>
+      <GROUP utype="spec:Spectrum.Target">
+        <PARAM arraysize="*" datatype="char" name="Name" ucd="meta.id;src" utype="spec:Spectrum.Target.Name" value="41"/>
+        <PARAM arraysize="2" datatype="double" name="Pos" ucd="pos.eq;src" utype="spec:Spectrum.Target.Pos" value="NaN NaN"/>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Char">
+        <GROUP utype="spec:Spectrum.Char.SpectralAxis">
+          <PARAM arraysize="*" datatype="char" name="SpectralAxis" ucd="em.freq" utype="spec:Spectrum.Char.SpectralAxis.Name" value="SpectralAxis"/>
+          <GROUP utype="spec:Spectrum.Char.SpectralAxis.Coverage">
+            <GROUP utype="spec:Spectrum.Char.SpectralAxis.Coverage.Bounds">
+              <PARAM datatype="double" name="Extent" ucd="instr.bandwidth" utype="spec:Spectrum.Char.SpectralAxis.Coverage.Bounds.Extent" value="1.5433798341725522E15"/>
+              <PARAM datatype="double" name="Min" ucd="em.freq;stat.min" utype="spec:Spectrum.Char.SpectralAxis.Coverage.Bounds.Min" value="2.4982708333333332E13"/>
+              <PARAM datatype="double" name="Max" ucd="em.freq;stat.max" utype="spec:Spectrum.Char.SpectralAxis.Coverage.Bounds.Max" value="1.5683625425058855E15"/>
+            </GROUP>
+          </GROUP>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Char.FluxAxis">
+          <PARAM arraysize="*" datatype="char" name="FluxAxis" ucd="phot.flux.density;em.freq" utype="spec:Spectrum.Char.FluxAxis.Name" value="FluxAxis"/>
+        </GROUP>
+      </GROUP>
+      <GROUP utype="spec:Spectrum.Data">
+        <GROUP utype="spec:Spectrum.Data.SpectralAxis">
+          <FIELDref ref="ID_0"/>
+        </GROUP>
+        <GROUP utype="spec:Spectrum.Data.FluxAxis">
+          <FIELDref ref="ID_1"/>
+          <GROUP utype="spec:Spectrum.Data.FluxAxis.Accuracy">
+            <FIELDref ref="ID_2"/>
+          </GROUP>
+        </GROUP>
+      </GROUP>
+      <FIELD ID="ID_0" datatype="double" unit="Hz" utype="spec:Spectrum.Data.SpectralAxis.Value"/>
+      <FIELD ID="ID_1" datatype="double" unit="Jy" utype="spec:Spectrum.Data.FluxAxis.Value"/>
+      <FIELD ID="ID_2" datatype="double" ucd="stat.error;phot.flux.density;em.freq" utype="spec:Spectrum.Data.FluxAxis.Accuracy.StatError"/>
+      <DATA>
+        <TABLEDATA>
+          <TR>
+            <TD>1.2544669009958992E15</TD>
+            <TD>7.67433052658348E-6</TD>
+            <TD>3.052481515824097E-7</TD>
+          </TR>
+          <TR>
+            <TD>1.6655138888888888E14</TD>
+            <TD>8.892830970480248E-5</TD>
+            <TD>3.5371426949503227E-6</TD>
+          </TR>
+          <TR>
+            <TD>1.0934747323691938E15</TD>
+            <TD>1.2275537420950026E-5</TD>
+            <TD>4.88262148007046E-7</TD>
+          </TR>
+          <TR>
+            <TD>1.3444514204991368E15</TD>
+            <TD>8.11037696131862E-6</TD>
+            <TD>3.225919925527659E-7</TD>
+          </TR>
+          <TR>
+            <TD>1.5683625425058855E15</TD>
+            <TD>5.875447370608608E-6</TD>
+            <TD>2.3369718614353708E-7</TD>
+          </TR>
+          <TR>
+            <TD>2.4982708333333332E13</TD>
+            <TD>4.581841311845485E-4</TD>
+            <TD>1.2144305293309966E-4</TD>
+          </TR>
+          <TR>
+            <TD>2.7770907440343853E14</TD>
+            <TD>5.07038163022752E-5</TD>
+            <TD>2.016755227160364E-6</TD>
+          </TR>
+          <TR>
+            <TD>4.800136097990553E14</TD>
+            <TD>3.4438218824837046E-5</TD>
+            <TD>1.3697875799925932E-6</TD>
+          </TR>
+          <TR>
+            <TD>6.634852659650986E14</TD>
+            <TD>2.0000493384788725E-5</TD>
+            <TD>7.955239372731208E-7</TD>
+          </TR>
+          <TR>
+            <TD>1.3324111111111111E14</TD>
+            <TD>1.0116738753431462E-4</TD>
+            <TD>4.023954654845808E-6</TD>
+          </TR>
+          <TR>
+            <TD>7.4948125E13</TD>
+            <TD>1.545397123895535E-4</TD>
+            <TD>6.146850385135729E-6</TD>
+          </TR>
+          <TR>
+            <TD>1.0337672413793103E14</TD>
+            <TD>1.4224599654416014E-4</TD>
+            <TD>5.6578651863764445E-6</TD>
+          </TR>
+          <TR>
+            <TD>9.524630267986211E14</TD>
+            <TD>1.4224612008277323E-5</TD>
+            <TD>5.657870100150898E-7</TD>
+          </TR>
+        </TABLEDATA>
+      </DATA>
+    </TABLE>
+  </RESOURCE>
+</VOTABLE>
