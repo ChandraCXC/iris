@@ -27,6 +27,13 @@ package cfa.vo.sed.science.stacker;
  */
 class StackException extends Exception {
 
+    String msg = "A stacking error occurred.";
+    
+    public StackException(String msg) {
+	super(msg);
+	this.msg = msg;
+    }
+    
     public StackException() {
     }
     
