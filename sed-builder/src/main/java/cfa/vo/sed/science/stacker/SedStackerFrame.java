@@ -55,6 +55,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import org.apache.commons.lang.StringUtils;
+import org.astrogrid.samp.client.SampException;
 import org.jdesktop.observablecollections.ObservableCollections;
 import spv.util.UnitsException;
 
@@ -1063,6 +1064,12 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 		ExtSed sed = SedStack.createSedFromStack(selectedStack, selectedStack.getName()+"_z="+redshiftConf.getToRedshift().toString()+"_");
 		manager.add(sed);
 	    }
+	} catch (StackException ex) {
+	    NarrowOptionPane.showMessageDialog(this, ex, "Redshift Error", JOptionPane.ERROR_MESSAGE);
+	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+	} catch (SampException ex) {
+	    NarrowOptionPane.showMessageDialog(this, ex, "Redshift Error", JOptionPane.ERROR_MESSAGE);
+	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
 	} catch (Exception ex) {
 	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
 	}
