@@ -105,7 +105,7 @@ public class SedStackerRedshifter {
 		
 		segment.setZ(Double.valueOf(stack.getSed(i).getAttachment(REDSHIFT).toString()));
 		
-	    } else if (stack.getSed(i).getAttachment(REDSHIFT) != null &&
+	    } else if (stack.getSed(i).getAttachment(REDSHIFT) != null && 
 		    !isNumeric(stack.getSed(i).getAttachment(REDSHIFT).toString())) {
 		
 		throw new StackException("Invalid redshift for " + stack.getSed(i).getId() +

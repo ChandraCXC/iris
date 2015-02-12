@@ -309,17 +309,27 @@ public class AddSedsFrame extends javax.swing.JInternalFrame {
 		    
 		    if (!isSegmentsAsSeds()) {
 
+			// store redshift for next time Add SEDs table is opened.
 			sed.addAttachment(ORIG_REDSHIFT, redshift);
-			sed.addAttachment(REDSHIFT, sed.getAttachment(ORIG_REDSHIFT));
-			sed.addAttachment(NORM_CONSTANT, 1.0);
-			stack.add(sed);
+			/* 
+			* Make a copy of the original SED. I don't use the original SED object 
+			* because if a user adds multiple copies of a single SED and changes 
+			* the redshifts of each copy, reseting the Stack would change the 
+			* redshift of each SED to the last editted SED.
+			*/
+			ExtSed copy = sed.clone();
+			copy.addAttachment(ORIG_REDSHIFT, redshift);
+			copy.addAttachment(REDSHIFT, copy.getAttachment(ORIG_REDSHIFT));
+			copy.addAttachment(NORM_CONSTANT, 1.0);
+			stack.add(copy);			
 
 		    } else {
 
 			for (int j=0; j<openSeds.get(i).getNumberOfSegments(); j++) {
 
 			    Segment seg = sed.getSegment(j);
-			    ExtSed nsed = new ExtSed(sed.getId()+": "+seg.getTarget().getName().getValue(), false);
+			    String id = seg.isSetTarget() ? sed.getId()+": "+seg.getTarget().getName().getValue() : sed.getId()+": segment"+j;
+			    ExtSed nsed = new ExtSed(id, false);
 			    nsed.addSegment(seg);
 			    nsed.addAttachment(ORIG_REDSHIFT, redshift);
 			    nsed.addAttachment(REDSHIFT, nsed.getAttachment(ORIG_REDSHIFT));
