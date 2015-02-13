@@ -608,7 +608,7 @@
             <Property name="name" type="java.lang.String" value="jRadioButton2" noResource="true"/>
           </Properties>
           <BindingProperties>
-            <BindingProperty name="selected" source="Form" sourcePath="${selectedConfig.normConfiguration.atPointStats}" target="jRadioButton2" targetPath="selected" updateStrategy="0" immediately="false"/>
+            <BindingProperty name="selected" source="Form" sourcePath="${selectedConfig.normConfiguration.atPoint}" target="jRadioButton2" targetPath="selected" updateStrategy="0" immediately="false"/>
           </BindingProperties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="false"/>
@@ -688,7 +688,7 @@
             <BindingProperty name="text" source="Form" sourcePath="${selectedConfig.normConfiguration.atPointYValue}" target="atPointYText" targetPath="text" updateStrategy="0" immediately="false">
               <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
             </BindingProperty>
-            <BindingProperty name="enabled" source="jRadioButton2" sourcePath="${selected}" target="atPointYText" targetPath="enabled" updateStrategy="0" immediately="false"/>
+            <BindingProperty name="enabled" source="Form" sourcePath="${selectedConfig.normConfiguration.atPointYTextEnabled}" target="atPointYText" targetPath="enabled" updateStrategy="0" immediately="false"/>
           </BindingProperties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="false"/>
@@ -1104,7 +1104,7 @@
             <Property name="name" type="java.lang.String" value="stackYUnitComboBox" noResource="true"/>
           </Properties>
           <BindingProperties>
-            <BindingProperty name="selectedItem" source="Form" sourcePath="${selectedStack.conf.stackConfiguration.YUnits}" target="stackYUnitComboBox" targetPath="selectedItem" updateStrategy="0" immediately="false"/>
+            <BindingProperty name="selectedItem" source="Form" sourcePath="${selectedConfig.stackConfiguration.YUnits}" target="stackYUnitComboBox" targetPath="selectedItem" updateStrategy="0" immediately="false"/>
           </BindingProperties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="false"/>

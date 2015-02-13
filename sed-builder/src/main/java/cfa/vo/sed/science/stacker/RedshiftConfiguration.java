@@ -31,14 +31,16 @@ import java.beans.PropertyChangeSupport;
  */
 public final class RedshiftConfiguration {
     
-    private Double toRedshift;
+
+// Default redshift configuration    
+//    public RedshiftConfiguration() {
+//        setToRedshift(0.0);
+//	  setCorrectFlux(true);
+//    }
+    
+    private Double toRedshift = 0.0;
 
     public static final String PROP_TOREDSHIFT = "toRedshift";
-
-    public RedshiftConfiguration() {
-        setToRedshift(0.0);
-	setCorrectFlux(true);
-    }
     
     /**
      * Get the value of toRedshift
@@ -60,7 +62,7 @@ public final class RedshiftConfiguration {
         propertyChangeSupport.firePropertyChange(PROP_TOREDSHIFT, oldToRedshift, toRedshift);
     }
     
-    private boolean correctFlux;
+    private boolean correctFlux = true;
 
     public static final String PROP_CORRECTFLUX = "correctFlux";
 
