@@ -53,6 +53,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.samp.client.SampException;
@@ -1416,16 +1417,15 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 	} else {
 	    newStacks.remove(stack);
 	    setStacks(newStacks);
-//	    SedStack newStack;
-//	    if (!getStacks().isEmpty()) {
-		SedStack newStack = getStacks().get(newStacks.size()-1);
-//	    } else {
-//		newStack = new SedStack("Stack");
-//		newStacks.add(newStack);
-//		setStacks(newStacks);
-//	    }
-	    setSelectedStack(newStack);
-	    jList1.setSelectedValue(newStack, true);
+	    SedStack newStack;
+	    if (!getStacks().isEmpty()) {
+		newStack = getStacks().get(newStacks.size()-1);
+		setSelectedStack(newStack);
+		jList1.setSelectedValue(newStack, true);
+	    } else {
+		newStack = new SedStack("Stack");
+		updateStackList(newStack, true);
+	    }
 	}
     }
 
