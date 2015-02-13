@@ -31,17 +31,18 @@ import java.beans.PropertyChangeSupport;
  */
 public final class StackConfiguration {
     
-    public StackConfiguration() {
-	setStatistic("avg");
-	setBinsize(0.5);
-	setBinsizeUnit("Angstrom");
-	setYUnits("erg/s/cm2/A");
-	setLogbin(true);
-	setSmooth(false);
-	setSmoothBinsize(20.0);
-    }
+// Default stack configuration
+//    public StackConfiguration() {
+//	setStatistic("avg");
+//	setBinsize(0.5);
+//	setBinsizeUnit("Angstrom");
+//	setYUnits("erg/s/cm2/A");
+//	setLogbin(true);
+//	setSmooth(false);
+//	setSmoothBinsize(20.0);
+//    }
     
-    private Double binsize;
+    private Double binsize = 0.5;
 
     public static final String PROP_BINSIZE = "binsize";
 
@@ -65,7 +66,7 @@ public final class StackConfiguration {
 	propertyChangeSupport.firePropertyChange(PROP_BINSIZE, oldBinsize, binsize);
     }
     
-    private String statistic;
+    private String statistic = "Average";
 
     public static final String PROP_STATISTIC = "statistic";
 
@@ -89,7 +90,7 @@ public final class StackConfiguration {
 	propertyChangeSupport.firePropertyChange(PROP_STATISTIC, oldStatistic, statistic);
     }
 
-    private boolean logbin;
+    private boolean logbin = true;
 
     public static final String PROP_LOGBIN = "logbin";
 
@@ -113,7 +114,7 @@ public final class StackConfiguration {
 	propertyChangeSupport.firePropertyChange(PROP_LOGBIN, oldLogbin, logbin);
     }
 
-    private boolean smooth;
+    private boolean smooth = false;
 
     public static final String PROP_SMOOTH = "smooth";
 
@@ -137,7 +138,7 @@ public final class StackConfiguration {
 	propertyChangeSupport.firePropertyChange(PROP_SMOOTH, oldSmooth, smooth);
     }
 
-    private Double smoothBinsize;
+    private Double smoothBinsize = 20.0;
 
     public static final String PROP_SMOOTHBINSIZE = "smoothBinsize";
 
@@ -161,7 +162,7 @@ public final class StackConfiguration {
 	propertyChangeSupport.firePropertyChange(PROP_SMOOTHBINSIZE, oldSmoothBinsize, smoothBinsize);
     }
 
-    private String binsizeUnit;
+    private String binsizeUnit = "Angstrom";
 
     public static final String PROP_BINSIZEUNIT = "binsizeUnit";
 
@@ -206,7 +207,7 @@ public final class StackConfiguration {
 	propertyChangeSupport.removePropertyChangeListener(listener);
     }
     
-    private String yUnits;
+    private String yUnits = "erg/s/cm2/Angstrom";
 
     public static final String PROP_YUNITS = "yUnits";
 

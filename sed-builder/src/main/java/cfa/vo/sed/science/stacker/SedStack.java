@@ -23,7 +23,6 @@
 package cfa.vo.sed.science.stacker;
 
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.sedlib.Param;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedException;
 import cfa.vo.sedlib.common.SedNoDataException;

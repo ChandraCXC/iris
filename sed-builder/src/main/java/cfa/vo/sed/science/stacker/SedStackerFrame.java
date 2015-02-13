@@ -40,6 +40,8 @@ import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.sedlib.common.SedException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.beans.PropertyVetoException;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
@@ -103,18 +105,6 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 		}
 	    }
 	});
-	// disable Y value text box if using Average or Median.
-	atPointYType.addActionListener( new ActionListener() {
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-		String normType = (String) atPointYType.getSelectedItem();
-		if (normType.equals("Value")) {
-		    atPointYText.setEnabled(true);
-		} else {
-		    atPointYText.setEnabled(false);
-		}
-	    }
-	});
 	
 	/* The following four statements add Action Listeners to the unit combo boxes
 	in the normalization options. These are so that whatever units the user
@@ -166,6 +156,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 //	Action stack = new StackAction();
 	
     }
+    
     private boolean createSedAfterRedshift = false;
 
     public static final String PROP_CREATESEDAFTERREDSHIFT = "createSedAfterRedshift";
@@ -477,7 +468,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         jRadioButton2.setText("At point");
         jRadioButton2.setName("jRadioButton2"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedConfig.normConfiguration.atPointStats}"), jRadioButton2, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedConfig.normConfiguration.atPoint}"), jRadioButton2, org.jdesktop.beansbinding.BeanProperty.create("selected"));
         bindingGroup.addBinding(binding);
 
         atPointXLabel.setText("X:");
@@ -519,7 +510,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedConfig.normConfiguration.atPointYValue}"), atPointYText, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jRadioButton2, org.jdesktop.beansbinding.ELProperty.create("${selected}"), atPointYText, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedConfig.normConfiguration.atPointYTextEnabled}"), atPointYText, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
         atPointYUnit.setModel(new DefaultComboBoxModel(loadEnum(SPVYUnit.class)));
@@ -815,7 +806,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         stackYUnitComboBox.setModel(new DefaultComboBoxModel(loadEnum(SPVYUnit.class)));
         stackYUnitComboBox.setName("stackYUnitComboBox"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedStack.conf.stackConfiguration.YUnits}"), stackYUnitComboBox, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedConfig.stackConfiguration.YUnits}"), stackYUnitComboBox, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
         bindingGroup.addBinding(binding);
 
         jLabel1.setText("Y Axis:");
@@ -1332,7 +1323,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         SedStack oldSelectedStack = this.selectedStack;
         this.selectedStack = selectedStack;
         firePropertyChange(PROP_SELECTEDSTACK, oldSelectedStack, selectedStack);
-        if (selectedStack != null) {
+	if (selectedStack != null) {
             setSelectedConfig(selectedStack.getConf());
 	    sedsTable.setModel(new StackTableModel(selectedStack));
         }
@@ -1444,7 +1435,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         }
         return null;
     }
-    
+
 //    public void updateSedBuilderStack() throws SedInconsistentException, SedNoDataException, SedException, UnitsException {
 //	// get the representative Sed in the SedBuilder
 //	ExtSed sed = null;

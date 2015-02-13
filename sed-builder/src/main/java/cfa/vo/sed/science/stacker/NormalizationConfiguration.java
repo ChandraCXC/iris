@@ -31,25 +31,26 @@ import java.beans.PropertyChangeSupport;
  */
 public final class NormalizationConfiguration {
     
-    public NormalizationConfiguration() {
-	setIntegrate(true);
-	setAtPoint(false);
-	setMultiply(true);
-	setAdd(false);
-	setStats("Value");
-	setXUnits("Angstrom");
-	setXmin(Double.NEGATIVE_INFINITY);
-	setXmax(Double.POSITIVE_INFINITY);
-	setYValue(1.0);
-	setAtPointYValue(1.0);
-	setAtPointYUnits("erg/s/cm2/A");
-	setAtPointXValue(5000.0);
-	setAtPointXUnits("Angstrom");
-	setAtPointStats("Value");
-	setIntegrateValueYUnits("erg/s/cm2");
-    }
+// Default Normalization configuration:
+//    public NormalizationConfiguration() {
+//	setIntegrate(true);
+//	setAtPoint(false);
+//	setMultiply(true);
+//	setAdd(false);
+//	setStats("Value");
+//	setXUnits("Angstrom");
+//	setXmin(Double.NEGATIVE_INFINITY);
+//	setXmax(Double.POSITIVE_INFINITY);
+//	setYValue(1.0);
+//	setAtPointYValue(1.0);
+//	setAtPointYUnits("erg/s/cm2/A");
+//	setAtPointXValue(5000.0);
+//	setAtPointXUnits("Angstrom");
+//	setAtPointStats("Value");
+//	setIntegrateValueYUnits("erg/s/cm2");
+//    }
     
-    private boolean integrate;
+    private boolean integrate = true;
 
     public static final String PROP_INTEGRATE = "integrate";
 
@@ -71,6 +72,8 @@ public final class NormalizationConfiguration {
 	boolean oldIntegrate = this.integrate;
 	this.integrate = integrate;
 	propertyChangeSupport.firePropertyChange(PROP_INTEGRATE, oldIntegrate, integrate);
+	// disable Y value text box if not normalizing at a point and using "Value" for the statistic.
+	setAtPointYTextEnabled(false);
     }
 
     private transient final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
@@ -93,7 +96,7 @@ public final class NormalizationConfiguration {
 	propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
-    private Double xmax;
+    private Double xmax = Double.POSITIVE_INFINITY;
 
     public static final String PROP_XMAX = "xmax";
 
@@ -117,7 +120,7 @@ public final class NormalizationConfiguration {
 	propertyChangeSupport.firePropertyChange(PROP_XMAX, oldXMax, xmax);
     }
 
-    private Double xmin;
+    private Double xmin = Double.NEGATIVE_INFINITY;
 
     public static final String PROP_XMIN = "xmin";
 
@@ -141,7 +144,7 @@ public final class NormalizationConfiguration {
 	propertyChangeSupport.firePropertyChange(PROP_XMIN, oldXMin, xmin);
     }
 
-    private String stats;
+    private String stats = "Value";
 
     public static final String PROP_STATS = "stats";
 
@@ -154,8 +157,8 @@ public final class NormalizationConfiguration {
 	return stats;
     }
 
-    /**
-     * Set the value of stats
+    /** 
+    * Set the value of stats
      *
      * @param stats new value of stats
      */
@@ -189,7 +192,7 @@ public final class NormalizationConfiguration {
 	propertyChangeSupport.firePropertyChange(PROP_YVALUE, oldYValue, yValue);
     }
 
-    private String xUnits;
+    private String xUnits = "Angstrom";
 
     public static final String PROP_XUNITS = "xUnits";
 
@@ -214,7 +217,7 @@ public final class NormalizationConfiguration {
     }
 
     
-    private Double atPointXValue;
+    private Double atPointXValue = 5000.0;
 
     public static final String PROP_ATPOINTXVALUE = "atPointXValue";
 
@@ -239,7 +242,7 @@ public final class NormalizationConfiguration {
     }
     
 
-    private boolean multiply;
+    private boolean multiply = true;
 
     public static final String PROP_MULTIPLY = "multiply";
 
@@ -263,7 +266,7 @@ public final class NormalizationConfiguration {
 	propertyChangeSupport.firePropertyChange(PROP_MULTIPLY, oldMultiply, multiply);
     }
     
-    private Double atPointYValue;
+    private Double atPointYValue = 1.0;
 
     public static final String PROP_ATPOINTYVALUE = "atPointYValue";
 
@@ -287,7 +290,7 @@ public final class NormalizationConfiguration {
 	propertyChangeSupport.firePropertyChange(PROP_ATPOINTYVALUE, oldAtPointYValue, atPointYValue);
     }
 
-    private String atPointYUnits;
+    private String atPointYUnits = "erg/s/cm2/Angstrom";
 
     public static final String PROP_ATPOINTYUNITS = "atPointYUnits";
 
@@ -311,7 +314,7 @@ public final class NormalizationConfiguration {
 	propertyChangeSupport.firePropertyChange(PROP_ATPOINTYUNITS, oldAtPointYUnit, atPointYUnits);
     }
 
-    private String atPointXUnits;
+    private String atPointXUnits = "Angstrom";
     
     public static final String PROP_ATPOINTXUNITS = "atPointXUnits";
 
@@ -335,7 +338,7 @@ public final class NormalizationConfiguration {
 	propertyChangeSupport.firePropertyChange(PROP_ATPOINTXUNITS, oldAtPointXUnits, atPointXUnits);
     }
 
-    private String atPointStats;
+    private String atPointStats = "Value";
 
     public static final String PROP_ATPOINTSTATS = "atPointStats";
 
@@ -357,9 +360,15 @@ public final class NormalizationConfiguration {
 	String oldAtPointStats = this.atPointStats;
 	this.atPointStats = atPointStats;
 	propertyChangeSupport.firePropertyChange(PROP_ATPOINTSTATS, oldAtPointStats, atPointStats);
+	// disable Y value text box if not normalizing at a point and using "Value" for the statistic.
+	if (atPointStats.equals("Value") && this.atPoint) {
+	    setAtPointYTextEnabled(true);
+	} else {
+	    setAtPointYTextEnabled(false);
+	}
     }
 
-        private boolean add;
+    private boolean add = false;
 
     public static final String PROP_ADD = "add";
 
@@ -383,7 +392,7 @@ public final class NormalizationConfiguration {
 	propertyChangeSupport.firePropertyChange(PROP_ADD, oldAdd, add);
     }
 
-        private boolean atPoint;
+    private boolean atPoint = false;
 
     public static final String PROP_ATPOINT = "atPoint";
 
@@ -405,9 +414,15 @@ public final class NormalizationConfiguration {
 	boolean oldAtPoint = this.atPoint;
 	this.atPoint = atPoint;
 	propertyChangeSupport.firePropertyChange(PROP_ATPOINT, oldAtPoint, atPoint);
+	// disable Y value text box if not normalizing at a point and using "Value" for the statistic.
+	if (this.atPoint && this.atPointStats.equals("Value")) {
+	    setAtPointYTextEnabled(true);
+	} else {
+	    setAtPointYTextEnabled(false);
+	}
     }
 
-    private String integrateValueYUnits;
+    private String integrateValueYUnits = "erg/s/cm2";
 
     public static final String PROP_INTEGRATEVALUEYUNITS = "integrateValueYUnits";
 
@@ -429,6 +444,21 @@ public final class NormalizationConfiguration {
 	String oldIntegrateValueYUnits = this.integrateValueYUnits;
 	this.integrateValueYUnits = integrateValueYUnits;
 	propertyChangeSupport.firePropertyChange(PROP_INTEGRATEVALUEYUNITS, oldIntegrateValueYUnits, integrateValueYUnits);
+    }
+
+    private boolean atPointYTextEnabled = false;
+
+    public static final String PROP_ATPOINTYTEXTENABLED = "atPointYTextEnabled";
+
+    public boolean isAtPointYTextEnabled() {
+	return atPointYTextEnabled;
+    }
+
+    // used to disable Y value text box if using Average or Median.
+    public void setAtPointYTextEnabled(boolean atPointYTextEnabled) {
+	boolean oldAtPointYTextEnabled = this.atPointYTextEnabled;
+	this.atPointYTextEnabled = atPointYTextEnabled;
+	propertyChangeSupport.firePropertyChange(PROP_ATPOINTYTEXTENABLED, oldAtPointYTextEnabled, atPointYTextEnabled);
     }
 
     @Override
