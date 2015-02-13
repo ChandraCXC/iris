@@ -848,11 +848,11 @@
                         </Component>
                         <Component class="javax.swing.JRadioButton" name="fullModelButton">
                           <Properties>
-                            <Property name="selected" type="boolean" value="true"/>
                             <Property name="text" type="java.lang.String" value="Full Model"/>
                             <Property name="name" type="java.lang.String" value="fullModelButton" noResource="true"/>
                           </Properties>
                           <BindingProperties>
+                            <BindingProperty name="selected" source="Form" sourcePath="${fullModel}" target="fullModelButton" targetPath="selected" updateStrategy="0" immediately="false"/>
                             <BindingProperty name="enabled" source="integrateModelButton" sourcePath="${selected}" target="fullModelButton" targetPath="enabled" updateStrategy="0" immediately="false"/>
                           </BindingProperties>
                         </Component>

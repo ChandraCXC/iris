@@ -372,7 +372,7 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
                 .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jFormattedTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jButton1))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         org.jdesktop.layout.GroupLayout jPanel6Layout = new org.jdesktop.layout.GroupLayout(jPanel6);
@@ -388,7 +388,7 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 96, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+            .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Interpolation"));
@@ -661,10 +661,11 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, integrateModelButton, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jLabel9, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
-        fullModelButton.setSelected(true);
         fullModelButton.setText("Full Model");
         fullModelButton.setName("fullModelButton"); // NOI18N
 
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${fullModel}"), fullModelButton, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, integrateModelButton, org.jdesktop.beansbinding.ELProperty.create("${selected}"), fullModelButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
@@ -683,7 +684,6 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
         bindingGroup.addBinding(binding);
 
         jButton7.setAction(actionMap.get("showModel")); // NOI18N
-        jButton7.setText("Show Model");
         jButton7.setName("jButton7"); // NOI18N
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, integrateModelButton, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jButton7, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
@@ -720,7 +720,7 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
                 .add(jPanel9Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(modelExpressionField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jLabel9, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 28, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(8, Short.MAX_VALUE))
         );
 
         org.jdesktop.layout.GroupLayout jPanel11Layout = new org.jdesktop.layout.GroupLayout(jPanel11);
@@ -766,7 +766,7 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
                             .add(jButton3)
                             .add(integrateModelButton))))
                 .add(9, 9, 9)
-                .add(jPanel9, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE))
+                .add(jPanel9, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder("Results"));
@@ -794,8 +794,10 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
         bindingGroup.addBinding(jTableBinding);
         jTableBinding.bind();
         jScrollPane3.setViewportView(jTable3);
-        jTable3.getColumnModel().getColumn(1).setCellRenderer(new ScientificRenderer());
-        jTable3.getColumnModel().getColumn(2).setCellRenderer(new ScientificRenderer());
+        if (jTable3.getColumnModel().getColumnCount() > 0) {
+            jTable3.getColumnModel().getColumn(1).setCellRenderer(new ScientificRenderer());
+            jTable3.getColumnModel().getColumn(2).setCellRenderer(new ScientificRenderer());
+        }
 
         jButton4.setAction(actionMap.get("reset")); // NOI18N
         jButton4.setName("jButton4"); // NOI18N
@@ -920,10 +922,10 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
             List<PassBand> pbs = new ArrayList(filters);
             try {
                 List<SimplePhotometryPoint> out = calculate(pbs);
-                List<SimplePhotometryPoint> ppoints = new ArrayList(points);
+//                List<SimplePhotometryPoint> ppoints = new ArrayList();
                 setPoints(null);
-                ppoints.addAll(out);
-                setPoints(ppoints);
+//                ppoints.addAll(out);
+                setPoints(out);
             } catch (Exception ex) {
                 NarrowOptionPane.showMessageDialog(null, ex.getMessage(), "Error", NarrowOptionPane.ERROR_MESSAGE);
                 Logger.getLogger(ScienceFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -1567,6 +1569,9 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
         boolean oldFullModel = this.fullModel;
         this.fullModel = fullModel;
         firePropertyChange(PROP_FULLMODEL, oldFullModel, fullModel);
+        if (fullModel) {
+            setIntegrateModel(isIntegrateModel());
+        }
     }
 
     private int modelBins = 10000;
