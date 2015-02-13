@@ -94,7 +94,7 @@ public class SedStackerStacker {
 			    "Make the binsize smaller, or use logarithmic binning.", 
 		    "ERROR", 
 		    JOptionPane.ERROR_MESSAGE);
-//	    throw new StackException("Too many bins (number of bins calculated: "+numOfBins+"). Make the binsize smaller or use log binning.");
+	    throw new StackException("Too many bins (number of bins calculated: "+numOfBins+"). Make the binsize smaller or use log binning.");
 	}
 	
 	SedStackerStackPayload payload = (SedStackerStackPayload) SAMPFactory.get(SedStackerStackPayload.class);

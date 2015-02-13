@@ -30,6 +30,8 @@ import static cfa.vo.sed.science.stacker.SedStackerAttachments.REDSHIFT;
 import cfa.vo.sedlib.common.SedException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sherpa.SherpaClient;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.Arrays;
 import org.astrogrid.samp.Response;
 import spv.spectrum.SEDMultiSegmentSpectrum;
@@ -97,9 +99,19 @@ public class SedStackerRedshifter {
 	    
 	    segment.setId(stack.getSed(i).getId());
 	    
-	    if (stack.getSed(i).getAttachment(REDSHIFT) != null) {
+	    if (stack.getSed(i).getAttachment(REDSHIFT) != null && 
+		    isNumeric(stack.getSed(i).getAttachment(REDSHIFT).toString()) &&
+		    !stack.getSed(i).getAttachment(REDSHIFT).toString().equals("")) {
 		
 		segment.setZ(Double.valueOf(stack.getSed(i).getAttachment(REDSHIFT).toString()));
+		
+	    } else if (stack.getSed(i).getAttachment(REDSHIFT) != null && 
+		    !isNumeric(stack.getSed(i).getAttachment(REDSHIFT).toString())) {
+		
+		throw new StackException("Invalid redshift for " + stack.getSed(i).getId() +
+			" (z = " + stack.getSed(i).getAttachment(REDSHIFT).toString() + "). "+
+			"Stack was not redshifted."
+		);
 		
 	    } else {
 		
@@ -130,7 +142,12 @@ public class SedStackerRedshifter {
 	    stack.getSed(c).getSegment(0).setSpectralAxisValues(segment.getX());
 	    stack.getSed(c).getSegment(0).setFluxAxisValues(segment.getY());
 	    stack.getSed(c).getSegment(0).setDataValues(segment.getYerr(), SEDMultiSegmentSpectrum.E_UTYPE);
-	    stack.getSed(c).addAttachment(REDSHIFT, zconfig.getToRedshift());
+	    
+	    // If the SED's original redshift is known, reset the latest redshift
+	    // Otherwise, leave the redshift as null.
+	    if (!Double.isNaN(segment.getZ())) {
+		stack.getSed(c).addAttachment(REDSHIFT, zconfig.getToRedshift());
+	    }
 	    
 	    // If any SEDs were normalized with new normalization paramters, update the norm constant and hashcode.
 	    if (Integer.parseInt(stack.getSed(c).getAttachment(SedStackerAttachments.REDSHIFT_CONF_HASH).toString()) != zconfig.hashCode()) {
@@ -219,4 +236,11 @@ public class SedStackerRedshifter {
 	return this.redshiftConfigChanged;
     }
 
+    private static boolean isNumeric(String str) {
+	NumberFormat formatter = NumberFormat.getInstance();
+	ParsePosition pos = new ParsePosition(0);
+	formatter.parse(str, pos);
+	return str.length() == pos.getIndex();
+    }
+    
 }

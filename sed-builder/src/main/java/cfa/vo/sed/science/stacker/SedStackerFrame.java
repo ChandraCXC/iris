@@ -40,6 +40,8 @@ import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.sedlib.common.SedException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.beans.PropertyVetoException;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
@@ -53,8 +55,10 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 import org.apache.commons.lang.StringUtils;
+import org.astrogrid.samp.client.SampException;
 import org.jdesktop.observablecollections.ObservableCollections;
 import spv.util.UnitsException;
 
@@ -98,18 +102,6 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 		} else {
 		    integrationYUnit.setModel(new DefaultComboBoxModel(loadEnum(SPVYUnit.class)));
 		    integrationValueText.setEnabled(false);
-		}
-	    }
-	});
-	// disable Y value text box if using Average or Median.
-	atPointYType.addActionListener( new ActionListener() {
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-		String normType = (String) atPointYType.getSelectedItem();
-		if (normType.equals("Value")) {
-		    atPointYText.setEnabled(true);
-		} else {
-		    atPointYText.setEnabled(false);
 		}
 	    }
 	});
@@ -164,6 +156,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 //	Action stack = new StackAction();
 	
     }
+    
     private boolean createSedAfterRedshift = false;
 
     public static final String PROP_CREATESEDAFTERREDSHIFT = "createSedAfterRedshift";
@@ -475,7 +468,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         jRadioButton2.setText("At point");
         jRadioButton2.setName("jRadioButton2"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedConfig.normConfiguration.atPointStats}"), jRadioButton2, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedConfig.normConfiguration.atPoint}"), jRadioButton2, org.jdesktop.beansbinding.BeanProperty.create("selected"));
         bindingGroup.addBinding(binding);
 
         atPointXLabel.setText("X:");
@@ -517,7 +510,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedConfig.normConfiguration.atPointYValue}"), atPointYText, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jRadioButton2, org.jdesktop.beansbinding.ELProperty.create("${selected}"), atPointYText, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedConfig.normConfiguration.atPointYTextEnabled}"), atPointYText, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
         atPointYUnit.setModel(new DefaultComboBoxModel(loadEnum(SPVYUnit.class)));
@@ -813,7 +806,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         stackYUnitComboBox.setModel(new DefaultComboBoxModel(loadEnum(SPVYUnit.class)));
         stackYUnitComboBox.setName("stackYUnitComboBox"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedStack.conf.stackConfiguration.YUnits}"), stackYUnitComboBox, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedConfig.stackConfiguration.YUnits}"), stackYUnitComboBox, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
         bindingGroup.addBinding(binding);
 
         jLabel1.setText("Y Axis:");
@@ -1063,6 +1056,12 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 		ExtSed sed = SedStack.createSedFromStack(selectedStack, selectedStack.getName()+"_z="+redshiftConf.getToRedshift().toString()+"_");
 		manager.add(sed);
 	    }
+	} catch (StackException ex) {
+	    NarrowOptionPane.showMessageDialog(this, ex, "Redshift Error", JOptionPane.ERROR_MESSAGE);
+	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+	} catch (SampException ex) {
+	    NarrowOptionPane.showMessageDialog(this, ex, "Redshift Error", JOptionPane.ERROR_MESSAGE);
+	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
 	} catch (Exception ex) {
 	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
 	}
@@ -1324,7 +1323,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         SedStack oldSelectedStack = this.selectedStack;
         this.selectedStack = selectedStack;
         firePropertyChange(PROP_SELECTEDSTACK, oldSelectedStack, selectedStack);
-        if (selectedStack != null) {
+	if (selectedStack != null) {
             setSelectedConfig(selectedStack.getConf());
 	    sedsTable.setModel(new StackTableModel(selectedStack));
         }
@@ -1409,16 +1408,15 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 	} else {
 	    newStacks.remove(stack);
 	    setStacks(newStacks);
-//	    SedStack newStack;
-//	    if (!getStacks().isEmpty()) {
-		SedStack newStack = getStacks().get(newStacks.size()-1);
-//	    } else {
-//		newStack = new SedStack("Stack");
-//		newStacks.add(newStack);
-//		setStacks(newStacks);
-//	    }
-	    setSelectedStack(newStack);
-	    jList1.setSelectedValue(newStack, true);
+	    SedStack newStack;
+	    if (!getStacks().isEmpty()) {
+		newStack = getStacks().get(newStacks.size()-1);
+		setSelectedStack(newStack);
+		jList1.setSelectedValue(newStack, true);
+	    } else {
+		newStack = new SedStack("Stack");
+		updateStackList(newStack, true);
+	    }
 	}
     }
 
@@ -1437,7 +1435,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         }
         return null;
     }
-    
+
 //    public void updateSedBuilderStack() throws SedInconsistentException, SedNoDataException, SedException, UnitsException {
 //	// get the representative Sed in the SedBuilder
 //	ExtSed sed = null;
