@@ -38,6 +38,7 @@ import cfa.vo.iris.sed.quantities.IUnit;
 import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.sedlib.common.SedException;
+import cfa.vo.sedlib.common.SedNoDataException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
@@ -1121,6 +1122,15 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 
     private void createSedButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createSedButtonActionPerformed
 	try {
+	    
+	    if(selectedStack.getSeds().isEmpty()) {
+	    NarrowOptionPane.showMessageDialog(null,
+                    "Stack is empty. Please add SEDs to the stack first.",
+                    "Empty Stack",
+                    NarrowOptionPane.ERROR_MESSAGE);
+            throw new SedNoDataException();
+	}
+	    
 	    ExtSed sed = SedStack.createSedFromStack(selectedStack);
 	    
 	    manager.add(sed);

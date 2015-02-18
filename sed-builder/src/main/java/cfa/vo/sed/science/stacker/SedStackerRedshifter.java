@@ -66,8 +66,13 @@ public class SedStackerRedshifter {
         
 	this.redshiftConfigChanged = false;
 	
-        if(stack.getSeds().isEmpty())
+	if(stack.getSeds().isEmpty()) {
+	    NarrowOptionPane.showMessageDialog(null,
+                    "Stack is empty. Please add SEDs to the stack to redshift.",
+                    "Empty Stack",
+                    NarrowOptionPane.ERROR_MESSAGE);
             throw new SedNoDataException();
+	}
 	
 	try {
 	    client.findSherpa();

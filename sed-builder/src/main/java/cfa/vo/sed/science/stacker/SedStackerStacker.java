@@ -63,7 +63,7 @@ public class SedStackerStacker {
 
 	if(stack.getSeds().isEmpty()) {
 	    NarrowOptionPane.showMessageDialog(null,
-                    "Stack is empty. Please add SEDs to the stack to normalize.",
+                    "Stack is empty. Please add SEDs to the stack to stack.",
                     "Empty Stack",
                     NarrowOptionPane.ERROR_MESSAGE);
             throw new SedNoDataException();
