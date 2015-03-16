@@ -527,7 +527,7 @@
             <BindingProperty name="text" source="Form" sourcePath="${selectedConfig.normConfiguration.YValue}" target="integrationValueText" targetPath="text" updateStrategy="0" immediately="false">
               <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
             </BindingProperty>
-            <BindingProperty name="enabled" source="jRadioButton1" sourcePath="${selected}" target="integrationValueText" targetPath="enabled" updateStrategy="0" immediately="false"/>
+            <BindingProperty name="enabled" source="Form" sourcePath="${selectedConfig.normConfiguration.integrateYTextEnabled}" target="integrationValueText" targetPath="enabled" updateStrategy="0" immediately="false"/>
           </BindingProperties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_VariableLocal" type="java.lang.Boolean" value="false"/>

@@ -73,7 +73,14 @@ public final class NormalizationConfiguration {
 	this.integrate = integrate;
 	propertyChangeSupport.firePropertyChange(PROP_INTEGRATE, oldIntegrate, integrate);
 	// disable Y value text box if not normalizing at a point and using "Value" for the statistic.
-	setAtPointYTextEnabled(false);
+	if (this.integrate) {
+	    setAtPointYTextEnabled(false);
+	    if(this.stats.equals("Value")) {
+		setIntegrateYTextEnabled(true);
+	    }
+	} else {
+	    setIntegrateYTextEnabled(false);
+	}
     }
 
     private transient final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
@@ -166,6 +173,12 @@ public final class NormalizationConfiguration {
 	String oldStats = this.stats;
 	this.stats = stats;
 	propertyChangeSupport.firePropertyChange(PROP_STATS, oldStats, stats);
+	// disable Y value text box if not normalizing at a point and using "Value" for the statistic.
+	if (this.stats.equals("Value") && this.integrate) {
+	    setIntegrateYTextEnabled(true);
+	} else {
+	    setIntegrateYTextEnabled(false);
+	}
     }
 
     private Double yValue = 1.0;
@@ -363,6 +376,7 @@ public final class NormalizationConfiguration {
 	// disable Y value text box if not normalizing at a point and using "Value" for the statistic.
 	if (atPointStats.equals("Value") && this.atPoint) {
 	    setAtPointYTextEnabled(true);
+	    setIntegrateYTextEnabled(false);
 	} else {
 	    setAtPointYTextEnabled(false);
 	}
@@ -415,8 +429,11 @@ public final class NormalizationConfiguration {
 	this.atPoint = atPoint;
 	propertyChangeSupport.firePropertyChange(PROP_ATPOINT, oldAtPoint, atPoint);
 	// disable Y value text box if not normalizing at a point and using "Value" for the statistic.
-	if (this.atPoint && this.atPointStats.equals("Value")) {
-	    setAtPointYTextEnabled(true);
+	if (this.atPoint) {
+	    setIntegrateYTextEnabled(false);
+	    if (this.atPointStats.equals("Value")) {
+		setAtPointYTextEnabled(true);
+	    }
 	} else {
 	    setAtPointYTextEnabled(false);
 	}
@@ -459,6 +476,21 @@ public final class NormalizationConfiguration {
 	boolean oldAtPointYTextEnabled = this.atPointYTextEnabled;
 	this.atPointYTextEnabled = atPointYTextEnabled;
 	propertyChangeSupport.firePropertyChange(PROP_ATPOINTYTEXTENABLED, oldAtPointYTextEnabled, atPointYTextEnabled);
+    }
+    
+    private boolean integrateYTextEnabled = true;
+
+    public static final String PROP_INTEGRATEYTEXTENABLED = "integrateYTextEnabled";
+
+    public boolean isIntegrateYTextEnabled() {
+	return integrateYTextEnabled;
+    }
+
+    // used to disable Y value text box if using Average or Median.
+    public void setIntegrateYTextEnabled(boolean integrateYTextEnabled) {
+	boolean oldIntegrateYTextEnabled = this.integrateYTextEnabled;
+	this.integrateYTextEnabled = integrateYTextEnabled;
+	propertyChangeSupport.firePropertyChange(PROP_ATPOINTYTEXTENABLED, oldIntegrateYTextEnabled, integrateYTextEnabled);
     }
 
     @Override
