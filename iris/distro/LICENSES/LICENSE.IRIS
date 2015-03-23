@@ -1,0 +1,19 @@
+
+IRIS is composed by newly developed code by individual teams in the former 
+Virtual Astronomical Observatory community, and reuses existing tools and 
+libraries.
+
+In particular, IRIS uses Sherpa as a fitting engine and Specview for
+visualization and Analysis.
+
+Sherpa is distributed under the GPLv3 license (see LICENSE.SAO and 
+COPYING files).
+
+Specview is distributed under the AURA license (see LICENSE.STScI file).
+
+Oxygen Icons are used for most of the desktop icons in the IRIS 
+application. These images are licensed under LGPL v3 (see 
+LICENSE-oxygen-icons.txt file).
+
+IRIS is distributed under the Apache v2 license (see LICENSE-2.0.txt file),
+which is compatible with the licenses of the software packaged with IRIS.
