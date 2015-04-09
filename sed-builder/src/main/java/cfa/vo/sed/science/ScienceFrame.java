@@ -919,7 +919,7 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
                     addPassBand(pf, false);
                 }
             }
-            List<PassBand> pbs = new ArrayList(filters);
+            List<PassBand> pbs = new ArrayList(bands);
             try {
                 List<SimplePhotometryPoint> out = calculate(pbs);
 //                List<SimplePhotometryPoint> ppoints = new ArrayList();
