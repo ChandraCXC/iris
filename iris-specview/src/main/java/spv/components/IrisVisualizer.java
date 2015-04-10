@@ -170,6 +170,8 @@ public class IrisVisualizer implements IrisComponent {
 
                     if (source.getNumberOfSegments() > 0) {
                         display(source);
+                    } else {
+                        remove(source);
                     }
 
                 } else if (payload == SedCommand.REMOVED) {
@@ -184,18 +186,26 @@ public class IrisVisualizer implements IrisComponent {
 
             public void process(Segment source, final SegmentPayload payload) {
 
-                if (payload.getSedCommand() == SedCommand.REMOVED) {
-                    return;
+                ExtSed sed = payload.getSed();
+
+                if (sed.getNumberOfSegments() > 0) {
+                    display(sed);
+                } else {
+                    remove(sed);
                 }
 
-                ExtSed sed = payload.getSed();
+//                if (payload.getSedCommand() == SedCommand.REMOVED) {
+//                    return;
+//                }
+
+//                ExtSed sed = payload.getSed();
 
                 // If the sed structure was modified, invalidate
                 // any model associated with it.
 
                 invalidateModel(sed);
 
-                display(payload.getSed());
+//                display(payload.getSed());
             }
         });
 
@@ -286,7 +296,7 @@ public class IrisVisualizer implements IrisComponent {
                 lastLocation = null;
                 disposeCurrentFrame();
                 currentFrame = frame;
-//                currentFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
+                currentFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
                 if (lastLocation != null) {
                     currentFrame.setLocation(lastLocation);
                 }
@@ -418,6 +428,7 @@ public class IrisVisualizer implements IrisComponent {
 
                     if (currentFrame == null) {
                         currentFrame = idm.getInternalFrame();
+                        currentFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
 
                         ws.addFrame(currentFrame);
                     }
