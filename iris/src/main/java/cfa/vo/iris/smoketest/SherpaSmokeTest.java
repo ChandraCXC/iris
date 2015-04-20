@@ -39,8 +39,6 @@ import junit.framework.Assert;
 import org.astrogrid.samp.Client;
 import org.astrogrid.samp.Response;
 import org.astrogrid.samp.client.ResultHandler;
-import spv.util.XUnits;
-import spv.util.YUnits;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -197,127 +195,79 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
             EnergyBin b1 = new EnergyBin();
             EnergyBin b2 = new EnergyBin();
 
-            b1.setMin(0.55);
-            b1.setMax(0.75);
+            b1.setMin(1000.0);
+            b1.setMax(3000.0);
             b1.setUnits("Angstrom");
 
 
-            b2.setMin(0.6);
-            b2.setMax(0.9);
+            b2.setMin(4000.0);
+            b2.setMax(6000.0);
             b2.setUnits("Angstrom");
 
             pbs.add(b2);
             pbs.add(b1);
 
-            AbstractModel p1 = c.createModel(Models.Polynom1D, "p1");
-            Parameter c0 = c.getParameter(p1, "c0");
-            c0.setFrozen(0);
-            c0.setVal(0.0);
+            AbstractModel p1 = c.createModel(Models.PowerLaw1D, "p1");
+            Parameter gamma = c.getParameter(p1, "gamma");
+            gamma.setFrozen(0);
+            gamma.setVal(0.0);
 
-            Parameter c1 = c.getParameter(p1, "c1");
-            c1.setFrozen(0);
-            c1.setVal(1.0);
+            Parameter ref = c.getParameter(p1, "ref");
+//            ref.setFrozen(0);
+            ref.setVal(1.0);
 
-            AbstractModel p2 = c.createModel(Models.Polynom1D, "p2");
-            c0 = c.getParameter(p2, "c0");
-            c0.setFrozen(1);
-            c0.setVal(0.0);
+            Parameter ampl = c.getParameter(p1, "ampl");
+            ampl.setFrozen(0);
+            ampl.setVal(1.0);
 
-            Parameter c2 = c.getParameter(p2, "c2");
-            c2.setFrozen(0);
-            c2.setVal(1.0);
+            AbstractModel p2 = c.createModel(Models.PowerLaw1D, "p2");
+            gamma = c.getParameter(p2, "gamma");
+            gamma.setFrozen(0);
+            gamma.setVal(0.0);
+
+            ref = c.getParameter(p2, "ref");
+//            ref.setFrozen(0);
+            ref.setVal(1.0);
+
+            ampl = c.getParameter(p2, "ampl");
+            ampl.setFrozen(0);
+            ampl.setVal(5.0);
 
 
 
             SherpaIntegrator integrator = new SherpaIntegrator(controller);
 
+            //Some constants we need for conversions
+            double H = 6.62620E-27;
+            double C = 2.997925E+18;
+            double HC = H*C;
+            double rb2 = b2.getMax()/b2.getMin();
+            double rb1 = b1.getMax()/b1.getMin();
+
             cm = c.createCompositeModel("p1+p2", p1, p2);
             cfa.vo.sed.science.integration.Response response = integrator.integrateComponents(pbs, cm, null, 10000);
             for (SimplePhotometryPoint point : response.getPoints()) {
-                if (point.getId().equals("0.6-0.9 Angstrom")) {
-                    Assert.assertEquals(point.getWavelength(), 0.75);
-                    double fluxDensity = YUnits.convert(new double[]{point.getFlux()}, new double[]{point.getWavelength()},
-                            new YUnits("erg/s/cm2"), new XUnits("Angstrom"), new YUnits("photon/s/cm2/Angstrom"), true)[0];
-                    Assert.assertEquals(fluxDensity * 0.75, 0.396, 0.001);
+                if (point.getId().equals("1000.0-3000.0 Angstrom")) {
+                    Assert.assertEquals(2000., point.getWavelength());
+                    Assert.assertEquals(Math.log(rb1*5.0*rb2)*HC, point.getFlux(), 0.001);
                 }
             }
 
             cm = c.createCompositeModel("p1", p1);
             response = integrator.integrateComponents(pbs, cm, null, 10000);
             for (SimplePhotometryPoint point : response.getPoints()) {
-                if (point.getId().equals("0.6-0.9 Angstrom")) {
-                    Assert.assertEquals(point.getWavelength(), 0.75);
-                    double fluxDensity = YUnits.convert(new double[]{point.getFlux()}, new double[]{point.getWavelength()},
-                            new YUnits("erg/s/cm2"), new XUnits("Angstrom"), new YUnits("photon/s/cm2/Angstrom"), true)[0];
-                    Assert.assertEquals(fluxDensity * 0.75, 0.225, 0.001);
+                if (point.getId().equals("1000.0-3000.0 Angstrom")) {
+                    Assert.assertEquals(2000., point.getWavelength());
+                    Assert.assertEquals(Math.log(rb1)*HC, point.getFlux(), 0.001);
                 }
             }
 
             cm = c.createCompositeModel("p2", p2);
             response = integrator.integrateComponents(pbs, cm, null, 10000);
             for (SimplePhotometryPoint point : response.getPoints()) {
-                if (point.getId().equals("0.6-0.9 Angstrom")) {
-                    Assert.assertEquals(point.getWavelength(), 0.75);
-                    double fluxDensity = YUnits.convert(new double[]{point.getFlux()}, new double[]{point.getWavelength()},
-                            new YUnits("erg/s/cm2"), new XUnits("Angstrom"), new YUnits("photon/s/cm2/Angstrom"), true)[0];
-                    Assert.assertEquals(fluxDensity * 0.75, 0.171, 0.001);
-                }
-            }
-
-            cm = c.createCompositeModel("p1", p1);
-            response = integrator.integrateComponents(pbs, cm, null, 10000);
-            for (SimplePhotometryPoint point : response.getPoints()) {
-                if (point.getId().equals("0.6-0.9 Angstrom")) {
-                    Assert.assertEquals(point.getWavelength(), 0.75);
-                    double fluxDensity = YUnits.convert(new double[]{point.getFlux()}, new double[]{point.getWavelength()},
-                            new YUnits("erg/s/cm2"), new XUnits("Angstrom"), new YUnits("photon/s/cm2/Angstrom"), true)[0];
-                    Assert.assertEquals(fluxDensity * 0.75, 0.225, 0.001);
-                } else {
-                    Assert.assertEquals(point.getWavelength(), 0.65);
-                    double fluxDensity = YUnits.convert(new double[]{point.getFlux()}, new double[]{point.getWavelength()},
-                            new YUnits("erg/s/cm2"), new XUnits("Angstrom"), new YUnits("photon/s/cm2/Angstrom"), true)[0];
-                    Assert.assertEquals(fluxDensity * 0.65, 0.13, 0.001);
-                }
-            }
-
-            AbstractModel p3 = c.createModel(Models.Polynom1D, "p3");
-            c0 = c.getParameter(p3, "c0");
-            c0.setFrozen(1);
-            c0.setVal(0.0);
-            c2 = c.getParameter(p3, "c2");
-            c2.setFrozen(0);
-            c2.setVal(3e-19);
-
-            pbs = new ArrayList();
-
-            b1 = new EnergyBin();
-            b2 = new EnergyBin();
-            EnergyBin b3 = new EnergyBin();
-
-            pbs.add(b1);
-            pbs.add(b2);
-            pbs.add(b3);
-
-            b1.setMin(5e11);
-            b1.setMax(1e12);
-            b1.setUnits("Hz");
-
-            b2.setMin(5e16);
-            b2.setMax(10e17);
-            b2.setUnits("Hz");
-
-            b3.setMin(5e16);
-            b3.setMax(6e16);
-            b3.setUnits("Hz");
-
-            cm = c.createCompositeModel("p3", p3);
-            response = integrator.integrateComponents(pbs, cm, null, 10000);
-            for (SimplePhotometryPoint point : response.getPoints()) {
-                if (point.getId().equals("5.0E11-1.0E12 Hz")) {
-                    Assert.assertEquals(point.getWavelength(), 4496888, 1);
-                    double fluxDensity = YUnits.convert(new double[]{point.getFlux()}, new double[]{point.getWavelength()},
-                            new YUnits("erg/s/cm2"), new XUnits("Angstrom"), new YUnits("photon/s/cm2/Angstrom"), true)[0];
-                    Assert.assertEquals(fluxDensity*point.getWavelength(), 18.860, 0.005);
+                if (point.getId().equals("4000.0-6000.0 Angstrom")) {
+                    Assert.assertEquals(5000., point.getWavelength());
+                    Assert.assertEquals(Math.log(rb2*5.0)*HC, point.getFlux(), 0.001);
                 }
             }
 

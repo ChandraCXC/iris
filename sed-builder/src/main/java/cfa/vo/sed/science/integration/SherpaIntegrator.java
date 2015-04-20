@@ -160,7 +160,7 @@ public class SherpaIntegrator {
         double[] xx = cfa.vo.interop.EncodeDoubleArray.decodeBase64(((List<String>)result.get("results")).get(0), false);
         double[] yy = cfa.vo.interop.EncodeDoubleArray.decodeBase64(((List<String>) result.get("results")).get(1), false);
 
-//        yy = YUnits.convert(yy, xx, new YUnits("photon/s/cm2/Angstrom"), new XUnits("Angstrom"), new YUnits("erg/s/cm2/Angstrom"), true);
+        yy = YUnits.convert(yy, xx, new YUnits("photon/s/cm2/Angstrom"), new XUnits("Angstrom"), new YUnits("erg/s/cm2/Angstrom"), true);
 
         // Integrate
         payload.setX(xx);
@@ -169,8 +169,8 @@ public class SherpaIntegrator {
 
         Response res = (Response) SAMPFactory.get(controller.callAndWait(client.findSherpa(), message.get(), 20).getResult(), Response.class);
         for (SimplePhotometryPoint p : res.getPoints()) {
-            double photon = p.getFlux()/p.getWavelength();
-            double erg = YUnits.convert(new double[]{photon}, new double[]{p.getWavelength()}, new YUnits("photon/s/cm2/Angstrom"), new XUnits("Angstrom"), new YUnits("erg/s/cm2"), true)[0];
+            double erg = p.getFlux();
+//            double erg = YUnits.convert(new double[]{photon}, new double[]{p.getWavelength()}, new YUnits("photon/s/cm2/Angstrom"), new XUnits("Angstrom"), new YUnits("erg/s/cm2"), true)[0];
             p.setFlux(erg);
         }
         return res;
