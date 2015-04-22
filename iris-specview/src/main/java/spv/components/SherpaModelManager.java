@@ -155,7 +155,6 @@ public class SherpaModelManager extends SpvModelManager {
 
         pathMap = new HashMap<String,String>();
         functionNameMap = new HashMap<String,String>();
-        getInternalFrame().setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
     }
 
     // .execute() is the main method used by the caller to activate the fit.
@@ -261,21 +260,11 @@ public class SherpaModelManager extends SpvModelManager {
         }
     }
 
-    private boolean wantedHidden = false;
-
-    public boolean isWantedHidden() {
-        return wantedHidden;
-    }
-
-    public void setWantedHidden(boolean wantedHidden) {
-        this.wantedHidden = wantedHidden;
-    }
-
     public void dispose() {
-        int option = JOptionPane.showConfirmDialog(frame.getFrame(),
-                "Would you like to keep the model for the SED?", "Confirm",
-                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-        if (option == JOptionPane.NO_OPTION) {
+        if (JOptionPane.showConfirmDialog(frame.getFrame(),
+                "** Model will be lost! ** You can save it to file with the File menu", "Confirm",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) ==
+                JOptionPane.OK_OPTION) {
 
             if (fitManager != null) {
                 fitManager.dispose();
@@ -288,9 +277,6 @@ public class SherpaModelManager extends SpvModelManager {
             }
 
             super.dispose();
-        } else if (option == JOptionPane.YES_OPTION) {
-            this.getInternalFrame().hide();
-            this.wantedHidden = true;
         }
     }
 
