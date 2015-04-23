@@ -1,0 +1,36 @@
+/**
+ * Copyright (C) 2015 Smithsonian Astrophysical Observatory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package cfa.vo.sed.science.stacker;
+
+/**
+ *
+ * @author jbudynk
+ */
+public class SedStackerAttachments {
+    
+    public static String ORIG_REDSHIFT = "sedstacker:orig redshift";
+    public static String REDSHIFT = "sedstacker:latest redshift";
+    public static String NORM_CONSTANT = "sedstacker:norm constant";
+    public static String COUNTS = "sedstacker: counts";
+    public static String NORM_CONF_HASH = "sedstacker: normConfHash";
+    public static String REDSHIFT_CONF_HASH = "sedstacker: redshiftConfHash";
+}
