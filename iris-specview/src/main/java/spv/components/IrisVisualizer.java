@@ -444,6 +444,10 @@ public class IrisVisualizer implements IrisComponent {
 
                         try {
                             Spectrum sp = factory.readAllSegments(null, sed);
+                            if (sp == null) {
+                                NarrowOptionPane.showMessageDialog(ws.getRootFrame(), "No SEDs to fit. Please load a file.", "Fitting Engine", NarrowOptionPane.INFORMATION_MESSAGE);
+                                return;
+                            }
                             sp.setName(sed.getId());
 
                             // Get model manager from Sed attachment
