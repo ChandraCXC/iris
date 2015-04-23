@@ -1256,7 +1256,9 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
         if (integrateModel) {
             SpectrumContainer sc = (SpectrumContainer) sed.getAttachment("fit.model");
             SherpaModelManager smm = (SherpaModelManager) sc.getModelManager();
-
+            if (!smm.lastFitted()) {
+                throw new Exception("No Model Found. Please fit the data first and keep the fitting window open.");
+            }
             CompositeModel model = smm.getModel();
             model.setName(modelExpression);
 
@@ -1502,7 +1504,11 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
         SpectrumContainer sc = (SpectrumContainer) sed.getAttachment("fit.model");
         if (sc != null) {
             SherpaModelManager smm = (SherpaModelManager) sc.getModelManager();
-            setModelExpression(smm.getExpression());
+            if (smm != null && smm.lastFitted()) {
+                setModelExpression(smm.getExpression());
+            } else {
+                setModelExpression("No Model");
+            }
         } else {
             setModelExpression("No Model");
         }

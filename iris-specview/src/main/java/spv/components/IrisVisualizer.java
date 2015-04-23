@@ -269,7 +269,7 @@ public class IrisVisualizer implements IrisComponent {
                 lastLocation = null;
                 disposeCurrentFrame();
                 currentFrame = frame;
-                currentFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
+//                currentFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
                 if (lastLocation != null) {
                     currentFrame.setLocation(lastLocation);
                 }
@@ -401,7 +401,6 @@ public class IrisVisualizer implements IrisComponent {
 
                     if (currentFrame == null) {
                         currentFrame = idm.getInternalFrame();
-                        currentFrame.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
 
                         ws.addFrame(currentFrame);
                     }

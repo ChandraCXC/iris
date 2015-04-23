@@ -155,6 +155,12 @@ public class SherpaModelManager extends SpvModelManager {
 
         pathMap = new HashMap<String,String>();
         functionNameMap = new HashMap<String,String>();
+//        this.getInternalFrame().setClosable(false);
+        this.getInternalFrame().setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
+    }
+    
+    public boolean lastFitted(){
+        return this.lastFittingMap != null;
     }
 
     // .execute() is the main method used by the caller to activate the fit.
@@ -261,8 +267,10 @@ public class SherpaModelManager extends SpvModelManager {
     }
 
     public void dispose() {
+//        this.getInternalFrame().setClosable(false);
+        this.getInternalFrame().setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
         if (JOptionPane.showConfirmDialog(frame.getFrame(),
-                "** Model will be lost! ** You can save it to file with the File menu", "Confirm",
+                "If you close this frame the model will be lost and some Iris components may not be able to work with models anymore.", "Confirm",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) ==
                 JOptionPane.OK_OPTION) {
 
