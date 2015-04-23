@@ -1373,8 +1373,8 @@ public class PhotometryCatalogFrame extends ConfirmJInternalFrame implements Seg
     private FilterSelectionListener listener = new FilterSelectionListener() {
 
         @Override
-        public void process(final PhotometryFilter source, SedCommand payload) {
-            selectedPoint.getSpectralAxisBuilder().setFilter(source);
+        public void process(final List<PhotometryFilter> source, SedCommand payload) {
+            selectedPoint.getSpectralAxisBuilder().setFilter(source.get(0));
         }
     };
     

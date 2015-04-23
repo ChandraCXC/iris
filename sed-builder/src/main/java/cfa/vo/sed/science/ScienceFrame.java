@@ -890,14 +890,27 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
 private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeMode
     pbconf.setMode(evt.getActionCommand());
 }//GEN-LAST:event_changeMode
-    private List<PhotometryFilter> filters = new ArrayList();
+    private List<PhotometryFilter> filters = new ArrayList<PhotometryFilter>();
     private PhotometryFilterSelector selector;
     private FilterSelectionListener listener = new FilterSelectionListener() {
         @Override
-        public void process(final PhotometryFilter source, SedCommand payload) {
-            if (!filters.contains(source)) {
-                filters.add(source);
-                addPassBand(source);
+        public void process(final List<PhotometryFilter> source, SedCommand payload) {
+            for (PhotometryFilter pf : source) {
+                if (!filters.contains(pf)) {
+                    filters.add(pf);
+                    addPassBand(pf, false);
+                }
+            }
+            List<PassBand> pbs = new ArrayList(filters);
+            try {
+                List<SimplePhotometryPoint> out = calculate(pbs);
+                List<SimplePhotometryPoint> ppoints = new ArrayList(points);
+                setPoints(null);
+                ppoints.addAll(out);
+                setPoints(ppoints);
+            } catch (Exception ex) {
+                NarrowOptionPane.showMessageDialog(null, ex.getMessage(), "Error", NarrowOptionPane.ERROR_MESSAGE);
+                Logger.getLogger(ScienceFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     };
@@ -1163,7 +1176,7 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
         this.iqconfig = iqconfig;
     }
 
-    public synchronized void addPassBand(PassBand pb) {
+    public synchronized void addPassBand(PassBand pb, boolean calculate) {
         if (!iqconfig.getPassbands().contains(pb)) {
             iqconfig.getPassbands().add(pb);
             if (pb instanceof PhotometryFilter) {
@@ -1186,7 +1199,9 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
         }
 
         setBands(iqconfig.getPassbands());
-        calculate(pb);
+        if(calculate) {
+            calculate(pb);
+        }
         sed.addAttachment(FILTERS_ATTACH, filters);
     }
 
@@ -1196,7 +1211,7 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
         eb.setMax(pbconf.getMax());
         eb.setMin(pbconf.getMin());
         eb.setUnits(pbconf.getUnits());
-        addPassBand(eb);
+        addPassBand(eb, true);
     }
     private List<PassBand> bands;
     public static final String PROP_BANDS = "bands";
