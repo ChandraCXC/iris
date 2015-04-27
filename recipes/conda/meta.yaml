@@ -3,12 +3,12 @@ package:
   version: "2.1"
 
 build:
-  number: 1
+  number: 3 
 
 requirements:
   run:
-   - sherpa-samp
+   - sherpa-samp 2.1
 
 about:
   home: https://github.com/ChandraCXC/sherpa-samp.git
-  summary: SAMP interface to Sherpa.   
+  summary: A Virtual Observatory tool for Spectral Energy Distributions 
