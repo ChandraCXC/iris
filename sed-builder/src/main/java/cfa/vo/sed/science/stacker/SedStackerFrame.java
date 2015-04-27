@@ -88,6 +88,8 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 	// normalization comboBoxes. Chooses the list of units available 
 	// based on the normalization type chosen (Value, Median, or Average).
 	// Also disable Y value text box if using Average or Median.
+	
+	//TODO: cleanup unused code.
 	integrationNormType.addActionListener( new ActionListener() {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {

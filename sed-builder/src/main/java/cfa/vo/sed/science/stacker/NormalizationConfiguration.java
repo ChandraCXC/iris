@@ -20,6 +20,9 @@
  * and open the template in the editor.
  */
 
+/* TODO: cleanup unused code for binding the Y-unit values to the integration 
+ * Y-unit dropdown menu
+ */ 
 package cfa.vo.sed.science.stacker;
 
 import java.beans.PropertyChangeListener;
