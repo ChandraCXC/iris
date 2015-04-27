@@ -45,6 +45,7 @@ import spv.util.YUnits;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -350,7 +351,7 @@ public class ExtSed extends Sed {
      * if the action needs to be stopped.
      */
     int checkModel(String message) {
-        if (this.getAttachment(FIT_ATTACH) != null) {
+        if (wasFitted()) {
             int ans = NarrowOptionPane.showConfirmDialog(null,
                     message + "\n" +
                             "This action requires that the Fit Component be closed.\n" +
@@ -365,5 +366,28 @@ public class ExtSed extends Sed {
             }
         }
         return NO_MODEL;
+    }
+
+    // FIXME HORRIBLE HACK to avoid coupling iris-common with the viewer/fitter
+    // while still informing the user that changing the SED
+    // requires to reset the Fitting manager.
+    private boolean wasFitted() {
+        Object attachment = this.getAttachment(FIT_ATTACH);
+        if (attachment == null) {
+            return false;
+        }
+
+        try {
+            Method getModelManager = attachment.getClass().getMethod("getModelManager");
+            Object modelManager = getModelManager.invoke(attachment);
+            Method lastFitted = modelManager.getClass().getMethod("lastFitted");
+            return (Boolean) lastFitted.invoke(modelManager);
+        } catch (Throwable ex) {
+            NarrowOptionPane.showMessageDialog(null, "An unexpected error occurred. Iris will try to continue, but you may experience\n" +
+                    "some unexpected behavior.", "Unexpected Error", NarrowOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(ExtSed.class.getName()).log(Level.SEVERE, null, ex);
+            return true;
+        }
+
     }
 }
