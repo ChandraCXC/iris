@@ -9,8 +9,7 @@ chmod u+x Iris
 cp Iris $IRIS/launch
 cp -r lib $IRIS
 cp *.jar $IRIS
-cp COPYING $IRIS
-cp LICENSE* $IRIS
+cp -r LICENSES $IRIS
 cp README.txt $IRIS
 cp -r examples $IRIS
 
