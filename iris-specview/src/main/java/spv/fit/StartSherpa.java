@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012, 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,12 +25,7 @@ package spv.fit;
 import spv.util.ExceptionHandler;
 
 import java.io.IOException;
-
 import java.util.Map;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.InputStream;
-import java.io.BufferedInputStream;
 
 public class StartSherpa extends AbstractFittingEngine {
 
@@ -77,25 +72,25 @@ public class StartSherpa extends AbstractFittingEngine {
          */
     }
 
-    @Override
-    public void print(InputStream in) {
-
-        BufferedReader reader = new BufferedReader(new InputStreamReader(new BufferedInputStream(in)));
-
-        try {
-            while (true) {
-                String line = reader.readLine();
-                if (line == null) {
-                    break;
-                }
-                System.out.println(line);
-            }
-            reader.close();
-
-        } catch (IOException ie) {
-            ExceptionHandler.handleException(ie);
-        }
-    }
+//    @Override
+//    public void print(InputStream in) {
+//
+//        BufferedReader reader = new BufferedReader(new InputStreamReader(new BufferedInputStream(in)));
+//
+//        try {
+//            while (true) {
+//                String line = reader.readLine();
+//                if (line == null) {
+//                    break;
+//                }
+//                System.out.println(line);
+//            }
+//            reader.close();
+//
+//        } catch (IOException ie) {
+//            ExceptionHandler.handleException(ie);
+//        }
+//    }
 
     @Override
     public void run() {

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012, 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ public class About extends javax.swing.JDialog {
         jLabel11 = new javax.swing.JLabel();
 
         jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
-        jLabel1.setText("Iris v2.0");
+        jLabel1.setText("Iris v2.1");
         jLabel1.setName("jLabel1"); // NOI18N
 
         jLabel2.setText("Virtual Astronomical Observatory");
@@ -109,7 +109,6 @@ public class About extends javax.swing.JDialog {
                     .add(jLabel5)
                     .add(jLabel7)
                     .add(jLabel2))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
                         .add(18, 18, 18)

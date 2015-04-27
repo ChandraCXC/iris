@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012, 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sed.filters.AbstractSingleStarTableFilter;
+import cfa.vo.sed.filters.IFileFormat;
 import cfa.vo.sed.filters.NativeFileFormat;
 import cfa.vo.sed.setup.PhotometryCatalogBuilder;
 import cfa.vo.sed.setup.SetupBean;
@@ -39,6 +40,7 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 import org.jdesktop.application.Action;
 
 /**
@@ -176,6 +178,34 @@ public class SampChooser extends javax.swing.JInternalFrame {
     public void importCatalog() {
         try {
             AbstractSingleStarTableFilter filter = (AbstractSingleStarTableFilter) NativeFileFormat.valueOf(formatName).getFilter(url);
+	    
+	    /* Spectra warning. If there are 1000 < points < 2500, just warn user that
+	    * visualizer may be slow.
+	    * If there are over 2500 points, give user decision to add to Iris or not.
+	    */
+	    int numOfPoints = filter.getColumnData(0, 0).length;
+	    if(numOfPoints < 2500 && numOfPoints > 1000) {
+		NarrowOptionPane.showMessageDialog(this, 
+			"There are over 1000 data points in this file.\n"+
+				"Visualization tools may be slightly slower than usual for this SED.", 
+			"Large Segment Detected", 
+			NarrowOptionPane.INFORMATION_MESSAGE);
+	    }
+	    else if(numOfPoints > 2500) {
+		int answer = NarrowOptionPane.showOptionDialog(this, 
+			"The number of data points exceeds the limit supported by Iris visualization tools (number of points detected: "+String.valueOf(numOfPoints)+").\n"+
+			//"There are over 2500 points in this file (number detected: "+String.valueOf(numOfPoints)+").\n"+
+				//"Iris visualization tools do not support spectra, meaning"+
+				"Visualization tools will be slow for this SED.\n\n"+
+				"Do you want to continue import?", 
+			"Large Segment Detected", 
+			NarrowOptionPane.YES_NO_OPTION, 
+			NarrowOptionPane.WARNING_MESSAGE, null, new String[]{"Yes", "No"}, "No");
+		if (answer == JOptionPane.NO_OPTION) {
+		    return;
+		}
+	    }
+	    
             PhotometryCatalogFrame catFrame = new PhotometryCatalogFrame(new PhotometryCatalogBuilder(filter, sed, 0));
             workspace.addFrame(catFrame);
             catFrame.setVisible(true);
@@ -202,6 +232,34 @@ public class SampChooser extends javax.swing.JInternalFrame {
     @Action
     public void importSpectrum() {
         try {
+	    
+	    /* Spectra warning. If there are 1000 < points < 2500, just warn user that
+	    * visualizer may be slow.
+	    * If there are over 2500 points, give user decision to add to Iris or not.
+	    */
+	    int numOfPoints = NativeFileFormat.valueOf(formatName).getFilter(url).getColumnData(0,0).length;
+	    if(numOfPoints < 2500 && numOfPoints > 1000) {
+		NarrowOptionPane.showMessageDialog(this, 
+			"There are over 1000 data points in this file.\n"+
+				"Visualization tools may be slightly slower than usual for this SED.", 
+			"Large Segment Detected", 
+			NarrowOptionPane.INFORMATION_MESSAGE);
+	    }
+	    else if(numOfPoints > 2500) {
+		int answer = NarrowOptionPane.showOptionDialog(this,
+			"The number of data points exceeds the limit supported by Iris visualization tools (number of points detected: "+String.valueOf(numOfPoints)+").\n"+
+			//"There are over 2500 points in this file (number detected: "+String.valueOf(numOfPoints)+").\n"+
+				//"Iris visualization tools do not support spectra, meaning"+
+				"Visualization tools will be slow for this SED.\n\n"+
+				"Do you want to continue import?", 
+			"Large Segment Detected", 
+			NarrowOptionPane.YES_NO_OPTION, 
+			NarrowOptionPane.WARNING_MESSAGE, null, new String[]{"Yes", "No"}, "No");
+		if (answer == JOptionPane.NO_OPTION) {
+		    return;
+		}
+	    }
+	    
             SetupBean c = new SetupBean();
             c.setPositionInFile(0);
             c.setFileLocation(url.toString());

@@ -1,3 +1,20 @@
+/**
+ * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
 /*
  * This software is distributed under a BSD license,
  * as described in the LICENSE file at the top
@@ -18,7 +35,6 @@ import cfa.vo.iris.events.*;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.utils.IList;
-import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.TextParam;
 import cfa.vo.sedlib.common.SedException;
@@ -117,7 +133,7 @@ public class IrisCoplotManager extends MultiplePanelGUI {
             sbuffer.append(" ");
             sbuffer.append(sedId);
             try {
-                Segment newSegment = SedBuilder.flatten(sed, "Angstrom", "Jy").getSegment(0);
+                Segment newSegment = ExtSed.flatten(sed, "Angstrom", "Jy").getSegment(0);
                 multipleSed.addSegment(newSegment);
                 newSegment.createTarget().createName().setValue(sedId);
             } catch (UnitsException ex) {

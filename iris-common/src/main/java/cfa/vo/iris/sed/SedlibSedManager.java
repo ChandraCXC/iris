@@ -84,6 +84,9 @@ public class SedlibSedManager implements ISedManager<ExtSed> {
 
     @Override
     public void add(ExtSed sed) {
+        if (!sed.isManaged()) {
+            sed.setManaged(true);
+        }
         String id = sed.getId();
         int c = 0;
         while (existsSed(id + (c == 0 ? "" : "." + c))) {

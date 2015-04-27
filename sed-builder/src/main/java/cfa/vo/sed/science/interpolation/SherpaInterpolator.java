@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2013, 2015 Smithsonian Astrophysical Observatory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -10,7 +26,6 @@ import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sherpa.SherpaClient;
@@ -37,13 +52,12 @@ public class SherpaInterpolator {
     }
 
     public ExtSed interpolate(ExtSed sed, InterpolationConfig interpConf) throws Exception {
-        client.findSherpa();
 
         if (sed.getNumberOfSegments() == 0) {
             throw new SedNoDataException();
         }
 
-        String sherpaId = client.getSherpaId();
+        String sherpaId = client.findSherpa();
 
         if (sherpaId == null) {
             NarrowOptionPane.showMessageDialog(null,
@@ -53,7 +67,7 @@ public class SherpaInterpolator {
             throw new Exception("Sherpa not found");
         }
         
-        ExtSed newsed = SedBuilder.flatten(sed, "Angstrom", "Jy");
+        ExtSed newsed = ExtSed.flatten(sed, "Angstrom", "Jy");
         
         String intervUnits = interpConf.getUnits();
         Double xmin = interpConf.getXMin();

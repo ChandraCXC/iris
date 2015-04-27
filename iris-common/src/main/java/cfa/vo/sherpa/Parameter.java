@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012, 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,17 +37,17 @@ public interface Parameter {
 
     void setMax(Double max);
 
-    Boolean getFrozen();
+    Integer getFrozen();
 
-    void setFrozen(Boolean frozen);
+    void setFrozen(Integer frozen);
 
-    Boolean getHidden();
+    Integer getHidden();
 
-    void setHidden(Boolean hidden);
+    void setHidden(Integer hidden);
 
-    Boolean getAlwaysfrozen();
+    Integer getAlwaysfrozen();
 
-    void setAlwaysfrozen(Boolean alwaysfrozen);
+    void setAlwaysfrozen(Integer alwaysfrozen);
 
     String getUnits();
 

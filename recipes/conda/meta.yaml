@@ -1,0 +1,14 @@
+package:
+  name: iris
+  version: "2.1"
+
+build:
+  number: 1
+
+requirements:
+  run:
+   - sherpa-samp
+
+about:
+  home: https://github.com/ChandraCXC/sherpa-samp.git
+  summary: SAMP interface to Sherpa.   

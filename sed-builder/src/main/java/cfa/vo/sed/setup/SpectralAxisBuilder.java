@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012, 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@ import cfa.vo.sed.builder.dm.SpectralAxis;
 import cfa.vo.sed.setup.validation.Validation;
 import cfa.vo.sed.builder.photfilters.PhotometryFilter;
 import cfa.vo.sed.filters.IFilter;
-import cfa.vo.sed.quantities.IUnit;
-import cfa.vo.sed.quantities.XQuantity;
+import cfa.vo.iris.sed.quantities.IUnit;
+import cfa.vo.iris.sed.quantities.XQuantity;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

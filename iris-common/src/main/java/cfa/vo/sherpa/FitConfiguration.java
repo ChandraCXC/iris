@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012, 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,9 @@ public interface FitConfiguration {
 
     void addModel(CompositeModel model);
 
-    List<CompositeModel> getUsermodels();
+    List<UserModel> getUsermodels();
 
-    void addUsermodel(CompositeModel model);
+    void addUsermodel(UserModel model);
 
     Stat getStat();
 

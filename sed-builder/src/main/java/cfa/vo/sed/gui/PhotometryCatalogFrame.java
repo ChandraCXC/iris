@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012, 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,19 +30,19 @@ import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.gui.ConfirmJInternalFrame;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.SedException;
 import cfa.vo.sed.builder.ISegmentColumn;
 import cfa.vo.sed.builder.SedBuilder;
-import cfa.vo.sed.builder.SedImporterException;
 import cfa.vo.sed.builder.dm.PhotometryCatalog;
 import cfa.vo.sed.builder.dm.Target;
 import cfa.vo.sed.builder.photfilters.FilterSelectionListener;
 import cfa.vo.sed.builder.photfilters.PhotometryFilter;
 import cfa.vo.sed.gui.PhotometryPointFrame.PhotometryFilterSelector;
-import cfa.vo.sed.quantities.IUnit;
-import cfa.vo.sed.quantities.SPVYQuantity;
-import cfa.vo.sed.quantities.SPVYUnit;
-import cfa.vo.sed.quantities.XQuantity;
-import cfa.vo.sed.quantities.XUnit;
+import cfa.vo.iris.sed.quantities.IUnit;
+import cfa.vo.iris.sed.quantities.SPVYQuantity;
+import cfa.vo.iris.sed.quantities.SPVYUnit;
+import cfa.vo.iris.sed.quantities.XQuantity;
+import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.sed.setup.PhotometryCatalogBuilder;
 import cfa.vo.sed.setup.PhotometryPointBuilder;
 import cfa.vo.sedlib.Segment;
@@ -1260,19 +1260,19 @@ public class PhotometryCatalogFrame extends ConfirmJInternalFrame implements Seg
         public Object convertReverse(Object t) {
             try {
                 return getUnitsFromString((String) t);
-            } catch (SedImporterException ex) {
+            } catch (SedException ex) {
                 Logger.getLogger(PhotometryPointFrame.class.getName()).log(Level.SEVERE, null, ex);
                 return null;
             }
         }
 
-        protected abstract IUnit getUnitsFromString(String s) throws SedImporterException;
+        protected abstract IUnit getUnitsFromString(String s) throws SedException;
     }
 
     private class XUnitsConverter extends UnitsConverter {
 
         @Override
-        protected IUnit getUnitsFromString(String s) throws SedImporterException {
+        protected IUnit getUnitsFromString(String s) throws SedException {
             return XUnit.getFromUnitString(s);
         }
     }
@@ -1280,7 +1280,7 @@ public class PhotometryCatalogFrame extends ConfirmJInternalFrame implements Seg
     private class YUnitsConverter extends UnitsConverter {
 
         @Override
-        protected IUnit getUnitsFromString(String s) throws SedImporterException {
+        protected IUnit getUnitsFromString(String s) throws SedException {
             return SPVYUnit.getFromUnitString(s);
         }
     }
@@ -1373,8 +1373,8 @@ public class PhotometryCatalogFrame extends ConfirmJInternalFrame implements Seg
     private FilterSelectionListener listener = new FilterSelectionListener() {
 
         @Override
-        public void process(final PhotometryFilter source, SedCommand payload) {
-            selectedPoint.getSpectralAxisBuilder().setFilter(source);
+        public void process(final List<PhotometryFilter> source, SedCommand payload) {
+            selectedPoint.getSpectralAxisBuilder().setFilter(source.get(0));
         }
     };
     
