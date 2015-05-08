@@ -31,6 +31,7 @@ import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sherpa.SherpaClient;
 import org.astrogrid.samp.Response;
+import spv.spectrum.SEDMultiSegmentSpectrum;
 import spv.util.UnitsException;
 import spv.util.XUnits;
 
@@ -77,6 +78,7 @@ public class SherpaRedshifter {
         RedshiftPayload payload = (RedshiftPayload) SAMPFactory.get(RedshiftPayload.class);
         payload.setX(inputSed.getSegment(0).getSpectralAxisValues());
         payload.setY(inputSed.getSegment(0).getFluxAxisValues());
+	payload.setYerr((double[]) inputSed.getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE));
         payload.setFromRedshift(fromRedshift);
         payload.setToRedshift(toRedshift);
         SAMPMessage message = SAMPFactory.createMessage(REDSHIFT_MTYPE, payload, RedshiftPayload.class);
@@ -90,6 +92,7 @@ public class SherpaRedshifter {
         RedshiftPayload response = (RedshiftPayload) SAMPFactory.get(rspns.getResult(), RedshiftPayload.class);
         inputSed.getSegment(0).setSpectralAxisValues(response.getX());
         inputSed.getSegment(0).setFluxAxisValues(response.getY());
+	inputSed.getSegment(0).setDataValues(response.getYerr(), SEDMultiSegmentSpectrum.E_UTYPE);
         
         inputSed.checkChar();
         

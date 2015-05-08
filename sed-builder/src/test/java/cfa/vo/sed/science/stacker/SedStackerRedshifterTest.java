@@ -117,7 +117,7 @@ public class SedStackerRedshifterTest {
     //@Test
     public void testRedshift() throws Exception {
 	// Start the SAMP controller
-	controller = new SedSAMPController("SEDStacker", "SEDStacker", "");
+	controller = new SedSAMPController("SEDStacker", "SEDStacker", this.getClass().getResource("/tools_tiny.png").toString());
         controller.setAutoRunHub(false);
         controller.start(false);
 
@@ -182,7 +182,7 @@ public class SedStackerRedshifterTest {
     public void testRedshifter() throws Exception {
 	
 	// Start the SAMP controller
-	controller = new SedSAMPController("SEDStacker", "SEDStacker", "");
+	controller = new SedSAMPController("SEDStacker", "SEDStacker", this.getClass().getResource("/tools_tiny.png").toString());
         controller.setAutoRunHub(false);
         controller.start(false);
 
@@ -288,7 +288,7 @@ public class SedStackerRedshifterTest {
     public void testRedshifterNoZ() throws Exception {
 	
 	// Start the SAMP controller
-	controller = new SedSAMPController("SEDStacker", "SEDStacker", "");
+	controller = new SedSAMPController("SEDStacker", "SEDStacker", this.getClass().getResource("/tools_tiny.png").toString());
         controller.setAutoRunHub(false);
         controller.start(false);
 

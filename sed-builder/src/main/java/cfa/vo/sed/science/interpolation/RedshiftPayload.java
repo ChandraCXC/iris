@@ -33,6 +33,10 @@ public interface RedshiftPayload {
     public double[] getY();
 
     public void setY(double[] y);
+    
+    public double[] getYerr();
+    
+    public void setYerr(double[] yerr);
 
     public double getFromRedshift();
 
