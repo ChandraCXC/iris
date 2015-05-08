@@ -1,5 +1,21 @@
 #!/bin/bash
 
+#
+# Copyright (C) 2011, 2015 Smithsonian Astrophysical Observatory
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 function start_iris {
 
     bindir=$( cd -P "$( dirname "$0" )" && pwd )
@@ -8,9 +24,17 @@ function start_iris {
     fi
 
     export IRIS_DIR="$bindir"
-    export IRIS_DOC="http://cxc.cfa.harvard.edu/iris/v2.0/"
+    export IRIS_DOC="http://cxc.cfa.harvard.edu/iris/v${project.version}/"
 
-    args="-Xms256m -Xmx1024m -Dhttp.agent=iris/${project.version}"
+    if [ -z "$IRIS_LOG_LOCATION" ]; then
+        export IRIS_LOG_LOCATION="$HOME/.vao/iris/logs"
+    fi
+
+    if [ -z "$IRIS_LOG_NAME" ]; then
+        export IRIS_LOG_Name="IrisLog-"
+    fi
+
+    args="-Xms256m -Xmx1024m $IRIS_EXTRA_FLAGS -Dhttp.agent=iris/${project.version}"
 
     if test -x /usr/bin/sw_vers && /usr/bin/sw_vers | grep -q 'OS.X'; then
       args="$args -Xdock:name=Iris"
@@ -21,13 +45,18 @@ function start_iris {
           mkdir -p ~/.vao/iris
     fi
 
+    if [ ! -d ~/.vao/iris/logs ]; then
+          echo "Creating Iris logs directory in ~/.vao/iris"
+          mkdir -p ~/.vao/iris/logs
+    fi
+
     java $args -DIRIS_DIR="$bindir" -jar "$bindir"/${project.name}-${project.version}.jar --ssa $@ &
     irispid=$!
     echo "Started Iris with pid $irispid"
 
     sherpagrep=`ps aux | grep sherpa`
 
-    if [[ $sherpagrep == *startsherpa.py* ]]
+    if [[ $sherpagrep == *sherpa-samp.py* ]]
     then
         echo "Sherpa already running\n"
     else
@@ -35,7 +64,7 @@ function start_iris {
         export LD_LIBRARY_PATH=$bindir/lib/sherpa/lib
         unset PYTHONPATH
 
-        "$bindir"/lib/sherpa/bin/python2.6 "$bindir"/lib/sherpa/startsherpa.py &>~/.vao/iris/sherpa.log&
+        sherpa-samp &>$HOME/.vao/iris/sherpa.log&
         sherpapid=$!
         echo "Started Sherpa with pid $sherpapid"
     fi
@@ -50,14 +79,14 @@ function start_iris {
 
     sherpagrep=`ps aux | grep sherpa`
 
-    if [[ $sherpagrep == *startsherpa.py* ]]
+    if [[ $sherpagrep == *sherpa-samp* ]]
     then
         kill -9 "$sherpapid"
     fi
 
     sherpagrep=`ps aux | grep sherpa`
 
-    if [[ $sherpagrep == *startsherpa.py* ]]
+    if [[ $sherpagrep == *sherpa-samp* ]]
     then
         echo "WARNING: Sherpa process still running with PID $sherpapid. Please kill this process manually"
     else

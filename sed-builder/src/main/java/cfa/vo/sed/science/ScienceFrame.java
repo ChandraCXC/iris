@@ -1,3 +1,19 @@
+/**
+ * Copyright (C) 2013, 2015 Smithsonian Astrophysical Observatory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /*
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
@@ -10,10 +26,12 @@
  */
 package cfa.vo.sed.science;
 
+import cfa.vo.interop.SAMPFactory;
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedListener;
+import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.gui.widgets.SedList;
 import cfa.vo.iris.logging.LogEntry;
@@ -21,12 +39,7 @@ import cfa.vo.iris.logging.LogEvent;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.sed.builder.SedBuilder;
-import cfa.vo.sed.builder.photfilters.EnergyBin;
-import cfa.vo.sed.builder.photfilters.FilterSelectionListener;
-import cfa.vo.sed.builder.photfilters.IQConfig;
-import cfa.vo.sed.builder.photfilters.PassBand;
-import cfa.vo.sed.builder.photfilters.PassBandConf;
-import cfa.vo.sed.builder.photfilters.PhotometryFilter;
+import cfa.vo.sed.builder.photfilters.*;
 import cfa.vo.sed.gui.PhotometryPointFrame.PhotometryFilterSelector;
 import cfa.vo.sed.gui.SaveSedDialog;
 import cfa.vo.sed.science.integration.Response;
@@ -39,7 +52,16 @@ import cfa.vo.sed.science.interpolation.ZConfig;
 import cfa.vo.sedlib.Param;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedException;
-import java.awt.BorderLayout;
+import cfa.vo.sherpa.CompositeModel;
+import cfa.vo.sherpa.UserModel;
+import org.jdesktop.application.Action;
+import org.jdesktop.application.Task;
+import spv.components.SherpaModelManager;
+import spv.controller.SpectrumContainer;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -49,10 +71,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JLabel;
-import javax.swing.table.DefaultTableCellRenderer;
-import org.jdesktop.application.Action;
-import org.jdesktop.application.Task;
 
 /**
  *
@@ -62,6 +80,7 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
 
     private IrisApplication app;
     private SedlibSedManager manager;
+    private IWorkspace ws;
     private static String ZCONF_ATTACH = "science:z";
     private static String ICONF_ATTACH = "science:interpolation";
     private ExtSed sed;
@@ -86,6 +105,7 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
         this.sed = sed;
 
         if (sed != null) {
+            setIntegrateModel(isIntegrateModel()); // Hack - Force model reevaluation
             ZConfig zconf = (ZConfig) sed.getAttachment(ZCONF_ATTACH);
             if (zconf == null) {
                 zconf = new ZConfig();
@@ -147,6 +167,7 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
      */
     public ScienceFrame(IrisApplication app, IWorkspace ws) {
         this.app = app;
+        this.ws = ws;
         this.manager = (SedlibSedManager) ws.getSedManager();
         initComponents();
         sedPanel.setViewportView(new SedList(ws.getSedManager()));
@@ -211,6 +232,14 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
         jTextField12 = new javax.swing.JTextField();
         xAxisCombo4 = new javax.swing.JComboBox();
         jButton9 = new javax.swing.JButton();
+        integrateModelButton = new javax.swing.JRadioButton();
+        jPanel9 = new javax.swing.JPanel();
+        modelExpressionField = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        fullModelButton = new javax.swing.JRadioButton();
+        jTextField4 = new javax.swing.JTextField();
+        jLabel10 = new javax.swing.JLabel();
+        jButton7 = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
@@ -343,7 +372,7 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
                 .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jFormattedTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jButton1))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         org.jdesktop.layout.GroupLayout jPanel6Layout = new org.jdesktop.layout.GroupLayout(jPanel6);
@@ -354,12 +383,12 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
                 .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(69, Short.MAX_VALUE))
+                .addContainerGap(74, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 96, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+            .add(jPanel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Interpolation"));
@@ -481,14 +510,13 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
                                 .add(jLabel7)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(jComboBox2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 137, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                            .add(jCheckBox2))))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .add(jCheckBox2)))))
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addContainerGap(226, Short.MAX_VALUE)
+                .addContainerGap(164, Short.MAX_VALUE)
                 .add(jButton2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 127, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(busy, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(126, 126, 126))
+                .add(171, 171, 171))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -515,7 +543,7 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
                         .add(jCheckBox1)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jCheckBox2)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 41, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 70, Short.MAX_VALUE)
                         .add(jPanel3Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(jButton2)
                             .add(busy, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
@@ -535,11 +563,11 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel1Layout.createSequentialGroup()
-                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
-                    .add(jPanel6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+            .add(jPanel1Layout.createSequentialGroup()
+                .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -608,27 +636,118 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jRadioButton8, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jButton9, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
+        integrateModelButton.setText("Integrate model (NO)"); // NOI18N
+        integrateModelButton.setName("integrateModelButton"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${integrateModel}"), integrateModelButton, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        bindingGroup.addBinding(binding);
+
+        jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder("Model Integration"));
+        jPanel9.setName("jPanel9"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, integrateModelButton, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jPanel9, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
+        modelExpressionField.setName("modelExpressionField"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${modelExpression}"), modelExpressionField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, fullModelButton, org.jdesktop.beansbinding.ELProperty.create("${!selected && enabled}"), modelExpressionField, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
+        jLabel9.setText("Model Expression:");
+        jLabel9.setName("jLabel9"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, integrateModelButton, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jLabel9, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
+        fullModelButton.setText("Full Model");
+        fullModelButton.setName("fullModelButton"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${fullModel}"), fullModelButton, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, integrateModelButton, org.jdesktop.beansbinding.ELProperty.create("${selected}"), fullModelButton, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
+        jTextField4.setColumns(5);
+        jTextField4.setName("jTextField4"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${modelBins}"), jTextField4, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, integrateModelButton, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jTextField4, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
+        jLabel10.setText("Model evaluation bins #:");
+        jLabel10.setName("jLabel10"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, integrateModelButton, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jLabel10, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
+        jButton7.setAction(actionMap.get("showModel")); // NOI18N
+        jButton7.setName("jButton7"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, integrateModelButton, org.jdesktop.beansbinding.ELProperty.create("${selected}"), jButton7, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        bindingGroup.addBinding(binding);
+
+        org.jdesktop.layout.GroupLayout jPanel9Layout = new org.jdesktop.layout.GroupLayout(jPanel9);
+        jPanel9.setLayout(jPanel9Layout);
+        jPanel9Layout.setHorizontalGroup(
+            jPanel9Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel9Layout.createSequentialGroup()
+                .add(fullModelButton)
+                .add(13, 13, 13)
+                .add(jLabel10)
+                .add(2, 2, 2)
+                .add(jTextField4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jButton7))
+            .add(jPanel9Layout.createSequentialGroup()
+                .add(9, 9, 9)
+                .add(jLabel9)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(modelExpressionField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE))
+        );
+        jPanel9Layout.setVerticalGroup(
+            jPanel9Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel9Layout.createSequentialGroup()
+                .add(jPanel9Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jPanel9Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                        .add(fullModelButton)
+                        .add(jLabel10)
+                        .add(jTextField4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(jButton7))
+                .add(10, 10, 10)
+                .add(jPanel9Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(modelExpressionField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jLabel9, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 28, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(8, Short.MAX_VALUE))
+        );
+
         org.jdesktop.layout.GroupLayout jPanel11Layout = new org.jdesktop.layout.GroupLayout(jPanel11);
         jPanel11.setLayout(jPanel11Layout);
         jPanel11Layout.setHorizontalGroup(
             jPanel11Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jPanel9, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .add(jPanel11Layout.createSequentialGroup()
                 .add(jPanel11Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel11Layout.createSequentialGroup()
-                        .add(jRadioButton9)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jButton3))
                     .add(jPanel11Layout.createSequentialGroup()
                         .add(jRadioButton8)
                         .add(18, 18, 18)
                         .add(jTextField10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 68, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField12, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 69, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(7, 7, 7)
+                        .add(jTextField12, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 69, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(jPanel11Layout.createSequentialGroup()
+                        .add(jRadioButton9)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(jButton3)))
+                .add(7, 7, 7)
+                .add(jPanel11Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                    .add(integrateModelButton)
+                    .add(jPanel11Layout.createSequentialGroup()
                         .add(xAxisCombo4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(8, 8, 8)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(jButton9, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 72, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
         jPanel11Layout.setVerticalGroup(
             jPanel11Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -644,8 +763,10 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
                         .add(42, 42, 42)
                         .add(jPanel11Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                             .add(jRadioButton9)
-                            .add(jButton3))))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .add(jButton3)
+                            .add(integrateModelButton))))
+                .add(9, 9, 9)
+                .add(jPanel9, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder("Results"));
@@ -667,14 +788,16 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
         columnBinding.setColumnClass(Double.class);
         columnBinding.setEditable(false);
         columnBinding = jTableBinding.addColumnBinding(org.jdesktop.beansbinding.ELProperty.create("${flux}"));
-        columnBinding.setColumnName("Flux (Jy)");
+        columnBinding.setColumnName("Flux (erg/s/cm2)");
         columnBinding.setColumnClass(Double.class);
         columnBinding.setEditable(false);
         bindingGroup.addBinding(jTableBinding);
         jTableBinding.bind();
         jScrollPane3.setViewportView(jTable3);
-        jTable3.getColumnModel().getColumn(1).setCellRenderer(new ScientificRenderer());
-        jTable3.getColumnModel().getColumn(2).setCellRenderer(new ScientificRenderer());
+        if (jTable3.getColumnModel().getColumnCount() > 0) {
+            jTable3.getColumnModel().getColumn(1).setCellRenderer(new ScientificRenderer());
+            jTable3.getColumnModel().getColumn(2).setCellRenderer(new ScientificRenderer());
+        }
 
         jButton4.setAction(actionMap.get("reset")); // NOI18N
         jButton4.setName("jButton4"); // NOI18N
@@ -705,12 +828,12 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(jButton5)
                 .addContainerGap())
-            .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 484, Short.MAX_VALUE)
+            .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel8Layout.createSequentialGroup()
-                .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 159, Short.MAX_VALUE)
+                .add(jScrollPane3, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jPanel8Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(jButton8)
@@ -725,9 +848,9 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
         jPanel7.setLayout(jPanel7Layout);
         jPanel7Layout.setHorizontalGroup(
             jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel7Layout.createSequentialGroup()
-                .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel8, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .add(jPanel7Layout.createSequentialGroup()
+                .add(jPanel7Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel8, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(jPanel11, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -759,9 +882,9 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 358, Short.MAX_VALUE)
+            .add(0, 387, Short.MAX_VALUE)
             .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                .add(sedPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE))
+                .add(sedPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE))
         );
 
         jSplitPane1.setLeftComponent(jPanel4);
@@ -774,7 +897,7 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
+            .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
         );
 
         bindingGroup.bind();
@@ -785,14 +908,27 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
 private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeMode
     pbconf.setMode(evt.getActionCommand());
 }//GEN-LAST:event_changeMode
-    private List<PhotometryFilter> filters = new ArrayList();
+    private List<PhotometryFilter> filters = new ArrayList<PhotometryFilter>();
     private PhotometryFilterSelector selector;
     private FilterSelectionListener listener = new FilterSelectionListener() {
         @Override
-        public void process(final PhotometryFilter source, SedCommand payload) {
-            if (!filters.contains(source)) {
-                filters.add(source);
-                addPassBand(source);
+        public void process(final List<PhotometryFilter> source, SedCommand payload) {
+            for (PhotometryFilter pf : source) {
+                if (!filters.contains(pf)) {
+                    filters.add(pf);
+                    addPassBand(pf, false);
+                }
+            }
+            List<PassBand> pbs = new ArrayList(bands);
+            try {
+                List<SimplePhotometryPoint> out = calculate(pbs);
+//                List<SimplePhotometryPoint> ppoints = new ArrayList();
+                setPoints(null);
+//                ppoints.addAll(out);
+                setPoints(out);
+            } catch (Exception ex) {
+                NarrowOptionPane.showMessageDialog(null, ex.getMessage(), "Error", NarrowOptionPane.ERROR_MESSAGE);
+                Logger.getLogger(ScienceFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     };
@@ -819,12 +955,15 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
     private org.jdesktop.swingx.JXBusyLabel busy;
     private org.jdesktop.swingx.JXBusyLabel busy2;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JRadioButton fullModelButton;
+    private javax.swing.JRadioButton integrateModelButton;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
     private javax.swing.JCheckBox jCheckBox1;
@@ -835,6 +974,7 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
     private javax.swing.JFormattedTextField jFormattedTextField1;
     private javax.swing.JFormattedTextField jFormattedTextField2;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -842,6 +982,7 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel2;
@@ -851,6 +992,7 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JRadioButton jRadioButton8;
     private javax.swing.JRadioButton jRadioButton9;
     private javax.swing.JScrollPane jScrollPane1;
@@ -866,6 +1008,8 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
     private javax.swing.JTextField jTextField12;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField4;
+    private javax.swing.JTextField modelExpressionField;
     private javax.swing.JScrollPane sedPanel;
     private javax.swing.JComboBox xAxisCombo4;
     private javax.swing.JFormattedTextField zField;
@@ -1050,7 +1194,7 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
         this.iqconfig = iqconfig;
     }
 
-    public synchronized void addPassBand(PassBand pb) {
+    public synchronized void addPassBand(PassBand pb, boolean calculate) {
         if (!iqconfig.getPassbands().contains(pb)) {
             iqconfig.getPassbands().add(pb);
             if (pb instanceof PhotometryFilter) {
@@ -1073,58 +1217,19 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
         }
 
         setBands(iqconfig.getPassbands());
-        calculate(pb);
+        if(calculate) {
+            calculate(pb);
+        }
         sed.addAttachment(FILTERS_ATTACH, filters);
     }
 
     @Action
     public void addPassBands() {
-//        if (pbconf.getMode().equals("Photometry Filter")) {
-//            for (PhotometryFilter f : filters) {
-//                if (iqconfig.getPassbands() == null) {
-//                    iqconfig.setPassbands(new ArrayList());
-//                }
-//
-//                if (!iqconfig.getPassbands().contains(f)) {
-//                    iqconfig.getPassbands().add(f);
-//                    try {
-//                        f.getCurve();
-//                    } catch (SedException ex) {
-//                        Logger.getLogger(ScienceFrame.class.getName()).log(Level.SEVERE, null, ex);
-//                        NarrowOptionPane.showMessageDialog(null, "Cannot read filter profile", "Error", NarrowOptionPane.ERROR_MESSAGE);
-//                    } catch (IOException ex) {
-//                        Logger.getLogger(ScienceFrame.class.getName()).log(Level.SEVERE, null, ex);
-//                        NarrowOptionPane.showMessageDialog(null, "Cannot read filter profile", "Error", NarrowOptionPane.ERROR_MESSAGE);
-//                    }
-//                }
-//            }
-//        } else {
         EnergyBin eb = new EnergyBin();
         eb.setMax(pbconf.getMax());
         eb.setMin(pbconf.getMin());
         eb.setUnits(pbconf.getUnits());
-        addPassBand(eb);
-//            if (!iqconfig.getPassbands().contains(eb)) {
-//                iqconfig.getPassbands().add(eb);
-//            }
-//        }
-//
-////        setBands(null);
-//        setBands(iqconfig.getPassbands());
-//        sed.addAttachment(FILTERS_ATTACH, filters);
-
-//        if (points == null) {
-//            points = new ArrayList();
-//        }
-//        if (points.isEmpty()) {
-//            List<SimplePhotometryPoint> pps = new ArrayList();
-//            for (PassBand pb : bands) {
-//                SimplePhotometryPoint p = (SimplePhotometryPoint) SAMPFactory.get(SimplePhotometryPoint.class);
-//                p.setId(pb.getId());
-//                pps.add(p);
-//            }
-//            setPoints(pps);
-//        }
+        addPassBand(eb, true);
     }
     private List<PassBand> bands;
     public static final String PROP_BANDS = "bands";
@@ -1175,22 +1280,53 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
     }
     SherpaIntegrator integrator;
 
-    private synchronized void calculate(PassBand pb) {
-        List<PassBand> ps = new ArrayList();
-        ps.add(pb);
+    private synchronized List<SimplePhotometryPoint> calculate(List<PassBand> pbs) throws Exception{
         if (integrator == null) {
             integrator = new SherpaIntegrator(app.getSAMPController());
         }
+
+        Response response = (Response) SAMPFactory.get(Response.class);
+        if (integrateModel) {
+            SpectrumContainer sc = (SpectrumContainer) sed.getAttachment("fit.model");
+            SherpaModelManager smm = (SherpaModelManager) sc.getModelManager();
+            if (!smm.lastFitted()) {
+                throw new Exception("No Model Found. Please fit the data first and keep the fitting window open.");
+            }
+            CompositeModel model = smm.getModel();
+            model.setName(modelExpression);
+
+            List<UserModel> userModels = smm.getUserModels();
+
+            for (PassBand pb : pbs) {
+                List pbl = new ArrayList();
+                pbl.add(pb);
+                response.addPoint(integrator.integrateComponents(pbl, model, userModels, modelBins).getPoints().get(0));
+            }
+        } else {
+            response = integrator.integrate(sed, pbs);
+        }
+        return response.getPoints();
+
+    }
+
+
+    private synchronized void calculate(PassBand pb) {
+        List<PassBand> ps = new ArrayList();
+        ps.add(pb);
+        List<SimplePhotometryPoint> out = null;
         try {
-            Response response = (Response) integrator.integrate(sed, ps);
-            List<SimplePhotometryPoint> ppoints = new ArrayList(points);
-            setPoints(null);
-            ppoints.addAll(response.getPoints());
-            setPoints(ppoints);
+            out = calculate(ps);
         } catch (Exception ex) {
             Logger.getLogger(ScienceFrame.class.getName()).log(Level.SEVERE, null, ex);
             NarrowOptionPane.showMessageDialog(null, (String) ex.getMessage(), "Error", NarrowOptionPane.ERROR_MESSAGE);
+            return;
         }
+
+        List<SimplePhotometryPoint> ppoints = new ArrayList(points);
+        setPoints(null);
+        ppoints.addAll(out);
+        setPoints(ppoints);
+
 
     }
 
@@ -1211,7 +1347,7 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
         @Override
         protected Object doInBackground() {
             try {
-                return integrator.integrate(sed, pbs);
+                return calculate(pbs);
             } catch (Exception ex) {
                 Logger.getLogger(ScienceFrame.class.getName()).log(Level.SEVERE, null, ex);
                 return ex.getMessage();
@@ -1226,9 +1362,9 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
                 return;
             }
 
-            Response response = (Response) result;
+            List<SimplePhotometryPoint> ppoints = (List<SimplePhotometryPoint>) result;
 
-            setPoints(new ArrayList(response.getPoints()));
+            setPoints(ppoints);
 
         }
     }
@@ -1318,17 +1454,18 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
         }
 
         try {
+//            y = YUnits.convert(y, x, new YUnits("Jy"), new XUnits("Angstrom"), new YUnits("erg/s/cm2"), true);
             Segment segment = new Segment();
             segment.setSpectralAxisValues(x);
             segment.setFluxAxisValues(y);
             segment.setTarget(sed.getSegment(0).getTarget());
             segment.setSpectralAxisUnits("Angstrom");
-            segment.setFluxAxisUnits("Jy");
+            segment.setFluxAxisUnits("erg/s/cm2");
             segment.createChar().createSpectralAxis().setUcd("em.wl");
-            segment.createChar().createFluxAxis().setUcd("phot.flux.density;em.wl");
+            segment.createChar().createFluxAxis().setUcd("phot.flux;em.wl");
             newsed.addSegment(segment);
             newsed.checkChar();
-        } catch (SedException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(ScienceFrame.class.getName()).log(Level.SEVERE, null, ex);
             NarrowOptionPane.showMessageDialog(null,
                     ex.getMessage(),
@@ -1370,4 +1507,131 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
             setText((value == null) ? "" : formatter.format(value));
         }
     }
+    
+    private boolean integrateModel = false;
+    public static final String PROP_INTEGRATEMODEL = "integrateModel";
+
+    /**
+     * Get the value of integrateModel
+     *
+     * @return the value of integrateModel
+     */
+    public boolean isIntegrateModel() {
+        return integrateModel;
+    }
+
+    /**
+     * Set the value of integrateModel
+     *
+     * @param integrateModel new value of integrateModel
+     */
+    public void setIntegrateModel(boolean integrateModel) {
+        boolean oldIntegrateModel = this.integrateModel;
+        this.integrateModel = integrateModel;
+        firePropertyChange(PROP_INTEGRATEMODEL, oldIntegrateModel, integrateModel);
+        if (integrateModel) {
+            integrateModelButton.setText("Integrate Model (YES)");
+        } else {
+            integrateModelButton.setText("Integrate Model (NO)");
+        }
+        SpectrumContainer sc = (SpectrumContainer) sed.getAttachment("fit.model");
+        if (sc != null) {
+            SherpaModelManager smm = (SherpaModelManager) sc.getModelManager();
+            if (smm != null && smm.lastFitted()) {
+                setModelExpression(smm.getExpression());
+            } else {
+                setModelExpression("No Model");
+            }
+        } else {
+            setModelExpression("No Model");
+        }
+
+    }
+    
+    private boolean fullModel = true;
+    public static final String PROP_FULLMODEL = "fullModel";
+
+    /**
+     * Get the value of fullModel
+     *
+     * @return the value of fullModel
+     */
+    public boolean isFullModel() {
+        return fullModel;
+    }
+
+    /**
+     * Set the value of fullModel
+     *
+     * @param fullModel new value of fullModel
+     */
+    public void setFullModel(boolean fullModel) {
+        boolean oldFullModel = this.fullModel;
+        this.fullModel = fullModel;
+        firePropertyChange(PROP_FULLMODEL, oldFullModel, fullModel);
+        if (fullModel) {
+            setIntegrateModel(isIntegrateModel());
+        }
+    }
+
+    private int modelBins = 10000;
+    public static final String PROP_MODELBINS = "modelBins";
+
+    /**
+     * Get the value of modelBins
+     *
+     * @return the value of modelBins
+     */
+    public int getModelBins() {
+        return modelBins;
+    }
+
+    /**
+     * Set the value of modelBins
+     *
+     * @param modelBins new value of modelBins
+     */
+    public void setModelBins(int modelBins) {
+        int oldModelBins = this.modelBins;
+        this.modelBins = modelBins;
+        firePropertyChange(PROP_MODELBINS, oldModelBins, modelBins);
+    }
+    
+    private String modelExpression;
+    public static final String PROP_MODELEXPRESSION = "modelExpression";
+
+    /**
+     * Get the value of modelExpression
+     *
+     * @return the value of modelExpression
+     */
+    public String getModelExpression() {
+        return modelExpression;
+    }
+
+    /**
+     * Set the value of modelExpression
+     *
+     * @param modelExpression new value of modelExpression
+     */
+    public void setModelExpression(String modelExpression) {
+        String oldModelExpression = this.modelExpression;
+        this.modelExpression = modelExpression;
+        firePropertyChange(PROP_MODELEXPRESSION, oldModelExpression, modelExpression);
+    }
+    
+    private ModelViewerFrame mvf;
+
+    @Action
+    public void showModel() {
+
+        if (mvf == null) {
+            mvf = new ModelViewerFrame(sed);
+            ws.addFrame(mvf);
+        }
+        GUIUtils.moveToFront(mvf);
+    }
+
+
+    
 }

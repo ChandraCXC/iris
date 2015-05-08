@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012, 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@
 package cfa.vo.sed.builder.dm;
 
 import cfa.vo.sed.setup.validation.AbstractValidable;
-import cfa.vo.sed.quantities.IQuantity;
-import cfa.vo.sed.quantities.IUnit;
+import cfa.vo.iris.sed.quantities.IQuantity;
+import cfa.vo.iris.sed.quantities.IUnit;
 
 /**
  *

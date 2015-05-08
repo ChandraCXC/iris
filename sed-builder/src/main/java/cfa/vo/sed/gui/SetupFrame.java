@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012, 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,9 +44,9 @@ import cfa.vo.sed.builder.SegmentImporter;
 import cfa.vo.sed.filters.FileFormatManager;
 import cfa.vo.sed.filters.FilterException;
 import cfa.vo.sed.filters.IFileFormat;
-import cfa.vo.sed.quantities.IUnit;
-import cfa.vo.sed.quantities.SPVYQuantity;
-import cfa.vo.sed.quantities.XQuantity;
+import cfa.vo.iris.sed.quantities.IUnit;
+import cfa.vo.iris.sed.quantities.SPVYQuantity;
+import cfa.vo.iris.sed.quantities.XQuantity;
 import cfa.vo.sed.setup.validation.IValidator;
 import cfa.vo.sedlib.Segment;
 import java.io.IOException;

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012, 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -106,9 +106,9 @@ public class PhotometryFilterBrowsePanel extends javax.swing.JPanel {
             }
         }
         for (FilterSelectionListener listener : listeners) {
-            for (PhotometryFilter filter : filterList) {
-                listener.process(filter, SedCommand.SELECTED);
-            }
+//            for (PhotometryFilter filter : filterList) {
+                listener.process(filterList, SedCommand.SELECTED);
+//            }
         }
     }
     private List<FilterSelectionListener> listeners = new ArrayList();

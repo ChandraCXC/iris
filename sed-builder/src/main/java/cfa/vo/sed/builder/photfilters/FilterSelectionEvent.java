@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012, 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,12 +23,13 @@ package cfa.vo.sed.builder.photfilters;
 
 import cfa.vo.iris.events.GenericEvent;
 import cfa.vo.iris.events.SedCommand;
+import java.util.List;
 
 /**
  *
  * @author olaurino
  */
-public class FilterSelectionEvent extends GenericEvent<PhotometryFilter, FilterSelectionListener, SedCommand>{
+public class FilterSelectionEvent extends GenericEvent<List<PhotometryFilter>, FilterSelectionListener, SedCommand>{
     private static class Holder {
         private static final FilterSelectionEvent INSTANCE = new FilterSelectionEvent();
     }

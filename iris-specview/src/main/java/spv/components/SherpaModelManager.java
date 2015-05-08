@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012, 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,40 +36,49 @@ package spv.components;
  *  12 Feb 2011  -  Implemented (IB)
  */
 
-import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.*;
-import java.util.List;
-import java.lang.reflect.Constructor;
-import java.io.PrintWriter;
-
-import com.sun.xml.tree.XmlDocument;
+import cfa.vo.interop.SAMPFactory;
+import cfa.vo.iris.events.SedCommand;
+import cfa.vo.iris.events.SedEvent;
+import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.sherpa.CompositeModel;
+import cfa.vo.sherpa.Model;
+import cfa.vo.sherpa.UserModel;
 import com.sun.xml.tree.ElementNode;
-
-import org.astrogrid.samp.client.*;
-import org.astrogrid.samp.*;
+import com.sun.xml.tree.XmlDocument;
+import org.astrogrid.samp.Client;
 import org.astrogrid.samp.Message;
+import org.astrogrid.samp.Response;
+import org.astrogrid.samp.client.ResultHandler;
+import org.astrogrid.samp.client.SampException;
 import org.astrogrid.samp.gui.GuiHubConnector;
 import org.astrogrid.samp.gui.SubscribedClientListModel;
 import org.w3c.dom.Node;
 import spv.controller.SherpaFitManager;
 import spv.controller.SpectrumContainer;
 import spv.controller.SpvModelManager;
+import spv.fit.FittedSpectrum;
+import spv.fit.MinimizationAlgorithm;
+import spv.fit.SEDFittedSpectrum;
 import spv.model.Server2;
 import spv.spectrum.Spectrum;
 import spv.spectrum.SpectrumTools;
 import spv.spectrum.function.*;
 import spv.util.*;
 import spv.util.sed.SEDException;
-import spv.fit.FittedSpectrum;
-import spv.fit.SEDFittedSpectrum;
-import spv.fit.MinimizationAlgorithm;
 import spv.view.AbstractPlotWidget;
 import spv.view.PlotStatus;
+
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.awt.*;
+import java.io.PrintWriter;
+import java.lang.reflect.Constructor;
+import java.util.*;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  *  This is the controller for Sherpa fitting-related operations.
@@ -108,6 +117,8 @@ public class SherpaModelManager extends SpvModelManager {
     private static List<String> fittingParameterNames = new ArrayList<String>();
     private static List<String> fittingParameterDescriptions = new ArrayList<String>();
     private Command callbackOnDispose;
+    private SedlibSedManager manager;
+    private ExtSed sed;
 
     static {
         fittingParameterNames.add(STATVAL);
@@ -132,10 +143,11 @@ public class SherpaModelManager extends SpvModelManager {
      *  @param  conn     the connection to the SAMP hub
      *  @param  desktop  desktop to work with
      */
-    public SherpaModelManager(Spectrum sp, GuiHubConnector conn, JDesktopPane desktop) {
+    public SherpaModelManager(Spectrum sp, GuiHubConnector conn, JDesktopPane desktop, SedlibSedManager manager, ExtSed sed) {
         super(sp, null);
-
+        this.sed = sed;
         this.conn = conn;
+        this.manager = manager;
 
         super.setDesktop(desktop);
 
@@ -143,6 +155,12 @@ public class SherpaModelManager extends SpvModelManager {
 
         pathMap = new HashMap<String,String>();
         functionNameMap = new HashMap<String,String>();
+//        this.getInternalFrame().setClosable(false);
+        this.getInternalFrame().setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
+    }
+    
+    public boolean lastFitted(){
+        return this.lastFittingMap != null;
     }
 
     // .execute() is the main method used by the caller to activate the fit.
@@ -249,8 +267,10 @@ public class SherpaModelManager extends SpvModelManager {
     }
 
     public void dispose() {
+//        this.getInternalFrame().setClosable(false);
+        this.getInternalFrame().setDefaultCloseOperation(JInternalFrame.DO_NOTHING_ON_CLOSE);
         if (JOptionPane.showConfirmDialog(frame.getFrame(),
-                "** Model will be lost! ** You can save it to file with the File menu", "Confirm",
+                "If you close this frame the model will be lost and some Iris components may not be able to work with models anymore.", "Confirm",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE) ==
                 JOptionPane.OK_OPTION) {
 
@@ -317,6 +337,10 @@ public class SherpaModelManager extends SpvModelManager {
 
     protected void printFitInfo(PrintWriter pw) {
         if (lastFittingMap != null) {
+	    pw.println("Model Expression:");
+	    pw.println("        " + sherpaExpressionField.getText());
+	    pw.println();
+	    
             pw.println("Fit parameters:");
             for (int i = 0; i < fittingParameterNames.size(); i++) {
                 String name =  fittingParameterNames.get(i);
@@ -326,8 +350,8 @@ public class SherpaModelManager extends SpvModelManager {
             pw.println();
         }
     }
-
-
+    
+    
     ///////////////////////////////////////////////////////////////////
     //
     //                 Fitting via Sherpa.
@@ -350,6 +374,31 @@ public class SherpaModelManager extends SpvModelManager {
         List<Map> models = new ArrayList<Map>();
         models.add(model);
         return models;
+    }
+
+    public List<UserModel> getUserModels() {
+        List<UserModel> userModels = new ArrayList();
+
+        Set<String> keys = pathMap.keySet();
+        Iterator<String> keysIterator = keys.iterator();
+        while (keysIterator.hasNext()) {
+
+            String key = keysIterator.next();
+            String path = pathMap.get(key);
+            String name = functionNameMap.get(key);
+
+            UserModel userModel = (UserModel) SAMPFactory.get(UserModel.class);
+
+            if (path != null) {
+                userModel.setName(key);
+                userModel.setFile(path);
+                userModel.setFunction(name);
+
+                userModels.add(userModel);
+            }
+        }
+
+        return userModels;
     }
 
     private List<Map> createUserModels() {
@@ -505,7 +554,7 @@ public class SherpaModelManager extends SpvModelManager {
     private void storeFitResultParameters(Map map) {
 
         lastFittingMap = map;
-
+	
         String statval = (String) map.get(STATVAL);
         String nfev = (String) map.get(NFEV);
         fitManager.tolfield.setText(statval + "  at function evaluation  " + nfev);
@@ -838,6 +887,7 @@ public class SherpaModelManager extends SpvModelManager {
             } else if (fitManager != null){
                 fitManager.setGUIStatus(MinimizationAlgorithm.STOPPED_AT_BEGINNING);
             }
+            SedEvent.getInstance().fire(sed, SedCommand.CHANGED);
         }
     }
 
@@ -875,5 +925,45 @@ public class SherpaModelManager extends SpvModelManager {
                 fitManager.setGUIStatus(MinimizationAlgorithm.STOPPED_AT_BEGINNING);
             }
         }
+    }
+
+    public CompositeModel getModel() {
+        CompositeModel model = (CompositeModel) SAMPFactory.get(CompositeModel.class);
+        model.setName(sherpaExpressionField.getText());
+        try {
+            Enumeration<SherpaFunction> components = this.getSEDFittedSpectrum().getContinuousIntensity().getComponentDatabase().getComponentList();
+            for (; components.hasMoreElements(); ) {
+                SherpaFunction f = components.nextElement();
+                Model m = this.createSherpaModel(f);
+                model.addPart(m);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ex);
+        }
+        return model;
+    }
+
+    public Model createSherpaModel(SherpaFunction f) {
+        Model m = (Model) SAMPFactory.get(Model.class);
+        String mid = "c" + String.valueOf(f.getSerialNumber());
+        m.setName(f.getName()+"."+mid);
+        for (int i=0; i<f.getNumberOfParameters(); i++) {
+            SherpaFParameter orig = (SherpaFParameter) f.getParameter(i);
+            cfa.vo.sherpa.Parameter p = (cfa.vo.sherpa.Parameter) SAMPFactory.get(cfa.vo.sherpa.Parameter.class);
+            p.setName(mid+'.'+orig.getName());
+            p.setVal(orig.getValue());
+            p.setMin(orig.getMin());
+            p.setMax(orig.getMax());
+            p.setFrozen(orig.isFixed()? 1 : 0);
+            p.setAlwaysfrozen(orig.isAlwaysFixed()? 1 : 0);
+//            p.setHidden(orig.isHidden()? 1 : 0);
+//            p.setLink(orig.getLink());
+            m.addPar(p);
+        }
+        return m;
+    }
+
+    public String getExpression() {
+        return sherpaExpressionField.getText();
     }
 }

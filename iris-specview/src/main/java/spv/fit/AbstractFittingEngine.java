@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012, 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,6 @@
 
 package spv.fit;
 
-import java.io.InputStream;
-
 /**
  *
  * @author olaurino
@@ -31,9 +29,6 @@ public abstract class AbstractFittingEngine implements FittingEngine {
 
     public AbstractFittingEngine() {
     }
-
-    @Override
-    public abstract void print(InputStream in);
 
     @Override
     public abstract void run();

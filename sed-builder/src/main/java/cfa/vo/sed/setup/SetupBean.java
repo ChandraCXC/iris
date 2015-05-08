@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012, 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@
 
 package cfa.vo.sed.setup;
 
-import cfa.vo.sed.quantities.SPVYUnit;
-import cfa.vo.sed.quantities.XUnit;
+import cfa.vo.iris.sed.quantities.SPVYUnit;
+import cfa.vo.iris.sed.quantities.XUnit;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Method;

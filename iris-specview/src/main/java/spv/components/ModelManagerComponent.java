@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012, 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ public class ModelManagerComponent implements IrisComponent {
 
                         if (container != null) {
 
-                            spv.components.SherpaModelManager smm = (spv.components.SherpaModelManager) container.getModelManager();
+                            SherpaModelManager smm = (SherpaModelManager) container.getModelManager();
 
                             // Make the component button responsive only
                             // in case this model manager is inactive.

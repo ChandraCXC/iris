@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012, 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,12 +28,12 @@ import cfa.vo.sed.setup.ISetup;
 import cfa.vo.sed.filters.FilterException;
 import cfa.vo.sed.filters.IFileFormat;
 import cfa.vo.sed.filters.IFilter;
-import cfa.vo.sed.quantities.IAxisMetadata;
-import cfa.vo.sed.quantities.XUnit;
-import cfa.vo.sed.quantities.AxisMetadata;
-import cfa.vo.sed.quantities.SPVYQuantity;
-import cfa.vo.sed.quantities.SPVYUnit;
-import cfa.vo.sed.quantities.XQuantity;
+import cfa.vo.iris.sed.quantities.IAxisMetadata;
+import cfa.vo.iris.sed.quantities.XUnit;
+import cfa.vo.iris.sed.quantities.AxisMetadata;
+import cfa.vo.iris.sed.quantities.SPVYQuantity;
+import cfa.vo.iris.sed.quantities.SPVYUnit;
+import cfa.vo.iris.sed.quantities.XQuantity;
 import cfa.vo.sedlib.DoubleParam;
 import cfa.vo.sedlib.Field;
 import cfa.vo.sedlib.Interval;
