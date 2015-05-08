@@ -140,8 +140,8 @@ public class SedStackerStackerTest {
         SegmentPayload seg = response.getSegments().get(0);
 	double[] controlY = new double[] {5.0, 5.36666667, 4.5, 2.66666667, 4.0, 6.5, 1.5, 10.5, 5.0, 10.0};
 	double[] controlX = new double[] {   0.,    2.,    4.,    6.,    8.,   10.,   16.,   22.,   50.,  100.};
-	//double[] controlYerr = new double[] {0.5, 1.5033629, 0.72801099, 0.54313902, 0.4, 1.44308697, 0.15, 1.05, 0.5, 1.0};
-	double[] controlYerr = new double[] {0.5, 0.501120965, 0.3640055, 0.18104634, 0.4, 0.48102899, 0.15, 1.05, 0.5, 1.0};
+	//double[] controlYerr = new double[] {0.5, 0.501120965, 0.3640055, 0.18104634, 0.4, 0.48102899, 0.15, 1.05, 0.5, 1.0}; // calculated from errors [sqrt(sum(errors^2))/N]
+	double[] controlYerr = new double[] {0, 6.82169741, 2.5, 1.64991582, 0., 5.21216526, 0., 0., 0., 0.}; // calculated from stddev(flux)
 	double[] controlCounts = new double[] {1, 3, 2, 3, 1, 3, 1, 1, 1, 1};
 	
 	assertEquals(response.getSegments().size(),1);
@@ -256,8 +256,8 @@ public class SedStackerStackerTest {
 	
 	double[] controlY = new double[] {5.0, 5.36666667, 4.5, 2.66666667, 4.0, 6.5, 1.5, 10.5, 5.0, 10.0};
 	double[] controlX = new double[] {   0.,    2.,    4.,    6.,    8.,   10.,   16.,   22.,   50.,  100.};
-	//double[] controlYerr = new double[] {0.5, 1.5033629, 0.72801099, 0.54313902, 0.4, 1.44308697, 0.15, 1.05, 0.5, 1.0};
-	double[] controlYerr = new double[] {0.5, 0.501120965, 0.3640055, 0.18104634, 0.4, 0.48102899, 0.15, 1.05, 0.5, 1.0};
+	//double[] controlYerr = new double[] {0.5, 0.501120965, 0.3640055, 0.18104634, 0.4, 0.48102899, 0.15, 1.05, 0.5, 1.0}; // calculated from errors [sqrt(sum(errors^2))/N]
+	double[] controlYerr = new double[] {0, 6.82169741, 2.5, 1.64991582, 0., 5.21216526, 0., 0., 0., 0.}; // calculated from stddev(flux)
 	double[] controlCounts = new double[] {1, 3, 2, 3, 1, 3, 1, 1, 1, 1};
 	
 	// test values of stacked Sed
