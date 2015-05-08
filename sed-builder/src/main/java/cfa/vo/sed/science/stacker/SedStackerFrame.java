@@ -40,8 +40,6 @@ import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.sedlib.common.SedException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.beans.PropertyVetoException;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
@@ -55,7 +53,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.samp.client.SampException;
@@ -91,18 +88,73 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 	// normalization comboBoxes. Chooses the list of units available 
 	// based on the normalization type chosen (Value, Median, or Average).
 	// Also disable Y value text box if using Average or Median.
+	
+	//TODO: cleanup unused code.
 	integrationNormType.addActionListener( new ActionListener() {
 	    @Override
 	    public void actionPerformed(ActionEvent e) {
 		
 		String normType = (String) integrationNormType.getSelectedItem();
-		if (normType.equals("Value")) {
-		    integrationYUnit.setModel(new DefaultComboBoxModel(new String[] {"erg/s/cm2","Jy-Hz","Watt/m2","erg/s","Watt"}));
+		String [] model;
+		
+		if (normType.equals("Value") && getSelectedConfig().getNormConfiguration().isIntegrate()) {
+		    model = new String[] {"erg/s/cm2","Jy-Hz","Watt/m2","erg/s","Watt"};
 		    integrationValueText.setEnabled(true);
 		} else {
-		    integrationYUnit.setModel(new DefaultComboBoxModel(loadEnum(SPVYUnit.class)));
+		    model = loadEnum(SPVYUnit.class);
 		    integrationValueText.setEnabled(false);
 		}
+		
+		try {
+		    Object yunit = integrationYUnit.getSelectedItem();
+		    integrationYUnit.setModel(new DefaultComboBoxModel(model));
+		    integrationYUnit.setSelectedItem(yunit);
+		} catch (IllegalArgumentException ex) {
+		    integrationYUnit.setModel(new DefaultComboBoxModel(model));
+		} catch (Exception ex) {
+		    integrationYUnit.setModel(new DefaultComboBoxModel(model));
+		}
+		
+	    }
+	});
+//	atPointYType.addActionListener( new ActionListener() {
+//	    @Override
+//	    public void actionPerformed(ActionEvent e) {
+//		
+//		String normType = (String) atPointYType.getSelectedItem();
+//		if (normType.equals("Value")) {
+//		    atPointYText.setEnabled(true);
+//		} else {
+//		    atPointYText.setEnabled(false);
+//		}
+//		
+//	    }
+//	});
+	jRadioButton1.addActionListener( new ActionListener() {
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		
+		boolean selected = jRadioButton1.isSelected();
+		if (selected && integrationNormType.getSelectedItem().equals("Value")) {
+		    integrationValueText.setEnabled(true);
+		} else {
+		    integrationValueText.setEnabled(false);
+		}
+		
+		atPointYText.setEnabled(false);
+	    }
+	});
+	jRadioButton2.addActionListener( new ActionListener() {
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+		
+		boolean selected = jRadioButton2.isSelected();
+		if (selected && atPointYType.getSelectedItem().equals("Value")) {
+		    atPointYText.setEnabled(true);
+		} else {
+		    atPointYText.setEnabled(false);
+		}
+		integrationValueText.setEnabled(false); // good - keep!
 	    }
 	});
 	
@@ -427,7 +479,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedConfig.normConfiguration.YValue}"), integrationValueText, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jRadioButton1, org.jdesktop.beansbinding.ELProperty.create("${selected}"), integrationValueText, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedConfig.normConfiguration.integrateYTextEnabled}"), integrationValueText, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
         integrationNormType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Value", "Average", "Median" }));
