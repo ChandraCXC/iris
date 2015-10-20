@@ -34,6 +34,7 @@ import java.util.Arrays;
 import org.astrogrid.samp.Response;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import spv.spectrum.SEDMultiSegmentSpectrum;
@@ -59,7 +60,8 @@ public class SherpaRedshifterTest {
     public void tearDown() {
     }
 
-    //@Test
+    @Ignore
+    @Test
     public void testShift() throws Exception {
 	
 	// This test is to make sure that the SEDs are redshifted correctly,

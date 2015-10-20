@@ -34,6 +34,7 @@ import java.util.List;
 import org.astrogrid.samp.Response;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import spv.spectrum.SEDMultiSegmentSpectrum;
@@ -113,8 +114,9 @@ public class SedStackerRedshifterTest {
 	controlX1WithExtraSegment = new double[] {0.90909091, 4.54545455, 9.09090909, 13.63636364, 18.181818182, 45.45454545, 90.90909091};
 	controlY1WithExtraSegment = new double[] {0.1, 0.5, 1.0, 1.5, 2.0, 5.0, 10.0};
     }
-    
-    //@Test
+
+	@Ignore
+    @Test
     public void testRedshift() throws Exception {
 	// Start the SAMP controller
 	controller = new SedSAMPController("SEDStacker", "SEDStacker", this.getClass().getResource("/tools_tiny.png").toString());
@@ -177,8 +179,9 @@ public class SedStackerRedshifterTest {
     @After
     public void tearDown() {
     }
-    
-    //@Test
+
+	@Ignore
+    @Test
     public void testRedshifter() throws Exception {
 	
 	// Start the SAMP controller
@@ -283,8 +286,9 @@ public class SedStackerRedshifterTest {
 	}
 	controller.stop();
     }
-    
-    //@Test
+
+	@Ignore
+    @Test
     public void testRedshifterNoZ() throws Exception {
 	
 	// Start the SAMP controller

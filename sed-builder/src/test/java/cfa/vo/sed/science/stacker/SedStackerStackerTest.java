@@ -34,6 +34,7 @@ import java.util.List;
 import org.astrogrid.samp.Response;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import spv.spectrum.SEDMultiSegmentSpectrum;
@@ -95,8 +96,9 @@ public class SedStackerStackerTest {
 	segment3.setYerr(yerr3);
 	segment3.setZ(0.3);
     }
-    
-    //@Test
+
+	@Ignore
+    @Test
     public void testStackAvg() throws Exception {
 	// Start the SAMP controller
 	controller = new SedSAMPController("SEDStacker", "SEDStacker", this.getClass().getResource("/tools_tiny.png").toString());
@@ -162,8 +164,9 @@ public class SedStackerStackerTest {
 	
 	controller.stop();
     }
-    
-    //@Test
+
+	@Ignore
+    @Test
     public void testStacker() throws Exception {
 	// Start the SAMP controller
 	controller = new SedSAMPController("SEDStacker", "SEDStacker", this.getClass().getResource("/tools_tiny.png").toString());
