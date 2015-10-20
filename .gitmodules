@@ -1,0 +1,15 @@
+[submodule "sherpa-samp"]
+	path = sherpa-samp
+	url = https://github.com/ChandraCXC/sherpa-samp
+[submodule "sherpa"]
+	path = sherpa
+	url = https://github.com/sherpa/sherpa
+[submodule "sedstacker"]
+	path = sedstacker
+	url = https://github.com/jbudynk/sedstacker
+[submodule "iris-asdc-plugin"]
+	path = iris-asdc-plugin
+	url = https://github.com/ChandraCXC/iris-asdc-plugin
+[submodule "sedlib"]
+	path = sedlib
+	url = https://github.com/ChandraCXC/sedlib
