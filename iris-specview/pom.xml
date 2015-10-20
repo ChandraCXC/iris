@@ -28,7 +28,7 @@
     <parent>
         <groupId>cfa.vo</groupId>
         <artifactId>iris2</artifactId>
-        <version>2.1</version>
+        <version>3.0-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -43,31 +43,6 @@
             <artifactId>iris-common</artifactId>
             <version>${project.version}</version>
         </dependency>
-<!--        <dependency>
-            <groupId>specview</groupId>
-            <artifactId>specview</artifactId>
-            <version>20141119b1</version>
-        </dependency>-->
-<!--        <dependency>
-            <groupId>cds.savot.common</groupId>
-            <artifactId>cds.savot.common</artifactId>
-            <version>cds.savot.common</version>
-        </dependency>
-        <dependency>
-            <groupId>cds.savot.model</groupId>
-            <artifactId>cds.savot.model</artifactId>
-            <version>cds.savot.model</version>
-        </dependency>
-        <dependency>
-            <groupId>cds.savot.pull</groupId>
-            <artifactId>cds.savot.pull</artifactId>
-            <version>cds.savot.pull</version>
-        </dependency>
-        <dependency>
-            <groupId>cds.savot.writer</groupId>
-            <artifactId>cds.savot.writer</artifactId>
-            <version>cds.savot.writer</version>
-        </dependency>-->
         <dependency>
           <groupId>cds.savot</groupId>
           <artifactId>savot</artifactId>
@@ -88,11 +63,5 @@
             <artifactId>jython</artifactId>
             <version>2.5.3</version>
         </dependency>
-<!--        <dependency>
-            <groupId>cfa.vo</groupId>
-            <artifactId>sed-builder</artifactId>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>-->
     </dependencies>
 </project>

@@ -25,7 +25,7 @@
     <groupId>cfa.vo</groupId>
     <artifactId>iris2</artifactId>
     <packaging>pom</packaging>
-    <version>2.1</version>
+    <version>3.0-SNAPSHOT</version>
     <name>Iris</name>
 
     <modules>
@@ -55,30 +55,6 @@
                     <header>etc/header.txt</header>
                 </configuration>
             </plugin>
-<!--            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>3.2</version>
-                <configuration>
-                    <port>8080</port>
-                    <reportPlugins>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-project-info-reports-plugin</artifactId>
-                            <version>2.2</version>
-                            <reports>
-                                <report>cim</report>
-                                <report>issue-tracking</report>
-                            </reports>
-                        </plugin>
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-javadoc-plugin</artifactId>
-                            <version>2.2</version>
-                        </plugin>
-                    </reportPlugins>
-                </configuration>
-            </plugin>-->
 
         </plugins>
         
@@ -105,73 +81,6 @@
         </dependency>
     </dependencies>
 
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.7</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jxr-plugin</artifactId>
-                <version>2.3</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-pmd-plugin</artifactId>
-                <version>2.7.1</version>
-                <configuration>
-                    <debug>true</debug>
-                    <linkXref>true</linkXref>
-                    <targetJdk>1.6</targetJdk>
-                    <sourceEncoding>ISO-8859-1</sourceEncoding>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <formats>
-                        <format>html</format>
-                        <format>xml</format>
-                    </formats>
-                    <check>
-                        <branchRate>85</branchRate>
-                        <lineRate>85</lineRate>
-                        <haltOnFailure>false</haltOnFailure>
-                        <totalBranchRate>85</totalBranchRate>
-                        <totalLineRate>85</totalLineRate>
-                        <packageLineRate>85</packageLineRate>
-                        <packageBranchRate>85</packageBranchRate>
-                        <regexes>
-                            <regex>
-                                <pattern>net.vao.*</pattern>
-                                <lineRate>80</lineRate>
-                            </regex>
-                            <regex>
-                                <pattern>com.example.boringcode.*</pattern>
-                                <branchRate>40</branchRate>
-                                <lineRate>30</lineRate>
-                            </regex>
-                        </regexes>
-                    </check>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>findbugs-maven-plugin</artifactId>
-                <version>2.3</version>
-                <configuration>
-                    <threshold>Normal</threshold>
-                    <effort>Default</effort>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
-
     <repositories>
 
         <repository>
@@ -190,18 +99,6 @@
             <layout>default</layout>
         </repository>
     </repositories>
-
-    <distributionManagement>
-<!--        <repository>
-            <id>vao-deploy-repository</id>
-            <name>vaotest2.tuc.noao.edu-releases</name>
-            <url>http://vaotest2.tuc.noao.edu:8080/artifactory/libs-snapshot-local</url>
-        </repository>-->
-<!--        <site>
-      <id>test</id>
-      <url>file:///Users/olaurino/Desktop/site</url>
-    </site>-->
-    </distributionManagement>
   
 </project>
 
