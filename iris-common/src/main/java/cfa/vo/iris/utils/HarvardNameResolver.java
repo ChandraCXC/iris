@@ -3,7 +3,6 @@
  */
 package cfa.vo.iris.utils;
 
-import cfa.vo.iris.utils.NameResolver.Position;
 import java.io.*;
 import java.util.*;
 import java.net.*;
