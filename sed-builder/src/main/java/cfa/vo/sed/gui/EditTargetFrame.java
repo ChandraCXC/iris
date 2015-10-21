@@ -29,7 +29,7 @@ package cfa.vo.sed.gui;
 
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.utils.HarvardNameResolver;
-import cfa.vo.iris.utils.NameResolver.Position;
+import cfa.vo.iris.utils.Position;
 import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sed.builder.dm.ExtendedTarget;
 import cfa.vo.sedlib.Segment;
