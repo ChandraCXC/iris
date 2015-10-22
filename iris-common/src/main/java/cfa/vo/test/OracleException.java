@@ -19,16 +19,16 @@
  * and open the template in the editor.
  */
 
-package cfa.vo.sed.test;
+package cfa.vo.test;
 
 /**
  *
  * @author olaurino
  */
-public class OracleFailException extends Exception {
+public class OracleException extends Exception {
 
-    OracleFailException(String string) {
-        super(string);
+    public OracleException(Exception ex) {
+        super(ex);
     }
 
 }
