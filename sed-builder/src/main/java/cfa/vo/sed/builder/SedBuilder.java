@@ -176,7 +176,9 @@ public class SedBuilder implements IrisComponent {
 
         public BuilderMenuItems() {
 
-            add(new AbstractDesktopItem("File|Load File", "Load SED data from several different sources", "/scratch.png", "/scratch_tiny.png") {
+            add(new AbstractDesktopItem("File|Load File", "Load SED data from several different sources",
+                    new ImageIcon(getClass().getResource("scratch.png")),
+                    new ImageIcon(getClass().getResource("scratch_tiny.png"))) {
                 @Override
                 public void onClick() {
                     SedBuilder.show();
@@ -185,7 +187,9 @@ public class SedBuilder implements IrisComponent {
                 }
             });
 
-            add(new AbstractDesktopItem("File|Load NED SED", "Load SED data from the NASA Extragalactic Database", "/ned.png", "/ned_tiny.png") {
+            add(new AbstractDesktopItem("File|Load NED SED", "Load SED data from the NASA Extragalactic Database",
+                    new ImageIcon(getClass().getResource("ned.png")),
+                    new ImageIcon(getClass().getResource("ned_tiny.png"))) {
                 @Override
                 public void onClick() {
                     SedBuilder.show();
@@ -193,14 +197,18 @@ public class SedBuilder implements IrisComponent {
                 }
             });
 
-            add(new AbstractDesktopItem("SED Builder", "Load SED data from several different sources", "/tool.png", "/tool_tiny.png") {
+            add(new AbstractDesktopItem("SED Builder", "Load SED data from several different sources",
+                    new ImageIcon(getClass().getResource("tool.png")),
+                    new ImageIcon(getClass().getResource("tool_tiny.png"))) {
                 @Override
                 public void onClick() {
                     SedBuilder.show();
                 }
             });
 
-            add(new AbstractMenuItem("Plugins...", "Manage custom file filters plug-ins", false, "/plugin.png", "/plugin.png") {
+            add(new AbstractMenuItem("Plugins...", "Manage custom file filters plug-ins", false,
+                            new ImageIcon(getClass().getResource("plugin.png")),
+                            new ImageIcon(getClass().getResource("plugin.png"))) {
                 @Override
                 public void onClick() {
                     if (pManager == null) {
@@ -224,14 +232,18 @@ public class SedBuilder implements IrisComponent {
                 }
             });
 
-            add(new AbstractMenuItem("Load setup file...", "Load a SED from a previously saved Setup File", false, "/tool.png", "/tool_tiny.png") {
+            add(new AbstractMenuItem("Load setup file...", "Load a SED from a previously saved Setup File", false,
+                    new ImageIcon(getClass().getResource("tool.png")),
+                    new ImageIcon(getClass().getResource("tool_tiny.png"))) {
                 @Override
                 public void onClick() {
                     new LoadSetupDialog(rootFrame, sedManager).setVisible(true);
                 }
             });
 
-            add(new AbstractMenuItem("Photometry Filters Browser", "Browse Photometry Filters", false, "/tool.png", "/tool_tiny.png") {
+            add(new AbstractMenuItem("Photometry Filters Browser", "Browse Photometry Filters", false,
+                    new ImageIcon(getClass().getResource("tool.png")),
+                    new ImageIcon(getClass().getResource("tool_tiny.png"))) {
                 @Override
                 public void onClick() {
                     SedBuilder.showPhotometryFilterBrowser();
