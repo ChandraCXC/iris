@@ -62,14 +62,6 @@
             <version>1.03</version>
         </dependency>
         <dependency>
-            <groupId>org.uispec4j</groupId>
-            <artifactId>uispec4j</artifactId>
-            <version>2.4</version>
-            <classifier>jdk16</classifier>
-            <scope>test</scope>
-            <type>jar</type>
-        </dependency>
-        <dependency>
             <groupId>org.netbeans.external</groupId>
             <artifactId>AbsoluteLayout</artifactId>
             <version>RELEASE701</version>
@@ -91,27 +83,5 @@
     <layout>default</layout>
   </repository> 
 </repositories>
-
-    <profiles>
-        <profile>
-            <id>NoGuiTests</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <excludes>
-                                <exclude>**/BuilderMainViewTest.java</exclude>
-                            </excludes>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
 </project>

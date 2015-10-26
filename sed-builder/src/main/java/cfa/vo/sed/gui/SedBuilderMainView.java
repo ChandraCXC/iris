@@ -37,7 +37,7 @@ import cfa.vo.iris.sed.quantities.IUnit;
 import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.utils.HarvardNameResolver;
-import cfa.vo.iris.utils.NameResolver.Position;
+import cfa.vo.iris.utils.Position;
 import cfa.vo.iris.utils.SkyCoordinates;
 import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sedlib.DoubleParam;

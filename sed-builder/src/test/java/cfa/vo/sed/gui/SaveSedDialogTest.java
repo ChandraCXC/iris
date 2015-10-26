@@ -36,6 +36,7 @@ import java.net.URL;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import java.util.List;
 import cfa.vo.sedlib.DoubleParam;
@@ -60,8 +61,10 @@ public class SaveSedDialogTest {
     
     @AfterClass
     public static void tearDownClass() throws Exception {
-	
+
     }
+
+	@Ignore
     @Test
     public void testWriteAscii() throws Exception {
 	

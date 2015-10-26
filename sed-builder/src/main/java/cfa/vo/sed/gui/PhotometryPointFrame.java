@@ -31,7 +31,7 @@ import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.utils.HarvardNameResolver;
-import cfa.vo.iris.utils.NameResolver.Position;
+import cfa.vo.iris.utils.Position;
 import cfa.vo.iris.utils.SkyCoordinates;
 import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sed.builder.dm.PhotometryPointSegment;
@@ -60,7 +60,6 @@ import javax.swing.JInternalFrame;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Task;
 import org.jdesktop.beansbinding.Converter;
-import org.jdesktop.swingx.JXBusyLabel;
 
 /**
  *

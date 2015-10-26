@@ -31,7 +31,7 @@ import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ISedManager;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.utils.HarvardNameResolver;
-import cfa.vo.iris.utils.NameResolver.Position;
+import cfa.vo.iris.utils.Position;
 import cfa.vo.iris.utils.SkyCoordinates;
 import cfa.vo.sed.setup.SetupBean;
 import cfa.vo.sed.setup.validation.AxesValidator;
@@ -58,7 +58,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
-import jsky.catalog.Catalog;
+
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Task;
 

@@ -18,31 +18,22 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cfa.vo.sed.builder.gui;
+package cfa.vo.gui;
 
+import cfa.vo.iris.Iris;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.sed.builder.SedBuilder;
-import cfa.vo.sed.gui.SedBuilderMainView;
-import cfa.vo.sed.test.App;
-import cfa.vo.sed.test.DesktopWs;
-import cfa.vo.sed.test.Oracle;
+import cfa.vo.test.Oracle;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 import java.net.URL;
-import javax.swing.JDesktopPane;
 import junit.framework.Assert;
-import org.uispec4j.Window;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.uispec4j.Button;
-import org.uispec4j.Desktop;
-import org.uispec4j.Table;
-import org.uispec4j.UISpecTestCase;
+import org.junit.*;
+import org.uispec4j.*;
+import org.uispec4j.interception.WindowInterceptor;
+import org.uispec4j.utils.MainClassTrigger;
 
 /**
  *
@@ -50,52 +41,65 @@ import org.uispec4j.UISpecTestCase;
  */
 public class BuilderMainViewTest extends UISpecTestCase {
 
-    private Window mainWindow;
+    private static Window mainWindow;
+    private static Trigger trigger;
     private Window configurationWindow;
+    private Desktop desktop;
+    private static Window samphub;
 
     public BuilderMainViewTest() {
     }
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
+//    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+        setAdapter(new AppAdapter(Iris.class, new String[0]));
+        mainWindow = getMainWindow();
+        desktop = mainWindow.getDesktop();
+        samphub.titleEquals("SAMP Hub");
     }
+//
+//    @AfterClass
+//    public static void tearDownClass() throws Exception {
+//    }
 
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
+//    @After
+//    public void tearDown() {
+//        mainWindow = null;
+//        configurationWindow = null;
+//    }
 
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-        mainWindow = null;
-        configurationWindow = null;
-    }
-
+    @Ignore
     @Test
     public void testNewSegment() throws Exception {
 
         Oracle oracle = new Oracle();
 
-        SedBuilder builder = new SedBuilder();
-        builder.init(new App(), new DesktopWs());
+//        SedBuilder builder = new SedBuilder();
+//        builder.init(new App(), new DesktopWs());
 
         SedlibSedManager manager = (SedlibSedManager) SedBuilder.getWorkspace().getSedManager();
 
-        SedBuilderMainView mainView = new SedBuilderMainView(manager, SedBuilder.getWorkspace().getRootFrame());
+//        SedBuilderMainView mainView = new SedBuilderMainView(manager, SedBuilder.getWorkspace().getRootFrame());
 
+        mainWindow.getMenuBar()
+                .getMenu("Tools")
+                .getSubMenu("SED Builder")
+                .getSubMenu("SED Builder")
+                .click();
+
+        desktop.containsWindow("SED Builder");
+
+        Window window = desktop.getWindow("SED Builder");
         //Test sedFrame name resolver
-        mainWindow = new Window(mainView);
 
-        Button newSed = mainWindow.getButton("jButton8");
+        Button newSed = window.getButton("jButton8");
 
         newSed.click();
 
         Thread.sleep(2000);
 
-        Assert.assertEquals(1, manager.getSeds().size());
+        Assert.assertEquals(2, manager.getSeds().size());
 
         ExtSed sed = manager.getSelected();
 
@@ -107,20 +111,16 @@ public class BuilderMainViewTest extends UISpecTestCase {
 
         sed.addSegment(s);
 
-        Table table = mainWindow.getTable();
+        Table table = window.getTable();
 
         assertTrue(table.contentEquals(new String[][]{
-                    {"35.665, 43.036", "NASA/IPAC Extragalactic Database (NED)", "33"},
-                    {"35.665, 43.036", "Me", "3"}
+                    {"3C 066A", "35.665, 43.036", "NASA/IPAC Extragalactic Database (NED)", "33"},
+                    {"3C 066A", "35.665, 43.036", "Me", "3"}
                 }));
 
-        Button newSegment = mainWindow.getButton("jButton3");
+        Button newSegment = window.getButton("jButton15");
 
         newSegment.click();
-
-        JDesktopPane desk = SedBuilder.getWorkspace().getDesktop();
-
-        Desktop desktop = new Desktop(desk);
 
         Assert.assertTrue(desktop.containsWindow("Load an input File").isTrue());
 
@@ -136,7 +136,7 @@ public class BuilderMainViewTest extends UISpecTestCase {
 
         loadWindow.getComboBox("fileFormat").select("ASCII TABLE");
 
-        loadWindow.getButton("Load").click();
+        loadWindow.getButton("Load Spectrum/SED").click();
 
         Assert.assertTrue(desktop.containsWindow("Import Setup Frame").isTrue());
 
@@ -169,9 +169,9 @@ public class BuilderMainViewTest extends UISpecTestCase {
         setupWindow.getButton("Add Segment to SED").click();
 
         assertTrue(table.contentEquals(new String[][]{
-                    {"35.665, 43.036", "NASA/IPAC Extragalactic Database (NED)", "33"},
-                    {"35.665, 43.036", "Me", "3"},
-                    {"0.1, 0.2", "Me", "455"}
+                    {"3C 066A", "35.665, 43.036", "NASA/IPAC Extragalactic Database (NED)", "33"},
+                    {"3C 066A", "35.665, 43.036", "Me", "3"},
+                    {"Test", "0.1, 0.2", "Me", "455"}
                 }));
 
 
@@ -301,6 +301,29 @@ public class BuilderMainViewTest extends UISpecTestCase {
 ////        SedImporterApp.sampShutdown();
 //
 //        Thread.sleep(3000);
+
+    }
+
+    private static class AppAdapter implements UISpecAdapter {
+
+        public AppAdapter(Class mainClass, String... args) {
+            if(trigger == null)
+                trigger = new MainClassTrigger(mainClass, args);
+            UISpec4J.setWindowInterceptionTimeLimit(60000);
+        }
+
+        public Window getMainWindow() {
+            if (mainWindow == null) {
+                mainWindow = WindowInterceptor.run(trigger);
+                samphub = WindowInterceptor.run(new Trigger() {
+                    @Override
+                    public void run() throws Exception {
+
+                    }
+                });
+            }
+            return mainWindow;
+        }
 
     }
 }

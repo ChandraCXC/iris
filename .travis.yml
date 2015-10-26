@@ -1,0 +1,30 @@
+language: java
+
+jdk:
+  - oraclejdk8
+  - oraclejdk7
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.m2
+    - $HOME/miniconda
+
+install: true
+
+before_install:
+  - export PATH=$HOME/miniconda/bin:$PATH
+  - command -v conda >/dev/null || { wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh;
+     bash miniconda.sh -b -f; }
+  - conda update --yes conda
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION astropy=0.4.4 scipy
+  - conda install --yes -c https://conda.anaconda.org/sherpa sherpa
+  - pip install sampy
+  - pip install astlib
+  - cd sherpa-samp; python setup.py develop; cd ..
+  - cd sedstacker; python setup.py develop; cd ..
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+
+script: mvn -U test
