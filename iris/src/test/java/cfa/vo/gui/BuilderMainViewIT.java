@@ -45,9 +45,6 @@ public class BuilderMainViewIT extends UISpecTestCase {
 
     public void setUp() throws Exception {
         super.setUp();
-        if (!TestApp.hasComponent(SedBuilder.class)) {
-            TestApp.addComponent(new SedBuilder());
-        }
         setAdapter(new IrisUISpecAdapter(Iris.class, new String[0]));
         mainWindow = getMainWindow();
         desktop = mainWindow.getDesktop();
