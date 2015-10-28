@@ -13,7 +13,6 @@ $ pip install sampy
 $ pip install astlib
 $ cd sherpa-samp; python setup.py develop; cd ..
 $ cd sedstacker; python setup.py develop; cd ..
-$ mvn test
 ````
 
 You should also make sure that `sherpa-samp` is working.
@@ -30,3 +29,34 @@ $ chmod u+x Iris
 $ ./Iris smoketest
 ````
 
+## How to run the unit and integration tests
+
+### Without coverage analysis
+
+````
+$ mvn clean test # Unit tests
+$ mvn clean test-compile failsafe:integration-test # Integration tests only
+$ mvn clean verify # All tests
+````
+
+### With JaCoCo coverage analysis
+
+````
+$ mvn -Pjacoco test # Unit tests
+$ mvn -Pjacoco verify # All tests
+$ mvn -Pjacoco jacoco:report # generate report
+````
+
+Note that individual reports will be created in each individual submodule.
+
+### With Sonar
+
+A [[http://www.sonarqube.org/ | SonarQube]] instance must be running.
+The configuration for the SonarQube instance must be placed into
+the maven local `settings.xml` file for connecting with the database
+backing the SonarQube instance.
+
+````
+$ mvn -Psonar install # All tests
+$ mvn sonar:sonar
+````
