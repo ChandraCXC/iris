@@ -1,7 +1,8 @@
 cfa.vo.iris.logger.IrisLogger
 cfa.vo.sed.builder.SedBuilder
-spv.components.IrisVisualizer
 cfa.vo.iris.smoketest.SmokeTest
 cfa.vo.iris.ConsistencyChecker
 org.asdc.iris.plugin.asdcirisplugin.AsdcComponent
 cfa.vo.sed.science.ScienceComponent
+cfa.vo.iris.visualizer.VisualizerComponent
+cfa.vo.iris.visualizer.FittingToolComponent

@@ -61,9 +61,15 @@
             <artifactId>jsky</artifactId>
             <version>3.0</version>
         </dependency>
+        <!-- TODO: Delete me! -->
         <dependency>
             <groupId>spv</groupId>
             <artifactId>iris-specview</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>iris-visualizer</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
