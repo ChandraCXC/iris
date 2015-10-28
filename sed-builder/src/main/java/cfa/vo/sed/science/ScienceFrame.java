@@ -38,6 +38,7 @@ import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.iris.sed.fit.IFit;
 import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sed.builder.photfilters.*;
 import cfa.vo.sed.gui.PhotometryPointFrame.PhotometryFilterSelector;
@@ -56,8 +57,6 @@ import cfa.vo.sherpa.CompositeModel;
 import cfa.vo.sherpa.UserModel;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Task;
-import spv.components.SherpaModelManager;
-import spv.controller.SpectrumContainer;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -1287,15 +1286,12 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
 
         Response response = (Response) SAMPFactory.get(Response.class);
         if (integrateModel) {
-            SpectrumContainer sc = (SpectrumContainer) sed.getAttachment("fit.model");
-            SherpaModelManager smm = (SherpaModelManager) sc.getModelManager();
-            if (!smm.lastFitted()) {
-                throw new Exception("No Model Found. Please fit the data first and keep the fitting window open.");
-            }
-            CompositeModel model = smm.getModel();
+            IFit fit = (IFit) sed.getAttachment("fit.model");
+
+            CompositeModel model = fit.getModel();
             model.setName(modelExpression);
 
-            List<UserModel> userModels = smm.getUserModels();
+            List<UserModel> userModels = fit.getUserModels();
 
             for (PassBand pb : pbs) {
                 List pbl = new ArrayList();
@@ -1534,14 +1530,9 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
         } else {
             integrateModelButton.setText("Integrate Model (NO)");
         }
-        SpectrumContainer sc = (SpectrumContainer) sed.getAttachment("fit.model");
-        if (sc != null) {
-            SherpaModelManager smm = (SherpaModelManager) sc.getModelManager();
-            if (smm != null && smm.lastFitted()) {
-                setModelExpression(smm.getExpression());
-            } else {
-                setModelExpression("No Model");
-            }
+        IFit fit = (IFit) sed.getAttachment("fit.model");
+        if (fit != null) {
+            setModelExpression(fit.getExpression());
         } else {
             setModelExpression("No Model");
         }
