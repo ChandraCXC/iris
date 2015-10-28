@@ -21,7 +21,7 @@
 
 package cfa.vo.iris.sed;
 
-import cfa.vo.iris.utils.IList;
+import java.util.List;
 
 /**
  *
@@ -40,7 +40,7 @@ public interface ISedManager<SedClass> {
      *
      * @return
      */
-    IList<SedClass> getSeds();
+    List<SedClass> getSeds();
     /**
      * Check whether an SED is managed by this SED Manager.
      *

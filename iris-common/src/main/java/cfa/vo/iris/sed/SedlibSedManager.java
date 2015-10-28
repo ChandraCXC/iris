@@ -24,8 +24,9 @@ import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
-import cfa.vo.iris.utils.IList;
-import cfa.vo.iris.utils.List;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.TreeMap;
 
 /**
@@ -38,8 +39,8 @@ public class SedlibSedManager implements ISedManager<ExtSed> {
     private ExtSed selected;
 
     @Override
-    public IList<ExtSed> getSeds() {
-        return new List(sedMap.values());
+    public List<ExtSed> getSeds() {
+        return new ArrayList(sedMap.values());
     }
 
     @Override
