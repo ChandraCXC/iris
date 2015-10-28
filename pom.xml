@@ -34,7 +34,6 @@
         <module>samp-factory</module>
         <module>test-components</module>
         <module>sed-builder</module>
-        <module>iris-specview</module>
     </modules>
 
     <properties>
