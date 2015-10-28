@@ -24,13 +24,13 @@ import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.units.DummyUnitsFactory;
+import cfa.vo.iris.units.IUnitsFactory;
+import cfa.vo.iris.units.UnitsException;
 import cfa.vo.sed.builder.photfilters.EnergyBin;
 import cfa.vo.sed.builder.photfilters.PassBand;
 import cfa.vo.sed.builder.photfilters.PhotometryFilter;
 import cfa.vo.sherpa.*;
-import spv.util.UnitsException;
-import spv.util.XUnits;
-import spv.util.YUnits;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +44,7 @@ public class SherpaIntegrator {
 
     private SAMPController controller;
     private SherpaClient client;
+    private IUnitsFactory uf = DummyUnitsFactory.INSTANCE;
     
     public SherpaIntegrator(SAMPController controller) {
         this.controller = controller;
@@ -160,7 +161,7 @@ public class SherpaIntegrator {
         double[] xx = cfa.vo.interop.EncodeDoubleArray.decodeBase64(((List<String>)result.get("results")).get(0), false);
         double[] yy = cfa.vo.interop.EncodeDoubleArray.decodeBase64(((List<String>) result.get("results")).get(1), false);
 
-        yy = YUnits.convert(yy, xx, new YUnits("photon/s/cm2/Angstrom"), new XUnits("Angstrom"), new YUnits("erg/s/cm2/Angstrom"), true);
+        yy = uf.convertY(yy, xx, uf.newYUnits("photon/s/cm2/Angstrom"), uf.newXUnits("Angstrom"), uf.newYUnits("erg/s/cm2/Angstrom"), true);
 
         // Integrate
         payload.setX(xx);
@@ -178,7 +179,7 @@ public class SherpaIntegrator {
 
     
     private double[] convertValues(double[] values, String fromUnits, String toUnits) throws UnitsException {
-        return XUnits.convert(values, new XUnits(fromUnits), new XUnits(toUnits));
+        return uf.convertX(values, uf.newXUnits(fromUnits), uf.newXUnits(toUnits));
     }
 
 

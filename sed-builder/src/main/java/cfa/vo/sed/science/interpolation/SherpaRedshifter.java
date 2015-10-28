@@ -26,14 +26,15 @@ import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.iris.units.DummyUnitsFactory;
+import cfa.vo.iris.units.IUnitsFactory;
+import cfa.vo.iris.units.UnitsException;
+import cfa.vo.iris.utils.UTYPEs;
 import cfa.vo.sedlib.Param;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sherpa.SherpaClient;
 import org.astrogrid.samp.Response;
-import spv.spectrum.SEDMultiSegmentSpectrum;
-import spv.util.UnitsException;
-import spv.util.XUnits;
 
 /**
  *
@@ -45,6 +46,7 @@ public class SherpaRedshifter {
     private SedlibSedManager manager;
     private SAMPController controller;
     private static String REDSHIFT_MTYPE = "spectrum.redshift.calc";
+    private static IUnitsFactory uf = DummyUnitsFactory.INSTANCE;
 
     public SherpaRedshifter(SAMPController controller, SedlibSedManager manager) {
         this.client = new SherpaClient(controller);
@@ -78,7 +80,7 @@ public class SherpaRedshifter {
         RedshiftPayload payload = (RedshiftPayload) SAMPFactory.get(RedshiftPayload.class);
         payload.setX(inputSed.getSegment(0).getSpectralAxisValues());
         payload.setY(inputSed.getSegment(0).getFluxAxisValues());
-	payload.setYerr((double[]) inputSed.getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE));
+        payload.setYerr((double[]) inputSed.getSegment(0).getDataValues(UTYPEs.FLUX_STAT_ERROR));
         payload.setFromRedshift(fromRedshift);
         payload.setToRedshift(toRedshift);
         SAMPMessage message = SAMPFactory.createMessage(REDSHIFT_MTYPE, payload, RedshiftPayload.class);
@@ -92,7 +94,7 @@ public class SherpaRedshifter {
         RedshiftPayload response = (RedshiftPayload) SAMPFactory.get(rspns.getResult(), RedshiftPayload.class);
         inputSed.getSegment(0).setSpectralAxisValues(response.getX());
         inputSed.getSegment(0).setFluxAxisValues(response.getY());
-	inputSed.getSegment(0).setDataValues(response.getYerr(), SEDMultiSegmentSpectrum.E_UTYPE);
+        inputSed.getSegment(0).setDataValues(response.getYerr(), UTYPEs.FLUX_STAT_ERROR);
         
         inputSed.checkChar();
         
@@ -104,14 +106,4 @@ public class SherpaRedshifter {
         return inputSed;
     }
 
-    private double[] getSpectralValues(Segment segment) throws SedNoDataException, UnitsException {
-        double[] values = segment.getSpectralAxisValues();
-        return convertValues(values, segment.getSpectralAxisUnits(), "Angstrom");
-    }
-
-    private double[] convertValues(double[] values, String fromUnits, String toUnits) throws UnitsException {
-        return XUnits.convert(values, new XUnits(fromUnits), new XUnits(toUnits));
-    }
-
-    
 }

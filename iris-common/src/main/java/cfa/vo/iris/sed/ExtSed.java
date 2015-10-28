@@ -31,16 +31,16 @@ import cfa.vo.iris.sed.quantities.AxisMetadata;
 import cfa.vo.iris.sed.quantities.SPVYQuantity;
 import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
+import cfa.vo.iris.units.DummyUnitsFactory;
+import cfa.vo.iris.units.IUnitsFactory;
+import cfa.vo.iris.units.UnitsException;
+import cfa.vo.iris.utils.UTYPEs;
 import cfa.vo.sedlib.*;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sedlib.common.SedParsingException;
 import cfa.vo.sedlib.io.SedFormat;
 import org.apache.commons.lang.ArrayUtils;
-import spv.spectrum.SEDMultiSegmentSpectrum;
-import spv.util.UnitsException;
-import spv.util.XUnits;
-import spv.util.YUnits;
 
 import java.io.File;
 import java.io.IOException;
@@ -57,6 +57,7 @@ public class ExtSed extends Sed {
     private Map<String, Object> attachments = new TreeMap();
     private String id;
     private boolean managed = true;
+    private static IUnitsFactory uf = DummyUnitsFactory.INSTANCE;
 
     public ExtSed(String id) {
         this.id = id;
@@ -242,13 +243,13 @@ public class ExtSed extends Sed {
 
             double[] xoldvalues = oldSegment.getSpectralAxisValues();
             double[] yoldvalues = oldSegment.getFluxAxisValues();
-            double[] erroldvalues = (double[]) oldSegment.getDataValues(SEDMultiSegmentSpectrum.E_UTYPE);
+            double[] erroldvalues = (double[]) oldSegment.getDataValues(UTYPEs.FLUX_STAT_ERROR);
             String xoldunits = oldSegment.getSpectralAxisUnits();
             String yoldunits = oldSegment.getFluxAxisUnits();
             double[] ynewvalues = convertYValues(yoldvalues, xoldvalues, yoldunits, xoldunits, yunit);
             yvalues = concat(yvalues, ynewvalues);
             if (erroldvalues != null) {
-                double[] errnewvalues = YUnits.convertErrors(erroldvalues, yoldvalues, xoldvalues, new YUnits(yoldunits), new XUnits(xoldunits), new YUnits(yunit), true);
+                double[] errnewvalues = uf.convertErrors(erroldvalues, yoldvalues, xoldvalues, uf.newYUnits(yoldunits), uf.newXUnits(xoldunits), uf.newYUnits(yunit), true);
 //                double[] errnewvalues = convertYValues(erroldvalues, xoldvalues, yoldunits, xoldunits, yunit);
                 staterr = concat(staterr, errnewvalues);
             }
@@ -259,7 +260,7 @@ public class ExtSed extends Sed {
         Segment segment = new Segment();
         segment.setSpectralAxisValues(xvalues);
         segment.setFluxAxisValues(yvalues);
-        segment.setDataValues(staterr, SEDMultiSegmentSpectrum.E_UTYPE);
+        segment.setDataValues(staterr, UTYPEs.FLUX_STAT_ERROR);
         segment.setTarget(target);
         segment.setSpectralAxisUnits(xunit);
         segment.setFluxAxisUnits(yunit);
@@ -300,12 +301,11 @@ public class ExtSed extends Sed {
     }
 
     private static double[] convertXValues(double[] values, String fromUnits, String toUnits) throws UnitsException {
-        return XUnits.convert(values, new XUnits(fromUnits), new XUnits(toUnits));
+        return uf.convertX(values, uf.newXUnits(fromUnits), uf.newXUnits(toUnits));
     }
 
     private static double[] convertYValues(double[] yvalues, double[] xvalues, String fromYUnits, String fromXUnits, String toUnits) throws UnitsException {
-        return YUnits.convert(yvalues, xvalues, new YUnits(fromYUnits), new XUnits(fromXUnits), new YUnits(toUnits), true);
-    }
+        return uf.convertY(yvalues, xvalues, uf.newYUnits(fromYUnits), uf.newXUnits(fromXUnits), uf.newYUnits(toUnits), true);
     }
 
 }

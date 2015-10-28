@@ -26,13 +26,13 @@ import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.iris.units.DummyUnitsFactory;
+import cfa.vo.iris.units.IUnitsFactory;
+import cfa.vo.iris.units.UnitsException;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sherpa.SherpaClient;
 import org.astrogrid.samp.Response;
-import spv.util.UnitsException;
-import spv.util.XUnits;
-import spv.util.YUnits;
 
 /**
  *
@@ -44,6 +44,7 @@ public class SherpaInterpolator {
     private SedlibSedManager manager;
     private SAMPController controller;
     private static String INTERPOLATE_MTYPE = "spectrum.interpolate";
+    private static IUnitsFactory uf = DummyUnitsFactory.INSTANCE;
 
     public SherpaInterpolator(SAMPController controller, SedlibSedManager manager) {
         this.client = new SherpaClient(controller);
@@ -141,10 +142,10 @@ public class SherpaInterpolator {
     }
 
     private double[] convertXValues(double[] values, String fromUnits, String toUnits) throws UnitsException {
-        return XUnits.convert(values, new XUnits(fromUnits), new XUnits(toUnits));
+        return uf.convertX(values, uf.newXUnits(fromUnits), uf.newXUnits(toUnits));
     }
 
     private double[] convertYValues(double[] yvalues, double[] xvalues, String fromYUnits, String fromXUnits, String toUnits) throws UnitsException {
-        return YUnits.convert(yvalues, xvalues, new YUnits(fromYUnits), new XUnits(fromXUnits), new YUnits(toUnits), true);
+        return uf.convertY(yvalues, xvalues, uf.newYUnits(fromYUnits), uf.newXUnits(fromXUnits), uf.newYUnits(toUnits), true);
     }
 }
