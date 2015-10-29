@@ -19,7 +19,7 @@
  * and open the template in the editor.
  */
 
-package cfa.vo.sed.test;
+package cfa.vo.iris.test;
 
 /**
  *

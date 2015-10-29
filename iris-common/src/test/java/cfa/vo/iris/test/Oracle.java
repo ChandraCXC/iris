@@ -24,7 +24,7 @@
 *
 ***********************************************************************/
 
-package cfa.vo.sed.test;
+package cfa.vo.iris.test;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

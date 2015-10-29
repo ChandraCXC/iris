@@ -35,7 +35,7 @@ import cfa.vo.iris.sed.quantities.YUnit;
 import cfa.vo.sed.setup.PhotometryCatalogBuilder;
 import cfa.vo.sed.setup.PhotometryPointBuilder;
 import cfa.vo.sed.test.App;
-import cfa.vo.sed.test.Oracle;
+import cfa.vo.iris.test.Oracle;
 import cfa.vo.sed.test.Ws;
 import cfa.vo.sedlib.io.SedFormat;
 import org.junit.After;

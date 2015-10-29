@@ -311,7 +311,7 @@ public class IrisDesktop extends JFrame implements PluginListener {
 
         sampIcon.setForeground(new java.awt.Color(255, 255, 255));
         sampIcon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        sampIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/connect_no.png")));
+        sampIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("connect_no.png")));
         sampIcon.setText("SAMP status: disconnected");
         sampIcon.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         sampIcon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -329,7 +329,7 @@ public class IrisDesktop extends JFrame implements PluginListener {
 
         javax.swing.ActionMap actionMap = org.jdesktop.application.Application.getInstance().getContext().getActionMap(IrisDesktop.class, this);
         exitMenuItem.setAction(actionMap.get("exit")); // NOI18N
-        exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/process_stop.png")));
+        exitMenuItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("process_stop.png")));
         fileMenu.add(exitMenuItem);
 
         jMenuBar1.add(fileMenu);
@@ -340,7 +340,7 @@ public class IrisDesktop extends JFrame implements PluginListener {
         jMenu1.setText("Interop");
 
         jCheckBoxMenuItem1.setText("Run Hub Automatically");
-        jCheckBoxMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/redo.png")));
+        jCheckBoxMenuItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("redo.png")));
 
         org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sampAutoHub}"), jCheckBoxMenuItem1, org.jdesktop.beansbinding.BeanProperty.create("selected"));
         bindingGroup.addBinding(binding);
@@ -356,7 +356,7 @@ public class IrisDesktop extends JFrame implements PluginListener {
             }
         });
 
-        aboutLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iris_button_tiny.png")));
+        aboutLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("iris_button_tiny.png")));
         aboutLabel.setText("About SedImporter");
         aboutLabel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -476,8 +476,8 @@ public class IrisDesktop extends JFrame implements PluginListener {
     public boolean isSampConnected() {
         return sampConnected;
     }
-    private static final Icon sampNo = new ImageIcon(IrisDesktop.class.getResource("/connect_no.png"));
-    private static final Icon sampYes = new ImageIcon(IrisDesktop.class.getResource("/connect_established.png"));
+    private static final Icon sampNo = new ImageIcon(IrisDesktop.class.getResource("connect_no.png"));
+    private static final Icon sampYes = new ImageIcon(IrisDesktop.class.getResource("connect_established.png"));
 
     /**
      * Set the value of sampConnected
