@@ -29,6 +29,7 @@ import cfa.vo.iris.sed.ExtSed;
 
 import static cfa.vo.sed.science.stacker.SedStackerAttachments.REDSHIFT;
 
+import cfa.vo.iris.utils.Default;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sherpa.SherpaClient;
@@ -253,7 +254,7 @@ public class SedStackerRedshifterTest {
         stack.getConf().setRedshiftConfiguration(redshiftConf);
 
         // redshift the Stack
-        redshifter = new SedStackerRedshifter(controller);
+        redshifter = new SedStackerRedshifter(controller, Default.UNITS_MANAGER);
         redshifter.shift(stack);
 
         List<double[]> xs = new ArrayList();
@@ -358,7 +359,7 @@ public class SedStackerRedshifterTest {
         stack.getConf().setRedshiftConfiguration(redshiftConf);
 
         // redshift the Stack
-        redshifter = new SedStackerRedshifter(controller);
+        redshifter = new SedStackerRedshifter(controller, Default.UNITS_MANAGER);
         redshifter.shift(stack);
 
         // original values. make sure stack.getOrigSeds() returns original seds

@@ -23,6 +23,9 @@ package cfa.vo.sed.test;
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ISedManager;
 import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.iris.units.UnitsManager;
+import cfa.vo.iris.utils.Default;
+
 import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -66,5 +69,10 @@ public class DesktopWs implements IWorkspace {
     @Override
     public JDesktopPane getDesktop() {
         return desktop;
+    }
+
+    @Override
+    public UnitsManager getUnitsManager() {
+        return Default.UNITS_MANAGER;
     }
 }

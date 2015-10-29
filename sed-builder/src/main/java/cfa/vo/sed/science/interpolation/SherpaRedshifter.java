@@ -26,30 +26,26 @@ import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.iris.units.DummyUnitsFactory;
-import cfa.vo.iris.units.IUnitsFactory;
+import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.Param;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sherpa.SherpaClient;
 import org.astrogrid.samp.Response;
 
-/**
- *
- * @author olaurino
- */
 public class SherpaRedshifter {
 
     private SherpaClient client;
     private SedlibSedManager manager;
     private SAMPController controller;
     private static String REDSHIFT_MTYPE = "spectrum.redshift.calc";
-    private static IUnitsFactory uf = DummyUnitsFactory.INSTANCE;
+    private UnitsManager um;
 
-    public SherpaRedshifter(SAMPController controller, SedlibSedManager manager) {
+    public SherpaRedshifter(SAMPController controller, SedlibSedManager manager, UnitsManager unitsManager) {
         this.client = new SherpaClient(controller);
         this.manager = manager;
         this.controller = controller;
+        this.um = unitsManager;
     }
 
     

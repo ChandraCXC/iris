@@ -29,8 +29,7 @@ import cfa.vo.iris.sed.ExtSed;
 
 import static cfa.vo.sed.science.stacker.SedStackerAttachments.COUNTS;
 
-import cfa.vo.iris.units.DummyUnitsFactory;
-import cfa.vo.iris.units.IUnitsFactory;
+import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.Segment;
@@ -53,11 +52,12 @@ public class SedStackerStacker {
     private SherpaClient client;
     private SAMPController controller;
     private static String STACK_MTYPE = "stack.stack";
-    private static IUnitsFactory uf = DummyUnitsFactory.INSTANCE;
+    private UnitsManager um;
 
-    public SedStackerStacker(SAMPController controller) {
+    public SedStackerStacker(SAMPController controller, UnitsManager unitsManager) {
         this.client = new SherpaClient(controller);
         this.controller = controller;
+        this.um = unitsManager;
     }
 
     public ExtSed stack(SedStack stack) throws Exception {
@@ -193,10 +193,6 @@ public class SedStackerStacker {
                     UTYPE.FLUX_STAT_ERROR);
 
         }
-    }
-
-    private static double[] convertXValues(double[] values, String fromUnits, String toUnits) throws UnitsException {
-        return uf.convertX(values, uf.newXUnits(fromUnits), uf.newXUnits(toUnits));
     }
 
     private int calculateNumberOfBins(SedStack stack, Boolean log) throws SedNoDataException {

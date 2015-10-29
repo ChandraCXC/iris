@@ -29,6 +29,7 @@ import cfa.vo.iris.sed.ExtSed;
 
 import static cfa.vo.sed.science.stacker.SedStackerAttachments.NORM_CONSTANT;
 
+import cfa.vo.iris.utils.Default;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sherpa.SherpaClient;
@@ -245,7 +246,7 @@ public class SedStackerNormalizerTest {
         config.setYValue(1.0);
 
         // normalize the Stack
-        SedStackerNormalizer normalizer = new SedStackerNormalizer(controller);
+        SedStackerNormalizer normalizer = new SedStackerNormalizer(controller, Default.UNITS_MANAGER);
         normalizer.normalize(stack, config);
 
         List<double[]> xs = new ArrayList();
@@ -352,7 +353,7 @@ public class SedStackerNormalizerTest {
         config.setYValue(1.0);
 
         // normalize the Stack
-        SedStackerNormalizer normalizer = new SedStackerNormalizer(controller);
+        SedStackerNormalizer normalizer = new SedStackerNormalizer(controller, Default.UNITS_MANAGER);
         normalizer.normalize(stack, config);
 
         List<double[]> xs = new ArrayList();

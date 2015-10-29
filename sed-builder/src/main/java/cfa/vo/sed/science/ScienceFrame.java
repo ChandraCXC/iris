@@ -1050,7 +1050,7 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
             return;
         }
         if (redshifter == null) {
-            redshifter = new SherpaRedshifter(app.getSAMPController(), manager);
+            redshifter = new SherpaRedshifter(app.getSAMPController(), manager, ws.getUnitsManager());
         }
         try {
             if (sed.getNumberOfSegments() == 0) {
@@ -1081,7 +1081,7 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
         @Override
         protected Object doInBackground() {
             if (interpolator == null) {
-                interpolator = new SherpaInterpolator(app.getSAMPController(), manager);
+                interpolator = new SherpaInterpolator(app.getSAMPController(), manager, ws.getUnitsManager());
             }
             try {
                 if (sed.getNumberOfSegments() == 0) {
@@ -1281,7 +1281,7 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
 
     private synchronized List<SimplePhotometryPoint> calculate(List<PassBand> pbs) throws Exception{
         if (integrator == null) {
-            integrator = new SherpaIntegrator(app.getSAMPController());
+            integrator = new SherpaIntegrator(app.getSAMPController(), ws.getUnitsManager());
         }
 
         Response response = (Response) SAMPFactory.get(Response.class);
@@ -1334,7 +1334,7 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
             super(application);
             busy2.setBusy(true);
             if (integrator == null) {
-                integrator = new SherpaIntegrator(app.getSAMPController());
+                integrator = new SherpaIntegrator(app.getSAMPController(), ws.getUnitsManager());
             }
 
             pbs = new ArrayList(bands);

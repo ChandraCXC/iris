@@ -27,8 +27,7 @@ import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 
-import cfa.vo.iris.units.DummyUnitsFactory;
-import cfa.vo.iris.units.IUnitsFactory;
+import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.common.SedException;
@@ -41,20 +40,17 @@ import javax.swing.JOptionPane;
 
 import org.astrogrid.samp.client.SampException;
 
-/**
- *
- * @author jbudynk
- */
 public class SedStackerNormalizer {
     private SherpaClient client;
     private SAMPController controller;
     private static String NORMALIZE_MTYPE = "stack.normalize";
     private boolean normConfigChanged;
-    private static IUnitsFactory uf = DummyUnitsFactory.INSTANCE;
+    private UnitsManager um;
 
-    public SedStackerNormalizer(SAMPController controller) {
+    public SedStackerNormalizer(SAMPController controller, UnitsManager unitsManager) {
         this.client = new SherpaClient(controller);
         this.controller = controller;
+        this.um = unitsManager;
     }
 
     public void normalize(SedStack stack) throws Exception {
@@ -140,13 +136,13 @@ public class SedStackerNormalizer {
             Double xmax = normConfig.getXmax();
             Double xmin = normConfig.getXmin();
             if (!xmax.equals(Double.POSITIVE_INFINITY)) {
-                xmax = uf.convertX(new double[]{xmax}, normConfig.getXUnits(), xunit)[0];
+                xmax = um.convertX(new double[]{xmax}, normConfig.getXUnits(), xunit)[0];
                 payload.setXmax(xmax.toString());
             } else {
                 payload.setXmax("max");
             }
             if (!xmin.equals(Double.NEGATIVE_INFINITY)) {
-                xmin = uf.convertX(new double[]{xmin}, normConfig.getXUnits(), xunit)[0];
+                xmin = um.convertX(new double[]{xmin}, normConfig.getXUnits(), xunit)[0];
                 payload.setXmin(xmin.toString());
             } else {
                 payload.setXmin("min");

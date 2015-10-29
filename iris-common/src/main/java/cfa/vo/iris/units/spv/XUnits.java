@@ -28,6 +28,7 @@ import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  *  This class supports physical units associated with the independent
@@ -56,7 +57,7 @@ import java.util.HashMap;
  *  @author   Ivo Busko (Space Telescope Science Institute)
  */
 
-public class XUnits extends Units implements XUnit, Cloneable, Serializable {
+public class XUnits extends Units implements XUnit, Serializable {
 
     static final long serialVersionUID = 1L;
 
@@ -158,31 +159,12 @@ public class XUnits extends Units implements XUnit, Cloneable, Serializable {
      *  @param  value   the input string
      *  @return         the correct string
      */
-    public static String GetCorrectSpelling(String value) {
+    public static String getCorrectSpelling(String value) {
         String result = XUnits.correct.get(value.toLowerCase());
         if (result == null) {
             result = value;
         }
         return result;
-    }
-
-    /**
-     *  Gets an array with the strings representing all valid X units.
-     *
-     *  @return    the array with the strings representing all valid X units
-     */
-    public static String[] GetUnitsStrings() {
-        Object[] keys = converters.getKeysArray();
-
-        String[] result = new String[keys.length];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = (String)(keys[i]);
-        }
-
-        return result;
-    }
-
-    public XUnits() {
     }
 
     /**
@@ -194,22 +176,10 @@ public class XUnits extends Units implements XUnit, Cloneable, Serializable {
      *  @param  arg  string with the units
      */
     public XUnits (String arg) {
-        this.original_spelling = arg;
-        this.units_string = GetCorrectSpelling(arg);
+        this.originalSpelling = arg;
+        this.unitsString = getCorrectSpelling(arg);
 
-        getConverterObject();
-    }
-
-    /**
-     *  Constructor.
-     *
-     *  @param  units  a pre-existing <code>XUnits</code> instance
-     */
-    public XUnits (XUnits units) {
-        this.original_spelling = units.getOriginalSpelling();
-        this.units_string = units.toString();
-
-        getConverterObject();
+        makeConverterObject();
     }
 
     /**
@@ -220,7 +190,7 @@ public class XUnits extends Units implements XUnit, Cloneable, Serializable {
      *  @return   <code>true</code> if this is a valid instance
      */
     public boolean isValid() {
-        return IsValidUnits(this);
+        return converters.containsKey(this.toString());
     }
 
     /**
@@ -245,11 +215,11 @@ public class XUnits extends Units implements XUnit, Cloneable, Serializable {
      *  @return    the units string spelled according to SED specs
      */
     public String getSEDSpelling() {
-        String spelling = sed.get(units_string);
+        String spelling = sed.get(this.toString());
         if (spelling != null) {
             return spelling;
         }
-        return units_string;
+        return this.toString();
     }
 
     /**
@@ -273,87 +243,17 @@ public class XUnits extends Units implements XUnit, Cloneable, Serializable {
      *
      *  @return   the standard independent variable units
      */
-    public static XUnits GetStandardUnits() {
+    public static XUnits getStandardUnits() {
         return new XUnits (ANGSTROM_STRING);
-    }
-
-    /**
-     *  Returns the preferred independent variable units.
-     *
-     *  @return   the preferred independent variable units
-     */
-    public static Units GetPreferredUnits() {
-        String units_string = ANGSTROM_STRING;
-        if (units_string != null) {
-            return new XUnits(units_string);
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     *  Returns an <code>Enumeration</code> with the string
-     *  designations of all supported units for the independent variable.
-     *
-     *  @return  an <code>Enumeration</code> with all supported
-     *           units for the independent variable
-     */
-    public Enumeration getSupportedUnits() {
-        return converters.keys();
-    }
-
-    /**
-     *  Checks if the supplied <code>Units</code> instance is a
-     *  valid independent variable units.
-     *
-     *  @param   units   the units to be tested
-     *
-     *  @return  <code>true</code> if the supplied <code>Units</code>
-     *           instance is a valid independent variable units,
-     *           <code>false</code> otherwise.
-     */
-    public static boolean IsValidUnits (Units units) {
-
-        // This is the elegant way to do it:
-        //
-        // return converters.containsKey (units.toString());
-        //
-        // Unfortunately it doesn't handle cases such as case insensitivity
-        // and acceptable mispellings such as "A" in place of "Angstrom".
-        // The reason is that once a key is stored in the converters vector, it
-        // looses its Units type and becomes an Object. Then, the Object
-        // equals() method is used instead of the Units one. Thus we must
-        // encode here a more complex mechanism that will care about the
-        // "hidden" attributes of these Units objects.
-
-        String cunits_string = XUnits.GetCorrectSpelling(units.toString());
-
-        XUnits cunits = new XUnits(cunits_string);
-
-        Enumeration list = converters.keys();
-
-        while (list.hasMoreElements()) {
-            String name = (String) list.nextElement();
-            XUnits unit = new XUnits (name);
-            if (cunits.equals(unit)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
      *  Converts argument from this units to standard units.
      *
      *  @param   value   the value expressed in this units
-     *  @param   avalue  auxiliary value expressed in standard units,.
-     *                   Not used.
      *  @return          the value after conversion to standard units
      */
-    public double convertToStandardUnits (double value, double avalue) {
-        if (value == DATA_MARKER || avalue == DATA_MARKER) {
-            return DATA_MARKER;
-        }
+    public double convertToStandardUnits (double value) {
         if (converter != null) {
             return (converter.convertFrom(value));
         } else {
@@ -365,14 +265,9 @@ public class XUnits extends Units implements XUnit, Cloneable, Serializable {
      *  Converts argument from standard units to this units.
      *
      *  @param   value   the value expressed in standard units
-     *  @param   avalue  auxiliary value expressed in standard units.
-     *                   Not used.
      *  @return          the value after conversion to this units
      */
-    public double convertFromStandardUnits (double value, double avalue) {
-        if (value == DATA_MARKER || avalue == DATA_MARKER) {
-            return DATA_MARKER;
-        }
+    public double convertFromStandardUnits (double value) {
         if (converter != null) {
             return(converter.convertTo(value));
         } else {
@@ -385,27 +280,9 @@ public class XUnits extends Units implements XUnit, Cloneable, Serializable {
      *  to/from standard units. If no conversion is possible/supported,
      *  the converter references remain <code>null</code>.
      */
-    protected void getConverterObject() {
-        converter = (Converter)converters.get (units_string);
+    protected void makeConverterObject() {
+        converter = (Converter)converters.get (this.toString());
     }
-
-
-    /////////////////////////////////////////////////////////////////
-    //
-    //                 Cloneable interface.
-    //
-    /////////////////////////////////////////////////////////////////
-
-
-    /**
-     *  Returns a clone copy of this object.
-     *
-     *  @return  the clone
-     */
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
-
 
     /////////////////////////////////////////////////////////////////
     //
@@ -458,7 +335,7 @@ public class XUnits extends Units implements XUnit, Cloneable, Serializable {
         public String getUCD()                {return ucdstring;}
     }
 
-    protected static KeyedVector converters = new KeyedVector();
+    protected static Map<String, Converter> converters = new HashMap<String, Converter>();
 
     static {
         converters.put(ANGSTROM_STRING,   new WavelengthConverter(1.0));
@@ -489,7 +366,7 @@ public class XUnits extends Units implements XUnit, Cloneable, Serializable {
      *  @return          new array with the converted values
      *  @throws  UnitsException if the units aren't of the appropriate type
      */
-    public static double[] convert(double[] x, XUnits xunit, XUnits nunit) throws UnitsException {
+    public static double[] convert(double[] x, XUnit xunit, XUnit nunit) throws UnitsException {
 
         double[] out = new double[x.length];
 
@@ -504,8 +381,8 @@ public class XUnits extends Units implements XUnit, Cloneable, Serializable {
             throw new UnitsException (ERROR_MSG);
         }
 
-        String fromUnits = XUnits.GetCorrectSpelling(xunit.toString());
-        String toUnits = XUnits.GetCorrectSpelling(nunit.toString());
+        String fromUnits = XUnits.getCorrectSpelling(xunit.toString());
+        String toUnits = XUnits.getCorrectSpelling(nunit.toString());
 
         Converter converterFrom = (Converter)converters.get(fromUnits);
         Converter converterTo   = (Converter)converters.get(toUnits);
@@ -515,14 +392,15 @@ public class XUnits extends Units implements XUnit, Cloneable, Serializable {
         }
 
         for (int i = 0; i < out.length; i++) {
-            if (x[i] != DATA_MARKER) {
-                out[i] = converterTo.convertTo(converterFrom.convertFrom(x[i]));
-            } else {
-                out[i] = DATA_MARKER;
-            }
+            out[i] = converterTo.convertTo(converterFrom.convertFrom(x[i]));
         }
 
         return out;
+    }
+
+    @Override
+    public double[] convert(double[] x, XUnit toUnit) throws UnitsException {
+        return convert(x, this, toUnit);
     }
 }
 

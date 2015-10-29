@@ -22,6 +22,8 @@
 package cfa.vo.iris;
 
 import cfa.vo.iris.sed.ISedManager;
+import cfa.vo.iris.units.UnitsManager;
+
 import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -71,4 +73,6 @@ public interface IWorkspace {
      * @return A reference to the JDesktopPane included in this application.
      */
     JDesktopPane getDesktop();
+
+    UnitsManager getUnitsManager();
 }

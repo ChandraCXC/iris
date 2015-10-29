@@ -44,32 +44,22 @@ package cfa.vo.iris.units.spv;
  *  @author   Ivo Busko (Space Telescope Science Institute)
  */
 
-public abstract class Units implements Constant, Cloneable, Serializable {
+public abstract class Units implements Serializable {
 
     public static final String UNITLESS = "Unitless";
 
     static final long serialVersionUID = 12L;
     static final String ERROR_MSG = " Invalid units conversion ";
 
-    protected static final double H = 6.62620E-27;  // Planck's constant
-    protected static final double C = 2.997925E+18; // speed of light (Angstrom/s)
-    protected static final double E = H * C / 1.6021917E-6; // Angstrom * MeV
+    // [OL] Updating these values to have more precision. The values come from astropy
+    protected static final double H = 6.62606957E-27;  // Planck's constant (erg s)
+    protected static final double C = 2.99792458E+18; // speed of light (Angstrom/s)
+    protected static final double MEV2ERG = 1.602176565E-6; // MeV to erg conversion constant
+    protected static final double E = H * C / MEV2ERG; // Angstrom * MeV
 
-    protected String units_string;
-    protected String original_spelling;
+    protected String unitsString;
+    protected String originalSpelling;
     protected String ucd = null;
-
-    /**
-     *  Sets the string value of the units object. This works as a
-     *  pseudo-constructor because units ojects are basically defined
-     *  by a string.
-     *
-     *  @param   value   the string value
-     */
-    public void setFromString (String value) {
-        this.units_string = new String (value);
-        getConverterObject();
-    }
 
     /**
      *  Compares two <code>Units</code> object for equality.
@@ -77,25 +67,24 @@ public abstract class Units implements Constant, Cloneable, Serializable {
      *  @param  units  the <code>Units</code> object to be compared
      *                 with this
      */
+    @Override
     public boolean equals (Object units) {
-        if (units == null || this.units_string == null) {
+        if (units == null || this.unitsString == null) {
             return false;
         } else {
-            return ((units.toString()).equalsIgnoreCase(this.units_string.toString()));
+            return units.toString().equalsIgnoreCase(this.unitsString.toString());
         }
     }
 
     /**
-     *  Returns an hash code. This method overrides the default
-     *  implementation in <code>Object</code> to always return the same
-     *  constant. In this way <code>Units</code> objects can be used
-     *  as <code>Hashtable</code> keys based solely on the units
-     *  string.
+     *  Return the hashcode of the string representing this instance (i.e. the return value of toString()).
+     *  Note that since the @equals method ignores case, the hashcode is computed on the lower case string.
      *
-     *  @return   a constant
+     *  @return   the hashcode of the string representing this instance, after being transformed to lower case.
      */
+    @Override
     public int hashCode() {
-        return 1;
+        return toString().toLowerCase().hashCode();
     }
 
     /**
@@ -104,7 +93,7 @@ public abstract class Units implements Constant, Cloneable, Serializable {
      *  @return    the original spelling for this units instance
      */
     public String getOriginalSpelling () {
-        return original_spelling;
+        return originalSpelling;
     }
 
     /**
@@ -113,12 +102,9 @@ public abstract class Units implements Constant, Cloneable, Serializable {
      *  @return  the string that represents this, or an empty string ("")
      *           if no units are defined.
      */
+    @Override
     public String toString() {
-        if (units_string == null) {
-            return ("");
-        } else {
-            return units_string;
-        }
+        return unitsString == null ? "" : unitsString;
     }
 
     /**
@@ -130,92 +116,4 @@ public abstract class Units implements Constant, Cloneable, Serializable {
         this.ucd = ucd;
     }
 
-    /**
-     *  Returns the units string spelled according to SED specs.
-     *  <p>
-     *  This class assumes that the standard spelling is already the
-     *  correct one. If not, subclasses should override this method
-     *  in order to implement special cases.
-     *
-     *  @return    the units string spelled according to SED specs
-     */
-    public String getSEDSpelling() {
-        return units_string;
-    }
-
-    /**
-     *  Checks if this units instance is internally consistent;
-     *  that is, its string representation matches one of the
-     *  supported units types.
-     *
-     *  @return   <code>true</code> if this is a valid instance
-     */
-    public abstract boolean isValid();
-
-    /**
-     *  Returns a string appropriate to be used as a axis label.
-     *  The string may look like "Wavelength", "Energy" or "Frequency" or
-     *  "Flux density", or whatever, depending on the units type.
-     */
-    public abstract String getLabel();
-
-    /**
-     *  Returns a string appropriate to be used as a UCD.
-     */
-    public abstract String getUCD();
-
-    /**
-     *  Returns an <code>Enumeration</code> with the string designations
-     *  of all supported units.
-     *
-     *  @return  an <code>Enumeration</code> with all supported
-     *           units
-     */
-    public abstract Enumeration getSupportedUnits();
-
-    /**
-     *  Converts argument from this units to standard units.
-     *
-     *  @param   value   the value to be converted, expressed in this units
-     *  @param   avalue  auxiliary value expressed in standard units,
-     *                   eventually used by the conversion formula.
-     *  @return          the value after conversion to standard units
-     */
-    public abstract double convertToStandardUnits (double value,
-                                                   double avalue);
-
-    /**
-     *  Converts argument from standard units to this units.
-     *
-     *  @param   value   the value expressed in standard units
-     *  @param   avalue  auxiliary value expressed in standard units,
-     *                   eventually used by the conversion formula.
-     *  @return          the value after conversion to this units
-     */
-    public abstract double convertFromStandardUnits (double value,
-                                                     double avalue);
-
-    /**
-     *  Grabs and stores the two objects that convertFrom this units type
-     *  to/from standard units. If no conversion is possible/supported,
-     *  the converter references remain <code>null</code>.
-     */
-    protected abstract void getConverterObject();
-
-
-    /////////////////////////////////////////////////////////////////
-    //
-    //                 Cloneable interface.
-    //
-    /////////////////////////////////////////////////////////////////
-
-
-    /**
-     *  Returns a clone copy of this object.
-     *
-     *  @return  the clone
-     */
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
 }

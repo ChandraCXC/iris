@@ -29,6 +29,7 @@ import cfa.vo.iris.sed.ExtSed;
 
 import static cfa.vo.sed.science.stacker.SedStackerAttachments.COUNTS;
 
+import cfa.vo.iris.utils.Default;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sherpa.SherpaClient;
@@ -242,7 +243,7 @@ public class SedStackerStackerTest {
         config.setYUnits("erg/s/cm2/Hz");
 
         // stack
-        stacker = new SedStackerStacker(controller);
+        stacker = new SedStackerStacker(controller, Default.UNITS_MANAGER);
         ExtSed result = stacker.stack(stack, config);
 
         List<double[]> xs = new ArrayList();

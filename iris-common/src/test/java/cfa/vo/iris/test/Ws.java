@@ -23,6 +23,9 @@ package cfa.vo.iris.test;
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ISedManager;
 import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.iris.units.UnitsManager;
+import cfa.vo.iris.utils.Default;
+
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JDesktopPane;
@@ -30,10 +33,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 
-/**
- *
- * @author olaurino
- */
 public class Ws implements IWorkspace {
 
     SedlibSedManager manager = new SedlibSedManager();
@@ -69,5 +68,10 @@ public class Ws implements IWorkspace {
     @Override
     public JDesktopPane getDesktop() {
         return null;
+    }
+
+    @Override
+    public UnitsManager getUnitsManager() {
+        return Default.UNITS_MANAGER;
     }
 }

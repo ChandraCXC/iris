@@ -1108,7 +1108,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         }
 
         if (redshifter == null) {
-            redshifter = new SedStackerRedshifter(controller);
+            redshifter = new SedStackerRedshifter(controller, ws.getUnitsManager());
         }
         try {
             redshifter.shift(selectedStack, redshiftConf);
@@ -1223,7 +1223,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         }
 
         if (normalizer == null) {
-            normalizer = new SedStackerNormalizer(controller);
+            normalizer = new SedStackerNormalizer(controller, ws.getUnitsManager());
         }
         try {
             normalizer.normalize(selectedStack, normConfig);
@@ -1248,7 +1248,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 
 
         if (stacker == null) {
-            stacker = new SedStackerStacker(controller);
+            stacker = new SedStackerStacker(controller, ws.getUnitsManager());
         }
         try {
             ExtSed stackedStack = stacker.stack(selectedStack, stackConfig);

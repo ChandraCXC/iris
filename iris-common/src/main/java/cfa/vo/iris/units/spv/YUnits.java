@@ -27,11 +27,11 @@ package cfa.vo.iris.units.spv;
  */
 
 import cfa.vo.iris.units.UnitsException;
+import cfa.vo.iris.units.XUnit;
 import cfa.vo.iris.units.YUnit;
 
 import java.io.Serializable;
 
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.HashMap;
@@ -65,7 +65,7 @@ import java.util.HashMap;
  *  @author   Ivo Busko (Space Telescope Science Institute)
  */
 
-public class YUnits extends Units implements YUnit, Cloneable, Serializable {
+public class YUnits extends Units implements YUnit, Serializable {
 
     static final long serialVersionUID = 1L;
 
@@ -80,8 +80,6 @@ public class YUnits extends Units implements YUnit, Cloneable, Serializable {
     // The optional multiplicative factor.
 
     private double factor = 1.0;
-
-    private ArrayList<String> al = new ArrayList<String>();
 
     // These define the supported units strings.
 
@@ -293,11 +291,15 @@ public class YUnits extends Units implements YUnit, Cloneable, Serializable {
      *  @param  value   the input string
      *  @return         the correct string
      */
-    public static String GetCorrectSpelling(String value) {
-        String result = value;
-        if (result != null) {
+    public static String getCorrectSpelling(String value) {
+        value = getFactorAndUnit(value)[1];
+
+        String result = null;
+
+        if (value != null) {
             result = correct.get(value.toLowerCase());
         }
+
         if (result == null) {
             result = value;
         }
@@ -306,55 +308,41 @@ public class YUnits extends Units implements YUnit, Cloneable, Serializable {
     }
 
     /**
-     *  Gets an array with the strings representing all valid Y units.
-     *
-     *  @return    the array with the strings representing all valid Y units
-     */
-    public static String[] GetUnitsStrings() {
-        Object[] keys = converters.getKeysArray();
-
-        String[] result = new String[keys.length];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = (String)(keys[i]);
-        }
-
-        return result;
-    }
-
-    public YUnits() {
-    }
-
-    /**
      *  Constructor.
      *
      *  @param  arg  string with the units
      */
     public YUnits (String arg) {
-        String clean_string = removeNormalizationFactor(arg);
+        String[] result = getFactorAndUnit(arg);
 
-        original_spelling = clean_string;
+        if (result[0] != null) {
+            factor = parseFactor(result[0]);
+        }
 
-        units_string = GetCorrectSpelling(clean_string);
+        String clean_string = result[1];
 
-        getConverterObject();
+        originalSpelling = clean_string;
+
+        unitsString = getCorrectSpelling(clean_string);
+
+        makeConverterObject();
     }
 
-    private String removeNormalizationFactor(String arg) {
-        String result = arg;
-
-        if (arg.startsWith("10")) {
-            int index = result.indexOf(' ');
+    private static String[] getFactorAndUnit(String unit) {
+        String[] result = new String[2];
+        result[1] = unit;
+        if (!unit.isEmpty() && unit.startsWith("10")) {
+            int index = unit.indexOf(' ');
             if (index < 0) {
-                index = result.indexOf('.');
+                index = unit.indexOf('.');
             }
             if (index < 0) {
-                index = result.indexOf(')');
+                index = unit.indexOf(')');
             }
 
             if (index > 0) {
-                result = result.substring(index + 1);
-                String factor_string = arg.substring(0,index) + " ";
-                factor = parseFactor(factor_string);
+                result[1] = unit.substring(index + 1);
+                result[0] = unit.substring(0,index) + " ";
             }
         }
 
@@ -396,7 +384,7 @@ public class YUnits extends Units implements YUnit, Cloneable, Serializable {
      *  @return   <code>true</code> if this is a valid instance
      */
     public boolean isValid() {
-        return IsValidUnits(this);
+        return converters.containsKey(this.toString());
     }
 
     /**
@@ -418,11 +406,11 @@ public class YUnits extends Units implements YUnit, Cloneable, Serializable {
      *  @return    the units string spelled according to SED specs
      */
     public String getSEDSpelling() {
-        String spelling = sed.get(units_string);
+        String spelling = sed.get(unitsString);
         if (spelling != null) {
             return spelling;
         }
-        return units_string;
+        return unitsString;
     }
 
     /**
@@ -436,182 +424,6 @@ public class YUnits extends Units implements YUnit, Cloneable, Serializable {
             return converter.getUCD();
         }
         return null;
-    }
-
-    /**
-     *  Returns the standard dependent variable units.
-     *
-     *  @return   the standard dependent variable units
-     */
-    public static Units GetStandardUnits() {
-        return new YUnits (PHOTLAM_STRING);
-    }
-
-    /**
-     *  Returns the preferred dependent variable units.
-     *
-     *  @return   the preferred dependent variable units
-     */
-    public static Units GetPreferredUnits() {
-        String units_string = FLAM_STRING;
-        if (units_string != null) {
-            return new YUnits(units_string);
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     *  Returns a instance of the photnu units.
-     *
-     *  @return   the instance of the photnu units
-     */
-    public static Units GetPhotnuUnits() {
-        return new YUnits (PHOTNU_STRING);
-    }
-
-    /**
-     *  Returns the string used to specify FLAM units.
-     *
-     *  @return   the string used to specify FLAM units
-     */
-    public static String GetFlamString() {
-        return FLAM_STRING;
-    }
-
-    /**
-     *  Returns an <code>Enumeration</code> with the string
-     *  designations of all supported units for the dependent variable.
-     *
-     *  @return  an <code>Enumeration</code> with all supported
-     *           units for the dependent variable
-     */
-    public Enumeration getSupportedUnits() {
-        return converters.keys();
-    }
-
-    /**
-     *  Returns an <code>Enumeration</code> with the string
-     *  designations of only the units whose conversion methods
-     *  do not require ordered wavelengths.
-     *
-     *  @param  sorted  if <code>true</code>, only returns the units
-     *                  whose conversion methods do not require ordered
-     *                  wavelengths. If <code>false</code>, return
-     *                  all supported units.
-     *  @param isFlux   if <code>true</code>, get flux units, else, get
-     *                  flux density units
-     *  @return  an <code>Enumeration</code> with units for the dependent
-     *           variable
-     */
-    public Enumeration getSupportedUnits(boolean sorted, boolean isFlux) {
-        boolean isPartialUnits = true;
-        al.clear();
-        int n = converters.getSize();
-        for (int i = 0; i < n; i++) {
-            Converter yu = (Converter) (converters.get(i));
-            if (yu.requireSortedWavelengths() == sorted) {
-                if (isPartialUnits) {
-                    if (yu.isFlux() == isFlux) {
-                        al.add(converters.getKey(i));
-                    }
-                } else {
-                    al.add(converters.getKey(i));
-                }
-            } else {
-                al.add(converters.getKey(i));
-            }
-        }
-        return new Enumeration() {
-            private Object[] array = al.toArray();
-            private int current = 0;
-
-            public boolean hasMoreElements() {
-                return (current >= 0 && current < array.length);
-            }
-
-            public Object nextElement() {
-                return array[current++];
-            }
-        };
-    }
-
-    /**
-     *  Checks if the supplied <code>Units</code> instance is a
-     *  valid dependent variable units.
-     *
-     *  @return  <code>true</code> if the supplied <code>Units</code>
-     *           instance is a valid dependent variable units,
-     *           <code>false</code> otherwise.
-     */
-    public static boolean IsValidUnits (Units units) {
-
-        if (units == null) {
-            return false;
-        }
-
-        // This is the elegant way to do it:
-        //
-        // return converters.containsKey (units.toString());
-        //
-        // Unfortunately it doesn't handle cases such as case insensitivity
-        // and acceptable mispellings such as "A" in place of "Angstrom".
-        // The reason is that once a key is stored in the converters vector, it
-        // looses its Units type and becomes an Object. Then, the Object
-        // equals() method is used instead of the Units one. Thus we must
-        // encode here a more complex mechanism that will care about the
-        // nature of the Units objects.
-        String cunits_string = YUnits.GetCorrectSpelling(units.toString());
-        YUnits cunits = new YUnits(cunits_string);
-
-        Enumeration list = converters.keys();
-        while (list.hasMoreElements()) {
-            String name = (String) list.nextElement();
-            YUnits unit = new YUnits (name);
-            if (cunits.equals(unit)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     *  Converts argument from this units to standard units.
-     *  The method delivers wrong results with COUNTS units.
-     *
-     *  @param   value   the value expressed in this units
-     *  @param   avalue  auxiliary value expressed in standard units,
-     *                   eventually used by the conversion formula.
-     *  @return          the value after conversion to standard units
-     */
-    public double convertToStandardUnits (double value, double avalue) {
-        if (value == DATA_MARKER || avalue == DATA_MARKER) {
-            return DATA_MARKER;
-        }
-        if (converter != null) {
-            return (factor * converter.convertFrom (value, avalue, avalue, avalue + 1.));
-        }
-        return value;
-    }
-
-    /**
-     *  Converts argument from standard units to this units.
-     *  The method delivers wrong results with COUNTS units.
-     *
-     *  @param   value   the value expressed in standard units
-     *  @param   avalue  auxiliary value expressed in standard units,
-     *                   eventually used by the conversion formula.
-     *  @return          the value after conversion to this units
-     */
-    public double convertFromStandardUnits (double value, double avalue) {
-        if (value == DATA_MARKER || avalue == DATA_MARKER) {
-            return DATA_MARKER;
-        }
-        if (converter != null) {
-            return (converter.convertTo(value, avalue, avalue, avalue + 1.));
-        }
-        return value;
     }
 
     /**
@@ -648,29 +460,12 @@ public class YUnits extends Units implements YUnit, Cloneable, Serializable {
      *  to/from standard units. If no conversion is possible/supported,
      *  the converter references remain <code>null</code>.
      */
-    protected void getConverterObject() {
-        converter = (Converter)converters.get (units_string);
+    protected void makeConverterObject() {
+        converter = (Converter)converters.get (unitsString);
     }
 
-    private double getFactor() {
+    public double getFactor() {
         return factor;
-    }
-
-
-    /////////////////////////////////////////////////////////////////
-    //
-    //                 Cloneable interface.
-    //
-    /////////////////////////////////////////////////////////////////
-
-
-    /**
-     *  Returns a clone copy of this object.
-     *
-     *  @return  the clone
-     */
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
     }
 
 
@@ -747,7 +542,7 @@ public class YUnits extends Units implements YUnit, Cloneable, Serializable {
         }
     }
 
-    protected static KeyedVector converters = new KeyedVector();
+    protected static Map<String, Converter> converters = new HashMap<String, Converter>();
 
     static {
         // From PHOTLAM to PHOTLAM
@@ -1228,7 +1023,7 @@ public class YUnits extends Units implements YUnit, Cloneable, Serializable {
      *  @throws  UnitsException if the units aren't of the appropriate type
      */
     static public double[] convert (double[] y, double[] x,
-                                    YUnits yunit, XUnits xunit, YUnits nunit,
+                                    YUnit yunit, XUnit xunit, YUnit nunit,
                                     boolean raise) throws UnitsException {
 
         if (yunit == null || xunit == null || nunit == null) {
@@ -1238,12 +1033,12 @@ public class YUnits extends Units implements YUnit, Cloneable, Serializable {
         double[] out = new double[x.length];
 
         // Generate a wavelength array in standard units.
-        double[] wave = XUnits.convert (x, xunit, XUnits.GetStandardUnits());
+        double[] wave = XUnits.convert (x, xunit, XUnits.getStandardUnits());
 
         // Get the "from" and "to" conversion objects.
 
-        Converter from = (Converter)converters.get (YUnits.GetCorrectSpelling(yunit.toString()));
-        Converter to   = (Converter)converters.get (YUnits.GetCorrectSpelling(nunit.toString()));
+        Converter from = (Converter)converters.get (YUnits.getCorrectSpelling(yunit.toString()));
+        Converter to   = (Converter)converters.get (YUnits.getCorrectSpelling(nunit.toString()));
 
         if (from == null || to == null) {
             if (raise) {
@@ -1260,14 +1055,10 @@ public class YUnits extends Units implements YUnit, Cloneable, Serializable {
         int lim = wave.length - 1;
 
         for (int i = 0; i < out.length; i++) {
-            if (wave[i] != DATA_MARKER && y[i] != DATA_MARKER) {
-                w1 = wave[Math.max(i-1,0)];
-                w2 = wave[Math.min(i+1,lim)];
-                hold   = factor * from.convertFrom(y[i], wave[i], w1, w2);
-                out[i] = to.convertTo(hold, wave[i], w1, w2);
-            } else {
-                out[i] = DATA_MARKER;
-            }
+            w1 = wave[Math.max(i-1,0)];
+            w2 = wave[Math.min(i+1,lim)];
+            hold   = factor * from.convertFrom(y[i], wave[i], w1, w2);
+            out[i] = to.convertTo(hold, wave[i], w1, w2);
         }
 
         return out;
@@ -1290,8 +1081,8 @@ public class YUnits extends Units implements YUnit, Cloneable, Serializable {
      *  @return          the converted dependent variable values
      *  @throws  UnitsException if the units aren't of the appropriate type
      */
-    public static double[] convertErrors(double[] e, double[] y, double[] x, YUnits yunit,
-                                         XUnits xunit, YUnits nunit, boolean raise)
+    public static double[] convertErrors(double[] e, double[] y, double[] x, YUnit yunit,
+                                         XUnit xunit, YUnit nunit, boolean raise)
             throws UnitsException {
         if (!yunit.isMagnitude() && !nunit.isMagnitude()) {
             return convert(e, x, yunit, xunit, nunit, raise);
@@ -1314,6 +1105,16 @@ public class YUnits extends Units implements YUnit, Cloneable, Serializable {
             result[i] = y_converted[i] - result[i];
         }
         return result;
+    }
+
+    @Override
+    public double[] convert(double[] y, double[] x, XUnit xUnit, YUnit toUnit) throws UnitsException {
+        return convert(y, x, this, xUnit, toUnit, true);
+    }
+
+    @Override
+    public double[] convertErrors(double[] e, double[] y, double[] x, XUnit xUnit, YUnit toUnit) throws UnitsException {
+        return convertErrors(e, y, x, this, xUnit, toUnit, true);
     }
 
 }

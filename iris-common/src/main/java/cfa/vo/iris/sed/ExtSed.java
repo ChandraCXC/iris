@@ -20,6 +20,7 @@
  */
 package cfa.vo.iris.sed;
 
+import cfa.vo.iris.desktop.IrisWorkspace;
 import cfa.vo.iris.events.MultipleSegmentEvent;
 import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
@@ -31,9 +32,10 @@ import cfa.vo.iris.sed.quantities.AxisMetadata;
 import cfa.vo.iris.sed.quantities.SPVYQuantity;
 import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
-import cfa.vo.iris.units.DummyUnitsFactory;
-import cfa.vo.iris.units.IUnitsFactory;
+import cfa.vo.iris.units.DefaultUnitsManager;
+import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.units.UnitsException;
+import cfa.vo.iris.utils.Default;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.*;
 import cfa.vo.sedlib.common.SedInconsistentException;
@@ -57,7 +59,7 @@ public class ExtSed extends Sed {
     private Map<String, Object> attachments = new TreeMap();
     private String id;
     private boolean managed = true;
-    private static IUnitsFactory uf = DummyUnitsFactory.INSTANCE;
+    private static UnitsManager uf = Default.UNITS_MANAGER;
 
     public ExtSed(String id) {
         this.id = id;
@@ -249,7 +251,7 @@ public class ExtSed extends Sed {
             double[] ynewvalues = convertYValues(yoldvalues, xoldvalues, yoldunits, xoldunits, yunit);
             yvalues = concat(yvalues, ynewvalues);
             if (erroldvalues != null) {
-                double[] errnewvalues = uf.convertErrors(erroldvalues, yoldvalues, xoldvalues, uf.newYUnits(yoldunits), uf.newXUnits(xoldunits), uf.newYUnits(yunit), true);
+                double[] errnewvalues = uf.convertErrors(erroldvalues, yoldvalues, xoldvalues, uf.newYUnits(yoldunits), uf.newXUnits(xoldunits), uf.newYUnits(yunit));
 //                double[] errnewvalues = convertYValues(erroldvalues, xoldvalues, yoldunits, xoldunits, yunit);
                 staterr = concat(staterr, errnewvalues);
             }
@@ -305,7 +307,7 @@ public class ExtSed extends Sed {
     }
 
     private static double[] convertYValues(double[] yvalues, double[] xvalues, String fromYUnits, String fromXUnits, String toUnits) throws UnitsException {
-        return uf.convertY(yvalues, xvalues, uf.newYUnits(fromYUnits), uf.newXUnits(fromXUnits), uf.newYUnits(toUnits), true);
+        return uf.convertY(yvalues, xvalues, uf.newYUnits(fromYUnits), uf.newXUnits(fromXUnits), uf.newYUnits(toUnits));
     }
 
 }

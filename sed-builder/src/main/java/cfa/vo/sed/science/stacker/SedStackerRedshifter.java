@@ -29,8 +29,7 @@ import cfa.vo.iris.sed.ExtSed;
 
 import static cfa.vo.sed.science.stacker.SedStackerAttachments.REDSHIFT;
 
-import cfa.vo.iris.units.DummyUnitsFactory;
-import cfa.vo.iris.units.IUnitsFactory;
+import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.common.SedException;
@@ -58,11 +57,12 @@ public class SedStackerRedshifter {
     private SAMPController controller;
     private static String REDSHIFT_MTYPE = "stack.redshift";
     private boolean redshiftConfigChanged;
-    private static IUnitsFactory uf = DummyUnitsFactory.INSTANCE;
+    private UnitsManager um;
 
-    public SedStackerRedshifter(SAMPController controller) {
+    public SedStackerRedshifter(SAMPController controller, UnitsManager unitsManager) {
         this.client = new SherpaClient(controller);
         this.controller = controller;
+        this.um = unitsManager;
     }
 
     public void shift(SedStack stack) throws Exception {
