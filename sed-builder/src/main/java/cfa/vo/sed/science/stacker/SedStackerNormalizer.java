@@ -30,7 +30,7 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.units.DummyUnitsFactory;
 import cfa.vo.iris.units.IUnitsFactory;
 import cfa.vo.iris.units.UnitsException;
-import cfa.vo.iris.utils.UTYPEs;
+import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.common.SedException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sherpa.SherpaClient;
@@ -128,7 +128,7 @@ public class SedStackerNormalizer {
 
             segment.setX(stack.getSed(i).getSegment(0).getSpectralAxisValues());
             segment.setY(stack.getSed(i).getSegment(0).getFluxAxisValues());
-            segment.setYerr((double[]) stack.getSed(i).getSegment(0).getDataValues(UTYPEs.FLUX_STAT_ERROR));
+            segment.setYerr((double[]) stack.getSed(i).getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR));
             segment.setId(stack.getSed(i).getId());
             payload.addSegment(segment);
 
@@ -208,7 +208,7 @@ public class SedStackerNormalizer {
 
             stack.getSeds().get(c).getSegment(0).setSpectralAxisValues(segment.getX());
             stack.getSeds().get(c).getSegment(0).setFluxAxisValues(segment.getY());
-            stack.getSeds().get(c).getSegment(0).setDataValues(segment.getYerr(), UTYPEs.FLUX_STAT_ERROR);
+            stack.getSeds().get(c).getSegment(0).setDataValues(segment.getYerr(), UTYPE.FLUX_STAT_ERROR);
 
             // If any SEDs were normalized with new normalization paramters, update the norm constant and hashcode.
             if (Integer.parseInt(stack.getSed(c).getAttachment(SedStackerAttachments.NORM_CONF_HASH).toString()) != normConfig.hashCode()) {
@@ -249,8 +249,8 @@ public class SedStackerNormalizer {
             stack.getSeds().get(i).getSegment(0).setSpectralAxisUnits(xUnits);
             stack.getSeds().get(i).getSegment(0).setFluxAxisValues(nsed.getSegment(0).getFluxAxisValues());
             stack.getSeds().get(i).getSegment(0).setSpectralAxisValues(nsed.getSegment(0).getSpectralAxisValues());
-            stack.getSeds().get(i).getSegment(0).setDataValues((double[]) nsed.getSegment(0).getDataValues(UTYPEs.FLUX_STAT_ERROR),
-                    UTYPEs.FLUX_STAT_ERROR);
+            stack.getSeds().get(i).getSegment(0).setDataValues((double[]) nsed.getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR),
+                    UTYPE.FLUX_STAT_ERROR);
 
         }
     }
@@ -267,8 +267,8 @@ public class SedStackerNormalizer {
             stack.getSeds().get(i).getSegment(0).setSpectralAxisUnits(xUnits);
             stack.getSeds().get(i).getSegment(0).setFluxAxisValues(nsed.getSegment(0).getFluxAxisValues());
             stack.getSeds().get(i).getSegment(0).setSpectralAxisValues(nsed.getSegment(0).getSpectralAxisValues());
-            stack.getSeds().get(i).getSegment(0).setDataValues((double[]) nsed.getSegment(0).getDataValues(UTYPEs.FLUX_STAT_ERROR),
-                    UTYPEs.FLUX_STAT_ERROR);
+            stack.getSeds().get(i).getSegment(0).setDataValues((double[]) nsed.getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR),
+                    UTYPE.FLUX_STAT_ERROR);
 
         }
     }
@@ -285,8 +285,8 @@ public class SedStackerNormalizer {
             stack.getSeds().get(i).getSegment(0).setSpectralAxisUnits(xUnits.get(i));
             stack.getSeds().get(i).getSegment(0).setFluxAxisValues(nsed.getSegment(0).getFluxAxisValues());
             stack.getSeds().get(i).getSegment(0).setSpectralAxisValues(nsed.getSegment(0).getSpectralAxisValues());
-            stack.getSeds().get(i).getSegment(0).setDataValues((double[]) nsed.getSegment(0).getDataValues(UTYPEs.FLUX_STAT_ERROR),
-                    UTYPEs.FLUX_STAT_ERROR);
+            stack.getSeds().get(i).getSegment(0).setDataValues((double[]) nsed.getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR),
+                    UTYPE.FLUX_STAT_ERROR);
 
         }
     }

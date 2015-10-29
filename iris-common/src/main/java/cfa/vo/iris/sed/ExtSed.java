@@ -34,7 +34,7 @@ import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.units.DummyUnitsFactory;
 import cfa.vo.iris.units.IUnitsFactory;
 import cfa.vo.iris.units.UnitsException;
-import cfa.vo.iris.utils.UTYPEs;
+import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.*;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
@@ -243,7 +243,7 @@ public class ExtSed extends Sed {
 
             double[] xoldvalues = oldSegment.getSpectralAxisValues();
             double[] yoldvalues = oldSegment.getFluxAxisValues();
-            double[] erroldvalues = (double[]) oldSegment.getDataValues(UTYPEs.FLUX_STAT_ERROR);
+            double[] erroldvalues = (double[]) oldSegment.getDataValues(UTYPE.FLUX_STAT_ERROR);
             String xoldunits = oldSegment.getSpectralAxisUnits();
             String yoldunits = oldSegment.getFluxAxisUnits();
             double[] ynewvalues = convertYValues(yoldvalues, xoldvalues, yoldunits, xoldunits, yunit);
@@ -260,7 +260,7 @@ public class ExtSed extends Sed {
         Segment segment = new Segment();
         segment.setSpectralAxisValues(xvalues);
         segment.setFluxAxisValues(yvalues);
-        segment.setDataValues(staterr, UTYPEs.FLUX_STAT_ERROR);
+        segment.setDataValues(staterr, UTYPE.FLUX_STAT_ERROR);
         segment.setTarget(target);
         segment.setSpectralAxisUnits(xunit);
         segment.setFluxAxisUnits(yunit);

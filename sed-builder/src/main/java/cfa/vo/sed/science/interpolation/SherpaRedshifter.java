@@ -28,10 +28,8 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.units.DummyUnitsFactory;
 import cfa.vo.iris.units.IUnitsFactory;
-import cfa.vo.iris.units.UnitsException;
-import cfa.vo.iris.utils.UTYPEs;
+import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.Param;
-import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sherpa.SherpaClient;
 import org.astrogrid.samp.Response;
@@ -80,7 +78,7 @@ public class SherpaRedshifter {
         RedshiftPayload payload = (RedshiftPayload) SAMPFactory.get(RedshiftPayload.class);
         payload.setX(inputSed.getSegment(0).getSpectralAxisValues());
         payload.setY(inputSed.getSegment(0).getFluxAxisValues());
-        payload.setYerr((double[]) inputSed.getSegment(0).getDataValues(UTYPEs.FLUX_STAT_ERROR));
+        payload.setYerr((double[]) inputSed.getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR));
         payload.setFromRedshift(fromRedshift);
         payload.setToRedshift(toRedshift);
         SAMPMessage message = SAMPFactory.createMessage(REDSHIFT_MTYPE, payload, RedshiftPayload.class);
@@ -94,7 +92,7 @@ public class SherpaRedshifter {
         RedshiftPayload response = (RedshiftPayload) SAMPFactory.get(rspns.getResult(), RedshiftPayload.class);
         inputSed.getSegment(0).setSpectralAxisValues(response.getX());
         inputSed.getSegment(0).setFluxAxisValues(response.getY());
-        inputSed.getSegment(0).setDataValues(response.getYerr(), UTYPEs.FLUX_STAT_ERROR);
+        inputSed.getSegment(0).setDataValues(response.getYerr(), UTYPE.FLUX_STAT_ERROR);
         
         inputSed.checkChar();
         

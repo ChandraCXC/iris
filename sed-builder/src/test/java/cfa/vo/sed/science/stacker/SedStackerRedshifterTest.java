@@ -29,7 +29,7 @@ import cfa.vo.iris.sed.ExtSed;
 
 import static cfa.vo.sed.science.stacker.SedStackerAttachments.REDSHIFT;
 
-import cfa.vo.iris.utils.UTYPEs;
+import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sherpa.SherpaClient;
 
@@ -211,7 +211,7 @@ public class SedStackerRedshifterTest {
         seg1.setSpectralAxisValues(x1);
         seg1.setFluxAxisUnits("Jy");
         seg1.setSpectralAxisUnits("Angstrom");
-        seg1.setDataValues(yerr1, UTYPEs.FLUX_STAT_ERROR);
+        seg1.setDataValues(yerr1, UTYPE.FLUX_STAT_ERROR);
         sed1.addSegment(seg1);
 //	Segment seg11 = new Segment();
 //	seg11.setFluxAxisValues(new double[] {2.0});
@@ -227,7 +227,7 @@ public class SedStackerRedshifterTest {
         seg2.setSpectralAxisValues(x2);
         seg2.setFluxAxisUnits("erg/s/cm2");
         seg2.setSpectralAxisUnits("Angstrom");
-        seg2.setDataValues(yerr2, UTYPEs.FLUX_STAT_ERROR);
+        seg2.setDataValues(yerr2, UTYPE.FLUX_STAT_ERROR);
         sed2.addSegment(seg2);
         sed2.addAttachment(REDSHIFT, .2);
 
@@ -236,7 +236,7 @@ public class SedStackerRedshifterTest {
         seg3.setSpectralAxisValues(x3);
         seg3.setFluxAxisUnits("erg/s/cm2");
         seg3.setSpectralAxisUnits("Angstrom");
-        seg3.setDataValues(yerr3, UTYPEs.FLUX_STAT_ERROR);
+        seg3.setDataValues(yerr3, UTYPE.FLUX_STAT_ERROR);
         sed3.addSegment(seg3);
         sed3.addAttachment(REDSHIFT, 0.3);
 
@@ -281,7 +281,7 @@ public class SedStackerRedshifterTest {
 
         // stack.getSeds() should return redshifted seds
         ExtSed shiftedSed1 = stack.getSeds().get(0);
-        double[] yerrValues = (double[]) shiftedSed1.getSegment(0).getDataValues(UTYPEs.FLUX_STAT_ERROR);
+        double[] yerrValues = (double[]) shiftedSed1.getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR);
         for (int i = 0; i < shiftedSed1.getSegment(0).getLength(); i++) {
             double xValue = shiftedSed1.getSegment(0).getSpectralAxisValues()[i];
             double yValue = shiftedSed1.getSegment(0).getFluxAxisValues()[i];
@@ -324,7 +324,7 @@ public class SedStackerRedshifterTest {
         seg1.setSpectralAxisValues(x1);
         seg1.setFluxAxisUnits("Jy");
         seg1.setSpectralAxisUnits("Angstrom");
-        seg1.setDataValues(yerr1, UTYPEs.FLUX_STAT_ERROR);
+        seg1.setDataValues(yerr1, UTYPE.FLUX_STAT_ERROR);
         sed1.addSegment(seg1);
         sed1.addAttachment(REDSHIFT, 0.1);
 
@@ -333,7 +333,7 @@ public class SedStackerRedshifterTest {
         seg2.setSpectralAxisValues(x2);
         seg2.setFluxAxisUnits("erg/s/cm2");
         seg2.setSpectralAxisUnits("Angstrom");
-        seg2.setDataValues(yerr2, UTYPEs.FLUX_STAT_ERROR);
+        seg2.setDataValues(yerr2, UTYPE.FLUX_STAT_ERROR);
         sed2.addSegment(seg2);
         sed2.addAttachment(REDSHIFT, null);
 
@@ -342,7 +342,7 @@ public class SedStackerRedshifterTest {
         seg3.setSpectralAxisValues(x3);
         seg3.setFluxAxisUnits("erg/s/cm2");
         seg3.setSpectralAxisUnits("Angstrom");
-        seg3.setDataValues(yerr3, UTYPEs.FLUX_STAT_ERROR);
+        seg3.setDataValues(yerr3, UTYPE.FLUX_STAT_ERROR);
         sed3.addSegment(seg3);
         sed3.addAttachment(REDSHIFT, 0.3);
 
@@ -385,7 +385,7 @@ public class SedStackerRedshifterTest {
 
         // stack.getSeds() should return redshifted seds
         ExtSed shiftedSed1 = stack.getSeds().get(0);
-        double[] yerrValues = (double[]) shiftedSed1.getSegment(0).getDataValues(UTYPEs.FLUX_STAT_ERROR);
+        double[] yerrValues = (double[]) shiftedSed1.getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR);
         for (int i = 0; i < shiftedSed1.getSegment(0).getLength(); i++) {
             double xValue = shiftedSed1.getSegment(0).getSpectralAxisValues()[i];
             double yValue = shiftedSed1.getSegment(0).getFluxAxisValues()[i];

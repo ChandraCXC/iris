@@ -32,14 +32,13 @@ import static cfa.vo.sed.science.stacker.SedStackerAttachments.REDSHIFT;
 import cfa.vo.iris.units.DummyUnitsFactory;
 import cfa.vo.iris.units.IUnitsFactory;
 import cfa.vo.iris.units.UnitsException;
-import cfa.vo.iris.utils.UTYPEs;
+import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.common.SedException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sherpa.SherpaClient;
 
 import java.text.NumberFormat;
 import java.text.ParsePosition;
-import java.util.Arrays;
 
 import org.astrogrid.samp.Response;
 
@@ -108,7 +107,7 @@ public class SedStackerRedshifter {
 
             segment.setX(stack.getSed(i).getSegment(0).getSpectralAxisValues());
             segment.setY(stack.getSed(i).getSegment(0).getFluxAxisValues());
-            segment.setYerr((double[]) stack.getSed(i).getSegment(0).getDataValues(UTYPEs.FLUX_STAT_ERROR));
+            segment.setYerr((double[]) stack.getSed(i).getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR));
 
             segment.setId(stack.getSed(i).getId());
 
@@ -154,7 +153,7 @@ public class SedStackerRedshifter {
 
             stack.getSed(c).getSegment(0).setSpectralAxisValues(segment.getX());
             stack.getSed(c).getSegment(0).setFluxAxisValues(segment.getY());
-            stack.getSed(c).getSegment(0).setDataValues(segment.getYerr(), UTYPEs.FLUX_STAT_ERROR);
+            stack.getSed(c).getSegment(0).setDataValues(segment.getYerr(), UTYPE.FLUX_STAT_ERROR);
 
             // If the SED's original redshift is known, reset the latest redshift
             // Otherwise, leave the redshift as null.
@@ -201,8 +200,8 @@ public class SedStackerRedshifter {
             stack.getSeds().get(i).getSegment(0).setSpectralAxisUnits(xUnits);
             stack.getSeds().get(i).getSegment(0).setFluxAxisValues(nsed.getSegment(0).getFluxAxisValues());
             stack.getSeds().get(i).getSegment(0).setSpectralAxisValues(nsed.getSegment(0).getSpectralAxisValues());
-            stack.getSeds().get(i).getSegment(0).setDataValues((double[]) nsed.getSegment(0).getDataValues(UTYPEs.FLUX_STAT_ERROR),
-                    UTYPEs.FLUX_STAT_ERROR);
+            stack.getSeds().get(i).getSegment(0).setDataValues((double[]) nsed.getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR),
+                    UTYPE.FLUX_STAT_ERROR);
 
         }
     }
@@ -219,8 +218,8 @@ public class SedStackerRedshifter {
             stack.getSeds().get(i).getSegment(0).setSpectralAxisUnits(xUnits);
             stack.getSeds().get(i).getSegment(0).setFluxAxisValues(nsed.getSegment(0).getFluxAxisValues());
             stack.getSeds().get(i).getSegment(0).setSpectralAxisValues(nsed.getSegment(0).getSpectralAxisValues());
-            stack.getSeds().get(i).getSegment(0).setDataValues((double[]) nsed.getSegment(0).getDataValues(UTYPEs.FLUX_STAT_ERROR),
-                    UTYPEs.FLUX_STAT_ERROR);
+            stack.getSeds().get(i).getSegment(0).setDataValues((double[]) nsed.getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR),
+                    UTYPE.FLUX_STAT_ERROR);
 
         }
     }
@@ -237,8 +236,8 @@ public class SedStackerRedshifter {
             stack.getSeds().get(i).getSegment(0).setSpectralAxisUnits(xUnits.get(i));
             stack.getSeds().get(i).getSegment(0).setFluxAxisValues(nsed.getSegment(0).getFluxAxisValues());
             stack.getSeds().get(i).getSegment(0).setSpectralAxisValues(nsed.getSegment(0).getSpectralAxisValues());
-            stack.getSeds().get(i).getSegment(0).setDataValues((double[]) nsed.getSegment(0).getDataValues(UTYPEs.FLUX_STAT_ERROR),
-                    UTYPEs.FLUX_STAT_ERROR);
+            stack.getSeds().get(i).getSegment(0).setDataValues((double[]) nsed.getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR),
+                    UTYPE.FLUX_STAT_ERROR);
 
         }
     }

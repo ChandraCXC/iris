@@ -32,7 +32,7 @@ import static cfa.vo.sed.science.stacker.SedStackerAttachments.COUNTS;
 import cfa.vo.iris.units.DummyUnitsFactory;
 import cfa.vo.iris.units.IUnitsFactory;
 import cfa.vo.iris.units.UnitsException;
-import cfa.vo.iris.utils.UTYPEs;
+import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.Segment;
 
 import cfa.vo.sedlib.common.SedException;
@@ -109,7 +109,7 @@ public class SedStackerStacker {
 
             segment.setX(stack.getSed(i).getSegment(0).getSpectralAxisValues());
             segment.setY(stack.getSed(i).getSegment(0).getFluxAxisValues());
-            segment.setYerr((double[]) stack.getSed(i).getSegment(0).getDataValues(UTYPEs.FLUX_STAT_ERROR));
+            segment.setYerr((double[]) stack.getSed(i).getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR));
 
             payload.addSegment(segment);
         }
@@ -147,7 +147,7 @@ public class SedStackerStacker {
         Segment seg = new Segment();
         seg.setFluxAxisValues(segment.getY());
         seg.setSpectralAxisValues(segment.getX());
-        seg.setDataValues(segment.getYerr(), UTYPEs.FLUX_STAT_ERROR);
+        seg.setDataValues(segment.getYerr(), UTYPE.FLUX_STAT_ERROR);
         seg.setFluxAxisUnits(stackConfig.getYUnits());
         seg.setSpectralAxisUnits(stackConfig.getBinsizeUnit());
 
@@ -171,8 +171,8 @@ public class SedStackerStacker {
             stack.getSeds().get(i).getSegment(0).setSpectralAxisUnits(xUnits);
             stack.getSeds().get(i).getSegment(0).setFluxAxisValues(nsed.getSegment(0).getFluxAxisValues());
             stack.getSeds().get(i).getSegment(0).setSpectralAxisValues(nsed.getSegment(0).getSpectralAxisValues());
-            stack.getSeds().get(i).getSegment(0).setDataValues((double[]) nsed.getSegment(0).getDataValues(UTYPEs.FLUX_STAT_ERROR),
-                    UTYPEs.FLUX_STAT_ERROR);
+            stack.getSeds().get(i).getSegment(0).setDataValues((double[]) nsed.getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR),
+                    UTYPE.FLUX_STAT_ERROR);
 
         }
     }
@@ -189,8 +189,8 @@ public class SedStackerStacker {
             stack.getSeds().get(i).getSegment(0).setSpectralAxisUnits(xUnits.get(i));
             stack.getSeds().get(i).getSegment(0).setFluxAxisValues(nsed.getSegment(0).getFluxAxisValues());
             stack.getSeds().get(i).getSegment(0).setSpectralAxisValues(nsed.getSegment(0).getSpectralAxisValues());
-            stack.getSeds().get(i).getSegment(0).setDataValues((double[]) nsed.getSegment(0).getDataValues(UTYPEs.FLUX_STAT_ERROR),
-                    UTYPEs.FLUX_STAT_ERROR);
+            stack.getSeds().get(i).getSegment(0).setDataValues((double[]) nsed.getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR),
+                    UTYPE.FLUX_STAT_ERROR);
 
         }
     }
