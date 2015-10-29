@@ -126,26 +126,4 @@ public class SherpaInterpolator {
         return newSed;
 
     }
-
-    private double[] concat(double[] a, double[] b) {
-        int aLen = a.length;
-        int bLen = b.length;
-        double[] c = new double[aLen + bLen];
-        System.arraycopy(a, 0, c, 0, aLen);
-        System.arraycopy(b, 0, c, aLen, bLen);
-        return c;
-    }
-
-    private double[] getSpectralValues(Segment segment) throws SedNoDataException, UnitsException {
-        double[] values = segment.getSpectralAxisValues();
-        return convertXValues(values, segment.getSpectralAxisUnits(), "Angstrom");
-    }
-
-    private double[] convertXValues(double[] values, String fromUnits, String toUnits) throws UnitsException {
-        return uf.convertX(values, uf.newXUnits(fromUnits), uf.newXUnits(toUnits));
-    }
-
-    private double[] convertYValues(double[] yvalues, double[] xvalues, String fromYUnits, String fromXUnits, String toUnits) throws UnitsException {
-        return uf.convertY(yvalues, xvalues, uf.newYUnits(fromYUnits), uf.newXUnits(fromXUnits), uf.newYUnits(toUnits), true);
-    }
 }

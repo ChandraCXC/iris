@@ -188,24 +188,6 @@ public class SedStackerRedshifter {
         }
     }
 
-
-    private void convertUnits(SedStack stack, String xUnits, String yUnits) throws SedException, UnitsException {
-
-        for (int i = 0; i < stack.getSeds().size(); i++) {
-
-            ExtSed sed = stack.getSeds().get(i);
-            ExtSed nsed = ExtSed.flatten(sed, xUnits, yUnits);
-
-            stack.getSeds().get(i).getSegment(0).setFluxAxisUnits(yUnits);
-            stack.getSeds().get(i).getSegment(0).setSpectralAxisUnits(xUnits);
-            stack.getSeds().get(i).getSegment(0).setFluxAxisValues(nsed.getSegment(0).getFluxAxisValues());
-            stack.getSeds().get(i).getSegment(0).setSpectralAxisValues(nsed.getSegment(0).getSpectralAxisValues());
-            stack.getSeds().get(i).getSegment(0).setDataValues((double[]) nsed.getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR),
-                    UTYPE.FLUX_STAT_ERROR);
-
-        }
-    }
-
     private void convertUnits(SedStack stack, String xUnits) throws SedException, UnitsException {
 
         for (int i = 0; i < stack.getSeds().size(); i++) {
