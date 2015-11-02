@@ -43,57 +43,49 @@ import org.astrogrid.samp.client.SampException;
 import org.jdesktop.application.Application;
 
 /**
+ * Base Iris application. Handles startup, shutdown, etc.
  *
- * @author olaurino
  */
 public abstract class AbstractIrisApplication extends Application implements IrisApplication {
-
-    private static SedSAMPController sampController;
+    
     private static boolean isTest = false;
-    private Map<String, IrisComponent> components = new TreeMap();
-    private IrisWorkspace ws;
-    private IrisDesktop desktop;
-    public static final File CONFIGURATION_DIR = new File(System.getProperty("user.home") + "/.vao/iris/");
-    public final boolean MAC_OS_X = System.getProperty("os.name").toLowerCase().startsWith("mac os x");
     static boolean SAMP_ENABLED = System.getProperty("samp", "true").toLowerCase().equals("false") ? false : true;
     public static final boolean SAMP_FALLBACK = false;
+    public static final File CONFIGURATION_DIR = new File(System.getProperty("user.home") + "/.vao/iris/");
+    public static final boolean MAC_OS_X = System.getProperty("os.name").toLowerCase().startsWith("mac os x");
 
-    public void addConnectionListener(SAMPConnectionListener listener) {
-        sampController.addConnectionListener(listener);
-    }
+    private static SedSAMPController sampController;
+    
+    protected String[] componentArgs;
+    protected String componentName;
+    protected boolean isBatch = false;
 
-    public void addMessageHandler(MessageHandler handler) {
-        sampController.addMessageHandler(handler);
-    }
+    protected IrisWorkspace ws;
+    protected IrisDesktop desktop;
+    protected Map<String, IrisComponent> components = new TreeMap<>();
 
-    public void exitApp() {
-        for (IrisComponent component : components.values()) {
-            component.shutdown();
-        }
-        sampShutdown();
-        System.exit(0);
-    }
+    // Default constructor
+    protected AbstractIrisApplication() {}
 
     public abstract String getName();
-
     public abstract String getDescription();
-
     public abstract URL getSAMPIcon();
+    public abstract List<IrisComponent> getComponents() throws Exception;
+    public abstract JDialog getAboutBox();
+    public abstract URL getDesktopIcon();
+    public abstract void setProperties(List<String> properties);
 
     public static AbstractIrisApplication getInstance() {
         return Application.getInstance(AbstractIrisApplication.class);
     }
 
-    public void sampSetup() {
-        if (SAMP_ENABLED) {
-            sampController = new SedSAMPController(getName(), getDescription(), getSAMPIcon().toString());
-            try {
-                sampController.startWithResourceServer("sedImporter/", !isTest);
-            } catch (Exception ex) {
-                System.err.println("SAMP Error. Disabling SAMP support.");
-                System.err.println("Error message: " + ex.getMessage());
-                SAMP_ENABLED = false;
-            }
+    public static void setTest(boolean t) {
+        isTest = t;
+    }
+
+    public static void setAutoRunHub(boolean autoRunHub) {
+        if (sampController != null) {
+            sampController.setAutoRunHub(autoRunHub);
         }
     }
 
@@ -104,24 +96,6 @@ public abstract class AbstractIrisApplication extends Application implements Iri
         }
     }
 
-    public static void setAutoRunHub(boolean autoRunHub) {
-        sampController.setAutoRunHub(autoRunHub);
-    }
-
-    public static void setTest(boolean t) {
-        isTest = t;
-    }
-    protected String[] componentArgs;
-    protected String componentName;
-    protected boolean isBatch = false;
-
-    protected AbstractIrisApplication() {
-    }
-
-    public abstract List<IrisComponent> getComponents() throws Exception;
-
-    public abstract JDialog getAboutBox();
-
     @Override
     public File getConfigurationDir() {
         return CONFIGURATION_DIR;
@@ -129,8 +103,8 @@ public abstract class AbstractIrisApplication extends Application implements Iri
 
     @Override
     protected void initialize(String[] args) {
-        List<String> properties = new ArrayList();
-        List<String> arguments = new ArrayList();
+        List<String> properties = new ArrayList<>();
+        List<String> arguments = new ArrayList<>();
         for (String arg : args) {
             if (arg.startsWith("--")) {
                 arg = arg.replaceFirst("--", "");
@@ -148,15 +122,110 @@ public abstract class AbstractIrisApplication extends Application implements Iri
             }
         }
         setProperties(properties);
+    }
+
+    @Override
+    protected void startup() {
+        if (!CONFIGURATION_DIR.exists()) {
+            CONFIGURATION_DIR.mkdirs();
+        }
+        if (isBatch) {
+            if (!components.containsKey(componentName)) {
+                System.out.println("Component " + componentName + " does not exist.");
+            } else {
+                components.get(componentName).getCli().call(componentArgs);
+            }
+
+            exitApp();
+        }
+
+        if (MAC_OS_X) {
+            System.setProperty("apple.laf.useScreenMenuBar", "true");
+        }
+        System.out.println("Launching GUI...");
+        
+        // Read and construct components
+        initComponents();
+        
+        // Setup samp call
+        sampSetup();
+        
+        // Initialize the desktop/main view and set visible to true
+        initDesktop(); 
+        
+        // Initialize iris workspace and add components
+        initWorkspace();
+
+        // Add plugin manager
+        setupPluginManager();
+    }
+    
+    protected void initComponents() {
         try {
             for (IrisComponent component : getComponents()) {
                 component.initCli(this);
                 components.put(component.getCli().getName(), component);
             }
         } catch (Exception ex) {
-            System.out.println("Error reading component file");
+            // Do we want to application to continue if we can't load any components?
+            System.err.println("Error reading component file"); 
+            Logger.getLogger(AbstractIrisApplication.class.getName())
+                .log(Level.SEVERE, "Error reading component file", ex);
+        }
+    }
+
+    public void sampSetup() {
+        if (SAMP_ENABLED) {
+            sampController = new SedSAMPController(getName(), getDescription(), getSAMPIcon().toString());
+            try {
+                sampController.startWithResourceServer("sedImporter/", !isTest);
+            } catch (Exception ex) {
+                System.err.println("SAMP Error. Disabling SAMP support.");
+                System.err.println("Error message: " + ex.getMessage());
+                Logger.getLogger(AbstractIrisApplication.class.getName())
+                    .log(Level.SEVERE, "SAMP Error. Disabling SAMP support.", ex);
+                SAMP_ENABLED = false;
+            }
+        }
+    }
+    
+    protected void initDesktop() {
+        try {
+            desktop = new IrisDesktop(this);
+        } catch (Exception ex) {
+            System.out.println("Error initializing components");
+            Logger.getLogger(AbstractIrisApplication.class.getName())
+                    .log(Level.SEVERE, null, ex);
+            exitApp();
         }
 
+        desktop.setVisible(true);
+    }
+    
+    protected void initWorkspace() {
+        ws = new IrisWorkspace();
+        ws.setDesktop(desktop);
+        desktop.setWorkspace(ws);
+        for (final IrisComponent component : components.values()) {
+            component.init(this, ws);
+        }
+    }
+    
+    protected void setupPluginManager() {
+        PluginManager manager = new PluginManager();
+        components.put(manager.getCli().getName(), manager);
+        manager.init(this, ws);
+        desktop.setPluginManager(manager);
+        desktop.reset(new ArrayList<>(components.values()));
+        manager.load();
+    }
+
+    public void exitApp() {
+        for (IrisComponent component : components.values()) {
+            component.shutdown();
+        }
+        sampShutdown();
+        System.exit(0);
     }
 
     @Override
@@ -175,67 +244,19 @@ public abstract class AbstractIrisApplication extends Application implements Iri
     }
 
     @Override
-    protected void startup() {
-        if (!CONFIGURATION_DIR.exists()) {
-            CONFIGURATION_DIR.mkdirs();
-        }
-        if (isBatch) {
-            if (!components.containsKey(componentName)) {
-                System.out.println("Component " + componentName + " does not exist.");
-            } else {
-                components.get(componentName).getCli().call(componentArgs);
-            }
-
-            exitApp();
-        } else {
-
-            if (MAC_OS_X) {
-                System.setProperty("apple.laf.useScreenMenuBar", "true");
-            }
-            System.out.println("Launching GUI...");
-
-            sampSetup();
-            
-            try {
-                desktop = new IrisDesktop(AbstractIrisApplication.this);
-            } catch (Exception ex) {
-                System.out.println("Error initializing components");
-                Logger.getLogger(AbstractIrisApplication.class.getName()).log(Level.SEVERE, null, ex);
-                exitApp();
-            }
-            
-            desktop.setVisible(true);
-            
-            ws = new IrisWorkspace();
-            ws.setDesktop(desktop);
-            desktop.setWorkspace(ws);
-            for (final IrisComponent component : components.values()) {
-
-                component.init(AbstractIrisApplication.this, ws);
-
-            }
-            
-            PluginManager manager = new PluginManager();
-            
-            components.put(manager.getCli().getName(), manager);
-            
-            manager.init(AbstractIrisApplication.this, ws);
-            
-            desktop.setPluginManager(manager);
-            
-            desktop.reset(new ArrayList(components.values()));
-            
-            manager.load();
-
-        }
-    }
-
-    @Override
     public SAMPController getSAMPController() {
         return sampController;
     }
+    
+    public void addConnectionListener(SAMPConnectionListener listener) {
+        if (sampController != null) {
+            sampController.addConnectionListener(listener);
+        }
+    }
 
-    public abstract URL getDesktopIcon();
-
-    public abstract void setProperties(List<String> properties);
+    public void addMessageHandler(MessageHandler handler) {
+        if (sampController != null) {
+            sampController.addMessageHandler(handler);
+        }
+    }
 }

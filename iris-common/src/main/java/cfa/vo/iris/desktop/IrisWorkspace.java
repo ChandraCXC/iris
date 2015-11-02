@@ -35,7 +35,7 @@ import javax.swing.JInternalFrame;
  */
 public class IrisWorkspace implements IWorkspace {
 
-    private IrisDesktop mainview;
+    protected IrisDesktop mainview;
 
     private ISedManager sedManager;
 
@@ -86,5 +86,4 @@ public class IrisWorkspace implements IWorkspace {
     public void removeFrame(JInternalFrame frame) {
         this.getDesktop().remove(frame);
     }
-
 }
