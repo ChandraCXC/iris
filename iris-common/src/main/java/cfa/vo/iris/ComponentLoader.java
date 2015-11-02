@@ -51,7 +51,6 @@ public class ComponentLoader {
         String compOverride = System.getProperty(COMP_OVERRIDE_SYS_PROP);
         if (!StringUtils.isEmpty(compOverride)) {
             try {
-                System.out.println(compOverride);
                 File f = new File(compOverride);
                 componentsURL = new URL("file:" + f.getAbsolutePath());
             } catch (MalformedURLException ex) {

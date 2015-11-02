@@ -7,12 +7,10 @@ import cfa.vo.visualizer.fitting.FittingToolGUI;
 import org.astrogrid.samp.client.MessageHandler;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class FittingToolComponent implements IrisComponent {
     
-    private IrisApplication app;
+    protected IrisApplication app;
     private IWorkspace ws;
     private List<IMenuItem> menuItems = new MenuItems();
 
@@ -29,7 +27,7 @@ public class FittingToolComponent implements IrisComponent {
 
     @Override
     public String getDescription() {
-        return "Iris ";
+        return "Used to fit SED data.";
     }
 
     @Override
@@ -69,8 +67,7 @@ public class FittingToolComponent implements IrisComponent {
                             view = new FittingToolGUI(ws);
                             ws.getDesktop().add(view);
                         } catch (Exception ex) {
-                            Logger.getLogger(FittingToolComponent.class.getName())
-                                    .log(Level.SEVERE, null, ex);
+                            throw new RuntimeException(ex);
                         }
                     }
                     GUIUtils.moveToFront(view);

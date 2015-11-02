@@ -64,12 +64,15 @@ import org.jdesktop.application.Action;
  */
 public class IrisDesktop extends JFrame implements PluginListener {
 
-    private List<DesktopButton> buttons = new ArrayList();
-    private List<IrisComponent> components = new ArrayList();
-    private JDialog aboutBox;
-    AbstractIrisApplication app;
+    protected List<DesktopButton> buttons = new ArrayList<>();
+    protected List<IrisComponent> components = new ArrayList<>();
+    protected JDialog aboutBox;
+    protected AbstractIrisApplication app;
     IWorkspace ws;
     DesktopButton helpButton;
+    
+    //  private List<JMenu> menus = new ArrayList();
+    private List<IrisMenuItem> fileMenus = new ArrayList<>();
 
     public void setWorkspace(IWorkspace ws) {
         this.ws = ws;
@@ -124,21 +127,7 @@ public class IrisDesktop extends JFrame implements PluginListener {
 
         desktopPane.setLayer(jLabel2, -1);
 
-
-        AbstractDesktopItem help = new AbstractDesktopItem("Help", "Help on " + app.getName(), "/help_contextual.png", "/help_contextual_tiny.png") {
-
-            @Override
-            public void onClick() {
-                showLink(app.getHelpURL());
-            }
-        };
-
-        IrisMenuItem helpItem = new IrisMenuItem(help);
-
-        helpMenu.add(helpItem);
-        helpButton = new DesktopButton(help);
-        buttons.add(helpButton);
-        desktopPane.add(helpButton);
+        addHelpButton();
 
         paintButtons();
 
@@ -165,16 +154,30 @@ public class IrisDesktop extends JFrame implements PluginListener {
                 e.printStackTrace();
             }
         }
-
-
     }
-//    private List<JMenu> menus = new ArrayList();
-    private List<IrisMenuItem> fileMenus = new ArrayList();
+    
+    
+    protected void addHelpButton() {
+        AbstractDesktopItem help = new AbstractDesktopItem("Help", "Help on " + app.getName(), "/help_contextual.png", "/help_contextual_tiny.png") {
+
+            @Override
+            public void onClick() {
+                showLink(app.getHelpURL());
+            }
+        };
+
+        IrisMenuItem helpItem = new IrisMenuItem(help);
+
+        helpMenu.add(helpItem);
+        helpButton = new DesktopButton(help);
+        buttons.add(helpButton);
+        desktopPane.add(helpButton);
+    }
 
     public void reset(List<IrisComponent> components) {
-        
-        if(!components.contains(manager))
+        if(manager != null && !components.contains(manager)) {
             components.add(manager);
+        }
 
         for (DesktopButton b : buttons) {
             desktopPane.remove(b);
@@ -186,9 +189,8 @@ public class IrisDesktop extends JFrame implements PluginListener {
             fileMenu.remove(i);
         }
 
-        fileMenus = new ArrayList();
-
-        buttons = new ArrayList();
+        fileMenus = new ArrayList<>();
+        buttons = new ArrayList<>();
 
         int c = 0;
         for (IrisComponent component : components) {
@@ -196,7 +198,6 @@ public class IrisDesktop extends JFrame implements PluginListener {
             JMenu cMenu = null;
             for (IMenuItem item : component.getMenus()) {
                 IrisMenuItem i = new IrisMenuItem(item);
-
 
                 if (i.getMenu().equals("File")) {
                     fileMenu.add(i, c + cf++);
@@ -250,7 +251,7 @@ public class IrisDesktop extends JFrame implements PluginListener {
         return new int[]{xb, yb, xf, yf};
     }
 
-    private void paintButtons() {
+    protected void paintButtons() {
         int width = this.getWidth();
         int xl = 175;
         int yl = 175;
@@ -283,7 +284,7 @@ public class IrisDesktop extends JFrame implements PluginListener {
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    protected void initComponents() {
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         desktopPane = new javax.swing.JDesktopPane();
@@ -430,19 +431,19 @@ public class IrisDesktop extends JFrame implements PluginListener {
 //        });
 //    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenuItem aboutLabel;
-    private javax.swing.JDesktopPane desktopPane;
-    private javax.swing.JMenuItem exitMenuItem;
-    private javax.swing.JMenu fileMenu;
-    private javax.swing.JMenu helpMenu;
-    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JToolBar jToolBar1;
-    private javax.swing.JLabel sampIcon;
-    private javax.swing.JMenu toolsMenu;
-    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
+    protected javax.swing.JMenuItem aboutLabel;
+    protected javax.swing.JDesktopPane desktopPane;
+    protected javax.swing.JMenuItem exitMenuItem;
+    protected javax.swing.JMenu fileMenu;
+    protected javax.swing.JMenu helpMenu;
+    protected javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
+    protected javax.swing.JLabel jLabel2;
+    protected javax.swing.JMenu jMenu1;
+    protected javax.swing.JMenuBar jMenuBar1;
+    protected javax.swing.JToolBar jToolBar1;
+    protected javax.swing.JLabel sampIcon;
+    protected javax.swing.JMenu toolsMenu;
+    protected org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
     void setComponents(List<IrisComponent> components) {

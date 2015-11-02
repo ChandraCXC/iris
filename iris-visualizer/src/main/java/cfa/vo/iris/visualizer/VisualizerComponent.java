@@ -27,7 +27,7 @@ public class VisualizerComponent implements IrisComponent {
 
     @Override
     public String getDescription() {
-        return "Iris ";
+        return "Used to visualize SED data in a plotter or in a scrolling metadata browser.";
     }
 
     @Override
@@ -65,8 +65,8 @@ public class VisualizerComponent implements IrisComponent {
                     if (view == null) {
                         try {
                             view = new PlotterView("Iris Visualizer", app, ws);
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
+                        } catch (Exception ex) {
+                            throw new RuntimeException(ex);
                         }
                         ws.getDesktop().add(view);
                     }
