@@ -48,6 +48,8 @@ import org.jdesktop.application.Application;
  */
 public abstract class AbstractIrisApplication extends Application implements IrisApplication {
     
+    private static final Logger logger = Logger.getLogger(AbstractIrisApplication.class.getName());
+    
     private static boolean isTest = false;
     static boolean SAMP_ENABLED = System.getProperty("samp", "true").toLowerCase().equals("false") ? false : true;
     public static final boolean SAMP_FALLBACK = false;
@@ -169,8 +171,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
         } catch (Exception ex) {
             // Do we want to application to continue if we can't load any components?
             System.err.println("Error reading component file"); 
-            Logger.getLogger(AbstractIrisApplication.class.getName())
-                .log(Level.SEVERE, "Error reading component file", ex);
+            logger.log(Level.SEVERE, "Error reading component file", ex);
         }
     }
 
@@ -182,8 +183,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
             } catch (Exception ex) {
                 System.err.println("SAMP Error. Disabling SAMP support.");
                 System.err.println("Error message: " + ex.getMessage());
-                Logger.getLogger(AbstractIrisApplication.class.getName())
-                    .log(Level.SEVERE, "SAMP Error. Disabling SAMP support.", ex);
+                logger.log(Level.SEVERE, "SAMP Error. Disabling SAMP support.", ex);
                 SAMP_ENABLED = false;
             }
         }
@@ -194,8 +194,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
             desktop = new IrisDesktop(this);
         } catch (Exception ex) {
             System.out.println("Error initializing components");
-            Logger.getLogger(AbstractIrisApplication.class.getName())
-                    .log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
             exitApp();
         }
 

@@ -22,6 +22,10 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -34,6 +38,9 @@ import org.junit.Test;
  * @author olaurino
  */
 public class SedMessageTest {
+    
+    private static final Logger logger = Logger.getLogger(SedMessageTest.class.getName());
+    
     private Sed mySed;
 
     public SedMessageTest() {
@@ -70,7 +77,7 @@ public class SedMessageTest {
         sampReceiver.setAutoRunHub(false);
 
         while(!sampSender.isConnected()) {
-            System.out.println("waiting connection");
+            logger.log(Level.INFO, "waiting connection...");
             Thread.sleep(1000);
         }
 

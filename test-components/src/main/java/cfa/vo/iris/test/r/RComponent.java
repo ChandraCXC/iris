@@ -49,6 +49,8 @@ import org.rosuda.JRI.Rengine;
  * @author olaurino
  */
 public class RComponent implements IrisComponent {
+    
+    private static final Logger logger = Logger.getLogger(RComponent.class.getName());
 
     private IrisApplication app;
     private IWorkspace ws;
@@ -107,7 +109,7 @@ public class RComponent implements IrisComponent {
                     if(re==null) {
                         re = new Rengine(new String[]{}, false, new TextConsole());
                         if (!re.waitForR()) {
-                            System.out.println("Cannot load R");
+                            logger.info("Cannot load R");
                             return;
                         }
 
@@ -148,7 +150,7 @@ public class RComponent implements IrisComponent {
 
         @Override
         public void rBusy(Rengine re, int which) {
-            System.out.println("rBusy(" + which + ")");
+            logger.info("rBusy(" + which + ")");
         }
 
         @Override
@@ -159,14 +161,14 @@ public class RComponent implements IrisComponent {
                 String s = br.readLine();
                 return (s == null || s.length() == 0) ? s : s + "\n";
             } catch (Exception e) {
-                System.out.println("jriReadConsole exception: " + e.getMessage());
+                logger.log(Level.WARNING, "jriReadConsole exception: ", e);
             }
             return null;
         }
 
         @Override
         public void rShowMessage(Rengine re, String message) {
-            System.out.println("rShowMessage \"" + message + "\"");
+            logger.info("rShowMessage \"" + message + "\"");
         }
 
         @Override
