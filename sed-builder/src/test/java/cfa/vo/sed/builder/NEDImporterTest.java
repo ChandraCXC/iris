@@ -33,7 +33,7 @@ import static org.junit.Assert.*;
  *
  * @author olaurino
  */
-public class NEDImporter {
+public class NEDImporterTest {
 
 //    public NEDImporter() {
 //    }
@@ -59,7 +59,6 @@ public class NEDImporter {
 //     */
 //    @Test
 //    public void testGetSedFromWrongName() throws Exception {
-//        System.out.println("getSedFromName");
 //        String targetName = "pippo";
 //        Sed result = NEDImporter.getSedFromName(targetName);
 //        assertEquals(0, result.getNumberOfSegments());
@@ -70,7 +69,6 @@ public class NEDImporter {
 //     */
 //    @Test
 //    public void testGetSedFor3C186() throws Exception {
-//        System.out.println("getSedFor3C186");
 //        String targetName = "3c186";
 //        Sed result = NEDImporter.getSedFromName(targetName);
 //        assertEquals(1, result.getNumberOfSegments());
@@ -81,7 +79,6 @@ public class NEDImporter {
 //     */
 //    @Test
 //    public void testGetSedFor3C273() throws Exception {
-//        System.out.println("getSedFor3C273");
 //        String targetName = "3c273";
 //        Sed result = NEDImporter.getSedFromName(targetName);
 //        assertEquals(1, result.getNumberOfSegments());

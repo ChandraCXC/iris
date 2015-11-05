@@ -34,6 +34,7 @@ import cfa.vo.sherpa.SherpaClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.astrogrid.samp.Response;
 import org.junit.After;
@@ -50,6 +51,8 @@ import spv.spectrum.SEDMultiSegmentSpectrum;
  * @author jbudynk
  */
 public class SedStackerNormalizerTest {
+    
+    private static final Logger logger = Logger.getLogger(SedStackerNormalizerTest.class.getName());
 
     double[] x1;
     double[] y1;
@@ -119,10 +122,9 @@ public class SedStackerNormalizerTest {
         controller.start(false);
 
         Thread.sleep(2000);
-        System.out.println();
 
         while (!controller.isConnected()) {
-            System.out.println("waiting connection");
+            logger.info("waiting connection");
             Thread.sleep(1000);
         }
 
@@ -184,10 +186,9 @@ public class SedStackerNormalizerTest {
         controller.start(false);
 
         Thread.sleep(2000);
-        System.out.println();
 
         while (!controller.isConnected()) {
-            System.out.println("waiting connection");
+            logger.info("waiting connection");
             Thread.sleep(1000);
         }
 
@@ -291,10 +292,8 @@ public class SedStackerNormalizerTest {
         controller.start(false);
 
         Thread.sleep(2000);
-        System.out.println();
 
         while (!controller.isConnected()) {
-            System.out.println("waiting connection");
             Thread.sleep(1000);
         }
 

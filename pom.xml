@@ -58,6 +58,12 @@
                     <includes>
                         <include>**/*Test.*</include>
                     </includes>
+                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <systemPropertyVariables>
+                        <java.util.logging.config.file>
+                            ${project.parent.basedir}/iris/src/test/resources/log.properties
+                        </java.util.logging.config.file>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
             <plugin>

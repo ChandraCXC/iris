@@ -50,8 +50,6 @@ public class AsciiConfTest {
 	@Test
 	public void testMakeConf() throws Exception {
 		
-		System.out.println("makeConf");
-		
 		URL filenameOK = AsciiConf.class.getResource("/test_data/ascii-conf-test.dat");
 		SetupBean resultOK = new AsciiConf().makeConf(filenameOK);
 		
