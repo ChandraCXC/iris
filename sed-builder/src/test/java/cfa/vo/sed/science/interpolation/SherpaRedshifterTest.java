@@ -32,6 +32,7 @@ import cfa.vo.sedlib.Param;
 import cfa.vo.sherpa.SherpaClient;
 
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 import org.astrogrid.samp.Response;
 import org.junit.After;
@@ -46,6 +47,8 @@ import static org.junit.Assert.*;
  * @author jbudynk
  */
 public class SherpaRedshifterTest {
+    
+    private static final Logger logger = Logger.getLogger(SherpaRedshifterTest.class.getName());
 
     private SAMPController controller;
     private static String REDSHIFT_MTYPE = "spectrum.redshift.calc";
@@ -70,7 +73,7 @@ public class SherpaRedshifterTest {
         // including that the flux errors are sorted along with their
         // corresponding (x, y) points
 
-        System.out.println("To run this test, you need a SAMP Hub running with Sherpa-SAMP connected.");
+        logger.info("To run this test, you need a SAMP Hub running with Sherpa-SAMP connected.");
 
         double[] y = new double[]{
                 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30
@@ -89,10 +92,9 @@ public class SherpaRedshifterTest {
         controller.start(false);
 
         Thread.sleep(2000);
-        System.out.println();
 
         while (!controller.isConnected()) {
-            System.out.println("waiting connection");
+            logger.info("waiting connection");
             Thread.sleep(1000);
         }
 

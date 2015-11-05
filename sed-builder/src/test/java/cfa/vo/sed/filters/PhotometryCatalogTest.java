@@ -38,6 +38,9 @@ import cfa.vo.sed.test.App;
 import cfa.vo.iris.test.Oracle;
 import cfa.vo.sed.test.Ws;
 import cfa.vo.sedlib.io.SedFormat;
+
+import java.util.logging.Logger;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -49,6 +52,8 @@ import org.junit.Test;
  * @author olaurino
  */
 public class PhotometryCatalogTest {
+    
+    private static final Logger logger = Logger.getLogger(PhotometryCatalogTest.class.getName());
 
     public PhotometryCatalogTest() {
     }
@@ -144,15 +149,15 @@ public class PhotometryCatalogTest {
         int c = 0;
 
         for(PhotometryCatalogEntry entry : catalog) {
-            System.out.println("Entry "+(++c));
+            logger.info("Entry "+(++c));
             for(PhotometryPointSegment segment : entry) {
                 PhotometryPoint point = segment.getPoint();
-                System.out.println("\tPoint: " + point.getId());
-                System.out.println("\t\tFilter: "+ point.getSpectralAxis().getFilter().toString());
-                System.out.println("\t\tFlux: " + point.getFluxAxis().getValue());
-                System.out.println("\t\tError: " + point.getFluxAxis().getError());
-                System.out.println("\t\tQuantity: " + point.getFluxAxis().getQuantity());
-                System.out.println("\t\tUnit: " + point.getFluxAxis().getUnit());
+                logger.info("\tPoint: " + point.getId());
+                logger.info("\t\tFilter: "+ point.getSpectralAxis().getFilter().toString());
+                logger.info("\t\tFlux: " + point.getFluxAxis().getValue());
+                logger.info("\t\tError: " + point.getFluxAxis().getError());
+                logger.info("\t\tQuantity: " + point.getFluxAxis().getQuantity());
+                logger.info("\t\tUnit: " + point.getFluxAxis().getUnit());
             }
         }
 

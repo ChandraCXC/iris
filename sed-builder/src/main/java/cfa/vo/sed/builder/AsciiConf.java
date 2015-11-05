@@ -107,7 +107,6 @@ public class AsciiConf {
             conf.setXAxisColumnNumber(0);
             conf.setYAxisColumnNumber(1);
             conf.setXAxisQuantity(xquantity.getName().toUpperCase());
-	    System.out.println("");
             conf.setXAxisUnit(metadata.get("XUNIT").toString());
             conf.setYAxisQuantity(yquantity.getName().toUpperCase());
             conf.setYAxisUnit(metadata.get("YUNIT").toString());    
