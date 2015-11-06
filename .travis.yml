@@ -27,4 +27,8 @@ before_install:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
 
-script: mvn -U test
+# This runs without instrumentation
+script: mvn -U verify
+
+# This runs with instrumentation
+after_success: mvn -Pjacoco clean verify coveralls:report

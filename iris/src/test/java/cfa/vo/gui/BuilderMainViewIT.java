@@ -20,6 +20,7 @@
  */
 package cfa.vo.gui;
 
+import cfa.vo.iris.Iris;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.sed.builder.SedBuilder;
@@ -37,17 +38,14 @@ import org.uispec4j.*;
  *
  * @author olaurino
  */
-public class BuilderMainViewTest extends UISpecTestCase {
+public class BuilderMainViewIT extends UISpecTestCase {
 
     private static Window mainWindow;
     private Desktop desktop;
 
     public void setUp() throws Exception {
         super.setUp();
-        if (!TestApp.hasComponent(SedBuilder.class)) {
-            TestApp.addComponent(new SedBuilder());
-        }
-        setAdapter(new IrisUISpecAdapter(TestApp.class, new String[0]));
+        setAdapter(new IrisUISpecAdapter(Iris.class, new String[0]));
         mainWindow = getMainWindow();
         desktop = mainWindow.getDesktop();
     }
