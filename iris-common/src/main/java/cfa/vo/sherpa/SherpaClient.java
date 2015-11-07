@@ -19,6 +19,8 @@ package cfa.vo.sherpa;
 import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
+
+import org.apache.commons.lang.StringUtils;
 import org.astrogrid.samp.Client;
 import org.astrogrid.samp.Response;
 import org.astrogrid.samp.client.SampException;
@@ -37,8 +39,9 @@ import java.util.logging.Logger;
 public class SherpaClient {
 
     private SAMPController sampController;
-    private Map<String, AbstractModel> modelMap = new HashMap();
+    private Map<String, AbstractModel> modelMap = new HashMap<>();
     private Integer stringCounter = 0;
+    private Map<String, Class> exceptions = new Exceptions();
 //    private String sherpaPublicId;
 
     public SherpaClient(SAMPController controller) {
@@ -99,7 +102,6 @@ public class SherpaClient {
         Response response = sampController.callAndWait(sherpaPublicId, message.get(), 10);
 
         return (FitResults) SAMPFactory.get(response.getResult(), FitResults.class);
-
     }
 
     public Data createData(String name) {
@@ -143,27 +145,24 @@ public class SherpaClient {
     public String findSherpa() throws SampException {
 //        if(sherpaPublicId==null)
         String returnString = "";
-            try {
-                for(Entry<String, Client> entry : (Set<Entry<String, Client>>) sampController.getClientMap().entrySet())
-                    if (entry.getValue().getMetadata().getName().toLowerCase().equals("sherpa")) {
-                        returnString = entry.getValue().getId();
-                        break;
-                    }
-                if (!returnString.isEmpty()) {
-                    return returnString;
-                } else {
-                    throw new Exception();
+        try {
+            for(Entry<String, Client> entry : (Set<Entry<String, Client>>) sampController.getClientMap().entrySet())
+                if (entry.getValue().getMetadata().getName().toLowerCase().equals("sherpa")) {
+                    returnString = entry.getValue().getId();
+                    break;
                 }
-            } catch (Exception ex) {
-                throw new SampException("Cannot find Sherpa. If the problem persists, please refer to the troubleshooting section of the documentation.");
+            if (StringUtils.isEmpty(returnString)) {
+                throw new Exception();
             }
+            return returnString;
+        } catch (Exception ex) {
+            throw new SampException("Cannot find Sherpa. If the problem persists, please refer to the troubleshooting section of the documentation.", ex);
+        }
     }
 
     public boolean isException(Response rspns) {
         return !rspns.isOK();
     }
-    
-    private Map<String, Class> exceptions = new Exceptions();
 
     public Exception getException(Response rspns) throws Exception {
         try {
@@ -235,7 +234,4 @@ public class SherpaClient {
             super(msg);
         }
     }
-    
-    
-    
 }

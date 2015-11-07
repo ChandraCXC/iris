@@ -26,40 +26,24 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 /**
- *
+ * 
  * @author olaurino
  */
 public class Configuration {
-    
-    private RedshiftConfiguration redshiftConfiguration = new RedshiftConfiguration();
 
     public static final String PROP_REDSHIFTCONFIGURATION = "redshiftConfiguration";
+    public static final String PROP_NORMCONFIGURATION = "normConfiguration";
+    public static final String PROP_STACKCONFIGURATION = "stackConfiguration";
 
-    /**
-     * Get the value of redshiftConfiguration
-     *
-     * @return the value of redshiftConfiguration
-     */
-    public RedshiftConfiguration getRedshiftConfiguration() {
-        return redshiftConfiguration;
-    }
-
-    /**
-     * Set the value of redshiftConfiguration
-     *
-     * @param redshiftConfiguration new value of redshiftConfiguration
-     */
-    public void setRedshiftConfiguration(RedshiftConfiguration redshiftConfiguration) {
-        RedshiftConfiguration oldRedshiftConfiguration = this.redshiftConfiguration;
-        this.redshiftConfiguration = redshiftConfiguration;
-        propertyChangeSupport.firePropertyChange(PROP_REDSHIFTCONFIGURATION, oldRedshiftConfiguration, redshiftConfiguration);
-    }
+    private RedshiftConfiguration redshiftConfiguration = new RedshiftConfiguration();
+    private NormalizationConfiguration normConfiguration = new NormalizationConfiguration();
+    private StackConfiguration stackConfiguration = new StackConfiguration();
 
     private transient final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
     /**
      * Add PropertyChangeListener.
-     *
+     * 
      * @param listener
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -68,60 +52,74 @@ public class Configuration {
 
     /**
      * Remove PropertyChangeListener.
-     *
+     * 
      * @param listener
      */
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
     
-    private NormalizationConfiguration normConfiguration = new NormalizationConfiguration();
+    /**
+     * Get the value of redshiftConfiguration
+     * 
+     * @return the value of redshiftConfiguration
+     */
+    public RedshiftConfiguration getRedshiftConfiguration() {
+        return redshiftConfiguration;
+    }
 
-    public static final String PROP_NORMCONFIGURATION = "normConfiguration";
+    /**
+     * Set the value of redshiftConfiguration
+     * 
+     * @param redshiftConfiguration
+     *            new value of redshiftConfiguration
+     */
+    public void setRedshiftConfiguration(RedshiftConfiguration redshiftConfiguration) {
+        RedshiftConfiguration oldRedshiftConfiguration = this.redshiftConfiguration;
+        this.redshiftConfiguration = redshiftConfiguration;
+        propertyChangeSupport.firePropertyChange(PROP_REDSHIFTCONFIGURATION, oldRedshiftConfiguration,
+                redshiftConfiguration);
+    }
 
     /**
      * Get the value of normConfiguration
-     *
+     * 
      * @return the value of normConfiguration
      */
     public NormalizationConfiguration getNormConfiguration() {
-	return normConfiguration;
+        return normConfiguration;
     }
 
     /**
      * Set the value of normConfiguration
-     *
-     * @param normConfiguration new value of normConfiguration
+     * 
+     * @param normConfiguration
+     *            new value of normConfiguration
      */
     public void setNormConfiguration(NormalizationConfiguration normConfiguration) {
-	NormalizationConfiguration oldNormConfiguration = this.normConfiguration;
-	this.normConfiguration = normConfiguration;
-	propertyChangeSupport.firePropertyChange(PROP_NORMCONFIGURATION, oldNormConfiguration, normConfiguration);
+        NormalizationConfiguration oldNormConfiguration = this.normConfiguration;
+        this.normConfiguration = normConfiguration;
+        propertyChangeSupport.firePropertyChange(PROP_NORMCONFIGURATION, oldNormConfiguration, normConfiguration);
     }
-
-    private StackConfiguration stackConfiguration = new StackConfiguration();
-
-    public static final String PROP_STACKCONFIGURATION = "stackConfiguration";
 
     /**
      * Get the value of stackConfiguration
-     *
+     * 
      * @return the value of stackConfiguration
      */
     public StackConfiguration getStackConfiguration() {
-	return stackConfiguration;
+        return stackConfiguration;
     }
 
     /**
      * Set the value of stackConfiguration
-     *
-     * @param stackConfiguration new value of stackConfiguration
+     * 
+     * @param stackConfiguration
+     *            new value of stackConfiguration
      */
     public void setStackConfiguration(StackConfiguration stackConfiguration) {
-	StackConfiguration oldStackConfiguration = this.stackConfiguration;
-	this.stackConfiguration = stackConfiguration;
-	propertyChangeSupport.firePropertyChange(PROP_STACKCONFIGURATION, oldStackConfiguration, stackConfiguration);
+        StackConfiguration oldStackConfiguration = this.stackConfiguration;
+        this.stackConfiguration = stackConfiguration;
+        propertyChangeSupport.firePropertyChange(PROP_STACKCONFIGURATION, oldStackConfiguration, stackConfiguration);
     }
-
-    
 }

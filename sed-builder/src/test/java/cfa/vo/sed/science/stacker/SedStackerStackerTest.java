@@ -22,277 +22,312 @@
 package cfa.vo.sed.science.stacker;
 
 import cfa.vo.interop.SAMPController;
-import cfa.vo.interop.SAMPFactory;
-import cfa.vo.interop.SAMPMessage;
-import cfa.vo.iris.interop.SedSAMPController;
 import cfa.vo.iris.sed.ExtSed;
-
-import static cfa.vo.sed.science.stacker.SedStackerAttachments.COUNTS;
 
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sherpa.SherpaClient;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Logger;
-
-import org.astrogrid.samp.Response;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
 import static org.junit.Assert.*;
 
-import spv.spectrum.SEDMultiSegmentSpectrum;
+import java.awt.Component;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import org.astrogrid.samp.Response;
+import org.astrogrid.samp.client.SampException;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
-/**
- *
- * @author jbudynk
- */
+import cfa.vo.sedlib.common.SedNoDataException;
+
 public class SedStackerStackerTest {
     
-    private static final Logger logger = Logger.getLogger(SedStackerStackerTest.class.getName());
+    protected static double[] x1 = new double[] { 5, 1, 10, 15, 50, 100 };
+    protected static double[] y1 = new double[] { 0.5, 0.1, 1.0, 1.5, 5.0, 10.0 };
+    protected static double[] yerr1 = new double[] { 0.05, 0.01, 0.1, 0.15, 0.5, 1.0 };
+
+    protected static double[] x2 = new double[] { 2, 4, 5, 8, 10 };
+    protected static double[] y2 = new double[] { 1, 2, 3, 4, 5 };
+    protected static double[] yerr2 = new double[] { 0.1, 0.2, 0.3, 0.4, 0.5 };
+
+    protected static double[] x3 = new double[] { 0.5, 3.0, 1.5, 5.0, 10.5, 21.0 };
+    protected static double[] y3 = new double[] { 5.0, 7.0, 15.0, 4.5, 13.5, 10.5 };
+    protected static double[] yerr3 = new double[] { 0.5, 0.7, 1.5, 0.45, 1.35, 1.05 };
     
-    double[] x1;
-    double[] y1;
-    double[] yerr1;
-    double[] x2;
-    double[] y2;
-    double[] yerr2;
-    double[] x3;
-    double[] y3;
-    double[] yerr3;
-
-    SegmentPayload segment1;
-    SegmentPayload segment2;
-    SegmentPayload segment3;
-
-    SedStackerStackPayload payload;
-
-    private SAMPController controller;
+    Segment segment1;
+    Segment segment2;
+    Segment segment3;
+    
+    ExtSed sed1;
+    ExtSed sed2;
+    ExtSed sed3;
+    
+    private SedStack sedStack;
+    
     private SedStackerStacker stacker;
-
+    
+    private StackerPayloadStub response;
+    
+    protected SherpaClientStub client;
+    protected SAMPControllerStub controller;
+    
     @Before
-    public void setUp() {
-        x1 = new double[]{5, 1, 10, 15, 50, 100};
-        y1 = new double[]{0.5, 0.1, 1.0, 1.5, 5.0, 10.0};
-        yerr1 = new double[]{0.05, 0.01, 0.1, 0.15, 0.5, 1.0};
-
-        x2 = new double[]{2, 4, 5, 8, 10};
-        y2 = new double[]{1, 2, 3, 4, 5};
-        yerr2 = new double[]{0.1, 0.2, 0.3, 0.4, 0.5};
-
-        x3 = new double[]{0.5, 3.0, 1.5, 5.0, 10.5, 21.0};
-        y3 = new double[]{5.0, 7.0, 15.0, 4.5, 13.5, 10.5};
-        yerr3 = new double[]{0.5, 0.7, 1.5, 0.45, 1.35, 1.05};
-
-        segment1 = (SegmentPayload) SAMPFactory.get(SegmentPayload.class);
-        segment1.setX(x1);
-        segment1.setY(y1);
-        segment1.setYerr(yerr1);
-        segment1.setZ(0.1);
-
-        segment2 = (SegmentPayload) SAMPFactory.get(SegmentPayload.class);
-        segment2.setX(x2);
-        segment2.setY(y2);
-        segment2.setYerr(yerr2);
-        segment2.setZ(0.2);
-
-        segment3 = (SegmentPayload) SAMPFactory.get(SegmentPayload.class);
-        segment3.setX(x3);
-        segment3.setY(y3);
-        segment3.setYerr(yerr3);
-        segment3.setZ(0.3);
-    }
-
-    @Ignore("need sherpa-samp running")
-    @Test
-    public void testStackAvg() throws Exception {
-        // Start the SAMP controller
-        controller = new SedSAMPController("SEDStacker", "SEDStacker", this.getClass().getResource("/tools_tiny.png").toString());
-        controller.setAutoRunHub(false);
-        controller.start(false);
-
-        Thread.sleep(2000);
-
-        while (!controller.isConnected()) {
-            logger.info("waiting connection");
-            Thread.sleep(1000);
-        }
-
-        payload = (SedStackerStackPayload) SAMPFactory.get(SedStackerStackPayload.class);
-
-        // Setup the stack payload
-        payload.addSegment(segment1);
-        payload.addSegment(segment2);
-        payload.addSegment(segment3);
-        payload.setBinsize(2.0);
-        payload.setLogBin(false);
-        payload.setSmooth(false);
-        payload.setSmoothBinsize(5.0);
-        payload.setStatistic("avg");
-
-        // Setup and send SAMP message
-        SAMPMessage message = SAMPFactory.createMessage("stack.stack", payload, SedStackerStackPayload.class);
-
-        SherpaClient client = new SherpaClient(controller);
-
-        Response rspns = controller.callAndWait(client.findSherpa(), message.get(), 10);
-        if (client.isException(rspns)) {
-            Exception ex = client.getException(rspns);
-            throw ex;
-        }
-
-        SedStackerStackPayload response = (SedStackerStackPayload) SAMPFactory.get(rspns.getResult(), SedStackerStackPayload.class);
-
-        // get response values
-        SegmentPayload seg = response.getSegments().get(0);
-        double[] controlY = new double[]{5.0, 5.36666667, 4.5, 2.66666667, 4.0, 6.5, 1.5, 10.5, 5.0, 10.0};
-        double[] controlX = new double[]{0., 2., 4., 6., 8., 10., 16., 22., 50., 100.};
-        //double[] controlYerr = new double[] {0.5, 0.501120965, 0.3640055, 0.18104634, 0.4, 0.48102899, 0.15, 1.05, 0.5, 1.0}; // calculated from errors [sqrt(sum(errors^2))/N]
-        double[] controlYerr = new double[]{0, 6.82169741, 2.5, 1.64991582, 0., 5.21216526, 0., 0., 0., 0.}; // calculated from stddev(flux)
-        double[] controlCounts = new double[]{1, 3, 2, 3, 1, 3, 1, 1, 1, 1};
-
-        assertEquals(response.getSegments().size(), 1);
-
-        // tests
-        for (int i = 0; i < seg.getY().length; i++) {
-            assertEquals(controlY[i], seg.getY()[i], 0.00001);
-        }
-        for (int i = 0; i < seg.getY().length; i++) {
-            assertEquals(controlX[i], seg.getX()[i], 0.00001);
-        }
-        for (int i = 0; i < seg.getY().length; i++) {
-            assertEquals(controlYerr[i], seg.getYerr()[i], 0.00001);
-        }
-        for (int i = 0; i < seg.getY().length; i++) {
-            assertEquals(controlCounts[i], seg.getCounts()[i], 0.00001);
-        }
-
-        controller.stop();
-    }
-
-    @Ignore("need sherpa-samp running")
-    @Test
-    public void testStacker() throws Exception {
-        // Start the SAMP controller
-        controller = new SedSAMPController("SEDStacker", "SEDStacker", this.getClass().getResource("/tools_tiny.png").toString());
-        controller.setAutoRunHub(false);
-        controller.start(false);
-
-        Thread.sleep(2000);
-
-        while (!controller.isConnected()) {
-            logger.info("waiting connection");
-            Thread.sleep(1000);
-        }
-
-        ExtSed sed1 = new ExtSed("Sed1");
-        ExtSed sed2 = new ExtSed("Sed2");
-        ExtSed sed3 = new ExtSed("Sed3");
-
-        Segment seg1 = new Segment();
-
-        for (int k = 0; k < x1.length; k++) {
-            y1[k] = y1[k] * 1e23;
-            yerr1[k] = yerr1[k] * 1e23;
-        }
-        seg1.setFluxAxisValues(y1);
-        seg1.setSpectralAxisValues(x1);
-        seg1.setFluxAxisUnits("Jy");
-        seg1.setSpectralAxisUnits("Angstrom");
-        seg1.setDataValues(yerr1, SEDMultiSegmentSpectrum.E_UTYPE);
-        sed1.addSegment(seg1);
-
-        Segment seg2 = new Segment();
-        seg2.setFluxAxisValues(y2);
-        seg2.setSpectralAxisValues(x2);
-        seg2.setFluxAxisUnits("erg/s/cm2/Hz");
-        seg2.setSpectralAxisUnits("Angstrom");
-        seg2.setDataValues(yerr2, SEDMultiSegmentSpectrum.E_UTYPE);
-        sed2.addSegment(seg2);
-
-        Segment seg3 = new Segment();
-        seg3.setFluxAxisValues(y3);
-
-        //convert the values in x3 to nm so I can test the unit conversions too.
-        int k = 0;
-        for (double x : x3) {
-            x3[k] = x * 0.1;
-            k++;
-        }
-        seg3.setSpectralAxisValues(x3);
-        seg3.setFluxAxisUnits("erg/s/cm2/Hz");
-        seg3.setSpectralAxisUnits("nm");
-        seg3.setDataValues(yerr3, SEDMultiSegmentSpectrum.E_UTYPE);
-        sed3.addSegment(seg3);
-
-        SedStack stack = new SedStack("Stack");
-        stack.add(sed1);
-        stack.add(sed2);
-        stack.add(sed3);
-
-        // setup the stacking configuration
-        StackConfiguration config = new StackConfiguration();
-        config.setBinsize(2.0);
-        config.setBinsizeUnit("Angstrom");
-        config.setLogbin(false);
-        config.setSmooth(false);
-        config.setSmoothBinsize(20.);
-        config.setStatistic("avg");
-        config.setYUnits("erg/s/cm2/Hz");
-
-        // stack
-        stacker = new SedStackerStacker(controller);
-        ExtSed result = stacker.stack(stack, config);
-
-        List<double[]> xs = new ArrayList();
-        List<double[]> ys = new ArrayList();
-        xs.add(x1);
-        xs.add(x2);
-        xs.add(x3);
-        ys.add(y1);
-        ys.add(y2);
-        ys.add(y3);
-
-        // stack.getOrigSeds() should return original seds
-        for (int j = 0; j < stack.getOrigSeds().size(); j++) {
-            ExtSed origSed = stack.getOrigSeds().get(j);
-            double[] x = xs.get(j);
-            double[] y = ys.get(j);
-
-            for (int i = 0; i < stack.getOrigSeds().get(j).getSegment(0).getLength(); i++) {
-                double xOrigValue = origSed.getSegment(0).getSpectralAxisValues()[i];
-                double yOrigValue = origSed.getSegment(0).getFluxAxisValues()[i];
-                assertEquals(xOrigValue, x[i]);
-                assertEquals(yOrigValue, y[i]);
+    public void setUp() throws Exception {
+        this.controller = new SAMPControllerStub("name", "description", "url");
+        this.client = new SherpaClientStub(controller);
+        
+        this.stacker = new SedStackerStacker(controller, client) {
+            @Override
+            protected void showMessageDialog(Component parent, Object msg, String title, int type) {
+                logger.info("Expected message dialogue: " + msg);
             }
-        }
+            @Override
+            protected SedStackerStackPayload translateResponse(Response rspns) throws Exception {
+                return response;
+            }
+        };
+    }
+    
+    private void initialize() throws Exception {
+        segment1 = new Segment();
+        segment1.setFluxAxisValues(y1);
+        segment1.setFluxAxisUnits("Jy");
+        segment1.setSpectralAxisValues(x1);
+        segment1.setSpectralAxisUnits("Angstrom");
+        
+        segment2 = new Segment();
+        segment2.setFluxAxisValues(y2);
+        segment2.setFluxAxisUnits("erg/s/cm2/Angstrom");
+        segment2.setSpectralAxisValues(x2);
+        segment2.setSpectralAxisUnits("Hz");
+        
+        segment3 = new Segment();
+        segment3.setFluxAxisValues(y3);
+        segment3.setFluxAxisUnits("mJy");
+        segment3.setSpectralAxisValues(x3);
+        segment3.setSpectralAxisUnits("m");
 
-        double[] controlY = new double[]{5.0, 5.36666667, 4.5, 2.66666667, 4.0, 6.5, 1.5, 10.5, 5.0, 10.0};
-        double[] controlX = new double[]{0., 2., 4., 6., 8., 10., 16., 22., 50., 100.};
-        //double[] controlYerr = new double[] {0.5, 0.501120965, 0.3640055, 0.18104634, 0.4, 0.48102899, 0.15, 1.05, 0.5, 1.0}; // calculated from errors [sqrt(sum(errors^2))/N]
-        double[] controlYerr = new double[]{0, 6.82169741, 2.5, 1.64991582, 0., 5.21216526, 0., 0., 0., 0.}; // calculated from stddev(flux)
-        double[] controlCounts = new double[]{1, 3, 2, 3, 1, 3, 1, 1, 1, 1};
-
-        // test values of stacked Sed
-        double[] yerrValues = (double[]) result.getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE);
-        double[] counts = (double[]) result.getAttachment(COUNTS);
-        for (int i = 0; i < result.getSegment(0).getLength(); i++) {
-            double xValue = result.getSegment(0).getSpectralAxisValues()[i];
-            double yValue = result.getSegment(0).getFluxAxisValues()[i];
-            assertEquals(controlX[i], xValue, 0.00001);
-            assertEquals(controlY[i], yValue, 0.00001);
-            assertEquals(controlYerr[i], yerrValues[i], 0.00001);
-            assertEquals(controlCounts[i], counts[i]);
-        }
-
-        controller.stop();
+        sed1 = new ExtSed("1");
+        sed1.addSegment(segment1);
+        
+        sed2 = new ExtSed("2");
+        sed2.addSegment(segment2);
+        
+        sed3 = new ExtSed("3");
+        sed3.addSegment(segment3);
+        
+        List<ExtSed> seds = new LinkedList<ExtSed>();
+        seds.add(sed1);
+        seds.add(sed2);
+        seds.add(sed3);
+        
+        sedStack = new SedStack("test", seds);
+        
+        controller.rspns = new Response();
+        
+        response = new StackerPayloadStub();
     }
 
-    @After
-    public void tearDown() {
+    @Test
+    public void testEmptyStack() throws Exception {
+        // pushing through an empty stack we expect an SedNoDataException and a message dialogue.
+        // Note that the message dialogue is stubbed out of the call.
+        SedStack stack = new SedStack(null);
+        stack.setSeds(new ArrayList<ExtSed>());
+        
+        try {
+            stacker.stack(stack);
+        } catch(SedNoDataException ex) {
+            return;
+        }
+        Assert.fail();
     }
+    
+    @Test
+    public void testSherpaException() throws Exception {
+        // The check for a sherpa client should fail.
+        initialize();
+        client.findSherpa = false;
+        try {
+            stacker.stack(sedStack);
+        } catch(Exception ex) {
+            // Tied to message, would be better if we had a more specific exception thrown.
+            assertTrue(ex.getMessage().contains("Sherpa not found"));
+            return;
+        } finally {
+            client.findSherpa = true;
+        }
+        Assert.fail();
+    }
+    
+    @Test
+    public void testUnitConversion() throws Exception {
+        // The convert units method should ensure that all SEDs in a stack
+        // have the same units
+        initialize();
+        
+        stacker.convertUnits(sedStack, "Angstrom", "erg/s/cm2/Angstrom");
+        
+        assertEquals(sedStack.getSeds().get(0).getSegment(0).getFluxAxisUnits(),
+                sedStack.getSeds().get(1).getSegment(0).getFluxAxisUnits());
+        assertEquals(sedStack.getSeds().get(0).getSegment(0).getFluxAxisUnits(),
+                sedStack.getSeds().get(2).getSegment(0).getFluxAxisUnits());
+        
+        assertEquals(sedStack.getSeds().get(0).getSegment(0).getSpectralAxisUnits(),
+                sedStack.getSeds().get(1).getSegment(0).getSpectralAxisUnits());
+        assertEquals(sedStack.getSeds().get(0).getSegment(0).getSpectralAxisUnits(),
+                sedStack.getSeds().get(2).getSegment(0).getSpectralAxisUnits());
+    }
+    
+    @Test
+    public void checkMemory() throws Exception {
+        initialize();
+        
+        // Normal request should pass just fine
+        stacker.checkMemory(sedStack);
 
+        // Send in a request that should barf on memory requirements
+        double[] breakStuff = new double[] {1, 1000000000};
+        segment1.setSpectralAxisValues(breakStuff);
+        try {
+            stacker.checkMemory(sedStack);
+        } catch (StackException ex) {
+            return;
+        }
+        fail();
+    }
+    
+    @Test
+    public void testSAMPException() throws Exception {
+        initialize();
+        
+        // Simulating a sherpa client exception, verify it propagates to the caller.
+        client.hasException = true;
+        try {
+            stacker.stack(sedStack);
+        } catch (RuntimeException ex) {
+            assertTrue(ex.getMessage().contains("client"));
+            return;
+        } finally {
+            client.hasException = false;
+        }
+        fail();
+    }
+    
+    @Test
+    public void testSuccessful() throws Exception {
+        initialize();
+        
+        response.segments = new LinkedList<SegmentPayload>();
+        SegmentPayload payload = new SegmentPayloadStub();
+        response.segments.add(payload);
+        
+        stacker.stack(sedStack);
+    }
+    
+    //
+    //
+    // Stubs, use these to set expectations
+    //
+    //
+    
+    private static class SAMPControllerStub extends SAMPController {
+        public SAMPControllerStub(String name, String description, String iconUrl) {
+            super(name, description, iconUrl);
+        }
+        
+        public Response rspns;
+        
+        @SuppressWarnings("rawtypes")
+        @Override
+        public Response callAndWait(String arg0, Map arg1, int arg2) throws SampException {
+            return rspns;
+        }
+    }
+    
+    private static class SherpaClientStub extends SherpaClient {
+        
+        public SherpaClientStub(SAMPController controller) {
+            super(controller);
+        }
+
+        public boolean findSherpa = true;
+        @Override
+        public String findSherpa() throws SampException {
+            if (findSherpa) return "";
+            throw new SampException();
+        }
+
+        public boolean hasException = false;
+        @Override
+        public boolean isException(Response rspns) {
+            return hasException;
+        }
+        
+        @Override
+        public Exception getException(Response rspns) {
+            return new RuntimeException("client exception");
+        }
+    }
+    
+    private static class StackerPayloadStub implements SedStackerStackPayload {
+        public List<SegmentPayload> segments;
+        @Override
+        public Double getBinsize() {return null;}
+        @Override
+        public void setBinsize(Double binsize) {}
+        @Override
+        public Double getSmoothBinsize() {return null;}
+        @Override
+        public void setSmoothBinsize(Double boxSize) {}
+        @Override
+        public String getStatistic() {return null;}
+        @Override
+        public void setStatistic(String statistic) {}
+        @Override
+        public Boolean getLogBin() {return null;}
+        @Override
+        public void setLogBin(Boolean logBin) {}
+        @Override
+        public Boolean getSmooth() {return null;}
+        @Override
+        public void setSmooth(Boolean smooth) {}
+        @Override
+        public List<SegmentPayload> getSegments() {return segments;}
+        @Override
+        public void addSegment(SegmentPayload segment) {}
+    }
+    
+    private static class SegmentPayloadStub implements SegmentPayload {
+        @Override
+        public double[] getX() {return x1;}
+        @Override
+        public void setX(double[] x) {}
+        @Override
+        public double[] getY() {return y1;}
+        @Override
+        public void setY(double[] y) {}
+        @Override
+        public double[] getYerr() {return yerr1;}
+        @Override
+        public void setYerr(double[] yerr) {}
+        @Override
+        public Double getZ() {return 0.0;}
+        @Override
+        public void setZ(Double redshift) {}
+        @Override
+        public Double getNormConstant() {return 0.0;}
+        @Override
+        public void setNormConstant(Double normConstant) {}
+        @Override
+        public double[] getCounts() {return yerr1;}
+        @Override
+        public void setCounts(double[] counts) {}
+        @Override
+        public String getId() {return null;}
+        @Override
+        public void setId(String id) {}
+    }
 }
