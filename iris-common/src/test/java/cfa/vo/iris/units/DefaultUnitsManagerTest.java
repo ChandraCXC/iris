@@ -56,23 +56,47 @@ public class DefaultUnitsManagerTest {
 
     @Test
     public void factors() throws Exception {
-        YUnit unit = manager.newYUnits("10**1 Jy");
+        YUnit unit = manager.newYUnits("10 Jy");
         assertEquals(10, unit.getFactor(), 1e-20);
+        assertTrue("10 Jy should be a valid unit with factor", unit.isValid());
 
-        unit = manager.newYUnits("10**3.Jy");
+        unit = manager.newYUnits("1e3 Jy");
         assertEquals(1000, unit.getFactor(), 1e-20);
+        assertTrue("1e3 Jy should be a valid unit with factor", unit.isValid());
 
-        unit = manager.newYUnits("10**(-3) Jy");
-        assertEquals(0.001, unit.getFactor(), 1e-20);
+        unit = manager.newYUnits("1e-4Jy");
+        assertEquals(0.0001, unit.getFactor(), 1e-20);
+        assertTrue("1e-4Jy should be a valid unit with factor", unit.isValid());
 
-        unit = manager.newYUnits("10**(-5).Jy");
+        unit = manager.newYUnits("1e-5*erg cm**(-2) s**(-1) Hz**(-1)");
         assertEquals(0.00001, unit.getFactor(), 1e-20);
+        assertTrue("1e-5*erg cm**(-2) s**(-1) Hz**(-1) should be a valid unit with factor", unit.isValid());
 
-        unit = manager.newYUnits("10**-1 Jy");
+        unit = manager.newYUnits("1e-5erg cm**(-2) s**(-1) Hz**(-1)");
+        assertEquals(0.00001, unit.getFactor(), 1e-20);
+        assertTrue("1e-5*erg cm**(-2) s**(-1) Hz**(-1) should be a valid unit with factor", unit.isValid());
+
+        unit = manager.newYUnits("0.1 Jy");
         assertEquals(0.1, unit.getFactor(), 1e-20);
+        assertTrue("0.1 Jy should be a valid unit with factor", unit.isValid());
 
-        unit = manager.newYUnits("10**-2.Jy");
+        unit = manager.newYUnits("10e-3 erg/s/cm2/Hz");
         assertEquals(0.01, unit.getFactor(), 1e-20);
+        assertTrue("10e-3 erg/s/cm2/Hz should be a valid unit with factor", unit.isValid());
+
+        unit = manager.newYUnits("e-3 Jy");
+        assertEquals(1, unit.getFactor(), 1e-20);
+        assertFalse("e-3 Jy should not be a valid unit with factor", unit.isValid());
+
+        unit = manager.newYUnits("blah");
+        assertEquals(1, unit.getFactor(), 1e-20);
+        assertFalse("blah should not be a valid unit with factor", unit.isValid());
+
+        unit = manager.newYUnits("");
+        assertEquals(1, unit.getFactor(), 1e-20);
+        assertFalse("The empty string should not be a valid unit with factor", unit.isValid());
+
+
     }
 
     @Test

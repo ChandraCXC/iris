@@ -32,9 +32,10 @@ import cfa.vo.iris.units.YUnit;
 
 import java.io.Serializable;
 
-import java.util.Enumeration;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  *  This class supports physical units associated with the dependent
@@ -110,24 +111,20 @@ public class YUnits extends Units implements YUnit, Serializable {
     private static final String FLUXDENSITY_LABEL = "Flux density";
     private static final String FLUX_LABEL        = '\u03BD' + "F(" + '\u03BD' + ")";
     private static final String MAGNITUDE_LABEL   = "Magnitude";
-    private static final String COUNTS_LABEL      = "Counts";
 
     // UCDs most appropriate for each units type.
 
     private static final String FLUXD_WAV_UCD = "phot.fluxDens;em.wl";
     private static final String FLUXD_FRE_UCD = "phot.fluxDens;em.freq";
-    private static final String FLUXD_ENE_UCD = "phot.fluxDens;em.energy";
-    private static final String FLUX_UCD      = "phot.flux.beam";
     private static final String MAGNITUDE_UCD = "phot.mag";
-    private static final String COUNTS_UCD    = "phot.count";
 
     // Alternate spellings.
 
-    public static Map<String,String> correct = new HashMap<String, String>();
+    public static final Map<String,String> correct = new HashMap<String, String>();
 
     // SED spellings.
 
-    private static Map<String,String> sed = new HashMap<String, String>();
+    private static final Map<String,String> sed = new HashMap<String, String>();
 
     static {
         // keys must be all lower case !
@@ -286,91 +283,32 @@ public class YUnits extends Units implements YUnit, Serializable {
     }
 
     /**
+     *  Constructor.
+     *
+     *  @param  arg  string with the units
+     */
+    public YUnits (String arg) {
+        UnitStringParser.FactoredUnit u = UnitStringParser.parse(arg);
+
+        factor = u.getFactor();
+        originalSpelling = u.getUnit();
+        unitsString = getCorrectSpelling(originalSpelling);
+
+        makeConverterObject();
+    }
+
+    /**
      *  Corrects spelling errors.
      *
      *  @param  value   the input string
      *  @return         the correct string
      */
     public static String getCorrectSpelling(String value) {
-        value = getFactorAndUnit(value)[1];
 
-        String result = null;
-
-        if (value != null) {
-            result = correct.get(value.toLowerCase());
-        }
+        String result = correct.get(value.toLowerCase());
 
         if (result == null) {
             result = value;
-        }
-
-        return result;
-    }
-
-    /**
-     *  Constructor.
-     *
-     *  @param  arg  string with the units
-     */
-    public YUnits (String arg) {
-        String[] result = getFactorAndUnit(arg);
-
-        if (result[0] != null) {
-            factor = parseFactor(result[0]);
-        }
-
-        String clean_string = result[1];
-
-        originalSpelling = clean_string;
-
-        unitsString = getCorrectSpelling(clean_string);
-
-        makeConverterObject();
-    }
-
-    private static String[] getFactorAndUnit(String unit) {
-        String[] result = new String[2];
-        result[1] = unit;
-        if (!unit.isEmpty() && unit.startsWith("10")) {
-            int index = unit.indexOf(' ');
-            if (index < 0) {
-                index = unit.indexOf('.');
-            }
-            if (index < 0) {
-                index = unit.indexOf(')');
-            }
-
-            if (index > 0) {
-                result[1] = unit.substring(index + 1);
-                result[0] = unit.substring(0,index) + " ";
-            }
-        }
-
-        return result;
-    }
-
-    private double parseFactor(String factor_string) {
-
-        String[] factors = factor_string.split("\\*+");
-
-        if (factors.length != 2) {
-            return 1.0;
-        }
-
-        // Remove eventual parenthesis around the mantissa.
-
-        if (factors[1].startsWith("(")) {
-            factors[1] = factors[1].substring(1,factors[1].length()-2);
-        }
-
-        double result = 1.0;
-        try {
-            double charac = Double.parseDouble(factors[0]);
-            double mant   = Double.parseDouble(factors[1]);
-
-            result = Math.pow(charac, mant);
-
-        } catch (NumberFormatException e) {
         }
 
         return result;
@@ -442,6 +380,7 @@ public class YUnits extends Units implements YUnit, Serializable {
      *
      * @return  <code>true</code> if it is a magnitude
      */
+    @Override
     public boolean isMagnitude() {
         return (converter != null) && converter.isMagnitude();
     }
@@ -464,6 +403,7 @@ public class YUnits extends Units implements YUnit, Serializable {
         converter = (Converter)converters.get (unitsString);
     }
 
+    @Override
     public double getFactor() {
         return factor;
     }
@@ -479,14 +419,11 @@ public class YUnits extends Units implements YUnit, Serializable {
     // Conversion is performed in two steps: first the input value is
     // converted to PHOTLAM units, them the resulting value is converted
     // to the target units. Each individual algorithm is packaged in a
-    // Converter-implementing object. These objects are indexed in a
-    // KeyedVector by the string representation of the Units associated
-    // with the data. A Units object itself cannot be used as key since
-    // this results in infinite recursion at constructor time. The
+    // Converter-implementing object. The
     // wavelength array must be previously converted to Angstrom.
 
-    // The KeyedVector keys are used as the source for the supported
-    // units enumeration. The first entry must be the default standard
+    // A Map is used to index the converters with unit strings as keys.
+    // The first entry must be the default standard
     // units.
 
     interface Converter extends Serializable {

@@ -23,7 +23,6 @@ package cfa.vo.iris.units.spv;
  */
 
         import java.io.Serializable;
-        import java.util.Enumeration;
 
 /**
  *  Class that handles physical units.
@@ -45,8 +44,6 @@ package cfa.vo.iris.units.spv;
  */
 
 public abstract class Units implements Serializable {
-
-    public static final String UNITLESS = "Unitless";
 
     static final long serialVersionUID = 12L;
     static final String ERROR_MSG = " Invalid units conversion ";
@@ -72,7 +69,7 @@ public abstract class Units implements Serializable {
         if (units == null || this.unitsString == null) {
             return false;
         } else {
-            return units.toString().equalsIgnoreCase(this.unitsString.toString());
+            return units.toString().equalsIgnoreCase(this.unitsString);
         }
     }
 
