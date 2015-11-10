@@ -52,6 +52,18 @@ public class ComponentLoaderTest {
         System.clearProperty(ComponentLoader.COMP_OVERRIDE_SYS_PROP);
     }
     
+    @Test
+    public void testSetOverrideInvalidePath() {
+        System.setProperty(ComponentLoader.COMP_OVERRIDE_SYS_PROP, "invalid");
+        
+        ComponentLoader loader = new ComponentLoader();
+        List<IrisComponent> components = loader.instantiateComponents();
+        
+        assertEquals(0, components.size());
+        
+        System.clearProperty(ComponentLoader.COMP_OVERRIDE_SYS_PROP);
+    }
+    
     // Simulated components for testing only.
     public static class TestIrisComponent extends AbstractIrisComponent {
         @Override

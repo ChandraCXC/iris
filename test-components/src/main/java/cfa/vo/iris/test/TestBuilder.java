@@ -34,6 +34,8 @@ import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.sedlib.Segment;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+
 import org.astrogrid.samp.client.MessageHandler;
 
 /**
@@ -41,6 +43,8 @@ import org.astrogrid.samp.client.MessageHandler;
  * @author olaurino
  */
 public class TestBuilder implements IrisComponent {
+    
+    private static final Logger logger = Logger.getLogger(TestBuilder.class.getName());
 
     private static IrisApplication app;
 
@@ -122,7 +126,7 @@ public class TestBuilder implements IrisComponent {
 
         @Override
         public void call(String[] args) {
-            System.out.println(getName()+" called with arguments: "+args);
+            logger.info(getName()+" called with arguments: "+args);
         }
 
     }

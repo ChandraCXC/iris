@@ -31,6 +31,8 @@ import java.util.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 
 public class ComponentLoader {
+    
+    private static final Logger logger = Logger.getLogger(ComponentLoader.class.getName());
 
     protected URL componentsURL;
     protected List<IrisComponent> irisComponents = new ArrayList<IrisComponent>();
@@ -56,7 +58,7 @@ public class ComponentLoader {
             } catch (MalformedURLException ex) {
                 String message = "Invalid URL:" + componentsURL;
                 System.err.println(message);
-                Logger.getLogger(ComponentLoader.class.getName()).log(Level.SEVERE, message, ex);
+                logger.log(Level.SEVERE, message, ex);
                 return irisComponents;
             }
         }
@@ -67,7 +69,7 @@ public class ComponentLoader {
         } catch (IOException ex) {
             String message = "Cannot read components file at: " + componentsURL;
             System.err.println(message);
-            Logger.getLogger(ComponentLoader.class.getName()).log(Level.SEVERE, message, ex);
+            logger.log(Level.SEVERE, message, ex);
             return irisComponents;
         }
 
@@ -116,7 +118,7 @@ public class ComponentLoader {
             } catch (Exception ex) {
                 String message = "Could not construct component " + className;
                 System.err.println(message);
-                Logger.getLogger(ComponentLoader.class.getName()).log(Level.SEVERE, message, ex);
+                logger.log(Level.SEVERE, message, ex);
                 failures.add(className);
                 continue;
             }

@@ -29,6 +29,9 @@ import cfa.vo.sedlib.io.SedFormat;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -40,6 +43,9 @@ import org.junit.Test;
  * @author olaurino
  */
 public class SedTest {
+
+    private static final Logger logger = Logger.getLogger(SedTest.class.getName());
+    
     private Sed mySed;
 
     public SedTest() {
@@ -63,7 +69,7 @@ public class SedTest {
 
      @Test
      public void sedMessageTest() throws Exception {
-//        System.out.println(getClass().getResource("/test_data/3C273.vot").getPath());
+//        logger.log(Level.INFO, getClass().getResource("/test_data/3C273.vot").getPath());
 //        Sed sed = Sed.read(getClass().getResource("/test_data/3C273.vot").getPath(), SedFormat.VOT);
 //        SedManager man = new SedManager();
 //        SedManager.SpecviewSed s = man.new SpecviewSed(sed, "3c273");

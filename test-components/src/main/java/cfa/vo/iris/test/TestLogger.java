@@ -30,8 +30,11 @@ import cfa.vo.iris.NullCommandLineInterface;
 import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
 import cfa.vo.iris.logging.LogListener;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+
 import org.astrogrid.samp.client.MessageHandler;
 
 /**
@@ -39,6 +42,8 @@ import org.astrogrid.samp.client.MessageHandler;
  * @author olaurino
  */
 public class TestLogger implements IrisComponent, LogListener {
+    
+    private static final Logger logger = Logger.getLogger(TestLogger.class.getName());
 
     @Override
     public void init(IrisApplication app, IWorkspace workspace) {
@@ -72,7 +77,7 @@ public class TestLogger implements IrisComponent, LogListener {
 
     @Override
     public void process(Object source, LogEntry payload) {
-        System.out.println(payload.getFormatted());
+        logger.info(payload.getFormatted());
     }
 
     @Override
