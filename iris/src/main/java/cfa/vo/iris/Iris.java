@@ -39,7 +39,7 @@ import javax.swing.UIManager;
  */
 public class Iris extends AbstractIrisApplication {
 
-    protected List<IrisComponent> components = new ComponentLoader().instantiateComponents();
+    protected List<IrisComponent> components;
 
     @Override
     public URL getSAMPIcon() {
@@ -84,6 +84,12 @@ public class Iris extends AbstractIrisApplication {
             Logger.getLogger(Iris.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
+    }
+
+    @Override
+    protected void initialize(String[] args) {
+        super.initialize(args);
+        components = new ComponentLoader().instantiateComponents();
     }
 
     @Override
