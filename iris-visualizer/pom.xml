@@ -58,16 +58,6 @@
                     <siteDirectory>./src/site/</siteDirectory>
                     <outputDirectory>${project.parent.basedir}/target/site/iris-specview/</outputDirectory>
                 </configuration>
-<!-- 
-                <dependencies>
-                    <dependency>
-                        <!~~ add support for ssh/scp ~~>
-                        <groupId>org.apache.maven.wagon</groupId>
-                        <artifactId>wagon-ssh</artifactId>
-                        <version>1.0</version>
-                    </dependency>
-                </dependencies>
--->
             </plugin>
         </plugins>
     </build>

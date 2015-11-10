@@ -163,16 +163,7 @@
                 <version>3.4</version>
                 <configuration>
                     <siteDirectory>${project.basedir}/iris-docs</siteDirectory>
-<!--                     <outputDirectory>${basedir}/target/site</outputDirectory> -->
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <!-- add support for ssh/scp -->
-                        <groupId>org.apache.maven.wagon</groupId>
-                        <artifactId>wagon-ssh</artifactId>
-                        <version>1.0</version>
-                    </dependency>
-              </dependencies>
             </plugin>
 
         </plugins>
@@ -199,10 +190,11 @@
             <!-- Enabling the use of SSH -->
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-ssh-external</artifactId>
-                <version>1.0-beta-6</version>
+                <artifactId>wagon-ssh</artifactId>
+                <version>2.10</version>
             </extension>
         </extensions>
+
         
     </build>
 
@@ -428,7 +420,7 @@
     <distributionManagement>
         <site>
             <id>cxc.cfa.harvard.edu</id>
-            <url>scp://newdevel10.cfa.harvard.edu/data/da/Docs/irisweb/iris/v${project.version}/</url>
+            <url>scp://newdevel10.cfa.harvard.edu/proj/web-cxc-dmz-prev/htdocs/iris/v${project.version}/</url>
         </site>
     </distributionManagement>
     
