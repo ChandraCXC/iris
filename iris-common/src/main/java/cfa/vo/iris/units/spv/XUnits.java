@@ -345,15 +345,15 @@ public class XUnits extends Units implements XUnit, Serializable {
         converters.put(CENTIMETER_STRING, new WavelengthConverter(1.E+8));
         converters.put(METER_STRING,      new WavelengthConverter(1.E+10));
 
-        converters.put(EV_STRING,         new SymmetricalConverter(E * 1.E6,  ENERGY_LABEL, ENERGY_UCD));
-        converters.put(KEV_STRING,        new SymmetricalConverter(E * 1.E3,  ENERGY_LABEL, ENERGY_UCD));
-        converters.put(MEV_STRING,        new SymmetricalConverter(E,         ENERGY_LABEL, ENERGY_UCD));
-        converters.put(GEV_STRING,        new SymmetricalConverter(E * 1.E-3, ENERGY_LABEL, ENERGY_UCD));
-        converters.put(HZ_STRING,         new SymmetricalConverter(C,         FREQUENCY_LABEL, FREQUENCY_UCD));
-        converters.put(KHZ_STRING,        new SymmetricalConverter(C / 1.E3,  FREQUENCY_LABEL, FREQUENCY_UCD));
-        converters.put(MHZ_STRING,        new SymmetricalConverter(C / 1.E6,  FREQUENCY_LABEL, FREQUENCY_UCD));
-        converters.put(GHZ_STRING,        new SymmetricalConverter(C / 1.E9,  FREQUENCY_LABEL, FREQUENCY_UCD));
-        converters.put(THZ_STRING,        new SymmetricalConverter(C / 1.E12, FREQUENCY_LABEL, FREQUENCY_UCD));
+        converters.put(EV_STRING,         new SymmetricalConverter(Constant.E * 1.E6,  ENERGY_LABEL, ENERGY_UCD));
+        converters.put(KEV_STRING,        new SymmetricalConverter(Constant.E * 1.E3,  ENERGY_LABEL, ENERGY_UCD));
+        converters.put(MEV_STRING,        new SymmetricalConverter(Constant.E,         ENERGY_LABEL, ENERGY_UCD));
+        converters.put(GEV_STRING,        new SymmetricalConverter(Constant.E * 1.E-3, ENERGY_LABEL, ENERGY_UCD));
+        converters.put(HZ_STRING,         new SymmetricalConverter(Constant.C,         FREQUENCY_LABEL, FREQUENCY_UCD));
+        converters.put(KHZ_STRING,        new SymmetricalConverter(Constant.C / 1.E3,  FREQUENCY_LABEL, FREQUENCY_UCD));
+        converters.put(MHZ_STRING,        new SymmetricalConverter(Constant.C / 1.E6,  FREQUENCY_LABEL, FREQUENCY_UCD));
+        converters.put(GHZ_STRING,        new SymmetricalConverter(Constant.C / 1.E9,  FREQUENCY_LABEL, FREQUENCY_UCD));
+        converters.put(THZ_STRING,        new SymmetricalConverter(Constant.C / 1.E12, FREQUENCY_LABEL, FREQUENCY_UCD));
         converters.put(WAVENUMBER_STRING, new SymmetricalConverter(10000.0,   WAVENUMBER_LABEL, WAVENUMBER_UCD));
     }
 

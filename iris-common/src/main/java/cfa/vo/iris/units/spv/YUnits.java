@@ -34,8 +34,6 @@ import java.io.Serializable;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  *  This class supports physical units associated with the dependent
@@ -429,7 +427,7 @@ public class YUnits extends Units implements YUnit, Serializable {
     interface Converter extends Serializable {
         // Constant used for Rayleigh conversions.
         double RAYLEIGH_FACTOR = (1e-17 * Math.pow((180./Math.PI*3600.),2) * 4. * Math.PI )  /
-                (H * 1.e-7 * 299792458.);
+                (Constant.H * 1.e-7 * 299792458.);
 
         double convertFrom(double flux, double wave, double w1, double w2);
         double convertTo(double flux, double wave, double w1, double w2);
@@ -547,10 +545,10 @@ public class YUnits extends Units implements YUnit, Serializable {
         // From FLAM to PHOTLAM
         converters.put (FLAM_STRING, new Converter() {
             public double convertFrom (double f, double w, double d1, double d2) {
-                return (f * w / (H * C));
+                return (f * w / (Constant.H * Constant.C));
             }
             public double convertTo(double f, double w, double d1, double d2) {
-                return (H * C * f / w);
+                return (Constant.H * Constant.C * f / w);
             }
             public boolean requireSortedWavelengths() {
                 return false;
@@ -574,10 +572,10 @@ public class YUnits extends Units implements YUnit, Serializable {
         // From FNU to PHOTLAM
         converters.put (FNU_STRING, new Converter() {
             public double convertFrom (double f, double w, double d1, double d2) {
-                return (f / w / H);
+                return (f / w / Constant.H);
             }
             public double convertTo(double f, double w, double d1, double d2) {
-                return (H * f * w);
+                return (Constant.H * f * w);
             }
             public boolean requireSortedWavelengths() {
                 return false;
@@ -601,10 +599,10 @@ public class YUnits extends Units implements YUnit, Serializable {
         // From PHOTNU to PHOTLAM
         converters.put (PHOTNU_STRING, new Converter() {
             public double convertFrom (double f, double w, double d1, double d2) {
-                return (C * f / (w * w));
+                return (Constant.C * f / (w * w));
             }
             public double convertTo(double f, double w, double d1, double d2) {
-                return (f * w * w / C);
+                return (f * w * w / Constant.C);
             }
             public boolean requireSortedWavelengths() {
                 return false;
@@ -635,10 +633,10 @@ public class YUnits extends Units implements YUnit, Serializable {
         //   1 (Watt/cm**2/micron) = 1.E3 flam
         converters.put (WATT_STRING, new Converter() {
             public double convertFrom (double f, double w, double d1, double d2) {
-                return (1.E+3 * f * w / (H * C));
+                return (1.E+3 * f * w / (Constant.H * Constant.C));
             }
             public double convertTo(double f, double w, double d1, double d2) {
-                return (H * C * f / 1.E+3 / w);
+                return (Constant.H * Constant.C * f / 1.E+3 / w);
             }
             public boolean requireSortedWavelengths() {
                 return false;
@@ -662,10 +660,10 @@ public class YUnits extends Units implements YUnit, Serializable {
         // From Watt/m**2/micron to PHOTLAM
         converters.put (WATTM_STRING, new Converter() {
             public double convertFrom (double f, double w, double d1, double d2) {
-                return (1.E-1 * f * w / (H * C));
+                return (1.E-1 * f * w / (Constant.H * Constant.C));
             }
             public double convertTo(double f, double w, double d1, double d2) {
-                return (H * C * f / 1.E-1 / w);
+                return (Constant.H * Constant.C * f / 1.E-1 / w);
             }
             public boolean requireSortedWavelengths() {
                 return false;
@@ -689,10 +687,10 @@ public class YUnits extends Units implements YUnit, Serializable {
         // From Watt/m**2/nm to PHOTLAM
         converters.put (WATTNM_STRING, new Converter() {
             public double convertFrom (double f, double w, double d1, double d2) {
-                return (1.E+2 * f * w / (H * C));
+                return (1.E+2 * f * w / (Constant.H * Constant.C));
             }
             public double convertTo(double f, double w, double d1, double d2) {
-                return (H * C * f / 1.E+2 / w);
+                return (Constant.H * Constant.C * f / 1.E+2 / w);
             }
             public boolean requireSortedWavelengths() {
                 return false;
@@ -723,10 +721,10 @@ public class YUnits extends Units implements YUnit, Serializable {
             //
 
             public double convertFrom (double f, double w, double d1, double d2) {
-                return f *  (w * RAYLEIGH_FACTOR) / 1e6;
+                return f *  (w * Constant.RAYLEIGH_FACTOR) / 1e6;
             }
             public double convertTo(double f, double w, double d1, double d2) {
-                return f / ((w * RAYLEIGH_FACTOR) / 1e6);
+                return f / ((w * Constant.RAYLEIGH_FACTOR) / 1e6);
             }
             public boolean requireSortedWavelengths() {
                 return false;
@@ -754,10 +752,10 @@ public class YUnits extends Units implements YUnit, Serializable {
                 this.factor = factor;
             }
             public double convertFrom (double f, double w, double d1, double d2) {
-                return (factor * f / w / H);
+                return (factor * f / w / Constant.H);
             }
             public double convertTo(double f, double w, double d1, double d2) {
-                return (1./factor * f * w * H);
+                return (1./factor * f * w * Constant.H);
             }
             public boolean requireSortedWavelengths() {
                 return false;
@@ -791,10 +789,10 @@ public class YUnits extends Units implements YUnit, Serializable {
         // From Jy-Hz to PHOTLAM
         converters.put (JYHZ_STRING, new Converter() {
             public double convertFrom (double f, double w, double d1, double d2) {
-                return (1.E-23 / H / C * f);
+                return (1.E-23 / Constant.H / Constant.C * f);
             }
             public double convertTo(double f, double w, double d1, double d2) {
-                return (1.E+23 * H * C * f);
+                return (1.E+23 * Constant.H * Constant.C * f);
             }
             public boolean requireSortedWavelengths() {
                 return false;
@@ -818,10 +816,10 @@ public class YUnits extends Units implements YUnit, Serializable {
         // From NUFNU to PHOTLAM
         converters.put (NUFNU_STRING, new Converter() {
             public double convertFrom (double f, double w, double d1, double d2) {
-                return (f / C / H);
+                return (f / Constant.C / Constant.H);
             }
             public double convertTo(double f, double w, double d1, double d2) {
-                return (H * f * C);
+                return (Constant.H * f * Constant.C);
             }
             public boolean requireSortedWavelengths() {
                 return false;
@@ -845,10 +843,10 @@ public class YUnits extends Units implements YUnit, Serializable {
         // From ABMAG to PHOTLAM
         converters.put (ABMAG_STRING, new Converter() {
             public double convertFrom (double f, double w, double d1, double d2) {
-                return (1.0 / (H * w) * Math.pow (10.0, (-0.4 * (f - ABZERO))));
+                return (1.0 / (Constant.H * w) * Math.pow (10.0, (-0.4 * (f - ABZERO))));
             }
             public double convertTo(double f, double w, double d1, double d2) {
-                double arg = H * f * w;
+                double arg = Constant.H * f * w;
                 if (arg > 0.0) {
                     return (-1.085736 * Math.log (arg) + ABZERO);
                 } else {
@@ -877,10 +875,10 @@ public class YUnits extends Units implements YUnit, Serializable {
         // From STMAG to PHOTLAM
         converters.put (STMAG_STRING, new Converter() {
             public double convertFrom (double f, double w, double d1, double d2) {
-                return (w / H / C * Math.pow (10.0, (-0.4 * (f - STZERO))));
+                return (w / Constant.H / Constant.C * Math.pow (10.0, (-0.4 * (f - STZERO))));
             }
             public double convertTo(double f, double w, double d1, double d2) {
-                double arg = H * C * f / w;
+                double arg = Constant.H * Constant.C * f / w;
                 if (arg > 0.0)
                     return (-1.085736 * Math.log (arg) + STZERO);
                 else

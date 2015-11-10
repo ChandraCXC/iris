@@ -61,13 +61,13 @@ public class VelocityUnits extends XUnits {
             this.factor = factor;
         }
         public double convertFrom(double arg) {
-            return (arg * factor / (C/1.E13) * refwave) + refwave;
+            return (arg * factor / (Constant.C / 1.E13) * refwave) + refwave;
         }
         public double getReferenceWavelength() {
             return refwave;
         }
         public double convertTo(double arg) {
-            return (arg - refwave) / refwave * (C/1.E13) / factor;
+            return (arg - refwave) / refwave * (Constant.C / 1.E13) / factor;
         }
         public String getAxisLabel() {return "Velocity";}
         public String getUCD()       {return "em.velocity";}
