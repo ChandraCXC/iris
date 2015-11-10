@@ -16,72 +16,53 @@
 package cfa.vo.iris;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.apache.commons.lang.StringUtils;
 
-public class ComponentLoader {
+public final class ComponentLoader {
 
-    protected URL componentsURL;
-    protected List<IrisComponent> irisComponents = new ArrayList<IrisComponent>();
-    protected List<String> failures = new ArrayList<String>();
-    
-    protected static final String COMP_OVERRIDE_SYS_PROP = "compFile";
+    protected List<IrisComponent> components = new ArrayList<>();
+    protected List<String> failures = new ArrayList<>();
 
     public ComponentLoader() {
-        componentsURL = this.getClass().getResource("/components");
+        this(ComponentLoader.class.getResource("/components"));
+    }
+
+    public ComponentLoader(Collection<Class<? extends IrisComponent>> componentList) {
+        for (Class c : componentList) {
+            loadComponent(c);
+        }
     }
     
     public ComponentLoader(URL componentsURL) {
-        this.componentsURL = componentsURL;
-    }
-
-    public List<IrisComponent> instantiateComponents() {
-
-        String compOverride = System.getProperty(COMP_OVERRIDE_SYS_PROP);
-        if (!StringUtils.isEmpty(compOverride)) {
-            try {
-                File f = new File(compOverride);
-                componentsURL = new URL("file:" + f.getAbsolutePath());
-            } catch (MalformedURLException ex) {
-                String message = "Invalid URL:" + componentsURL;
-                System.err.println(message);
-                Logger.getLogger(ComponentLoader.class.getName()).log(Level.SEVERE, message, ex);
-                return irisComponents;
-            }
-        }
-
-        List<String> componentsList;
         try {
-            componentsList = readComponentsFile();
+            initComponents(readComponentsFile(componentsURL));
         } catch (IOException ex) {
             String message = "Cannot read components file at: " + componentsURL;
             System.err.println(message);
             Logger.getLogger(ComponentLoader.class.getName()).log(Level.SEVERE, message, ex);
-            return irisComponents;
         }
-
-        initComponents(componentsList);
-        
-        return irisComponents;
     }
-    
+
+    public List<IrisComponent> getComponents() {
+        return components;
+    }
+
     /**
      * @return list of components to load
      * @throws IOException
      *      for issues related to reading componentsURL.
      */
-    private List<String> readComponentsFile() throws IOException {
+    private List<String> readComponentsFile(URL componentsURL) throws IOException {
         
         if (componentsURL == null) {
             throw new IOException("No components file specified!");
@@ -99,29 +80,35 @@ public class ComponentLoader {
         r.close();
         return componentsList;
     }
+
+    public void loadComponent(Class<? extends IrisComponent> componentClass) {
+        try {
+            Logger.getLogger(ComponentLoader.class.getName()).log(Level.INFO, "Loading class: " + componentClass.getName());
+            IrisComponent component = componentClass.newInstance();
+            components.add(component);
+        } catch (Exception ex) {
+            String message = "Could not construct component " + componentClass.getName();
+            System.err.println(message);
+            Logger.getLogger(ComponentLoader.class.getName()).log(Level.SEVERE, message, ex);
+            failures.add(componentClass.getName());
+        }
+    }
     
     /**
      * Tries to find and construct the classes enumerated in the components list. Components that cannot
      * be constructed will be logged and skipped.
      */
     private void initComponents(List<String> componentsList) {
-
         for (String className : componentsList) {
-            IrisComponent component = null;
-            
             try {
-                Logger.getLogger(ComponentLoader.class.getName()).log(Level.INFO, "Loading class: " + className);
-                Class componentClass = Class.forName(className);
-                component = (IrisComponent) componentClass.newInstance();
-            } catch (Exception ex) {
-                String message = "Could not construct component " + className;
+                Class clazz = Class.forName(className);
+                loadComponent(clazz);
+            } catch (ClassNotFoundException ex) {
+                String message = "cannot find class " + className;
                 System.err.println(message);
                 Logger.getLogger(ComponentLoader.class.getName()).log(Level.SEVERE, message, ex);
                 failures.add(className);
-                continue;
             }
-            
-            irisComponents.add(component);
         }
     }
 }

@@ -29,8 +29,7 @@ import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 import java.net.URL;
 
-import cfa.vo.iris.test.IrisUISpecAdapter;
-import cfa.vo.iris.test.TestApp;
+import cfa.vo.iris.test.SampUISpecAdapter;
 import junit.framework.Assert;
 import org.uispec4j.*;
 
@@ -45,7 +44,7 @@ public class BuilderMainViewIT extends UISpecTestCase {
 
     public void setUp() throws Exception {
         super.setUp();
-        setAdapter(new IrisUISpecAdapter(Iris.class, new String[0]));
+        setAdapter(new SampUISpecAdapter(Iris.class));
         mainWindow = getMainWindow();
         desktop = mainWindow.getDesktop();
     }

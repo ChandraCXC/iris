@@ -7,12 +7,12 @@ import org.uispec4j.utils.MainClassTrigger;
 /**
  * Created by olaurino on 10/23/15.
  */
-public class IrisUISpecAdapter implements UISpecAdapter {
+public class SampUISpecAdapter implements UISpecAdapter {
     private Window mainWindow;
     private Trigger trigger;
     private Window samphub;
 
-    public IrisUISpecAdapter(Class mainClass, String... args) {
+    public SampUISpecAdapter(Class mainClass, String... args) {
         if (trigger == null)
             trigger = new MainClassTrigger(mainClass, args);
         UISpec4J.setWindowInterceptionTimeLimit(60000);

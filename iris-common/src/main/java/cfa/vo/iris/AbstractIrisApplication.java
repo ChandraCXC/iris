@@ -28,7 +28,10 @@ import cfa.vo.iris.desktop.IrisWorkspace;
 import cfa.vo.iris.interop.SedSAMPController;
 import cfa.vo.iris.sdk.PluginManager;
 import cfa.vo.iris.sed.ExtSed;
+
+import java.awt.*;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +40,8 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
+
+import org.apache.commons.lang.StringUtils;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.MessageHandler;
 import org.astrogrid.samp.client.SampException;
@@ -62,18 +67,42 @@ public abstract class AbstractIrisApplication extends Application implements Iri
 
     protected IrisWorkspace ws;
     protected IrisDesktop desktop;
-    protected Map<String, IrisComponent> components = new TreeMap<>();
-
-    // Default constructor
-    protected AbstractIrisApplication() {}
+    private ComponentLoader componentLoader;
+    private Map<String, IrisComponent> components = new TreeMap<>();
+    protected static final String COMP_OVERRIDE_SYS_PROP = "compFile";
 
     public abstract String getName();
     public abstract String getDescription();
     public abstract URL getSAMPIcon();
-    public abstract List<IrisComponent> getComponents() throws Exception;
     public abstract JDialog getAboutBox();
     public abstract URL getDesktopIcon();
     public abstract void setProperties(List<String> properties);
+
+    // Override this method in subclasses if a custom component loader needs to be defined.
+    public ComponentLoader getComponentLoader() {
+        if (componentLoader == null) {
+            String compOverride = System.getProperty(COMP_OVERRIDE_SYS_PROP);
+            if (!StringUtils.isEmpty(compOverride)) {
+                try {
+                    File f = new File(compOverride);
+                    URL componentsURL = new URL("file:" + f.getAbsolutePath());
+                    componentLoader = new ComponentLoader(componentsURL);
+                } catch (MalformedURLException ex) {
+                    String message = "Invalid URL for component file: " + compOverride;
+                    System.err.println(message);
+                    Logger.getLogger(AbstractIrisApplication.class.getName()).log(Level.SEVERE, message, ex);
+                    componentLoader = new ComponentLoader();
+                }
+            } else {
+                componentLoader = new ComponentLoader();
+            }
+        }
+        return componentLoader;
+    }
+
+    public List<IrisComponent> getComponents() {
+        return getComponentLoader().getComponents();
+    }
 
     public static AbstractIrisApplication getInstance() {
         return Application.getInstance(AbstractIrisApplication.class);

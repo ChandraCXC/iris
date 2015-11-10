@@ -25,7 +25,7 @@ import cfa.vo.iris.test.TestSSAServer;
 import cfa.vo.iris.test.r.RComponent;
 import cfa.vo.iris.test.vizier.VizierClient;
 import cfa.vo.sed.builder.SedBuilder;
-import java.io.IOException;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -39,16 +39,9 @@ import javax.swing.UIManager;
  */
 public class Iris extends AbstractIrisApplication {
 
-    protected List<IrisComponent> components;
-
     @Override
     public URL getSAMPIcon() {
         return getClass().getResource("/iris_button_tiny.png");
-    }
-
-    @Override
-    public List<IrisComponent> getComponents() throws IOException {
-        return components;
     }
 
     @Override
@@ -87,27 +80,17 @@ public class Iris extends AbstractIrisApplication {
     }
 
     @Override
-    protected void initialize(String[] args) {
-        super.initialize(args);
-        components = new ComponentLoader().instantiateComponents();
-    }
-
-    @Override
     public void setProperties(List<String> properties) {
         Logger.getLogger("").setLevel(Level.OFF);
         for (String prop : properties) {
             if (prop.equals("test")) {
-                TestBuilder tb = new TestBuilder();
-                components.add(tb);
-                TestLogger tl = new TestLogger();
-                components.add(tl);
-                TestSSAServer th = new TestSSAServer();
-                components.add(th);
-//                components.add(new BarePlotterTestComponent());
+                getComponentLoader().loadComponent(TestBuilder.class);
+                getComponentLoader().loadComponent(TestLogger.class);
+                getComponentLoader().loadComponent(TestSSAServer.class);
             }
 
             if (prop.equals("r")) {
-                components.add(new RComponent());
+                getComponentLoader().loadComponent(RComponent.class);
             }
 
             if (prop.equals("lnf")) {
@@ -121,7 +104,7 @@ public class Iris extends AbstractIrisApplication {
             }
 
             if (prop.equals("vizier")) {
-                components.add(new VizierClient());
+                getComponentLoader().loadComponent(VizierClient.class);
             }
 
 

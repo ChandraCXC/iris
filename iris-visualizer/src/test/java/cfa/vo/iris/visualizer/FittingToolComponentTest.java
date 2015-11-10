@@ -1,22 +1,23 @@
 package cfa.vo.iris.visualizer;
 
-import java.util.Arrays;
+import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import org.junit.Before;
 import org.junit.Test;
 import cfa.vo.iris.IrisComponent;
-import cfa.vo.iris.test.unit.AbstractIrisGUITest;
 
-public class FittingToolComponentTest extends AbstractIrisGUITest {
-    
-    private FittingToolComponent comp;
+public class FittingToolComponentTest extends AbstractComponentGUITest {
+
+    private FittingToolComponent comp = new FittingToolComponent();
     private String windowName;
     
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        comp = new FittingToolComponent();
         windowName = comp.getName();
-        app.setComponents(Arrays.asList((IrisComponent) comp));
+    }
+
+    protected IrisComponent getComponent() {
+        return comp;
     }
 
     @Test
