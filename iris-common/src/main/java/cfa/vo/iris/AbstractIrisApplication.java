@@ -129,6 +129,10 @@ public abstract class AbstractIrisApplication extends Application implements Iri
         if (!CONFIGURATION_DIR.exists()) {
             CONFIGURATION_DIR.mkdirs();
         }
+
+        // Read and construct components
+        initComponents();
+
         if (isBatch) {
             if (!components.containsKey(componentName)) {
                 System.out.println("Component " + componentName + " does not exist.");
@@ -143,9 +147,6 @@ public abstract class AbstractIrisApplication extends Application implements Iri
             System.setProperty("apple.laf.useScreenMenuBar", "true");
         }
         System.out.println("Launching GUI...");
-        
-        // Read and construct components
-        initComponents();
         
         // Setup samp call
         sampSetup();
