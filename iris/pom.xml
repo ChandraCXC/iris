@@ -23,12 +23,13 @@
     <packaging>jar</packaging>
     <name>iris</name>
     <scm>
-     <developerConnection>scm:git:https://github.com/ChandraCXC/iris.git</developerConnection>
+        <developerConnection>scm:git:https://github.com/ChandraCXC/iris.git</developerConnection>
     </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.build.timestamp.format>yyyy/MM/dd</maven.build.timestamp.format>
         <buildDate>${maven.build.timestamp}</buildDate>
+        <main.basedir>${project.parent.basedir}</main.basedir>
     </properties>
 
     <parent>
@@ -159,6 +160,28 @@
                     </execution>
                 </executions>
             </plugin>
+            
+            <!-- for the site -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.4</version>
+                <configuration>
+                    <siteDirectory>./src/site/</siteDirectory>
+                    <outputDirectory>${project.parent.basedir}/target/site/iris/</outputDirectory>
+                </configuration>
+<!-- 
+                <dependencies>
+                    <dependency>
+                        <!~~ add support for ssh/scp ~~>
+                        <groupId>org.apache.maven.wagon</groupId>
+                        <artifactId>wagon-ssh</artifactId>
+                        <version>1.0</version>
+                    </dependency>
+                </dependencies>
+-->
+            </plugin>
+            
         </plugins>
     </build>
 

@@ -1,0 +1,97 @@
+<project xmlns="http://maven.apache.org/DECORATION/1.6.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.6.0 http://maven.apache.org/xsd/decoration-1.6.0.xsd"
+         name="Iris">
+
+	<bannerLeft>
+		<name>Chandra CXC</name>
+		<src>../imgs/Iris_logo_padding.png</src>
+		<href>../index.html</href>
+	</bannerLeft>
+
+
+    <body>
+    
+        <links>
+            <item name="Chandra CXC" href="http://cxc.cfa.harvard.edu"/>
+        </links>
+    
+        <menu ref="parent"/>
+        <menu name="Information">
+			<item name="Introduction" href="./index.html"/>
+			<item name="Sybling Modules" href="../modules.html"/>
+		</menu>
+        <menu ref="reports"/>
+		  
+<!-- 
+		<menu name="Iris" >
+		  <item name="Homepage" href="../../../index.html"/>
+		</menu>
+		  <menu name="Introduction">
+			<item name="About" href="../../../intro/index.html"/>
+			<item name="Features" href="../../intro/features.html"/>
+			<item name="Future" href="../../../intro/future.html"/>
+		  </menu>
+		  <menu name="Download Iris">
+			<item name="Download &amp; Installation" href="../../../download/index.html"/>
+			<item name="Smoke Test" href="../../../download/smoke_tests.html"/>
+			<item name="Troubleshooting" href="../../../bugs/smoke.html"/>
+		  </menu>
+		  <menu name="Documentation">
+			<item name="How-To Guide" href="../../../guide.html" collapse="true">
+			  <item name="Loading SED Data into Iris" href="../../../threads/entry/index.html"/>
+			  <item name="Building and Managing SEDs" href="../../../threads/importer/index.html"/>
+			  <item name="Visualizing SED Data" href="../../../threads/plot/index.html"/>
+			  <item name="Modeling and Fiting SED Data" href="../../../threads/fit/index.html"/>
+			  <item name="Saving SED Data" href="../../../threads/save/index.html"/>
+			  <item name="Shifting, Interpolating, and Integrating SED Data" href="../../../threads/science/index.html"/>
+			  <item name="Statistically Combining SEDs" href="../../../threads/science/sedstacker/index.html"/>
+			  <item name="Creating Iris Plugins: The Iris Software Development Kit" href="../../../threads/sdk/index.html"/>
+			  <item name="Installing Iris Plugins" href="../../../threads/plugin_manager/index.html"/>
+			</item>
+			<item name="Bugs &amp; Caveats" href="../../../bugs/index.html"/>
+			<item name="FAQs" href="../../../faq/index.html"/>
+			<item name="Release Notes" href="../../../releasenotes/index.html"/>
+		  </menu>
+		  <menu name="References">
+			<item name="Iris Models" href="../../../references/models.html"/>
+			<item name="Supported File Formats" href="../../../references/importer_files.html"/>
+			<item name="Publications" href="../../../publications/index.html"/>
+		  </menu>
+		  <menu name="Help Desk">
+			<item name="CXC HelpDesk" href="http://cxc.cfa.harvard.edu/helpdesk"/>
+		  </menu>
+		  <menu name="Release Versions">
+		  	<item name="Latest Release" href="../../../latest/index.html"/>
+		  	<item name="Previous Releases" href="../../../archive.html"/>
+		  </menu>
+		  <menu name="Project Documentation">
+		    <item name="Project Informaiton" href="./project-info.html"/>
+		    <item name=""/>
+		  </menu>
+ -->
+	
+    </body>
+    
+    <skin>
+        <groupId>org.apache.maven.skins</groupId>
+        <artifactId>maven-fluido-skin</artifactId>
+        <version>1.4</version>
+
+    </skin>
+
+    
+    <custom>
+        <fluidoSkin>
+            <googleSearch>
+                <sitesearch>http://cxc.cfa.harvard.edu/iris/v${project.version}</sitesearch>
+            </googleSearch>
+            <gitHub>
+                <projectId>ChandraCXC/iris</projectId>
+                <ribbonOrientation>left</ribbonOrientation>
+                <ribbonColor>orange</ribbonColor>
+            </gitHub>
+            <sideBarEnabled>true</sideBarEnabled>
+        </fluidoSkin>
+    </custom>
+
+</project>

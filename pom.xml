@@ -27,6 +27,19 @@
     <packaging>pom</packaging>
     <version>3.0-SNAPSHOT</version>
     <name>Iris</name>
+    <description>
+        Iris is a desktop application for building and analyzing 
+        spectral energy distributions within a Virtual Observatory environment.
+    </description>
+    <url>http://cxc.cfa.harvard.edu/iris</url>
+    
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
     <modules>
         <module>iris</module>
@@ -37,6 +50,10 @@
         <module>iris-visualizer</module>
     </modules>
 
+    <!-- 
+    To help with site creation directory, define the parent directory
+    Childern modules use this to define the parent module.
+    -->
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Sonar -->
@@ -45,7 +62,53 @@
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.language>java</sonar.language>
         <sonar.exclusions>**cfa/vo/iris/test/**</sonar.exclusions>
+        <main.basedir>${project.basedir}</main.basedir>
     </properties>
+
+    <organization>
+        <name>Chandra X-Ray Observatory</name>
+        <url>http://cxc.cfa.harvard.edu</url>
+    </organization>
+
+    <developers>
+
+        <developer>
+            <name>Janet DePonte Evans</name>
+            <email>janet@cfa.harvard.edu</email>
+            <organization>Harvard-Smithsonian Center For Astrophysics</organization>
+            <organizationUrl>http://www.cfa.harvard.edu</organizationUrl>
+            <roles>
+                <role>project manager</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Omar Laurino</name>
+            <email>olaurino@cfa.harvard.edu</email>
+            <organization>Harvard-Smithsonian Center For Astrophysics</organization>
+            <organizationUrl>http://www.cfa.harvard.edu</organizationUrl>
+            <roles>
+                <role>group lead</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Jamie Budynkiewicz</name>
+            <email>jbudynkiewicz@cfa.harvard.edu</email>
+            <organization>Harvard-Smithsonian Center For Astrophysics</organization>
+            <organizationUrl>http://www.cfa.harvard.edu</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Erik Holum</name>
+            <email>eholum@cfa.harvard.edu</email>
+            <organization>Harvard-Smithsonian Center For Astrophysics</organization>
+            <organizationUrl>http://www.cfa.harvard.edu</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
 
     <build>
         <plugins>
@@ -94,6 +157,24 @@
                 </configuration>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.4</version>
+                <configuration>
+                    <siteDirectory>${project.basedir}/iris-docs</siteDirectory>
+<!--                     <outputDirectory>${basedir}/target/site</outputDirectory> -->
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <!-- add support for ssh/scp -->
+                        <groupId>org.apache.maven.wagon</groupId>
+                        <artifactId>wagon-ssh</artifactId>
+                        <version>1.0</version>
+                    </dependency>
+              </dependencies>
+            </plugin>
+
         </plugins>
         
         <pluginManagement>
@@ -113,6 +194,16 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        
+        <extensions>
+            <!-- Enabling the use of SSH -->
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh-external</artifactId>
+                <version>1.0-beta-6</version>
+            </extension>
+        </extensions>
+        
     </build>
 
     <dependencies>
@@ -295,5 +386,51 @@
             </build>
         </profile>
     </profiles>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.8</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>license</report>
+                            <report>modules</report>
+                            <report>scm</report>
+                            <report>project-team</report>
+                            <report>issue-tracking</report>
+                            <report>cim</report>
+                            <report>dependencies</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <issueManagement>
+        <system>GitHub</system>
+        <url>http://github.com/ChandraCXC/iris/issues</url>
+    </issueManagement>
+
+    <ciManagement>
+        <system>Travis-CI</system>
+        <url>http://travis-ci.org/ChandraCXC/iris</url>
+    </ciManagement>
+    
+    <scm>
+        <url>https://github.com/ChandraCXC/iris</url>
+    </scm>
+
+    <distributionManagement>
+        <site>
+            <id>cxc.cfa.harvard.edu</id>
+            <url>scp://newdevel10.cfa.harvard.edu/data/da/Docs/irisweb/iris/v${project.version}/</url>
+        </site>
+    </distributionManagement>
+    
 </project>
 
