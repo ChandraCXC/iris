@@ -54,7 +54,7 @@ import org.jdesktop.application.Application;
 public abstract class AbstractIrisApplication extends Application implements IrisApplication {
     
     private static boolean isTest = false;
-    static boolean SAMP_ENABLED = System.getProperty("samp", "true").toLowerCase().equals("false") ? false : true;
+    static boolean SAMP_ENABLED = !System.getProperty("samp", "true").toLowerCase().equals("false");
     public static final boolean SAMP_FALLBACK = false;
     public static final File CONFIGURATION_DIR = new File(System.getProperty("user.home") + "/.vao/iris/");
     public static final boolean MAC_OS_X = System.getProperty("os.name").toLowerCase().startsWith("mac os x");
