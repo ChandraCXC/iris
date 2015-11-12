@@ -28,14 +28,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 
-public final class ComponentLoader {
+public class ComponentLoader {
 
     protected List<IrisComponent> components = new ArrayList<>();
     protected List<String> failures = new ArrayList<>();
-
-    public ComponentLoader() {
-        this(ComponentLoader.class.getResource("/components"));
-    }
 
     public ComponentLoader(Collection<Class<? extends IrisComponent>> componentList) {
         for (Class c : componentList) {
@@ -81,7 +77,7 @@ public final class ComponentLoader {
         return componentsList;
     }
 
-    public void loadComponent(Class<? extends IrisComponent> componentClass) {
+    public final void loadComponent(Class<? extends IrisComponent> componentClass) {
         try {
             Logger.getLogger(ComponentLoader.class.getName()).log(Level.INFO, "Loading class: " + componentClass.getName());
             IrisComponent component = componentClass.newInstance();

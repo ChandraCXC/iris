@@ -69,7 +69,6 @@ public abstract class AbstractIrisApplication extends Application implements Iri
     protected IrisDesktop desktop;
     private ComponentLoader componentLoader;
     private Map<String, IrisComponent> components = new TreeMap<>();
-    protected static final String COMP_OVERRIDE_SYS_PROP = "compFile";
 
     public abstract String getName();
     public abstract String getDescription();
@@ -77,26 +76,16 @@ public abstract class AbstractIrisApplication extends Application implements Iri
     public abstract JDialog getAboutBox();
     public abstract URL getDesktopIcon();
     public abstract void setProperties(List<String> properties);
+    protected abstract URL getComponentsFileLocation();
 
     // Override this method in subclasses if a custom component loader needs to be defined.
     public ComponentLoader getComponentLoader() {
-        if (componentLoader == null) {
-            String compOverride = System.getProperty(COMP_OVERRIDE_SYS_PROP);
-            if (!StringUtils.isEmpty(compOverride)) {
-                try {
-                    File f = new File(compOverride);
-                    URL componentsURL = new URL("file:" + f.getAbsolutePath());
-                    componentLoader = new ComponentLoader(componentsURL);
-                } catch (MalformedURLException ex) {
-                    String message = "Invalid URL for component file: " + compOverride;
-                    System.err.println(message);
-                    Logger.getLogger(AbstractIrisApplication.class.getName()).log(Level.SEVERE, message, ex);
-                    componentLoader = new ComponentLoader();
-                }
-            } else {
-                componentLoader = new ComponentLoader();
-            }
+        if (componentLoader != null) {
+            return componentLoader;
         }
+
+        URL componentsURL = getComponentsFileLocation();
+        componentLoader = new ComponentLoader(componentsURL);
         return componentLoader;
     }
 

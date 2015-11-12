@@ -117,4 +117,9 @@ public class Iris extends AbstractIrisApplication {
         }
 
     }
+
+    @Override
+    protected URL getComponentsFileLocation() {
+        return Iris.class.getResource("/components");
+    }
 }
