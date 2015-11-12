@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,10 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 
-/**
- *
- * @author olaurino
- */
 public class StubWorkspace implements IWorkspace {
     private JFrame mainWindow = new JFrame("Test App");
     private JDesktopPane desktop;
