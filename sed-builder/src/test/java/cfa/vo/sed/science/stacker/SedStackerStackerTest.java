@@ -243,7 +243,7 @@ public class SedStackerStackerTest {
         config.setYUnits("erg/s/cm2/Hz");
 
         // stack
-        stacker = new SedStackerStacker(controller, Default.UNITS_MANAGER);
+        stacker = new SedStackerStacker(controller, Default.getInstance().getUnitsManager());
         ExtSed result = stacker.stack(stack, config);
 
         List<double[]> xs = new ArrayList();

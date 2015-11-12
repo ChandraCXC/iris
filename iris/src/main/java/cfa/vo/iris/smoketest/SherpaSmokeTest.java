@@ -236,7 +236,7 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
 
 
 
-            SherpaIntegrator integrator = new SherpaIntegrator(controller, Default.UNITS_MANAGER);
+            SherpaIntegrator integrator = new SherpaIntegrator(controller, Default.getInstance().getUnitsManager());
 
             //Some constants we need for conversions
             double H = 6.62620E-27;

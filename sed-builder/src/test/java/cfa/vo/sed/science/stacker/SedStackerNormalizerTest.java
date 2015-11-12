@@ -246,7 +246,7 @@ public class SedStackerNormalizerTest {
         config.setYValue(1.0);
 
         // normalize the Stack
-        SedStackerNormalizer normalizer = new SedStackerNormalizer(controller, Default.UNITS_MANAGER);
+        SedStackerNormalizer normalizer = new SedStackerNormalizer(controller, Default.getInstance().getUnitsManager());
         normalizer.normalize(stack, config);
 
         List<double[]> xs = new ArrayList();
@@ -353,7 +353,7 @@ public class SedStackerNormalizerTest {
         config.setYValue(1.0);
 
         // normalize the Stack
-        SedStackerNormalizer normalizer = new SedStackerNormalizer(controller, Default.UNITS_MANAGER);
+        SedStackerNormalizer normalizer = new SedStackerNormalizer(controller, Default.getInstance().getUnitsManager());
         normalizer.normalize(stack, config);
 
         List<double[]> xs = new ArrayList();

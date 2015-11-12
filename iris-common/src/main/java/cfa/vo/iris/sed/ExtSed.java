@@ -59,7 +59,7 @@ public class ExtSed extends Sed {
     private Map<String, Object> attachments = new TreeMap();
     private String id;
     private boolean managed = true;
-    private static UnitsManager uf = Default.UNITS_MANAGER;
+    private static UnitsManager uf = Default.getInstance().getUnitsManager();
 
     public ExtSed(String id) {
         this.id = id;

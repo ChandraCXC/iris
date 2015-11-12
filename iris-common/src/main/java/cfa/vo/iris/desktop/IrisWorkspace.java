@@ -70,7 +70,7 @@ public class IrisWorkspace implements IWorkspace {
 
     @Override
     public UnitsManager getUnitsManager() {
-        return Default.UNITS_MANAGER;
+        return Default.getInstance().getUnitsManager();
     }
 
     /**

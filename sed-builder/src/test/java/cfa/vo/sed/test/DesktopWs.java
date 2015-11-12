@@ -31,10 +31,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 
-/**
- *
- * @author olaurino
- */
 public class DesktopWs implements IWorkspace {
 
     SedlibSedManager manager = new SedlibSedManager();
@@ -73,6 +69,6 @@ public class DesktopWs implements IWorkspace {
 
     @Override
     public UnitsManager getUnitsManager() {
-        return Default.UNITS_MANAGER;
+        return Default.getInstance().getUnitsManager();
     }
 }

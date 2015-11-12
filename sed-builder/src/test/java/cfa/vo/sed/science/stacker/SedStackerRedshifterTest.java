@@ -254,7 +254,7 @@ public class SedStackerRedshifterTest {
         stack.getConf().setRedshiftConfiguration(redshiftConf);
 
         // redshift the Stack
-        redshifter = new SedStackerRedshifter(controller, Default.UNITS_MANAGER);
+        redshifter = new SedStackerRedshifter(controller, Default.getInstance().getUnitsManager());
         redshifter.shift(stack);
 
         List<double[]> xs = new ArrayList();
@@ -359,7 +359,7 @@ public class SedStackerRedshifterTest {
         stack.getConf().setRedshiftConfiguration(redshiftConf);
 
         // redshift the Stack
-        redshifter = new SedStackerRedshifter(controller, Default.UNITS_MANAGER);
+        redshifter = new SedStackerRedshifter(controller, Default.getInstance().getUnitsManager());
         redshifter.shift(stack);
 
         // original values. make sure stack.getOrigSeds() returns original seds
