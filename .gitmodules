@@ -15,4 +15,4 @@
 	url = https://github.com/ChandraCXC/sedlib
 [submodule "iris-docs"]
 	path = iris-docs
-	url = https://github.com/jbudynk/iris-docs.git
+	url = https://github.com/ChandraCXC/iris-docs.git
