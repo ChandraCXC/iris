@@ -378,6 +378,24 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>stage-local</id>
+            <distributionManagement>
+                <site>
+                    <id>cxc.cfa.harvard.edu</id>
+                    <url>file:///proj/web-cxc-dmz-prev/htdocs/iris/v${project.version}/</url>
+                </site>
+            </distributionManagement>
+        </profile>
+        <profile>
+            <id>deploy-local</id>
+            <distributionManagement>
+                <site>
+                    <id>cxc.cfa.harvard.edu</id>
+                    <url>file:///data/da/Docs/irisweb/iris/v${project.version}/</url>
+                </site>
+            </distributionManagement>
+        </profile>
     </profiles>
 
     <reporting>
@@ -417,13 +435,6 @@
     <scm>
         <url>https://github.com/ChandraCXC/iris</url>
     </scm>
-
-    <distributionManagement>
-        <site>
-            <id>cxc.cfa.harvard.edu</id>
-            <url>scp://newdevel10.cfa.harvard.edu/proj/web-cxc-dmz-prev/htdocs/iris/v${project.version}/</url>
-        </site>
-    </distributionManagement>
     
 </project>
 
