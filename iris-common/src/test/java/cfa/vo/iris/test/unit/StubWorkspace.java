@@ -27,11 +27,15 @@ import cfa.vo.iris.desktop.IrisMenuItem;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.sed.ISedManager;
 import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.iris.units.DefaultUnitsManager;
+import cfa.vo.iris.units.UnitsManager;
+
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 
 public class StubWorkspace implements IWorkspace {
+    private UnitsManager unitsManager = new DefaultUnitsManager();
     private JFrame mainWindow = new JFrame("Test App");
     private JDesktopPane desktop;
     private SedlibSedManager manager = new SedlibSedManager();
@@ -94,5 +98,10 @@ public class StubWorkspace implements IWorkspace {
     @Override
     public JDesktopPane getDesktop() {
         return desktop;
+    }
+
+    @Override
+    public UnitsManager getUnitsManager() {
+        return unitsManager;
     }
 }
