@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package cfa.vo.iris.test;
+package cfa.vo.iris.test.unit;
 
 import cfa.vo.interop.SAMPController;
-import cfa.vo.iris.IrisApplication;
+import cfa.vo.iris.*;
 import cfa.vo.iris.sed.ExtSed;
-import java.io.File;
-import java.net.URL;
+import com.google.common.io.Files;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.SampException;
 
+import java.io.File;
+import java.net.URL;
+
 /**
+ * A basic Iris desktop application for unit testing of Iris components.
+ * Only a basic iris desktop application window is available with no functionality
+ * accessible through the workspace. Tests are responsible for adding components 
+ * and manually specifying workspace behavior.
+ * 
+ * This should be extended to include data control/expose interfaces for mocking
+ * basic application i/o.
  *
- * @author olaurino
  */
-public class App implements IrisApplication {
+public class ApplicationStub implements IrisApplication {
+    private StubWorkspace wSpace = new StubWorkspace();
+    
+    public IWorkspace getWorkspace() {
+        return wSpace;
+    }
 
     @Override
     public File getConfigurationDir() {
-        return new File(System.getProperty("user.home") + "/.vao/iris/importer/");
+        return Files.createTempDir();
     }
 
     @Override
@@ -46,21 +54,25 @@ public class App implements IrisApplication {
 
     @Override
     public void sendSedMessage(ExtSed sed) throws SampException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("not implemented yet");
     }
 
     @Override
     public void sendSampMessage(Message msg) throws SampException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("not implemented yet");
     }
 
     @Override
     public SAMPController getSAMPController() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return null;
+    }
+
+    public void addComponent(IrisComponent component) {
+        wSpace.addComponent(component);
     }
 
     @Override
     public URL getHelpURL() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return null;
     }
 }

@@ -22,50 +22,42 @@
 
 package cfa.vo.sed.gui;
 
+import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.sed.builder.AsciiConf;
 import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sed.builder.SegmentImporter;
 import cfa.vo.sed.setup.SetupBean;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
-
 import java.io.File;
 import java.net.URL;
-
-import cfa.vo.iris.test.IrisUISpecAdapter;
-import cfa.vo.iris.test.TestApp;
-
 import java.util.List;
-
 import cfa.vo.sedlib.DoubleParam;
 import cfa.vo.sedlib.Sed;
 import org.uispec4j.Desktop;
-import org.uispec4j.UISpecTestCase;
 import org.uispec4j.Window;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
-/**
- *
- * @author jbudynk
- */
-public class SaveSedDialogTest extends UISpecTestCase {
+
+public class SaveSedDialogTest extends AbstractComponentGUITest {
 
     private static Window mainWindow;
     private Desktop desktop;
 
     public void setUp() throws Exception {
         super.setUp();
-        if (!TestApp.hasComponent(SedBuilder.class)) {
-            TestApp.addComponent(new SedBuilder());
-        }
-        setAdapter(new IrisUISpecAdapter(TestApp.class, new String[0]));
         mainWindow = getMainWindow();
         desktop = mainWindow.getDesktop();
+    }
+
+    @Override
+    protected IrisComponent getComponent() {
+        return new SedBuilder();
     }
 
     public void testWriteAscii() throws Exception {
@@ -73,7 +65,7 @@ public class SaveSedDialogTest extends UISpecTestCase {
         URL fileURL = SaveSedDialog.class.getResource("/test_data/3c273.xml");
 
         Sed s = Sed.read(fileURL.openStream(), SedFormat.VOT);
-        List<Segment> segList = new ArrayList();
+        List<Segment> segList = new ArrayList<>();
         // To assign the RA and DEC correctly, in case the pos.eq is in
         // SpatialAxis.Coverage.Location rather than Target.Pos
         for (int i = 0; i < s.getNumberOfSegments(); i++) {
