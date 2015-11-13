@@ -36,6 +36,7 @@ import cfa.vo.sherpa.SherpaClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.astrogrid.samp.Response;
 import org.junit.After;
@@ -50,6 +51,8 @@ import static org.junit.Assert.*;
  * @author jbudynk
  */
 public class SedStackerRedshifterTest {
+    
+    private static final Logger logger = Logger.getLogger(SedStackerRedshifterTest.class.getName());
 
     double[] x1;
     double[] y1;
@@ -130,10 +133,9 @@ public class SedStackerRedshifterTest {
         controller.start(false);
 
         Thread.sleep(2000);
-        System.out.println();
 
         while (!controller.isConnected()) {
-            System.out.println("waiting connection");
+            logger.info("waiting connection");
             Thread.sleep(1000);
         }
 
@@ -196,10 +198,9 @@ public class SedStackerRedshifterTest {
         controller.start(false);
 
         Thread.sleep(2000);
-        System.out.println();
-
+        
         while (!controller.isConnected()) {
-            System.out.println("waiting connection");
+            logger.info("waiting connection");
             Thread.sleep(1000);
         }
 
@@ -309,10 +310,9 @@ public class SedStackerRedshifterTest {
         controller.start(false);
 
         Thread.sleep(2000);
-        System.out.println();
 
         while (!controller.isConnected()) {
-            System.out.println("waiting connection");
+            logger.info("waiting connection");
             Thread.sleep(1000);
         }
 

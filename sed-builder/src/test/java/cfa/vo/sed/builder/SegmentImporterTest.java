@@ -49,8 +49,6 @@ public class SegmentImporterTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        System.out.println("Creating configuration files");
-
         URL fileURL = URLTestConverter.getURL("test:///test_data/fileformats.ini");
 
         List<ISetup> confList = ConfigFactory.getAllFormatsConfigurations();

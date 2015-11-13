@@ -52,14 +52,14 @@ import org.jdesktop.application.Application;
  *
  */
 public abstract class AbstractIrisApplication extends Application implements IrisApplication {
-    
+
+    private static final Logger logger = Logger.getLogger(AbstractIrisApplication.class.getName());
+    private static SedSAMPController sampController;
     private static boolean isTest = false;
     static boolean SAMP_ENABLED = !System.getProperty("samp", "true").toLowerCase().equals("false");
     public static final boolean SAMP_FALLBACK = false;
     public static final File CONFIGURATION_DIR = new File(System.getProperty("user.home") + "/.vao/iris/");
     public static final boolean MAC_OS_X = System.getProperty("os.name").toLowerCase().startsWith("mac os x");
-
-    private static SedSAMPController sampController;
     
     protected String[] componentArgs;
     protected String componentName;
@@ -83,7 +83,6 @@ public abstract class AbstractIrisApplication extends Application implements Iri
         if (componentLoader != null) {
             return componentLoader;
         }
-
         URL componentsURL = getComponentsFileLocation();
         componentLoader = new ComponentLoader(componentsURL);
         return componentLoader;
@@ -201,8 +200,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
             } catch (Exception ex) {
                 System.err.println("SAMP Error. Disabling SAMP support.");
                 System.err.println("Error message: " + ex.getMessage());
-                Logger.getLogger(AbstractIrisApplication.class.getName())
-                    .log(Level.SEVERE, "SAMP Error. Disabling SAMP support.", ex);
+                logger.log(Level.SEVERE, null, ex);
                 SAMP_ENABLED = false;
             }
         }
@@ -212,9 +210,8 @@ public abstract class AbstractIrisApplication extends Application implements Iri
         try {
             desktop = new IrisDesktop(this);
         } catch (Exception ex) {
-            System.out.println("Error initializing components");
-            Logger.getLogger(AbstractIrisApplication.class.getName())
-                    .log(Level.SEVERE, null, ex);
+            System.err.println("Error initializing components");
+            logger.log(Level.SEVERE, null, ex);
             exitApp();
         }
 

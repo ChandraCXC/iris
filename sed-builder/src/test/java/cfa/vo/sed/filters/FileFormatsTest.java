@@ -53,10 +53,8 @@ public class FileFormatsTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        System.out.println("Creating configuration files");
 
         URL fileURL = URLTestConverter.getURL("test:///test_data/fileformats.ini");
-        System.out.println(fileURL);
         List<ISetup> confList = ConfigFactory.getAllFormatsConfigurations();
 
         SetupManager.write(confList, fileURL);
@@ -83,9 +81,7 @@ public class FileFormatsTest {
         SedBuilder builder = new SedBuilder();
         builder.init(new App(), new Ws());
 
-        System.out.println("read all configurations in fileformats.ini");
         URL fileURL = URLTestConverter.getURL("test:///test_data/fileformats.ini");
-        System.out.println(fileURL);
         List<ISetup> expResult = ConfigFactory.getAllFormatsConfigurations();
         List<ISetup> result = SetupManager.read(fileURL);
         assertEquals(expResult.size(), result.size());

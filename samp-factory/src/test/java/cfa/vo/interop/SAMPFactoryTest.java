@@ -59,7 +59,6 @@ public class SAMPFactoryTest extends TestCase {
      * Test of get method, of class SAMPFactory.
      */
     public void testGet_Class() {
-        System.out.println("get");
         TestInterface result = (TestInterface) SAMPFactory.get(TestInterface.class);
         List<String> methods = new ArrayList();
         List<String> exp_methods = new ArrayList();
@@ -92,7 +91,6 @@ public class SAMPFactoryTest extends TestCase {
      * Test of createMessage method, of class SAMPFactory.
      */
     public void testCreateMessage() throws Exception {
-        System.out.println("createMessage");
         String mtype = "test";
         Object instance = getInstance();
 
@@ -111,8 +109,6 @@ public class SAMPFactoryTest extends TestCase {
      * Test of get method, of class SAMPFactory.
      */
     public void testGet_SAMPMessage_Class() throws Exception {
-        System.out.println("get");
-
         String mtype = "test";
         Object instance = getInstance();
 
@@ -128,7 +124,6 @@ public class SAMPFactoryTest extends TestCase {
      * Test of get method, of class SAMPFactory.
      */
     public void testGet_Map_Class() throws Exception {
-        System.out.println("get");
 
         String mtype = "test";
         Object instance = getInstance();
