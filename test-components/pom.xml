@@ -24,9 +24,9 @@
     <name>test-components</name>
 
     <parent>
-       <groupId>cfa.vo</groupId>
-       <artifactId>iris2</artifactId>
-       <version>3.0-SNAPSHOT</version>
+        <groupId>cfa.vo</groupId>
+        <artifactId>iris2</artifactId>
+        <version>3.0-SNAPSHOT</version>
     </parent>
 
     <dependencies>

@@ -1,0 +1,48 @@
+<project xmlns="http://maven.apache.org/DECORATION/1.6.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/DECORATION/1.6.0 http://maven.apache.org/xsd/decoration-1.6.0.xsd"
+         name="Iris">
+
+	<bannerLeft>
+		<name>Chandra CXC</name>
+		<src>../imgs/Iris_logo_padding.png</src>
+		<href>../index.html</href>
+	</bannerLeft>
+
+    <body>
+    
+        <links>
+            <item name="Chandra CXC" href="http://cxc.cfa.harvard.edu"/>
+        </links>
+
+        <menu ref="parent"/>
+        <menu name="Information">
+			<item name="Introduction" href="./index.html"/>
+			<item name="Sybling Modules" href="../modules.html"/>
+		</menu>
+        <menu ref="reports"/>
+        	
+    </body>
+    
+    <skin>
+        <groupId>org.apache.maven.skins</groupId>
+        <artifactId>maven-fluido-skin</artifactId>
+        <version>1.4</version>
+
+    </skin>
+
+    
+    <custom>
+        <fluidoSkin>
+            <googleSearch>
+                <sitesearch>http://cxc.cfa.harvard.edu/iris/v${project.version}</sitesearch>
+            </googleSearch>
+            <gitHub>
+                <projectId>ChandraCXC/iris</projectId>
+                <ribbonOrientation>left</ribbonOrientation>
+                <ribbonColor>orange</ribbonColor>
+            </gitHub>
+            <sideBarEnabled>true</sideBarEnabled>
+        </fluidoSkin>
+    </custom>
+
+</project>

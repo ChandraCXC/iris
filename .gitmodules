@@ -13,3 +13,6 @@
 [submodule "sedlib"]
 	path = sedlib
 	url = https://github.com/ChandraCXC/sedlib
+[submodule "iris-docs"]
+	path = iris-docs
+	url = https://github.com/ChandraCXC/iris-docs.git

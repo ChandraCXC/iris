@@ -23,7 +23,7 @@
     <packaging>jar</packaging>
     <name>iris</name>
     <scm>
-     <developerConnection>scm:git:https://github.com/ChandraCXC/iris.git</developerConnection>
+        <developerConnection>scm:git:https://github.com/ChandraCXC/iris.git</developerConnection>
     </scm>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -159,6 +159,7 @@
                     </execution>
                 </executions>
             </plugin>
+            
         </plugins>
     </build>
 
