@@ -74,7 +74,6 @@
 
         <developer>
             <name>Janet DePonte Evans</name>
-            <email>janet@cfa.harvard.edu</email>
             <organization>Harvard-Smithsonian Center For Astrophysics</organization>
             <organizationUrl>http://www.cfa.harvard.edu</organizationUrl>
             <roles>
@@ -83,7 +82,7 @@
         </developer>
         <developer>
             <name>Omar Laurino</name>
-            <email>olaurino@cfa.harvard.edu</email>
+            <email>olaurino @ cfa.harvard.edu</email>
             <organization>Harvard-Smithsonian Center For Astrophysics</organization>
             <organizationUrl>http://www.cfa.harvard.edu</organizationUrl>
             <roles>
@@ -92,7 +91,7 @@
         </developer>
         <developer>
             <name>Jamie Budynkiewicz</name>
-            <email>jbudynkiewicz@cfa.harvard.edu</email>
+            <email>jbudynkiewicz @ cfa.harvard.edu</email>
             <organization>Harvard-Smithsonian Center For Astrophysics</organization>
             <organizationUrl>http://www.cfa.harvard.edu</organizationUrl>
             <roles>
@@ -101,7 +100,7 @@
         </developer>
         <developer>
             <name>Erik Holum</name>
-            <email>eholum@cfa.harvard.edu</email>
+            <email>eholum @ cfa.harvard.edu</email>
             <organization>Harvard-Smithsonian Center For Astrophysics</organization>
             <organizationUrl>http://www.cfa.harvard.edu</organizationUrl>
             <roles>
@@ -382,7 +381,7 @@
             <distributionManagement>
                 <site>
                     <id>cxc.cfa.harvard.edu</id>
-                    <url>file:///data/da/Docs/irisweb/iris/v${project.version}/</url>
+                    <url>file:///proj/web-cxc-dmz/htdocs/iris/v${project.version}/</url>
                 </site>
             </distributionManagement>
         </profile>
@@ -425,6 +424,14 @@
     <scm>
         <url>https://github.com/ChandraCXC/iris</url>
     </scm>
+    
+    <distributionManagement>
+        <site>
+            <id>cxc.cfa.harvard.edu</id>
+            <!-- by default, save to the test site -->
+            <url>file:///proj/web-cxc-dmz-prev/htdocs/iris/v${project.version}/</url>
+        </site>
+    </distributionManagement>
     
 </project>
 
