@@ -24,6 +24,10 @@ package cfa.vo.iris.desktop;
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ISedManager;
 import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.iris.units.DefaultUnitsManager;
+import cfa.vo.iris.units.UnitsManager;
+import cfa.vo.iris.utils.Default;
+
 import javax.swing.JDesktopPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -38,6 +42,8 @@ public class IrisWorkspace implements IWorkspace {
     private IrisDesktop mainview;
 
     private ISedManager sedManager;
+
+    private static final JFileChooser fileChooser = new JFileChooser();
 
     public IrisWorkspace() {
         sedManager = new SedlibSedManager();
@@ -62,7 +68,10 @@ public class IrisWorkspace implements IWorkspace {
         return mainview.getDesktopPane();
     }
 
-    private static final JFileChooser fileChooser = new JFileChooser();
+    @Override
+    public UnitsManager getUnitsManager() {
+        return Default.getInstance().getUnitsManager();
+    }
 
     /**
      * Get the value of fileChooser

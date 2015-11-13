@@ -32,13 +32,11 @@ import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SedListener;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.fit.IFit;
 import cfa.vo.sherpa.CompositeModel;
 import cfa.vo.sherpa.CompositeModelTreeModel;
 import cfa.vo.sherpa.Parameter;
 import cfa.vo.sherpa.UserModel;
-import spv.components.SherpaModelManager;
-import spv.controller.SpectrumContainer;
-
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -84,10 +82,9 @@ public final class ModelViewerFrame extends javax.swing.JInternalFrame implement
 
     private void setSed(ExtSed sed) {
         try {
-            SpectrumContainer sc = (SpectrumContainer) sed.getAttachment("fit.model");
-            SherpaModelManager smm = (SherpaModelManager) sc.getModelManager();
-            CompositeModel m = smm.getModel();
-            userModels = smm.getUserModels();
+            IFit fit = (IFit) sed.getAttachment("fit.model");
+            CompositeModel m = fit.getModel();
+            userModels = fit.getUserModels();
             setModel(m);
             setExpression(m.getName());
         } catch (Exception ex) {

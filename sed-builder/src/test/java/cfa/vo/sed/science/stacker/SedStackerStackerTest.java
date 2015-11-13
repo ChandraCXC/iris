@@ -29,6 +29,8 @@ import cfa.vo.iris.sed.ExtSed;
 
 import static cfa.vo.sed.science.stacker.SedStackerAttachments.COUNTS;
 
+import cfa.vo.iris.utils.Default;
+import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sherpa.SherpaClient;
 
@@ -42,8 +44,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-
-import spv.spectrum.SEDMultiSegmentSpectrum;
 
 /**
  *
@@ -201,7 +201,7 @@ public class SedStackerStackerTest {
         seg1.setSpectralAxisValues(x1);
         seg1.setFluxAxisUnits("Jy");
         seg1.setSpectralAxisUnits("Angstrom");
-        seg1.setDataValues(yerr1, SEDMultiSegmentSpectrum.E_UTYPE);
+        seg1.setDataValues(yerr1, UTYPE.FLUX_STAT_ERROR);
         sed1.addSegment(seg1);
 
         Segment seg2 = new Segment();
@@ -209,7 +209,7 @@ public class SedStackerStackerTest {
         seg2.setSpectralAxisValues(x2);
         seg2.setFluxAxisUnits("erg/s/cm2/Hz");
         seg2.setSpectralAxisUnits("Angstrom");
-        seg2.setDataValues(yerr2, SEDMultiSegmentSpectrum.E_UTYPE);
+        seg2.setDataValues(yerr2, UTYPE.FLUX_STAT_ERROR);
         sed2.addSegment(seg2);
 
         Segment seg3 = new Segment();
@@ -224,7 +224,7 @@ public class SedStackerStackerTest {
         seg3.setSpectralAxisValues(x3);
         seg3.setFluxAxisUnits("erg/s/cm2/Hz");
         seg3.setSpectralAxisUnits("nm");
-        seg3.setDataValues(yerr3, SEDMultiSegmentSpectrum.E_UTYPE);
+        seg3.setDataValues(yerr3, UTYPE.FLUX_STAT_ERROR);
         sed3.addSegment(seg3);
 
         SedStack stack = new SedStack("Stack");
@@ -243,7 +243,7 @@ public class SedStackerStackerTest {
         config.setYUnits("erg/s/cm2/Hz");
 
         // stack
-        stacker = new SedStackerStacker(controller);
+        stacker = new SedStackerStacker(controller, Default.getInstance().getUnitsManager());
         ExtSed result = stacker.stack(stack, config);
 
         List<double[]> xs = new ArrayList();
@@ -276,7 +276,7 @@ public class SedStackerStackerTest {
         double[] controlCounts = new double[]{1, 3, 2, 3, 1, 3, 1, 1, 1, 1};
 
         // test values of stacked Sed
-        double[] yerrValues = (double[]) result.getSegment(0).getDataValues(SEDMultiSegmentSpectrum.E_UTYPE);
+        double[] yerrValues = (double[]) result.getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR);
         double[] counts = (double[]) result.getAttachment(COUNTS);
         for (int i = 0; i < result.getSegment(0).getLength(); i++) {
             double xValue = result.getSegment(0).getSpectralAxisValues()[i];

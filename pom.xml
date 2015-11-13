@@ -34,7 +34,6 @@
         <module>samp-factory</module>
         <module>test-components</module>
         <module>sed-builder</module>
-        <module>iris-specview</module>
     </modules>
 
     <properties>
@@ -113,7 +112,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.0</version>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

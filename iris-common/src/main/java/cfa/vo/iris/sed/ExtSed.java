@@ -20,32 +20,32 @@
  */
 package cfa.vo.iris.sed;
 
+import cfa.vo.iris.desktop.IrisWorkspace;
 import cfa.vo.iris.events.MultipleSegmentEvent;
 import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SegmentEvent;
 import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
-import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
 import cfa.vo.iris.sed.quantities.AxisMetadata;
 import cfa.vo.iris.sed.quantities.SPVYQuantity;
 import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
+import cfa.vo.iris.units.DefaultUnitsManager;
+import cfa.vo.iris.units.UnitsManager;
+import cfa.vo.iris.units.UnitsException;
+import cfa.vo.iris.utils.Default;
+import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.*;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sedlib.common.SedParsingException;
 import cfa.vo.sedlib.io.SedFormat;
 import org.apache.commons.lang.ArrayUtils;
-import spv.spectrum.SEDMultiSegmentSpectrum;
-import spv.util.UnitsException;
-import spv.util.XUnits;
-import spv.util.YUnits;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,6 +59,7 @@ public class ExtSed extends Sed {
     private Map<String, Object> attachments = new TreeMap();
     private String id;
     private boolean managed = true;
+    private static UnitsManager uf = Default.getInstance().getUnitsManager();
 
     public ExtSed(String id) {
         this.id = id;
@@ -84,12 +85,6 @@ public class ExtSed extends Sed {
 
     @Override
     public void addSegment(Segment segment, int offset) throws SedNoDataException, SedInconsistentException {
-        if (managed) {
-            int whatToDo = checkModel("You are modifying an SED.");
-            if (whatToDo == DONT_MODIFY_SED) {
-                return;
-            }
-        }
         super.addSegment(segment, offset);
         if (managed) {
             SegmentEvent.getInstance().fire(segment, new SegmentPayload(this, SedCommand.ADDED));
@@ -109,12 +104,6 @@ public class ExtSed extends Sed {
 
     @Override
     public void addSegment(java.util.List<Segment> segments, int offset) throws SedInconsistentException, SedNoDataException {
-        if (managed) {
-            int whatToDo = checkModel("You are modifying an SED.");
-            if (whatToDo == DONT_MODIFY_SED) {
-                return;
-            }
-        }
         for (Segment segment : segments) {
             addSegmentSilently(segment, offset);
         }
@@ -128,12 +117,6 @@ public class ExtSed extends Sed {
     @Override
     public void removeSegment(int i) {
         Segment seg = this.getSegment(i);
-        if (managed) {
-            int whatToDo = checkModel("You are modifying an SED.");
-            if (whatToDo == DONT_MODIFY_SED) {
-                return;
-            }
-        }
         super.removeSegment(i);
         if (managed) {
             SegmentEvent.getInstance().fire(seg, new SegmentPayload(this, SedCommand.REMOVED));
@@ -178,12 +161,6 @@ public class ExtSed extends Sed {
     }
 
     public boolean remove(Segment s) {
-        if (managed) {
-            int whatToDo = checkModel("You are modifying an SED.");
-            if (whatToDo == DONT_MODIFY_SED) {
-                return true;
-            }
-        }
         boolean resp = super.segmentList.remove(s);
         if (managed) {
             SegmentEvent.getInstance().fire(s, new SegmentPayload(this, SedCommand.REMOVED));
@@ -193,12 +170,6 @@ public class ExtSed extends Sed {
     }
 
     public boolean remove(List<Segment> segments) {
-        if (managed) {
-            int whatToDo = checkModel("You are modifying an SED.");
-            if (whatToDo == DONT_MODIFY_SED) {
-                return true;
-            }
-        }
         boolean resp = true;
         for (Segment s : segments) {
             resp &= super.segmentList.remove(s);
@@ -274,13 +245,13 @@ public class ExtSed extends Sed {
 
             double[] xoldvalues = oldSegment.getSpectralAxisValues();
             double[] yoldvalues = oldSegment.getFluxAxisValues();
-            double[] erroldvalues = (double[]) oldSegment.getDataValues(SEDMultiSegmentSpectrum.E_UTYPE);
+            double[] erroldvalues = (double[]) oldSegment.getDataValues(UTYPE.FLUX_STAT_ERROR);
             String xoldunits = oldSegment.getSpectralAxisUnits();
             String yoldunits = oldSegment.getFluxAxisUnits();
             double[] ynewvalues = convertYValues(yoldvalues, xoldvalues, yoldunits, xoldunits, yunit);
             yvalues = concat(yvalues, ynewvalues);
             if (erroldvalues != null) {
-                double[] errnewvalues = YUnits.convertErrors(erroldvalues, yoldvalues, xoldvalues, new YUnits(yoldunits), new XUnits(xoldunits), new YUnits(yunit), true);
+                double[] errnewvalues = uf.convertErrors(erroldvalues, yoldvalues, xoldvalues, uf.newYUnits(yoldunits), uf.newXUnits(xoldunits), uf.newYUnits(yunit));
 //                double[] errnewvalues = convertYValues(erroldvalues, xoldvalues, yoldunits, xoldunits, yunit);
                 staterr = concat(staterr, errnewvalues);
             }
@@ -291,7 +262,7 @@ public class ExtSed extends Sed {
         Segment segment = new Segment();
         segment.setSpectralAxisValues(xvalues);
         segment.setFluxAxisValues(yvalues);
-        segment.setDataValues(staterr, SEDMultiSegmentSpectrum.E_UTYPE);
+        segment.setDataValues(staterr, UTYPE.FLUX_STAT_ERROR);
         segment.setTarget(target);
         segment.setSpectralAxisUnits(xunit);
         segment.setFluxAxisUnits(yunit);
@@ -332,62 +303,11 @@ public class ExtSed extends Sed {
     }
 
     private static double[] convertXValues(double[] values, String fromUnits, String toUnits) throws UnitsException {
-        return XUnits.convert(values, new XUnits(fromUnits), new XUnits(toUnits));
+        return uf.convertX(values, uf.newXUnits(fromUnits), uf.newXUnits(toUnits));
     }
 
     private static double[] convertYValues(double[] yvalues, double[] xvalues, String fromYUnits, String fromXUnits, String toUnits) throws UnitsException {
-        return YUnits.convert(yvalues, xvalues, new YUnits(fromYUnits), new XUnits(fromXUnits), new YUnits(toUnits), true);
+        return uf.convertY(yvalues, xvalues, uf.newYUnits(fromYUnits), uf.newXUnits(fromXUnits), uf.newYUnits(toUnits));
     }
 
-    String FIT_ATTACH = "fit.model";
-    int MODIFY_SED = 0;
-    int NO_MODEL = 1;
-    int DONT_MODIFY_SED = 2;
-
-    /**
-     * Check if there is a model attached (see #55, #80 #108) and inform the user they need to reset the fitting tool.
-     *
-     * @return MODIFY_SED if the user wants to continue, NO_MODEL if the SED has no model attached, DONT_MODIFY_SED
-     * if the action needs to be stopped.
-     */
-    int checkModel(String message) {
-        if (wasFitted()) {
-            int ans = NarrowOptionPane.showConfirmDialog(null,
-                    message + "\n" +
-                            "This action requires that the Fit Component be closed.\n" +
-                            "Please click NO to abort, or click YES to continue.\n" +
-                            "If you continue, please make sure you close the Fit Component too.",
-                    "Confirm change",
-                    NarrowOptionPane.YES_NO_OPTION);
-            if (ans == NarrowOptionPane.YES_OPTION) {
-                return MODIFY_SED;
-            } else {
-                return DONT_MODIFY_SED;
-            }
-        }
-        return NO_MODEL;
-    }
-
-    // FIXME HORRIBLE HACK to avoid coupling iris-common with the viewer/fitter
-    // while still informing the user that changing the SED
-    // requires to reset the Fitting manager.
-    private boolean wasFitted() {
-        Object attachment = this.getAttachment(FIT_ATTACH);
-        if (attachment == null) {
-            return false;
-        }
-
-        try {
-            Method getModelManager = attachment.getClass().getMethod("getModelManager");
-            Object modelManager = getModelManager.invoke(attachment);
-            Method lastFitted = modelManager.getClass().getMethod("lastFitted");
-            return (Boolean) lastFitted.invoke(modelManager);
-        } catch (Throwable ex) {
-            NarrowOptionPane.showMessageDialog(null, "An unexpected error occurred. Iris will try to continue, but you may experience\n" +
-                    "some unexpected behavior.", "Unexpected Error", NarrowOptionPane.ERROR_MESSAGE);
-            Logger.getLogger(ExtSed.class.getName()).log(Level.SEVERE, null, ex);
-            return true;
-        }
-
-    }
 }

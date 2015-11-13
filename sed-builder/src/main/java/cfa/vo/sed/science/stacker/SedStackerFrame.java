@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2015 Smithsonian Astrophysical Observatory
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,8 +37,10 @@ import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.sed.quantities.IUnit;
 import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
+import cfa.vo.iris.units.UnitsException;
 import cfa.vo.sedlib.common.SedException;
 import cfa.vo.sedlib.common.SedNoDataException;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
@@ -55,17 +57,17 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.samp.client.SampException;
 import org.jdesktop.observablecollections.ObservableCollections;
-import spv.util.UnitsException;
 
 /**
  *
  * @author jbudynk
  */
 public class SedStackerFrame extends javax.swing.JInternalFrame {
-    
+
     private JFrame rootFrame;
     private IrisApplication app;
     private SAMPController controller;
@@ -73,51 +75,51 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
     private IWorkspace ws;
 
     public SedStackerFrame(IrisApplication app, IWorkspace ws) {
-	initComponents();
-	
-	this.rootFrame = ws.getRootFrame();
-	this.app = app;
-	this.controller = app.getSAMPController();
-	this.manager = (SedlibSedManager) ws.getSedManager();
-	this.ws = ws;
-	
-	if (stacks.isEmpty()) {
-	    SedStack stack = new SedStack("Stack");
-	    updateStackList(stack, true);
-	}
-	
-	// normalization comboBoxes. Chooses the list of units available 
-	// based on the normalization type chosen (Value, Median, or Average).
-	// Also disable Y value text box if using Average or Median.
-	
-	//TODO: cleanup unused code.
-	integrationNormType.addActionListener( new ActionListener() {
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-		
-		String normType = (String) integrationNormType.getSelectedItem();
-		String [] model;
-		
-		if (normType.equals("Value") && getSelectedConfig().getNormConfiguration().isIntegrate()) {
-		    model = new String[] {"erg/s/cm2","Jy-Hz","Watt/m2","erg/s","Watt"};
-		    integrationValueText.setEnabled(true);
-		} else {
-		    model = loadEnum(SPVYUnit.class);
-		    integrationValueText.setEnabled(false);
-		}
-		
-		try {
-		    Object yunit = integrationYUnit.getSelectedItem();
-		    integrationYUnit.setModel(new DefaultComboBoxModel(model));
-		    integrationYUnit.setSelectedItem(yunit);
-		} catch (IllegalArgumentException ex) {
-		    integrationYUnit.setModel(new DefaultComboBoxModel(model));
-		} catch (Exception ex) {
-		    integrationYUnit.setModel(new DefaultComboBoxModel(model));
-		}
-		
-	    }
-	});
+        initComponents();
+
+        this.rootFrame = ws.getRootFrame();
+        this.app = app;
+        this.controller = app.getSAMPController();
+        this.manager = (SedlibSedManager) ws.getSedManager();
+        this.ws = ws;
+
+        if (stacks.isEmpty()) {
+            SedStack stack = new SedStack("Stack");
+            updateStackList(stack, true);
+        }
+
+        // normalization comboBoxes. Chooses the list of units available
+        // based on the normalization type chosen (Value, Median, or Average).
+        // Also disable Y value text box if using Average or Median.
+
+        //TODO: cleanup unused code.
+        integrationNormType.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                String normType = (String) integrationNormType.getSelectedItem();
+                String[] model;
+
+                if (normType.equals("Value") && getSelectedConfig().getNormConfiguration().isIntegrate()) {
+                    model = new String[]{"erg/s/cm2", "Jy-Hz", "Watt/m2", "erg/s", "Watt"};
+                    integrationValueText.setEnabled(true);
+                } else {
+                    model = loadEnum(SPVYUnit.class);
+                    integrationValueText.setEnabled(false);
+                }
+
+                try {
+                    Object yunit = integrationYUnit.getSelectedItem();
+                    integrationYUnit.setModel(new DefaultComboBoxModel(model));
+                    integrationYUnit.setSelectedItem(yunit);
+                } catch (IllegalArgumentException ex) {
+                    integrationYUnit.setModel(new DefaultComboBoxModel(model));
+                } catch (Exception ex) {
+                    integrationYUnit.setModel(new DefaultComboBoxModel(model));
+                }
+
+            }
+        });
 //	atPointYType.addActionListener( new ActionListener() {
 //	    @Override
 //	    public void actionPerformed(ActionEvent e) {
@@ -131,34 +133,34 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 //		
 //	    }
 //	});
-	jRadioButton1.addActionListener( new ActionListener() {
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-		
-		boolean selected = jRadioButton1.isSelected();
-		if (selected && integrationNormType.getSelectedItem().equals("Value")) {
-		    integrationValueText.setEnabled(true);
-		} else {
-		    integrationValueText.setEnabled(false);
-		}
-		
-		atPointYText.setEnabled(false);
-	    }
-	});
-	jRadioButton2.addActionListener( new ActionListener() {
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-		
-		boolean selected = jRadioButton2.isSelected();
-		if (selected && atPointYType.getSelectedItem().equals("Value")) {
-		    atPointYText.setEnabled(true);
-		} else {
-		    atPointYText.setEnabled(false);
-		}
-		integrationValueText.setEnabled(false); // good - keep!
-	    }
-	});
-	
+        jRadioButton1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                boolean selected = jRadioButton1.isSelected();
+                if (selected && integrationNormType.getSelectedItem().equals("Value")) {
+                    integrationValueText.setEnabled(true);
+                } else {
+                    integrationValueText.setEnabled(false);
+                }
+
+                atPointYText.setEnabled(false);
+            }
+        });
+        jRadioButton2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                boolean selected = jRadioButton2.isSelected();
+                if (selected && atPointYType.getSelectedItem().equals("Value")) {
+                    atPointYText.setEnabled(true);
+                } else {
+                    atPointYText.setEnabled(false);
+                }
+                integrationValueText.setEnabled(false); // good - keep!
+            }
+        });
+
 	/* The following four statements add Action Listeners to the unit combo boxes
 	in the normalization options. These are so that whatever units the user
 	uses for normalization will be selected for stacking.
@@ -197,7 +199,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 //		stackBinSizeUnitsComboBox.setSelectedIndex(unit);
 //	    }
 //	});
-	
+
 //	// undo management items
 //	ExtendedUndoManager undoManager = new ExtendedUndoManager();
 //	UndoableEditSupport undoSupport = new UndoableEditSupport();
@@ -207,9 +209,9 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 //	Action redshift = new RedshiftAction();
 //	Action normalize = new NormalizeAction();
 //	Action stack = new StackAction();
-	
+
     }
-    
+
     private boolean createSedAfterRedshift = false;
 
     public static final String PROP_CREATESEDAFTERREDSHIFT = "createSedAfterRedshift";
@@ -220,7 +222,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
      * @return the value of createSedAfterRedshift
      */
     public boolean isCreateSedAfterRedshift() {
-	return createSedAfterRedshift;
+        return createSedAfterRedshift;
     }
 
     /**
@@ -229,9 +231,9 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
      * @param createSedAfterRedshift new value of createSedAfterRedshift
      */
     public void setCreateSedAfterRedshift(boolean createSedAfterRedshift) {
-	boolean oldCreateSedAfterRedshift = this.createSedAfterRedshift;
-	this.createSedAfterRedshift = createSedAfterRedshift;
-	firePropertyChange(PROP_CREATESEDAFTERREDSHIFT, oldCreateSedAfterRedshift, createSedAfterRedshift);
+        boolean oldCreateSedAfterRedshift = this.createSedAfterRedshift;
+        this.createSedAfterRedshift = createSedAfterRedshift;
+        firePropertyChange(PROP_CREATESEDAFTERREDSHIFT, oldCreateSedAfterRedshift, createSedAfterRedshift);
     }
 
     private boolean createSedAfterNormalize = false;
@@ -244,7 +246,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
      * @return the value of createSedAfterNormalize
      */
     public boolean isCreateSedAfterNormalize() {
-	return createSedAfterNormalize;
+        return createSedAfterNormalize;
     }
 
     /**
@@ -253,9 +255,9 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
      * @param createSedAfterNormalize new value of createSedAfterNormalize
      */
     public void setCreateSedAfterNormalize(boolean createSedAfterNormalize) {
-	boolean oldCreateSedAfterNormalize = this.createSedAfterNormalize;
-	this.createSedAfterNormalize = createSedAfterNormalize;
-	firePropertyChange(PROP_CREATESEDAFTERNORMALIZE, oldCreateSedAfterNormalize, createSedAfterNormalize);
+        boolean oldCreateSedAfterNormalize = this.createSedAfterNormalize;
+        this.createSedAfterNormalize = createSedAfterNormalize;
+        firePropertyChange(PROP_CREATESEDAFTERNORMALIZE, oldCreateSedAfterNormalize, createSedAfterNormalize);
     }
 
 
@@ -375,9 +377,15 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         stackPanel.setName("stackPanel"); // NOI18N
 
         jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
+            String[] strings = {"Item 1", "Item 2", "Item 3", "Item 4", "Item 5"};
+
+            public int getSize() {
+                return strings.length;
+            }
+
+            public Object getElementAt(int i) {
+                return strings[i];
+            }
         });
         jList1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jList1.setName("jList1"); // NOI18N
@@ -393,6 +401,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jList1MousePressed(evt);
             }
+
             public void mouseReleased(java.awt.event.MouseEvent evt) {
                 jList1MouseReleased(evt);
             }
@@ -402,12 +411,12 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(stackPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
+                jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                        .add(stackPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, stackPanel)
+                jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                        .add(org.jdesktop.layout.GroupLayout.TRAILING, stackPanel)
         );
 
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Redshift and Normalize"));
@@ -468,7 +477,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jRadioButton1, org.jdesktop.beansbinding.ELProperty.create("${selected}"), integrationMinMaxUnit, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
-        integrationYUnit.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "erg/s/cm2", "Jy-Hz", "Watt/m2", "erg/s", "Watt" }));
+        integrationYUnit.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"erg/s/cm2", "Jy-Hz", "Watt/m2", "erg/s", "Watt"}));
         integrationYUnit.setName("integrationYUnit"); // NOI18N
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedConfig.normConfiguration.integrateValueYUnits}"), integrationYUnit, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
@@ -483,7 +492,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedConfig.normConfiguration.integrateYTextEnabled}"), integrationValueText, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
-        integrationNormType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Value", "Average", "Median" }));
+        integrationNormType.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Value", "Average", "Median"}));
         integrationNormType.setName("integrationNormType"); // NOI18N
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedConfig.normConfiguration.stats}"), integrationNormType, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
@@ -543,7 +552,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, jRadioButton2, org.jdesktop.beansbinding.ELProperty.create("${selected}"), atPointXText, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
-        atPointYType.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Value", "Average", "Median" }));
+        atPointYType.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Value", "Average", "Median"}));
         atPointYType.setName("atPointYType"); // NOI18N
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedConfig.normConfiguration.atPointStats}"), atPointYType, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
@@ -607,132 +616,132 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         org.jdesktop.layout.GroupLayout jPanel5Layout = new org.jdesktop.layout.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jSeparator1)
-                    .add(jPanel5Layout.createSequentialGroup()
-                        .add(jLabel11)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 76, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(correctFlux)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .add(jCheckBox1)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(redshiftButton))
-                    .add(jPanel5Layout.createSequentialGroup()
-                        .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jPanel5Layout.createSequentialGroup()
-                                .add(jRadioButton2)
-                                .add(26, 26, 26)
+                jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                        .add(jPanel5Layout.createSequentialGroup()
+                                .addContainerGap()
                                 .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(jPanel5Layout.createSequentialGroup()
-                                        .add(atPointXLabel)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(atPointXText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 73, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .add(3, 3, 3)
-                                        .add(atPointXUnit, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 116, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                    .add(jPanel5Layout.createSequentialGroup()
-                                        .add(atPointYLabel)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(atPointYType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(atPointYText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 78, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .add(7, 7, 7)
-                                        .add(atPointYUnit, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 116, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
-                            .add(jPanel5Layout.createSequentialGroup()
-                                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                                    .add(jPanel5Layout.createSequentialGroup()
-                                        .add(integrationNormToLabel)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(integrationNormType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
-                                    .add(jPanel5Layout.createSequentialGroup()
-                                        .add(jRadioButton1)
-                                        .add(8, 8, 8)
-                                        .add(integrationXMinLabel)
-                                        .add(3, 3, 3)
-                                        .add(integrationXMinText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 73, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(integrationXMaxLabel)
-                                        .add(3, 3, 3)))
-                                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                                    .add(jPanel5Layout.createSequentialGroup()
-                                        .add(integrationXMaxText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 73, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(integrationMinMaxUnit, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 116, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                    .add(jPanel5Layout.createSequentialGroup()
-                                        .add(integrationValueText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 73, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                        .add(integrationYUnit, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 116, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
-                            .add(jPanel5Layout.createSequentialGroup()
-                                .add(jLabel6)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jRadioButton3)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(jRadioButton4)))
-                        .add(0, 0, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .add(0, 0, Short.MAX_VALUE)
-                        .add(jCheckBox2)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(normalizeButton)))
-                .addContainerGap())
+                                        .add(jSeparator1)
+                                        .add(jPanel5Layout.createSequentialGroup()
+                                                .add(jLabel11)
+                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                .add(jTextField8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 76, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                .add(correctFlux)
+                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                .add(jCheckBox1)
+                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                .add(redshiftButton))
+                                        .add(jPanel5Layout.createSequentialGroup()
+                                                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                                        .add(jPanel5Layout.createSequentialGroup()
+                                                                .add(jRadioButton2)
+                                                                .add(26, 26, 26)
+                                                                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                                                        .add(jPanel5Layout.createSequentialGroup()
+                                                                                .add(atPointXLabel)
+                                                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                                                .add(atPointXText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 73, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                                                                .add(3, 3, 3)
+                                                                                .add(atPointXUnit, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 116, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                                                        .add(jPanel5Layout.createSequentialGroup()
+                                                                                .add(atPointYLabel)
+                                                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                                                .add(atPointYType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                                                .add(atPointYText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 78, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                                                                .add(7, 7, 7)
+                                                                                .add(atPointYUnit, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 116, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                                                        .add(jPanel5Layout.createSequentialGroup()
+                                                                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                                                                        .add(jPanel5Layout.createSequentialGroup()
+                                                                                .add(integrationNormToLabel)
+                                                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                                                .add(integrationNormType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
+                                                                        .add(jPanel5Layout.createSequentialGroup()
+                                                                                .add(jRadioButton1)
+                                                                                .add(8, 8, 8)
+                                                                                .add(integrationXMinLabel)
+                                                                                .add(3, 3, 3)
+                                                                                .add(integrationXMinText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 73, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                                                .add(integrationXMaxLabel)
+                                                                                .add(3, 3, 3)))
+                                                                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                                                                        .add(jPanel5Layout.createSequentialGroup()
+                                                                                .add(integrationXMaxText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 73, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                                                .add(integrationMinMaxUnit, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 116, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                                                        .add(jPanel5Layout.createSequentialGroup()
+                                                                                .add(integrationValueText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 73, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                                                .add(integrationYUnit, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 116, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                                                        .add(jPanel5Layout.createSequentialGroup()
+                                                                .add(jLabel6)
+                                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                                .add(jRadioButton3)
+                                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                                .add(jRadioButton4)))
+                                                .add(0, 0, Short.MAX_VALUE))
+                                        .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel5Layout.createSequentialGroup()
+                                                .add(0, 0, Short.MAX_VALUE)
+                                                .add(jCheckBox2)
+                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                .add(normalizeButton)))
+                                .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel5Layout.createSequentialGroup()
-                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                        .add(correctFlux)
-                        .add(jTextField8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .add(jLabel11))
-                    .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                        .add(redshiftButton)
-                        .add(jCheckBox1)))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jSeparator1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel6)
-                    .add(jRadioButton3)
-                    .add(jRadioButton4))
-                .add(18, 18, 18)
-                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jRadioButton1)
-                    .add(integrationMinMaxUnit, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(integrationXMaxText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(integrationXMinText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(integrationXMinLabel)
-                    .add(integrationXMaxLabel))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(integrationYUnit, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(integrationValueText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(integrationNormType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(integrationNormToLabel))
-                .add(11, 11, 11)
-                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jRadioButton2)
-                    .add(jPanel5Layout.createSequentialGroup()
-                        .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                                .add(atPointXText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .add(atPointXLabel))
-                            .add(atPointXUnit, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                            .add(atPointYLabel)
-                            .add(atPointYType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(atPointYText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(atPointYUnit, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(normalizeButton)
-                    .add(jCheckBox2))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                        .add(jPanel5Layout.createSequentialGroup()
+                                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                        .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                                .add(correctFlux)
+                                                .add(jTextField8, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                                .add(jLabel11))
+                                        .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                                .add(redshiftButton)
+                                                .add(jCheckBox1)))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jSeparator1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                        .add(jLabel6)
+                                        .add(jRadioButton3)
+                                        .add(jRadioButton4))
+                                .add(18, 18, 18)
+                                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                        .add(jRadioButton1)
+                                        .add(integrationMinMaxUnit, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(integrationXMaxText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(integrationXMinText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(integrationXMinLabel)
+                                        .add(integrationXMaxLabel))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                        .add(integrationYUnit, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(integrationValueText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(integrationNormType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(integrationNormToLabel))
+                                .add(11, 11, 11)
+                                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                        .add(jRadioButton2)
+                                        .add(jPanel5Layout.createSequentialGroup()
+                                                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                                        .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                                                .add(atPointXText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                                                .add(atPointXLabel))
+                                                        .add(atPointXUnit, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                                        .add(atPointYLabel)
+                                                        .add(atPointYType, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                                        .add(atPointYText, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                                        .add(atPointYUnit, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                                .add(jPanel5Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                        .add(normalizeButton)
+                                        .add(jCheckBox2))
+                                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Added SEDs"));
@@ -773,21 +782,21 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         org.jdesktop.layout.GroupLayout jPanel4Layout = new org.jdesktop.layout.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel4Layout.createSequentialGroup()
-                .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(addButton)
-                    .add(removeButton))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 653, Short.MAX_VALUE))
+                jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                        .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel4Layout.createSequentialGroup()
+                                .add(jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                        .add(addButton)
+                                        .add(removeButton))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 653, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel4Layout.createSequentialGroup()
-                .add(addButton)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(removeButton))
-            .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 160, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                jPanel4Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                        .add(jPanel4Layout.createSequentialGroup()
+                                .add(addButton)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(removeButton))
+                        .add(jScrollPane2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 160, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
         );
 
         jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder("Stacking Options"));
@@ -796,7 +805,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         jLabel7.setText("Statistic:");
         jLabel7.setName("jLabel7"); // NOI18N
 
-        stackStatisticComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Average", "Weighted Avg", "Sum" }));
+        stackStatisticComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Average", "Weighted Avg", "Sum"}));
         stackStatisticComboBox.setName("stackStatisticComboBox"); // NOI18N
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedConfig.stackConfiguration.statistic}"), stackStatisticComboBox, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
@@ -865,75 +874,75 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         org.jdesktop.layout.GroupLayout jPanel6Layout = new org.jdesktop.layout.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel6Layout.createSequentialGroup()
-                        .add(0, 0, Short.MAX_VALUE)
-                        .add(stackButton)
-                        .addContainerGap())
-                    .add(jPanel6Layout.createSequentialGroup()
-                        .add(29, 29, 29)
-                        .add(jLabel8)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField6)
-                        .add(17, 17, 17))
-                    .add(jPanel6Layout.createSequentialGroup()
-                        .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jPanel6Layout.createSequentialGroup()
-                                .add(jLabel10)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(stackBinSizeUnitsComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 116, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                            .add(jPanel6Layout.createSequentialGroup()
+                jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                        .add(jPanel6Layout.createSequentialGroup()
+                                .addContainerGap()
                                 .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(jLabel7)
-                                    .add(jLabel1))
-                                .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(jPanel6Layout.createSequentialGroup()
-                                        .add(12, 12, 12)
-                                        .add(stackYUnitComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 143, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                                    .add(jPanel6Layout.createSequentialGroup()
-                                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                        .add(stackStatisticComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 143, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
-                            .add(smoothCheckBox)
-                            .add(logBinningCheckBox)
-                            .add(jPanel6Layout.createSequentialGroup()
-                                .add(jLabel9)
-                                .add(43, 43, 43)
-                                .add(binsizeTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 115, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                        .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                        .add(org.jdesktop.layout.GroupLayout.TRAILING, jPanel6Layout.createSequentialGroup()
+                                                .add(0, 0, Short.MAX_VALUE)
+                                                .add(stackButton)
+                                                .addContainerGap())
+                                        .add(jPanel6Layout.createSequentialGroup()
+                                                .add(29, 29, 29)
+                                                .add(jLabel8)
+                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                .add(jTextField6)
+                                                .add(17, 17, 17))
+                                        .add(jPanel6Layout.createSequentialGroup()
+                                                .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                                        .add(jPanel6Layout.createSequentialGroup()
+                                                                .add(jLabel10)
+                                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                                .add(stackBinSizeUnitsComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 116, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                                        .add(jPanel6Layout.createSequentialGroup()
+                                                                .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                                                        .add(jLabel7)
+                                                                        .add(jLabel1))
+                                                                .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                                                        .add(jPanel6Layout.createSequentialGroup()
+                                                                                .add(12, 12, 12)
+                                                                                .add(stackYUnitComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 143, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                                                        .add(jPanel6Layout.createSequentialGroup()
+                                                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                                                                                .add(stackStatisticComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 143, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                                                        .add(smoothCheckBox)
+                                                        .add(logBinningCheckBox)
+                                                        .add(jPanel6Layout.createSequentialGroup()
+                                                                .add(jLabel9)
+                                                                .add(43, 43, 43)
+                                                                .add(binsizeTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 115, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                                                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel7)
-                    .add(stackStatisticComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(stackYUnitComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel1))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel9)
-                    .add(binsizeTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel10)
-                    .add(stackBinSizeUnitsComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(9, 9, 9)
-                .add(logBinningCheckBox)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(smoothCheckBox)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel8)
-                    .add(jTextField6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .add(18, 18, 18)
-                .add(stackButton)
-                .add(18, 18, 18))
+                jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                        .add(jPanel6Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                        .add(jLabel7)
+                                        .add(stackStatisticComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                        .add(stackYUnitComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(jLabel1))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                        .add(jLabel9)
+                                        .add(binsizeTextField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                        .add(jLabel10)
+                                        .add(stackBinSizeUnitsComboBox, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                .add(9, 9, 9)
+                                .add(logBinningCheckBox)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(smoothCheckBox)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(jPanel6Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                                        .add(jLabel8)
+                                        .add(jTextField6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                .add(18, 18, 18)
+                                .add(stackButton)
+                                .add(18, 18, 18))
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Managment"));
@@ -969,62 +978,62 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         org.jdesktop.layout.GroupLayout jPanel2Layout = new org.jdesktop.layout.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel2Layout.createSequentialGroup()
-                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(resetButton)
-                    .add(createSedButton)
-                    .add(deleteButton))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                        .add(jPanel2Layout.createSequentialGroup()
+                                .add(jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                        .add(resetButton)
+                                        .add(createSedButton)
+                                        .add(deleteButton))
+                                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .add(resetButton)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(deleteButton)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(createSedButton)
-                .addContainerGap())
+                jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                        .add(jPanel2Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .add(resetButton)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(deleteButton)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .add(createSedButton)
+                                .addContainerGap())
         );
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jButton1)
-                            .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .add(0, 10, Short.MAX_VALUE))
+                layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                        .add(layout.createSequentialGroup()
+                                .addContainerGap()
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                                        .add(jPanel4, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                                        .add(layout.createSequentialGroup()
+                                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                                        .add(jButton1)
+                                                        .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                .add(jPanel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel6, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .add(0, 10, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                        .add(jButton1)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 301, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(jPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                        .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING, false)
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                                                .add(jButton1)
+                                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                                .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel6, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 301, Short.MAX_VALUE)
+                                        .add(org.jdesktop.layout.GroupLayout.LEADING, jPanel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                                        .add(jPanel4, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .add(jPanel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addContainerGap())
         );
 
         bindingGroup.bind();
@@ -1037,261 +1046,264 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
             @Override
             public void run() {
                 SedStack stack = new SedStack("Stack");
-		rename(stack, "Stack");
+                rename(stack, "Stack");
                 updateStackList(stack, true);
             }
         });
     }//GEN-LAST:event_newStack
-    
+
     private AddSedsFrame addSedsFrame;
+
     private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-	
-	// TODO: remove this when I add "Load From File" option in the AddSedsFrame.
-	if (manager.getSeds().isEmpty()) {
-	    NarrowOptionPane.showMessageDialog(this, 
-		    "There are no open SEDs. Create SEDs using the SED Builder first.",
-		    "Error: No Open SEDs", JOptionPane.OK_OPTION);
-	    return;
-	}
-	
-	if (addSedsFrame == null) {
-	    addSedsFrame = new AddSedsFrame(manager, selectedStack, sedsTable, this);
-	    ws.addFrame(addSedsFrame);
-	}
-	addSedsFrame.updateSeds(selectedStack);
-	GUIUtils.moveToFront(addSedsFrame);
-	
+
+        // TODO: remove this when I add "Load From File" option in the AddSedsFrame.
+        if (manager.getSeds().isEmpty()) {
+            NarrowOptionPane.showMessageDialog(this,
+                    "There are no open SEDs. Create SEDs using the SED Builder first.",
+                    "Error: No Open SEDs", JOptionPane.OK_OPTION);
+            return;
+        }
+
+        if (addSedsFrame == null) {
+            addSedsFrame = new AddSedsFrame(manager, selectedStack, sedsTable, this);
+            ws.addFrame(addSedsFrame);
+        }
+        addSedsFrame.updateSeds(selectedStack);
+        GUIUtils.moveToFront(addSedsFrame);
+
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
 
-	List<Integer> selectedRows = new ArrayList();
-	for (int i : sedsTable.getSelectedRows()) {
-	    selectedRows.add(i);
-	}
-	Collections.reverse(selectedRows);
-	final List sedList = selectedStack.getSeds();
-	final List origSedList = selectedStack.getOrigSeds();
-	for (int i : selectedRows) {
-	    sedList.remove(i);
-	    origSedList.remove(i);
-	}
-	sedsTable.setModel(new StackTableModel(selectedStack));
-	
+        List<Integer> selectedRows = new ArrayList();
+        for (int i : sedsTable.getSelectedRows()) {
+            selectedRows.add(i);
+        }
+        Collections.reverse(selectedRows);
+        final List sedList = selectedStack.getSeds();
+        final List origSedList = selectedStack.getOrigSeds();
+        for (int i : selectedRows) {
+            sedList.remove(i);
+            origSedList.remove(i);
+        }
+        sedsTable.setModel(new StackTableModel(selectedStack));
+
     }//GEN-LAST:event_removeButtonActionPerformed
 
     private SedStackerRedshifter redshifter;
+
     private void redshiftButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_redshiftButtonActionPerformed
-	
-	RedshiftConfiguration redshiftConf = getSelectedStack().getConf().getRedshiftConfiguration();
-	
-	// Check for invalid redshift values
-	if (redshiftConf.getToRedshift() == null ||  redshiftConf.getToRedshift() < 0 || !isNumeric(redshiftConf.getToRedshift().toString())) {
+
+        RedshiftConfiguration redshiftConf = getSelectedStack().getConf().getRedshiftConfiguration();
+
+        // Check for invalid redshift values
+        if (redshiftConf.getToRedshift() == null || redshiftConf.getToRedshift() < 0 || !isNumeric(redshiftConf.getToRedshift().toString())) {
             NarrowOptionPane.showMessageDialog(null, "Invalid redshift values", "WARNING", NarrowOptionPane.WARNING_MESSAGE);
-	    try {
-		this.setSelected(true);
-	    } catch (PropertyVetoException ex) {
-		Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
-	    }
+            try {
+                this.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
             return;
-	}
-	
-	if (redshifter == null) {
-	    redshifter = new SedStackerRedshifter(controller);
-	}
-	try {
-	    redshifter.shift(selectedStack, redshiftConf);
-	    NarrowOptionPane.showMessageDialog(this, "Successfully redshifted stack.", "SED Stacker Message", JOptionPane.INFORMATION_MESSAGE);
-	    if (isCreateSedAfterRedshift() && redshifter.redshiftConfigChanged()) {
-		ExtSed sed = SedStack.createSedFromStack(selectedStack, selectedStack.getName()+"_z="+redshiftConf.getToRedshift().toString()+"_");
-		manager.add(sed);
-	    }
-	} catch (StackException ex) {
-	    NarrowOptionPane.showMessageDialog(this, ex, "Redshift Error", JOptionPane.ERROR_MESSAGE);
-	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
-	} catch (SampException ex) {
-	    NarrowOptionPane.showMessageDialog(this, ex, "Redshift Error", JOptionPane.ERROR_MESSAGE);
-	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
-	} catch (Exception ex) {
-	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
-	}
+        }
+
+        if (redshifter == null) {
+            redshifter = new SedStackerRedshifter(controller, ws.getUnitsManager());
+        }
+        try {
+            redshifter.shift(selectedStack, redshiftConf);
+            NarrowOptionPane.showMessageDialog(this, "Successfully redshifted stack.", "SED Stacker Message", JOptionPane.INFORMATION_MESSAGE);
+            if (isCreateSedAfterRedshift() && redshifter.redshiftConfigChanged()) {
+                ExtSed sed = SedStack.createSedFromStack(selectedStack, selectedStack.getName() + "_z=" + redshiftConf.getToRedshift().toString() + "_");
+                manager.add(sed);
+            }
+        } catch (StackException ex) {
+            NarrowOptionPane.showMessageDialog(this, ex, "Redshift Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SampException ex) {
+            NarrowOptionPane.showMessageDialog(this, ex, "Redshift Error", JOptionPane.ERROR_MESSAGE);
+            Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_redshiftButtonActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-	String newName = JOptionPane.showInputDialog(stackPanel, "New Stack ID:");
-	List<String> names = new ArrayList();
-	for (SedStack stack : stacks) {
-	    names.add(stack.getName());
-	}
-	if (names.contains(newName)) {
-	    NarrowOptionPane.showMessageDialog(rootFrame, "This Stack ID already exists. Please use a unique ID.", "Rename error", NarrowOptionPane.ERROR_MESSAGE);
-	} else {
-	    SedStack stack = getSelectedStack();
-	    stack.setName(newName);
-	    setSelectedStack(stack);
-	    jList1.setSelectedValue(stack, true);
-	}
+        String newName = JOptionPane.showInputDialog(stackPanel, "New Stack ID:");
+        List<String> names = new ArrayList();
+        for (SedStack stack : stacks) {
+            names.add(stack.getName());
+        }
+        if (names.contains(newName)) {
+            NarrowOptionPane.showMessageDialog(rootFrame, "This Stack ID already exists. Please use a unique ID.", "Rename error", NarrowOptionPane.ERROR_MESSAGE);
+        } else {
+            SedStack stack = getSelectedStack();
+            stack.setName(newName);
+            setSelectedStack(stack);
+            jList1.setSelectedValue(stack, true);
+        }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jList1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MousePressed
         if (evt.isPopupTrigger()) {
-	    jList1.setSelectedIndex(jList1.locationToIndex(evt.getPoint()));
-	    jPopupMenu1.show(jList1, evt.getX(), evt.getY());
-	}
+            jList1.setSelectedIndex(jList1.locationToIndex(evt.getPoint()));
+            jPopupMenu1.show(jList1, evt.getX(), evt.getY());
+        }
     }//GEN-LAST:event_jList1MousePressed
 
     private void jList1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseReleased
         if (evt.isPopupTrigger()) {
-	    jList1.setSelectedIndex(jList1.locationToIndex(evt.getPoint()));
-	    jPopupMenu1.show(jList1, evt.getX(), evt.getY());
-	}
+            jList1.setSelectedIndex(jList1.locationToIndex(evt.getPoint()));
+            jPopupMenu1.show(jList1, evt.getX(), evt.getY());
+        }
     }//GEN-LAST:event_jList1MouseReleased
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
-        
-	int answer = NarrowOptionPane.showConfirmDialog(this, "Are you sure you want to delete "+selectedStack.getName()+"?", 
-		"Delete Stack", 
-		JOptionPane.YES_NO_OPTION);
-	if (answer == JOptionPane.NO_OPTION)
-	    return;
-	
-	try {
-	    SwingUtilities.invokeLater(new Runnable() {
-		@Override
-		public void run() {
-		    SedStack stack = selectedStack;
-		    updateStackList(stack, false);
-		}
-	    });
-	    sedsTable.setModel(new StackTableModel(selectedStack));
-	} catch (ArrayIndexOutOfBoundsException ex) {
-	    sedsTable.setModel(new StackTableModel());
-	}
+
+        int answer = NarrowOptionPane.showConfirmDialog(this, "Are you sure you want to delete " + selectedStack.getName() + "?",
+                "Delete Stack",
+                JOptionPane.YES_NO_OPTION);
+        if (answer == JOptionPane.NO_OPTION)
+            return;
+
+        try {
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    SedStack stack = selectedStack;
+                    updateStackList(stack, false);
+                }
+            });
+            sedsTable.setModel(new StackTableModel(selectedStack));
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            sedsTable.setModel(new StackTableModel());
+        }
     }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void createSedButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createSedButtonActionPerformed
-	try {
-	    
-	    if(selectedStack.getSeds().isEmpty()) {
-	    NarrowOptionPane.showMessageDialog(null,
-                    "Stack is empty. Please add SEDs to the stack first.",
-                    "Empty Stack",
-                    NarrowOptionPane.ERROR_MESSAGE);
-            throw new SedNoDataException();
-	}
-	    
-	    ExtSed sed = SedStack.createSedFromStack(selectedStack);
-	    
-	    manager.add(sed);
-	    
-	} catch (SedException ex) {
-	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
-	} catch (UnitsException ex) {
-	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
-	}
+        try {
+
+            if (selectedStack.getSeds().isEmpty()) {
+                NarrowOptionPane.showMessageDialog(null,
+                        "Stack is empty. Please add SEDs to the stack first.",
+                        "Empty Stack",
+                        NarrowOptionPane.ERROR_MESSAGE);
+                throw new SedNoDataException();
+            }
+
+            ExtSed sed = SedStack.createSedFromStack(selectedStack);
+
+            manager.add(sed);
+
+        } catch (SedException ex) {
+            Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (UnitsException ex) {
+            Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_createSedButtonActionPerformed
 
     private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
         selectedStack.resetStack();
-	sedsTable.setModel(new StackTableModel(selectedStack));
+        sedsTable.setModel(new StackTableModel(selectedStack));
     }//GEN-LAST:event_resetButtonActionPerformed
 
     private SedStackerNormalizer normalizer;
+
     private void normalizeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_normalizeButtonActionPerformed
-	NormalizationConfiguration normConfig = selectedStack.getConf().getNormConfiguration();
-	
-	// Check for invalid values
-	if (!checkNormParameters(normConfig)) {
-	    try {
-		this.setSelected(true);
-	    } catch (PropertyVetoException ex) {
-		Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
-	    }
-	    return;
-	}
-	
-	if (normalizer == null) {
-	    normalizer = new SedStackerNormalizer(controller);
-	}
-	try {
-	    normalizer.normalize(selectedStack, normConfig);
-	    NarrowOptionPane.showMessageDialog(this, "Successfully normalized stack.", "SED Stacker Message", JOptionPane.INFORMATION_MESSAGE);
-	    if (isCreateSedAfterNormalize() && normalizer.normConfigChanged()) {
-		ExtSed sed = SedStack.createSedFromStack(selectedStack, selectedStack.getName()+"_normalized");
-		manager.add(sed);
-	    }
-	} catch (Exception ex) {
-	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
-	    //NarrowOptionPane.showMessageDialog(this, ex, "ERROR", JOptionPane.WARNING_MESSAGE);
-	}
-	sedsTable.setModel(new StackTableModel(selectedStack));
+        NormalizationConfiguration normConfig = selectedStack.getConf().getNormConfiguration();
+
+        // Check for invalid values
+        if (!checkNormParameters(normConfig)) {
+            try {
+                this.setSelected(true);
+            } catch (PropertyVetoException ex) {
+                Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return;
+        }
+
+        if (normalizer == null) {
+            normalizer = new SedStackerNormalizer(controller, ws.getUnitsManager());
+        }
+        try {
+            normalizer.normalize(selectedStack, normConfig);
+            NarrowOptionPane.showMessageDialog(this, "Successfully normalized stack.", "SED Stacker Message", JOptionPane.INFORMATION_MESSAGE);
+            if (isCreateSedAfterNormalize() && normalizer.normConfigChanged()) {
+                ExtSed sed = SedStack.createSedFromStack(selectedStack, selectedStack.getName() + "_normalized");
+                manager.add(sed);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+            //NarrowOptionPane.showMessageDialog(this, ex, "ERROR", JOptionPane.WARNING_MESSAGE);
+        }
+        sedsTable.setModel(new StackTableModel(selectedStack));
     }//GEN-LAST:event_normalizeButtonActionPerformed
 
     private SedStackerStacker stacker;
+
     private void stackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stackButtonActionPerformed
         StackConfiguration stackConfig = selectedStack.getConf().getStackConfiguration();
-	
-	// Check for invalid values
-	
-	
-	
-	if (stacker == null) {
-	    stacker = new SedStackerStacker(controller);
-	}
-	try {
-	    ExtSed stackedStack = stacker.stack(selectedStack, stackConfig);
-	    NarrowOptionPane.showMessageDialog(this, "Successfully stacked.", "SED Stacker Message", JOptionPane.INFORMATION_MESSAGE);
-	    manager.add(stackedStack);
-	} catch (Exception ex) {
-	    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
-	    //NarrowOptionPane.showMessageDialog(this, ex, "ERROR", JOptionPane.WARNING_MESSAGE);
-	}
-	
+
+        // Check for invalid values
+
+
+        if (stacker == null) {
+            stacker = new SedStackerStacker(controller, ws.getUnitsManager());
+        }
+        try {
+            ExtSed stackedStack = stacker.stack(selectedStack, stackConfig);
+            NarrowOptionPane.showMessageDialog(this, "Successfully stacked.", "SED Stacker Message", JOptionPane.INFORMATION_MESSAGE);
+            manager.add(stackedStack);
+        } catch (Exception ex) {
+            Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+            //NarrowOptionPane.showMessageDialog(this, ex, "ERROR", JOptionPane.WARNING_MESSAGE);
+        }
+
     }//GEN-LAST:event_stackButtonActionPerformed
 
     private void sedsTableMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_sedsTableMousePressed
-        if(evt.isPopupTrigger()) {
-	    JTable source = (JTable) evt.getSource();
-	    int row = source.rowAtPoint( evt.getPoint() );
-	    int column = source.columnAtPoint( evt.getPoint() );
+        if (evt.isPopupTrigger()) {
+            JTable source = (JTable) evt.getSource();
+            int row = source.rowAtPoint(evt.getPoint());
+            int column = source.columnAtPoint(evt.getPoint());
 
-	    if (! source.isRowSelected(row))
-		source.changeSelection(row, column, false, false);
-	    
-	    sedsTable.changeSelection(row, column, false, false);
+            if (!source.isRowSelected(row))
+                source.changeSelection(row, column, false, false);
 
-	    jPopupMenu2.show(evt.getComponent(), evt.getX(), evt.getY());
-	}
+            sedsTable.changeSelection(row, column, false, false);
+
+            jPopupMenu2.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
     }//GEN-LAST:event_sedsTableMousePressed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         String newRedshift = JOptionPane.showInputDialog(sedsTable, "New observed redshift: ");
-	
-	//TODO: check for bad z values.
-	// Check for invalid redshift values
-	if (newRedshift != null && newRedshift.length() > 0) {
-	    if (!isNumeric(newRedshift) || Double.parseDouble(newRedshift) < 0) {
-		NarrowOptionPane.showMessageDialog(null, "Invalid redshift values", "WARNING", NarrowOptionPane.WARNING_MESSAGE);
-		try {
-		    this.setSelected(true);
-		} catch (PropertyVetoException ex) {
-		    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
-		}
-		return;
-	    }
-	    
-	    int i = sedsTable.getSelectedRow();
-	
-	    selectedStack.getSeds().get(i).addAttachment(SedStackerAttachments.REDSHIFT, newRedshift);
-	    selectedStack.getSeds().get(i).addAttachment(SedStackerAttachments.ORIG_REDSHIFT, newRedshift);
-	    selectedStack.getOrigSeds().get(i).addAttachment(SedStackerAttachments.REDSHIFT, newRedshift);
-	    selectedStack.getOrigSeds().get(i).addAttachment(SedStackerAttachments.ORIG_REDSHIFT, newRedshift);
+
+        //TODO: check for bad z values.
+        // Check for invalid redshift values
+        if (newRedshift != null && newRedshift.length() > 0) {
+            if (!isNumeric(newRedshift) || Double.parseDouble(newRedshift) < 0) {
+                NarrowOptionPane.showMessageDialog(null, "Invalid redshift values", "WARNING", NarrowOptionPane.WARNING_MESSAGE);
+                try {
+                    this.setSelected(true);
+                } catch (PropertyVetoException ex) {
+                    Logger.getLogger(SedStackerFrame.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                return;
+            }
+
+            int i = sedsTable.getSelectedRow();
+
+            selectedStack.getSeds().get(i).addAttachment(SedStackerAttachments.REDSHIFT, newRedshift);
+            selectedStack.getSeds().get(i).addAttachment(SedStackerAttachments.ORIG_REDSHIFT, newRedshift);
+            selectedStack.getOrigSeds().get(i).addAttachment(SedStackerAttachments.REDSHIFT, newRedshift);
+            selectedStack.getOrigSeds().get(i).addAttachment(SedStackerAttachments.ORIG_REDSHIFT, newRedshift);
 
 
-	    sedsTable.setModel(new StackTableModel(selectedStack));
-	    
-	}
-	
+            sedsTable.setModel(new StackTableModel(selectedStack));
+
+        }
+
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1337,7 +1349,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 
     //private List<SedStack> stacks = new ArrayList();
     private List<SedStack> stacks = ObservableCollections.observableList(new ArrayList());
-    
+
     public static final String PROP_STACKS = "stacks";
 
     /**
@@ -1359,7 +1371,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         this.stacks = stacks;
         firePropertyChange(PROP_STACKS, oldStacks, stacks);
     }
-    
+
     private SedStack selectedStack;
 
     public static final String PROP_SELECTEDSTACK = "selectedStack";
@@ -1382,12 +1394,12 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         SedStack oldSelectedStack = this.selectedStack;
         this.selectedStack = selectedStack;
         firePropertyChange(PROP_SELECTEDSTACK, oldSelectedStack, selectedStack);
-	if (selectedStack != null) {
+        if (selectedStack != null) {
             setSelectedConfig(selectedStack.getConf());
-	    sedsTable.setModel(new StackTableModel(selectedStack));
+            sedsTable.setModel(new StackTableModel(selectedStack));
         }
     }
-    
+
     private Configuration selectedConfig;
 
     public static final String PROP_SELECTEDCONFIG = "selectedConfig";
@@ -1422,7 +1434,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
      * @return the value of selectedSeds
      */
     public List<HashMap> getSelectedSeds() {
-	return selectedSeds;
+        return selectedSeds;
     }
 
     /**
@@ -1431,52 +1443,52 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
      * @param selectedSeds new value of selectedSeds
      */
     public void setSelectedSeds(List<HashMap> selectedSeds) {
-	List<HashMap> oldSelectedSeds = this.selectedSeds;
-	this.selectedSeds = selectedSeds;
-	firePropertyChange(PROP_SELECTEDSEDS, oldSelectedSeds, selectedSeds);
+        List<HashMap> oldSelectedSeds = this.selectedSeds;
+        this.selectedSeds = selectedSeds;
+        firePropertyChange(PROP_SELECTEDSEDS, oldSelectedSeds, selectedSeds);
     }
-    
+
     public void rename(SedStack stack, String newName) {
-	List<String> names = new ArrayList();
-	for (int i=0; i < this.getStacks().size(); i++) {
-	    names.add(this.getStacks().get(i).getName());
-	}
-	
+        List<String> names = new ArrayList();
+        for (int i = 0; i < this.getStacks().size(); i++) {
+            names.add(this.getStacks().get(i).getName());
+        }
+
         char c = '@';
-	int i = 1;
-	int j = 1;
+        int i = 1;
+        int j = 1;
         while (names.contains(newName + (c == '@' ? "" : "." + StringUtils.repeat(String.valueOf(c), j)))) {
-	    int val = j*26;
-	    if (i % val == 0) {
-		c = '@';
-		j++;
-	    }
-	    c++;
-	    i++;
+            int val = j * 26;
+            if (i % val == 0) {
+                c = '@';
+                j++;
+            }
+            c++;
+            i++;
         }
         stack.setName(newName + (c == '@' ? "" : "." + StringUtils.repeat(String.valueOf(c), j)));
     }
-    
+
     private void updateStackList(SedStack stack, Boolean add) {
-	List<SedStack> newStacks = new ArrayList(stacks);
-	if (add) {
-	    newStacks.add(stack);
-	    setStacks(newStacks);
-	    setSelectedStack(stack);
-	    jList1.setSelectedValue(stack, true);
-	} else {
-	    newStacks.remove(stack);
-	    setStacks(newStacks);
-	    SedStack newStack;
-	    if (!getStacks().isEmpty()) {
-		newStack = getStacks().get(newStacks.size()-1);
-		setSelectedStack(newStack);
-		jList1.setSelectedValue(newStack, true);
-	    } else {
-		newStack = new SedStack("Stack");
-		updateStackList(newStack, true);
-	    }
-	}
+        List<SedStack> newStacks = new ArrayList(stacks);
+        if (add) {
+            newStacks.add(stack);
+            setStacks(newStacks);
+            setSelectedStack(stack);
+            jList1.setSelectedValue(stack, true);
+        } else {
+            newStacks.remove(stack);
+            setStacks(newStacks);
+            SedStack newStack;
+            if (!getStacks().isEmpty()) {
+                newStack = getStacks().get(newStacks.size() - 1);
+                setSelectedStack(newStack);
+                jList1.setSelectedValue(newStack, true);
+            } else {
+                newStack = new SedStack("Stack");
+                updateStackList(newStack, true);
+            }
+        }
     }
 
     private String[] loadEnum(Class<? extends Enum> clazz) {
@@ -1658,54 +1670,54 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 //	    }
 //	}
 //    }
-    
+
     private static boolean isNumeric(String str) {
-	  NumberFormat formatter = NumberFormat.getInstance();
-	  ParsePosition pos = new ParsePosition(0);
-	  formatter.parse(str, pos);
-	  return str.length() == pos.getIndex();
-	}
-    
-    private Boolean checkNormParameters(NormalizationConfiguration normConfig) {
-	if (!normConfig.isIntegrate()) {
-	    if (
-		    normConfig.getAtPointXValue() == null ||
-		    normConfig.getAtPointYValue() == null ||
-		    !isNumeric(normConfig.getAtPointXValue().toString()) ||
-		    !isNumeric(normConfig.getAtPointYValue().toString()) ||
-		    normConfig.getAtPointXValue() <= 0 ||
-		    normConfig.getAtPointYValue() <= 0
-		) {
-		NarrowOptionPane.showMessageDialog(null, "Invalid (X, Y) values.", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
-		return false;
-	    }
-	    
-	} else {
-	    if (
-		    normConfig.getYValue() == null ||
-		    !isNumeric(normConfig.getYValue().toString()) ||
-		    normConfig.getYValue() <= 0
-		) {
-		NarrowOptionPane.showMessageDialog(this, "Invalid Y value.", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
-		return false;
-	    }
-	    
-	    if (
-		    normConfig.getXmax() == null ||
-		    normConfig.getXmin() == null ||
-		    normConfig.getXmax() <= 0 ||
-		    normConfig.getXmax() <= normConfig.getXmin()
-	    ) {
-		NarrowOptionPane.showMessageDialog(this, "Invalid range values.", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
-		return false;
-	    }
-	    if (!normConfig.getXmin().equals(Double.NEGATIVE_INFINITY) && normConfig.getXmin() <= 0) {
-		NarrowOptionPane.showMessageDialog(this, "Invalid range values.", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
-		return false;
-	    }
-	}
-	
-	return true;
+        NumberFormat formatter = NumberFormat.getInstance();
+        ParsePosition pos = new ParsePosition(0);
+        formatter.parse(str, pos);
+        return str.length() == pos.getIndex();
     }
-    
+
+    private Boolean checkNormParameters(NormalizationConfiguration normConfig) {
+        if (!normConfig.isIntegrate()) {
+            if (
+                    normConfig.getAtPointXValue() == null ||
+                            normConfig.getAtPointYValue() == null ||
+                            !isNumeric(normConfig.getAtPointXValue().toString()) ||
+                            !isNumeric(normConfig.getAtPointYValue().toString()) ||
+                            normConfig.getAtPointXValue() <= 0 ||
+                            normConfig.getAtPointYValue() <= 0
+                    ) {
+                NarrowOptionPane.showMessageDialog(null, "Invalid (X, Y) values.", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+
+        } else {
+            if (
+                    normConfig.getYValue() == null ||
+                            !isNumeric(normConfig.getYValue().toString()) ||
+                            normConfig.getYValue() <= 0
+                    ) {
+                NarrowOptionPane.showMessageDialog(this, "Invalid Y value.", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+
+            if (
+                    normConfig.getXmax() == null ||
+                            normConfig.getXmin() == null ||
+                            normConfig.getXmax() <= 0 ||
+                            normConfig.getXmax() <= normConfig.getXmin()
+                    ) {
+                NarrowOptionPane.showMessageDialog(this, "Invalid range values.", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            if (!normConfig.getXmin().equals(Double.NEGATIVE_INFINITY) && normConfig.getXmin() <= 0) {
+                NarrowOptionPane.showMessageDialog(this, "Invalid range values.", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 }

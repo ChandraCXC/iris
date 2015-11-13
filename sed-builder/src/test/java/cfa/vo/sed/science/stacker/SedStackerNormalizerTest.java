@@ -29,6 +29,8 @@ import cfa.vo.iris.sed.ExtSed;
 
 import static cfa.vo.sed.science.stacker.SedStackerAttachments.NORM_CONSTANT;
 
+import cfa.vo.iris.utils.Default;
+import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sherpa.SherpaClient;
 
@@ -42,8 +44,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-
-import spv.spectrum.SEDMultiSegmentSpectrum;
 
 /**
  *
@@ -205,7 +205,7 @@ public class SedStackerNormalizerTest {
         seg1.setSpectralAxisValues(x1);
         seg1.setFluxAxisUnits("Jy");
         seg1.setSpectralAxisUnits("Angstrom");
-        seg1.setDataValues(yerr1, SEDMultiSegmentSpectrum.E_UTYPE);
+        seg1.setDataValues(yerr1, UTYPE.FLUX_STAT_ERROR);
         sed1.addSegment(seg1);
 
         Segment seg2 = new Segment();
@@ -213,7 +213,7 @@ public class SedStackerNormalizerTest {
         seg2.setSpectralAxisValues(x2);
         seg2.setFluxAxisUnits("erg/s/cm2/Hz");
         seg2.setSpectralAxisUnits("Angstrom");
-        seg2.setDataValues(yerr2, SEDMultiSegmentSpectrum.E_UTYPE);
+        seg2.setDataValues(yerr2, UTYPE.FLUX_STAT_ERROR);
         sed2.addSegment(seg2);
 
         Segment seg3 = new Segment();
@@ -226,7 +226,7 @@ public class SedStackerNormalizerTest {
         seg3.setSpectralAxisValues(x3);
         seg3.setFluxAxisUnits("erg/s/cm2/Hz");
         seg3.setSpectralAxisUnits("nm");
-        seg3.setDataValues(yerr3, SEDMultiSegmentSpectrum.E_UTYPE);
+        seg3.setDataValues(yerr3, UTYPE.FLUX_STAT_ERROR);
         sed3.addSegment(seg3);
 
         SedStack stack = new SedStack("Stack");
@@ -246,7 +246,7 @@ public class SedStackerNormalizerTest {
         config.setYValue(1.0);
 
         // normalize the Stack
-        SedStackerNormalizer normalizer = new SedStackerNormalizer(controller);
+        SedStackerNormalizer normalizer = new SedStackerNormalizer(controller, Default.getInstance().getUnitsManager());
         normalizer.normalize(stack, config);
 
         List<double[]> xs = new ArrayList();
@@ -312,7 +312,7 @@ public class SedStackerNormalizerTest {
         seg1.setSpectralAxisValues(x1);
         seg1.setFluxAxisUnits("erg/s/cm2/Angstrom");
         seg1.setSpectralAxisUnits("Angstrom");
-        seg1.setDataValues(yerr1, SEDMultiSegmentSpectrum.E_UTYPE);
+        seg1.setDataValues(yerr1, UTYPE.FLUX_STAT_ERROR);
         sed1.addSegment(seg1);
 
         Segment seg2 = new Segment();
@@ -320,7 +320,7 @@ public class SedStackerNormalizerTest {
         seg2.setSpectralAxisValues(x2);
         seg2.setFluxAxisUnits("erg/s/cm2/Angstrom");
         seg2.setSpectralAxisUnits("Angstrom");
-        seg2.setDataValues(yerr2, SEDMultiSegmentSpectrum.E_UTYPE);
+        seg2.setDataValues(yerr2, UTYPE.FLUX_STAT_ERROR);
         sed2.addSegment(seg2);
 
         Segment seg3 = new Segment();
@@ -333,7 +333,7 @@ public class SedStackerNormalizerTest {
         seg3.setSpectralAxisValues(x3);
         seg3.setFluxAxisUnits("erg/s/cm2/Angstrom");
         seg3.setSpectralAxisUnits("nm");
-        seg3.setDataValues(yerr3, SEDMultiSegmentSpectrum.E_UTYPE);
+        seg3.setDataValues(yerr3, UTYPE.FLUX_STAT_ERROR);
         sed3.addSegment(seg3);
 
         SedStack stack = new SedStack("Stack");
@@ -353,7 +353,7 @@ public class SedStackerNormalizerTest {
         config.setYValue(1.0);
 
         // normalize the Stack
-        SedStackerNormalizer normalizer = new SedStackerNormalizer(controller);
+        SedStackerNormalizer normalizer = new SedStackerNormalizer(controller, Default.getInstance().getUnitsManager());
         normalizer.normalize(stack, config);
 
         List<double[]> xs = new ArrayList();

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package cfa.vo.iris.units;
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-package spv.fit;
-
-/**
- *
- * @author olaurino
- */
-public class NoSuchEngineException extends Exception {
-
+public class UnitsException extends Exception {
+    public UnitsException(String s) {
+        super(s);
+    }
 }

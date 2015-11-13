@@ -26,29 +26,25 @@ import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sherpa.SherpaClient;
 import org.astrogrid.samp.Response;
-import spv.util.UnitsException;
-import spv.util.XUnits;
-import spv.util.YUnits;
 
-/**
- *
- * @author olaurino
- */
 public class SherpaInterpolator {
 
     private SherpaClient client;
     private SedlibSedManager manager;
     private SAMPController controller;
     private static String INTERPOLATE_MTYPE = "spectrum.interpolate";
+    private UnitsManager um;
 
-    public SherpaInterpolator(SAMPController controller, SedlibSedManager manager) {
+    public SherpaInterpolator(SAMPController controller, SedlibSedManager manager, UnitsManager unitsManager) {
         this.client = new SherpaClient(controller);
         this.manager = manager;
         this.controller = controller;
+        this.um = unitsManager;
     }
 
     public ExtSed interpolate(ExtSed sed, InterpolationConfig interpConf) throws Exception {
@@ -74,10 +70,10 @@ public class SherpaInterpolator {
         Double xmax = interpConf.getXMax();
         
         if(xmin>Double.NEGATIVE_INFINITY)
-            xmin = convertXValues(new double[]{xmin}, intervUnits, "Angstrom")[0];
+            xmin = um.convertX(new double[]{xmin}, intervUnits, "Angstrom")[0];
         
         if(xmax<Double.POSITIVE_INFINITY)
-            xmax = convertXValues(new double[]{xmax}, intervUnits, "Angstrom")[0];
+            xmax = um.convertX(new double[]{xmax}, intervUnits, "Angstrom")[0];
         
         interpConf.setXMin(Math.min(xmin, xmax));
         interpConf.setXMax(Math.max(xmin, xmax));
@@ -94,15 +90,15 @@ public class SherpaInterpolator {
         InterpolationPayload response = (InterpolationPayload) SAMPFactory.get(rspns.getResult(), InterpolationPayload.class);
                 
         if(xmin>Double.NEGATIVE_INFINITY)
-            xmin = convertXValues(new double[]{xmin}, "Angstrom", intervUnits)[0];
+            xmin = um.convertX(new double[]{xmin}, "Angstrom", intervUnits)[0];
         
         if(xmax<Double.POSITIVE_INFINITY)
-            xmax = convertXValues(new double[]{xmax}, "Angstrom", intervUnits)[0];
+            xmax = um.convertX(new double[]{xmax}, "Angstrom", intervUnits)[0];
 
         interpConf.setXMin(Math.min(xmin, xmax));
         interpConf.setXMax(Math.max(xmin, xmax));
         
-        double[] x = convertXValues(response.getX(), "Angstrom", intervUnits);
+        double[] x = um.convertX(response.getX(), "Angstrom", intervUnits);
         
         Segment segment = new Segment();
         segment.setSpectralAxisValues(x);
@@ -124,27 +120,5 @@ public class SherpaInterpolator {
 
         return newSed;
 
-    }
-
-    private double[] concat(double[] a, double[] b) {
-        int aLen = a.length;
-        int bLen = b.length;
-        double[] c = new double[aLen + bLen];
-        System.arraycopy(a, 0, c, 0, aLen);
-        System.arraycopy(b, 0, c, aLen, bLen);
-        return c;
-    }
-
-    private double[] getSpectralValues(Segment segment) throws SedNoDataException, UnitsException {
-        double[] values = segment.getSpectralAxisValues();
-        return convertXValues(values, segment.getSpectralAxisUnits(), "Angstrom");
-    }
-
-    private double[] convertXValues(double[] values, String fromUnits, String toUnits) throws UnitsException {
-        return XUnits.convert(values, new XUnits(fromUnits), new XUnits(toUnits));
-    }
-
-    private double[] convertYValues(double[] yvalues, double[] xvalues, String fromYUnits, String fromXUnits, String toUnits) throws UnitsException {
-        return YUnits.convert(yvalues, xvalues, new YUnits(fromYUnits), new XUnits(fromXUnits), new YUnits(toUnits), true);
     }
 }

@@ -25,6 +25,7 @@ import cfa.vo.interop.PingMessage;
 import cfa.vo.iris.interop.AbstractSedMessageHandler;
 import cfa.vo.iris.interop.SedSAMPController;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.utils.Default;
 import cfa.vo.sed.builder.SegmentImporter;
 import cfa.vo.sed.builder.photfilters.EnergyBin;
 import cfa.vo.sed.builder.photfilters.PassBand;
@@ -235,7 +236,7 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
 
 
 
-            SherpaIntegrator integrator = new SherpaIntegrator(controller);
+            SherpaIntegrator integrator = new SherpaIntegrator(controller, Default.getInstance().getUnitsManager());
 
             //Some constants we need for conversions
             double H = 6.62620E-27;
