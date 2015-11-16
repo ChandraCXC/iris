@@ -52,7 +52,6 @@ import org.astrogrid.samp.client.SampException;
  */
 public class SedStackerRedshifter {
 
-
     private SherpaClient client;
     private SAMPController controller;
     private static String REDSHIFT_MTYPE = "stack.redshift";
@@ -69,41 +68,47 @@ public class SedStackerRedshifter {
         shift(stack, stack.getConf().getRedshiftConfiguration());
     }
 
-    public void shift(SedStack stack, RedshiftConfiguration zconfig) throws Exception {
 
+    public void shift(SedStack stack, RedshiftConfiguration zconfig)
+            throws Exception 
+    {
         this.redshiftConfigChanged = false;
 
         if (stack.getSeds().isEmpty()) {
-            NarrowOptionPane.showMessageDialog(null,
-                    "Stack is empty. Please add SEDs to the stack to redshift.",
-                    "Empty Stack",
-                    NarrowOptionPane.ERROR_MESSAGE);
+            NarrowOptionPane
+                    .showMessageDialog(
+                            null,
+                            "Stack is empty. Please add SEDs to the stack to redshift.",
+                            "Empty Stack", NarrowOptionPane.ERROR_MESSAGE);
             throw new SedNoDataException();
         }
 
         try {
             client.findSherpa();
         } catch (SampException ex) {
-            NarrowOptionPane.showMessageDialog(null,
-                    "Error redshifting: " +
-                            "Iris could not find the Sherpa process running in the background. Please check the Troubleshooting section in the Iris documentation.",
-                    "Cannot connect to Sherpa",
-                    NarrowOptionPane.ERROR_MESSAGE);
+            NarrowOptionPane.showMessageDialog(
+                            null,
+                            "Error redshifting: Iris could not find the Sherpa process running in the background." +
+                            " Please check the Troubleshooting section in the Iris documentation.",
+                            "Cannot connect to Sherpa",
+                            NarrowOptionPane.ERROR_MESSAGE);
             throw new Exception("Sherpa not found");
         }
 
-        // Create copy of stack and convert new stack to same units. First save the original units for later.
+        // Create copy of stack and convert new stack to same units. First save
+        // the original units for later.
         List<String> xunits = stack.getSpectralUnits();
         List<String> yunits = stack.getFluxUnits();
-        //SedStack nstack = stack.copy();
-        //convertUnits(stack, "Angstrom", "Jy");  //TODO: chose which method to use here.
+        // SedStack nstack = stack.copy();
+        // convertUnits(stack, "Angstrom", "Jy"); //TODO: chose which method to
+        // use here.
         convertUnits(stack, "Angstrom");
 
         SedStackerRedshiftPayload payload = (SedStackerRedshiftPayload) SAMPFactory.get(SedStackerRedshiftPayload.class);
 
         for (int i = 0; i < stack.getSeds().size(); i++) {
-
-            SegmentPayload segment = (SegmentPayload) SAMPFactory.get(SegmentPayload.class);
+            SegmentPayload segment = (SegmentPayload) SAMPFactory
+                    .get(SegmentPayload.class);
 
             segment.setX(stack.getSed(i).getSegment(0).getSpectralAxisValues());
             segment.setY(stack.getSed(i).getSegment(0).getFluxAxisValues());
@@ -111,24 +116,26 @@ public class SedStackerRedshifter {
 
             segment.setId(stack.getSed(i).getId());
 
-            if (stack.getSed(i).getAttachment(REDSHIFT) != null &&
-                    isNumeric(stack.getSed(i).getAttachment(REDSHIFT).toString()) &&
-                    !stack.getSed(i).getAttachment(REDSHIFT).toString().equals("")) {
+            if (stack.getSed(i).getAttachment(REDSHIFT) != null
+                    && isNumeric(stack.getSed(i).getAttachment(REDSHIFT)
+                            .toString())
+                    && !stack.getSed(i).getAttachment(REDSHIFT).toString()
+                            .equals("")) {
 
-                segment.setZ(Double.valueOf(stack.getSed(i).getAttachment(REDSHIFT).toString()));
+                segment.setZ(Double.valueOf(stack.getSed(i)
+                        .getAttachment(REDSHIFT).toString()));
 
-            } else if (stack.getSed(i).getAttachment(REDSHIFT) != null &&
-                    !isNumeric(stack.getSed(i).getAttachment(REDSHIFT).toString())) {
-
-                throw new StackException("Invalid redshift for " + stack.getSed(i).getId() +
-                        " (z = " + stack.getSed(i).getAttachment(REDSHIFT).toString() + "). " +
-                        "Stack was not redshifted."
-                );
+            } else if (stack.getSed(i).getAttachment(REDSHIFT) != null
+                    && !isNumeric(stack.getSed(i).getAttachment(REDSHIFT)
+                            .toString())) 
+            {
+                throw new StackException("Invalid redshift for "
+                        + stack.getSed(i).getId() + " (z = "
+                        + stack.getSed(i).getAttachment(REDSHIFT).toString()
+                        + "). " + "Stack was not redshifted.");
 
             } else {
-
                 segment.setZ(Double.NaN);
-
             }
 
             payload.addSegment(segment);
@@ -137,9 +144,11 @@ public class SedStackerRedshifter {
         payload.setZ0(zconfig.getToRedshift());
         payload.setCorrectFlux(zconfig.isCorrectFlux());
 
-        SAMPMessage message = SAMPFactory.createMessage(REDSHIFT_MTYPE, payload, SedStackerRedshiftPayload.class);
 
-        Response rspns = controller.callAndWait(client.findSherpa(), message.get(), 10);
+        SAMPMessage message = SAMPFactory.createMessage(REDSHIFT_MTYPE,
+                payload, SedStackerRedshiftPayload.class);
+        Response rspns = controller.callAndWait(client.findSherpa(),
+                message.get(), 10);
         if (client.isException(rspns)) {
             Exception ex = client.getException(rspns);
             throw ex;
@@ -160,9 +169,12 @@ public class SedStackerRedshifter {
             if (!Double.isNaN(segment.getZ())) {
                 stack.getSed(c).addAttachment(REDSHIFT, zconfig.getToRedshift());
             }
-
-            // If any SEDs were normalized with new normalization paramters, update the norm constant and hashcode.
-            if (Integer.parseInt(stack.getSed(c).getAttachment(SedStackerAttachments.REDSHIFT_CONF_HASH).toString()) != zconfig.hashCode()) {
+	    
+            // If any SEDs were normalized with new normalization paramters,
+            // update the norm constant and hashcode.
+            if (Integer.parseInt(stack.getSed(c).getAttachment(SedStackerAttachments.REDSHIFT_CONF_HASH).toString()) != 
+                    zconfig.hashCode()) 
+            {
                 stack.getSeds().get(c).addAttachment(SedStackerAttachments.REDSHIFT_CONF_HASH, zconfig.hashCode());
                 ct++;
             }
@@ -177,9 +189,9 @@ public class SedStackerRedshifter {
         // convert back to the original units of the Stack
         convertUnits(stack, xunits, yunits);
 
-	/* if some SEDs were skipped during shifting because they had no 
-	* redshift, tell the user which SEDs weren't redshifted.
-	*/
+        /* if some SEDs were skipped during shifting because they had no 
+         * redshift, tell the user which SEDs weren't redshifted.
+         */
         if (response.getExcludeds() != null && response.getExcludeds().size() > 0) {
             NarrowOptionPane.showMessageDialog(null,
                     "SEDs " + response.getExcludeds() + " were not redshifted because they do not have redshifts.",
@@ -220,12 +232,10 @@ public class SedStackerRedshifter {
             stack.getSeds().get(i).getSegment(0).setSpectralAxisValues(nsed.getSegment(0).getSpectralAxisValues());
             stack.getSeds().get(i).getSegment(0).setDataValues((double[]) nsed.getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR),
                     UTYPE.FLUX_STAT_ERROR);
-
         }
     }
 
     public boolean redshiftConfigChanged() {
-
         return this.redshiftConfigChanged;
     }
 
@@ -235,5 +245,4 @@ public class SedStackerRedshifter {
         formatter.parse(str, pos);
         return str.length() == pos.getIndex();
     }
-
 }

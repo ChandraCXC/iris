@@ -36,33 +36,39 @@ public class NEDImporter {
 
     public static final String NED_DATA_DEFAULT_ENDPOINT =
             "http://vo.ned.ipac.caltech.edu/services/accessSED?REQUEST=getData&TARGETNAME=:targetName";
+    
+    public NEDImporter() {}
 
     public static Sed getSedFromName(String targetName) throws SegmentImporterException {
         return getSedFromName(targetName, NED_DATA_DEFAULT_ENDPOINT);
     }
 
     public static Sed getSedFromName(String targetName, String endpoint) throws SegmentImporterException {
+
+        Sed sed;
         try {
             targetName = URLEncoder.encode(targetName, "UTF-8");
             endpoint = endpoint.replace(":targetName", targetName);
             URL nedUrl = new URL(endpoint);
-
-            Sed sed = Sed.read(nedUrl.openStream(), SedFormat.VOT);
-
-            if(sed.getNumberOfSegments()>0) {
-                Segment seg = sed.getSegment(0);
-
-                if(seg.createTarget().getPos()==null)
-                            if(seg.createChar().createSpatialAxis().createCoverage().getLocation()!=null)
-                                seg.createTarget().createPos().setValue(seg.getChar().getSpatialAxis().getCoverage().getLocation().getValue());
-                            else
-                                seg.createTarget().createPos().setValue(new DoubleParam[]{new DoubleParam(Double.NaN), new DoubleParam(Double.NaN)});
-            }
-            return sed;
-
+            sed = Sed.read(nedUrl.openStream(), SedFormat.VOT);
         } catch (Exception ex) {
             throw new SegmentImporterException(ex);
         }
+        
+        if (sed.getNumberOfSegments() > 0) {
+            Segment seg = sed.getSegment(0);
+            if (seg.createTarget().getPos() == null) {
+                if (seg.createChar().createSpatialAxis().createCoverage().getLocation() != null) {
+                    seg.createTarget().createPos()
+                            .setValue(seg.getChar().getSpatialAxis().getCoverage().getLocation().getValue());
+                } else {
+                    seg.createTarget().createPos()
+                            .setValue(new DoubleParam[] { new DoubleParam(Double.NaN), new DoubleParam(Double.NaN) });
+                }
+            }
+        }
+            
+        return sed;
     }
 
 //    public static Sed getError() throws SegmentImporterException {
