@@ -27,8 +27,7 @@ import java.net.URL;
 
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sed.setup.SetupBean;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -38,13 +37,12 @@ import static org.junit.Assert.*;
  * @author Jamie
  */
 public class AsciiConfTest {
+    private SedBuilder builder;
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
+    @Before
+    public void setUp() throws Exception {
+        builder = new SedBuilder();
+        builder.init(new App(), new Ws());
     }
 
     /**
@@ -63,9 +61,6 @@ public class AsciiConfTest {
         errors[1] = 1.0;
         errors[2] = Double.NaN;
         errors[3] = 1.0;
-
-        SedBuilder builder = new SedBuilder();
-        builder.init(new App(), new Ws());
 
         Segment segmentOK = SegmentImporter.getSegments(resultOK).get(0);
 
