@@ -13,7 +13,9 @@
     
         <head>
 	    <!-- meta keywords for SI / HEA -->
-            <meta http-equiv="keywords" content="chandra, axaf, x-ray, astronomy, astrophysics, catalog, multi-wavelength, multiwavelength, vao, VAO, sed, SED, SEDs"/>
+            <meta http-equiv="keywords" content="chandra, axaf, x-ray,
+            astronomy, astrophysics, catalog, multi-wavelength,
+            multiwavelength, vao, VAO, sed, SED, SEDs, spectral energy distribution"/>
             <meta http-equiv="description" content="Iris: VO SED Analysis Tool"/>
             <meta name="creator" content="SAO-HEA"/>
             <meta name="keywords" content="SI,Smithsonian,Smithsonian Institute"/>
