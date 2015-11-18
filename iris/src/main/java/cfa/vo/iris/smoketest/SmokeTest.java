@@ -23,7 +23,6 @@ package cfa.vo.iris.smoketest;
 
 import cfa.vo.iris.*;
 import org.astrogrid.samp.client.MessageHandler;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
