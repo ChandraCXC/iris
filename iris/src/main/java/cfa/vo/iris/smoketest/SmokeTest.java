@@ -58,7 +58,7 @@ public class SmokeTest implements IrisComponent {
             }
 
             @Override
-            public void call(String[] args) {
+            public int call(String[] args) {
                 String testFile = System.getProperty("IRIS_DIR")+"/examples/3c273.xml";
                 if(args.length>0) {
                     try{
@@ -66,7 +66,7 @@ public class SmokeTest implements IrisComponent {
                         test = new SherpaSmokeTest(testFile, timeout);
                     } catch (NumberFormatException ex) {
                         System.out.println(args[0]+" is not a number.");
-                        return;
+                        return 1;
                     }
                 }
                 else
@@ -76,7 +76,7 @@ public class SmokeTest implements IrisComponent {
                 } catch (Exception ex) {
                     Logger.getLogger(SmokeTest.class.getName()).log(Level.SEVERE, null, ex);
                 } finally {
-                    test.exit();
+                    return test.exit();
                 }
             }
         };

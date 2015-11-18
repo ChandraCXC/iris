@@ -70,6 +70,7 @@ function start_iris {
     fi
 
     wait $irispid
+    exit_code=$?
 
     echo "Killing Sherpa process..."
 
@@ -92,6 +93,8 @@ function start_iris {
     else
         echo "ALL DONE. Quitting."
     fi
+
+    exit $exit_code
 }
 
 if type -p java; then

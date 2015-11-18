@@ -285,7 +285,7 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
     }
 
     @Override
-    protected void exit() {
+    protected int exit() {
 
         if (controller != null) {
             controller.stop();
@@ -311,15 +311,9 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
             log("Something went wrong. If a timeout occurred, try re-running the test with a longer timeout (e.g. iris smoketest 20).");
             log("If the Smoke Test is not working, your system may not be supported, or you have downloaded"
                     + " a distribution that does not match your Operating System.");
-//            log("\n\nChecking Architecture");
-//            try {
-//                checkArch();
-//            } catch (Exception ex1) {
-//                Logger.getLogger(SherpaSmokeTest.class.getName()).log(Level.SEVERE, null, ex1);
-//            }
-//            Assert.fail();
         }
 
+        return working? 0 : 1;
 
     }
 
