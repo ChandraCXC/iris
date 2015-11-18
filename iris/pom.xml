@@ -28,8 +28,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.build.timestamp.format>yyyy/MM/dd</maven.build.timestamp.format>
         <buildDate>${maven.build.timestamp}</buildDate>
-        <samp.jar>${project.build.directory}/lib/jsamp-${jsamp.version}-${jsamp.classifier}.jar</samp.jar>
-        <sherpa.command>sherpa-samp</sherpa.command>
     </properties>
 
     <parent>
@@ -103,22 +101,6 @@
         </resources>
 
         <plugins>
-
-            <plugin>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
-                        </configuration>
-                    </execution>
-
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -160,73 +142,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <!-- Startup and Shutdown of the SAMP environment for integration tests -->
-            <!-- Executions bind to the pre-integration-test and post-integration-test phases -->
-            <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <groupId>org.apache.maven.plugins</groupId>
-                <executions>
-                    <execution>
-                        <id>Startup SAMP</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <!-- otherwise the outproperty below would not bubble up in maven -->
-                            <exportAntProperties>true</exportAntProperties>
-                            <target name="startup">
-                                <!-- first start the samp hub by executing the jsamp jar -->
-                                <exec executable="java" spawn="true">
-                                    <arg value="-jar"/>
-                                    <arg value="${samp.jar}"/>
-                                </exec>
-                                <!-- then start sherpa-samp -->
-                                <!-- both executions happen in the background (spawn = true)
-                                otherwise the maven process would wait for the tasks to finish and hang -->
-                                <exec executable="${sherpa.command}" spawn="true"/>
-                                <!-- use jps to find the hub pid. Maybe there is a better way of doing this?
-                                 The output is recorded in the hub.pid ant property, which will be available to maven -->
-                                <exec executable="jps">
-                                    <arg value="-l"/>
-                                    <redirector outputproperty="hub.pid">
-                                        <outputfilterchain>
-                                            <linecontains>
-                                                <contains value="${samp.jar}"/>
-                                            </linecontains>
-                                            <replacestring from=" ${samp.jar}"/>
-                                        </outputfilterchain>
-                                    </redirector>
-                                </exec>
-                            </target>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>Shutdown SAMP</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target name="shutdown">
-                                <!-- stop sherpa-samp -->
-                                <exec executable="killall">
-                                    <!-- sherpa-samp is designed to cleanly shutdown and disconnect from the hub after a SIGINT -->
-                                    <arg value="-2"/>
-                                    <arg value="${sherpa.command}"/>
-                                </exec>
-                                <!-- stop the SAMP hub -->
-                                <exec executable="kill">
-                                    <arg value="-9"/>
-                                    <arg value="${hub.pid}"/>
-                                </exec>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
     </build>
 
