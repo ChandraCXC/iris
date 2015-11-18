@@ -24,7 +24,6 @@
             <item name="Chandra CXC" href="http://cxc.cfa.harvard.edu"/>
         </links>
 
-        <menu ref="parent"/>
         <menu name="Information">
 			<item name="Introduction" href="./index.html"/>
 			<item name="Sibling Modules" href="../modules.html"/>
