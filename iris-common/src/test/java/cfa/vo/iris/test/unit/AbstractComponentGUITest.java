@@ -20,6 +20,12 @@ import cfa.vo.iris.IrisComponent;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * This abstract class makes it easier to unit-test a single component.
+ *
+ * Implementing classes can return a single {@link IrisComponent} instance rather
+ * than a list of them.
+ */
 public abstract class AbstractComponentGUITest extends AbstractGUITest {
 
     @Override
