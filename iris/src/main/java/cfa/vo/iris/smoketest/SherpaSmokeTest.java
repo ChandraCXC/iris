@@ -47,20 +47,12 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//import org.astrogrid.samp.Response;
-
-/**
- *
- * @author olaurino
- */
 public class SherpaSmokeTest extends AbstractSmokeTest {
 
     private String testVotable;
     private SedSAMPController controller;
     private boolean working = false;
     protected Boolean control;
-//    private SherpaSamp sherpa;
-//    private String sherpaDirS;
 
     public SherpaSmokeTest(String testVotable) {
         this(testVotable, 20);
@@ -86,21 +78,6 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
             log("Starting Smoke Test with timeout: "+TIMEOUT);
             log("========================================");
 
-//            sherpaDirS = System.getProperty("IRIS_DIR") + "/lib/sherpa";
-//
-//            File sherpaDir = new File(sherpaDirS);
-//
-//            boolean isSherpaDir = false;
-//
-//            //Verify sherpaDir contains sherpa
-//            for (File f : sherpaDir.listFiles()) {
-//                if (f.getName().equals("startsherpa.py")) {
-//                    isSherpaDir = true;
-//                }
-//            }
-//
-//            check(isSherpaDir, "The directory does not contain Sherpa");
-
             //Verify we can read test file.
             File testFile = new File(testVotable);
             check(testFile.canRead(), "Can't read file " + testVotable);
@@ -114,11 +91,6 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
             log("Waiting for the SAMP controller...");
             waitUntil(controller, "isConnected", "SAMP controller never connected!");
 
-            //Start Sherpa
-//            log("Starting Sherpa...");
-//            sherpa = new SherpaSamp();
-//            sherpa.start();
-//
             Thread.sleep(TIMEOUT*1000);//sherpa needs some time to connect to the hub
 
             //check that sherpa can be pinged
@@ -191,7 +163,7 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
 
             log("Running sample model integration...");
 
-            List<PassBand> pbs = new ArrayList();
+            List<PassBand> pbs = new ArrayList<>();
 
             EnergyBin b1 = new EnergyBin();
             EnergyBin b2 = new EnergyBin();
@@ -278,10 +250,6 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
             Logger.getLogger(SherpaSmokeTest.class.getName()).log(Level.SEVERE, null, ex);
             ex.printStackTrace();
         }
-//        catch (Exception ex) {
-//            Logger.getLogger(SherpaSmokeTest.class.getName()).log(Level.SEVERE, null, ex);
-//            ex.printStackTrace();
-//        }
     }
 
     @Override
@@ -290,15 +258,6 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
         if (controller != null) {
             controller.stop();
         }
-
-//        if (sherpa != null) {
-//            try {
-//                sherpa.shutdown();
-//                Thread.sleep(2000);
-//            } catch (InterruptedException ex) {
-//                Logger.getLogger(SherpaSmokeTest.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
 
         String message = working ? "Everything seems to be working!" : "OOPS! Something went wrong!";
 
@@ -352,40 +311,6 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
         public void done() {
         }
     }
-
-//    private void checkArch() throws IOException, InterruptedException {
-//        ProcessBuilder pb = new ProcessBuilder("file", sherpaDirS+"/bin/python2.6");
-//
-//        Process p = pb.start();
-//
-//        InputStream is = p.getInputStream();
-//
-//        p.waitFor();
-//
-//        String s = new Scanner(is).useDelimiter("\\A").next().toLowerCase();
-//
-//        String arch = System.getProperty("os.arch").toLowerCase();
-//
-//        if(arch.equals("amd64"))
-//            arch = "x86_64";
-//
-//        String os = System.getProperty("os.name").toLowerCase();
-//
-//        if(os.equals("mac os x"))
-//            os = "mach-o";
-//
-//        if(s.contains(os)) {
-//            if(!(s.contains(arch) || s.contains(arch.replaceAll("_", "-"))))
-//                Logger.getLogger("").log(Level.SEVERE, "\nIris may be installed for the wrong architecture. However, Iris could still work, so the test will continue...");
-//        } else {
-//            Logger.getLogger("").log(Level.SEVERE, "\nIt seems like you installed Iris for the wrong Operating System. However, the test will continue, since there is the unlikely possibility"
-//                    + " that Iris will work anyway or that there was an error probing the running operating system.");
-//        }
-//
-//        log("\nOperating system: "+os);
-//        log("Architecture: "+arch);
-//        log("Python Executable: "+s);
-//    }
 
     private class SmokeSedHandler extends AbstractSedMessageHandler {
 
