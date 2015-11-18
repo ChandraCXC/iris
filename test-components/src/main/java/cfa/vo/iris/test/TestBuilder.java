@@ -125,8 +125,9 @@ public class TestBuilder implements IrisComponent {
         }
 
         @Override
-        public void call(String[] args) {
+        public int call(String[] args) {
             logger.info(getName()+" called with arguments: "+args);
+            return 0;
         }
 
     }

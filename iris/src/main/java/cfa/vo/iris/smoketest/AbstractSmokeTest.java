@@ -66,6 +66,6 @@ public abstract class AbstractSmokeTest {
         check(f.get(this) != null, failMessage);
     }
 
-    protected abstract void exit();
+    protected abstract int exit();
 
 }
