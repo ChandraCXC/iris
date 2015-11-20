@@ -3,8 +3,10 @@ package cfa.vo.sed.science.stacker;
 import java.util.logging.Logger;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SAMPFactory;
@@ -36,12 +38,21 @@ public abstract class AbstracSEDStackerIT {
     protected SegmentPayload segment2;
     protected SegmentPayload segment3;
 
-    protected SAMPController controller;
+    protected static SAMPController controller;
+    
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        startSamp();
+    }
+    
+    @AfterClass
+    public static void afterClass() throws Exception {
+        terminate();
+    }
     
     @Before
     public void setUp() throws Exception {
         initVariables();
-        startSamp();
     }
     
     @After
@@ -84,9 +95,9 @@ public abstract class AbstracSEDStackerIT {
         segment3.setId("Sed3");
     }
     
-    private void startSamp() throws Exception {
+    private static void startSamp() throws Exception {
         // Start the SAMP controller
-        controller = new SedSAMPController("SEDStacker", "SEDStacker", this.getClass().getResource("/tools_tiny.png")
+        controller = new SedSAMPController("SEDStacker", "SEDStacker", AbstracSEDStackerIT.class.getResource("/tools_tiny.png")
                 .toString());
         controller.setAutoRunHub(false);
         controller.start(false);
@@ -106,7 +117,7 @@ public abstract class AbstracSEDStackerIT {
         }
     }
 
-    protected void terminate() {
+    protected static void terminate() {
         controller.stop();
     }
 }
