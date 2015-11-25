@@ -247,8 +247,8 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
             working = true;
 
         } catch (Throwable ex) {
-            Logger.getLogger(SherpaSmokeTest.class.getName()).log(Level.SEVERE, null, ex);
-            ex.printStackTrace();
+            working = false;
+            throw ex;
         }
     }
 

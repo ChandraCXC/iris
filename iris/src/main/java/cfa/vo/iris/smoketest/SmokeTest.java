@@ -72,8 +72,8 @@ public class SmokeTest implements IrisComponent {
                     test = new SherpaSmokeTest(testFile);
                 try {
                     test.runTest();
-                } catch (Exception ex) {
-                    Logger.getLogger(SmokeTest.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Throwable ex) {
+                    ex.printStackTrace(System.err);
                 } finally {
                     return test.exit();
                 }
