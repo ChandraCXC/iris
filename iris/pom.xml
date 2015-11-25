@@ -155,7 +155,7 @@
                 <executions>
                     <execution>
                         <id>Smoke Test</id>
-                        <phase>integration-test</phase>
+                        <phase>verify</phase>
                         <goals>
                             <goal>exec</goal>
                         </goals>
