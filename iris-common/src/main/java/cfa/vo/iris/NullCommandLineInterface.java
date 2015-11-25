@@ -39,8 +39,8 @@ public class NullCommandLineInterface implements ICommandLineInterface {
     }
 
     @Override
-    public void call(String[] args) {
-        
+    public int call(String[] args) {
+        return 0;
     }
 
 }
