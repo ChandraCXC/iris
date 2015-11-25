@@ -36,15 +36,10 @@ import java.util.List;
 
 import org.astrogrid.samp.Response;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- * 
- * @author jbudynk
- */
 public class SedStackerRedshifterIT extends AbstracSEDStackerIT {
     
     double[] controlY1;
@@ -72,7 +67,6 @@ public class SedStackerRedshifterIT extends AbstracSEDStackerIT {
                 5.0, 10.0 };
     }
 
-    @Ignore("need sherpa-samp running")
     @Test
     public void testRedshift() throws Exception {
         payload = (SedStackerRedshiftPayload) SAMPFactory
@@ -122,7 +116,6 @@ public class SedStackerRedshifterIT extends AbstracSEDStackerIT {
         }
     }
 
-    @Ignore("need sherpa-samp running")
     @Test
     public void testRedshifter() throws Exception {
         ExtSed sed1 = new ExtSed("Sed1");
@@ -223,7 +216,6 @@ public class SedStackerRedshifterIT extends AbstracSEDStackerIT {
         }
     }
 
-    @Ignore("need sherpa-samp running")
     @Test
     public void testRedshifterNoZ() throws Exception {
         ExtSed sed1 = new ExtSed("Sed1");
