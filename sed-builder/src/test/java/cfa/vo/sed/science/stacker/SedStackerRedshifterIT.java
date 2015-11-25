@@ -37,6 +37,10 @@ import java.util.List;
 import org.astrogrid.samp.Response;
 import org.junit.Before;
 import org.junit.Test;
+import org.uispec4j.Trigger;
+import org.uispec4j.Window;
+import org.uispec4j.interception.WindowHandler;
+import org.uispec4j.interception.WindowInterceptor;
 
 import static org.junit.Assert.*;
 
@@ -261,8 +265,7 @@ public class SedStackerRedshifterIT extends AbstracSEDStackerIT {
         stack.getConf().setRedshiftConfiguration(redshiftConf);
 
         // redshift the Stack
-        redshifter = new SedStackerRedshifter(controller, Default.getInstance().getUnitsManager());
-        redshifter.shift(stack);
+        redshiftWithWindowInterceptor(stack, redshiftConf);
 
         // original values. make sure stack.getOrigSeds() returns original seds
         List<double[]> xs = new ArrayList();
@@ -306,5 +309,21 @@ public class SedStackerRedshifterIT extends AbstracSEDStackerIT {
             double xValue = shiftedSed2.getSegment(0).getSpectralAxisValues()[i];
             assertEquals(xValue, x2[i], EPSILON);
         }
+    }
+
+    private void redshiftWithWindowInterceptor(final SedStack stack, final RedshiftConfiguration config) {
+        WindowInterceptor.init(new Trigger() {
+            @Override
+            public void run() throws Exception {
+                final SedStackerRedshifter shifter = new SedStackerRedshifter(controller, Default.getInstance().getUnitsManager());
+                shifter.shift(stack, config);
+            }
+        }).process(new WindowHandler() {
+            @Override
+            public Trigger process(Window window) throws Exception {
+                window.titleEquals("Unshifter SEDs");
+                return window.getButton("OK").triggerClick();
+            }
+        }).run();
     }
 }
