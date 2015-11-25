@@ -2,7 +2,6 @@ package cfa.vo.sed.science.stacker;
 
 import java.util.logging.Logger;
 
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -66,11 +65,6 @@ public abstract class AbstracSEDStackerIT {
     @Before
     public void setUp() throws Exception {
         initVariables();
-    }
-    
-    @After
-    public void tearDown() {
-        terminate();
     }
     
     protected void initVariables() throws Exception {

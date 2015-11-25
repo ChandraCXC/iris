@@ -99,8 +99,6 @@ public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
             assertEquals(9.846 * y2[i], resy2[i], EPSILON);
         }
         assertEquals(1.1529274, resnorm3, EPSILON);
-
-        controller.stop();
     }
 
     @Test
