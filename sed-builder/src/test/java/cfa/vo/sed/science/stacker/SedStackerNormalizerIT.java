@@ -22,6 +22,7 @@ import static cfa.vo.sed.science.stacker.SedStackerAttachments.NORM_CONSTANT;
 import cfa.vo.iris.utils.Default;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.Segment;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.astrogrid.samp.Response;

@@ -12,6 +12,7 @@ import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.iris.interop.SedSAMPController;
 import org.uispec4j.UISpec4J;
+import cfa.vo.iris.test.unit.it.AbstractSAMPTest;
 
 /**
  * Abstract class for integration testing of SAMP integration. Tests will fail if they are
@@ -33,6 +34,7 @@ public abstract class AbstracSEDStackerIT {
     }
 
     private static final Logger logger = Logger.getLogger(AbstracSEDStackerIT.class.getName());
+
     protected static final double EPSILON = 0.00001;
 
     protected double[] x1;
@@ -62,7 +64,7 @@ public abstract class AbstracSEDStackerIT {
     }
     
     @Before
-    public void setUp() throws Exception {
+    public void setup() throws Exception {
         initVariables();
     }
     
