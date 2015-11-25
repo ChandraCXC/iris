@@ -29,7 +29,6 @@ import cfa.vo.iris.utils.UTYPE;
 
 import static cfa.vo.sed.science.stacker.SedStackerAttachments.COUNTS;
 import cfa.vo.sedlib.Segment;
-import cfa.vo.sherpa.SherpaClient;
 import java.util.ArrayList;
 import java.util.List;
 import org.astrogrid.samp.Response;
@@ -63,8 +62,6 @@ public class SedStackerStackerIT extends AbstracSEDStackerIT {
 
         // Setup and send SAMP message
         SAMPMessage message = SAMPFactory.createMessage("stack.stack", payload, SedStackerStackPayload.class);
-
-        SherpaClient client = new SherpaClient(controller);
 
         Response rspns = controller.callAndWait(client.findSherpa(), message.get(), 10);
         if (client.isException(rspns)) {

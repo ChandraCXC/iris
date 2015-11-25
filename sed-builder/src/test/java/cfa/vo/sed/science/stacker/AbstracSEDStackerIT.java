@@ -2,6 +2,7 @@ package cfa.vo.sed.science.stacker;
 
 import java.util.logging.Logger;
 
+import cfa.vo.sherpa.SherpaClient;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -33,7 +34,9 @@ public abstract class AbstracSEDStackerIT {
 
     private static final Logger logger = Logger.getLogger(AbstracSEDStackerIT.class.getName());
     
-    private static final int SAMP_CONN_RETRIES = 3;
+    private static final int SAMP_CONN_RETRIES = 20;
+    private static final int TIMEOUT = 20000;
+    private static final int STEP = 1000;
     protected static final double EPSILON = 0.00001;
 
     protected double[] x1;
@@ -51,6 +54,7 @@ public abstract class AbstracSEDStackerIT {
     protected SegmentPayload segment3;
 
     protected static SAMPController controller;
+    protected static SherpaClient client;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -108,9 +112,7 @@ public abstract class AbstracSEDStackerIT {
                 .toString());
         controller.setAutoRunHub(true);
         controller.start(false);
-        
-        // Wait for start
-        Thread.sleep(2000);
+        client = new SherpaClient(controller);
 
         int count = 0;
         while (!controller.isConnected()) {
@@ -120,7 +122,14 @@ public abstract class AbstracSEDStackerIT {
                 Assert.fail(msg);
             }
             logger.info("waiting connection");
-            Thread.sleep(1000);
+            Thread.sleep(STEP);
+        }
+
+        boolean isSherpaThere = client.waitFor(TIMEOUT, STEP);
+        if (!isSherpaThere) {
+            String msg = "Sherpa did not show up, failing unit tests";
+            logger.info(msg);
+            Assert.fail();
         }
     }
 
