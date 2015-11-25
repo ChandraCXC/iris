@@ -10,6 +10,18 @@
 
     <body>
     
+        <head>
+	    <!-- meta keywords for SI / HEA -->
+            <meta http-equiv="keywords" content="chandra, axaf, x-ray,
+            astronomy, astrophysics, catalog, multi-wavelength,
+            multiwavelength, vao, VAO, sed, SED, SEDs, spectral energy distribution"/>
+            <meta http-equiv="description" content="Iris: VO SED Analysis Tool"/>
+            <meta name="creator" content="SAO-HEA"/>
+            <meta name="keywords" content="SI,Smithsonian,Smithsonian Institute"/>
+            <meta name="keywords" content="CfA,SAO,Harvard-Smithsonian,Center for Astrophysics"/>
+            <meta name="keywords" content="HEA,HEAD,High Energy Astrophysics Division"/>
+	</head>
+
         <links>
             <item name="Chandra CXC" href="http://cxc.cfa.harvard.edu"/>
         </links>
@@ -17,7 +29,7 @@
         <menu ref="parent"/>
         <menu name="Information">
 			<item name="Introduction" href="./index.html"/>
-			<item name="Sybling Modules" href="../modules.html"/>
+			<item name="Sibling Modules" href="../modules.html"/>
 		</menu>
         <menu ref="reports"/>
         	

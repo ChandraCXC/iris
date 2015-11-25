@@ -1,6 +1,6 @@
-# iris-specview
+# iris-visualizer
 
-This page contains developer information for the `iris-specview` package.
+This page contains developer information for the `iris-visualizer` package.
 
 Please see the [Project Documentation][proj-info] for more details.
 
