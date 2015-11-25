@@ -234,7 +234,7 @@
                             <configuration>
                                 <!-- otherwise the outproperty below would not bubble up in maven -->
                                 <exportAntProperties>true</exportAntProperties>
-                                <target name="startup">
+                                <target name="samp infrastructure startup">
                                     <!-- first start the samp hub by executing the jsamp jar -->
                                     <exec executable="java" spawn="true">
                                         <arg value="-jar"/>
@@ -267,7 +267,7 @@
                                 <goal>run</goal>
                             </goals>
                             <configuration>
-                                <target name="shutdown">
+                                <target name="samp infrastructure shutdown">
                                     <!-- stop sherpa-samp -->
                                     <exec executable="pkill">
                                         <!-- sherpa-samp is designed to cleanly shutdown and disconnect from the hub after a SIGINT -->
