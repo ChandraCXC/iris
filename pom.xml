@@ -269,9 +269,10 @@
                             <configuration>
                                 <target name="shutdown">
                                     <!-- stop sherpa-samp -->
-                                    <exec executable="killall">
+                                    <exec executable="pkill">
                                         <!-- sherpa-samp is designed to cleanly shutdown and disconnect from the hub after a SIGINT -->
                                         <arg value="-2"/>
+                                        <arg value="-f"/>
                                         <arg value="${sherpa.command}"/>
                                     </exec>
                                     <!-- stop the SAMP hub -->
