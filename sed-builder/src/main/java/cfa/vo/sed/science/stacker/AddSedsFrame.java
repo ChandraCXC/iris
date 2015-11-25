@@ -25,7 +25,6 @@ import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.units.UnitsException;
-import cfa.vo.iris.utils.List;
 
 import static cfa.vo.sed.science.stacker.SedStackerAttachments.REDSHIFT;
 import static cfa.vo.sed.science.stacker.SedStackerAttachments.NORM_CONSTANT;
@@ -39,10 +38,12 @@ import java.beans.PropertyVetoException;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
+import org.jdesktop.observablecollections.ObservableCollections;
 
 /**
  *
@@ -70,7 +71,8 @@ public class AddSedsFrame extends javax.swing.JInternalFrame {
 
     }
 
-    private List<ExtSed> openSeds = new List(); //ObservableCollections.observableList(new ArrayList());
+    private List<ExtSed> openSeds = ObservableCollections.observableList(new ArrayList());
+
 
     public static final String PROP_OPENSEDS = "openSeds";
 

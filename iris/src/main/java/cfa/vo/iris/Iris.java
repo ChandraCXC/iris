@@ -22,7 +22,6 @@ package cfa.vo.iris;
 import cfa.vo.iris.test.TestBuilder;
 import cfa.vo.iris.test.TestLogger;
 import cfa.vo.iris.test.TestSSAServer;
-import cfa.vo.iris.test.r.RComponent;
 import cfa.vo.iris.test.vizier.VizierClient;
 import cfa.vo.sed.builder.SedBuilder;
 
@@ -87,10 +86,6 @@ public class Iris extends AbstractIrisApplication {
                 getComponentLoader().loadComponent(TestBuilder.class);
                 getComponentLoader().loadComponent(TestLogger.class);
                 getComponentLoader().loadComponent(TestSSAServer.class);
-            }
-
-            if (prop.equals("r")) {
-                getComponentLoader().loadComponent(RComponent.class);
             }
 
             if (prop.equals("lnf")) {
