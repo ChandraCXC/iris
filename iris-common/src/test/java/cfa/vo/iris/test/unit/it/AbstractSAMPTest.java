@@ -18,6 +18,7 @@ package cfa.vo.iris.test.unit.it;
 
 import cfa.vo.interop.SAMPController;
 import cfa.vo.sherpa.SherpaClient;
+import java.util.logging.Logger;
 import org.astrogrid.samp.client.SampException;
 import org.junit.After;
 import static org.junit.Assert.*;
@@ -31,21 +32,42 @@ import org.junit.Before;
  */
 public class AbstractSAMPTest {
     
+    private final Logger logger = Logger.getLogger(AbstractSAMPTest.class.getName());
+    
+    private final int SAMP_CONN_RETRIES = 3;
+    
     protected SAMPController controller;
     private int TIMEOUT;
     private String controller_name;
     protected SherpaClient client;
     
     public AbstractSAMPTest() {
-	this.TIMEOUT = 5;
-	this.controller_name = "Iris Component";
+	this.controller_name = "Iris Test Controller";
     }
     
     public AbstractSAMPTest(int timeout, String controller_name) {
-	this.TIMEOUT = timeout;
 	this.controller_name = controller_name;
     }
     
+    
+//    /**
+//     * This rule allows the component loader to be initialized only once for the whole suite.
+//     * This works around the fact that @BeforeClass and @AfterClass methods need to be static.
+//     */
+//    @Rule
+//    public ExternalResource resource = new ExternalResource() {
+//        @Override
+//        protected void before() throws Exception {
+//            // asserts that the SAMP Hub is up, and that sherpa-samp is connected.
+//	    connectToSAMPHub();
+//	    isSherpaConnected();
+//        }
+//        @Override
+//        protected void after() {
+//            // disconnect controller
+//	    controller.stop();
+//        }
+//    };
     
     // forces the concrete classes to make their own before class, and it will 
     // not override this Before class
@@ -76,17 +98,16 @@ public class AbstractSAMPTest {
 	
 	// If the controller doesn't connect after 2 seconds, add additional
 	// wait time.
-	int time = 0;
-	while (!controller.isConnected()) {
-	    time += TIMEOUT*1000;
-	    Thread.sleep(time);
-	    
-	    // If the controller doesn't connect within the additional time, 
-	    // fail.
-	    if (time >= TIMEOUT*1000) {
-		fail("Could not connect to SAMP Hub.");
-	    }
-	}
+	int count = 0;
+        while (!controller.isConnected()) {
+            if (++count > SAMP_CONN_RETRIES) {
+                String msg = "Failed to connect to SAMP, failing Unit tests";
+                logger.info(msg);
+                fail(msg);
+            }
+            logger.info("waiting connection");
+            Thread.sleep(1000);
+        }
 	assertTrue(controller.isConnected());
     }
     
