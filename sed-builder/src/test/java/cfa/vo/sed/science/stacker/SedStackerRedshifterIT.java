@@ -29,7 +29,6 @@ import static cfa.vo.sed.science.stacker.SedStackerAttachments.REDSHIFT;
 import cfa.vo.iris.utils.Default;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.Segment;
-import cfa.vo.sherpa.SherpaClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,8 +85,6 @@ public class SedStackerRedshifterIT extends AbstracSEDStackerIT {
         // Setup and send SAMP message
         SAMPMessage message = SAMPFactory.createMessage("stack.redshift",
                 payload, SedStackerRedshiftPayload.class);
-
-        SherpaClient client = new SherpaClient(controller);
 
         Response rspns = controller.callAndWait(client.findSherpa(),
                 message.get(), 10);

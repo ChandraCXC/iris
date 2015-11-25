@@ -160,6 +160,23 @@ public class SherpaClient {
         }
     }
 
+    public boolean waitFor(int timeoutMillis, int step) {
+        String sherpaId = null;
+        int elapsed = 0;
+        while (sherpaId == null && elapsed < timeoutMillis) {
+            try {
+                sherpaId = findSherpa();
+            } catch (SampException e) {
+                try {
+                    Thread.sleep(step);
+                } catch (InterruptedException e1) {
+                    return sherpaId != null;
+                }
+            }
+        }
+        return sherpaId != null;
+    }
+
     public boolean isException(Response rspns) {
         return !rspns.isOK();
     }

@@ -22,7 +22,6 @@ import static cfa.vo.sed.science.stacker.SedStackerAttachments.NORM_CONSTANT;
 import cfa.vo.iris.utils.Default;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.Segment;
-import cfa.vo.sherpa.SherpaClient;
 import java.util.ArrayList;
 import java.util.List;
 import org.astrogrid.samp.Response;
@@ -73,8 +72,6 @@ public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
         // Setup and send SAMP message
         SAMPMessage message = SAMPFactory.createMessage("stack.normalize",
                 payload, SedStackerNormalizePayload.class);
-
-        SherpaClient client = new SherpaClient(controller);
 
         Response rspns = controller.callAndWait(client.findSherpa(),
                 message.get(), 10);
