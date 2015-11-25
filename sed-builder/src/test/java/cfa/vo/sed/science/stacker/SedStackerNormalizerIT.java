@@ -28,6 +28,11 @@ import java.util.List;
 import org.astrogrid.samp.Response;
 import org.junit.Before;
 import org.junit.Test;
+import org.uispec4j.Trigger;
+import org.uispec4j.Window;
+import org.uispec4j.interception.BasicHandler;
+import org.uispec4j.interception.WindowHandler;
+import org.uispec4j.interception.WindowInterceptor;
 
 import static org.junit.Assert.*;
 
@@ -258,8 +263,7 @@ public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
         config.setYValue(1.0);
 
         // normalize the Stack
-        SedStackerNormalizer normalizer = new SedStackerNormalizer(controller, Default.getInstance().getUnitsManager());
-        normalizer.normalize(stack, config);
+        normalizeWithWindowInterceptor(stack, config);
 
         List<double[]> xs = new ArrayList<>();
         List<double[]> ys = new ArrayList<>();
@@ -297,5 +301,21 @@ public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
                 0.035714285714,
                 Double.valueOf(stack.getSed(2).getAttachment(NORM_CONSTANT)
                         .toString()), EPSILON);
+    }
+
+    private void normalizeWithWindowInterceptor(final SedStack stack, final NormalizationConfiguration config) {
+        WindowInterceptor.init(new Trigger() {
+            @Override
+            public void run() throws Exception {
+                final SedStackerNormalizer normalizer = new SedStackerNormalizer(controller, Default.getInstance().getUnitsManager());
+                normalizer.normalize(stack, config);
+            }
+        }).process(new WindowHandler() {
+            @Override
+            public Trigger process(Window window) throws Exception {
+                window.titleEquals("Unnormalized SEDs");
+                return window.getButton("OK").triggerClick();
+            }
+        }).run();
     }
 }
