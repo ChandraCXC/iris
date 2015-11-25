@@ -13,38 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cfa.vo.sed.science.stacker;
 
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.sed.ExtSed;
 import static cfa.vo.sed.science.stacker.SedStackerAttachments.NORM_CONSTANT;
-
 import cfa.vo.iris.utils.Default;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sherpa.SherpaClient;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import org.astrogrid.samp.Response;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- * 
- * @author jbudynk
- */
+
 public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
 
     SedStackerNormalizePayload payload;
@@ -61,7 +48,6 @@ public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
         yerr3 = new double[]{0.5, 1.5, 0.7, 0.45, 1.35, 1.05};
     }
 
-    @Ignore("need sherpa-samp running")
     @Test
     public void testNormalize() throws Exception {
         payload = (SedStackerNormalizePayload) SAMPFactory
@@ -117,7 +103,6 @@ public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
         controller.stop();
     }
 
-    @Ignore("need sherpa-samp running")
     @Test
     public void testNormalizer() throws Exception {
         ExtSed sed1 = new ExtSed("Sed1");
@@ -217,7 +202,6 @@ public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
                         .toString()), EPSILON);
     }
 
-    @Ignore("need sherpa-samp running")
     @Test
     public void testNormalizerOutsideRange() throws Exception {
         ExtSed sed1 = new ExtSed("Sed1");

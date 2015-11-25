@@ -33,7 +33,6 @@ import cfa.vo.sherpa.SherpaClient;
 import java.util.ArrayList;
 import java.util.List;
 import org.astrogrid.samp.Response;
-import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -47,7 +46,6 @@ public class SedStackerStackerIT extends AbstracSEDStackerIT {
     
     private SedStackerStacker stacker;
 
-    @Ignore("need sherpa-samp running")
     @Test
     public void testStackAvg() throws Exception {
 
@@ -106,7 +104,6 @@ public class SedStackerStackerIT extends AbstracSEDStackerIT {
         }
     }
 
-    @Ignore("need sherpa-samp running")
     @Test
     public void testStacker() throws Exception {
         ExtSed sed1 = new ExtSed("Sed1");
