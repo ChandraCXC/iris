@@ -16,13 +16,15 @@
  
 package cfa.vo.iris.test.unit.it;
 
-import cfa.vo.interop.SAMPController;
+import cfa.vo.iris.interop.SedSAMPController;
 import cfa.vo.sherpa.SherpaClient;
 import java.util.logging.Logger;
 import org.astrogrid.samp.client.SampException;
 import org.junit.After;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Rule;
+import org.junit.rules.ExternalResource;
 
 /**
  * Abstract integration test class for tests that need SAMP/sherpa-samp 
@@ -36,17 +38,17 @@ public class AbstractSAMPTest {
     
     private final int SAMP_CONN_RETRIES = 3;
     
-    protected SAMPController controller;
+    protected SedSAMPController controller;
     private int TIMEOUT;
     private String controller_name;
     protected SherpaClient client;
     
     public AbstractSAMPTest() {
-	this.controller_name = "Iris Test Controller";
+        this.controller_name = "Iris Test Controller";
     }
     
     public AbstractSAMPTest(int timeout, String controller_name) {
-	this.controller_name = controller_name;
+        this.controller_name = controller_name;
     }
     
     
@@ -74,31 +76,43 @@ public class AbstractSAMPTest {
     @Before
     public final void setUp() throws Exception {
     
-	// asserts that the SAMP Hub is up, and that sherpa-samp is connected.
-	connectToSAMPHub();
-	isSherpaConnected();
+        // asserts that the SAMP Hub is up, and that sherpa-samp is connected.
+        connectToSAMPHub();
+        isSherpaConnected();
     }
     
     @After
     public void tearDown() {
-	controller.stop();
+        controller.stop();
     }
     
+    /*
+    * Creates a SedSAMPController and connects it to a SAMP Hub. Fails if
+    * it does not connect to a SAMP Hub.
+    */
     public void connectToSAMPHub() throws InterruptedException, Exception {
 	
 	// setup the SAMP controller
-	controller = new SAMPController(
-		this.controller_name, 
-		this.controller_name, 
-		this.getClass().getResource("/tools_tiny.png").toString()
+    controller = new SedSAMPController(
+            this.controller_name, 
+            this.controller_name, 
+            this.getClass().getResource("").toString()
 	);
-	controller.setAutoRunHub(false);
+    connectToSAMPHub(controller);
+    }
+
+    /*
+    Connects a SedSAMPController to a SAMP Hub. Fails if it does not connect to a 
+    SAMP Hub.
+    */
+    public void connectToSAMPHub(SedSAMPController controller) throws InterruptedException, Exception {
+        controller.setAutoRunHub(false);
         controller.start(false);
-	Thread.sleep(2000); // wait 2 seconds for connection
+        Thread.sleep(2000); // wait 2 seconds for connection
 	
-	// If the controller doesn't connect after 2 seconds, add additional
-	// wait time.
-	int count = 0;
+        // If the controller doesn't connect after 2 seconds, add additional
+        // wait time.
+        int count = 0;
         while (!controller.isConnected()) {
             if (++count > SAMP_CONN_RETRIES) {
                 String msg = "Failed to connect to SAMP, failing Unit tests";
@@ -108,13 +122,13 @@ public class AbstractSAMPTest {
             logger.info("waiting connection");
             Thread.sleep(1000);
         }
-	assertTrue(controller.isConnected());
+        assertTrue(controller.isConnected());
     }
     
     
     public void isSherpaConnected() throws SampException {
 	
-	this.client = new SherpaClient(this.controller);
-	assertTrue(!this.client.findSherpa().isEmpty());
+        this.client = new SherpaClient(this.controller);
+        assertTrue(!this.client.findSherpa().isEmpty());
     }
 }
