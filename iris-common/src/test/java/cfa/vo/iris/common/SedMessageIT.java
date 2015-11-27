@@ -67,13 +67,11 @@ public class SedMessageIT extends AbstractSAMPTest {
     public void sedMessageTest() throws Exception {
         System.setProperty("jsamp.hub.profiles", "std");
 
-        SedSAMPController sampSender = new SedSAMPController("TestSender", "An SED builder from the Virtual Astronomical Observatory", this.getClass().getResource("/iris_button_tiny.png").toString());
         SedSAMPController sampReceiver = new SedSAMPController("TestReceiver", "An SED builder from the Virtual Astronomical Observatory", this.getClass().getResource("/iris_button_tiny.png").toString());
         
-        connectToSAMPHub(sampSender);
         connectToSAMPHub(sampReceiver);
         
-        sampSender.startWithResourceServer("/test", false);
+        controller.startWithResourceServer("/test", false);
 
         sampReceiver.addMessageHandler(new SedHandler());
 
@@ -81,7 +79,7 @@ public class SedMessageIT extends AbstractSAMPTest {
 
         Thread.sleep(5000);
 
-        sampSender.sendSedMessage(sed);
+        controller.sendSedMessage(sed);
 
         int i=0;
 
@@ -97,8 +95,6 @@ public class SedMessageIT extends AbstractSAMPTest {
         sampReceiver.stop();
 
         Thread.sleep(2000);
-
-        sampSender.stop();
 
         Segment segment = sed.getSegment(0);
 
