@@ -173,6 +173,7 @@ public class SherpaClient {
                     return sherpaId != null;
                 }
             }
+            elapsed += step;
         }
         return sherpaId != null;
     }
