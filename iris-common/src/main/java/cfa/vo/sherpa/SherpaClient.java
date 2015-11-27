@@ -16,6 +16,7 @@
 
 package cfa.vo.sherpa;
 
+import cfa.vo.interop.PingMessage;
 import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
@@ -175,7 +176,25 @@ public class SherpaClient {
             }
             elapsed += step;
         }
-        return sherpaId != null;
+
+        boolean sherpaResponded = false;
+        elapsed = 0;
+
+        while (!sherpaResponded && elapsed < timeoutMillis) {
+            try {
+                this.sampController.callAndWait(sherpaId, new PingMessage().get(), step/1000);
+                sherpaResponded = true;
+            } catch (SampException e) {
+                try {
+                    Thread.sleep(step);
+                } catch (InterruptedException e1) {
+                    return sherpaResponded;
+                }
+            }
+            elapsed += step;
+        }
+
+        return sherpaResponded;
     }
 
     public boolean isException(Response rspns) {
@@ -192,47 +211,6 @@ public class SherpaClient {
             throw new Exception(ex);
         } 
     }
-    
-//    private class PingResultHandler implements ResultHandler {
-//
-//        @Override
-//        public void result(Client client, Response rspns) {
-//            if (client.getMetadata().getName().toLowerCase().equals("sherpa")) {
-//                sherpaPublicId = client.getId();
-//            }
-//        }
-//
-//        @Override
-//        public void done() {
-//        }
-//    }
-    
-//    private class SherpaFinderThread extends Thread {
-//
-//        @Override
-//        public void run() {
-//
-//            while (true) {
-//                try {
-//                    findSherpa();
-//                } catch (SampException ex) {
-//                    NarrowOptionPane.showMessageDialog(null,
-//                            "Iris could not find the Sherpa process running in the background. Check the Troubleshooting section in the Iris documentation.",
-//                            "Cannot connect to Sherpa",
-//                            NarrowOptionPane.ERROR_MESSAGE);
-//                }
-//
-//                try {
-//                    Thread.currentThread().wait(2000);
-//                    if (sherpaPublicId != null) {
-//                        break;
-//                    }
-//                } catch (InterruptedException ex) {
-//                    Logger.getLogger(SherpaClient.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
-//        }
-//    }
     
     private class Exceptions extends HashMap<String, Class> {
         public Exceptions() {
