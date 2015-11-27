@@ -20,9 +20,7 @@ import cfa.vo.iris.interop.SedSAMPController;
 import cfa.vo.sherpa.SherpaClient;
 import java.util.logging.Logger;
 import org.astrogrid.samp.client.SampException;
-import org.junit.After;
 import static org.junit.Assert.*;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.rules.ExternalResource;
 
@@ -52,39 +50,29 @@ public class AbstractSAMPTest {
     }
     
     
-//    /**
-//     * This rule allows the component loader to be initialized only once for the whole suite.
-//     * This works around the fact that @BeforeClass and @AfterClass methods need to be static.
-//     */
-//    @Rule
-//    public ExternalResource resource = new ExternalResource() {
-//        @Override
-//        protected void before() throws Exception {
-//            // asserts that the SAMP Hub is up, and that sherpa-samp is connected.
-//	    connectToSAMPHub();
-//	    isSherpaConnected();
-//        }
-//        @Override
-//        protected void after() {
-//            // disconnect controller
-//	    controller.stop();
-//        }
-//    };
-    
-    // forces the concrete classes to make their own before class, and it will 
-    // not override this Before class
-    @Before
-    public final void setUp() throws Exception {
-    
-        // asserts that the SAMP Hub is up, and that sherpa-samp is connected.
-        connectToSAMPHub();
-        isSherpaConnected();
-    }
-    
-    @After
-    public void tearDown() {
-        controller.stop();
-    }
+    /**
+     * Create before/after methods for each test class that extends this class.
+     * Setup/teardown SedSAMPControllers after each test.
+     * 
+     * Note that in the future we can implement the ExternalResource interface
+     * for various kinds of tests (NED Service, SAMP, Sherpa, etc.) in 
+     * independent classes. Then a test that needs multiple setup/teardown 
+     * methods can just instantiate the necessary Rules.
+     */
+    @Rule
+    public ExternalResource resource = new ExternalResource() {
+        @Override
+        protected void before() throws Exception {
+            // asserts that the SAMP Hub is up, and that sherpa-samp is connected.
+            connectToSAMPHub();
+            isSherpaConnected();
+        }
+        @Override
+        protected void after() {
+            // disconnect controller
+            controller.stop();
+        }
+    };
     
     /*
     * Creates a SedSAMPController and connects it to a SAMP Hub. Fails if
