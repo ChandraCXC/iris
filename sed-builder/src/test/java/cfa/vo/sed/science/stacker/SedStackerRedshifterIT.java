@@ -41,7 +41,8 @@ import org.uispec4j.interception.WindowInterceptor;
 
 import static org.junit.Assert.*;
 
-public class SedStackerRedshifterIT extends AbstracSEDStackerIT {
+
+public class SedStackerRedshifterIT extends AbstractSEDStackerIT {
     
     double[] controlY1;
     double[] controlX1;

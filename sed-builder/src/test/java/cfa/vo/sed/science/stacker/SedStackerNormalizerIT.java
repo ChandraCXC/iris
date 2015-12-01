@@ -30,14 +30,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.uispec4j.Trigger;
 import org.uispec4j.Window;
-import org.uispec4j.interception.BasicHandler;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
 
 import static org.junit.Assert.*;
 
 
-public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
+public class SedStackerNormalizerIT extends AbstractSEDStackerIT {
 
     SedStackerNormalizePayload payload;
     

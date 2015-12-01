@@ -19,7 +19,7 @@ import cfa.vo.iris.test.unit.it.AbstractSAMPTest;
  * unable to connect to the SAMP hub.
  * 
  */
-public abstract class AbstracSEDStackerIT {
+public abstract class AbstractSEDStackerIT extends AbstractSAMPTest {
 
     /**
      * Unfortunately this static block is required if we don't want to extend UISpecTestCase
@@ -32,9 +32,9 @@ public abstract class AbstracSEDStackerIT {
     {
         UISpec4J.init();
     }
-
-    private static final Logger logger = Logger.getLogger(AbstracSEDStackerIT.class.getName());
-
+    
+    private static final Logger logger = Logger.getLogger(AbstractSEDStackerIT.class.getName());
+    
     protected static final double EPSILON = 0.00001;
 
     protected double[] x1;
@@ -108,7 +108,7 @@ public abstract class AbstracSEDStackerIT {
         SAMPController controller = null;
 
         try {
-            controller = SedSAMPController.createAndStart("SEDStacker", "SEDStacker", AbstracSEDStackerIT.class.getResource("/tools_tiny.png"), true, false);
+            controller = SedSAMPController.createAndStart("SEDStacker", "SEDStacker", AbstractSEDStackerIT.class.getResource("/tools_tiny.png"), true, false);
         } catch (Exception ex) {
             String msg = "Failed to connect to SAMP, failing Unit tests";
             logger.info(msg);
