@@ -44,7 +44,7 @@ import static org.junit.Assert.*;
  * 
  * @author jbudynk
  */
-public class SedStackerRedshifterIT extends AbstracSEDStackerIT {
+public class SedStackerRedshifterIT extends AbstractSEDStackerIT {
     
     double[] controlY1;
     double[] controlX1;

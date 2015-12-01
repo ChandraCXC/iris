@@ -11,9 +11,9 @@ import cfa.vo.iris.test.unit.it.AbstractSAMPTest;
  * unable to connect to the SAMP hub.
  * 
  */
-public abstract class AbstracSEDStackerIT extends AbstractSAMPTest {
+public abstract class AbstractSEDStackerIT extends AbstractSAMPTest {
     
-    private static final Logger logger = Logger.getLogger(AbstracSEDStackerIT.class.getName());
+    private static final Logger logger = Logger.getLogger(AbstractSEDStackerIT.class.getName());
     
     protected static final double EPSILON = 0.00001;
 

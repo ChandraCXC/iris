@@ -44,7 +44,7 @@ import static org.junit.Assert.*;
  * 
  * @author jbudynk
  */
-public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
+public class SedStackerNormalizerIT extends AbstractSEDStackerIT {
 
     SedStackerNormalizePayload payload;
     
