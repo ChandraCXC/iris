@@ -26,6 +26,7 @@ before_install:
   - cd sedstacker; python setup.py develop; cd ..
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
+  - mkdir -p $HOME/.vao/iris/logs
 
 # This runs without instrumentation
 script: mvn -U verify
