@@ -24,7 +24,6 @@ import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.junit.After;
