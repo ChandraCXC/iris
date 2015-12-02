@@ -257,7 +257,7 @@ public class SedStackerStackerTest {
         @Override
         public String findSherpa() throws SampException {
             if (findSherpa) return "";
-            throw new SampException();
+            throw new SampException("Sherpa not found");
         }
 
         public boolean hasException = false;
