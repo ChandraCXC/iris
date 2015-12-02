@@ -42,6 +42,7 @@ public class SherpaClient {
     private Map<String, AbstractModel> modelMap = new HashMap<>();
     private Integer stringCounter = 0;
     private static final ExecutorService pool = Executors.newFixedThreadPool(20);
+    private static Logger logger = Logger.getLogger(SherpaClient.class.getName());
 
     protected SherpaClient(SAMPController controller) {
         this.sampController = controller;
@@ -195,7 +196,9 @@ public class SherpaClient {
                 String id = null;
                 while (id == null) {
                     try {
+                        logger.log(Level.INFO, "looking for Sherpa");
                         id = findSherpa(controller);
+                        logger.log(Level.INFO, "found Sherpa with id: "+id);
                     } catch (SampException ex) {
                         Thread.sleep(stepMillis); // This will be interrupted if a timeout occurs
                     }
@@ -204,9 +207,13 @@ public class SherpaClient {
                 boolean sherpaConnected = false;
                 while (!sherpaConnected) {
                     try {
-                        controller.callAndWait(id, new PingMessage().get(), (int)timeout.getAmount());
+                        logger.log(Level.INFO, "pinging Sherpa");
+                        controller.callAndWait(id, new PingMessage().get(), stepMillis);
+                        logger.log(Level.INFO, "Sherpa replied");
                         sherpaConnected = true;
                     } catch (SampException ex) {
+                        logger.log(Level.INFO, "Sherpa did not respond to ping, maybe the id is outdated? Renewing ID");
+                        id = findSherpa(controller);
                         Thread.sleep(stepMillis); // This will be interrupted if a timeout occurs
                     }
                 }
