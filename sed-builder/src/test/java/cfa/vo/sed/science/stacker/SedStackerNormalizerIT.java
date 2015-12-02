@@ -29,7 +29,6 @@ import static cfa.vo.sed.science.stacker.SedStackerAttachments.NORM_CONSTANT;
 import cfa.vo.iris.utils.Default;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.Segment;
-import cfa.vo.sherpa.SherpaClient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +44,7 @@ import static org.junit.Assert.*;
  * 
  * @author jbudynk
  */
-public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
+public class SedStackerNormalizerIT extends AbstractSEDStackerIT {
 
     SedStackerNormalizePayload payload;
     
@@ -83,8 +82,6 @@ public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
         SAMPMessage message = SAMPFactory.createMessage("stack.normalize",
                 payload, SedStackerNormalizePayload.class);
 
-        SherpaClient client = new SherpaClient(controller);
-
         Response rspns = controller.callAndWait(client.findSherpa(),
                 message.get(), 10);
         if (client.isException(rspns)) {
@@ -114,7 +111,6 @@ public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
         }
         assertEquals(1.1529274, resnorm3, EPSILON);
 
-        controller.stop();
     }
 
     @Ignore("need sherpa-samp running")

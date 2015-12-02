@@ -2,26 +2,19 @@ package cfa.vo.sed.science.stacker;
 
 import java.util.logging.Logger;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
-
-import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SAMPFactory;
-import cfa.vo.iris.interop.SedSAMPController;
+import cfa.vo.iris.test.unit.it.AbstractSAMPTest;
 
 /**
  * Abstract class for integration testing of SAMP integration. Tests will fail if they are
  * unable to connect to the SAMP hub.
  * 
  */
-public abstract class AbstracSEDStackerIT {
+public abstract class AbstractSEDStackerIT extends AbstractSAMPTest {
     
-    private static final Logger logger = Logger.getLogger(AbstracSEDStackerIT.class.getName());
+    private static final Logger logger = Logger.getLogger(AbstractSEDStackerIT.class.getName());
     
-    private static final int SAMP_CONN_RETRIES = 3;
     protected static final double EPSILON = 0.00001;
 
     protected double[] x1;
@@ -38,26 +31,11 @@ public abstract class AbstracSEDStackerIT {
     protected SegmentPayload segment2;
     protected SegmentPayload segment3;
 
-    protected static SAMPController controller;
-    
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        startSamp();
-    }
-    
-    @AfterClass
-    public static void afterClass() throws Exception {
-        terminate();
-    }
+ 
     
     @Before
-    public void setUp() throws Exception {
+    public void setup() throws Exception {
         initVariables();
-    }
-    
-    @After
-    public void tearDown() {
-        terminate();
     }
     
     protected void initVariables() throws Exception {
@@ -95,29 +73,4 @@ public abstract class AbstracSEDStackerIT {
         segment3.setId("Sed3");
     }
     
-    private static void startSamp() throws Exception {
-        // Start the SAMP controller
-        controller = new SedSAMPController("SEDStacker", "SEDStacker", AbstracSEDStackerIT.class.getResource("/tools_tiny.png")
-                .toString());
-        controller.setAutoRunHub(false);
-        controller.start(false);
-        
-        // Wait for start
-        Thread.sleep(2000);
-
-        int count = 0;
-        while (!controller.isConnected()) {
-            if (++count > SAMP_CONN_RETRIES) {
-                String msg = "Failed to connect to SAMP, failing Unit tests";
-                logger.info(msg);
-                Assert.fail(msg);
-            }
-            logger.info("waiting connection");
-            Thread.sleep(1000);
-        }
-    }
-
-    protected static void terminate() {
-        controller.stop();
-    }
 }
