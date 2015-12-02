@@ -135,6 +135,7 @@ public class SherpaClient {
 
     private static String findSherpa(SAMPController controller) throws SampException {
         String returnString = "";
+        logger.log(Level.INFO, "looking for Sherpa");
         try {
             for(Entry<String, Client> entry : (Set<Entry<String, Client>>) controller.getClientMap().entrySet())
                 if (entry.getValue().getMetadata().getName().toLowerCase().equals("sherpa")) {
@@ -144,8 +145,10 @@ public class SherpaClient {
             if (StringUtils.isEmpty(returnString)) {
                 throw new Exception();
             }
+            logger.log(Level.INFO, "found Sherpa with id: "+returnString);
             return returnString;
         } catch (Exception ex) {
+            logger.log(Level.SEVERE, "An error occurred while looking for Sherpa", ex);
             throw new SampException("Cannot find Sherpa. If the problem persists, please refer to the troubleshooting section of the documentation.", ex);
         }
     }
@@ -185,6 +188,21 @@ public class SherpaClient {
         return response;
     }
 
+    public static boolean ping(SAMPController controller) throws SampException {
+        Time step = Default.getInstance().getTimeStep().convertTo(TimeUnit.MILLISECONDS);
+        final int stepMillis = (int) step.getAmount();
+        try {
+            logger.log(Level.INFO, "pinging Sherpa");
+            String id = findSherpa(controller);
+            controller.callAndWait(id, new PingMessage().get(), stepMillis);
+            logger.log(Level.INFO, "Sherpa replied");
+            return true;
+        } catch (SampException ex) {
+            logger.log(Level.INFO, "Sherpa did not respond to ping, maybe the id is outdated? Renewing ID");
+            throw ex;
+        }
+    }
+
     public static SherpaClient create(final SAMPController controller) {
         final Time timeout = Default.getInstance().getSampTimeout().convertTo(TimeUnit.SECONDS);
         Time step = Default.getInstance().getTimeStep().convertTo(TimeUnit.MILLISECONDS);
@@ -196,9 +214,7 @@ public class SherpaClient {
                 String id = null;
                 while (id == null) {
                     try {
-                        logger.log(Level.INFO, "looking for Sherpa");
                         id = findSherpa(controller);
-                        logger.log(Level.INFO, "found Sherpa with id: "+id);
                     } catch (SampException ex) {
                         Thread.sleep(stepMillis); // This will be interrupted if a timeout occurs
                     }
@@ -207,13 +223,9 @@ public class SherpaClient {
                 boolean sherpaConnected = false;
                 while (!sherpaConnected) {
                     try {
-                        logger.log(Level.INFO, "pinging Sherpa");
-                        controller.callAndWait(id, new PingMessage().get(), stepMillis);
-                        logger.log(Level.INFO, "Sherpa replied");
-                        sherpaConnected = true;
+                        sherpaConnected = ping(controller);
                     } catch (SampException ex) {
-                        logger.log(Level.INFO, "Sherpa did not respond to ping, maybe the id is outdated? Renewing ID");
-                        id = findSherpa(controller);
+                        logger.log(Level.INFO, "Sherpa did not respond to ping, retrying in "+ stepMillis + " milliseconds");
                         Thread.sleep(stepMillis); // This will be interrupted if a timeout occurs
                     }
                 }
