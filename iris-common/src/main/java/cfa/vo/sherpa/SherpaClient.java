@@ -21,6 +21,8 @@ import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
 
+import cfa.vo.iris.utils.Default;
+import cfa.vo.iris.utils.Time;
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.samp.Client;
 import org.astrogrid.samp.Response;
@@ -30,30 +32,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author olaurino
- */
 public class SherpaClient {
 
     private SAMPController sampController;
     private Map<String, AbstractModel> modelMap = new HashMap<>();
     private Integer stringCounter = 0;
-    private Map<String, Class> exceptions = new Exceptions();
-//    private String sherpaPublicId;
+    private static final ExecutorService pool = Executors.newFixedThreadPool(20);
 
-    public SherpaClient(SAMPController controller) {
+    protected SherpaClient(SAMPController controller) {
         this.sampController = controller;
-//        Thread t = new SherpaFinderThread();
-//        t.start();
     }
-    
-//    public String getSherpaId() {
-//        return sherpaPublicId;
-//    }
 
     public Parameter getParameter(AbstractModel model, String name) throws Exception {
         Parameter par = model.getParameter(model.getId() + "." + name);
@@ -66,13 +58,6 @@ public class SherpaClient {
     public FitResults fit(Data dataset, CompositeModel model, Stat stat, Method method) throws Exception {
 
         String sherpaPublicId = findSherpa();
-
-//        if (sherpaPublicId == null) {
-//            findSherpa();
-        if (sherpaPublicId == null) {
-            throw new Exception("Sherpa is not connected to the hub?");
-        }
-//        }
 
         FitConfiguration fc = (FitConfiguration) SAMPFactory.get(FitConfiguration.class);
 
@@ -143,11 +128,14 @@ public class SherpaClient {
         return method;
     }
 
-    public String findSherpa() throws SampException {
-//        if(sherpaPublicId==null)
+    protected String findSherpa() throws SampException {
+        return findSherpa(sampController);
+    }
+
+    private static String findSherpa(SAMPController controller) throws SampException {
         String returnString = "";
         try {
-            for(Entry<String, Client> entry : (Set<Entry<String, Client>>) sampController.getClientMap().entrySet())
+            for(Entry<String, Client> entry : (Set<Entry<String, Client>>) controller.getClientMap().entrySet())
                 if (entry.getValue().getMetadata().getName().toLowerCase().equals("sherpa")) {
                     returnString = entry.getValue().getId();
                     break;
@@ -161,49 +149,16 @@ public class SherpaClient {
         }
     }
 
-    public boolean waitFor(int timeoutMillis, int step) {
-        String sherpaId = null;
-        int elapsed = 0;
-        while (sherpaId == null && elapsed < timeoutMillis) {
-            try {
-                sherpaId = findSherpa();
-            } catch (SampException e) {
-                try {
-                    Thread.sleep(step);
-                } catch (InterruptedException e1) {
-                    return sherpaId != null;
-                }
-            }
-            elapsed += step;
-        }
-
-        boolean sherpaResponded = false;
-        elapsed = 0;
-
-        while (!sherpaResponded && elapsed < timeoutMillis) {
-            try {
-                this.sampController.callAndWait(sherpaId, new PingMessage().get(), step/1000);
-                sherpaResponded = true;
-            } catch (SampException e) {
-                try {
-                    Thread.sleep(step);
-                } catch (InterruptedException e1) {
-                    return sherpaResponded;
-                }
-            }
-            elapsed += step;
-        }
-
-        return sherpaResponded;
+    public SAMPController getController() {
+        return this.sampController;
     }
 
-    public boolean isException(Response rspns) {
+    protected boolean isException(Response rspns) {
         return !rspns.isOK();
     }
 
-    public Exception getException(Response rspns) throws Exception {
+    protected Exception getException(Response rspns) throws Exception {
         try {
-//            Class clazz = exceptions.get((String)rspns.getResult().get("exception"));
             String message = (String) rspns.getResult().get("message");
             return new SEDException(message);
         } catch (Exception ex) {
@@ -212,22 +167,57 @@ public class SherpaClient {
         } 
     }
     
-    private class Exceptions extends HashMap<String, Class> {
-        public Exceptions() {
-            put("SEDException", SEDException.class);
-            put("DataException", SEDException.class);
-            put("ModelException", SEDException.class);
-            put("FitException", SEDException.class);
-            put("ConfidenceException", SEDException.class);
-            put("ParameterException", SEDException.class);
-            put("StatisticException", SEDException.class);
-            put("MethodException", SEDException.class);
-        }
-    }
-    
     public class SEDException extends Exception {
         public SEDException(String msg) {
             super(msg);
+        }
+    }
+
+    public Response sendMessage(final SAMPMessage message) throws Exception {
+        Time timeout = Default.getInstance().getSampTimeout();
+        long amount = TimeUnit.SECONDS.convert(timeout.getAmount(), timeout.getUnit());
+        Response response = sampController.callAndWait(findSherpa(), message.get(), (int)amount);
+        if (isException(response)) {
+            throw getException(response);
+        }
+
+        return response;
+    }
+
+    public static SherpaClient create(final SAMPController controller) {
+        final Time timeout = Default.getInstance().getSampTimeout().convertTo(TimeUnit.SECONDS);
+        Time step = Default.getInstance().getTimeStep().convertTo(TimeUnit.MILLISECONDS);
+        final int stepMillis = (int) step.getAmount();
+        Callable<SherpaClient> callable = new Callable<SherpaClient>() {
+            @Override
+            public SherpaClient call() throws Exception {
+                SherpaClient client = new SherpaClient(controller);
+                String id = null;
+                while (id == null) {
+                    try {
+                        id = findSherpa(controller);
+                    } catch (SampException ex) {
+                        Thread.sleep(stepMillis); // This will be interrupted if a timeout occurs
+                    }
+                }
+
+                boolean sherpaConnected = false;
+                while (!sherpaConnected) {
+                    try {
+                        controller.callAndWait(id, new PingMessage().get(), (int)timeout.getAmount());
+                        sherpaConnected = true;
+                    } catch (SampException ex) {
+                        Thread.sleep(stepMillis); // This will be interrupted if a timeout occurs
+                    }
+                }
+                return client;
+            }
+        };
+        Future<SherpaClient> futureSherpaClient = pool.submit(callable);
+        try {
+            return futureSherpaClient.get(timeout.getAmount(), timeout.getUnit());
+        } catch (Exception ex) {
+            throw new RuntimeException("Cannot find Sherpa!");
         }
     }
 }

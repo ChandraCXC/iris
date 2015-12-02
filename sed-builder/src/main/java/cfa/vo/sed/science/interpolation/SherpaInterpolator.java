@@ -20,10 +20,8 @@
  */
 package cfa.vo.sed.science.interpolation;
 
-import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
-import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.units.UnitsManager;
@@ -36,14 +34,11 @@ public class SherpaInterpolator {
 
     private SherpaClient client;
     private SedlibSedManager manager;
-    private SAMPController controller;
     private static String INTERPOLATE_MTYPE = "spectrum.interpolate";
     private UnitsManager um;
 
-    public SherpaInterpolator(SAMPController controller, SedlibSedManager manager, UnitsManager unitsManager) {
-        this.client = new SherpaClient(controller);
-        this.manager = manager;
-        this.controller = controller;
+    public SherpaInterpolator(SherpaClient client, SedlibSedManager manager, UnitsManager unitsManager) {
+        this.client = client;
         this.um = unitsManager;
     }
 
@@ -51,16 +46,6 @@ public class SherpaInterpolator {
 
         if (sed.getNumberOfSegments() == 0) {
             throw new SedNoDataException();
-        }
-
-        String sherpaId = client.findSherpa();
-
-        if (sherpaId == null) {
-            NarrowOptionPane.showMessageDialog(null,
-                    "Iris could not find the Sherpa process running in the background. Please check the Troubleshooting section in the Iris documentation.",
-                    "Cannot connect to Sherpa",
-                    NarrowOptionPane.ERROR_MESSAGE);
-            throw new Exception("Sherpa not found");
         }
         
         ExtSed newsed = ExtSed.flatten(sed, "Angstrom", "Jy");
@@ -81,11 +66,7 @@ public class SherpaInterpolator {
         interpConf.setX(newsed.getSegment(0).getSpectralAxisValues());
         interpConf.setY(newsed.getSegment(0).getFluxAxisValues());
         SAMPMessage message = SAMPFactory.createMessage(INTERPOLATE_MTYPE, interpConf, InterpolationPayload.class);
-        Response rspns = controller.callAndWait(sherpaId, message.get(), 10);
-        if (client.isException(rspns)) {
-            Exception ex = client.getException(rspns);
-            throw ex;
-        }
+        Response rspns = client.sendMessage(message);
 
         InterpolationPayload response = (InterpolationPayload) SAMPFactory.get(rspns.getResult(), InterpolationPayload.class);
                 

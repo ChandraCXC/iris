@@ -26,14 +26,8 @@ import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.interop.SedSAMPController;
-import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.sedlib.Param;
 import cfa.vo.sherpa.SherpaClient;
-
-import java.util.Arrays;
 import java.util.logging.Logger;
-
 import org.astrogrid.samp.Response;
 import org.junit.After;
 import org.junit.Before;
@@ -87,16 +81,7 @@ public class SherpaRedshifterTest {
 
 
         // Start the SAMP controller
-        controller = new SedSAMPController("SEDStacker", "SEDStacker", this.getClass().getResource("/tools_tiny.png").toString());
-        controller.setAutoRunHub(false); //set to 'true' when I figure out how to start Sherpa in the test...
-        controller.start(false);
-
-        Thread.sleep(2000);
-
-        while (!controller.isConnected()) {
-            logger.info("waiting connection");
-            Thread.sleep(1000);
-        }
+        controller = SedSAMPController.createAndStart("SEDStacker", "SEDStacker", this.getClass().getResource("/tools_tiny.png"), false, false);
 
 //	ExtSed inputSed = ExtSed.flatten(sed, "Angstrom", "Jy");
 
@@ -108,13 +93,8 @@ public class SherpaRedshifterTest {
         payload.setToRedshift(0);
         SAMPMessage message = SAMPFactory.createMessage(REDSHIFT_MTYPE, payload, RedshiftPayload.class);
 
-        SherpaClient client = new SherpaClient(controller);
-
-        Response rspns = controller.callAndWait(client.findSherpa(), message.get(), 10);
-        if (client.isException(rspns)) {
-            Exception ex = client.getException(rspns);
-            throw ex;
-        }
+        SherpaClient client = SherpaClient.create(controller);
+        Response rspns = client.sendMessage(message);
 
         RedshiftPayload response = (RedshiftPayload) SAMPFactory.get(rspns.getResult(), RedshiftPayload.class);
 

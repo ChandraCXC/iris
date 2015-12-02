@@ -21,30 +21,21 @@
  */
 package cfa.vo.sed.science.stacker;
 
-import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
-
 import static cfa.vo.sed.science.stacker.SedStackerAttachments.REDSHIFT;
-
-import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.common.SedException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sherpa.SherpaClient;
-
 import java.text.NumberFormat;
 import java.text.ParsePosition;
-
 import org.astrogrid.samp.Response;
-
 import java.util.List;
 import javax.swing.JOptionPane;
-
-import org.astrogrid.samp.client.SampException;
 
 /**
  *
@@ -53,15 +44,11 @@ import org.astrogrid.samp.client.SampException;
 public class SedStackerRedshifter {
 
     private SherpaClient client;
-    private SAMPController controller;
     private static String REDSHIFT_MTYPE = "stack.redshift";
     private boolean redshiftConfigChanged;
-    private UnitsManager um;
 
-    public SedStackerRedshifter(SAMPController controller, UnitsManager unitsManager) {
-        this.client = new SherpaClient(controller);
-        this.controller = controller;
-        this.um = unitsManager;
+    public SedStackerRedshifter(SherpaClient client) {
+        this.client = client;
     }
 
     public void shift(SedStack stack) throws Exception {
@@ -81,18 +68,6 @@ public class SedStackerRedshifter {
                             "Stack is empty. Please add SEDs to the stack to redshift.",
                             "Empty Stack", NarrowOptionPane.ERROR_MESSAGE);
             throw new SedNoDataException();
-        }
-
-        try {
-            client.findSherpa();
-        } catch (SampException ex) {
-            NarrowOptionPane.showMessageDialog(
-                            null,
-                            "Error redshifting: Iris could not find the Sherpa process running in the background." +
-                            " Please check the Troubleshooting section in the Iris documentation.",
-                            "Cannot connect to Sherpa",
-                            NarrowOptionPane.ERROR_MESSAGE);
-            throw new Exception("Sherpa not found");
         }
 
         // Create copy of stack and convert new stack to same units. First save
@@ -147,12 +122,7 @@ public class SedStackerRedshifter {
 
         SAMPMessage message = SAMPFactory.createMessage(REDSHIFT_MTYPE,
                 payload, SedStackerRedshiftPayload.class);
-        Response rspns = controller.callAndWait(client.findSherpa(),
-                message.get(), 10);
-        if (client.isException(rspns)) {
-            Exception ex = client.getException(rspns);
-            throw ex;
-        }
+        Response rspns = client.sendMessage(message);
 
         SedStackerRedshiftPayload response = (SedStackerRedshiftPayload) SAMPFactory.get(rspns.getResult(), SedStackerRedshiftPayload.class);
 

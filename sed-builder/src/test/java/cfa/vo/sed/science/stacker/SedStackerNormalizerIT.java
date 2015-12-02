@@ -73,12 +73,7 @@ public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
         SAMPMessage message = SAMPFactory.createMessage("stack.normalize",
                 payload, SedStackerNormalizePayload.class);
 
-        Response rspns = controller.callAndWait(client.findSherpa(),
-                message.get(), 10);
-        if (client.isException(rspns)) {
-            Exception ex = client.getException(rspns);
-            throw ex;
-        }
+        Response rspns = client.sendMessage(message);
 
         SedStackerNormalizePayload response = (SedStackerNormalizePayload) SAMPFactory
                 .get(rspns.getResult(), SedStackerNormalizePayload.class);
@@ -161,7 +156,7 @@ public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
         config.setYValue(1.0);
 
         // normalize the Stack
-        SedStackerNormalizer normalizer = new SedStackerNormalizer(controller, Default.getInstance().getUnitsManager());
+        SedStackerNormalizer normalizer = new SedStackerNormalizer(client, Default.getInstance().getUnitsManager());
         normalizer.normalize(stack, config);
 
         List<double[]> xs = new ArrayList<>();
@@ -304,7 +299,7 @@ public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
         WindowInterceptor.init(new Trigger() {
             @Override
             public void run() throws Exception {
-                final SedStackerNormalizer normalizer = new SedStackerNormalizer(controller, Default.getInstance().getUnitsManager());
+                final SedStackerNormalizer normalizer = new SedStackerNormalizer(client, Default.getInstance().getUnitsManager());
                 normalizer.normalize(stack, config);
             }
         }).process(new WindowHandler() {
