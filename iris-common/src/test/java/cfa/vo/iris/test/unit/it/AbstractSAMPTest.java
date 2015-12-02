@@ -34,8 +34,6 @@ public class AbstractSAMPTest {
     
     private final Logger logger = Logger.getLogger(AbstractSAMPTest.class.getName());
     
-    private final int SAMP_CONN_RETRIES = 3;
-    
     protected SedSAMPController controller;
     private String controller_name;
     protected SherpaClient client;
@@ -78,35 +76,14 @@ public class AbstractSAMPTest {
     * it does not connect to a SAMP Hub.
     */
     public void connectToSAMPHub() throws InterruptedException, Exception {
-	
-	// setup the SAMP controller
-    controller = new SedSAMPController(
-            this.controller_name, 
-            this.controller_name, 
-            this.getClass().getResource("").toString()
-	);
-    connectToSAMPHub(controller);
-    }
+        
+        // setup the SAMP controller
+        controller = SedSAMPController.createAndStart(this.controller_name, 
+                                                      this.controller_name, 
+                                                      this.getClass().getResource(""), 
+                                                      false,
+                                                      false);
 
-    /*
-    * Connects a SedSAMPController to a SAMP Hub. Fails if it does not connect to a 
-    * SAMP Hub.
-    */
-    public void connectToSAMPHub(SedSAMPController controller) throws InterruptedException, Exception {
-        controller.setAutoRunHub(false);
-        controller.start(false);
-
-        // Wait SAMP_CONN_RETRIES for the controller to connect to the SAMP hub.
-        int count = 0;
-        while (!controller.isConnected()) {
-            if (++count > SAMP_CONN_RETRIES) {
-                String msg = "Failed to connect to SAMP, failing tests";
-                logger.info(msg);
-                fail(msg);
-            }
-            logger.info("waiting connection");
-            Thread.sleep(1000);
-        }
         assertTrue(controller.isConnected());
     }
     

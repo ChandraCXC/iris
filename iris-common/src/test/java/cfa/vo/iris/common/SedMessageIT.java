@@ -24,6 +24,8 @@ import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 
+import static org.junit.Assert.assertTrue;
+
 import java.util.logging.Logger;
 
 import org.junit.After;
@@ -66,9 +68,13 @@ public class SedMessageIT extends AbstractSAMPTest {
     public void sedMessageTest() throws Exception {
         System.setProperty("jsamp.hub.profiles", "std");
 
-        SedSAMPController sampReceiver = new SedSAMPController("TestReceiver", "An SED builder from the Virtual Astronomical Observatory", this.getClass().getResource("/iris_button_tiny.png").toString());
+        SedSAMPController sampReceiver = SedSAMPController.createAndStart("TestReceiver", 
+                "An SED builder from the Virtual Astronomical Observatory",
+                this.getClass().getResource("/iris_button_tiny.png"), 
+                false,
+                false);
+        assertTrue(sampReceiver.isConnected());
         
-        connectToSAMPHub(sampReceiver);
         
         controller.startWithResourceServer("/test", false);
 
