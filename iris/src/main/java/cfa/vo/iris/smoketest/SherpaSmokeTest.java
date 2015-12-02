@@ -163,7 +163,7 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
 
             double[] err = (double[]) sed.getSegment(0).getCustomDataValues("Spectrum.Data.FluxAxis.Accuracy.StatError");
 
-            SherpaClient c = new SherpaClient(controller);
+            SherpaClient c = SherpaClient.create(controller);
 
             Data data = c.createData("test");
 
@@ -236,7 +236,7 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
 
 
 
-            SherpaIntegrator integrator = new SherpaIntegrator(controller, Default.getInstance().getUnitsManager());
+            SherpaIntegrator integrator = new SherpaIntegrator(c, Default.getInstance().getUnitsManager());
 
             //Some constants we need for conversions
             double H = 6.62620E-27;

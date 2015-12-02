@@ -20,9 +20,12 @@ import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.utils.Default;
+import cfa.vo.iris.utils.Time;
 import cfa.vo.sedlib.Sed;
 import java.net.URL;
 import java.util.Map;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.astrogrid.samp.client.SampException;
@@ -33,6 +36,7 @@ import org.astrogrid.samp.client.SampException;
  * @author olaurino
  */
 public class SedSAMPController extends SAMPController {
+    private static final ExecutorService pool = Executors.newFixedThreadPool(20);
 
     /**
      * This constructor just calls the parent constructor.
@@ -87,4 +91,23 @@ public class SedSAMPController extends SAMPController {
         }
 
     }
+
+    public static SedSAMPController createAndStart(final String name, final String description, final URL icon, final boolean withHub, final boolean withGui) throws Exception {
+        Callable<SedSAMPController> callable = new Callable<SedSAMPController>() {
+            @Override
+            public SedSAMPController call() throws Exception {
+                SedSAMPController controller = new SedSAMPController(name, description, icon.toString());
+                controller.setAutoRunHub(withHub);
+                controller.start(withGui);
+                while(!controller.isConnected()) {
+                    Thread.sleep(1000); // This will be interrupted if a timeout occurs
+                }
+                return controller;
+            }
+        };
+        Future<SedSAMPController> futureController = pool.submit(callable);
+        Time to = Default.getInstance().getSampTimeout();
+        return futureController.get(to.getAmount(), to.getUnit());
+    }
+
 }

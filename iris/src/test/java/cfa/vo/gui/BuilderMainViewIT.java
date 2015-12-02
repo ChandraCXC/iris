@@ -20,40 +20,26 @@
  */
 package cfa.vo.gui;
 
-import cfa.vo.iris.Iris;
+import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 import java.net.URL;
-
-import cfa.vo.iris.test.SampUISpecAdapter;
 import junit.framework.Assert;
 import org.uispec4j.*;
 
-/**
- *
- * @author olaurino
- */
-public class BuilderMainViewIT extends UISpecTestCase {
 
-    private static Window mainWindow;
-    private Desktop desktop;
-
-    public void setUp() throws Exception {
-        super.setUp();
-        setAdapter(new SampUISpecAdapter(Iris.class));
-        mainWindow = getMainWindow();
-        desktop = mainWindow.getDesktop();
-    }
+public class BuilderMainViewIT extends AbstractComponentGUITest {
 
     public void testNewSegment() throws Exception {
 
         SedlibSedManager manager = (SedlibSedManager) SedBuilder.getWorkspace().getSedManager();
 
-        mainWindow.getMenuBar()
+        window.getMenuBar()
                 .getMenu("Tools")
                 .getSubMenu("SED Builder")
                 .getSubMenu("SED Builder")
@@ -66,8 +52,6 @@ public class BuilderMainViewIT extends UISpecTestCase {
         Button newSed = window.getButton("jButton8");
 
         newSed.click();
-
-        Thread.sleep(2000);
 
         Assert.assertEquals(2, manager.getSeds().size());
 
@@ -146,4 +130,8 @@ public class BuilderMainViewIT extends UISpecTestCase {
 
     }
 
+    @Override
+    protected IrisComponent getComponent() {
+        return new SedBuilder();
+    }
 }

@@ -25,26 +25,22 @@ import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.sed.ExtSed;
 import static cfa.vo.sed.science.stacker.SedStackerAttachments.REDSHIFT;
-
-import cfa.vo.iris.utils.Default;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.Segment;
-import cfa.vo.sherpa.SherpaClient;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.astrogrid.samp.Response;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.uispec4j.Trigger;
+import org.uispec4j.Window;
+import org.uispec4j.interception.WindowHandler;
+import org.uispec4j.interception.WindowInterceptor;
 
 import static org.junit.Assert.*;
 
-/**
- * 
- * @author jbudynk
- */
 public class SedStackerRedshifterIT extends AbstracSEDStackerIT {
     
     double[] controlY1;
@@ -72,7 +68,6 @@ public class SedStackerRedshifterIT extends AbstracSEDStackerIT {
                 5.0, 10.0 };
     }
 
-    @Ignore("need sherpa-samp running")
     @Test
     public void testRedshift() throws Exception {
         payload = (SedStackerRedshiftPayload) SAMPFactory
@@ -89,14 +84,7 @@ public class SedStackerRedshifterIT extends AbstracSEDStackerIT {
         SAMPMessage message = SAMPFactory.createMessage("stack.redshift",
                 payload, SedStackerRedshiftPayload.class);
 
-        SherpaClient client = new SherpaClient(controller);
-
-        Response rspns = controller.callAndWait(client.findSherpa(),
-                message.get(), 10);
-        if (client.isException(rspns)) {
-            Exception ex = client.getException(rspns);
-            throw ex;
-        }
+        Response rspns = client.sendMessage(message);
 
         SedStackerRedshiftPayload response = (SedStackerRedshiftPayload) SAMPFactory
                 .get(rspns.getResult(), SedStackerRedshiftPayload.class);
@@ -122,7 +110,6 @@ public class SedStackerRedshifterIT extends AbstracSEDStackerIT {
         }
     }
 
-    @Ignore("need sherpa-samp running")
     @Test
     public void testRedshifter() throws Exception {
         ExtSed sed1 = new ExtSed("Sed1");
@@ -177,7 +164,7 @@ public class SedStackerRedshifterIT extends AbstracSEDStackerIT {
         stack.getConf().setRedshiftConfiguration(redshiftConf);
 
         // redshift the Stack
-        redshifter = new SedStackerRedshifter(controller, Default.getInstance().getUnitsManager());
+        redshifter = new SedStackerRedshifter(client);
         redshifter.shift(stack);
 
         List<double[]> xs = new ArrayList();
@@ -223,7 +210,6 @@ public class SedStackerRedshifterIT extends AbstracSEDStackerIT {
         }
     }
 
-    @Ignore("need sherpa-samp running")
     @Test
     public void testRedshifterNoZ() throws Exception {
         ExtSed sed1 = new ExtSed("Sed1");
@@ -269,8 +255,7 @@ public class SedStackerRedshifterIT extends AbstracSEDStackerIT {
         stack.getConf().setRedshiftConfiguration(redshiftConf);
 
         // redshift the Stack
-        redshifter = new SedStackerRedshifter(controller, Default.getInstance().getUnitsManager());
-        redshifter.shift(stack);
+        redshiftWithWindowInterceptor(stack, redshiftConf);
 
         // original values. make sure stack.getOrigSeds() returns original seds
         List<double[]> xs = new ArrayList();
@@ -314,5 +299,21 @@ public class SedStackerRedshifterIT extends AbstracSEDStackerIT {
             double xValue = shiftedSed2.getSegment(0).getSpectralAxisValues()[i];
             assertEquals(xValue, x2[i], EPSILON);
         }
+    }
+
+    private void redshiftWithWindowInterceptor(final SedStack stack, final RedshiftConfiguration config) {
+        WindowInterceptor.init(new Trigger() {
+            @Override
+            public void run() throws Exception {
+                final SedStackerRedshifter shifter = new SedStackerRedshifter(client);
+                shifter.shift(stack, config);
+            }
+        }).process(new WindowHandler() {
+            @Override
+            public Trigger process(Window window) throws Exception {
+                window.titleEquals("Unshifter SEDs");
+                return window.getButton("OK").triggerClick();
+            }
+        }).run();
     }
 }

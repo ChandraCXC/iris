@@ -21,7 +21,6 @@
  */
 package cfa.vo.sed.science.stacker;
 
-import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.gui.NarrowOptionPane;
@@ -60,19 +59,16 @@ public class SedStackerStacker {
     protected static String STACK_MTYPE = "stack.stack";
 
     protected SherpaClient client;
-    protected SAMPController controller;   
     protected UnitsManager um;
     
-    public SedStackerStacker(SAMPController controller, UnitsManager unitsManager) {
-        this.client = new SherpaClient(controller);
-        this.controller = controller;
+    public SedStackerStacker(SherpaClient client, UnitsManager unitsManager) {
+        this.client = client;
         this.um = unitsManager;
     }
     
     // Protected constructor for unit testing ONLY
-    protected SedStackerStacker(SAMPController controller, SherpaClient client) {
+    protected SedStackerStacker(SherpaClient client) {
         this.client = client;
-        this.controller = controller;
     }
 
     public ExtSed stack(SedStack stack) throws Exception {
@@ -93,16 +89,6 @@ public class SedStackerStacker {
             String msg = "Stack is empty. Please add SEDs to the stack to stack.";
             showMessageDialog(null, msg, "Empty Stack", NarrowOptionPane.ERROR_MESSAGE);
             throw new SedNoDataException(msg);
-        }
-
-        try {
-            client.findSherpa();
-        } catch (SampException ex) {
-            showMessageDialog(null,
-                            "Error stacking: Iris could not find the Sherpa process running in the background. " +
-                            "Please check the Troubleshooting section in the Iris documentation.",
-                            "Cannot connect to Sherpa", NarrowOptionPane.ERROR_MESSAGE);
-            throw new Exception("Sherpa not found");
         }
 
         // Create copy of stack and convert new stack to same units.
@@ -224,15 +210,14 @@ public class SedStackerStacker {
     private Response callSAMP(SedStackerStackPayload payload) throws Exception {
         SAMPMessage message = SAMPFactory.createMessage(STACK_MTYPE, payload, SedStackerStackPayload.class);
 
-        Response rspns = controller.callAndWait(client.findSherpa(), message.get(), 10);
-        if (client.isException(rspns)) {
-            Exception ex = client.getException(rspns);
+        try {
+            return client.sendMessage(message);
+        } catch (Exception ex) {
             showMessageDialog(null,
                     "A stacking error has occured. Please check the Iris documentation.", "ERROR",
                     JOptionPane.ERROR_MESSAGE);
             throw ex;
         }
-        return rspns;
     }
     
     /**

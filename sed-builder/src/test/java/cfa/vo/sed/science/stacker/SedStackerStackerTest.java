@@ -78,7 +78,7 @@ public class SedStackerStackerTest {
         this.controller = new SAMPControllerStub("name", "description", "url");
         this.client = new SherpaClientStub(controller);
         
-        this.stacker = new SedStackerStacker(controller, client) {
+        this.stacker = new SedStackerStacker(client) {
             @Override
             protected void showMessageDialog(Component parent, Object msg, String title, int type) {
                 logger.info("Expected message dialogue: " + msg);
@@ -257,7 +257,7 @@ public class SedStackerStackerTest {
         @Override
         public String findSherpa() throws SampException {
             if (findSherpa) return "";
-            throw new SampException();
+            throw new SampException("Sherpa not found");
         }
 
         public boolean hasException = false;
