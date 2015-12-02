@@ -33,10 +33,6 @@ public abstract class AbstracSEDStackerIT {
     }
 
     private static final Logger logger = Logger.getLogger(AbstracSEDStackerIT.class.getName());
-    
-    private static final int SAMP_CONN_RETRIES = 20;
-    private static final int TIMEOUT = 20000;
-    private static final int STEP = 1000;
     protected static final double EPSILON = 0.00001;
 
     protected double[] x1;

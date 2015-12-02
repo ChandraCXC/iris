@@ -189,12 +189,13 @@ public class SherpaClient {
     }
 
     public static boolean ping(SAMPController controller) throws SampException {
-        Time step = Default.getInstance().getTimeStep().convertTo(TimeUnit.MILLISECONDS);
-        final int stepMillis = (int) step.getAmount();
+        Time step = Default.getInstance().getTimeStep().convertTo(TimeUnit.SECONDS);
+        long seconds = step.getAmount();
+        final int stepSeconds = seconds < 1? 1 : (int) seconds;
         try {
-            logger.log(Level.INFO, "pinging Sherpa");
+            logger.log(Level.INFO, "pinging Sherpa with a " + stepSeconds + " seconds timeout");
             String id = findSherpa(controller);
-            controller.callAndWait(id, new PingMessage().get(), stepMillis);
+            controller.callAndWait(id, new PingMessage().get(), stepSeconds);
             logger.log(Level.INFO, "Sherpa replied");
             return true;
         } catch (SampException ex) {
