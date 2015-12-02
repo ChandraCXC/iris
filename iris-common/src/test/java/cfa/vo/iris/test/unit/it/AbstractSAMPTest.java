@@ -34,10 +34,9 @@ public class AbstractSAMPTest {
     
     private final Logger logger = Logger.getLogger(AbstractSAMPTest.class.getName());
     
-    private final int SAMP_CONN_RETRIES = 5;
+    private final int SAMP_CONN_RETRIES = 3;
     
     protected SedSAMPController controller;
-    private int TIMEOUT;
     private String controller_name;
     protected SherpaClient client;
     
@@ -45,7 +44,7 @@ public class AbstractSAMPTest {
         this.controller_name = "Iris Test Controller";
     }
     
-    public AbstractSAMPTest(int timeout, String controller_name) {
+    public AbstractSAMPTest(String controller_name) {
         this.controller_name = controller_name;
     }
     
@@ -101,7 +100,7 @@ public class AbstractSAMPTest {
         int count = 0;
         while (!controller.isConnected()) {
             if (++count > SAMP_CONN_RETRIES) {
-                String msg = "Failed to connect to SAMP, failing Unit tests";
+                String msg = "Failed to connect to SAMP, failing tests";
                 logger.info(msg);
                 fail(msg);
             }
@@ -115,9 +114,12 @@ public class AbstractSAMPTest {
     /*
     * Checks if Sherpa is connected to the SAMP hub
     */    
-    public void isSherpaConnected() throws SampException {
+    public void isSherpaConnected() throws SampException, InterruptedException {
 	
         this.client = new SherpaClient(this.controller);
+        // Give Sherpa some time to connect to SAMP Hub
+        // TODO: do this smarter, like in connectToSAMPHub()
+        Thread.sleep(SAMP_CONN_RETRIES*1000);
         assertTrue(!this.client.findSherpa().isEmpty());
     }
 }
