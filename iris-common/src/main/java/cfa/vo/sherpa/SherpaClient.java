@@ -199,7 +199,7 @@ public class SherpaClient {
             logger.log(Level.INFO, "Sherpa replied");
             return true;
         } catch (SampException ex) {
-            logger.log(Level.INFO, "Sherpa did not respond to ping, maybe the id is outdated? Renewing ID");
+            logger.log(Level.SEVERE, "Cannot ping Sherpa", ex);
             throw ex;
         }
     }
