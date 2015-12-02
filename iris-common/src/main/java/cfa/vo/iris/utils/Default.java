@@ -18,14 +18,22 @@ package cfa.vo.iris.utils;
 import cfa.vo.iris.units.DefaultUnitsManager;
 import cfa.vo.iris.units.UnitsManager;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Class that holds default implementations for all clients, generally IrisComponents, to share.
  */
 public class Default {
     private UnitsManager unitsManager = new DefaultUnitsManager();
+    private Time sampTimeout = new Time(60, TimeUnit.SECONDS);
+    private Time timeStep = new Time(1, TimeUnit.SECONDS);
 
     private Default() {
         /* Singleton class */
+    }
+
+    public Time getTimeStep() {
+        return timeStep;
     }
 
     private static class DefaultHolder {
@@ -38,5 +46,9 @@ public class Default {
 
     public UnitsManager getUnitsManager() {
         return unitsManager;
+    }
+
+    public Time getSampTimeout() {
+        return sampTimeout;
     }
 }

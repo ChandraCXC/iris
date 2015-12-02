@@ -25,6 +25,8 @@ import cfa.vo.interop.SAMPController;
 import cfa.vo.iris.sed.ExtSed;
 import java.io.File;
 import java.net.URL;
+
+import cfa.vo.sherpa.SherpaClient;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.SampException;
 

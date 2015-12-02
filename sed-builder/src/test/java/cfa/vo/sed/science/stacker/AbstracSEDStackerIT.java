@@ -53,7 +53,6 @@ public abstract class AbstracSEDStackerIT {
     protected SegmentPayload segment2;
     protected SegmentPayload segment3;
 
-    protected static SAMPController controller;
     protected static SherpaClient client;
 
     @BeforeClass
@@ -108,32 +107,28 @@ public abstract class AbstracSEDStackerIT {
     
     private static void startSamp() throws Exception {
         // Start the SAMP controller
-        controller = new SedSAMPController("SEDStacker", "SEDStacker", AbstracSEDStackerIT.class.getResource("/tools_tiny.png")
-                .toString());
-        controller.setAutoRunHub(true);
-        controller.start(false);
-        client = new SherpaClient(controller);
+        SAMPController controller = null;
 
-        int count = 0;
-        while (!controller.isConnected()) {
-            if (++count > SAMP_CONN_RETRIES) {
-                String msg = "Failed to connect to SAMP, failing Unit tests";
-                logger.info(msg);
-                Assert.fail(msg);
-            }
-            logger.info("waiting connection");
-            Thread.sleep(STEP);
+        try {
+            controller = SedSAMPController.createAndStart("SEDStacker", "SEDStacker", AbstracSEDStackerIT.class.getResource("/tools_tiny.png"), true, false);
+        } catch (Exception ex) {
+            String msg = "Failed to connect to SAMP, failing Unit tests";
+            logger.info(msg);
+            Assert.fail(msg);
         }
 
-        boolean isSherpaThere = client.waitFor(TIMEOUT, STEP);
-        if (!isSherpaThere) {
-            String msg = "Sherpa did not show up, failing unit tests";
+        try {
+            client = SherpaClient.create(controller);
+        } catch (Exception ex) {
+            String msg = "Sherpa did not show up, failing Unit tests";
             logger.info(msg);
-            Assert.fail();
+            Assert.fail(msg);
         }
     }
 
     protected static void terminate() {
-        controller.stop();
+        if (client != null && client.getController() != null) {
+            client.getController().stop();
+        }
     }
 }

@@ -54,6 +54,7 @@ import cfa.vo.sedlib.Param;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedException;
 import cfa.vo.sherpa.CompositeModel;
+import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.UserModel;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Task;
@@ -79,6 +80,7 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
 
     private IrisApplication app;
     private SedlibSedManager manager;
+    private SherpaClient client;
     private IWorkspace ws;
     private static String ZCONF_ATTACH = "science:z";
     private static String ICONF_ATTACH = "science:interpolation";
@@ -176,6 +178,7 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
             return;
         }
         setSed(_sed);
+        this.client = SherpaClient.create(app.getSAMPController());
     }
 
     /**
@@ -1050,7 +1053,7 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
             return;
         }
         if (redshifter == null) {
-            redshifter = new SherpaRedshifter(app.getSAMPController(), manager, ws.getUnitsManager());
+            redshifter = new SherpaRedshifter(client, manager);
         }
         try {
             if (sed.getNumberOfSegments() == 0) {
@@ -1081,7 +1084,7 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
         @Override
         protected Object doInBackground() {
             if (interpolator == null) {
-                interpolator = new SherpaInterpolator(app.getSAMPController(), manager, ws.getUnitsManager());
+                interpolator = new SherpaInterpolator(client, manager, ws.getUnitsManager());
             }
             try {
                 if (sed.getNumberOfSegments() == 0) {
@@ -1281,7 +1284,7 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
 
     private synchronized List<SimplePhotometryPoint> calculate(List<PassBand> pbs) throws Exception{
         if (integrator == null) {
-            integrator = new SherpaIntegrator(app.getSAMPController(), ws.getUnitsManager());
+            integrator = new SherpaIntegrator(client, ws.getUnitsManager());
         }
 
         Response response = (Response) SAMPFactory.get(Response.class);
@@ -1334,7 +1337,7 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
             super(application);
             busy2.setBusy(true);
             if (integrator == null) {
-                integrator = new SherpaIntegrator(app.getSAMPController(), ws.getUnitsManager());
+                integrator = new SherpaIntegrator(client, ws.getUnitsManager());
             }
 
             pbs = new ArrayList(bands);

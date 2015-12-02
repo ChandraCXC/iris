@@ -20,13 +20,10 @@
  */
 package cfa.vo.sed.science.interpolation;
 
-import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
-import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.Param;
 import cfa.vo.sedlib.common.SedNoDataException;
@@ -37,15 +34,11 @@ public class SherpaRedshifter {
 
     private SherpaClient client;
     private SedlibSedManager manager;
-    private SAMPController controller;
     private static String REDSHIFT_MTYPE = "spectrum.redshift.calc";
-    private UnitsManager um;
 
-    public SherpaRedshifter(SAMPController controller, SedlibSedManager manager, UnitsManager unitsManager) {
-        this.client = new SherpaClient(controller);
+    public SherpaRedshifter(SherpaClient client, SedlibSedManager manager) {
+        this.client = client;
         this.manager = manager;
-        this.controller = controller;
-        this.um = unitsManager;
     }
 
     
@@ -54,18 +47,6 @@ public class SherpaRedshifter {
         
         if(sed.getNumberOfSegments()==0)
             throw new SedNoDataException();
-        
-        String sherpaId = client.findSherpa();
-        
-        if (sherpaId == null) {
-            NarrowOptionPane.showMessageDialog(null,
-                    "Iris could not find the Sherpa process running in the background. Please check the Troubleshooting section in the Iris documentation.",
-                    "Cannot connect to Sherpa",
-                    NarrowOptionPane.ERROR_MESSAGE);
-            throw new Exception("Sherpa not found");
-        }
-
-//        ExtSed newSed = manager.newSed(sed.getId() + "_" + toRedshift);
 
         ExtSed inputSed = ExtSed.flatten(sed, "Angstrom", "Jy");
         
@@ -79,11 +60,7 @@ public class SherpaRedshifter {
         payload.setToRedshift(toRedshift);
         SAMPMessage message = SAMPFactory.createMessage(REDSHIFT_MTYPE, payload, RedshiftPayload.class);
 
-        Response rspns = controller.callAndWait(sherpaId, message.get(), 10);
-        if (client.isException(rspns)) {
-            Exception ex = client.getException(rspns);
-            throw ex;
-        }
+        Response rspns = client.sendMessage(message);
 
         RedshiftPayload response = (RedshiftPayload) SAMPFactory.get(rspns.getResult(), RedshiftPayload.class);
         inputSed.getSegment(0).setSpectralAxisValues(response.getX());

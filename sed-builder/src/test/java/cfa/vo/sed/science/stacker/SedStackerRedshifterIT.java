@@ -25,8 +25,6 @@ import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.sed.ExtSed;
 import static cfa.vo.sed.science.stacker.SedStackerAttachments.REDSHIFT;
-
-import cfa.vo.iris.utils.Default;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.Segment;
 
@@ -86,12 +84,7 @@ public class SedStackerRedshifterIT extends AbstracSEDStackerIT {
         SAMPMessage message = SAMPFactory.createMessage("stack.redshift",
                 payload, SedStackerRedshiftPayload.class);
 
-        Response rspns = controller.callAndWait(client.findSherpa(),
-                message.get(), 10);
-        if (client.isException(rspns)) {
-            Exception ex = client.getException(rspns);
-            throw ex;
-        }
+        Response rspns = client.sendMessage(message);
 
         SedStackerRedshiftPayload response = (SedStackerRedshiftPayload) SAMPFactory
                 .get(rspns.getResult(), SedStackerRedshiftPayload.class);
@@ -171,7 +164,7 @@ public class SedStackerRedshifterIT extends AbstracSEDStackerIT {
         stack.getConf().setRedshiftConfiguration(redshiftConf);
 
         // redshift the Stack
-        redshifter = new SedStackerRedshifter(controller, Default.getInstance().getUnitsManager());
+        redshifter = new SedStackerRedshifter(client);
         redshifter.shift(stack);
 
         List<double[]> xs = new ArrayList();
@@ -312,7 +305,7 @@ public class SedStackerRedshifterIT extends AbstracSEDStackerIT {
         WindowInterceptor.init(new Trigger() {
             @Override
             public void run() throws Exception {
-                final SedStackerRedshifter shifter = new SedStackerRedshifter(controller, Default.getInstance().getUnitsManager());
+                final SedStackerRedshifter shifter = new SedStackerRedshifter(client);
                 shifter.shift(stack, config);
             }
         }).process(new WindowHandler() {
