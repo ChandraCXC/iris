@@ -16,16 +16,18 @@
 
 package cfa.vo.iris.common;
 
+import cfa.vo.interop.SAMPController;
 import cfa.vo.iris.interop.AbstractSedMessageHandler;
-import cfa.vo.iris.interop.SedSAMPController;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.test.unit.it.AbstractSAMPTest;
+import cfa.vo.iris.utils.Default;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import org.junit.After;
@@ -35,10 +37,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- *
- * @author olaurino
- */
 public class SedMessageIT extends AbstractSAMPTest {
     
     private static final Logger logger = Logger.getLogger(SedMessageIT.class.getName());
@@ -68,23 +66,20 @@ public class SedMessageIT extends AbstractSAMPTest {
     public void sedMessageTest() throws Exception {
         System.setProperty("jsamp.hub.profiles", "std");
 
-        SedSAMPController sampReceiver = SedSAMPController.createAndStart("TestReceiver", 
-                "An SED builder from the Virtual Astronomical Observatory",
-                this.getClass().getResource("/iris_button_tiny.png"), 
-                false,
-                false);
+        long timeout = Default.getInstance().getSampTimeout().convertTo(TimeUnit.MILLISECONDS).getAmount();
+        SAMPController sampSender = new SAMPController.Builder("TestSender")
+                .withResourceServer("/test")
+                .buildAndStart(timeout);
+        SAMPController sampReceiver = new SAMPController.Builder("TestReceiver")
+                .buildAndStart(timeout);
+        assertTrue(sampSender.isConnected());
         assertTrue(sampReceiver.isConnected());
-        
-        
-        controller.startWithResourceServer("/test", false);
 
         sampReceiver.addMessageHandler(new SedHandler());
 
         ExtSed sed = ExtSed.read(this.getClass().getResource("/test_data/3c273.xml").getFile(), SedFormat.VOT);
 
-        Thread.sleep(5000);
-
-        controller.sendSedMessage(sed);
+        sed.sendSedMessage(sampSender);
 
         int i=0;
 
@@ -97,9 +92,8 @@ public class SedMessageIT extends AbstractSAMPTest {
 
         Assert.assertEquals(1, mySed.getNumberOfSegments());
 
+        sampSender.stop();
         sampReceiver.stop();
-
-        Thread.sleep(2000);
 
         Segment segment = sed.getSegment(0);
 

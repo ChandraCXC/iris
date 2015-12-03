@@ -28,10 +28,6 @@ import java.net.URL;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.SampException;
 
-/**
- *
- * @author olaurino
- */
 public class App implements IrisApplication {
 
     @Override
@@ -42,11 +38,6 @@ public class App implements IrisApplication {
     @Override
     public boolean isSampEnabled() {
         return false;
-    }
-
-    @Override
-    public void sendSedMessage(ExtSed sed) throws SampException {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override

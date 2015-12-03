@@ -53,11 +53,6 @@ public class ApplicationStub implements IrisApplication {
     }
 
     @Override
-    public void sendSedMessage(ExtSed sed) throws SampException {
-        throw new UnsupportedOperationException("not implemented yet");
-    }
-
-    @Override
     public void sendSampMessage(Message msg) throws SampException {
         throw new UnsupportedOperationException("not implemented yet");
     }

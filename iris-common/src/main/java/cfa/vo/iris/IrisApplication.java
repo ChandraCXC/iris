@@ -52,14 +52,6 @@ public interface IrisApplication {
      * @return True if SAMP is enabled in this session.
      */
     boolean isSampEnabled();
-    /**
-     * Convenience shortcut that allows components to broadcast a SED message to the SAMP hub.
-     *
-     * @param sed The SED file that has to be sent through SAMP
-     * @param sedId The ID of the SED file sent
-     * @throws SampException If an exception is thrown while the message is being sent
-     */
-    void sendSedMessage(ExtSed sed) throws SampException;
 
     void sendSampMessage(Message msg) throws SampException;
 

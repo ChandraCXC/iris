@@ -75,7 +75,7 @@ public class SedStackerStackerTest {
     
     @Before
     public void setUp() throws Exception {
-        this.controller = new SAMPControllerStub("name", "description", "url");
+        this.controller = new SAMPControllerStub("name");
         this.client = new SherpaClientStub(controller);
         
         this.stacker = new SedStackerStacker(client) {
@@ -232,10 +232,15 @@ public class SedStackerStackerTest {
     // Stubs, use these to set expectations
     //
     //
-    
+    private static class SAMPBuilder extends SAMPController.Builder {
+        public SAMPBuilder(String name) {
+            super(name);
+        }
+    }
+
     private static class SAMPControllerStub extends SAMPController {
-        public SAMPControllerStub(String name, String description, String iconUrl) {
-            super(name, description, iconUrl);
+        public SAMPControllerStub(String name) {
+            super(new Builder(name));
         }
         
         public Response rspns;

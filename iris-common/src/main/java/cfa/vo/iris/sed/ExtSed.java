@@ -20,19 +20,22 @@
  */
 package cfa.vo.iris.sed;
 
-import cfa.vo.iris.desktop.IrisWorkspace;
+import cfa.vo.interop.SAMPController;
+import cfa.vo.interop.SAMPFactory;
+import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.events.MultipleSegmentEvent;
 import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SegmentEvent;
 import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
+import cfa.vo.iris.interop.SedServerResource;
+import cfa.vo.iris.interop.VaoMessage;
 import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
 import cfa.vo.iris.sed.quantities.AxisMetadata;
 import cfa.vo.iris.sed.quantities.SPVYQuantity;
 import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
-import cfa.vo.iris.units.DefaultUnitsManager;
 import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.utils.Default;
@@ -43,9 +46,11 @@ import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sedlib.common.SedParsingException;
 import cfa.vo.sedlib.io.SedFormat;
 import org.apache.commons.lang.ArrayUtils;
+import org.astrogrid.samp.client.SampException;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -308,6 +313,48 @@ public class ExtSed extends Sed {
 
     private static double[] convertYValues(double[] yvalues, double[] xvalues, String fromYUnits, String fromXUnits, String toUnits) throws UnitsException {
         return uf.convertY(yvalues, xvalues, uf.newYUnits(fromYUnits), uf.newXUnits(fromXUnits), uf.newYUnits(toUnits));
+    }
+
+    /**
+     * This convenience method builds a new
+     * SedMessage, creates a new resource to be served by the internal HTTPServer and
+     * sends the SedMessage to the hub.
+     *
+     * @throws SampException
+     */
+    public void sendSedMessage(SAMPController controller) throws SampException {
+        try {
+
+            if(controller.getConnection().getSubscribedClients("table.load.votable").isEmpty())
+                throw new SampException("No clients can receive the SAMP Message");
+
+            for (int i = 1; i < getNumberOfSegments()+1; i++) {
+
+                String n = i==1 ? "" : String.valueOf(i);
+                String id = "ExportedSegment" +n;
+                Sed s = new Sed();
+
+                s.addSegment(getSegment(i-1));
+
+                VaoMessage msg = (VaoMessage) SAMPFactory.get(VaoMessage.class);
+                msg.setName(getId()+"Segment"+n);
+                msg.setTableId(id);
+                msg.getVaoPayload().setMessageType("sed");
+                msg.getVaoPayload().setSenderId("iris");
+                String filename = id + ".vot";
+                URL url = controller.addResource(filename, new SedServerResource(s));
+                msg.setUrl(url.toString());
+
+                SAMPMessage message = SAMPFactory.createMessage("table.load.votable", msg, VaoMessage.class);
+                ((Map)message.get().getParam("vao-payload")).put("sed-id", getId());
+                controller.sendMessage(message);
+            }
+
+        } catch (Exception ex) {
+            Logger.getLogger(ExtSed.class.getName()).log(Level.SEVERE, null, ex);
+            throw new SampException(ex.getMessage());
+        }
+
     }
 
 }

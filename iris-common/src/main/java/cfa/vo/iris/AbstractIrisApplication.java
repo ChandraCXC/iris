@@ -20,28 +20,24 @@
  */
 package cfa.vo.iris;
 
-import cfa.vo.interop.SAMPConnectionListener;
-import cfa.vo.interop.SAMPController;
-import cfa.vo.interop.SimpleSAMPMessage;
+import cfa.vo.interop.*;
 import cfa.vo.iris.desktop.IrisDesktop;
 import cfa.vo.iris.desktop.IrisWorkspace;
-import cfa.vo.iris.interop.SedSAMPController;
 import cfa.vo.iris.sdk.PluginManager;
 import cfa.vo.iris.sed.ExtSed;
 
-import java.awt.*;
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
 
-import org.apache.commons.lang.StringUtils;
+import cfa.vo.iris.utils.Default;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.MessageHandler;
 import org.astrogrid.samp.client.SampException;
@@ -54,7 +50,7 @@ import org.jdesktop.application.Application;
 public abstract class AbstractIrisApplication extends Application implements IrisApplication {
 
     private static final Logger logger = Logger.getLogger(AbstractIrisApplication.class.getName());
-    private static SedSAMPController sampController;
+    private static SAMPController sampController;
     private static boolean isTest = false;
     static boolean SAMP_ENABLED = !System.getProperty("samp", "true").toLowerCase().equals("false");
     public static final boolean SAMP_FALLBACK = false;
@@ -108,7 +104,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
 
     public static void sampShutdown() {
         if (sampController != null) {
-            Logger.getLogger(SedSAMPController.class.getName()).log(Level.INFO, "Shutting down SAMP");
+            Logger.getLogger(AbstractIrisApplication.class.getName()).log(Level.INFO, "Shutting down SAMP");
             sampController.stop();
         }
     }
@@ -195,9 +191,13 @@ public abstract class AbstractIrisApplication extends Application implements Iri
 
     public void sampSetup() {
         if (SAMP_ENABLED) {
-            sampController = new SedSAMPController(getName(), getDescription(), getSAMPIcon().toString());
             try {
-                sampController.startWithResourceServer("sedImporter/", !isTest);
+                sampController = new SAMPController.Builder(getName())
+                        .withDescription(getDescription())
+                        .withResourceServer("sedImporter/")
+                        .withAutoHub()
+                        .withGui(!isTest)
+                        .buildAndStart(Default.getInstance().getSampTimeout().convertTo(TimeUnit.MILLISECONDS).getAmount());
             } catch (Exception ex) {
                 System.err.println("SAMP Error. Disabling SAMP support.");
                 System.err.println("Error message: " + ex.getMessage());
@@ -248,11 +248,6 @@ public abstract class AbstractIrisApplication extends Application implements Iri
     @Override
     public boolean isSampEnabled() {
         return SAMP_ENABLED;
-    }
-
-    @Override
-    public void sendSedMessage(ExtSed sed) throws SampException {
-        sampController.sendSedMessage(sed);
     }
 
     @Override

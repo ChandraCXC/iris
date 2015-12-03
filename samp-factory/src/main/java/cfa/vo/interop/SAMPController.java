@@ -21,6 +21,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.astrogrid.samp.Message;
@@ -59,13 +60,18 @@ import org.astrogrid.samp.hub.HubServiceMode;
  * Notice that client's do not need to specify the subscriptions. They are automatically
  * computed and communicated to the Hub when new MessageHandlers are added or removed.
  *
- * @author olaurino
  */
 public class SAMPController extends GuiHubConnector {
 
     private static final int DEFAULT_TIMEOUT = 10;
 
-    private boolean autoRunHub = true;
+    private boolean autoRunHub;
+
+    private boolean withGui;
+
+    private boolean withServer;
+
+    private String serverRoot;
 
     private Hub hub;
 
@@ -77,10 +83,20 @@ public class SAMPController extends GuiHubConnector {
 
     HttpServer server;
 
-    private List<SAMPConnectionListener> listeners = Collections.synchronizedList(new ArrayList());
+    private List<SAMPConnectionListener> listeners = Collections.synchronizedList(new ArrayList<SAMPConnectionListener>());
 
     private Thread t;
 
+    private boolean started = false;
+
+    protected SAMPController(Builder builder) {
+        this(builder.name, builder.description, builder.icon.toString());
+        this.autoRunHub = builder.withHub;
+        if (builder.withResourceServer) {
+            this.activateServer(builder.serverRoot);
+        }
+        this.setGui(builder.withGui);
+    }
     /**
      *
      * Construct a new SAMPController, opens a connection to the SAMP Hub, or waits
@@ -90,7 +106,7 @@ public class SAMPController extends GuiHubConnector {
      * @param description The description string for the new client
      * @param iconUrl The location of the icon to show as associated to the new client.
      */
-    public SAMPController(String name, String description, String iconUrl) {
+    private SAMPController(String name, String description, String iconUrl) {
         super(DefaultClientProfile.getProfile());
         this.name = name;
 
@@ -222,15 +238,7 @@ public class SAMPController extends GuiHubConnector {
         this.autoRunHub = autoRunHub;
     }
 
-    private boolean started = false;
-
-    /**
-     * Start the controller. The controller starts a hub if it cannot find one running.
-     * This method allows to indicate whether the hub has to be launched in GUI mode or without
-     * any GUI.
-     * @param withGui True if the started hub must have a GUI.
-     */
-    public void start(boolean withGui) {
+    private void start() throws IOException {
         mode = withGui? HubServiceMode.MESSAGE_GUI : HubServiceMode.NO_GUI;
         if(!started) {
             try {
@@ -242,29 +250,27 @@ public class SAMPController extends GuiHubConnector {
 
             }
         }
+        if (withServer) {
+            startResourceServer();
+        }
     }
 
-    /**
-     * Start this controller. If a new hub is started it will be in GUI mode.
-     */
-    public void start() {
-        start(true);
-    }
-
-    /**
-     * Start this controller and initialize the internal web server.
-     * @param serverRoot String prefix for the served resources.
-     * @param withGui Whether the started hub has to be in GUI mode or not.
-     * @throws IOException
-     */
-    public void startWithResourceServer(String serverRoot, boolean withGui) throws IOException {
-        start(withGui);
+    private void startResourceServer() throws IOException {
         if(server == null)
             server = new HttpServer();
 
         server.start();
         resourceHandler = new ResourceHandler(server, serverRoot);
         server.addHandler(resourceHandler);
+    }
+
+    protected void activateServer(String serverRoot) {
+        this.withServer = true;
+        this.serverRoot = serverRoot;
+    }
+
+    protected void setGui(boolean withGui) {
+        this.withGui = withGui;
     }
 
     /**
@@ -351,6 +357,66 @@ public class SAMPController extends GuiHubConnector {
 
         }
 
+    }
+
+    public static class Builder {
+        private final String name;
+        private String description;
+        private URL icon = SAMPController.class.getResource("/iris_button_tiny.png");
+        private boolean withHub = false;
+        private boolean withGui = false;
+        private boolean withResourceServer = false;
+        private String serverRoot = "/";
+        private ExecutorService pool = Executors.newFixedThreadPool(20);
+
+        public Builder(String name) {
+            this.name = name;
+            this.description = name;
+        }
+
+        public Builder withDescription(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public Builder withIcon(URL iconURL) {
+            this.icon = iconURL;
+            return this;
+        }
+
+        public Builder withAutoHub() {
+            this.withHub = true;
+            return this;
+        }
+
+        public Builder withGui(boolean withGui) {
+            this.withGui = withGui;
+            return this;
+        }
+
+        public Builder withResourceServer(String serverRoot) {
+            this.withResourceServer = true;
+            if (serverRoot != null) {
+                this.serverRoot = serverRoot;
+            }
+            return this;
+        }
+
+        public SAMPController buildAndStart(long timeoutMillis) throws Exception {
+            Callable<SAMPController> callable = new Callable<SAMPController>() {
+                @Override
+                public SAMPController call() throws Exception {
+                    SAMPController controller = new SAMPController(Builder.this);
+                    controller.start();
+                    while (!controller.isConnected()) {
+                        Thread.sleep(1000); // This will be interrupted if a timeout occurs
+                    }
+                    return controller;
+                }
+            };
+            Future<SAMPController> futureController = pool.submit(callable);
+            return futureController.get(timeoutMillis, TimeUnit.MILLISECONDS);
+        }
     }
 
     private class SubscriptionListener implements SAMPConnectionListener {
