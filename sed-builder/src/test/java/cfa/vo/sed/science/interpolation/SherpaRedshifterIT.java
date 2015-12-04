@@ -78,9 +78,6 @@ public class SherpaRedshifterIT extends AbstractSAMPTest {
                 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
         };
 
-        // Start the SAMP controller
-        controller = SedSAMPController.createAndStart("SEDStacker", "SEDStacker", this.getClass().getResource("/tools_tiny.png"), false, false);
-
 //	ExtSed inputSed = ExtSed.flatten(sed, "Angstrom", "Jy");
 
         RedshiftPayload payload = (RedshiftPayload) SAMPFactory.get(RedshiftPayload.class);
@@ -91,7 +88,6 @@ public class SherpaRedshifterIT extends AbstractSAMPTest {
         payload.setToRedshift(0);
         SAMPMessage message = SAMPFactory.createMessage(REDSHIFT_MTYPE, payload, RedshiftPayload.class);
 
-        SherpaClient client = SherpaClient.create(controller);
         Response rspns = client.sendMessage(message);
         RedshiftPayload response = (RedshiftPayload) SAMPFactory.get(rspns.getResult(), RedshiftPayload.class);
 
