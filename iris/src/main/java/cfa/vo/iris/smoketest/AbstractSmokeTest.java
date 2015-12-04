@@ -19,10 +19,6 @@ package cfa.vo.iris.smoketest;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-/**
- *
- * @author olaurino
- */
 public abstract class AbstractSmokeTest {
 
     protected int TIMEOUT;

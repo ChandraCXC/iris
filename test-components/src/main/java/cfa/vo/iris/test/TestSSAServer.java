@@ -21,15 +21,14 @@
 
 package cfa.vo.iris.test;
 
+import cfa.vo.interop.SAMPController;
 import cfa.vo.iris.ICommandLineInterface;
 import cfa.vo.iris.IMenuItem;
 import cfa.vo.iris.IWorkspace;
-import cfa.vo.iris.AbstractIrisApplication;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.NullCommandLineInterface;
 import cfa.vo.iris.gui.NarrowOptionPane;
-import cfa.vo.iris.interop.SedSAMPController;
 import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
 import cfa.vo.iris.sed.SedlibSedManager;
@@ -51,18 +50,14 @@ import org.astrogrid.samp.client.AbstractMessageHandler;
 import org.astrogrid.samp.client.HubConnection;
 import org.astrogrid.samp.client.MessageHandler;
 
-/**
- *
- * @author olaurino
- */
 public class TestSSAServer implements IrisComponent {
 
     private SedlibSedManager sedManager;
     private JFrame rootFrame;
 
-    private static SedSAMPController c;
+    private static SAMPController c;
 
-    public static SedSAMPController getController() {
+    public static SAMPController getController() {
         return c;
     }
 
@@ -70,7 +65,11 @@ public class TestSSAServer implements IrisComponent {
     public void init(IrisApplication app, IWorkspace workspace) {
         sedManager = (SedlibSedManager) workspace.getSedManager();
         rootFrame = workspace.getRootFrame();
-        c = new SedSAMPController(getName(), getDescription(), ((AbstractIrisApplication)TestBuilder.getApplication()).getSAMPIcon().toString());
+        try {
+            c = new SAMPController.Builder(getName()).withDescription(getDescription()).buildAndStart(30000);
+        } catch (Exception ex) {
+            Logger.getLogger(getClass().getName()).log(Level.INFO, "Component could not connect to SAMP hub");
+        }
         Logger.getLogger(getClass().getName()).log(Level.INFO, "Component initialized");
     }
 

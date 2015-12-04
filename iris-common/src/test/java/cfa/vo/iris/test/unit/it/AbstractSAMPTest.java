@@ -16,8 +16,11 @@
  
 package cfa.vo.iris.test.unit.it;
 
-import cfa.vo.iris.interop.SedSAMPController;
+import cfa.vo.interop.SAMPController;
+import cfa.vo.iris.utils.Default;
 import cfa.vo.sherpa.SherpaClient;
+
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import org.astrogrid.samp.client.SampException;
 import static org.junit.Assert.*;
@@ -34,7 +37,7 @@ public class AbstractSAMPTest {
     
     private final Logger logger = Logger.getLogger(AbstractSAMPTest.class.getName());
     
-    protected SedSAMPController controller;
+    protected SAMPController controller;
     private String controller_name;
     protected SherpaClient client;
     
@@ -49,7 +52,7 @@ public class AbstractSAMPTest {
     
     /**
      * Create before/after methods for each test class that extends this class.
-     * Setup/teardown SedSAMPControllers after each test.
+     * Setup/teardown SAMPControllers after each test.
      * 
      * Note that in the future we can implement the ExternalResource interface
      * for various kinds of tests (NED Service, SAMP, Sherpa, etc.) in 
@@ -72,17 +75,14 @@ public class AbstractSAMPTest {
     };
     
     /*
-    * Creates a SedSAMPController and connects it to a SAMP Hub. Fails if
+    * Creates a SAMPController and connects it to a SAMP Hub. Fails if
     * it does not connect to a SAMP Hub.
     */
-    public void connectToSAMPHub() throws InterruptedException, Exception {
+    public void connectToSAMPHub() throws Exception {
         
         // setup the SAMP controller
-        controller = SedSAMPController.createAndStart(this.controller_name, 
-                                                      this.controller_name, 
-                                                      this.getClass().getResource(""), 
-                                                      false,
-                                                      false);
+        controller = new SAMPController.Builder(this.controller_name)
+                .buildAndStart(Default.getInstance().getSampTimeout().convertTo(TimeUnit.MILLISECONDS).getAmount());
 
         assertTrue(controller.isConnected());
     }

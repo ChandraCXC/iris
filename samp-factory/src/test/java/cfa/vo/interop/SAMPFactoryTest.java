@@ -29,10 +29,6 @@ import java.util.Map;
 import junit.framework.TestCase;
 import org.astrogrid.samp.Message;
 
-/**
- *
- * @author olaurino
- */
 public class SAMPFactoryTest extends TestCase {
 
     private SAMPController controller;
@@ -45,8 +41,10 @@ public class SAMPFactoryTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         System.setProperty("jsamp.hub.profiles", "std");
-        controller = new SAMPController("test", "test", SAMPController.class.getResource("/iris_button_tiny.png").toString());
-        controller.start(false);
+        controller = new SAMPController.Builder("test")
+                .withGui(false)
+                .withAutoHub()
+                .buildAndStart(30000);
     }
 
     @Override
