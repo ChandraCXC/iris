@@ -366,7 +366,7 @@ public class SedBuilder implements IrisComponent {
         }
 
         @Override
-        public void call(String[] args) {
+        public int call(String[] args) {
 
             SedFormat format;
             File outputFile;
@@ -374,7 +374,7 @@ public class SedBuilder implements IrisComponent {
             if (args.length > 0) {
                 if (args.length < 2) {
                     System.err.println("Usage: builder config_file output_file [output_format].");
-                    return;
+                    return 1;
                 } else {
                     String formatS = args.length == 2 ? "VOT" : args[2];
                     try {
@@ -388,26 +388,26 @@ public class SedBuilder implements IrisComponent {
                         confList = SetupManager.read(url);
                     } catch (IOException ex) {
                         System.err.println("Error reading file " + args[0] + ": " + ex.getMessage());
-                        return;
+                        return 1;
                     } catch (Exception ex) {
                         System.err.println("Generic error reading file " + args[0] + ": " + ex.getMessage());
-                        return;
+                        return 1;
                     }
                     try {
                         outputFile = new File(args[1]);
                         if (outputFile.exists() && !outputFile.canWrite()) {
                             System.err.println("Error: file " + args[1] + " is not writable.");
-                            return;
+                            return 1;
                         }
                     } catch (Exception ex) {
                         System.err.println("Error opening file " + args[1] + ": " + ex.getMessage());
-                        return;
+                        return 1;
                     }
                     try {
                         format = SedFormat.valueOf(formatS.toUpperCase());
                     } catch (Exception ex) {
                         System.err.println("No such a format: " + formatS + ". Please use 'vot' or 'fits'.");
-                        return;
+                        return 1;
                     }
 
 
@@ -419,7 +419,7 @@ public class SedBuilder implements IrisComponent {
                         segments = SegmentImporter.getSegments(confList);
                     } catch (Exception ex) {
                         System.err.println("Error while building segments: " + ex.getMessage());
-                        return;
+                        return 1;
                     }
                     System.out.println();
                     System.out.println("Building SED...");
@@ -432,7 +432,7 @@ public class SedBuilder implements IrisComponent {
                         }
                     } catch (SedInconsistentException ex) {
                         System.err.println("Error: segments are inconsistent: " + ex.getMessage());
-                        return;
+                        return 1;
                     }
                     try {
                         System.out.println();
@@ -447,6 +447,7 @@ public class SedBuilder implements IrisComponent {
 
                 }
             }
+            return 0;
         }
     }
 

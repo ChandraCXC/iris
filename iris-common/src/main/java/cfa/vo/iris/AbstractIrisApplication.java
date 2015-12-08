@@ -151,13 +151,14 @@ public abstract class AbstractIrisApplication extends Application implements Iri
         initComponents();
 
         if (isBatch) {
+            int status = 1; // assume we will fail
             if (!components.containsKey(componentName)) {
                 System.out.println("Component " + componentName + " does not exist.");
             } else {
-                components.get(componentName).getCli().call(componentArgs);
+                status = components.get(componentName).getCli().call(componentArgs);
             }
 
-            exitApp();
+            exitApp(status);
         }
 
         if (MAC_OS_X) {
@@ -212,7 +213,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
         } catch (Exception ex) {
             System.err.println("Error initializing components");
             logger.log(Level.SEVERE, null, ex);
-            exitApp();
+            exitApp(1);
         }
 
         desktop.setVisible(true);
@@ -236,12 +237,12 @@ public abstract class AbstractIrisApplication extends Application implements Iri
         manager.load();
     }
 
-    public void exitApp() {
+    public void exitApp(int status) {
         for (IrisComponent component : components.values()) {
             component.shutdown();
         }
         sampShutdown();
-        System.exit(0);
+        System.exit(status);
     }
 
     @Override

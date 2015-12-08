@@ -40,5 +40,5 @@ public interface ICommandLineInterface {
      *
      * @param args The command line arguments.
      */
-    void call(String[] args);
+    int call(String[] args);
 }

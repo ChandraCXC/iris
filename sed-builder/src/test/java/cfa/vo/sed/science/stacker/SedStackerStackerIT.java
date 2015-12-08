@@ -29,11 +29,10 @@ import cfa.vo.iris.utils.UTYPE;
 
 import static cfa.vo.sed.science.stacker.SedStackerAttachments.COUNTS;
 import cfa.vo.sedlib.Segment;
-import cfa.vo.sherpa.SherpaClient;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.astrogrid.samp.Response;
-import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -41,13 +40,12 @@ import static org.junit.Assert.*;
  *
  * @author jbudynk
  */
-public class SedStackerStackerIT extends AbstracSEDStackerIT {
+public class SedStackerStackerIT extends AbstractSEDStackerIT {
     
     SedStackerStackPayload payload;
     
     private SedStackerStacker stacker;
 
-    @Ignore("need sherpa-samp running")
     @Test
     public void testStackAvg() throws Exception {
 
@@ -66,13 +64,7 @@ public class SedStackerStackerIT extends AbstracSEDStackerIT {
         // Setup and send SAMP message
         SAMPMessage message = SAMPFactory.createMessage("stack.stack", payload, SedStackerStackPayload.class);
 
-        SherpaClient client = new SherpaClient(controller);
-
-        Response rspns = controller.callAndWait(client.findSherpa(), message.get(), 10);
-        if (client.isException(rspns)) {
-            Exception ex = client.getException(rspns);
-            throw ex;
-        }
+        Response rspns = client.sendMessage(message);
 
         SedStackerStackPayload response = (SedStackerStackPayload) SAMPFactory.get(rspns.getResult(),
                 SedStackerStackPayload.class);
@@ -106,7 +98,6 @@ public class SedStackerStackerIT extends AbstracSEDStackerIT {
         }
     }
 
-    @Ignore("need sherpa-samp running")
     @Test
     public void testStacker() throws Exception {
         ExtSed sed1 = new ExtSed("Sed1");
@@ -166,7 +157,7 @@ public class SedStackerStackerIT extends AbstracSEDStackerIT {
         config.setYUnits("erg/s/cm2/Hz");
 
         // stack
-        stacker = new SedStackerStacker(controller, (UnitsManager) null);
+        stacker = new SedStackerStacker(client, (UnitsManager) null);
         ExtSed result = stacker.stack(stack, config);
 
         List<double[]> xs = new ArrayList<>();

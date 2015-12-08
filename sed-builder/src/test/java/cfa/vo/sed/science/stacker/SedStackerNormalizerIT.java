@@ -13,39 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package cfa.vo.sed.science.stacker;
 
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.sed.ExtSed;
 import static cfa.vo.sed.science.stacker.SedStackerAttachments.NORM_CONSTANT;
-
 import cfa.vo.iris.utils.Default;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.Segment;
-import cfa.vo.sherpa.SherpaClient;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.astrogrid.samp.Response;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.uispec4j.Trigger;
+import org.uispec4j.Window;
+import org.uispec4j.interception.WindowHandler;
+import org.uispec4j.interception.WindowInterceptor;
 
 import static org.junit.Assert.*;
 
-/**
- * 
- * @author jbudynk
- */
-public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
+
+public class SedStackerNormalizerIT extends AbstractSEDStackerIT {
 
     SedStackerNormalizePayload payload;
     
@@ -61,7 +52,6 @@ public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
         yerr3 = new double[]{0.5, 1.5, 0.7, 0.45, 1.35, 1.05};
     }
 
-    @Ignore("need sherpa-samp running")
     @Test
     public void testNormalize() throws Exception {
         payload = (SedStackerNormalizePayload) SAMPFactory
@@ -83,14 +73,7 @@ public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
         SAMPMessage message = SAMPFactory.createMessage("stack.normalize",
                 payload, SedStackerNormalizePayload.class);
 
-        SherpaClient client = new SherpaClient(controller);
-
-        Response rspns = controller.callAndWait(client.findSherpa(),
-                message.get(), 10);
-        if (client.isException(rspns)) {
-            Exception ex = client.getException(rspns);
-            throw ex;
-        }
+        Response rspns = client.sendMessage(message);
 
         SedStackerNormalizePayload response = (SedStackerNormalizePayload) SAMPFactory
                 .get(rspns.getResult(), SedStackerNormalizePayload.class);
@@ -113,11 +96,8 @@ public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
             assertEquals(9.846 * y2[i], resy2[i], EPSILON);
         }
         assertEquals(1.1529274, resnorm3, EPSILON);
-
-        controller.stop();
     }
 
-    @Ignore("need sherpa-samp running")
     @Test
     public void testNormalizer() throws Exception {
         ExtSed sed1 = new ExtSed("Sed1");
@@ -176,7 +156,7 @@ public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
         config.setYValue(1.0);
 
         // normalize the Stack
-        SedStackerNormalizer normalizer = new SedStackerNormalizer(controller, Default.getInstance().getUnitsManager());
+        SedStackerNormalizer normalizer = new SedStackerNormalizer(client, Default.getInstance().getUnitsManager());
         normalizer.normalize(stack, config);
 
         List<double[]> xs = new ArrayList<>();
@@ -217,7 +197,6 @@ public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
                         .toString()), EPSILON);
     }
 
-    @Ignore("need sherpa-samp running")
     @Test
     public void testNormalizerOutsideRange() throws Exception {
         ExtSed sed1 = new ExtSed("Sed1");
@@ -276,8 +255,7 @@ public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
         config.setYValue(1.0);
 
         // normalize the Stack
-        SedStackerNormalizer normalizer = new SedStackerNormalizer(controller, Default.getInstance().getUnitsManager());
-        normalizer.normalize(stack, config);
+        normalizeWithWindowInterceptor(stack, config);
 
         List<double[]> xs = new ArrayList<>();
         List<double[]> ys = new ArrayList<>();
@@ -315,5 +293,21 @@ public class SedStackerNormalizerIT extends AbstracSEDStackerIT {
                 0.035714285714,
                 Double.valueOf(stack.getSed(2).getAttachment(NORM_CONSTANT)
                         .toString()), EPSILON);
+    }
+
+    private void normalizeWithWindowInterceptor(final SedStack stack, final NormalizationConfiguration config) {
+        WindowInterceptor.init(new Trigger() {
+            @Override
+            public void run() throws Exception {
+                final SedStackerNormalizer normalizer = new SedStackerNormalizer(client, Default.getInstance().getUnitsManager());
+                normalizer.normalize(stack, config);
+            }
+        }).process(new WindowHandler() {
+            @Override
+            public Trigger process(Window window) throws Exception {
+                window.titleEquals("Unnormalized SEDs");
+                return window.getButton("OK").triggerClick();
+            }
+        }).run();
     }
 }

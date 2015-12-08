@@ -21,7 +21,6 @@
  */
 package cfa.vo.sed.science.stacker;
 
-import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.gui.NarrowOptionPane;
@@ -38,18 +37,14 @@ import org.astrogrid.samp.Response;
 import java.util.List;
 import javax.swing.JOptionPane;
 
-import org.astrogrid.samp.client.SampException;
-
 public class SedStackerNormalizer {
     private SherpaClient client;
-    private SAMPController controller;
     private static String NORMALIZE_MTYPE = "stack.normalize";
     private boolean normConfigChanged;
     private UnitsManager um;
 
-    public SedStackerNormalizer(SAMPController controller, UnitsManager unitsManager) {
-        this.client = new SherpaClient(controller);
-        this.controller = controller;
+    public SedStackerNormalizer(SherpaClient client, UnitsManager unitsManager) {
+        this.client = client;
         this.um = unitsManager;
     }
 
@@ -67,17 +62,6 @@ public class SedStackerNormalizer {
                     "Empty Stack",
                     NarrowOptionPane.ERROR_MESSAGE);
             throw new SedNoDataException();
-        }
-
-        try {
-            client.findSherpa();
-        } catch (SampException ex) {
-            NarrowOptionPane.showMessageDialog(null,
-                    "Error normalizing: " +
-                            "Iris could not find the Sherpa process running in the background. Please check the Troubleshooting section in the Iris documentation.",
-                    "Cannot connect to Sherpa",
-                    NarrowOptionPane.ERROR_MESSAGE);
-            throw new Exception("Sherpa not found");
         }
 
         // Create copy of stack and convert new stack to same units. First save the original units for later.
@@ -189,12 +173,7 @@ public class SedStackerNormalizer {
         }
 
         SAMPMessage message = SAMPFactory.createMessage(NORMALIZE_MTYPE, payload, SedStackerNormalizePayload.class);
-
-        Response rspns = controller.callAndWait(client.findSherpa(), message.get(), 10);
-        if (client.isException(rspns)) {
-            Exception ex = client.getException(rspns);
-            throw ex;
-        }
+        Response rspns = client.sendMessage(message);
 
         SedStackerNormalizePayload response = (SedStackerNormalizePayload) SAMPFactory.get(rspns.getResult(), SedStackerNormalizePayload.class);
 

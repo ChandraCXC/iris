@@ -58,6 +58,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 
+import cfa.vo.sherpa.SherpaClient;
 import org.apache.commons.lang.StringUtils;
 import org.astrogrid.samp.client.SampException;
 import org.jdesktop.observablecollections.ObservableCollections;
@@ -70,7 +71,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 
     private JFrame rootFrame;
     private IrisApplication app;
-    private SAMPController controller;
+    private SherpaClient client;
     private SedlibSedManager manager;
     private IWorkspace ws;
 
@@ -79,7 +80,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 
         this.rootFrame = ws.getRootFrame();
         this.app = app;
-        this.controller = app.getSAMPController();
+        this.client = SherpaClient.create(app.getSAMPController());
         this.manager = (SedlibSedManager) ws.getSedManager();
         this.ws = ws;
 
@@ -1108,7 +1109,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         }
 
         if (redshifter == null) {
-            redshifter = new SedStackerRedshifter(controller, ws.getUnitsManager());
+            redshifter = new SedStackerRedshifter(client);
         }
         try {
             redshifter.shift(selectedStack, redshiftConf);
@@ -1223,7 +1224,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         }
 
         if (normalizer == null) {
-            normalizer = new SedStackerNormalizer(controller, ws.getUnitsManager());
+            normalizer = new SedStackerNormalizer(client, ws.getUnitsManager());
         }
         try {
             normalizer.normalize(selectedStack, normConfig);
@@ -1248,7 +1249,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 
 
         if (stacker == null) {
-            stacker = new SedStackerStacker(controller, ws.getUnitsManager());
+            stacker = new SedStackerStacker(client, ws.getUnitsManager());
         }
         try {
             ExtSed stackedStack = stacker.stack(selectedStack, stackConfig);

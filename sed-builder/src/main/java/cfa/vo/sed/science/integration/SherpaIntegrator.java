@@ -41,29 +41,17 @@ import java.util.Map;
  */
 public class SherpaIntegrator {
 
-    private SAMPController controller;
     private SherpaClient client;
     private UnitsManager um;
     
-    public SherpaIntegrator(SAMPController controller, UnitsManager unitsManager) {
-        this.controller = controller;
-        this.client = new SherpaClient(controller);
+    public SherpaIntegrator(SherpaClient client, UnitsManager unitsManager) {
+        this.client = client;
         this.um = unitsManager;
     }
 
     public synchronized Response integrate(ExtSed sed, List<PassBand> bands) throws Exception {
-
-//        String sherpaId = client.findSherpa();
-//
-//        if (sherpaId == null) {
-//            NarrowOptionPane.showMessageDialog(null,
-//                    "Iris could not find the Sherpa process running in the background. Please check the Troubleshooting section in the Iris documentation.",
-//                    "Cannot connect to Sherpa",
-//                    NarrowOptionPane.ERROR_MESSAGE);
-//            throw new Exception("Sherpa not found");
-//        }
         
-        List<PassBand> pbs = new ArrayList(bands);
+        List<PassBand> pbs = new ArrayList<>(bands);
         IntegrationPayload payload = (IntegrationPayload) SAMPFactory.get(IntegrationPayload.class);
         for (PassBand pb : pbs) {
             if (pb instanceof PhotometryFilter) {
@@ -95,7 +83,7 @@ public class SherpaIntegrator {
         payload.setY(y);
         
         SAMPMessage message = SAMPFactory.createMessage("spectrum.integrate", payload, IntegrationPayload.class);
-        return (Response) SAMPFactory.get(controller.callAndWait(client.findSherpa(), message.get(), 20).getResult(), Response.class);
+        return (Response) SAMPFactory.get(client.sendMessage(message).getResult(), Response.class);
         
     }
 
@@ -116,7 +104,7 @@ public class SherpaIntegrator {
 
         double[] x = new double[0];
 
-        List<PassBand> pbs = new ArrayList(bands);
+        List<PassBand> pbs = new ArrayList<>(bands);
         IntegrationPayload payload = (IntegrationPayload) SAMPFactory.get(IntegrationPayload.class);
         for (PassBand pb : pbs) {
             if (pb instanceof PhotometryFilter) {
@@ -150,11 +138,7 @@ public class SherpaIntegrator {
         dataset.setX(x);
 
         SAMPMessage modelMessage = SAMPFactory.createMessage("spectrum.fit.calc.model.values", conf, FitConfiguration.class);
-        org.astrogrid.samp.Response response = controller.callAndWait(client.findSherpa(), modelMessage.get(), 20);
-
-        if (client.isException(response)) {
-            throw client.getException(response);
-        }
+        org.astrogrid.samp.Response response = client.sendMessage(modelMessage);
 
         Map result = response.getResult();
 
@@ -168,7 +152,7 @@ public class SherpaIntegrator {
         payload.setY(yy);
         SAMPMessage message = SAMPFactory.createMessage("spectrum.integrate", payload, IntegrationPayload.class);
 
-        Response res = (Response) SAMPFactory.get(controller.callAndWait(client.findSherpa(), message.get(), 20).getResult(), Response.class);
+        Response res = (Response) SAMPFactory.get(client.sendMessage(message).getResult(), Response.class);
         for (SimplePhotometryPoint p : res.getPoints()) {
             double erg = p.getFlux();
 //            double erg = YUnits.convert(new double[]{photon}, new double[]{p.getWavelength()}, new YUnits("photon/s/cm2/Angstrom"), new XUnits("Angstrom"), new YUnits("erg/s/cm2"), true)[0];

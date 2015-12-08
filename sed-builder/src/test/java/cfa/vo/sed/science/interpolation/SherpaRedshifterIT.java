@@ -22,18 +22,13 @@
 
 package cfa.vo.sed.science.interpolation;
 
-import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.interop.SedSAMPController;
-import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.sedlib.Param;
 import cfa.vo.sherpa.SherpaClient;
+import cfa.vo.iris.test.unit.it.AbstractSAMPTest;
 
-import java.util.Arrays;
 import java.util.logging.Logger;
-
 import org.astrogrid.samp.Response;
 import org.junit.After;
 import org.junit.Before;
@@ -46,23 +41,21 @@ import static org.junit.Assert.*;
  *
  * @author jbudynk
  */
-public class SherpaRedshifterTest {
+public class SherpaRedshifterIT extends AbstractSAMPTest {
     
-    private static final Logger logger = Logger.getLogger(SherpaRedshifterTest.class.getName());
-
-    private SAMPController controller;
+    private static final Logger logger = Logger.getLogger(SherpaRedshifterIT.class.getName());
     private static String REDSHIFT_MTYPE = "spectrum.redshift.calc";
 
-    public SherpaRedshifterTest() {
+    public SherpaRedshifterIT() {
 
     }
 
     @Before
-    public void setUp() {
+    public void setup() {
     }
 
     @After
-    public void tearDown() {
+    public void teardown() {
     }
 
     @Ignore("need sherpa-samp running")
@@ -85,19 +78,6 @@ public class SherpaRedshifterTest {
                 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
         };
 
-
-        // Start the SAMP controller
-        controller = new SedSAMPController("SEDStacker", "SEDStacker", this.getClass().getResource("/tools_tiny.png").toString());
-        controller.setAutoRunHub(false); //set to 'true' when I figure out how to start Sherpa in the test...
-        controller.start(false);
-
-        Thread.sleep(2000);
-
-        while (!controller.isConnected()) {
-            logger.info("waiting connection");
-            Thread.sleep(1000);
-        }
-
 //	ExtSed inputSed = ExtSed.flatten(sed, "Angstrom", "Jy");
 
         RedshiftPayload payload = (RedshiftPayload) SAMPFactory.get(RedshiftPayload.class);
@@ -108,29 +88,16 @@ public class SherpaRedshifterTest {
         payload.setToRedshift(0);
         SAMPMessage message = SAMPFactory.createMessage(REDSHIFT_MTYPE, payload, RedshiftPayload.class);
 
-        SherpaClient client = new SherpaClient(controller);
-
-        Response rspns = controller.callAndWait(client.findSherpa(), message.get(), 10);
-        if (client.isException(rspns)) {
-            Exception ex = client.getException(rspns);
-            throw ex;
-        }
-
+        Response rspns = client.sendMessage(message);
         RedshiftPayload response = (RedshiftPayload) SAMPFactory.get(rspns.getResult(), RedshiftPayload.class);
 
         double[] controlYerr = new double[]{
                 1, 21, 11, 2, 22, 12, 3, 23, 13, 4, 24, 14, 25, 15, 5, 16, 6, 26, 17, 7, 27, 18, 8, 28, 29, 19, 9, 20, 10, 30
         };
 
-        // tests
         // Make sure flux errors are sorted correctly with the SED points.
         for (int i = 0; i < response.getY().length; i++) {
             assertEquals(controlYerr[i], response.getYerr()[i], 0.00001);
         }
-
-        controller.stop();
-
     }
-
-
 }

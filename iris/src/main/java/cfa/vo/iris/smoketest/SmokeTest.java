@@ -23,7 +23,6 @@ package cfa.vo.iris.smoketest;
 
 import cfa.vo.iris.*;
 import org.astrogrid.samp.client.MessageHandler;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -58,7 +57,7 @@ public class SmokeTest implements IrisComponent {
             }
 
             @Override
-            public void call(String[] args) {
+            public int call(String[] args) {
                 String testFile = System.getProperty("IRIS_DIR")+"/examples/3c273.xml";
                 if(args.length>0) {
                     try{
@@ -66,17 +65,17 @@ public class SmokeTest implements IrisComponent {
                         test = new SherpaSmokeTest(testFile, timeout);
                     } catch (NumberFormatException ex) {
                         System.out.println(args[0]+" is not a number.");
-                        return;
+                        return 1;
                     }
                 }
                 else
                     test = new SherpaSmokeTest(testFile);
                 try {
                     test.runTest();
-                } catch (Exception ex) {
-                    Logger.getLogger(SmokeTest.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (Throwable ex) {
+                    ex.printStackTrace(System.err);
                 } finally {
-                    test.exit();
+                    return test.exit();
                 }
             }
         };

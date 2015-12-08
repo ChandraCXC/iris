@@ -19,11 +19,13 @@ package cfa.vo.iris.common;
 import cfa.vo.iris.interop.AbstractSedMessageHandler;
 import cfa.vo.iris.interop.SedSAMPController;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.test.unit.it.AbstractSAMPTest;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 
-import java.util.logging.Level;
+import static org.junit.Assert.assertTrue;
+
 import java.util.logging.Logger;
 
 import org.junit.After;
@@ -37,13 +39,13 @@ import org.junit.Test;
  *
  * @author olaurino
  */
-public class SedMessageTest {
+public class SedMessageIT extends AbstractSAMPTest {
     
-    private static final Logger logger = Logger.getLogger(SedMessageTest.class.getName());
+    private static final Logger logger = Logger.getLogger(SedMessageIT.class.getName());
     
     private Sed mySed;
 
-    public SedMessageTest() {
+    public SedMessageIT() {
     }
 
     @BeforeClass
@@ -55,35 +57,26 @@ public class SedMessageTest {
     }
 
     @Before
-    public void setUp() {
+    public void setup() {
     }
 
     @After
-    public void tearDown() {
+    public void teardown() {
     }
 
-     @Test
-     public void sedMessageTest() throws Exception {
+    @Test
+    public void sedMessageTest() throws Exception {
         System.setProperty("jsamp.hub.profiles", "std");
 
-        SedSAMPController sampSender = new SedSAMPController("TestSender", "An SED builder from the Virtual Astronomical Observatory", this.getClass().getResource("/iris_button_tiny.png").toString());
-        SedSAMPController sampReceiver = new SedSAMPController("TestReceiver", "An SED builder from the Virtual Astronomical Observatory", this.getClass().getResource("/iris_button_tiny.png").toString());
-
-        sampSender.startWithResourceServer("/test", false);
-
-        Thread.sleep(2000);
-
-        sampReceiver.start(false);
-        sampReceiver.setAutoRunHub(false);
-
-        while(!sampSender.isConnected()) {
-            logger.log(Level.INFO, "waiting connection...");
-            Thread.sleep(1000);
-        }
-
-        while(!sampReceiver.isConnected()) {
-            Thread.sleep(1000);
-        }
+        SedSAMPController sampReceiver = SedSAMPController.createAndStart("TestReceiver", 
+                "An SED builder from the Virtual Astronomical Observatory",
+                this.getClass().getResource("/iris_button_tiny.png"), 
+                false,
+                false);
+        assertTrue(sampReceiver.isConnected());
+        
+        
+        controller.startWithResourceServer("/test", false);
 
         sampReceiver.addMessageHandler(new SedHandler());
 
@@ -91,7 +84,7 @@ public class SedMessageTest {
 
         Thread.sleep(5000);
 
-        sampSender.sendSedMessage(sed);
+        controller.sendSedMessage(sed);
 
         int i=0;
 
@@ -108,23 +101,21 @@ public class SedMessageTest {
 
         Thread.sleep(2000);
 
-        sampSender.stop();
-
         Segment segment = sed.getSegment(0);
 
         Assert.assertEquals("NASA/IPAC Extragalactic Database (NED)", segment.getCuration().getPublisher().getValue());
 
         Assert.assertEquals("3c273", sed.getId());
 
-     }
+    }
 
-     private class SedHandler extends AbstractSedMessageHandler {
+    private class SedHandler extends AbstractSedMessageHandler {
 
         @Override
         public void processSed(Sed sed, String sedId) {
             mySed = sed;
         }
 
-     }
+    }
 
 }
