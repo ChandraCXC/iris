@@ -32,8 +32,7 @@ import java.net.URL;
 import junit.framework.Assert;
 import org.uispec4j.*;
 
-
-public class BuilderMainViewIT extends AbstractComponentGUITest {
+public class BuilderMainViewTest extends AbstractComponentGUITest {
 
     public void testNewSegment() throws Exception {
 
