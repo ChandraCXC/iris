@@ -22,7 +22,10 @@ public final class HubSAMPController implements ISAMPController {
     private boolean started = false;
     private Hub hub;
 
-    public HubSAMPController(SAMPControllerBuilder controllerBuilder, long timeoutMillis) throws Exception {
+    private static SAMPControllerBuilder builder;
+    private static long timeoutMillis;
+
+    private HubSAMPController(SAMPControllerBuilder controllerBuilder, long timeoutMillis) throws Exception {
         this.controllerDelegate = controllerBuilder.build();
         this.start();
         controllerDelegate.start(timeoutMillis);
@@ -44,17 +47,11 @@ public final class HubSAMPController implements ISAMPController {
     @Override
     public void start() {
         if(!started) {
-//            try {
-//                Thread.sleep(2000);
-                t = new Thread(new CheckConnection());
-                t.start();
-                started = true;
-//            } catch (InterruptedException ex) {
-//
-//            }
+            t = new Thread(new CheckConnection());
+            t.start();
+            started = true;
         }
     }
-
 
     public void setAutoRunHub(boolean autoRunHub) {
         this.autoRunHub = autoRunHub;
@@ -93,6 +90,11 @@ public final class HubSAMPController implements ISAMPController {
     @Override
     public URL addResource(String filename, ServerResource serverResource) {
         return controllerDelegate.addResource(filename, serverResource);
+    }
+
+    @Override
+    public boolean isConnected() {
+        return controllerDelegate.isConnected();
     }
 
     private class CheckConnection extends Thread {
@@ -146,8 +148,42 @@ public final class HubSAMPController implements ISAMPController {
                     break;
                 }
             }
+        }
+    }
 
+    private static final class SingletonHolder {
+        private static final HubSAMPController INSTANCE = initHubController();
+
+        private static HubSAMPController initHubController() {
+            try {
+                return new HubSAMPController(builder, timeoutMillis);
+            } catch (Exception e) {
+                throw new ExceptionInInitializerError(e);
+            }
         }
 
+        private SingletonHolder() {
+            /* prevent instantiation */
+        }
+
+        private static HubSAMPController getInstance() {
+            return SingletonHolder.INSTANCE;
+        }
+    }
+
+    public static HubSAMPController getInstance(SAMPControllerBuilder builder, long timeoutMillis) throws Exception {
+        if (HubSAMPController.builder != null) {
+            throw new IllegalStateException("Class was already instantiated with a different argument");
+        }
+
+        HubSAMPController.timeoutMillis = timeoutMillis;
+        HubSAMPController.builder = builder;
+
+        try {
+            return SingletonHolder.getInstance();
+        } catch (ExceptionInInitializerError ex) {
+            Throwable cause = ex.getCause();
+            throw new Exception(cause);
+        }
     }
 }

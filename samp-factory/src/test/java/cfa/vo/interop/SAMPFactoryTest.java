@@ -26,29 +26,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import cfa.vo.iris.test.unit.SAMPClientResource;
 import junit.framework.TestCase;
 import org.astrogrid.samp.Message;
+import org.junit.Rule;
 
 public class SAMPFactoryTest extends TestCase {
 
-    private ISAMPController controller;
+    @Rule
+    private SAMPClientResource sampClient = new SAMPClientResource();
     
     public SAMPFactoryTest(String testName) {
         super(testName);
-    }
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        System.setProperty("jsamp.hub.profiles", "std");
-        controller = new HubSAMPController(new SAMPControllerBuilder("test")
-                .withGui(false), 30000);
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        controller.stop();
     }
 
     /**

@@ -64,7 +64,9 @@ public class SAMPControllerBuilder {
 
     public SAMPController buildAndStart(long timeoutMillis) throws Exception {
         SAMPController controller = build();
-        controller.start(timeoutMillis);
+        if(!controller.start(timeoutMillis)) {
+            throw new Exception("cannot start or connect SAMP controller");
+        }
         return controller;
     }
 

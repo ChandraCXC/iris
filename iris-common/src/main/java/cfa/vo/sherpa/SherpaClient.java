@@ -204,6 +204,10 @@ public class SherpaClient {
         }
     }
 
+    public boolean ping() throws SampException {
+        return ping(this.sampController);
+    }
+
     public static SherpaClient create(final ISAMPController controller) {
         final Time timeout = Default.getInstance().getSampTimeout().convertTo(TimeUnit.SECONDS);
         Time step = Default.getInstance().getTimeStep().convertTo(TimeUnit.MILLISECONDS);

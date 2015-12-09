@@ -24,33 +24,24 @@ package cfa.vo.sed.science.interpolation;
 
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
-import cfa.vo.iris.test.unit.it.AbstractSAMPTest;
 
 import java.util.logging.Logger;
+
+import cfa.vo.iris.test.unit.SherpaResource;
 import org.astrogrid.samp.Response;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 
-public class SherpaRedshifterIT extends AbstractSAMPTest {
+public class SherpaRedshifterIT {
     
     private static final Logger logger = Logger.getLogger(SherpaRedshifterIT.class.getName());
     private static String REDSHIFT_MTYPE = "spectrum.redshift.calc";
 
-    public SherpaRedshifterIT() {
-
-    }
-
-    @Before
-    public void setup() {
-    }
-
-    @After
-    public void teardown() {
-    }
+    @Rule
+    public SherpaResource sherpa = new SherpaResource();
 
     @Test
     public void testShift() throws Exception {
@@ -79,7 +70,7 @@ public class SherpaRedshifterIT extends AbstractSAMPTest {
         payload.setToRedshift(0);
         SAMPMessage message = SAMPFactory.createMessage(REDSHIFT_MTYPE, payload, RedshiftPayload.class);
 
-        Response rspns = client.sendMessage(message);
+        Response rspns = sherpa.getClient().sendMessage(message);
         RedshiftPayload response = (RedshiftPayload) SAMPFactory.get(rspns.getResult(), RedshiftPayload.class);
 
         double[] controlYerr = new double[]{

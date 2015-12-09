@@ -200,8 +200,9 @@ public abstract class AbstractIrisApplication extends Application implements Iri
                 SAMPControllerBuilder builder = new SAMPControllerBuilder(getName())
                         .withDescription(getDescription())
                         .withResourceServer("sedImporter/")
+                        .withIcon(getSAMPIcon())
                         .withGui(!isTest);
-                sampController = new HubSAMPController(builder, timeout);
+                sampController = HubSAMPController.getInstance(builder, timeout);
 
             } catch (Exception ex) {
                 System.err.println("SAMP Error. Disabling SAMP support.");

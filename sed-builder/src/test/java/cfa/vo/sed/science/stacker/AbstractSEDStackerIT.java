@@ -1,28 +1,18 @@
 package cfa.vo.sed.science.stacker;
 
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
-
-import cfa.vo.interop.HubSAMPController;
-import cfa.vo.interop.SAMPControllerBuilder;
-import cfa.vo.iris.utils.Default;
+import cfa.vo.iris.test.unit.SherpaResource;
 import cfa.vo.sherpa.SherpaClient;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-
-import cfa.vo.interop.ISAMPController;
+import org.junit.*;
 import cfa.vo.interop.SAMPFactory;
 import org.uispec4j.UISpec4J;
-import cfa.vo.iris.test.unit.it.AbstractSAMPTest;
 
 /**
  * Abstract class for integration testing of SAMP integration. Tests will fail if they are
  * unable to connect to the SAMP hub.
  * 
  */
-public abstract class AbstractSEDStackerIT extends AbstractSAMPTest {
+public abstract class AbstractSEDStackerIT {
 
     /**
      * Unfortunately this static block is required if we don't want to extend UISpecTestCase
@@ -54,21 +44,15 @@ public abstract class AbstractSEDStackerIT extends AbstractSAMPTest {
     protected SegmentPayload segment2;
     protected SegmentPayload segment3;
 
-    protected static SherpaClient client;
+    @Rule
+    public SherpaResource sherpaResource = new SherpaResource();
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        startSamp();
-    }
-
-    @AfterClass
-    public static void afterClass() throws Exception {
-        terminate();
-    }
+    protected SherpaClient client;
     
     @Before
     public void setup() throws Exception {
         initVariables();
+        client = sherpaResource.getClient();
     }
     
     protected void initVariables() throws Exception {
@@ -104,33 +88,5 @@ public abstract class AbstractSEDStackerIT extends AbstractSAMPTest {
         segment3.setYerr(yerr3);
         segment3.setZ(0.3);
         segment3.setId("Sed3");
-    }
-    
-    private static void startSamp() throws Exception {
-        // Start the SAMP controller
-        ISAMPController controller = null;
-
-        try {
-            long timeout = Default.getInstance().getSampTimeout().convertTo(TimeUnit.MILLISECONDS).getAmount();
-            controller = new HubSAMPController(new SAMPControllerBuilder("SEDStacker"), timeout);
-        } catch (Exception ex) {
-            String msg = "Failed to connect to SAMP, failing Unit tests";
-            logger.info(msg);
-            Assert.fail(msg);
-        }
-
-        try {
-            client = SherpaClient.create(controller);
-        } catch (Exception ex) {
-            String msg = "Sherpa did not show up, failing Unit tests";
-            logger.info(msg);
-            Assert.fail(msg);
-        }
-    }
-
-    protected static void terminate() {
-        if (client != null && client.getController() != null) {
-            client.getController().stop();
-        }
     }
 }

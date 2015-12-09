@@ -83,7 +83,7 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
 
             //Start a SAMPController
             log("Starting SAMP infrastructure...");
-            controller = new HubSAMPController(new SAMPControllerBuilder("TestController").withResourceServer("/test"), TIMEOUT*1000);
+            controller = HubSAMPController.getInstance(new SAMPControllerBuilder("TestController").withResourceServer("/test"), TIMEOUT*1000);
 
             //check that sherpa can be pinged
             log("Pinging Sherpa...");

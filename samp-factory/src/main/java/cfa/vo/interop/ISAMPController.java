@@ -1,6 +1,5 @@
 package cfa.vo.interop;
 
-import org.astrogrid.samp.Message;
 import org.astrogrid.samp.Response;
 import org.astrogrid.samp.client.HubConnection;
 import org.astrogrid.samp.client.MessageHandler;
@@ -28,4 +27,6 @@ public interface ISAMPController {
     HubConnection getConnection() throws SampException;
 
     URL addResource(String filename, ServerResource serverResource);
+
+    boolean isConnected();
 }
