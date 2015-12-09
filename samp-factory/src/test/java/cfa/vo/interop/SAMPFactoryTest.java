@@ -31,7 +31,7 @@ import org.astrogrid.samp.Message;
 
 public class SAMPFactoryTest extends TestCase {
 
-    private SAMPController controller;
+    private ISAMPController controller;
     
     public SAMPFactoryTest(String testName) {
         super(testName);
@@ -41,10 +41,8 @@ public class SAMPFactoryTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         System.setProperty("jsamp.hub.profiles", "std");
-        controller = new SAMPController.Builder("test")
-                .withGui(false)
-                .withAutoHub()
-                .buildAndStart(30000);
+        controller = new HubSAMPController(new SAMPControllerBuilder("test")
+                .withGui(false), 30000);
     }
 
     @Override
@@ -58,8 +56,8 @@ public class SAMPFactoryTest extends TestCase {
      */
     public void testGet_Class() {
         TestInterface result = (TestInterface) SAMPFactory.get(TestInterface.class);
-        List<String> methods = new ArrayList();
-        List<String> exp_methods = new ArrayList();
+        List<String> methods = new ArrayList<>();
+        List<String> exp_methods = new ArrayList<>();
 
         for(Method m : result.getClass().getDeclaredMethods())
             methods.add(m.getName());
@@ -200,7 +198,7 @@ public class SAMPFactoryTest extends TestCase {
 
             @Override
             public List<String> getThings() {
-                return Arrays.asList(new String[]{"One", "Two"});
+                return Arrays.asList("One", "Two");
             }
 
             @Override

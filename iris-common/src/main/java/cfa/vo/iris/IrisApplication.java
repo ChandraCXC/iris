@@ -21,12 +21,11 @@
 
 package cfa.vo.iris;
 
-import cfa.vo.interop.SAMPController;
-import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.interop.ISAMPController;
+
 import java.io.File;
 import java.net.URL;
 
-import cfa.vo.sherpa.SherpaClient;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.SampException;
 
@@ -36,7 +35,6 @@ import org.astrogrid.samp.client.SampException;
  * interface is provided to the components when they are initialized, so that they can
  * access application-wide information and operations.
  *
- * @author olaurino
  */
 public interface IrisApplication {
     /**
@@ -55,7 +53,7 @@ public interface IrisApplication {
 
     void sendSampMessage(Message msg) throws SampException;
 
-    SAMPController getSAMPController();
+    ISAMPController getSAMPController();
 
     URL getHelpURL();
 }

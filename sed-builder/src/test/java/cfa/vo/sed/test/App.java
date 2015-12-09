@@ -20,9 +20,9 @@
  */
 package cfa.vo.sed.test;
 
-import cfa.vo.interop.SAMPController;
+import cfa.vo.interop.ISAMPController;
 import cfa.vo.iris.IrisApplication;
-import cfa.vo.iris.sed.ExtSed;
+
 import java.io.File;
 import java.net.URL;
 import org.astrogrid.samp.Message;
@@ -46,7 +46,7 @@ public class App implements IrisApplication {
     }
 
     @Override
-    public SAMPController getSAMPController() {
+    public ISAMPController getSAMPController() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

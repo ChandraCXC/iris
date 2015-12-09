@@ -3,6 +3,8 @@ package cfa.vo.sed.science.stacker;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import cfa.vo.interop.HubSAMPController;
+import cfa.vo.interop.SAMPControllerBuilder;
 import cfa.vo.iris.utils.Default;
 import cfa.vo.sherpa.SherpaClient;
 import org.junit.AfterClass;
@@ -10,7 +12,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-import cfa.vo.interop.SAMPController;
+import cfa.vo.interop.ISAMPController;
 import cfa.vo.interop.SAMPFactory;
 import org.uispec4j.UISpec4J;
 import cfa.vo.iris.test.unit.it.AbstractSAMPTest;
@@ -106,13 +108,11 @@ public abstract class AbstractSEDStackerIT extends AbstractSAMPTest {
     
     private static void startSamp() throws Exception {
         // Start the SAMP controller
-        SAMPController controller = null;
+        ISAMPController controller = null;
 
         try {
             long timeout = Default.getInstance().getSampTimeout().convertTo(TimeUnit.MILLISECONDS).getAmount();
-            controller = new SAMPController.Builder("SEDStacker")
-                    .withAutoHub()
-                    .buildAndStart(timeout);
+            controller = new HubSAMPController(new SAMPControllerBuilder("SEDStacker"), timeout);
         } catch (Exception ex) {
             String msg = "Failed to connect to SAMP, failing Unit tests";
             logger.info(msg);

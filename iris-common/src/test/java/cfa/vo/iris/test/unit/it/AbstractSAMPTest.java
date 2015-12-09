@@ -17,6 +17,7 @@
 package cfa.vo.iris.test.unit.it;
 
 import cfa.vo.interop.SAMPController;
+import cfa.vo.interop.SAMPControllerBuilder;
 import cfa.vo.iris.utils.Default;
 import cfa.vo.sherpa.SherpaClient;
 
@@ -81,7 +82,7 @@ public class AbstractSAMPTest {
     public void connectToSAMPHub() throws Exception {
         
         // setup the SAMP controller
-        controller = new SAMPController.Builder(this.controller_name)
+        controller = new SAMPControllerBuilder(this.controller_name)
                 .buildAndStart(Default.getInstance().getSampTimeout().convertTo(TimeUnit.MILLISECONDS).getAmount());
 
         assertTrue(controller.isConnected());

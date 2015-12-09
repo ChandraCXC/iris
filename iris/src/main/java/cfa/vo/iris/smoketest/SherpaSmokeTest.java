@@ -21,7 +21,9 @@
 
 package cfa.vo.iris.smoketest;
 
-import cfa.vo.interop.SAMPController;
+import cfa.vo.interop.HubSAMPController;
+import cfa.vo.interop.ISAMPController;
+import cfa.vo.interop.SAMPControllerBuilder;
 import cfa.vo.iris.interop.AbstractSedMessageHandler;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.utils.Default;
@@ -46,7 +48,7 @@ import java.util.logging.Logger;
 public class SherpaSmokeTest extends AbstractSmokeTest {
 
     private String testVotable;
-    private SAMPController controller;
+    private ISAMPController controller;
     private boolean working = false;
     protected Boolean control;
 
@@ -81,10 +83,7 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
 
             //Start a SAMPController
             log("Starting SAMP infrastructure...");
-            controller = new SAMPController.Builder("TestController")
-                    .withAutoHub()
-                    .withResourceServer("/test")
-                    .buildAndStart(TIMEOUT*1000);
+            controller = new HubSAMPController(new SAMPControllerBuilder("TestController").withResourceServer("/test"), TIMEOUT*1000);
 
             //check that sherpa can be pinged
             log("Pinging Sherpa...");
@@ -102,7 +101,7 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
 
             //Setup a client that handles SEDs
             log("Setting up a SAMP SED receiver...");
-            SAMPController mockReceiver = new SAMPController.Builder("MockReceiver").buildAndStart(TIMEOUT*1000);
+            ISAMPController mockReceiver = new SAMPControllerBuilder("MockReceiver").buildAndStart(TIMEOUT*1000);
 
             mockReceiver.addMessageHandler(new SmokeSedHandler());
 

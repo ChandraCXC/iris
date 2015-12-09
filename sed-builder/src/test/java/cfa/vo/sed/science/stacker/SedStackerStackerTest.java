@@ -22,6 +22,7 @@
 package cfa.vo.sed.science.stacker;
 
 import cfa.vo.interop.SAMPController;
+import cfa.vo.interop.SAMPControllerBuilder;
 import cfa.vo.iris.sed.ExtSed;
 
 import cfa.vo.sedlib.Segment;
@@ -232,7 +233,7 @@ public class SedStackerStackerTest {
     // Stubs, use these to set expectations
     //
     //
-    private static class SAMPBuilder extends SAMPController.Builder {
+    private static class SAMPBuilder extends SAMPControllerBuilder {
         public SAMPBuilder(String name) {
             super(name);
         }
@@ -240,7 +241,7 @@ public class SedStackerStackerTest {
 
     private static class SAMPControllerStub extends SAMPController {
         public SAMPControllerStub(String name) {
-            super(new Builder(name));
+            super(new SAMPControllerBuilder(name));
         }
         
         public Response rspns;

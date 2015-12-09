@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.astrogrid.samp.Message;
+
 import org.astrogrid.samp.Metadata;
 import org.astrogrid.samp.client.DefaultClientProfile;
 import org.astrogrid.samp.client.LogResultHandler;
@@ -35,7 +35,6 @@ import org.astrogrid.samp.gui.GuiHubConnector;
 import org.astrogrid.samp.httpd.HttpServer;
 import org.astrogrid.samp.httpd.ResourceHandler;
 import org.astrogrid.samp.httpd.ServerResource;
-import org.astrogrid.samp.hub.Hub;
 import org.astrogrid.samp.hub.HubServiceMode;
 
 /**
@@ -61,11 +60,9 @@ import org.astrogrid.samp.hub.HubServiceMode;
  * computed and communicated to the Hub when new MessageHandlers are added or removed.
  *
  */
-public class SAMPController extends GuiHubConnector {
+public class SAMPController extends GuiHubConnector implements ISAMPController {
 
     private static final int DEFAULT_TIMEOUT = 10;
-
-    private boolean autoRunHub;
 
     private boolean withGui;
 
@@ -73,29 +70,24 @@ public class SAMPController extends GuiHubConnector {
 
     private String serverRoot;
 
-    private Hub hub;
+    protected HubServiceMode mode = HubServiceMode.MESSAGE_GUI;
 
-    private HubServiceMode mode = HubServiceMode.MESSAGE_GUI;
-
-    private String name;
+    protected String name;
 
     private ResourceHandler resourceHandler;
 
     HttpServer server;
 
-    private List<SAMPConnectionListener> listeners = Collections.synchronizedList(new ArrayList<SAMPConnectionListener>());
+    protected List<SAMPConnectionListener> listeners = Collections.synchronizedList(new ArrayList<SAMPConnectionListener>());
 
-    private Thread t;
-
-    private boolean started = false;
-
-    protected SAMPController(Builder builder) {
-        this(builder.name, builder.description, builder.icon.toString());
-        this.autoRunHub = builder.withHub;
-        if (builder.withResourceServer) {
-            this.activateServer(builder.serverRoot);
+    protected SAMPController(SAMPControllerBuilder builder) {
+        this(builder.getName(),
+                builder.getDescription(),
+                builder.getIcon().toString());
+        if (builder.isWithResourceServer()) {
+            this.activateServer(builder.getServerRoot());
         }
-        this.setGui(builder.withGui);
+        this.setGui(builder.isWithGui());
     }
     /**
      *
@@ -128,6 +120,10 @@ public class SAMPController extends GuiHubConnector {
 
     }
 
+    public String getName() {
+        return name;
+    }
+
     /**
      * A Connection Listener is a listener that gets called each time the status of
      * the connection is changed.
@@ -137,6 +133,10 @@ public class SAMPController extends GuiHubConnector {
     public final void addConnectionListener(SAMPConnectionListener listener) {
         listeners.add(listener);
         listener.run(isConnected());
+    }
+
+    public SAMPConnectionListener[] getListeners() {
+        return listeners.toArray(new SAMPConnectionListener[]{});
     }
 
     /**
@@ -180,14 +180,6 @@ public class SAMPController extends GuiHubConnector {
         resourceHandler.removeResource(url);
     }
 
-    /**
-     * Get the current status of the AutoRunHub feature.d
-     * @return
-     */
-    public boolean isAutoRunHub() {
-        return autoRunHub;
-    }
-
     public void removeConnectionListener(SAMPConnectionListener listener) {
         listeners.remove(listener);
     }
@@ -228,31 +220,40 @@ public class SAMPController extends GuiHubConnector {
         callAll(message.get(), handler, timeout);
     }
 
-    /**
-     * Set the AutoRunHub feature on or off. If the feature is on a new internal Hub
-     * will be started each time a connection can't be established.
-     *
-     * @param autoRunHub
-     */
-    public void setAutoRunHub(boolean autoRunHub) {
-        this.autoRunHub = autoRunHub;
+    public boolean start(long timeoutMillis) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Callable<Boolean> callable = new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                mode = withGui? HubServiceMode.MESSAGE_GUI : HubServiceMode.NO_GUI;
+                if (withServer) {
+                    startResourceServer();
+                }
+                while (!isConnected()) {
+                    Thread.sleep(1000); // This will be interrupted if a timeout occurs
+                }
+                return Boolean.TRUE;
+            }
+        };
+        Future<Boolean> futureController = executor.submit(callable);
+        try {
+            return futureController.get(timeoutMillis, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException ex) {
+            futureController.cancel(true);
+            return false;
+        }
     }
 
-    private void start() throws IOException {
-        mode = withGui? HubServiceMode.MESSAGE_GUI : HubServiceMode.NO_GUI;
-        if(!started) {
-            try {
-                Thread.sleep(2000);
-                t = new Thread(new CheckConnection());
-                t.start();
-                started = true;
-            } catch (InterruptedException ex) {
+    public void start() throws Exception {
+        if (!start(30000)) {
+            String msg = "Timeout starting SAMPController";
+            Logger.getLogger(SAMPController.class.getName()).log(Level.SEVERE, msg);
+            throw new Exception(msg);
+        }
+    }
 
-            }
-        }
-        if (withServer) {
-            startResourceServer();
-        }
+    public HubServiceMode getHubServiceMode() {
+        return mode;
     }
 
     private void startResourceServer() throws IOException {
@@ -278,145 +279,15 @@ public class SAMPController extends GuiHubConnector {
      * If it had started the internal HttpServer it will be shut down.
      */
     public void stop() {
-
-        this.setAutoRunHub(false);
         this.setAutoconnect(0);
-
-        if(t!=null) {
-            t.interrupt();
-        }
 
         if (server != null) {
             server.stop();
             server = null;
         }
 
-        if (hub != null) {
-            hub.shutdown();
-        } else {
-            disconnect();
-        }
+        disconnect();
 
-        started = false;
-
-    }
-
-    private class CheckConnection extends Thread {
-
-        private boolean state = false;
-
-        @Override
-        public void run() {
-
-            while(true) {
-                try {
-
-                    if(!isConnected()) {
-                        try {
-                            if(autoRunHub) {
-                                hub = Hub.runHub(mode);
-                                
-                            }
-                            else
-                                hub = null;
-                        } catch (IOException ex) {
-
-                        }
-
-                    }
-
-                    
-
-                    boolean stateChanged = state != isConnected();
-
-                    if(stateChanged && isConnected())
-                        if(!this.isInterrupted()) {
-                            try {
-                                getConnection().notifyAll(new Message("updated status for "+name));
-                            } catch (SampException ex) {
-                                Logger.getLogger(SAMPController.class.getName()).log(Level.WARNING, "Couldn't notify changed state. Maybe we (or the hub) are being shut down");
-                            }
-                        } else {
-                            throw new InterruptedException();
-                        }
-
-                    if(stateChanged) {
-                        state = isConnected();
-                        for(SAMPConnectionListener listener : listeners.toArray(new SAMPConnectionListener[]{})) {
-                            listener.run(state);
-                        }
-                    }
-                
-                    Thread.sleep(1000);
-
-                } catch (InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                    break;
-                }
-            }
-
-        }
-
-    }
-
-    public static class Builder {
-        private final String name;
-        private String description;
-        private URL icon = SAMPController.class.getResource("/iris_button_tiny.png");
-        private boolean withHub = false;
-        private boolean withGui = false;
-        private boolean withResourceServer = false;
-        private String serverRoot = "/";
-        private ExecutorService pool = Executors.newFixedThreadPool(20);
-
-        public Builder(String name) {
-            this.name = name;
-            this.description = name;
-        }
-
-        public Builder withDescription(String description) {
-            this.description = description;
-            return this;
-        }
-
-        public Builder withIcon(URL iconURL) {
-            this.icon = iconURL;
-            return this;
-        }
-
-        public Builder withAutoHub() {
-            this.withHub = true;
-            return this;
-        }
-
-        public Builder withGui(boolean withGui) {
-            this.withGui = withGui;
-            return this;
-        }
-
-        public Builder withResourceServer(String serverRoot) {
-            this.withResourceServer = true;
-            if (serverRoot != null) {
-                this.serverRoot = serverRoot;
-            }
-            return this;
-        }
-
-        public SAMPController buildAndStart(long timeoutMillis) throws Exception {
-            Callable<SAMPController> callable = new Callable<SAMPController>() {
-                @Override
-                public SAMPController call() throws Exception {
-                    SAMPController controller = new SAMPController(Builder.this);
-                    controller.start();
-                    while (!controller.isConnected()) {
-                        Thread.sleep(1000); // This will be interrupted if a timeout occurs
-                    }
-                    return controller;
-                }
-            };
-            Future<SAMPController> futureController = pool.submit(callable);
-            return futureController.get(timeoutMillis, TimeUnit.MILLISECONDS);
-        }
     }
 
     private class SubscriptionListener implements SAMPConnectionListener {

@@ -17,6 +17,7 @@
 package cfa.vo.iris.common;
 
 import cfa.vo.interop.SAMPController;
+import cfa.vo.interop.SAMPControllerBuilder;
 import cfa.vo.iris.interop.AbstractSedMessageHandler;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.test.unit.it.AbstractSAMPTest;
@@ -67,10 +68,10 @@ public class SedMessageIT extends AbstractSAMPTest {
         System.setProperty("jsamp.hub.profiles", "std");
 
         long timeout = Default.getInstance().getSampTimeout().convertTo(TimeUnit.MILLISECONDS).getAmount();
-        SAMPController sampSender = new SAMPController.Builder("TestSender")
+        SAMPController sampSender = new SAMPControllerBuilder("TestSender")
                 .withResourceServer("/test")
                 .buildAndStart(timeout);
-        SAMPController sampReceiver = new SAMPController.Builder("TestReceiver")
+        SAMPController sampReceiver = new SAMPControllerBuilder("TestReceiver")
                 .buildAndStart(timeout);
         assertTrue(sampSender.isConnected());
         assertTrue(sampReceiver.isConnected());

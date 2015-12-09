@@ -26,9 +26,8 @@
  */
 package cfa.vo.sed.gui;
 
-import cfa.vo.interop.SAMPController;
+import cfa.vo.interop.ISAMPController;
 import cfa.vo.iris.AbstractIrisApplication;
-import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.events.*;
 import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
 import cfa.vo.iris.gui.NarrowOptionPane;
@@ -805,7 +804,7 @@ public class SedBuilderMainView extends JInternalFrame {
         try {
             ExtSed flattened = ExtSed.flatten(sed, xunit, yunit);
             AbstractIrisApplication app = Application.getInstance(AbstractIrisApplication.class);
-            SAMPController controller = app.getSAMPController();
+            ISAMPController controller = app.getSAMPController();
             flattened.sendSedMessage(controller);
 
         } catch (Exception ex) {
@@ -1061,7 +1060,7 @@ public class SedBuilderMainView extends JInternalFrame {
         try {
             ExtSed s = new ExtSed(sed.getId() + "Selection", false);
             s.addSegment(selectedSegments);
-            SAMPController controller = Application.getInstance(AbstractIrisApplication.class).getSAMPController();
+            ISAMPController controller = Application.getInstance(AbstractIrisApplication.class).getSAMPController();
             s.sendSedMessage(controller);
         } catch (SedInconsistentException ex) {//If the segment is already in the SED this exception can't be thrown.
             Logger.getLogger(SedBuilderMainView.class.getName()).log(Level.SEVERE, null, ex);

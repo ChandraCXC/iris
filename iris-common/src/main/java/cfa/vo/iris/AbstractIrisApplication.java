@@ -23,8 +23,9 @@ package cfa.vo.iris;
 import cfa.vo.interop.*;
 import cfa.vo.iris.desktop.IrisDesktop;
 import cfa.vo.iris.desktop.IrisWorkspace;
+import cfa.vo.interop.ISAMPController;
+import cfa.vo.interop.HubSAMPController;
 import cfa.vo.iris.sdk.PluginManager;
-import cfa.vo.iris.sed.ExtSed;
 
 import java.io.File;
 import java.net.URL;
@@ -50,7 +51,7 @@ import org.jdesktop.application.Application;
 public abstract class AbstractIrisApplication extends Application implements IrisApplication {
 
     private static final Logger logger = Logger.getLogger(AbstractIrisApplication.class.getName());
-    private static SAMPController sampController;
+    private static HubSAMPController sampController;
     private static boolean isTest = false;
     static boolean SAMP_ENABLED = !System.getProperty("samp", "true").toLowerCase().equals("false");
     public static final boolean SAMP_FALLBACK = false;
@@ -192,12 +193,16 @@ public abstract class AbstractIrisApplication extends Application implements Iri
     public void sampSetup() {
         if (SAMP_ENABLED) {
             try {
-                sampController = new SAMPController.Builder(getName())
+                long timeout = Default.getInstance()
+                        .getSampTimeout()
+                        .convertTo(TimeUnit.MILLISECONDS)
+                        .getAmount();
+                SAMPControllerBuilder builder = new SAMPControllerBuilder(getName())
                         .withDescription(getDescription())
                         .withResourceServer("sedImporter/")
-                        .withAutoHub()
-                        .withGui(!isTest)
-                        .buildAndStart(Default.getInstance().getSampTimeout().convertTo(TimeUnit.MILLISECONDS).getAmount());
+                        .withGui(!isTest);
+                sampController = new HubSAMPController(builder, timeout);
+
             } catch (Exception ex) {
                 System.err.println("SAMP Error. Disabling SAMP support.");
                 System.err.println("Error message: " + ex.getMessage());
@@ -256,7 +261,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
     }
 
     @Override
-    public SAMPController getSAMPController() {
+    public ISAMPController getSAMPController() {
         return sampController;
     }
     

@@ -20,6 +20,7 @@
  */
 package cfa.vo.iris.sed;
 
+import cfa.vo.interop.ISAMPController;
 import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
@@ -322,7 +323,7 @@ public class ExtSed extends Sed {
      *
      * @throws SampException
      */
-    public void sendSedMessage(SAMPController controller) throws SampException {
+    public void sendSedMessage(ISAMPController controller) throws SampException {
         try {
 
             if(controller.getConnection().getSubscribedClients("table.load.votable").isEmpty())

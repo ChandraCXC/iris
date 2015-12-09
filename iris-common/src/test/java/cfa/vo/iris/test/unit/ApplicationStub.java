@@ -15,9 +15,8 @@
  */
 package cfa.vo.iris.test.unit;
 
-import cfa.vo.interop.SAMPController;
+import cfa.vo.interop.ISAMPController;
 import cfa.vo.iris.*;
-import cfa.vo.iris.sed.ExtSed;
 import com.google.common.io.Files;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.SampException;
@@ -58,7 +57,7 @@ public class ApplicationStub implements IrisApplication {
     }
 
     @Override
-    public SAMPController getSAMPController() {
+    public ISAMPController getSAMPController() {
         return null;
     }
 
