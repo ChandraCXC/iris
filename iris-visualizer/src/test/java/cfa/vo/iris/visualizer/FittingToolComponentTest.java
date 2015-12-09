@@ -23,11 +23,13 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
     private FittingToolComponent comp = new FittingToolComponent();
     private String windowName;
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         windowName = comp.getName();
     }
 
+    @Override
     protected IrisComponent getComponent() {
         return comp;
     }

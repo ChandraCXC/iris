@@ -23,6 +23,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
     private VisualizerComponent comp = new VisualizerComponent();
     private String windowName;
 
+    @Override
     public void setUp() throws Exception {
         super.setUp();
         windowName = comp.getName();
