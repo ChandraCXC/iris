@@ -62,14 +62,14 @@ public class SmokeTest implements IrisComponent {
                 if(args.length>0) {
                     try{
                         Integer timeout = Integer.parseInt(args[0]);
-                        test = new SherpaSmokeTest(testFile, timeout);
+                        test = new SherpaSmokeTest(testFile, timeout, app);
                     } catch (NumberFormatException ex) {
                         System.out.println(args[0]+" is not a number.");
                         return 1;
                     }
                 }
                 else
-                    test = new SherpaSmokeTest(testFile);
+                    test = new SherpaSmokeTest(testFile, app);
                 try {
                     test.runTest();
                 } catch (Throwable ex) {

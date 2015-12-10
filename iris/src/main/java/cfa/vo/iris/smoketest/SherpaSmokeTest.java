@@ -21,9 +21,9 @@
 
 package cfa.vo.iris.smoketest;
 
-import cfa.vo.interop.HubSAMPController;
 import cfa.vo.interop.ISAMPController;
 import cfa.vo.interop.SAMPControllerBuilder;
+import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.interop.AbstractSedMessageHandler;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.utils.Default;
@@ -52,13 +52,13 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
     private boolean working = false;
     protected Boolean control;
 
-    public SherpaSmokeTest(String testVotable) {
-        this(testVotable, 60);
+    public SherpaSmokeTest(String testVotable, IrisApplication app) {
+        this(testVotable, 60, app);
     }
 
-    public SherpaSmokeTest(String testVotable, int timeout) {
-
+    public SherpaSmokeTest(String testVotable, int timeout, IrisApplication app) {
         super(timeout);
+        this.controller = app.getSAMPController();
 
         this.testVotable = testVotable;
 
@@ -80,10 +80,6 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
             log("Testing file read...");
             File testFile = new File(testVotable);
             check(testFile.canRead(), "Can't read file " + testVotable);
-
-            //Start a SAMPController
-            log("Starting SAMP infrastructure...");
-            controller = HubSAMPController.getInstance(new SAMPControllerBuilder("TestController").withResourceServer("/test"), TIMEOUT*1000);
 
             //check that sherpa can be pinged
             log("Pinging Sherpa...");

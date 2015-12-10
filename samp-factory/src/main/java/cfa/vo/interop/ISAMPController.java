@@ -12,7 +12,7 @@ import java.util.Map;
 public interface ISAMPController {
     void stop();
 
-    void start() throws Exception;
+    boolean start(long timeoutMillis);
 
     void sendMessage(SAMPMessage message) throws SampException;
 

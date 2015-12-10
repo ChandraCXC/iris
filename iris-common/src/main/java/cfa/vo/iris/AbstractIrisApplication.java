@@ -24,10 +24,10 @@ import cfa.vo.interop.*;
 import cfa.vo.iris.desktop.IrisDesktop;
 import cfa.vo.iris.desktop.IrisWorkspace;
 import cfa.vo.interop.ISAMPController;
-import cfa.vo.interop.HubSAMPController;
 import cfa.vo.iris.sdk.PluginManager;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +42,7 @@ import cfa.vo.iris.utils.Default;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.MessageHandler;
 import org.astrogrid.samp.client.SampException;
+import org.astrogrid.samp.hub.Hub;
 import org.jdesktop.application.Application;
 
 /**
@@ -202,7 +203,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
                         .withResourceServer("sedImporter/")
                         .withIcon(getSAMPIcon())
                         .withGui(!isTest);
-                sampController = HubSAMPController.getInstance(builder, timeout);
+                sampController = new HubSAMPController(builder, timeout);
 
             } catch (Exception ex) {
                 System.err.println("SAMP Error. Disabling SAMP support.");
@@ -263,6 +264,9 @@ public abstract class AbstractIrisApplication extends Application implements Iri
 
     @Override
     public ISAMPController getSAMPController() {
+        if (sampController == null) {
+            sampSetup();
+        }
         return sampController;
     }
     
@@ -275,6 +279,107 @@ public abstract class AbstractIrisApplication extends Application implements Iri
     public void addMessageHandler(MessageHandler handler) {
         if (sampController != null) {
             sampController.addMessageHandler(handler);
+        }
+    }
+
+    public static final class HubSAMPController extends SAMPController {
+
+        private boolean autoRunHub = true;
+        private Thread t;
+        private boolean started = false;
+        private Hub hub;
+
+        private HubSAMPController(SAMPControllerBuilder builder, long timeoutMillis) throws Exception {
+            super(builder);
+            this.start(timeoutMillis);
+        }
+
+        @Override
+        public void stop() {
+            this.autoRunHub = false;
+            if(t!=null) {
+                t.interrupt();
+            }
+            started = false;
+            if (hub != null) {
+                hub.shutdown();
+            }
+            super.stop();
+        }
+
+        @Override
+        public boolean start(long timeoutMillis) {
+            if(!started) {
+                t = new Thread(new CheckConnection());
+                t.start();
+                started = true;
+            }
+            return super.start(timeoutMillis);
+        }
+
+        public void setAutoRunHub(boolean autoRunHub) {
+            this.autoRunHub = autoRunHub;
+        }
+
+        private class CheckConnection extends Thread {
+
+            private boolean state = false;
+
+            private void runHubIfNeeded() {
+                // I autorunhub is false we don't want to start a new hub.
+                // Neither we want to start a hub if the controller is already connected (to a different hub)
+                // In any case we want to start a hub only if we did not start one already.
+                if (autoRunHub && hub == null && !isConnected()) {
+                    try {
+                        // this returns a running hub.
+                        // an exception is thrown if a hub is already running.
+                        hub = Hub.runHub(getHubServiceMode());
+                    } catch (IOException ex) {
+                        // do nothing, keep monitoring
+                    }
+                } else if (autoRunHub && hub != null && !isConnected()) {
+                    hub.shutdown();
+                    hub = null;
+                }
+                // if we are connected there is nothing to do anyway.
+            }
+
+            private void checkStatusUpdate() throws InterruptedException {
+                boolean stateChanged = state != isConnected();
+
+                if(stateChanged && isConnected())
+                    if(!this.isInterrupted()) {
+                        try {
+                            getConnection().notifyAll(new Message("updated status for "+ getName()));
+                        } catch (SampException ex) {
+                            Logger.getLogger(SAMPController.class.getName()).log(Level.WARNING, "Couldn't notify changed state. Maybe we (or the hub) are being shut down");
+                        }
+                    } else {
+                        throw new InterruptedException();
+                    }
+
+                if(stateChanged) {
+                    state = isConnected();
+                    for(SAMPConnectionListener listener : getListeners()) {
+                        listener.run(state);
+                    }
+                }
+            }
+
+            @Override
+            public void run() {
+
+                while(true) {
+                    try {
+                        runHubIfNeeded();
+                        checkStatusUpdate();
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                        break;
+                    }
+                }
+            }
         }
     }
 }
