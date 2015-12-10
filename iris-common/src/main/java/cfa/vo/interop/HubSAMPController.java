@@ -113,8 +113,12 @@ public final class HubSAMPController implements ISAMPController {
                                 hub = Hub.runHub(controllerDelegate.getHubServiceMode());
 
                             }
-                            else
-                                hub = null;
+                            else {
+                                if (hub != null) {
+                                    hub.shutdown();
+                                    hub = null;
+                                }
+                            }
                         } catch (IOException ex) {
 
                         }
