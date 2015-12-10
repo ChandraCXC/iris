@@ -41,7 +41,6 @@ public class SherpaClient {
     private ISAMPController sampController;
     private Map<String, AbstractModel> modelMap = new HashMap<>();
     private Integer stringCounter = 0;
-    private static final ExecutorService pool = Executors.newFixedThreadPool(20);
     private static Logger logger = Logger.getLogger(SherpaClient.class.getName());
 
     protected SherpaClient(ISAMPController controller) {
@@ -209,6 +208,7 @@ public class SherpaClient {
     }
 
     public static SherpaClient create(final ISAMPController controller) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
         final Time timeout = Default.getInstance().getSampTimeout().convertTo(TimeUnit.SECONDS);
         Time step = Default.getInstance().getTimeStep().convertTo(TimeUnit.MILLISECONDS);
         final int stepMillis = (int) step.getAmount();
@@ -237,11 +237,13 @@ public class SherpaClient {
                 return client;
             }
         };
-        Future<SherpaClient> futureSherpaClient = pool.submit(callable);
+        Future<SherpaClient> futureSherpaClient = executor.submit(callable);
         try {
             return futureSherpaClient.get(timeout.getAmount(), timeout.getUnit());
         } catch (Exception ex) {
             throw new RuntimeException("Cannot find Sherpa!");
+        } finally {
+            executor.shutdown();
         }
     }
 }
