@@ -241,6 +241,8 @@ public class SAMPController extends GuiHubConnector implements ISAMPController {
         } catch (InterruptedException | ExecutionException | TimeoutException ex) {
             futureController.cancel(true);
             return false;
+        } finally {
+            executor.shutdown();
         }
     }
 

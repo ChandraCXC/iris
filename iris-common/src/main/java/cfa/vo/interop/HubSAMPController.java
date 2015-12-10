@@ -1,21 +1,14 @@
 package cfa.vo.interop;
 
 import org.astrogrid.samp.Message;
-import org.astrogrid.samp.Response;
-import org.astrogrid.samp.client.HubConnection;
-import org.astrogrid.samp.client.MessageHandler;
 import org.astrogrid.samp.client.SampException;
-import org.astrogrid.samp.httpd.ServerResource;
 import org.astrogrid.samp.hub.Hub;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public final class HubSAMPController implements ISAMPController {
-    private SAMPController controllerDelegate;
+public final class HubSAMPController extends SAMPController {
 
     private boolean autoRunHub = true;
     private Thread t;
@@ -25,10 +18,9 @@ public final class HubSAMPController implements ISAMPController {
     private static SAMPControllerBuilder builder;
     private static long timeoutMillis;
 
-    private HubSAMPController(SAMPControllerBuilder controllerBuilder, long timeoutMillis) throws Exception {
-        this.controllerDelegate = controllerBuilder.build();
+    private HubSAMPController() throws Exception {
+        super(builder);
         this.start();
-        controllerDelegate.start(timeoutMillis);
     }
 
     @Override
@@ -41,7 +33,7 @@ public final class HubSAMPController implements ISAMPController {
         if (hub != null) {
             hub.shutdown();
         }
-        controllerDelegate.stop();
+        super.stop();
     }
 
     @Override
@@ -51,102 +43,66 @@ public final class HubSAMPController implements ISAMPController {
             t.start();
             started = true;
         }
+        super.start(timeoutMillis);
     }
 
     public void setAutoRunHub(boolean autoRunHub) {
         this.autoRunHub = autoRunHub;
     }
 
-    @Override
-    public void sendMessage(SAMPMessage message) throws SampException {
-        controllerDelegate.sendMessage(message);
-    }
-
-    @Override
-    public void addConnectionListener(SAMPConnectionListener listener) {
-        controllerDelegate.addConnectionListener(listener);
-    }
-
-    @Override
-    public void addMessageHandler(MessageHandler handler) {
-        controllerDelegate.addMessageHandler(handler);
-    }
-
-    @Override
-    public Response callAndWait(String id, Map message, int timeout) throws SampException {
-        return controllerDelegate.callAndWait(id, message, timeout);
-    }
-
-    @Override
-    public Map getClientMap() {
-        return controllerDelegate.getClientMap();
-    }
-
-    @Override
-    public HubConnection getConnection() throws SampException {
-        return controllerDelegate.getConnection();
-    }
-
-    @Override
-    public URL addResource(String filename, ServerResource serverResource) {
-        return controllerDelegate.addResource(filename, serverResource);
-    }
-
-    @Override
-    public boolean isConnected() {
-        return controllerDelegate.isConnected();
-    }
-
     private class CheckConnection extends Thread {
 
         private boolean state = false;
+
+        private void runHubIfNeeded() {
+            // I autorunhub is false we don't want to start a new hub.
+            // Neither we want to start a hub if the controller is already connected (to a different hub)
+            // In any case we want to start a hub only if we did not start one already.
+            if (autoRunHub && hub == null && !isConnected()) {
+                try {
+                    // this returns a running hub.
+                    // an exception is thrown if a hub is already running.
+                    hub = Hub.runHub(getHubServiceMode());
+                } catch (IOException ex) {
+                    // do nothing, keep monitoring
+                }
+            } else if (autoRunHub && hub != null && !isConnected()) {
+                hub.shutdown();
+                hub = null;
+            }
+            // if we are connected there is nothing to do anyway.
+        }
+
+        private void checkStatusUpdate() throws InterruptedException {
+            boolean stateChanged = state != isConnected();
+
+            if(stateChanged && isConnected())
+                if(!this.isInterrupted()) {
+                    try {
+                        getConnection().notifyAll(new Message("updated status for "+ getName()));
+                    } catch (SampException ex) {
+                        Logger.getLogger(SAMPController.class.getName()).log(Level.WARNING, "Couldn't notify changed state. Maybe we (or the hub) are being shut down");
+                    }
+                } else {
+                    throw new InterruptedException();
+                }
+
+            if(stateChanged) {
+                state = isConnected();
+                for(SAMPConnectionListener listener : getListeners()) {
+                    listener.run(state);
+                }
+            }
+        }
 
         @Override
         public void run() {
 
             while(true) {
                 try {
-
-                    if(!controllerDelegate.isConnected()) {
-                        try {
-                            if(autoRunHub) {
-                                hub = Hub.runHub(controllerDelegate.getHubServiceMode());
-
-                            }
-                            else {
-                                if (hub != null) {
-                                    hub.shutdown();
-                                    hub = null;
-                                }
-                            }
-                        } catch (IOException ex) {
-
-                        }
-
-                    }
-
-                    boolean stateChanged = state != controllerDelegate.isConnected();
-
-                    if(stateChanged && controllerDelegate.isConnected())
-                        if(!this.isInterrupted()) {
-                            try {
-                                controllerDelegate.getConnection().notifyAll(new Message("updated status for "+controllerDelegate.getName()));
-                            } catch (SampException ex) {
-                                Logger.getLogger(SAMPController.class.getName()).log(Level.WARNING, "Couldn't notify changed state. Maybe we (or the hub) are being shut down");
-                            }
-                        } else {
-                            throw new InterruptedException();
-                        }
-
-                    if(stateChanged) {
-                        state = controllerDelegate.isConnected();
-                        for(SAMPConnectionListener listener : controllerDelegate.getListeners()) {
-                            listener.run(state);
-                        }
-                    }
-
+                    runHubIfNeeded();
+                    checkStatusUpdate();
                     Thread.sleep(1000);
-
                 } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt();
                     break;
@@ -160,7 +116,7 @@ public final class HubSAMPController implements ISAMPController {
 
         private static HubSAMPController initHubController() {
             try {
-                return new HubSAMPController(builder, timeoutMillis);
+                return new HubSAMPController();
             } catch (Exception e) {
                 throw new ExceptionInInitializerError(e);
             }
