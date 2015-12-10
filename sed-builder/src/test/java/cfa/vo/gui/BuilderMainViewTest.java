@@ -44,7 +44,7 @@ public class BuilderMainViewTest extends AbstractComponentGUITest {
                 .getSubMenu("SED Builder")
                 .click();
 
-        desktop.containsWindow("SED Builder");
+        assertTrue(desktop.containsWindow("SED Builder"));
 
         Window window = desktop.getWindow("SED Builder");
 
@@ -52,7 +52,7 @@ public class BuilderMainViewTest extends AbstractComponentGUITest {
 
         newSed.click();
 
-        Assert.assertEquals(2, manager.getSeds().size());
+        assertEquals(2, manager.getSeds().size());
 
         ExtSed sed = manager.getSelected();
 
@@ -75,11 +75,11 @@ public class BuilderMainViewTest extends AbstractComponentGUITest {
 
         newSegment.click();
 
-        Assert.assertTrue(desktop.containsWindow("Load an input File").isTrue());
+        assertTrue(desktop.containsWindow("Load an input File").isTrue());
 
         Window loadWindow = desktop.getWindow("Load an input File");
 
-        Assert.assertTrue(loadWindow.isVisible().isTrue());
+        assertTrue(loadWindow.isVisible().isTrue());
 
         URL fileUrl = getClass().getResource("/test_data/3c273.dat");
 
@@ -91,11 +91,11 @@ public class BuilderMainViewTest extends AbstractComponentGUITest {
 
         loadWindow.getButton("Load Spectrum/SED").click();
 
-        Assert.assertTrue(desktop.containsWindow("Import Setup Frame").isTrue());
+        assertTrue(desktop.containsWindow("Import Setup Frame"));
 
         Window setupWindow = desktop.getWindow("Import Setup Frame");
 
-        Assert.assertTrue(setupWindow.isVisible().isTrue());
+        assertTrue(setupWindow.isVisible());
 
         setupWindow.getComboBox("xColumn").select("DataSpectralValue");
 

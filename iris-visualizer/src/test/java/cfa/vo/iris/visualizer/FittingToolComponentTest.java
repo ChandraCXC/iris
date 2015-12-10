@@ -26,7 +26,7 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
     @Override
     public void setUp() throws Exception {
         super.setUp();
-        windowName = comp.getName();
+        windowName = "Fitting Tool: Sed0";
     }
 
     @Override
@@ -38,10 +38,10 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         
         window.getMenuBar()
             .getMenu("Tools")
-            .getSubMenu(windowName)
-            .getSubMenu(windowName)
+            .getSubMenu(comp.getName())
+            .getSubMenu(comp.getName())
             .click();
         
-        desktop.containsWindow(windowName);
+        assertTrue(desktop.containsWindow(windowName));
     }
 }

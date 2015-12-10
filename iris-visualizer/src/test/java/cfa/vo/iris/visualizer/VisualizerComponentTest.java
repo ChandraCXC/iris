@@ -42,11 +42,11 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
             .getSubMenu(windowName)
             .click();
         
-        desktop.containsWindow(windowName);
+        assertTrue(desktop.containsWindow(windowName));
         
         org.uispec4j.Button mbButton = desktop.getWindow(windowName).getButton("Metadata");
         mbButton.click();
         
-        desktop.containsWindow("Metadata Browser");
+        assertTrue(desktop.containsWindow("Metadata Browser"));
     }
 }

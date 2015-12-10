@@ -249,7 +249,10 @@ public abstract class AbstractIrisApplication extends Application implements Iri
             component.shutdown();
         }
         sampShutdown();
-        System.exit(status);
+        if(!isTest) {
+            System.exit(status);
+        }
+        desktop.dispose();
     }
 
     @Override
