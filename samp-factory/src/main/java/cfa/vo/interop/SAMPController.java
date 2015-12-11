@@ -64,11 +64,11 @@ public class SAMPController extends GuiHubConnector implements ISAMPController {
 
     private static final int DEFAULT_TIMEOUT = 10;
 
-    private boolean withGui;
+    boolean withGui;
 
-    private boolean withServer;
+    boolean withServer;
 
-    private String serverRoot;
+    String serverRoot;
 
     protected HubServiceMode mode = HubServiceMode.MESSAGE_GUI;
 
