@@ -1,6 +1,8 @@
 package cfa.vo.sed.science.stacker;
 
 import java.util.logging.Logger;
+
+import cfa.vo.iris.test.unit.AbstractUISpecTest;
 import cfa.vo.iris.test.unit.SherpaResource;
 import cfa.vo.sherpa.SherpaClient;
 import org.junit.*;
@@ -12,19 +14,7 @@ import org.uispec4j.UISpec4J;
  * unable to connect to the SAMP hub.
  * 
  */
-public abstract class AbstractSEDStackerIT {
-
-    /**
-     * Unfortunately this static block is required if we don't want to extend UISpecTestCase
-     * and we want to use @Junit 4's annotation instead of extending TestCase.
-     * Maybe we can fix this up later by having an abstract test class for Iris with this static code,
-     * but I (OL) am leaving changes simple for now to reduce the chance of bad conflicts when we integrate
-     * changes in Sprint 12/03/15
-     */
-    static
-    {
-        UISpec4J.init();
-    }
+public abstract class AbstractSEDStackerIT extends AbstractUISpecTest {
     
     private static final Logger logger = Logger.getLogger(AbstractSEDStackerIT.class.getName());
     

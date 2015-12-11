@@ -36,6 +36,7 @@ public class IrisAppResource extends ExternalResource {
         logger.log(Level.INFO, "tearDown, verifying windows are gone");
         assertFalse(adapter.getSamphub().isVisible().isTrue());
         assertFalse(adapter.getMainWindow().isVisible().isTrue());
+        adapter = null;
     }
 
     public IrisUISpecAdapter getAdapter() {

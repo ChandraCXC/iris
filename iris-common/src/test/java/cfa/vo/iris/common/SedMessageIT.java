@@ -34,7 +34,7 @@ public class SedMessageIT {
     private Sed mySed;
 
     @Rule
-    public SAMPClientResource sender = new SAMPClientResource(new SAMPControllerBuilder("TestReceiver").withResourceServer("/test"));
+    public SAMPClientResource sender = new SAMPClientResource(new SAMPControllerBuilder("TestSender").withResourceServer("/test"));
 
     @Rule
     public SAMPClientResource clientResource = new SAMPClientResource(new SAMPControllerBuilder("TestReceiver"));

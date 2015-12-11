@@ -21,8 +21,7 @@
  */
 package cfa.vo.sed.science.stacker;
 
-import cfa.vo.interop.SAMPController;
-import cfa.vo.interop.SAMPControllerBuilder;
+import cfa.vo.interop.*;
 import cfa.vo.iris.sed.ExtSed;
 
 import cfa.vo.sedlib.Segment;
@@ -31,12 +30,17 @@ import cfa.vo.sherpa.SherpaClient;
 import static org.junit.Assert.*;
 
 import java.awt.Component;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.astrogrid.samp.Response;
+import org.astrogrid.samp.client.HubConnection;
+import org.astrogrid.samp.client.MessageHandler;
 import org.astrogrid.samp.client.SampException;
+import org.astrogrid.samp.httpd.ServerResource;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -76,7 +80,7 @@ public class SedStackerStackerTest {
     
     @Before
     public void setUp() throws Exception {
-        this.controller = new SAMPControllerStub("name");
+        this.controller = new SAMPControllerStub();
         this.client = new SherpaClientStub(controller);
         
         this.stacker = new SedStackerStacker(client) {
@@ -89,6 +93,11 @@ public class SedStackerStackerTest {
                 return response;
             }
         };
+    }
+
+    @After
+    public void tearDown() {
+        this.controller.stop();
     }
     
     private void initialize() throws Exception {
@@ -227,35 +236,71 @@ public class SedStackerStackerTest {
         
         stacker.stack(sedStack);
     }
-    
+
     //
     //
     // Stubs, use these to set expectations
     //
     //
-    private static class SAMPBuilder extends SAMPControllerBuilder {
-        public SAMPBuilder(String name) {
-            super(name);
-        }
-    }
-
-    private static class SAMPControllerStub extends SAMPController {
-        public SAMPControllerStub(String name) {
-            super(new SAMPControllerBuilder(name));
-        }
+    private static class SAMPControllerStub implements ISAMPController {
         
         public Response rspns;
-        
+
+        @Override
+        public void stop() {
+
+        }
+
+        @Override
+        public boolean start(long timeoutMillis) {
+            return false;
+        }
+
+        @Override
+        public void sendMessage(SAMPMessage message) throws SampException {
+
+        }
+
+        @Override
+        public void addConnectionListener(SAMPConnectionListener listener) {
+
+        }
+
+        @Override
+        public void addMessageHandler(MessageHandler handler) {
+
+        }
+
         @SuppressWarnings("rawtypes")
         @Override
         public Response callAndWait(String arg0, Map arg1, int arg2) throws SampException {
             return rspns;
         }
+
+        @Override
+        public Map getClientMap() {
+            return null;
+        }
+
+        @Override
+        public HubConnection getConnection() throws SampException {
+            return null;
+        }
+
+        @Override
+        public URL addResource(String filename, ServerResource serverResource) {
+            return null;
+        }
+
+        @Override
+        public boolean isConnected() {
+            return false;
+        }
     }
     
     private static class SherpaClientStub extends SherpaClient {
         
-        public SherpaClientStub(SAMPController controller) {
+        public SherpaClientStub(ISAMPController controller) {
             super(controller);
         }
 

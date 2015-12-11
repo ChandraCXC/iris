@@ -202,7 +202,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
                         .withDescription(getDescription())
                         .withResourceServer("sedImporter/")
                         .withIcon(getSAMPIcon())
-                        .withGui(!isTest);
+                        .withGui(true);
                 sampController = new HubSAMPController(builder, timeout);
 
             } catch (Exception ex) {
