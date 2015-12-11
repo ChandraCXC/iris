@@ -32,6 +32,9 @@ import java.net.URL;
 
 import org.junit.Test;
 import org.uispec4j.*;
+
+import javax.swing.*;
+
 import static org.junit.Assert.*;
 
 public class BuilderMainViewTest extends AbstractComponentGUITest {
@@ -57,24 +60,30 @@ public class BuilderMainViewTest extends AbstractComponentGUITest {
 
         assertEquals(2, manager.getSeds().size());
 
-        ExtSed sed = manager.getSelected();
+        builder.getButton("Load File").click();
+        assertTrue(desktop.containsWindow("Load an input File").isTrue());
+        Window loadFile = desktop.getWindow("Load an input File");
 
-        Segment s = Sed.read(getClass().getResource("/test_data/3c066aNED.vot").openStream(), SedFormat.VOT).getSegment(0);
+        loadFile.getTextBox("diskTextBox").setText(getClass().getResource("/test_data/3c066aNED.vot").getPath().toString());
+        loadFile.getButton("Load Spectrum/SED").click();
 
-        sed.addSegment(s);
+        builder.getButton("Load File").click();
+        assertTrue(desktop.containsWindow("Load an input File").isTrue());
+        loadFile = desktop.getWindow("Load an input File");
 
-        s = Sed.read(getClass().getResource("/test_data/mine.vot").openStream(), SedFormat.VOT).getSegment(0);
+        loadFile.getTextBox("diskTextBox").setText(getClass().getResource("/test_data/mine.vot").getPath().toString());
+        loadFile.getButton("Load Spectrum/SED").click();
 
-        sed.addSegment(s);
-
-        Thread.sleep(500); // give some time for the events to propagate
+        // FIXME (see task #229)
+        // we need to give the events time to settle
+        Thread.sleep(2000);
 
         Table table = builder.getTable();
 
         assertTrue(table.contentEquals(new String[][]{
-                    {"3C 066A", "35.665, 43.036", "NASA/IPAC Extragalactic Database (NED)", "33"},
-                    {"3C 066A", "35.665, 43.036", "Me", "3"}
-                }).isTrue());
+                {"3C 066A", "35.665, 43.036", "NASA/IPAC Extragalactic Database (NED)", "33"},
+                {"3C 066A", "35.665, 43.036", "Me", "3"}
+        }).isTrue());
 
         Button newSegment = builder.getButton("jButton15");
 
