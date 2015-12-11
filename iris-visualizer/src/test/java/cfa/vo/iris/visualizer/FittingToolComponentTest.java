@@ -17,15 +17,18 @@ package cfa.vo.iris.visualizer;
 
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.IrisComponent;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class FittingToolComponentTest extends AbstractComponentGUITest {
 
     private FittingToolComponent comp = new FittingToolComponent();
     private String windowName;
 
-    @Override
+    @Before
     public void setUp() throws Exception {
-        super.setUp();
         windowName = "Fitting Tool: Sed0";
     }
 
@@ -34,6 +37,7 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         return comp;
     }
 
+    @Test
     public void testVisualizerStub() throws Exception {
         
         window.getMenuBar()
@@ -42,6 +46,6 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
             .getSubMenu(comp.getName())
             .click();
         
-        assertTrue(desktop.containsWindow(windowName));
+        assertTrue(desktop.containsWindow(windowName).isTrue());
     }
 }

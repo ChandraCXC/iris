@@ -29,11 +29,14 @@ import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 import java.net.URL;
-import junit.framework.Assert;
+
+import org.junit.Test;
 import org.uispec4j.*;
+import static org.junit.Assert.*;
 
 public class BuilderMainViewTest extends AbstractComponentGUITest {
 
+    @Test
     public void testNewSegment() throws Exception {
 
         SedlibSedManager manager = (SedlibSedManager) SedBuilder.getWorkspace().getSedManager();
@@ -44,11 +47,11 @@ public class BuilderMainViewTest extends AbstractComponentGUITest {
                 .getSubMenu("SED Builder")
                 .click();
 
-        assertTrue(desktop.containsWindow("SED Builder"));
+        assertTrue(desktop.containsWindow("SED Builder").isTrue());
 
-        Window window = desktop.getWindow("SED Builder");
+        Window builder = desktop.getWindow("SED Builder");
 
-        Button newSed = window.getButton("jButton8");
+        Button newSed = builder.getButton("jButton8");
 
         newSed.click();
 
@@ -64,14 +67,16 @@ public class BuilderMainViewTest extends AbstractComponentGUITest {
 
         sed.addSegment(s);
 
-        Table table = window.getTable();
+        Thread.sleep(500); // give some time for the events to propagate
+
+        Table table = builder.getTable();
 
         assertTrue(table.contentEquals(new String[][]{
                     {"3C 066A", "35.665, 43.036", "NASA/IPAC Extragalactic Database (NED)", "33"},
                     {"3C 066A", "35.665, 43.036", "Me", "3"}
-                }));
+                }).isTrue());
 
-        Button newSegment = window.getButton("jButton15");
+        Button newSegment = builder.getButton("jButton15");
 
         newSegment.click();
 
@@ -91,11 +96,11 @@ public class BuilderMainViewTest extends AbstractComponentGUITest {
 
         loadWindow.getButton("Load Spectrum/SED").click();
 
-        assertTrue(desktop.containsWindow("Import Setup Frame"));
+        assertTrue(desktop.containsWindow("Import Setup Frame").isTrue());
 
         Window setupWindow = desktop.getWindow("Import Setup Frame");
 
-        assertTrue(setupWindow.isVisible());
+        assertTrue(setupWindow.isVisible().isTrue());
 
         setupWindow.getComboBox("xColumn").select("DataSpectralValue");
 
@@ -125,7 +130,7 @@ public class BuilderMainViewTest extends AbstractComponentGUITest {
                     {"3C 066A", "35.665, 43.036", "NASA/IPAC Extragalactic Database (NED)", "33"},
                     {"3C 066A", "35.665, 43.036", "Me", "3"},
                     {"Test", "0.1, 0.2", "Me", "455"}
-                }));
+                }).isTrue());
 
     }
 

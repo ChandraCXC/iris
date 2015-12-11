@@ -40,6 +40,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import static org.junit.Assert.*;
 
 
 public class SaveSedDialogTest extends AbstractComponentGUITest {

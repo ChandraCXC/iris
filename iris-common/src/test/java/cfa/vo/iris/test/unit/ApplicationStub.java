@@ -69,4 +69,8 @@ public class ApplicationStub implements IrisApplication {
     public URL getHelpURL() {
         return null;
     }
+
+    public void exit() {
+        wSpace.shutdown();
+    }
 }
