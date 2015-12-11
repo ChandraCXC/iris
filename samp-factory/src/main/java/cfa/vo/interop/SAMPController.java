@@ -281,14 +281,13 @@ public class SAMPController extends GuiHubConnector implements ISAMPController {
      * If it had started the internal HttpServer it will be shut down.
      */
     public void stop() {
-        this.setAutoconnect(0);
 
         if (server != null) {
             server.stop();
             server = null;
         }
 
-        disconnect();
+        setActive(false);
 
     }
 
