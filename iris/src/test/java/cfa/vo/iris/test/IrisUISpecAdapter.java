@@ -2,25 +2,30 @@ package cfa.vo.iris.test;
 
 import cfa.vo.iris.AbstractIrisApplication;
 import cfa.vo.iris.Iris;
-import cfa.vo.iris.IrisApplication;
 import org.jdesktop.application.Application;
 import org.uispec4j.*;
 import org.uispec4j.interception.WindowInterceptor;
 import org.uispec4j.utils.MainClassTrigger;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * UISpecAdapter that intercepts the samp hub window
  */
 public final class IrisUISpecAdapter implements UISpecAdapter {
     private Window mainWindow;
-    private Trigger trigger;
     private Window samphub;
 
-    public IrisUISpecAdapter(String... args) {
-        if (trigger == null)
-            trigger = new MainClassTrigger(Iris.class, args);
-        UISpec4J.setWindowInterceptionTimeLimit(60000);
+    private Logger logger = Logger.getLogger(IrisUISpecAdapter.class.getName());
+
+    public IrisUISpecAdapter() {
+        Trigger trigger = new MainClassTrigger(Iris.class, "--debug");
+        logger.log(Level.INFO, "setting timeout to 120000 millis");
+        UISpec4J.setWindowInterceptionTimeLimit(120000);
+        logger.log(Level.INFO, "intercepting main application window");
         mainWindow = WindowInterceptor.run(trigger);
+        logger.log(Level.INFO, "intercepting hub window");
         samphub = WindowInterceptor.run(new Trigger() {
             @Override
             public void run() throws Exception {
