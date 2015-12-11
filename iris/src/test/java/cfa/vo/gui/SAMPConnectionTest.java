@@ -1,13 +1,14 @@
 package cfa.vo.gui;
 
+import cfa.vo.iris.test.IrisAppResource;
 import cfa.vo.iris.test.IrisUISpecAdapter;
 import cfa.vo.iris.test.unit.AbstractUISpecTest;
 import org.astrogrid.samp.hub.Hub;
 import org.astrogrid.samp.hub.HubServiceMode;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
-import org.uispec4j.UISpec4J;
 import org.uispec4j.finder.ComponentMatcher;
 import javax.swing.JLabel;
 import java.awt.*;
@@ -21,32 +22,24 @@ public class SAMPConnectionTest extends AbstractUISpecTest {
 
     private Logger logger = Logger.getLogger(IrisUISpecAdapter.class.getName());
     private ExecutorService executor;
-    IrisUISpecAdapter adapter;
+
+    @Rule
+    public IrisAppResource irisApp = new IrisAppResource();
 
     @Before
     public void setUp() throws Exception {
-        logger.log(Level.INFO, "setup, instantiating adapter");
-        adapter = new IrisUISpecAdapter();
-        logger.log(Level.INFO, "setup, verifying windows");
-        assertTrue(adapter.getMainWindow().isVisible().isTrue());
-        assertTrue(adapter.getSamphub().isVisible().isTrue());
         executor = Executors.newSingleThreadExecutor();
     }
 
     @After
     public void tearDown() throws Exception {
         executor.shutdown();
-        logger.log(Level.INFO, "tearDown, exiting app");
-        adapter.getIrisApp().exitApp(0);
-        logger.log(Level.INFO, "tearDown, verifying windows are gone");
-        assertFalse(adapter.getSamphub().isVisible().isTrue());
-        assertFalse(adapter.getMainWindow().isVisible().isTrue());
     }
 
     // When launched, the Iris Application should launch a SAMP Hub and be connected
     @Test
     public void testBasic() throws Exception {
-
+        IrisUISpecAdapter adapter = irisApp.getAdapter();
         assertTrue(adapter.getMainWindow().titleEquals("Iris").isTrue());
         boolean found = false;
         for (int i=0; i<30; i++) {
@@ -64,6 +57,7 @@ public class SAMPConnectionTest extends AbstractUISpecTest {
     // If Autorunhub is turned off, the Iris Application should not reconnect
     @Test
     public void testNoAutoRunHub() throws Exception {
+        IrisUISpecAdapter adapter = irisApp.getAdapter();
         org.uispec4j.Window window = adapter.getMainWindow();
         assertTrue(window.titleEquals("Iris").isTrue());
 
