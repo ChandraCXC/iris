@@ -38,6 +38,7 @@ import javax.swing.*;
 import static org.junit.Assert.*;
 
 public class BuilderMainViewTest extends AbstractComponentGUITest {
+    private Table table;
 
     @Test
     public void testNewSegment() throws Exception {
@@ -52,7 +53,7 @@ public class BuilderMainViewTest extends AbstractComponentGUITest {
 
         assertTrue(desktop.containsWindow("SED Builder").isTrue());
 
-        Window builder = desktop.getWindow("SED Builder");
+        final Window builder = desktop.getWindow("SED Builder");
 
         Button newSed = builder.getButton("jButton8");
 
@@ -74,11 +75,12 @@ public class BuilderMainViewTest extends AbstractComponentGUITest {
         loadFile.getTextBox("diskTextBox").setText(getClass().getResource("/test_data/mine.vot").getPath().toString());
         loadFile.getButton("Load Spectrum/SED").click();
 
-        // FIXME (see task #229)
-        // we need to give the events time to settle
-        Thread.sleep(2000);
-
-        Table table = builder.getTable();
+        SwingUtilities.invokeAndWait(new Runnable() {
+            @Override
+            public void run() {
+                table = builder.getTable();
+            }
+        });
 
         assertTrue(table.contentEquals(new String[][]{
                 {"3C 066A", "35.665, 43.036", "NASA/IPAC Extragalactic Database (NED)", "33"},
