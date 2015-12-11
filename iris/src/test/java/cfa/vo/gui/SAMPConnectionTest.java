@@ -1,12 +1,10 @@
 package cfa.vo.gui;
 
 import cfa.vo.iris.test.IrisUISpecAdapter;
-import org.junit.After;
-import org.junit.Before;
+import org.astrogrid.samp.hub.Hub;
+import org.astrogrid.samp.hub.HubServiceMode;
 import org.uispec4j.*;
 import org.uispec4j.finder.ComponentMatcher;
-import org.uispec4j.interception.WindowInterceptor;
-
 import javax.swing.JLabel;
 import java.awt.*;
 import java.util.concurrent.ExecutorService;
@@ -81,6 +79,24 @@ public class SAMPConnectionTest extends UISpecTestCase {
         Thread.sleep(2000);
         JLabel label = (JLabel) window.findSwingComponent(new LabelFinder("SAMP status: connected"));
         assertNull(label);
+
+        // But Iris should reconnect if a new hub is started
+        logger.log(Level.INFO, "starting a new hub");
+        Hub newHub = Hub.runHub(HubServiceMode.NO_GUI);
+        logger.log(Level.INFO, "making sure Iris is connected within few seconds");
+        boolean found = false;
+        for (int i=0; i<30; i++) {
+            label = (JLabel) adapter.getMainWindow().findSwingComponent(new LabelFinder("SAMP status: connected"));
+            if(label != null) {
+                found = true;
+                break;
+            }
+            logger.log(Level.INFO, "sleeping for half a second");
+            Thread.sleep(500);
+        }
+        logger.log(Level.INFO, "shutting down the new hub");
+        newHub.shutdown();
+        assertTrue(found);
     }
 
     private class LabelFinder implements ComponentMatcher {
