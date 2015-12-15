@@ -12,15 +12,6 @@ public class SAMPClientResource extends ExternalResource {
     private SAMPControllerBuilder builder;
     private long timeoutMillis = 30000;
 
-    public SAMPClientResource(long timeoutMillis) {
-        this.timeoutMillis = timeoutMillis;
-    }
-
-    public SAMPClientResource(SAMPControllerBuilder builder, long timeoutMillis) {
-        this.builder = builder;
-        this.timeoutMillis = timeoutMillis;
-    }
-
     public SAMPClientResource(SAMPControllerBuilder builder) {
         this.builder = builder;
     }
