@@ -28,10 +28,15 @@ import java.util.List;
 /**
  * Abstract test case for Iris GUI tests. Sets up an Iris workspace,
  * adds whatever components we would like to test, and sets up a 
- * UISpec4j window handler on the iris application to simulate and verify 
+ * UISpec4j window adapter on the iris application to simulate and verify
  * GUI operations.
- * 
- * Extensions of this class are responsible for setting up components.
+ *
+ * Implementing classes must return the list of components (instances)
+ * to be initialized. The class will initialize the components under the hood
+ * using bare bone IrisApplication and IWorkspace instances.
+ *
+ * Implementing classes can use the protected fields <pre>window</pre> and <pre>desktop</pre>
+ * as hooks to start testing their components.
  *
  */
 public abstract class AbstractGUITest extends UISpecTestCase {
@@ -68,6 +73,11 @@ public abstract class AbstractGUITest extends UISpecTestCase {
         }
     }
 
+    /**
+     * Method used to get, from the implementing test cases, the list of components to be initialized
+     *
+     * @return a {@link List} of {@link IrisComponent}s.
+     */
     protected abstract List<IrisComponent> getComponents();
 
     @After

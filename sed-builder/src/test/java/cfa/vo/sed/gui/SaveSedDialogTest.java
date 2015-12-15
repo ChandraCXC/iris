@@ -36,8 +36,6 @@ import java.net.URL;
 import java.util.List;
 import cfa.vo.sedlib.DoubleParam;
 import cfa.vo.sedlib.Sed;
-import org.uispec4j.Desktop;
-import org.uispec4j.Window;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URLConnection;
@@ -45,15 +43,6 @@ import java.util.ArrayList;
 
 
 public class SaveSedDialogTest extends AbstractComponentGUITest {
-
-    private static Window mainWindow;
-    private Desktop desktop;
-
-    public void setUp() throws Exception {
-        super.setUp();
-        mainWindow = getMainWindow();
-        desktop = mainWindow.getDesktop();
-    }
 
     @Override
     protected IrisComponent getComponent() {
