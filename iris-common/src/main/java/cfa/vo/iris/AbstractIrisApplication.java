@@ -29,10 +29,7 @@ import cfa.vo.iris.sdk.PluginManager;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,6 +56,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
     public static final boolean SAMP_FALLBACK = false;
     public static final File CONFIGURATION_DIR = new File(System.getProperty("user.home") + "/.vao/iris/");
     public static final boolean MAC_OS_X = System.getProperty("os.name").toLowerCase().startsWith("mac os x");
+    private static final long CONNECTION_RETRY_MILLIS = 1000;
     
     protected String[] componentArgs;
     protected String componentName;
@@ -288,7 +286,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
     public static final class HubSAMPController extends SAMPController {
 
         private boolean autoRunHub = true;
-        private Thread t;
+        private Timer timer;
         private boolean started = false;
         private Hub hub;
 
@@ -300,9 +298,6 @@ public abstract class AbstractIrisApplication extends Application implements Iri
         @Override
         public void stop() {
             this.autoRunHub = false;
-            if(t!=null) {
-                t.interrupt();
-            }
             started = false;
             if (hub != null) {
                 hub.shutdown();
@@ -313,8 +308,8 @@ public abstract class AbstractIrisApplication extends Application implements Iri
         @Override
         public boolean start(long timeoutMillis) {
             if(!started) {
-                t = new Thread(new CheckConnection());
-                t.start();
+                timer = new Timer(true);
+                timer.schedule(new CheckConnectionTask(), 0, CONNECTION_RETRY_MILLIS);
                 started = true;
             }
             return super.start(timeoutMillis);
@@ -324,7 +319,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
             this.autoRunHub = autoRunHub;
         }
 
-        private class CheckConnection extends Thread {
+        private class CheckConnectionTask extends TimerTask {
 
             private boolean state = false;
 
@@ -332,33 +327,33 @@ public abstract class AbstractIrisApplication extends Application implements Iri
                 // I autorunhub is false we don't want to start a new hub.
                 // Neither we want to start a hub if the controller is already connected (to a different hub)
                 // In any case we want to start a hub only if we did not start one already.
-                if (autoRunHub && hub == null && !isConnected()) {
-                    try {
+                try {
+                    if (autoRunHub && hub == null && getConnection() == null) {
+                        logger.log(Level.INFO, "starting SAMP Hub");
                         // this returns a running hub.
                         // an exception is thrown if a hub is already running.
                         hub = Hub.runHub(HubServiceMode.MESSAGE_GUI);
-                    } catch (IOException ex) {
-                        // do nothing, keep monitoring
+                    } else if (hub != null && getConnection() == null) {
+                        // something is wrong with the hub. It is not null, but we don't have a connection.
+                        // shutdown the hub and set it to null.
+                        hub.shutdown();
+                        hub = null;
                     }
-                } else if (autoRunHub && hub != null && !isConnected()) {
-                    hub.shutdown();
-                    hub = null;
+                    // if we are connected, or if the hub is null and autoRunHub is false, then there is nothing to do.
+                    // Keep monitoring
+                } catch (IOException ex) {
+                    // do nothing, keep monitoring
                 }
-                // if we are connected there is nothing to do anyway.
             }
 
-            private void checkStatusUpdate() throws InterruptedException {
+            private void checkStatusUpdate() {
                 boolean stateChanged = state != isConnected();
 
                 if(stateChanged && isConnected())
-                    if(!this.isInterrupted()) {
-                        try {
-                            getConnection().notifyAll(new Message("updated status for "+ getName()));
-                        } catch (SampException ex) {
-                            Logger.getLogger(SAMPController.class.getName()).log(Level.WARNING, "Couldn't notify changed state. Maybe we (or the hub) are being shut down");
-                        }
-                    } else {
-                        throw new InterruptedException();
+                    try {
+                        getConnection().notifyAll(new Message("updated status for "+ getName()));
+                    } catch (SampException ex) {
+                        Logger.getLogger(SAMPController.class.getName()).log(Level.WARNING, "Couldn't notify changed state. Maybe we (or the hub) are being shut down");
                     }
 
                 if(stateChanged) {
@@ -371,17 +366,8 @@ public abstract class AbstractIrisApplication extends Application implements Iri
 
             @Override
             public void run() {
-
-                while(true) {
-                    try {
-                        runHubIfNeeded();
-                        checkStatusUpdate();
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ex) {
-                        Thread.currentThread().interrupt();
-                        break;
-                    }
-                }
+                runHubIfNeeded();
+                checkStatusUpdate();
             }
         }
     }
