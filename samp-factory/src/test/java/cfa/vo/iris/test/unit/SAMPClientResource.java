@@ -27,8 +27,7 @@ public class SAMPClientResource extends ExternalResource {
 
     public SAMPClientResource() {
         this.builder = new SAMPControllerBuilder("Test")
-                .withDescription("Test Hub")
-                .withGui(false);
+                .withDescription("Test Hub");
     }
 
     @Override

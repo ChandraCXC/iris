@@ -19,7 +19,6 @@ public class SAMPControllerBuilder {
     private final String name;
     private String description;
     private URL icon = SAMPController.class.getResource("/iris_button_tiny.png");
-    private boolean withGui = false;
     private boolean withResourceServer = false;
     private String serverRoot = "/";
 
@@ -63,17 +62,6 @@ public class SAMPControllerBuilder {
     }
 
     /**
-     * Set whether the controller being built should be represented by a GUI
-     * @param withGui
-     * @return
-     */
-    public SAMPControllerBuilder withGui(boolean withGui) {
-        //FIXME this is a leftover of the refactoring, and should go into the HubController instead.
-        this.withGui = withGui;
-        return this;
-    }
-
-    /**
      * Set whether the controller should start and internal HTTP server
      * @param serverRoot the root path of the resource server
      * @return
@@ -92,10 +80,6 @@ public class SAMPControllerBuilder {
 
     public URL getIcon() {
         return icon;
-    }
-
-    public boolean isWithGui() {
-        return withGui;
     }
 
     public boolean isWithResourceServer() {

@@ -43,6 +43,7 @@ import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.MessageHandler;
 import org.astrogrid.samp.client.SampException;
 import org.astrogrid.samp.hub.Hub;
+import org.astrogrid.samp.hub.HubServiceMode;
 import org.jdesktop.application.Application;
 
 /**
@@ -201,8 +202,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
                 SAMPControllerBuilder builder = new SAMPControllerBuilder(getName())
                         .withDescription(getDescription())
                         .withResourceServer("sedImporter/")
-                        .withIcon(getSAMPIcon())
-                        .withGui(true);
+                        .withIcon(getSAMPIcon());
                 sampController = new HubSAMPController(builder, timeout);
 
             } catch (Exception ex) {
@@ -336,7 +336,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
                     try {
                         // this returns a running hub.
                         // an exception is thrown if a hub is already running.
-                        hub = Hub.runHub(getHubServiceMode());
+                        hub = Hub.runHub(HubServiceMode.MESSAGE_GUI);
                     } catch (IOException ex) {
                         // do nothing, keep monitoring
                     }

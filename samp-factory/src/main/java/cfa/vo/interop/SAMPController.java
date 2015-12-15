@@ -64,13 +64,9 @@ public class SAMPController extends GuiHubConnector implements ISAMPController {
 
     private static final int DEFAULT_TIMEOUT = 10;
 
-    boolean withGui;
-
     boolean withServer;
 
     String serverRoot;
-
-    protected HubServiceMode mode = HubServiceMode.MESSAGE_GUI;
 
     protected String name;
 
@@ -87,7 +83,6 @@ public class SAMPController extends GuiHubConnector implements ISAMPController {
         if (builder.isWithResourceServer()) {
             this.activateServer(builder.getServerRoot());
         }
-        this.setGui(builder.isWithGui());
     }
     /**
      *
@@ -225,7 +220,6 @@ public class SAMPController extends GuiHubConnector implements ISAMPController {
         Callable<Boolean> callable = new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                mode = withGui? HubServiceMode.MESSAGE_GUI : HubServiceMode.NO_GUI;
                 if (withServer) {
                     startResourceServer();
                 }
@@ -254,10 +248,6 @@ public class SAMPController extends GuiHubConnector implements ISAMPController {
         }
     }
 
-    public HubServiceMode getHubServiceMode() {
-        return mode;
-    }
-
     private void startResourceServer() throws IOException {
         if(server == null)
             server = new HttpServer();
@@ -270,10 +260,6 @@ public class SAMPController extends GuiHubConnector implements ISAMPController {
     protected void activateServer(String serverRoot) {
         this.withServer = true;
         this.serverRoot = serverRoot;
-    }
-
-    protected void setGui(boolean withGui) {
-        this.withGui = withGui;
     }
 
     /**

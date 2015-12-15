@@ -37,7 +37,6 @@ public class SAMPControllerBuilderTest {
         assertEquals("aname", builder.getName());
         assertEquals("aname", builder.getDescription());
         assertEquals(getClass().getResource("/iris_button_tiny.png"), builder.getIcon());
-        assertFalse(builder.isWithGui());
         assertFalse(builder.isWithResourceServer());
 
         controller = builder.build();
@@ -45,7 +44,6 @@ public class SAMPControllerBuilderTest {
         assertEquals("aname", controller.getMetadata().getName());
         assertEquals("aname", controller.getMetadata().getDescriptionText());
         assertEquals(getClass().getResource("/iris_button_tiny.png"), controller.getMetadata().getIconUrl());
-        assertFalse(controller.withGui);
         assertFalse(controller.withServer);
     }
 
@@ -56,13 +54,11 @@ public class SAMPControllerBuilderTest {
         SAMPControllerBuilder builder = new SAMPControllerBuilder("anothername")
                 .withResourceServer("/root")
                 .withDescription("a description")
-                .withGui(true)
                 .withIcon(testURL);
 
         assertEquals("anothername", builder.getName());
         assertEquals("a description", builder.getDescription());
         assertEquals(testURL, builder.getIcon());
-        assertTrue(builder.isWithGui());
         assertTrue(builder.isWithResourceServer());
         assertEquals("/root", builder.getServerRoot());
 
@@ -71,7 +67,6 @@ public class SAMPControllerBuilderTest {
         assertEquals("anothername", controller.getMetadata().getName());
         assertEquals("a description", controller.getMetadata().getDescriptionText());
         assertEquals(testURL, controller.getMetadata().getIconUrl());
-        assertTrue(controller.withGui);
         assertTrue(controller.withServer);
     }
 
