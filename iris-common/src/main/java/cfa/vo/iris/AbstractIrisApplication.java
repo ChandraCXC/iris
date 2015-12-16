@@ -336,6 +336,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
                     } else if (hub != null && getConnection() == null) {
                         // something is wrong with the hub. It is not null, but we don't have a connection.
                         // shutdown the hub and set it to null.
+                        logger.log(Level.INFO, "hub is not null, but connection cannot be estabilished, resetting hub");
                         hub.shutdown();
                         hub = null;
                     }
@@ -343,6 +344,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
                     // Keep monitoring
                 } catch (IOException ex) {
                     // do nothing, keep monitoring
+                    logger.log(Level.INFO, "a hub is already running? Moving on", ex);
                 }
             }
 
