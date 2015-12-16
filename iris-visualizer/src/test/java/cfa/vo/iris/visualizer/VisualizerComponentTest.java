@@ -17,15 +17,17 @@ package cfa.vo.iris.visualizer;
 
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.IrisComponent;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 public class VisualizerComponentTest extends AbstractComponentGUITest {
     
     private VisualizerComponent comp = new VisualizerComponent();
     private String windowName;
 
-    @Override
+    @Before
     public void setUp() throws Exception {
-        super.setUp();
         windowName = comp.getName();
     }
 
@@ -34,6 +36,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         return comp;
     }
 
+    @Test
     public void testVisualizerStub() throws Exception {
         
         window.getMenuBar()
@@ -42,11 +45,11 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
             .getSubMenu(windowName)
             .click();
         
-        desktop.containsWindow(windowName);
+        assertTrue(desktop.containsWindow(windowName).isTrue());
         
         org.uispec4j.Button mbButton = desktop.getWindow(windowName).getButton("Metadata");
         mbButton.click();
         
-        desktop.containsWindow("Metadata Browser");
+        assertTrue(desktop.containsWindow("Metadata Browser").isTrue());
     }
 }

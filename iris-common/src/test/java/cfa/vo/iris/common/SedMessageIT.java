@@ -16,75 +16,36 @@
 
 package cfa.vo.iris.common;
 
+import cfa.vo.interop.SAMPControllerBuilder;
 import cfa.vo.iris.interop.AbstractSedMessageHandler;
-import cfa.vo.iris.interop.SedSAMPController;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.test.unit.it.AbstractSAMPTest;
+import cfa.vo.iris.test.unit.SAMPClientResource;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
-
-import static org.junit.Assert.assertTrue;
-
 import java.util.logging.Logger;
-
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 
-/**
- *
- * @author olaurino
- */
-public class SedMessageIT extends AbstractSAMPTest {
+public class SedMessageIT {
     
     private static final Logger logger = Logger.getLogger(SedMessageIT.class.getName());
-    
     private Sed mySed;
 
-    public SedMessageIT() {
-    }
+    @Rule
+    public SAMPClientResource sender = new SAMPClientResource(new SAMPControllerBuilder("TestSender").withResourceServer("/test"));
 
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @Before
-    public void setup() {
-    }
-
-    @After
-    public void teardown() {
-    }
+    @Rule
+    public SAMPClientResource clientResource = new SAMPClientResource(new SAMPControllerBuilder("TestReceiver"));
 
     @Test
     public void sedMessageTest() throws Exception {
-        System.setProperty("jsamp.hub.profiles", "std");
-
-        SedSAMPController sampReceiver = SedSAMPController.createAndStart("TestReceiver", 
-                "An SED builder from the Virtual Astronomical Observatory",
-                this.getClass().getResource("/iris_button_tiny.png"), 
-                false,
-                false);
-        assertTrue(sampReceiver.isConnected());
-        
-        
-        controller.startWithResourceServer("/test", false);
-
-        sampReceiver.addMessageHandler(new SedHandler());
+        clientResource.getHubController().addMessageHandler(new SedHandler());
 
         ExtSed sed = ExtSed.read(this.getClass().getResource("/test_data/3c273.xml").getFile(), SedFormat.VOT);
 
-        Thread.sleep(5000);
-
-        controller.sendSedMessage(sed);
+        sed.sendSedMessage(sender.getHubController());
 
         int i=0;
 
@@ -96,10 +57,6 @@ public class SedMessageIT extends AbstractSAMPTest {
             Assert.fail("timeout waiting for SAMP response");
 
         Assert.assertEquals(1, mySed.getNumberOfSegments());
-
-        sampReceiver.stop();
-
-        Thread.sleep(2000);
 
         Segment segment = sed.getSegment(0);
 

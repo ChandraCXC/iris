@@ -20,18 +20,14 @@
  */
 package cfa.vo.sed.test;
 
-import cfa.vo.interop.SAMPController;
+import cfa.vo.interop.ISAMPController;
 import cfa.vo.iris.IrisApplication;
-import cfa.vo.iris.sed.ExtSed;
+
 import java.io.File;
 import java.net.URL;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.SampException;
 
-/**
- *
- * @author olaurino
- */
 public class App implements IrisApplication {
 
     @Override
@@ -45,17 +41,12 @@ public class App implements IrisApplication {
     }
 
     @Override
-    public void sendSedMessage(ExtSed sed) throws SampException {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
     public void sendSampMessage(Message msg) throws SampException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public SAMPController getSAMPController() {
+    public ISAMPController getSAMPController() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

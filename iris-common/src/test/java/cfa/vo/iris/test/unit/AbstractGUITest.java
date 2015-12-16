@@ -18,9 +18,7 @@ package cfa.vo.iris.test.unit;
 import cfa.vo.iris.IrisComponent;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.uispec4j.Desktop;
-import org.uispec4j.UISpecTestCase;
 import org.uispec4j.Window;
 
 import java.util.List;
@@ -39,28 +37,24 @@ import java.util.List;
  * as hooks to start testing their components.
  *
  */
-public abstract class AbstractGUITest extends UISpecTestCase {
+public abstract class AbstractGUITest extends AbstractUISpecTest {
 
     protected Desktop desktop;
     protected Window window;
     private ApplicationStub app;
-    
-    @BeforeClass
-    public static void before() {}
+    private StubAdapter adapter;
     
     @Before
-    public void setUp() throws Exception {
-        super.setUp();
+    public final void before() throws Exception {
         System.setProperty("samp", "false");
 
-        StubAdapter adapter = new StubAdapter();
-        setAdapter(adapter);
+        adapter = new StubAdapter();
         app = adapter.getIrisApplication();
         
         // Apparently in eclipse you have to execute this manually.
         // IrisApplicationStub.main(new String[0]);
         
-        window = getMainWindow();
+        window = adapter.getMainWindow();
         desktop = window.getDesktop();
         initComponents();
     }
@@ -82,6 +76,10 @@ public abstract class AbstractGUITest extends UISpecTestCase {
 
     @After
     public void teardown() {
+        for (IrisComponent c: getComponents()) {
+            c.shutdown();
+        }
+        app.exit();
     }
 
 }

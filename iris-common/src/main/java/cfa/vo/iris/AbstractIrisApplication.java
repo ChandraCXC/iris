@@ -20,31 +20,27 @@
  */
 package cfa.vo.iris;
 
-import cfa.vo.interop.SAMPConnectionListener;
-import cfa.vo.interop.SAMPController;
-import cfa.vo.interop.SimpleSAMPMessage;
+import cfa.vo.interop.*;
 import cfa.vo.iris.desktop.IrisDesktop;
 import cfa.vo.iris.desktop.IrisWorkspace;
-import cfa.vo.iris.interop.SedSAMPController;
+import cfa.vo.interop.ISAMPController;
 import cfa.vo.iris.sdk.PluginManager;
-import cfa.vo.iris.sed.ExtSed;
 
-import java.awt.*;
 import java.io.File;
-import java.net.MalformedURLException;
+import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
 
-import org.apache.commons.lang.StringUtils;
+import cfa.vo.iris.utils.Default;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.MessageHandler;
 import org.astrogrid.samp.client.SampException;
+import org.astrogrid.samp.hub.Hub;
+import org.astrogrid.samp.hub.HubServiceMode;
 import org.jdesktop.application.Application;
 
 /**
@@ -54,12 +50,13 @@ import org.jdesktop.application.Application;
 public abstract class AbstractIrisApplication extends Application implements IrisApplication {
 
     private static final Logger logger = Logger.getLogger(AbstractIrisApplication.class.getName());
-    private static SedSAMPController sampController;
+    private static HubSAMPController sampController;
     private static boolean isTest = false;
-    static boolean SAMP_ENABLED = !System.getProperty("samp", "true").toLowerCase().equals("false");
+    public static boolean SAMP_ENABLED = !System.getProperty("samp", "true").toLowerCase().equals("false");
     public static final boolean SAMP_FALLBACK = false;
     public static final File CONFIGURATION_DIR = new File(System.getProperty("user.home") + "/.vao/iris/");
     public static final boolean MAC_OS_X = System.getProperty("os.name").toLowerCase().startsWith("mac os x");
+    private static final long CONNECTION_RETRY_MILLIS = 1000;
     
     protected String[] componentArgs;
     protected String componentName;
@@ -108,7 +105,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
 
     public static void sampShutdown() {
         if (sampController != null) {
-            Logger.getLogger(SedSAMPController.class.getName()).log(Level.INFO, "Shutting down SAMP");
+            Logger.getLogger(AbstractIrisApplication.class.getName()).log(Level.INFO, "Shutting down SAMP");
             sampController.stop();
         }
     }
@@ -195,9 +192,17 @@ public abstract class AbstractIrisApplication extends Application implements Iri
 
     public void sampSetup() {
         if (SAMP_ENABLED) {
-            sampController = new SedSAMPController(getName(), getDescription(), getSAMPIcon().toString());
             try {
-                sampController.startWithResourceServer("sedImporter/", !isTest);
+                long timeout = Default.getInstance()
+                        .getSampTimeout()
+                        .convertTo(TimeUnit.MILLISECONDS)
+                        .getAmount();
+                SAMPControllerBuilder builder = new SAMPControllerBuilder(getName())
+                        .withDescription(getDescription())
+                        .withResourceServer("sedImporter/")
+                        .withIcon(getSAMPIcon());
+                sampController = new HubSAMPController(builder, timeout);
+
             } catch (Exception ex) {
                 System.err.println("SAMP Error. Disabling SAMP support.");
                 System.err.println("Error message: " + ex.getMessage());
@@ -242,7 +247,10 @@ public abstract class AbstractIrisApplication extends Application implements Iri
             component.shutdown();
         }
         sampShutdown();
-        System.exit(status);
+        if(!isTest) {
+            System.exit(status);
+        }
+        desktop.dispose();
     }
 
     @Override
@@ -251,17 +259,15 @@ public abstract class AbstractIrisApplication extends Application implements Iri
     }
 
     @Override
-    public void sendSedMessage(ExtSed sed) throws SampException {
-        sampController.sendSedMessage(sed);
-    }
-
-    @Override
     public void sendSampMessage(Message msg) throws SampException {
         sampController.sendMessage(new SimpleSAMPMessage(msg));
     }
 
     @Override
-    public SAMPController getSAMPController() {
+    public ISAMPController getSAMPController() {
+        if (sampController == null) {
+            sampSetup();
+        }
         return sampController;
     }
     
@@ -274,6 +280,97 @@ public abstract class AbstractIrisApplication extends Application implements Iri
     public void addMessageHandler(MessageHandler handler) {
         if (sampController != null) {
             sampController.addMessageHandler(handler);
+        }
+    }
+
+    public static final class HubSAMPController extends SAMPController {
+
+        private boolean autoRunHub = true;
+        private Timer timer;
+        private boolean started = false;
+        private Hub hub;
+
+        private HubSAMPController(SAMPControllerBuilder builder, long timeoutMillis) throws Exception {
+            super(builder);
+            this.start(timeoutMillis);
+        }
+
+        @Override
+        public void stop() {
+            this.autoRunHub = false;
+            started = false;
+            if (hub != null) {
+                hub.shutdown();
+            }
+            super.stop();
+        }
+
+        @Override
+        public boolean start(long timeoutMillis) {
+            if(!started) {
+                timer = new Timer(true);
+                timer.schedule(new CheckConnectionTask(), 0, CONNECTION_RETRY_MILLIS);
+                started = true;
+            }
+            return super.start(timeoutMillis);
+        }
+
+        public void setAutoRunHub(boolean autoRunHub) {
+            this.autoRunHub = autoRunHub;
+        }
+
+        private class CheckConnectionTask extends TimerTask {
+
+            private boolean state = false;
+
+            private void runHubIfNeeded() {
+                // I autorunhub is false we don't want to start a new hub.
+                // Neither we want to start a hub if the controller is already connected (to a different hub)
+                // In any case we want to start a hub only if we did not start one already.
+                try {
+                    if (autoRunHub && hub == null && getConnection() == null) {
+                        logger.log(Level.INFO, "starting SAMP Hub");
+                        // this returns a running hub.
+                        // an exception is thrown if a hub is already running.
+                        hub = Hub.runHub(HubServiceMode.MESSAGE_GUI);
+                    } else if (hub != null && getConnection() == null) {
+                        // something is wrong with the hub. It is not null, but we don't have a connection.
+                        // shutdown the hub and set it to null.
+                        logger.log(Level.INFO, "hub is not null, but connection cannot be estabilished, resetting hub");
+                        hub.shutdown();
+                        hub = null;
+                    }
+                    // if we are connected, or if the hub is null and autoRunHub is false, then there is nothing to do.
+                    // Keep monitoring
+                } catch (IOException ex) {
+                    // do nothing, keep monitoring
+                    logger.log(Level.INFO, "a hub is already running? Moving on", ex);
+                }
+            }
+
+            private void checkStatusUpdate() {
+                boolean stateChanged = state != isConnected();
+
+                if(stateChanged && isConnected())
+                    try {
+                        getConnection().notifyAll(new Message("updated status for "+ getName()));
+                    } catch (SampException ex) {
+                        Logger.getLogger(SAMPController.class.getName()).log(Level.WARNING, "Couldn't notify changed state. Maybe we (or the hub) are being shut down");
+                    }
+
+                if(stateChanged) {
+                    state = isConnected();
+                    for(SAMPConnectionListener listener : getListeners()) {
+                        listener.run(state);
+                    }
+                }
+            }
+
+            @Override
+            public void run() {
+                runHubIfNeeded();
+                checkStatusUpdate();
+            }
         }
     }
 }

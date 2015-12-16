@@ -21,12 +21,11 @@
 
 package cfa.vo.iris;
 
-import cfa.vo.interop.SAMPController;
-import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.interop.ISAMPController;
+
 import java.io.File;
 import java.net.URL;
 
-import cfa.vo.sherpa.SherpaClient;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.SampException;
 
@@ -36,7 +35,6 @@ import org.astrogrid.samp.client.SampException;
  * interface is provided to the components when they are initialized, so that they can
  * access application-wide information and operations.
  *
- * @author olaurino
  */
 public interface IrisApplication {
     /**
@@ -52,18 +50,10 @@ public interface IrisApplication {
      * @return True if SAMP is enabled in this session.
      */
     boolean isSampEnabled();
-    /**
-     * Convenience shortcut that allows components to broadcast a SED message to the SAMP hub.
-     *
-     * @param sed The SED file that has to be sent through SAMP
-     * @param sedId The ID of the SED file sent
-     * @throws SampException If an exception is thrown while the message is being sent
-     */
-    void sendSedMessage(ExtSed sed) throws SampException;
 
     void sendSampMessage(Message msg) throws SampException;
 
-    SAMPController getSAMPController();
+    ISAMPController getSAMPController();
 
     URL getHelpURL();
 }

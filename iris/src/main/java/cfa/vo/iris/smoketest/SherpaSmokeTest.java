@@ -21,9 +21,10 @@
 
 package cfa.vo.iris.smoketest;
 
-import cfa.vo.interop.PingMessage;
+import cfa.vo.interop.ISAMPController;
+import cfa.vo.interop.SAMPControllerBuilder;
+import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.interop.AbstractSedMessageHandler;
-import cfa.vo.iris.interop.SedSAMPController;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.utils.Default;
 import cfa.vo.sed.builder.SegmentImporter;
@@ -37,9 +38,6 @@ import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sherpa.*;
 import junit.framework.Assert;
-import org.astrogrid.samp.Client;
-import org.astrogrid.samp.Response;
-import org.astrogrid.samp.client.ResultHandler;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -50,17 +48,17 @@ import java.util.logging.Logger;
 public class SherpaSmokeTest extends AbstractSmokeTest {
 
     private String testVotable;
-    private SedSAMPController controller;
+    private ISAMPController controller;
     private boolean working = false;
     protected Boolean control;
 
-    public SherpaSmokeTest(String testVotable) {
-        this(testVotable, 20);
+    public SherpaSmokeTest(String testVotable, IrisApplication app) {
+        this(testVotable, 60, app);
     }
 
-    public SherpaSmokeTest(String testVotable, int timeout) {
-
+    public SherpaSmokeTest(String testVotable, int timeout, IrisApplication app) {
         super(timeout);
+        this.controller = app.getSAMPController();
 
         this.testVotable = testVotable;
 
@@ -79,25 +77,13 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
             log("========================================");
 
             //Verify we can read test file.
+            log("Testing file read...");
             File testFile = new File(testVotable);
             check(testFile.canRead(), "Can't read file " + testVotable);
 
-            //Start a SAMPController
-            controller = new SedSAMPController("TestController", "An SED builder from the Virtual Astronomical Observatory", this.getClass().getResource("/iris_button_tiny.png").toString());
-            controller.startWithResourceServer("/test", false);
-
-            Thread.sleep(2000);//give the controller some time to settle down
-
-            log("Waiting for the SAMP controller...");
-            waitUntil(controller, "isConnected", "SAMP controller never connected!");
-
-            Thread.sleep(TIMEOUT*1000);//sherpa needs some time to connect to the hub
-
             //check that sherpa can be pinged
-            control = Boolean.FALSE;
             log("Pinging Sherpa...");
-            controller.sendMessage(new PingMessage(), new PingResultHandler(), this.TIMEOUT);
-            waitUntil("control", true, "Sherpa didn't respond to ping");//give sherpa TIMEOUT seconds to reply
+            SherpaClient c = SherpaClient.create(controller);
 
             //Import the file using SedImporter
             log("Creating a Setup for the SED Builder...");
@@ -111,13 +97,7 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
 
             //Setup a client that handles SEDs
             log("Setting up a SAMP SED receiver...");
-            SedSAMPController mockReceiver = new SedSAMPController("MockReceiver", "An SED builder from the Virtual Astronomical Observatory", this.getClass().getResource("/iris_button_tiny.png").toString());
-
-            mockReceiver.start(false);
-            mockReceiver.setAutoRunHub(false);
-
-            log("Waiting for the SAMP SED receiver...");
-            waitUntil(mockReceiver, "isConnected", "SAMP SED receiver never connected!");
+            ISAMPController mockReceiver = new SAMPControllerBuilder("MockReceiver").buildAndStart(TIMEOUT*1000);
 
             mockReceiver.addMessageHandler(new SmokeSedHandler());
 
@@ -125,17 +105,14 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
 
             //Send the Sed
             log("Broadcasting the SED...");
-            controller.sendSedMessage(sed);
+            sed.sendSedMessage(controller);
 
-            waitUntil("control", Boolean.TRUE, "It looks like the SED wasn't processed");//give the receiver TIMEOUT seconds to reply
+            waitUntil("control", Boolean.TRUE, "It looks like the SED wasn't processed");
 
             log("Preparing the Sherpa call...");
             double[] x = sed.getSegment(0).getSpectralAxisValues();
             double[] y = sed.getSegment(0).getFluxAxisValues();
-
             double[] err = (double[]) sed.getSegment(0).getCustomDataValues("Spectrum.Data.FluxAxis.Accuracy.StatError");
-
-            SherpaClient c = SherpaClient.create(controller);
 
             Data data = c.createData("test");
 
@@ -295,21 +272,6 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
         conf.setYAxisUnit("FLUXDENSITYFREQ1");
 
         return conf;
-    }
-
-    private class PingResultHandler implements ResultHandler {
-
-        @Override
-        public void result(Client client, Response rspns) {
-            log(client.getMetadata().getName() + " response status: " + rspns.getStatus());
-            if (client.getMetadata().getName().toLowerCase().equals("sherpa")) {
-                control = Boolean.TRUE;
-            }
-        }
-
-        @Override
-        public void done() {
-        }
     }
 
     private class SmokeSedHandler extends AbstractSedMessageHandler {

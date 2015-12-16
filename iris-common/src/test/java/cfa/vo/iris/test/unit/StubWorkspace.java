@@ -104,4 +104,8 @@ public class StubWorkspace implements IWorkspace {
     public UnitsManager getUnitsManager() {
         return unitsManager;
     }
+
+    public void shutdown() {
+        mainWindow.dispose();
+    }
 }

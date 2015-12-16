@@ -2,36 +2,19 @@ package cfa.vo.sed.science.stacker;
 
 import java.util.logging.Logger;
 
+import cfa.vo.iris.test.unit.AbstractUISpecTest;
+import cfa.vo.iris.test.unit.SherpaResource;
 import cfa.vo.sherpa.SherpaClient;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-
-import cfa.vo.interop.SAMPController;
+import org.junit.*;
 import cfa.vo.interop.SAMPFactory;
-import cfa.vo.iris.interop.SedSAMPController;
 import org.uispec4j.UISpec4J;
-import cfa.vo.iris.test.unit.it.AbstractSAMPTest;
 
 /**
  * Abstract class for integration testing of SAMP integration. Tests will fail if they are
  * unable to connect to the SAMP hub.
  * 
  */
-public abstract class AbstractSEDStackerIT extends AbstractSAMPTest {
-
-    /**
-     * Unfortunately this static block is required if we don't want to extend UISpecTestCase
-     * and we want to use @Junit 4's annotation instead of extending TestCase.
-     * Maybe we can fix this up later by having an abstract test class for Iris with this static code,
-     * but I (OL) am leaving changes simple for now to reduce the chance of bad conflicts when we integrate
-     * changes in Sprint 12/03/15
-     */
-    static
-    {
-        UISpec4J.init();
-    }
+public abstract class AbstractSEDStackerIT extends AbstractUISpecTest {
     
     private static final Logger logger = Logger.getLogger(AbstractSEDStackerIT.class.getName());
     
@@ -51,21 +34,15 @@ public abstract class AbstractSEDStackerIT extends AbstractSAMPTest {
     protected SegmentPayload segment2;
     protected SegmentPayload segment3;
 
-    protected static SherpaClient client;
+    @Rule
+    public SherpaResource sherpaResource = new SherpaResource();
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        startSamp();
-    }
-
-    @AfterClass
-    public static void afterClass() throws Exception {
-        terminate();
-    }
+    protected SherpaClient client;
     
     @Before
     public void setup() throws Exception {
         initVariables();
+        client = sherpaResource.getClient();
     }
     
     protected void initVariables() throws Exception {
@@ -101,32 +78,5 @@ public abstract class AbstractSEDStackerIT extends AbstractSAMPTest {
         segment3.setYerr(yerr3);
         segment3.setZ(0.3);
         segment3.setId("Sed3");
-    }
-    
-    private static void startSamp() throws Exception {
-        // Start the SAMP controller
-        SAMPController controller = null;
-
-        try {
-            controller = SedSAMPController.createAndStart("SEDStacker", "SEDStacker", AbstractSEDStackerIT.class.getResource("/tools_tiny.png"), true, false);
-        } catch (Exception ex) {
-            String msg = "Failed to connect to SAMP, failing Unit tests";
-            logger.info(msg);
-            Assert.fail(msg);
-        }
-
-        try {
-            client = SherpaClient.create(controller);
-        } catch (Exception ex) {
-            String msg = "Sherpa did not show up, failing Unit tests";
-            logger.info(msg);
-            Assert.fail(msg);
-        }
-    }
-
-    protected static void terminate() {
-        if (client != null && client.getController() != null) {
-            client.getController().stop();
-        }
     }
 }

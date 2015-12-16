@@ -21,9 +21,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.astrogrid.samp.Message;
+
 import org.astrogrid.samp.Metadata;
 import org.astrogrid.samp.client.DefaultClientProfile;
 import org.astrogrid.samp.client.LogResultHandler;
@@ -34,7 +35,6 @@ import org.astrogrid.samp.gui.GuiHubConnector;
 import org.astrogrid.samp.httpd.HttpServer;
 import org.astrogrid.samp.httpd.ResourceHandler;
 import org.astrogrid.samp.httpd.ServerResource;
-import org.astrogrid.samp.hub.Hub;
 import org.astrogrid.samp.hub.HubServiceMode;
 
 /**
@@ -59,28 +59,31 @@ import org.astrogrid.samp.hub.HubServiceMode;
  * Notice that client's do not need to specify the subscriptions. They are automatically
  * computed and communicated to the Hub when new MessageHandlers are added or removed.
  *
- * @author olaurino
  */
-public class SAMPController extends GuiHubConnector {
+public class SAMPController extends GuiHubConnector implements ISAMPController {
 
     private static final int DEFAULT_TIMEOUT = 10;
 
-    private boolean autoRunHub = true;
+    boolean withServer;
 
-    private Hub hub;
+    String serverRoot;
 
-    private HubServiceMode mode = HubServiceMode.MESSAGE_GUI;
-
-    private String name;
+    protected String name;
 
     private ResourceHandler resourceHandler;
 
     HttpServer server;
 
-    private List<SAMPConnectionListener> listeners = Collections.synchronizedList(new ArrayList());
+    protected List<SAMPConnectionListener> listeners = Collections.synchronizedList(new ArrayList<SAMPConnectionListener>());
 
-    private Thread t;
-
+    protected SAMPController(SAMPControllerBuilder builder) {
+        this(builder.getName(),
+                builder.getDescription(),
+                builder.getIcon().toString());
+        if (builder.isWithResourceServer()) {
+            this.activateServer(builder.getServerRoot());
+        }
+    }
     /**
      *
      * Construct a new SAMPController, opens a connection to the SAMP Hub, or waits
@@ -90,7 +93,7 @@ public class SAMPController extends GuiHubConnector {
      * @param description The description string for the new client
      * @param iconUrl The location of the icon to show as associated to the new client.
      */
-    public SAMPController(String name, String description, String iconUrl) {
+    private SAMPController(String name, String description, String iconUrl) {
         super(DefaultClientProfile.getProfile());
         this.name = name;
 
@@ -112,6 +115,10 @@ public class SAMPController extends GuiHubConnector {
 
     }
 
+    public String getName() {
+        return name;
+    }
+
     /**
      * A Connection Listener is a listener that gets called each time the status of
      * the connection is changed.
@@ -121,6 +128,10 @@ public class SAMPController extends GuiHubConnector {
     public final void addConnectionListener(SAMPConnectionListener listener) {
         listeners.add(listener);
         listener.run(isConnected());
+    }
+
+    public SAMPConnectionListener[] getListeners() {
+        return listeners.toArray(new SAMPConnectionListener[]{});
     }
 
     /**
@@ -164,14 +175,6 @@ public class SAMPController extends GuiHubConnector {
         resourceHandler.removeResource(url);
     }
 
-    /**
-     * Get the current status of the AutoRunHub feature.d
-     * @return
-     */
-    public boolean isAutoRunHub() {
-        return autoRunHub;
-    }
-
     public void removeConnectionListener(SAMPConnectionListener listener) {
         listeners.remove(listener);
     }
@@ -212,53 +215,40 @@ public class SAMPController extends GuiHubConnector {
         callAll(message.get(), handler, timeout);
     }
 
-    /**
-     * Set the AutoRunHub feature on or off. If the feature is on a new internal Hub
-     * will be started each time a connection can't be established.
-     *
-     * @param autoRunHub
-     */
-    public void setAutoRunHub(boolean autoRunHub) {
-        this.autoRunHub = autoRunHub;
-    }
-
-    private boolean started = false;
-
-    /**
-     * Start the controller. The controller starts a hub if it cannot find one running.
-     * This method allows to indicate whether the hub has to be launched in GUI mode or without
-     * any GUI.
-     * @param withGui True if the started hub must have a GUI.
-     */
-    public void start(boolean withGui) {
-        mode = withGui? HubServiceMode.MESSAGE_GUI : HubServiceMode.NO_GUI;
-        if(!started) {
-            try {
-                Thread.sleep(2000);
-                t = new Thread(new CheckConnection());
-                t.start();
-                started = true;
-            } catch (InterruptedException ex) {
-
+    public boolean start(long timeoutMillis) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Callable<Boolean> callable = new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                if (withServer) {
+                    startResourceServer();
+                }
+                while (!isConnected()) {
+                    Thread.sleep(1000); // This will be interrupted if a timeout occurs
+                }
+                return Boolean.TRUE;
             }
+        };
+        Future<Boolean> futureController = executor.submit(callable);
+        try {
+            return futureController.get(timeoutMillis, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException ex) {
+            futureController.cancel(true);
+            return false;
+        } finally {
+            executor.shutdown();
         }
     }
 
-    /**
-     * Start this controller. If a new hub is started it will be in GUI mode.
-     */
-    public void start() {
-        start(true);
+    public void start() throws Exception {
+        if (!start(30000)) {
+            String msg = "Timeout starting SAMPController";
+            Logger.getLogger(SAMPController.class.getName()).log(Level.SEVERE, msg);
+            throw new Exception(msg);
+        }
     }
 
-    /**
-     * Start this controller and initialize the internal web server.
-     * @param serverRoot String prefix for the served resources.
-     * @param withGui Whether the started hub has to be in GUI mode or not.
-     * @throws IOException
-     */
-    public void startWithResourceServer(String serverRoot, boolean withGui) throws IOException {
-        start(withGui);
+    private void startResourceServer() throws IOException {
         if(server == null)
             server = new HttpServer();
 
@@ -267,89 +257,23 @@ public class SAMPController extends GuiHubConnector {
         server.addHandler(resourceHandler);
     }
 
+    protected void activateServer(String serverRoot) {
+        this.withServer = true;
+        this.serverRoot = serverRoot;
+    }
+
     /**
      * Stop the SAMP client. If this controller had started a Hub, it will be shut down.
      * If it had started the internal HttpServer it will be shut down.
      */
     public void stop() {
 
-        this.setAutoRunHub(false);
-        this.setAutoconnect(0);
-
-        if(t!=null) {
-            t.interrupt();
-        }
-
         if (server != null) {
             server.stop();
             server = null;
         }
 
-        if (hub != null) {
-            hub.shutdown();
-        } else {
-            disconnect();
-        }
-
-        started = false;
-
-    }
-
-    private class CheckConnection extends Thread {
-
-        private boolean state = false;
-
-        @Override
-        public void run() {
-
-            while(true) {
-                try {
-
-                    if(!isConnected()) {
-                        try {
-                            if(autoRunHub) {
-                                hub = Hub.runHub(mode);
-                                
-                            }
-                            else
-                                hub = null;
-                        } catch (IOException ex) {
-
-                        }
-
-                    }
-
-                    
-
-                    boolean stateChanged = state != isConnected();
-
-                    if(stateChanged && isConnected())
-                        if(!this.isInterrupted()) {
-                            try {
-                                getConnection().notifyAll(new Message("updated status for "+name));
-                            } catch (SampException ex) {
-                                Logger.getLogger(SAMPController.class.getName()).log(Level.WARNING, "Couldn't notify changed state. Maybe we (or the hub) are being shut down");
-                            }
-                        } else {
-                            throw new InterruptedException();
-                        }
-
-                    if(stateChanged) {
-                        state = isConnected();
-                        for(SAMPConnectionListener listener : listeners.toArray(new SAMPConnectionListener[]{})) {
-                            listener.run(state);
-                        }
-                    }
-                
-                    Thread.sleep(1000);
-
-                } catch (InterruptedException ex) {
-                    Thread.currentThread().interrupt();
-                    break;
-                }
-            }
-
-        }
+        setActive(false);
 
     }
 

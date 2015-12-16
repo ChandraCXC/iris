@@ -15,9 +15,8 @@
  */
 package cfa.vo.iris.test.unit;
 
-import cfa.vo.interop.SAMPController;
+import cfa.vo.interop.ISAMPController;
 import cfa.vo.iris.*;
-import cfa.vo.iris.sed.ExtSed;
 import com.google.common.io.Files;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.SampException;
@@ -53,17 +52,12 @@ public class ApplicationStub implements IrisApplication {
     }
 
     @Override
-    public void sendSedMessage(ExtSed sed) throws SampException {
-        throw new UnsupportedOperationException("not implemented yet");
-    }
-
-    @Override
     public void sendSampMessage(Message msg) throws SampException {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     @Override
-    public SAMPController getSAMPController() {
+    public ISAMPController getSAMPController() {
         return null;
     }
 
@@ -74,5 +68,9 @@ public class ApplicationStub implements IrisApplication {
     @Override
     public URL getHelpURL() {
         return null;
+    }
+
+    public void exit() {
+        wSpace.shutdown();
     }
 }

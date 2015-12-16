@@ -17,7 +17,7 @@
 package cfa.vo.sherpa;
 
 import cfa.vo.interop.PingMessage;
-import cfa.vo.interop.SAMPController;
+import cfa.vo.interop.ISAMPController;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
 
@@ -38,13 +38,12 @@ import java.util.logging.Logger;
 
 public class SherpaClient {
 
-    private SAMPController sampController;
+    private ISAMPController sampController;
     private Map<String, AbstractModel> modelMap = new HashMap<>();
     private Integer stringCounter = 0;
-    private static final ExecutorService pool = Executors.newFixedThreadPool(20);
     private static Logger logger = Logger.getLogger(SherpaClient.class.getName());
 
-    protected SherpaClient(SAMPController controller) {
+    protected SherpaClient(ISAMPController controller) {
         this.sampController = controller;
     }
 
@@ -133,7 +132,7 @@ public class SherpaClient {
         return findSherpa(sampController);
     }
 
-    private static String findSherpa(SAMPController controller) throws SampException {
+    private static String findSherpa(ISAMPController controller) throws SampException {
         String returnString = "";
         logger.log(Level.INFO, "looking for Sherpa");
         try {
@@ -153,7 +152,7 @@ public class SherpaClient {
         }
     }
 
-    public SAMPController getController() {
+    public ISAMPController getController() {
         return this.sampController;
     }
 
@@ -188,7 +187,7 @@ public class SherpaClient {
         return response;
     }
 
-    public static boolean ping(SAMPController controller) throws SampException {
+    public static boolean ping(ISAMPController controller) throws SampException {
         Time step = Default.getInstance().getTimeStep().convertTo(TimeUnit.SECONDS);
         long seconds = step.getAmount();
         final int stepSeconds = seconds < 1? 1 : (int) seconds;
@@ -204,7 +203,12 @@ public class SherpaClient {
         }
     }
 
-    public static SherpaClient create(final SAMPController controller) {
+    public boolean ping() throws SampException {
+        return ping(this.sampController);
+    }
+
+    public static SherpaClient create(final ISAMPController controller) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
         final Time timeout = Default.getInstance().getSampTimeout().convertTo(TimeUnit.SECONDS);
         Time step = Default.getInstance().getTimeStep().convertTo(TimeUnit.MILLISECONDS);
         final int stepMillis = (int) step.getAmount();
@@ -233,11 +237,13 @@ public class SherpaClient {
                 return client;
             }
         };
-        Future<SherpaClient> futureSherpaClient = pool.submit(callable);
+        Future<SherpaClient> futureSherpaClient = executor.submit(callable);
         try {
             return futureSherpaClient.get(timeout.getAmount(), timeout.getUnit());
         } catch (Exception ex) {
             throw new RuntimeException("Cannot find Sherpa!");
+        } finally {
+            executor.shutdown();
         }
     }
 }
