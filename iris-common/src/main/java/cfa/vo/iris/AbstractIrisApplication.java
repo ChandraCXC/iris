@@ -392,18 +392,10 @@ public abstract class AbstractIrisApplication extends Application implements Iri
             }
 
             private void checkSherpaStatusUpdate() {
-                boolean stateChanged;
-                try {
-                    stateChanged = sherpaState != SherpaClient.ping(HubSAMPController.this);
-                } catch (SampException ex) {
-                    stateChanged = sherpaState;
-                }
+                sherpaState = SherpaClient.ping(HubSAMPController.this);
 
-                if (stateChanged) {
-                    sherpaState = !sherpaState;
-                    for(SAMPConnectionListener listener : sherpaConnectionListeners) {
-                        listener.run(sherpaState);
-                    }
+                for(SAMPConnectionListener listener : sherpaConnectionListeners) {
+                    listener.run(sherpaState);
                 }
             }
 

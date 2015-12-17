@@ -187,7 +187,7 @@ public class SherpaClient {
         return response;
     }
 
-    public static boolean ping(ISAMPController controller) throws SampException {
+    public static boolean ping(ISAMPController controller) {
         Time step = Default.getInstance().getTimeStep().convertTo(TimeUnit.SECONDS);
         long seconds = step.getAmount();
         final int stepSeconds = seconds < 1? 1 : (int) seconds;
@@ -199,7 +199,7 @@ public class SherpaClient {
             return true;
         } catch (SampException ex) {
             logger.log(Level.SEVERE, "Cannot ping Sherpa", ex);
-            throw ex;
+            return false;
         }
     }
 
@@ -227,9 +227,8 @@ public class SherpaClient {
 
                 boolean sherpaConnected = false;
                 while (!sherpaConnected) {
-                    try {
-                        sherpaConnected = ping(controller);
-                    } catch (SampException ex) {
+                    sherpaConnected = ping(controller);
+                    if (!sherpaConnected) {
                         logger.log(Level.INFO, "Sherpa did not respond to ping, retrying in "+ stepMillis + " milliseconds");
                         Thread.sleep(stepMillis); // This will be interrupted if a timeout occurs
                     }
