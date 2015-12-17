@@ -3,6 +3,7 @@ package cfa.vo.gui;
 import cfa.vo.iris.test.IrisAppResource;
 import cfa.vo.iris.test.IrisUISpecAdapter;
 import cfa.vo.iris.test.unit.AbstractUISpecTest;
+import cfa.vo.iris.utils.LabelFinder;
 import org.astrogrid.samp.hub.Hub;
 import org.astrogrid.samp.hub.HubServiceMode;
 import org.junit.After;
@@ -118,7 +119,7 @@ public class SAMPConnectionTest extends AbstractUISpecTest {
 
         logger.log(Level.INFO, "making sure Iris is not connected in 2 seconds");
         Thread.sleep(2000);
-        JLabel label = (JLabel) window.findSwingComponent(new LabelFinder("SAMP status: connected"));
+        JLabel label = new LabelFinder("SAMP status: connected").find(window);
         assertNull(label);
 
         // But Iris should reconnect if a new hub is started
@@ -127,7 +128,7 @@ public class SAMPConnectionTest extends AbstractUISpecTest {
         logger.log(Level.INFO, "making sure Iris is connected within few seconds");
         boolean found = false;
         for (int i=0; i<30; i++) {
-            label = (JLabel) adapter.getMainWindow().findSwingComponent(new LabelFinder("SAMP status: connected"));
+            label = new LabelFinder("SAMP status: connected").find(window);
             if(label != null) {
                 found = true;
                 break;
@@ -138,24 +139,5 @@ public class SAMPConnectionTest extends AbstractUISpecTest {
         logger.log(Level.INFO, "shutting down the new hub");
         newHub.shutdown();
         assertTrue(found);
-    }
-
-    private class LabelFinder implements ComponentMatcher {
-        private String labelString;
-
-        public LabelFinder(String string) {
-            this.labelString = string;
-        }
-
-        @Override
-        public boolean matches(Component component) {
-            if(component instanceof JLabel) {
-                JLabel label = (JLabel) component;
-                if(labelString.equals(label.getText())) {
-                    return true;
-                }
-            }
-            return false;
-        }
     }
 }

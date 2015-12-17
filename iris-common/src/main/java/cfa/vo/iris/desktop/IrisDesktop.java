@@ -268,7 +268,7 @@ public class IrisDesktop extends JFrame implements PluginListener {
 
 
         sampIcon.setBounds(20, this.getHeight() - sampIcon.getHeight() - 90, sampIcon.getWidth(), sampIcon.getHeight());
-        sherpaIcon.setBounds(sampIcon.getX() + 20, sampIcon.getY(), sampIcon.getWidth(), sampIcon.getHeight());
+        sherpaIcon.setBounds(sampIcon.getX() + sampIcon.getWidth() + 20, sampIcon.getY(), sampIcon.getWidth(), sampIcon.getHeight());
     }
 
     /** This method is called from within the constructor to
