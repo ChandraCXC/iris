@@ -7,8 +7,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.uispec4j.Window;
 
-import static org.junit.Assert.*;
-
 public class IrisDesktopSampConnectionIT extends AbstractUISpecTest {
     @Rule
     public IrisAppResource appResource = new IrisAppResource(false);

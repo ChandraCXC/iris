@@ -16,22 +16,17 @@
 
 package cfa.vo.sherpa;
 
-import cfa.vo.interop.PingMessage;
-import cfa.vo.interop.ISAMPController;
-import cfa.vo.interop.SAMPFactory;
-import cfa.vo.interop.SAMPMessage;
+import cfa.vo.interop.*;
 
 import cfa.vo.iris.utils.Default;
 import cfa.vo.iris.utils.Time;
-import org.apache.commons.lang.StringUtils;
-import org.astrogrid.samp.Client;
+import org.astrogrid.samp.Message;
 import org.astrogrid.samp.Response;
 import org.astrogrid.samp.client.SampException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -133,22 +128,18 @@ public class SherpaClient {
     }
 
     private static String findSherpa(ISAMPController controller) throws SampException {
-        String returnString = "";
         logger.log(Level.INFO, "looking for Sherpa");
-        try {
-            for(Entry<String, Client> entry : (Set<Entry<String, Client>>) controller.getClientMap().entrySet())
-                if (entry.getValue().getMetadata().getName().toLowerCase().equals("sherpa")) {
-                    returnString = entry.getValue().getId();
-                    break;
-                }
-            if (StringUtils.isEmpty(returnString)) {
-                throw new Exception();
-            }
-            logger.log(Level.INFO, "found Sherpa with id: "+returnString);
-            return returnString;
-        } catch (Exception ex) {
-            logger.log(Level.SEVERE, "An error occurred while looking for Sherpa", ex);
-            throw new SampException("Cannot find Sherpa. If the problem persists, please refer to the troubleshooting section of the documentation.", ex);
+        Message msg = new Message("x-samp.query.by-meta");
+        msg.addParam("key", "samp.name");
+        msg.addParam("value", "Sherpa");
+        List<String> ids = (List<String>) controller.callAndWait("hub", msg, 3000).getResult().get("ids");
+        if (!ids.isEmpty()) {
+            String retval = ids.get(0);
+            logger.log(Level.INFO, "found Sherpa with id: "+retval);
+            return retval;
+        } else {
+            logger.log(Level.WARNING, "Sherpa not found connected to the hub");
+            return "";
         }
     }
 
@@ -194,13 +185,15 @@ public class SherpaClient {
         try {
             logger.log(Level.INFO, "pinging Sherpa with a " + stepSeconds + " seconds timeout");
             String id = findSherpa(controller);
-            controller.callAndWait(id, new PingMessage().get(), stepSeconds);
-            logger.log(Level.INFO, "Sherpa replied");
-            return true;
-        } catch (SampException ex) {
+            if (!id.isEmpty()) {
+                controller.callAndWait(id, new PingMessage().get(), stepSeconds);
+                logger.log(Level.INFO, "Sherpa replied");
+                return true;
+            }
+        } catch (Exception ex) {
             logger.log(Level.SEVERE, "Cannot ping Sherpa", ex);
-            return false;
         }
+        return false;
     }
 
     public boolean ping() throws SampException {

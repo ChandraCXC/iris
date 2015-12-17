@@ -344,32 +344,20 @@ public abstract class AbstractIrisApplication extends Application implements Iri
             private boolean state = false;
 
             private void runHubIfNeeded() {
-                // If autorunhub is false we don't want to start a new hub.
-                // Neither we want to start a hub if the controller is already connected (maybe to a different hub)
-                // In any case we want to start a hub only if we did not start one already or if the one we started has been closed.
-                try {
-                    if (autoRunHub && hub == null && getConnection() == null) {
-                        logger.log(Level.INFO, "starting SAMP Hub");
-                        logger.log(Level.INFO, "autoRunHub: " + autoRunHub);
-                        logger.log(Level.INFO, "hub is null: " + (hub == null));
-                        logger.log(Level.INFO, "connection: " + (isConnected()));
-                        // this returns a running hub.
-                        // an exception is thrown if a hub is already running.
-                        hub = Hub.runHub(HubServiceMode.MESSAGE_GUI);
-                    } else if (autoRunHub && hub != null && getConnection() == null) {
-                        // something is wrong with the hub: it was started but we don't have connection. Reset hub.
-                        // Note that shutting down the hub is not enough to have it garbage collected, even if
-                        // using WeakReferences. There is a potential memory leak here.
-                        hub.shutdown();
-                        hub = null;
+                if(!isConnected()) {
+                    try {
+                        if(autoRunHub) {
+                            hub = Hub.runHub(HubServiceMode.MESSAGE_GUI);
+                        } else {
+                            hub = null;
+                            // this is likely to lead to memory leaks.
+                            // Shutting down the hub before freeing the reference does not seems to work
+                            // Even trying to use a WeakReference results in [
+                        }
+                    } catch (IOException ex) {
+
                     }
-                    // if we are connected, or if the hub is null and autoRunHub is false, then there is nothing to do.
-                    // Keep monitoring
-                } catch (IOException ex) {
-                    // do nothing, keep monitoring
-                    logger.log(Level.INFO, "a hub is already running? Moving on", ex);
-                } catch (Exception ex) {
-                    logger.log(Level.SEVERE, "failed to start controller");
+
                 }
             }
 

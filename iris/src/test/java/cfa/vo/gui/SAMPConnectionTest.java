@@ -31,6 +31,7 @@ public class SAMPConnectionTest extends AbstractUISpecTest {
         IrisUISpecAdapter adapter = irisApp.getAdapter();
         mainWindow = adapter.getMainWindow();
         assertTrue(mainWindow.titleEquals("Iris").isTrue());
+        this.RETRY = 60;
     }
 
     @After
