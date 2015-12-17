@@ -40,8 +40,48 @@ public class SAMPConnectionTest extends AbstractUISpecTest {
     @Test
     public void testBasic() throws Exception {
         IrisUISpecAdapter adapter = irisApp.getAdapter();
-        assertTrue(adapter.getMainWindow().titleEquals("Iris").isTrue());
+        org.uispec4j.Window window = adapter.getMainWindow();
+        assertTrue(window.titleEquals("Iris").isTrue());
         boolean found = false;
+        for (int i=0; i<30; i++) {
+            JLabel label = (JLabel) adapter.getMainWindow().findSwingComponent(new LabelFinder("SAMP status: connected"));
+            if(label != null) {
+                found = true;
+                break;
+            }
+            logger.log(Level.INFO, "sleeping for half a second");
+            Thread.sleep(500);
+        }
+        assertTrue(found);
+
+        // If we stop the hub a new one should come up
+        logger.log(Level.INFO, "stopping hub");
+        final org.uispec4j.Window hub = adapter.getSamphub();
+
+        // why oh why? Should we rather be using windowinterceptor or something?
+        executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                hub.getMenuBar().getMenu("File").getSubMenu("Stop Hub").click();
+                logger.log(Level.INFO, "stopped hub");
+            }
+        });
+
+        // check that Iris disconnects
+        found = false;
+        for (int i=0; i<30; i++) {
+            JLabel label = (JLabel) adapter.getMainWindow().findSwingComponent(new LabelFinder("SAMP status: disconnected"));
+            if(label != null) {
+                found = true;
+                break;
+            }
+            logger.log(Level.INFO, "sleeping for half a second");
+            Thread.sleep(500);
+        }
+        assertTrue(found);
+
+        // check that a new hub comes up and Iris reconnects
+        found = false;
         for (int i=0; i<30; i++) {
             JLabel label = (JLabel) adapter.getMainWindow().findSwingComponent(new LabelFinder("SAMP status: connected"));
             if(label != null) {

@@ -28,6 +28,7 @@ import cfa.vo.iris.sdk.PluginManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -270,7 +271,7 @@ public abstract class AbstractIrisApplication extends Application implements Iri
         }
         return sampController;
     }
-    
+
     public void addConnectionListener(SAMPConnectionListener listener) {
         if (sampController != null) {
             sampController.addConnectionListener(listener);
@@ -301,8 +302,8 @@ public abstract class AbstractIrisApplication extends Application implements Iri
             started = false;
             if (hub != null) {
                 hub.shutdown();
+                hub = null;
             }
-            super.stop();
         }
 
         @Override
@@ -324,19 +325,22 @@ public abstract class AbstractIrisApplication extends Application implements Iri
             private boolean state = false;
 
             private void runHubIfNeeded() {
-                // I autorunhub is false we don't want to start a new hub.
-                // Neither we want to start a hub if the controller is already connected (to a different hub)
-                // In any case we want to start a hub only if we did not start one already.
+                // If autorunhub is false we don't want to start a new hub.
+                // Neither we want to start a hub if the controller is already connected (maybe to a different hub)
+                // In any case we want to start a hub only if we did not start one already or if the one we started has been closed.
                 try {
                     if (autoRunHub && hub == null && getConnection() == null) {
                         logger.log(Level.INFO, "starting SAMP Hub");
+                        logger.log(Level.INFO, "autoRunHub: " + autoRunHub);
+                        logger.log(Level.INFO, "hub is null: " + (hub == null));
+                        logger.log(Level.INFO, "connection: " + (isConnected()));
                         // this returns a running hub.
                         // an exception is thrown if a hub is already running.
                         hub = Hub.runHub(HubServiceMode.MESSAGE_GUI);
-                    } else if (hub != null && getConnection() == null) {
-                        // something is wrong with the hub. It is not null, but we don't have a connection.
-                        // shutdown the hub and set it to null.
-                        logger.log(Level.INFO, "hub is not null, but connection cannot be estabilished, resetting hub");
+                    } else if (autoRunHub && hub != null && getConnection() == null) {
+                        // something is wrong with the hub: it was started but we don't have connection. Reset hub.
+                        // Note that shutting down the hub is not enough to have it garbage collected, even if
+                        // using WeakReferences. There is a potential memory leak here.
                         hub.shutdown();
                         hub = null;
                     }
@@ -345,6 +349,8 @@ public abstract class AbstractIrisApplication extends Application implements Iri
                 } catch (IOException ex) {
                     // do nothing, keep monitoring
                     logger.log(Level.INFO, "a hub is already running? Moving on", ex);
+                } catch (Exception ex) {
+                    logger.log(Level.SEVERE, "failed to start controller");
                 }
             }
 
