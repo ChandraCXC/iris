@@ -16,13 +16,17 @@
 package cfa.vo.iris.test.unit;
 
 import cfa.vo.interop.ISAMPController;
+import cfa.vo.interop.SAMPConnectionListener;
 import cfa.vo.iris.*;
 import com.google.common.io.Files;
 import org.astrogrid.samp.Message;
+import org.astrogrid.samp.client.MessageHandler;
 import org.astrogrid.samp.client.SampException;
 
+import javax.swing.*;
 import java.io.File;
 import java.net.URL;
+import java.util.Collection;
 
 /**
  * A basic Iris desktop application for unit testing of Iris components.
@@ -68,6 +72,51 @@ public class ApplicationStub implements IrisApplication {
     @Override
     public URL getHelpURL() {
         return null;
+    }
+
+    @Override
+    public JDialog getAboutBox() {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public Collection<? extends IrisComponent> getComponents() {
+        return null;
+    }
+
+    @Override
+    public void addMessageHandler(MessageHandler handler) {
+
+    }
+
+    @Override
+    public void exitApp(int status) {
+
+    }
+
+    @Override
+    public void addConnectionListener(SAMPConnectionListener sampConnectionListener) {
+
+    }
+
+    @Override
+    public void addSherpaConnectionListener(SAMPConnectionListener sampConnectionListener) {
+
+    }
+
+    @Override
+    public URL getDesktopIcon() {
+        return null;
+    }
+
+    @Override
+    public boolean isPlatformOSX() {
+        return false;
     }
 
     public void exit() {

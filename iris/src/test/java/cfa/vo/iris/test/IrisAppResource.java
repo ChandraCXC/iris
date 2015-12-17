@@ -9,24 +9,26 @@ import static org.junit.Assert.assertTrue;
 
 public class IrisAppResource extends ExternalResource {
     private IrisUISpecAdapter adapter;
-    private boolean withSamp;
+    private boolean withSampHub;
     private Logger logger = Logger.getLogger(IrisAppResource.class.getName());
 
     public IrisAppResource() {
         this(true);
     }
 
-    public IrisAppResource(boolean withSamp) {
-        this.withSamp = withSamp;
+    public IrisAppResource(boolean withSampHub) {
+        this.withSampHub = withSampHub;
     }
 
     @Override
     public void before() {
         logger.log(Level.INFO, "setup, instantiating adapter");
-        adapter = new IrisUISpecAdapter(withSamp);
+        adapter = new IrisUISpecAdapter(withSampHub);
         logger.log(Level.INFO, "setup, verifying windows");
         assertTrue(adapter.getMainWindow().isVisible().isTrue());
-        assertTrue(adapter.getSamphub().isVisible().isTrue());
+        if (withSampHub) {
+            assertTrue(adapter.getSamphub().isVisible().isTrue());
+        }
     }
 
     @Override
@@ -34,7 +36,9 @@ public class IrisAppResource extends ExternalResource {
         logger.log(Level.INFO, "tearDown, exiting app");
         adapter.getIrisApp().exitApp(0);
         logger.log(Level.INFO, "tearDown, verifying windows are gone");
-        assertFalse(adapter.getSamphub().isVisible().isTrue());
+        if (withSampHub) {
+            assertFalse(adapter.getSamphub().isVisible().isTrue());
+        }
         assertFalse(adapter.getMainWindow().isVisible().isTrue());
         adapter = null;
     }

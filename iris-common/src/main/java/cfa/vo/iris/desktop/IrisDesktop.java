@@ -26,14 +26,10 @@
  */
 package cfa.vo.iris.desktop;
 
+import cfa.vo.iris.*;
 import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.interop.SAMPConnectionListener;
-import cfa.vo.iris.AbstractDesktopItem;
-import cfa.vo.iris.IMenuItem;
-import cfa.vo.iris.AbstractIrisApplication;
-import cfa.vo.iris.IWorkspace;
-import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.events.PluginJarEvent;
 import cfa.vo.iris.events.PluginListener;
 import cfa.vo.iris.sdk.IrisPlugin;
@@ -58,16 +54,12 @@ import javax.swing.JSeparator;
 import org.astrogrid.samp.client.MessageHandler;
 import org.jdesktop.application.Action;
 
-/**
- *
- * @author olaurino
- */
 public class IrisDesktop extends JFrame implements PluginListener {
 
     protected List<DesktopButton> buttons = new ArrayList<>();
     protected List<IrisComponent> components = new ArrayList<>();
     protected JDialog aboutBox;
-    protected AbstractIrisApplication app;
+    protected IrisApplication app;
     IWorkspace ws;
     DesktopButton helpButton;
     
@@ -79,7 +71,7 @@ public class IrisDesktop extends JFrame implements PluginListener {
     }
 
     /** Creates new form SedImporterMainView */
-    public IrisDesktop(final AbstractIrisApplication app) throws Exception {
+    public IrisDesktop(final IrisApplication app) throws Exception {
 
         PluginJarEvent.getInstance().add(this);
 
@@ -107,6 +99,7 @@ public class IrisDesktop extends JFrame implements PluginListener {
             }
 
             app.addConnectionListener(new SampStatusListener());
+            app.addSherpaConnectionListener(new SherpaStatusListener());
 
         }
 
@@ -141,7 +134,7 @@ public class IrisDesktop extends JFrame implements PluginListener {
                 exit();
             }
         });
-        if (app.MAC_OS_X) {
+        if (app.isPlatformOSX()) {
             try {
                 // Generate and register the OSXAdapter, passing it a hash of all the methods we wish to
                 // use as delegates for various com.apple.eawt.ApplicationListener methods
@@ -275,6 +268,7 @@ public class IrisDesktop extends JFrame implements PluginListener {
 
 
         sampIcon.setBounds(20, this.getHeight() - sampIcon.getHeight() - 90, sampIcon.getWidth(), sampIcon.getHeight());
+        sherpaIcon.setBounds(sampIcon.getX() + 20, sampIcon.getY(), sampIcon.getWidth(), sampIcon.getHeight());
     }
 
     /** This method is called from within the constructor to
@@ -289,6 +283,7 @@ public class IrisDesktop extends JFrame implements PluginListener {
 
         desktopPane = new javax.swing.JDesktopPane();
         sampIcon = new javax.swing.JLabel();
+        sherpaIcon = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jToolBar1 = new javax.swing.JToolBar();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -318,7 +313,16 @@ public class IrisDesktop extends JFrame implements PluginListener {
         sampIcon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         sampIcon.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         sampIcon.setBounds(50, 490, 210, 120);
+        sherpaIcon.setForeground(new java.awt.Color(255, 255, 255));
+        sherpaIcon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        sherpaIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("connect_no.png")));
+        sherpaIcon.setText("Sherpa status: disconnected");
+        sherpaIcon.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        sherpaIcon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        sherpaIcon.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        sherpaIcon.setBounds(280, 490, 210, 120);
         desktopPane.add(sampIcon, javax.swing.JLayeredPane.DEFAULT_LAYER);
+        desktopPane.add(sherpaIcon, javax.swing.JLayeredPane.DEFAULT_LAYER);
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setBounds(350, 250, 330, 240);
@@ -442,6 +446,7 @@ public class IrisDesktop extends JFrame implements PluginListener {
     protected javax.swing.JMenuBar jMenuBar1;
     protected javax.swing.JToolBar jToolBar1;
     protected javax.swing.JLabel sampIcon;
+    protected javax.swing.JLabel sherpaIcon;
     protected javax.swing.JMenu toolsMenu;
     protected org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
@@ -468,6 +473,7 @@ public class IrisDesktop extends JFrame implements PluginListener {
         showAbout(null);
     }
     private boolean sampConnected = false;
+    private boolean sherpaConnected = false;
 
     /**
      * Get the value of sampConnected
@@ -493,7 +499,17 @@ public class IrisDesktop extends JFrame implements PluginListener {
             sampIcon.setForeground(sampConnected ? new Color(0, 200, 0) : Color.WHITE);
         }
     }
-    private boolean sampAutoHub = true;
+
+    private void setSherpaConnected(boolean sherpaConnected) {
+        if (sherpaConnected != this.sherpaConnected) {
+            this.sherpaConnected = sherpaConnected;
+            sherpaIcon.setIcon(sherpaConnected ? sampYes : sampNo);
+            sherpaIcon.setText(sherpaConnected ? "Sherpa status: connected" : "Sherpa status: disconnected");
+            sherpaIcon.setForeground(sherpaConnected ? new Color(0, 200, 0) : Color.WHITE);
+        }
+    }
+
+     private boolean sampAutoHub = true;
     public static final String PROP_SAMPAUTOHUB = "sampAutoHub";
 
     /**
@@ -562,5 +578,12 @@ public class IrisDesktop extends JFrame implements PluginListener {
             return true;
         }
         return false;
+    }
+
+    private class SherpaStatusListener implements SAMPConnectionListener {
+        @Override
+        public void run(boolean status) {
+            setSherpaConnected(status);
+        }
     }
 }

@@ -28,7 +28,6 @@ import cfa.vo.iris.sdk.PluginManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -37,6 +36,7 @@ import java.util.logging.Logger;
 import javax.swing.JDialog;
 
 import cfa.vo.iris.utils.Default;
+import cfa.vo.sherpa.SherpaClient;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.MessageHandler;
 import org.astrogrid.samp.client.SampException;
@@ -278,10 +278,22 @@ public abstract class AbstractIrisApplication extends Application implements Iri
         }
     }
 
+    @Override
+    public void addSherpaConnectionListener(SAMPConnectionListener listener) {
+        if (sampController != null) {
+            sampController.addSherpaConnectionListener(listener);
+        }
+    }
+
     public void addMessageHandler(MessageHandler handler) {
         if (sampController != null) {
             sampController.addMessageHandler(handler);
         }
+    }
+
+    @Override
+    public boolean isPlatformOSX() {
+        return MAC_OS_X;
     }
 
     public static final class HubSAMPController extends SAMPController {
@@ -290,6 +302,8 @@ public abstract class AbstractIrisApplication extends Application implements Iri
         private Timer timer;
         private boolean started = false;
         private Hub hub;
+        private List<SAMPConnectionListener> sherpaConnectionListeners =
+                Collections.synchronizedList(new ArrayList<SAMPConnectionListener>());
 
         private HubSAMPController(SAMPControllerBuilder builder, long timeoutMillis) throws Exception {
             super(builder);
@@ -320,8 +334,13 @@ public abstract class AbstractIrisApplication extends Application implements Iri
             this.autoRunHub = autoRunHub;
         }
 
+        public void addSherpaConnectionListener(SAMPConnectionListener listener) {
+            sherpaConnectionListeners.add(listener);
+        }
+
         private class CheckConnectionTask extends TimerTask {
 
+            private boolean sherpaState = false;
             private boolean state = false;
 
             private void runHubIfNeeded() {
@@ -372,10 +391,27 @@ public abstract class AbstractIrisApplication extends Application implements Iri
                 }
             }
 
+            private void checkSherpaStatusUpdate() {
+                boolean stateChanged;
+                try {
+                    stateChanged = sherpaState != SherpaClient.ping(HubSAMPController.this);
+                } catch (SampException ex) {
+                    stateChanged = sherpaState;
+                }
+
+                if (stateChanged) {
+                    sherpaState = !sherpaState;
+                    for(SAMPConnectionListener listener : sherpaConnectionListeners) {
+                        listener.run(sherpaState);
+                    }
+                }
+            }
+
             @Override
             public void run() {
                 runHubIfNeeded();
                 checkStatusUpdate();
+                checkSherpaStatusUpdate();
             }
         }
     }

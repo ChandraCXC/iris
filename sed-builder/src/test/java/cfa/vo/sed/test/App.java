@@ -21,12 +21,19 @@
 package cfa.vo.sed.test;
 
 import cfa.vo.interop.ISAMPController;
+import cfa.vo.interop.SAMPConnectionListener;
 import cfa.vo.iris.IrisApplication;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Collection;
+
+import cfa.vo.iris.IrisComponent;
 import org.astrogrid.samp.Message;
+import org.astrogrid.samp.client.MessageHandler;
 import org.astrogrid.samp.client.SampException;
+
+import javax.swing.*;
 
 public class App implements IrisApplication {
 
@@ -53,5 +60,50 @@ public class App implements IrisApplication {
     @Override
     public URL getHelpURL() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public JDialog getAboutBox() {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public Collection<? extends IrisComponent> getComponents() {
+        return null;
+    }
+
+    @Override
+    public void addMessageHandler(MessageHandler handler) {
+
+    }
+
+    @Override
+    public void exitApp(int status) {
+
+    }
+
+    @Override
+    public void addConnectionListener(SAMPConnectionListener sampConnectionListener) {
+
+    }
+
+    @Override
+    public void addSherpaConnectionListener(SAMPConnectionListener sampConnectionListener) {
+
+    }
+
+    @Override
+    public URL getDesktopIcon() {
+        return null;
+    }
+
+    @Override
+    public boolean isPlatformOSX() {
+        return false;
     }
 }
