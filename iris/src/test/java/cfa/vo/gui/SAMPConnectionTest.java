@@ -44,6 +44,10 @@ public class SAMPConnectionTest extends AbstractUISpecTest {
     public void testBasic() throws Exception {
         checkLabel(mainWindow, "SAMP", true);
 
+        // avoid autorunhub to start before we can check that Iris disconnected.
+        logger.log(Level.INFO, "disabling autorunhub");
+        switchAutoRunHub();
+
         // If we stop the hub a new one should come up
         logger.log(Level.INFO, "stopping hub");
         final Window hub = irisApp.getAdapter().getSamphub();
@@ -60,16 +64,18 @@ public class SAMPConnectionTest extends AbstractUISpecTest {
         // check that Iris disconnects
         checkLabel(mainWindow, "SAMP", false);
 
+        logger.log(Level.INFO, "enabling autorunhub");
+        switchAutoRunHub();
+
         // check that a new hub comes up and Iris reconnects
-        checkLabel(mainWindow, "SAMP", false);
+        checkLabel(mainWindow, "SAMP", true);
     }
 
     // If Autorunhub is turned off, the Iris Application should not reconnect
     @Test
     public void testNoAutoRunHub() throws Exception {
-
-        logger.log(Level.INFO, "stopping autorunhub");
-        mainWindow.getMenuBar().getMenu("Interop").getSubMenu("Run Hub Automatically").click();
+        logger.log(Level.INFO, "disabling autorunhub");
+        switchAutoRunHub();
 
         logger.log(Level.INFO, "stopping hub");
         final Window hub = irisApp.getAdapter().getSamphub();
@@ -93,5 +99,10 @@ public class SAMPConnectionTest extends AbstractUISpecTest {
         checkLabel(mainWindow, "SAMP", true);
         logger.log(Level.INFO, "shutting down the new hub");
         newHub.shutdown();
+    }
+
+    private void switchAutoRunHub() {
+        logger.log(Level.INFO, "switching autorunhub");
+        mainWindow.getMenuBar().getMenu("Interop").getSubMenu("Run Hub Automatically").click();
     }
 }

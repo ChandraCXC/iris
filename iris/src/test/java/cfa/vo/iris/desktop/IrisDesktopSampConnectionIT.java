@@ -9,7 +9,7 @@ import org.uispec4j.Window;
 
 public class IrisDesktopSampConnectionIT extends AbstractUISpecTest {
     @Rule
-    public IrisAppResource appResource = new IrisAppResource(false);
+    public IrisAppResource appResource = new IrisAppResource(false, false);
     private Window window;
 
     private final String SAMP = "SAMP";
@@ -18,6 +18,7 @@ public class IrisDesktopSampConnectionIT extends AbstractUISpecTest {
     @Before
     public void setUp() throws Exception {
         window = appResource.getAdapter().getMainWindow();
+        this.RETRY = 60;
     }
 
     @Test

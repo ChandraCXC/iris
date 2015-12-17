@@ -191,7 +191,7 @@ public class SherpaClient {
                 return true;
             }
         } catch (Exception ex) {
-            logger.log(Level.SEVERE, "Cannot ping Sherpa", ex);
+            logger.log(Level.WARNING, "Cannot ping Sherpa");
         }
         return false;
     }
