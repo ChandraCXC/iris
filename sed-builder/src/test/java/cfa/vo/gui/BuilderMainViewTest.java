@@ -109,7 +109,7 @@ public class BuilderMainViewTest extends AbstractComponentGUITest {
 
         assertTrue(desktop.containsWindow("Import Setup Frame").isTrue());
 
-        Window setupWindow = desktop.getWindow("Import Setup Frame");
+        final Window setupWindow = desktop.getWindow("Import Setup Frame");
 
         assertTrue(setupWindow.isVisible().isTrue());
 
@@ -135,7 +135,12 @@ public class BuilderMainViewTest extends AbstractComponentGUITest {
 
         setupWindow.getTextBox("publisherText").setText("Me");
 
-        setupWindow.getButton("Add Segment to SED").click();
+        SwingUtilities.invokeAndWait(new Runnable() {
+            @Override
+            public void run() {
+                setupWindow.getButton("Add Segment to SED").click();
+            }
+        });
 
         assertTrue(table.contentEquals(new String[][]{
                     {"3C 066A", "35.665, 43.036", "NASA/IPAC Extragalactic Database (NED)", "33"},
