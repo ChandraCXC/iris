@@ -19,8 +19,8 @@ public abstract class AbstractUISpecTest {
     private final String CONNECTED = "connected";
     private final String DISCONNECTED = "disconnected";
     private final String STATUS = " status: ";
-    private final int RETRY = 20;
-    private final int STEP = 500;
+    protected int RETRY = 20;
+    protected int STEP = 500;
 
     /**
      * Initializes the resources needed by the test case.<br>
