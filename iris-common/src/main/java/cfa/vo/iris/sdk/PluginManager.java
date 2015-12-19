@@ -35,10 +35,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 
-/**
- *
- * @author olaurino
- */
 public class PluginManager extends AbstractIrisComponent {
 
     private PluginManagerFrame gui;
@@ -131,7 +127,7 @@ public class PluginManager extends AbstractIrisComponent {
         @Override
         public void onClick() {
             if (gui == null) {
-                gui = new PluginManagerFrame(PluginManager.this);
+                gui = new PluginManagerFrame(PluginManager.this, app.getConfigurationDir());
                 workspace.addFrame(gui);
             }
 

@@ -119,6 +119,11 @@ public class ApplicationStub implements IrisApplication {
         return false;
     }
 
+    @Override
+    public void setAutoRunHub(boolean autoHub) {
+
+    }
+
     public void exit() {
         wSpace.shutdown();
     }

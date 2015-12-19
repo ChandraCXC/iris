@@ -99,6 +99,11 @@ public class IrisDesktopSampConnectionTest extends AbstractUISpecTest {
         }
 
         @Override
+        public void setAutoRunHub(boolean autoHub) {
+
+        }
+
+        @Override
         public void addConnectionListener(SAMPConnectionListener sampConnectionListener) {
             sampConnectionListeners.add(sampConnectionListener);
         }

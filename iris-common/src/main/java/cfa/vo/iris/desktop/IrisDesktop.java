@@ -529,7 +529,7 @@ public class IrisDesktop extends JFrame implements PluginListener {
     public void setSampAutoHub(boolean sampAutoHub) {
         boolean oldSampAutoHub = this.sampAutoHub;
         this.sampAutoHub = sampAutoHub;
-        AbstractIrisApplication.setAutoRunHub(sampAutoHub);
+        app.setAutoRunHub(sampAutoHub);
         firePropertyChange(PROP_SAMPAUTOHUB, oldSampAutoHub, sampAutoHub);
     }
 

@@ -1,6 +1,5 @@
 package cfa.vo.iris.test;
 
-import cfa.vo.iris.AbstractIrisApplication;
 import cfa.vo.iris.Iris;
 import org.jdesktop.application.Application;
 import org.uispec4j.*;
@@ -47,8 +46,8 @@ public final class IrisUISpecAdapter implements UISpecAdapter {
         return samphub;
     }
 
-    public AbstractIrisApplication getIrisApp() {
-        return Application.getInstance(AbstractIrisApplication.class);
+    public Iris getIrisApp() {
+        return Application.getInstance(Iris.class);
     }
 
 }

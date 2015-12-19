@@ -23,13 +23,10 @@ package cfa.vo.iris;
 
 import cfa.vo.interop.ISAMPController;
 
-import java.awt.*;
 import java.io.File;
 import java.net.URL;
 import java.util.Collection;
-
 import cfa.vo.interop.SAMPConnectionListener;
-import cfa.vo.iris.desktop.IrisDesktop;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.MessageHandler;
 import org.astrogrid.samp.client.SampException;
@@ -81,4 +78,6 @@ public interface IrisApplication {
     URL getDesktopIcon();
 
     boolean isPlatformOSX();
+
+    void setAutoRunHub(boolean autoHub);
 }

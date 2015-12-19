@@ -106,4 +106,9 @@ public class App implements IrisApplication {
     public boolean isPlatformOSX() {
         return false;
     }
+
+    @Override
+    public void setAutoRunHub(boolean autoHub) {
+
+    }
 }
