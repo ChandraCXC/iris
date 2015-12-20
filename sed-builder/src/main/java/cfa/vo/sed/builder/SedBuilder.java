@@ -77,7 +77,7 @@ public class SedBuilder implements IrisComponent {
 
     public static void show() {
         if (view == null) {
-            view = new SedBuilderMainView(sedManager, workspace.getRootFrame());
+            view = new SedBuilderMainView(sedManager, workspace.getRootFrame(), iris.getSAMPController());
             workspace.addFrame(view);
         }
 //        view.show();
@@ -215,7 +215,7 @@ public class SedBuilder implements IrisComponent {
                         pManager = new PluginManager();
                         workspace.addFrame(pManager);
                         if (view == null) {
-                            view = new SedBuilderMainView(sedManager, workspace.getRootFrame());
+                            view = new SedBuilderMainView(sedManager, workspace.getRootFrame(), iris.getSAMPController());
                             workspace.addFrame(view);
                         }
                         pManager.setLoadFrame(view.getLoadSegmentFrame());

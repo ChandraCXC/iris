@@ -51,6 +51,7 @@ public class IrisWorkspace implements IWorkspace {
 
     public void setDesktop(IrisDesktop mainView) {
         this.mainview = mainView;
+        mainView.setWorkspace(this);
     }
 
     @Override

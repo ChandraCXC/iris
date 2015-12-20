@@ -20,6 +20,8 @@ import static org.junit.Assert.*;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Before;
@@ -39,19 +41,25 @@ public class ComponentLoaderTest {
     @Test
     public void testLoadComponents() {
         ComponentLoader loader = new ComponentLoader(testUrl);
-        List<IrisComponent> components = loader.getComponents();
+        Collection<IrisComponent> components = loader.getComponents();
 
         assertEquals(1, components.size());
-        assertTrue(components.get(0) instanceof TestIrisComponent);
+        Iterator<IrisComponent> it = components.iterator();
+        assertTrue(it.hasNext());
+        assertTrue(it.next() instanceof TestIrisComponent);
 
         assertEquals(1, loader.failures.size());
         assertEquals(BrokenTestIrisComponent.class.getName(), loader.failures.get(0));
+
+        IrisComponent comp = loader.getComponent("testcomponent");
+        assertNotNull(comp);
+        assertTrue(comp instanceof TestIrisComponent);
     }
 
     @Test
     public void testFailedIORead() throws Exception {
         ComponentLoader loader = new ComponentLoader(new ArrayList());
-        List<IrisComponent> components = loader.getComponents();
+        Collection<IrisComponent> components = loader.getComponents();
 
         assertEquals(0, components.size());
     }
@@ -60,7 +68,7 @@ public class ComponentLoaderTest {
     public static class TestIrisComponent extends AbstractIrisComponent {
         @Override
         public String getName() {
-            return null;
+            return "test component";
         }
         @Override
         public String getDescription() {

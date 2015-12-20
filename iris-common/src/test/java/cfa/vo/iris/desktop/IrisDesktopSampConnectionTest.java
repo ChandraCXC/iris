@@ -1,5 +1,6 @@
 package cfa.vo.iris.desktop;
 
+import cfa.vo.interop.ISAMPController;
 import cfa.vo.interop.SAMPConnectionListener;
 import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.test.unit.AbstractUISpecTest;

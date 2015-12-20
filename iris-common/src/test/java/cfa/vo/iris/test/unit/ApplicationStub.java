@@ -85,6 +85,16 @@ public class ApplicationStub implements IrisApplication {
     }
 
     @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public URL getSAMPIcon() {
+        return null;
+    }
+
+    @Override
     public Collection<? extends IrisComponent> getComponents() {
         return null;
     }
@@ -92,6 +102,11 @@ public class ApplicationStub implements IrisApplication {
     @Override
     public void addMessageHandler(MessageHandler handler) {
 
+    }
+
+    @Override
+    public ComponentLoader getComponentLoader() {
+        return null;
     }
 
     @Override

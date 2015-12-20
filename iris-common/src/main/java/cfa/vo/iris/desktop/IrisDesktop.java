@@ -41,6 +41,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -57,7 +58,7 @@ import org.jdesktop.application.Action;
 public class IrisDesktop extends JFrame implements PluginListener {
 
     protected List<DesktopButton> buttons = new ArrayList<>();
-    protected List<IrisComponent> components = new ArrayList<>();
+    protected Collection<IrisComponent> components = new ArrayList<>();
     protected JDialog aboutBox;
     protected IrisApplication app;
     IWorkspace ws;
@@ -167,7 +168,9 @@ public class IrisDesktop extends JFrame implements PluginListener {
         desktopPane.add(helpButton);
     }
 
-    public void reset(List<IrisComponent> components) {
+    public void reset() {
+        components = app.getComponentLoader().getComponents();
+
         if(manager != null && !components.contains(manager)) {
             components.add(manager);
         }
@@ -552,7 +555,7 @@ public class IrisDesktop extends JFrame implements PluginListener {
                     c.shutdown();
                 }
             }
-            reset(components);
+            reset();
         }
 
     }

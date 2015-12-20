@@ -20,17 +20,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 
 public class ComponentLoader {
+    private Logger logger = Logger.getLogger(ComponentLoader.class.getName());
 
-    protected List<IrisComponent> components = new ArrayList<>();
+    protected TreeMap<String, IrisComponent> components = new TreeMap<>();
     protected List<String> failures = new ArrayList<>();
 
     public ComponentLoader(Collection<Class<? extends IrisComponent>> componentList) {
@@ -49,8 +47,33 @@ public class ComponentLoader {
         }
     }
 
-    public List<IrisComponent> getComponents() {
-        return components;
+    public Collection<IrisComponent> getComponents() {
+        return components.values();
+    }
+
+    IrisComponent getComponent(String name){
+        return components.get(name);
+    }
+
+    public void initComponents(IrisApplication app, IWorkspace ws) {
+        for (IrisComponent component : components.values()) {
+            component.init(app, ws);
+        }
+    }
+
+    public Map<String, IrisComponent> initComponentsCli(IrisApplication app) {
+        Map<String, IrisComponent> componentsMap = new HashMap<>();
+        try {
+            for (IrisComponent component : components.values()) {
+                component.initCli(app);
+                componentsMap.put(component.getCli().getName(), component);
+            }
+        } catch (Exception ex) {
+            // FIXME Do we want to application to continue if we can't load any components?
+            System.err.println("Error reading component file");
+            logger.log(Level.SEVERE, "Error reading component file", ex);
+        }
+        return componentsMap;
     }
 
     /**
@@ -78,16 +101,31 @@ public class ComponentLoader {
     }
 
     public final void loadComponent(Class<? extends IrisComponent> componentClass) {
+        instantiateComponent(componentClass);
+    }
+
+    private IrisComponent instantiateComponent(Class<? extends IrisComponent> componentClass) {
         try {
             Logger.getLogger(ComponentLoader.class.getName()).log(Level.INFO, "Loading class: " + componentClass.getName());
             IrisComponent component = componentClass.newInstance();
-            components.add(component);
+            components.put(component.getCli().getName(), component);
+            return component;
         } catch (Exception ex) {
             String message = "Could not construct component " + componentClass.getName();
             System.err.println(message);
             Logger.getLogger(ComponentLoader.class.getName()).log(Level.SEVERE, message, ex);
             failures.add(componentClass.getName());
+            return null;
         }
+    }
+
+    public IrisComponent loadComponent(Class<? extends IrisComponent> componentClass, IrisApplication app, IWorkspace ws) {
+        IrisComponent component = instantiateComponent(componentClass);
+        if (component != null) {
+            component.initCli(app);
+            component.init(app, ws);
+        }
+        return component;
     }
     
     /**
@@ -105,6 +143,12 @@ public class ComponentLoader {
                 Logger.getLogger(ComponentLoader.class.getName()).log(Level.SEVERE, message, ex);
                 failures.add(className);
             }
+        }
+    }
+
+    public void shutdown() {
+        for (IrisComponent component : components.values()) {
+            component.shutdown();
         }
     }
 }

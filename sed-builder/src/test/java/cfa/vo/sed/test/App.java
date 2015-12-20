@@ -22,6 +22,7 @@ package cfa.vo.sed.test;
 
 import cfa.vo.interop.ISAMPController;
 import cfa.vo.interop.SAMPConnectionListener;
+import cfa.vo.iris.ComponentLoader;
 import cfa.vo.iris.IrisApplication;
 
 import java.io.File;
@@ -73,6 +74,16 @@ public class App implements IrisApplication {
     }
 
     @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public URL getSAMPIcon() {
+        return null;
+    }
+
+    @Override
     public Collection<? extends IrisComponent> getComponents() {
         return null;
     }
@@ -80,6 +91,11 @@ public class App implements IrisApplication {
     @Override
     public void addMessageHandler(MessageHandler handler) {
 
+    }
+
+    @Override
+    public ComponentLoader getComponentLoader() {
+        return null;
     }
 
     @Override

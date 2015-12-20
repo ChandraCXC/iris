@@ -5,10 +5,8 @@ import cfa.vo.iris.test.IrisUISpecAdapter;
 import cfa.vo.iris.test.unit.AbstractUISpecTest;
 import org.astrogrid.samp.hub.Hub;
 import org.astrogrid.samp.hub.HubServiceMode;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;

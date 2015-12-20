@@ -27,7 +27,6 @@
 package cfa.vo.sed.gui;
 
 import cfa.vo.interop.ISAMPController;
-import cfa.vo.iris.AbstractIrisApplication;
 import cfa.vo.iris.events.*;
 import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
 import cfa.vo.iris.gui.NarrowOptionPane;
@@ -67,13 +66,10 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author olaurino
- */
 public class SedBuilderMainView extends JInternalFrame {
 
     private SedlibSedManager manager;
+    private ISAMPController controller;
     private JFrame rootFrame;
     private LoadSegmentFrame loadFrame;
     JXBusyLabel busy = new JXBusyLabel();
@@ -81,12 +77,13 @@ public class SedBuilderMainView extends JInternalFrame {
     public static final String PROP_SED = "sed";
 
     /** Creates new form SedBuilderMainView */
-    public SedBuilderMainView(final SedlibSedManager manager, JFrame rootFrame) {
+    public SedBuilderMainView(final SedlibSedManager manager, JFrame rootFrame, ISAMPController controller) {
         initComponents();
 
         jToolBar3.add(busy);
 
         this.manager = manager;
+        this.controller = controller;
 
         loadFrame = new LoadSegmentFrame(manager);
         SedBuilder.getWorkspace().addFrame(loadFrame);
@@ -803,8 +800,6 @@ public class SedBuilderMainView extends JInternalFrame {
     public void broadcast() {
         try {
             ExtSed flattened = ExtSed.flatten(sed, xunit, yunit);
-            AbstractIrisApplication app = Application.getInstance(AbstractIrisApplication.class);
-            ISAMPController controller = app.getSAMPController();
             flattened.sendSedMessage(controller);
 
         } catch (Exception ex) {
@@ -1060,7 +1055,6 @@ public class SedBuilderMainView extends JInternalFrame {
         try {
             ExtSed s = new ExtSed(sed.getId() + "Selection", false);
             s.addSegment(selectedSegments);
-            ISAMPController controller = Application.getInstance(AbstractIrisApplication.class).getSAMPController();
             s.sendSedMessage(controller);
         } catch (SedInconsistentException ex) {//If the segment is already in the SED this exception can't be thrown.
             Logger.getLogger(SedBuilderMainView.class.getName()).log(Level.SEVERE, null, ex);

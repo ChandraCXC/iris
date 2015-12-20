@@ -65,9 +65,15 @@ public interface IrisApplication {
 
     String getName();
 
+    String getDescription();
+
+    URL getSAMPIcon();
+
     Collection<? extends IrisComponent> getComponents();
 
     void addMessageHandler(MessageHandler handler);
+
+    ComponentLoader getComponentLoader();
 
     void exitApp(int status);
 
