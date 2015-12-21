@@ -26,7 +26,6 @@
  */
 package cfa.vo.sed.science.stacker;
 
-import cfa.vo.interop.SAMPController;
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.gui.GUIUtils;
@@ -63,10 +62,6 @@ import org.apache.commons.lang.StringUtils;
 import org.astrogrid.samp.client.SampException;
 import org.jdesktop.observablecollections.ObservableCollections;
 
-/**
- *
- * @author jbudynk
- */
 public class SedStackerFrame extends javax.swing.JInternalFrame {
 
     private JFrame rootFrame;
@@ -80,7 +75,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 
         this.rootFrame = ws.getRootFrame();
         this.app = app;
-        this.client = SherpaClient.create(app.getSAMPController());
+        this.client = SherpaClient.create(app.getSampService());
         this.manager = (SedlibSedManager) ws.getSedManager();
         this.ws = ws;
 

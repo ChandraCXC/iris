@@ -1,6 +1,6 @@
 package cfa.vo.iris.test.unit;
 
-import cfa.vo.interop.ISAMPController;
+import cfa.vo.interop.SampService;
 import cfa.vo.sherpa.SherpaClient;
 import org.junit.rules.ExternalResource;
 import static org.junit.Assert.*;
@@ -16,8 +16,8 @@ public class SherpaResource extends ExternalResource {
     @Override
     protected void before() throws Throwable {
         sampClient.before();
-        client = SherpaClient.create(sampClient.getHubController());
-        assertTrue(client.ping());
+        client = SherpaClient.create(sampClient.getSampService());
+        assertTrue(client.ping(60, 500));
     }
 
     protected void after() {
@@ -29,8 +29,8 @@ public class SherpaResource extends ExternalResource {
         return client;
     }
 
-    public ISAMPController getSAMPController() {
-        return client.getController();
+    public SampService getSampService() {
+        return client.getService();
     }
 
 }

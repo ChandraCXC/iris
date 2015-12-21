@@ -135,19 +135,19 @@ public class BuilderMainViewTest extends AbstractComponentGUITest {
 
         setupWindow.getTextBox("publisherText").setText("Me");
 
+        setupWindow.getButton("Add Segment to SED").click();
+
         SwingUtilities.invokeAndWait(new Runnable() {
             @Override
             public void run() {
-                setupWindow.getButton("Add Segment to SED").click();
-            }
-        });
-
-        assertTrue(table.contentEquals(new String[][]{
-                    {"3C 066A", "35.665, 43.036", "NASA/IPAC Extragalactic Database (NED)", "33"},
-                    {"3C 066A", "35.665, 43.036", "Me", "3"},
-                    {"Test", "0.1, 0.2", "Me", "455"}
+                assertTrue(table.contentEquals(new String[][]{
+                        {"3C 066A", "35.665, 43.036", "NASA/IPAC Extragalactic Database (NED)", "33"},
+                        {"3C 066A", "35.665, 43.036", "Me", "3"},
+                        {"Test", "0.1, 0.2", "Me", "455"}
                 }).isTrue());
 
+            }
+        });
     }
 
     @Override

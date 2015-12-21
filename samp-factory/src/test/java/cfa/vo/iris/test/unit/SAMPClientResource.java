@@ -1,38 +1,47 @@
 package cfa.vo.iris.test.unit;
 
-import cfa.vo.interop.ISAMPController;
-import cfa.vo.interop.SAMPController;
-import cfa.vo.interop.SAMPControllerBuilder;
+import cfa.vo.interop.SAMPServiceBuilder;
+import cfa.vo.interop.SampService;
 import org.junit.rules.ExternalResource;
 
 import static org.junit.Assert.assertTrue;
 
 public class SAMPClientResource extends ExternalResource {
-    private SAMPController controller;
-    private SAMPControllerBuilder builder;
-    private long timeoutMillis = 30000;
+    private SampService sampService;
+    private SAMPServiceBuilder builder;
 
-    public SAMPClientResource(SAMPControllerBuilder builder) {
+    public SAMPClientResource(SAMPServiceBuilder builder) {
         this.builder = builder;
     }
 
     public SAMPClientResource() {
-        this.builder = new SAMPControllerBuilder("Test")
+        this.builder = new SAMPServiceBuilder("Test")
                 .withDescription("Test Hub");
     }
 
     @Override
     protected void before() throws Throwable {
-        controller = builder.buildAndStart(timeoutMillis);
-        assertTrue(controller.isConnected());
+        sampService = builder.build();
+        sampService.start();
+        boolean connected = false;
+        for (int i=0; i<30; i++) {
+            try {
+                assertTrue(sampService.isSampUp());
+                connected = true;
+                break;
+            } catch (AssertionError e) {
+                Thread.sleep(500);
+            }
+        }
+        assertTrue(connected);
     }
 
     @Override
     protected void after() {
-        controller.stop();
+        sampService.shutdown();
     }
 
-    public ISAMPController getHubController() {
-        return controller;
+    public SampService getSampService() {
+        return sampService;
     }
 }

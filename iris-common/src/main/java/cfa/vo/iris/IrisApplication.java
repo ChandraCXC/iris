@@ -21,16 +21,14 @@
 
 package cfa.vo.iris;
 
-import cfa.vo.interop.ISAMPController;
-
 import java.io.File;
 import java.net.URL;
 import java.util.Collection;
 import cfa.vo.interop.SAMPConnectionListener;
+import cfa.vo.interop.SampService;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.MessageHandler;
 import org.astrogrid.samp.client.SampException;
-
 import javax.swing.*;
 
 /**
@@ -57,7 +55,7 @@ public interface IrisApplication {
 
     void sendSampMessage(Message msg) throws SampException;
 
-    ISAMPController getSAMPController();
+    SampService getSampService();
 
     URL getHelpURL();
 

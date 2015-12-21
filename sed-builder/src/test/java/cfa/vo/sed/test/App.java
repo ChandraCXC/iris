@@ -20,8 +20,8 @@
  */
 package cfa.vo.sed.test;
 
-import cfa.vo.interop.ISAMPController;
 import cfa.vo.interop.SAMPConnectionListener;
+import cfa.vo.interop.SampService;
 import cfa.vo.iris.ComponentLoader;
 import cfa.vo.iris.IrisApplication;
 
@@ -54,7 +54,7 @@ public class App implements IrisApplication {
     }
 
     @Override
-    public ISAMPController getSAMPController() {
+    public SampService getSampService() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

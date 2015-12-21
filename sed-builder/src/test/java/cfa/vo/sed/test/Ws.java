@@ -24,7 +24,7 @@ import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ISedManager;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.units.UnitsManager;
-import cfa.vo.iris.utils.Default;
+import cfa.vo.utils.Default;
 
 import java.util.ArrayList;
 import java.util.List;

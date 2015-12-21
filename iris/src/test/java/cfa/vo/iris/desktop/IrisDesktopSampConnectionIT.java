@@ -3,6 +3,7 @@ package cfa.vo.iris.desktop;
 import cfa.vo.iris.test.IrisAppResource;
 import cfa.vo.iris.test.unit.AbstractUISpecTest;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.uispec4j.Window;

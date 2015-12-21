@@ -1,5 +1,6 @@
 package cfa.vo.iris.utils;
 
+import cfa.vo.utils.Time;
 import org.junit.Before;
 import org.junit.Test;
 

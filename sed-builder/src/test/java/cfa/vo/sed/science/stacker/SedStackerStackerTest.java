@@ -30,20 +30,18 @@ import cfa.vo.sherpa.SherpaClient;
 import static org.junit.Assert.*;
 
 import java.awt.Component;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.astrogrid.samp.Response;
-import org.astrogrid.samp.client.HubConnection;
-import org.astrogrid.samp.client.MessageHandler;
+import org.astrogrid.samp.client.HubConnector;
 import org.astrogrid.samp.client.SampException;
-import org.astrogrid.samp.httpd.ServerResource;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import static org.mockito.Mockito.*;
 
 import cfa.vo.sedlib.common.SedNoDataException;
 
@@ -76,12 +74,17 @@ public class SedStackerStackerTest {
     private StackerPayloadStub response;
     
     protected SherpaClientStub client;
-    protected SAMPControllerStub controller;
+    protected SampService service;
     
     @Before
     public void setUp() throws Exception {
-        this.controller = new SAMPControllerStub();
-        this.client = new SherpaClientStub(controller);
+        this.service = mock(SampService.class);
+        HubConnector clientMock = mock(HubConnector.class);
+
+        when(service.getSampClient()).thenReturn(clientMock);
+        when(clientMock.callAndWait(any(String.class), any(Map.class), any(Integer.class))).thenReturn(new Response());
+
+        this.client = new SherpaClientStub(service);
         
         this.stacker = new SedStackerStacker(client) {
             @Override
@@ -97,7 +100,7 @@ public class SedStackerStackerTest {
 
     @After
     public void tearDown() {
-        this.controller.stop();
+        this.service.shutdown();
     }
     
     private void initialize() throws Exception {
@@ -134,8 +137,6 @@ public class SedStackerStackerTest {
         seds.add(sed3);
         
         sedStack = new SedStack("test", seds);
-        
-        controller.rspns = new Response();
         
         response = new StackerPayloadStub();
     }
@@ -242,66 +243,10 @@ public class SedStackerStackerTest {
     // Stubs, use these to set expectations
     //
     //
-    private static class SAMPControllerStub implements ISAMPController {
-        
-        public Response rspns;
-
-        @Override
-        public void stop() {
-
-        }
-
-        @Override
-        public boolean start(long timeoutMillis) {
-            return false;
-        }
-
-        @Override
-        public void sendMessage(SAMPMessage message) throws SampException {
-
-        }
-
-        @Override
-        public void addConnectionListener(SAMPConnectionListener listener) {
-
-        }
-
-        @Override
-        public void addMessageHandler(MessageHandler handler) {
-
-        }
-
-        @SuppressWarnings("rawtypes")
-        @Override
-        public Response callAndWait(String arg0, Map arg1, int arg2) throws SampException {
-            return rspns;
-        }
-
-        @Override
-        public Map getClientMap() {
-            return null;
-        }
-
-        @Override
-        public HubConnection getConnection() throws SampException {
-            return null;
-        }
-
-        @Override
-        public URL addResource(String filename, ServerResource serverResource) {
-            return null;
-        }
-
-        @Override
-        public boolean isConnected() {
-            return false;
-        }
-    }
-    
     private static class SherpaClientStub extends SherpaClient {
         
-        public SherpaClientStub(ISAMPController controller) {
-            super(controller);
+        public SherpaClientStub(SampService service) {
+            super(service);
         }
 
         public boolean findSherpa = true;

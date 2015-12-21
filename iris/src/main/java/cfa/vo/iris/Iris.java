@@ -190,12 +190,18 @@ public class Iris extends Application implements IrisApplication {
     }
 
     public void exitApp(int status) {
-        componentLoader.shutdown();
-        sampShutdown();
-        if(!isTest) {
-            System.exit(status);
+        try {
+            componentLoader.shutdown();
+            sampShutdown();
+            if (!isTest) {
+                System.exit(status);
+            }
+            desktop.dispose();
+        } catch (Throwable t) {
+            if (!isTest) {
+                System.exit(status);
+            }
         }
-        desktop.dispose();
     }
 
     @Override
@@ -205,24 +211,24 @@ public class Iris extends Application implements IrisApplication {
 
     @Override
     public void sendSampMessage(Message msg) throws SampException {
-        sampInitializer.getSampController().sendMessage(new SimpleSAMPMessage(msg));
+        sampInitializer.getSampService().sendMessage(new SimpleSAMPMessage(msg));
     }
 
     @Override
-    public ISAMPController getSAMPController() {
-        return sampInitializer.getSampController();
+    public SampService getSampService() {
+        return sampInitializer.getSampService();
     }
 
     public void addConnectionListener(SAMPConnectionListener listener) {
-        sampInitializer.getSampController().addConnectionListener(listener);
+        sampInitializer.getSampService().addSampConnectionListener(listener);
     }
 
     @Override
     public void addSherpaConnectionListener(SAMPConnectionListener listener) {
-        sampInitializer.getSampController().addSherpaConnectionListener(listener);
+        sampInitializer.getSampService().addSherpaConnectionListener(listener);
     }
 
     public void addMessageHandler(MessageHandler handler) {
-        sampInitializer.getSampController().addMessageHandler(handler);
+        sampInitializer.getSampService().addMessageHandler(handler);
     }
 }

@@ -21,8 +21,8 @@
 
 package cfa.vo.iris.test;
 
-import cfa.vo.interop.SAMPController;
-import cfa.vo.interop.SAMPControllerBuilder;
+import cfa.vo.interop.SAMPServiceBuilder;
+import cfa.vo.interop.SampService;
 import cfa.vo.iris.ICommandLineInterface;
 import cfa.vo.iris.IMenuItem;
 import cfa.vo.iris.IWorkspace;
@@ -56,9 +56,9 @@ public class TestSSAServer implements IrisComponent {
     private SedlibSedManager sedManager;
     private JFrame rootFrame;
 
-    private static SAMPController c;
+    private static SampService c;
 
-    public static SAMPController getController() {
+    public static SampService getController() {
         return c;
     }
 
@@ -67,7 +67,8 @@ public class TestSSAServer implements IrisComponent {
         sedManager = (SedlibSedManager) workspace.getSedManager();
         rootFrame = workspace.getRootFrame();
         try {
-            c = new SAMPControllerBuilder(getName()).withDescription(getDescription()).buildAndStart(30000);
+            c = new SAMPServiceBuilder(getName()).withDescription(getDescription()).build();
+            c.start();
         } catch (Exception ex) {
             Logger.getLogger(getClass().getName()).log(Level.INFO, "Component could not connect to SAMP hub");
         }

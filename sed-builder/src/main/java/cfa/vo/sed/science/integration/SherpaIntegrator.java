@@ -20,7 +20,6 @@
  */
 package cfa.vo.sed.science.integration;
 
-import cfa.vo.interop.SAMPController;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.sed.ExtSed;

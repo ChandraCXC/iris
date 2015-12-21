@@ -26,7 +26,7 @@
  */
 package cfa.vo.sed.gui;
 
-import cfa.vo.interop.ISAMPController;
+import cfa.vo.interop.SampService;
 import cfa.vo.iris.events.*;
 import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
 import cfa.vo.iris.gui.NarrowOptionPane;
@@ -69,7 +69,7 @@ import java.util.logging.Logger;
 public class SedBuilderMainView extends JInternalFrame {
 
     private SedlibSedManager manager;
-    private ISAMPController controller;
+    private SampService sampService;
     private JFrame rootFrame;
     private LoadSegmentFrame loadFrame;
     JXBusyLabel busy = new JXBusyLabel();
@@ -77,13 +77,13 @@ public class SedBuilderMainView extends JInternalFrame {
     public static final String PROP_SED = "sed";
 
     /** Creates new form SedBuilderMainView */
-    public SedBuilderMainView(final SedlibSedManager manager, JFrame rootFrame, ISAMPController controller) {
+    public SedBuilderMainView(final SedlibSedManager manager, JFrame rootFrame, SampService sampService) {
         initComponents();
 
         jToolBar3.add(busy);
 
         this.manager = manager;
-        this.controller = controller;
+        this.sampService = sampService;
 
         loadFrame = new LoadSegmentFrame(manager);
         SedBuilder.getWorkspace().addFrame(loadFrame);
@@ -800,7 +800,7 @@ public class SedBuilderMainView extends JInternalFrame {
     public void broadcast() {
         try {
             ExtSed flattened = ExtSed.flatten(sed, xunit, yunit);
-            flattened.sendSedMessage(controller);
+            flattened.sendSedMessage(sampService);
 
         } catch (Exception ex) {
             NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
@@ -1055,7 +1055,7 @@ public class SedBuilderMainView extends JInternalFrame {
         try {
             ExtSed s = new ExtSed(sed.getId() + "Selection", false);
             s.addSegment(selectedSegments);
-            s.sendSedMessage(controller);
+            s.sendSedMessage(sampService);
         } catch (SedInconsistentException ex) {//If the segment is already in the SED this exception can't be thrown.
             Logger.getLogger(SedBuilderMainView.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SedNoDataException ex) {//If the segment is alreadt in the SED this exception can't be thrown.

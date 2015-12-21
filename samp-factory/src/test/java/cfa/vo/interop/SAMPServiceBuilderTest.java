@@ -12,16 +12,16 @@ import java.util.logging.Logger;
 
 import static org.junit.Assert.*;
 
-public class SAMPControllerBuilderTest {
-    private Logger logger = Logger.getLogger(SAMPControllerBuilderTest.class.getName());
-    private SAMPController controller;
+public class SAMPServiceBuilderTest {
+    private Logger logger = Logger.getLogger(SAMPServiceBuilderTest.class.getName());
+    private SampService sampService;
     private Hub hub;
 
     @After
     public void after() throws Exception {
-        if (controller != null) {
+        if (sampService != null) {
             logger.log(Level.INFO, "shutting down controller");
-            controller.stop();
+            sampService.shutdown();
         }
 
         if (hub != null) {
@@ -32,26 +32,27 @@ public class SAMPControllerBuilderTest {
 
     @Test
     public void testDefaults() {
-        SAMPControllerBuilder builder = new SAMPControllerBuilder("aname");
+        SAMPServiceBuilder builder = new SAMPServiceBuilder("aname");
 
         assertEquals("aname", builder.getName());
         assertEquals("aname", builder.getDescription());
         assertEquals(getClass().getResource("/iris_button_tiny.png"), builder.getIcon());
         assertFalse(builder.isWithResourceServer());
 
-        controller = builder.build();
-        assertEquals("aname", controller.getName());
-        assertEquals("aname", controller.getMetadata().getName());
-        assertEquals("aname", controller.getMetadata().getDescriptionText());
-        assertEquals(getClass().getResource("/iris_button_tiny.png"), controller.getMetadata().getIconUrl());
-        assertFalse(controller.withServer);
+        sampService = builder.build();
+        sampService.start();
+        assertEquals("aname", sampService.getSampClient().getMetadata().getName());
+        assertEquals("aname", sampService.getSampClient().getMetadata().getName());
+        assertEquals("aname", sampService.getSampClient().getMetadata().getDescriptionText());
+        assertEquals(getClass().getResource("/iris_button_tiny.png"), sampService.getSampClient().getMetadata().getIconUrl());
+        assertNull(sampService.resourceServer);
     }
 
     @Test
     public void testArguments() throws Exception {
         URL testURL = new URL("http://somewhere.org/image.png");
 
-        SAMPControllerBuilder builder = new SAMPControllerBuilder("anothername")
+        SAMPServiceBuilder builder = new SAMPServiceBuilder("anothername")
                 .withResourceServer("/root")
                 .withDescription("a description")
                 .withIcon(testURL);
@@ -62,18 +63,19 @@ public class SAMPControllerBuilderTest {
         assertTrue(builder.isWithResourceServer());
         assertEquals("/root", builder.getServerRoot());
 
-        controller = builder.build();
-        assertEquals("anothername", controller.getName());
-        assertEquals("anothername", controller.getMetadata().getName());
-        assertEquals("a description", controller.getMetadata().getDescriptionText());
-        assertEquals(testURL, controller.getMetadata().getIconUrl());
-        assertTrue(controller.withServer);
+        sampService = builder.build();
+        sampService.start();
+        assertEquals("anothername", sampService.getSampClient().getMetadata().getName());
+        assertEquals("anothername", sampService.getSampClient().getMetadata().getName());
+        assertEquals("a description", sampService.getSampClient().getMetadata().getDescriptionText());
+        assertEquals(testURL, sampService.getSampClient().getMetadata().getIconUrl());
+        assertNotNull(sampService.resourceServer);
     }
 
     @Test
     public void testConnection() throws Exception {
         logger.log(Level.INFO, "instantiating builder");
-        SAMPControllerBuilder builder = new SAMPControllerBuilder("aname");
+        SAMPServiceBuilder builder = new SAMPServiceBuilder("aname");
 
         logger.log(Level.INFO, "starting hub");
         try {
@@ -83,9 +85,19 @@ public class SAMPControllerBuilderTest {
         }
 
         logger.log(Level.INFO, "starting controller");
-        controller = builder.buildAndStart(30000);
+        sampService = builder.build();
+        sampService.start();
         logger.log(Level.INFO, "checking controller is connected");
-        assertTrue(controller.isConnected());
-
+        boolean connected = false;
+        for (int i=0; i<20; i++) {
+            try {
+                assertTrue(sampService.getSampClient().isConnected());
+                connected = true;
+                break;
+            } catch (AssertionError e) {
+                Thread.sleep(500);
+            }
+        }
+        assertTrue(connected);
     }
 }

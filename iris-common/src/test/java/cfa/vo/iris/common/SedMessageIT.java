@@ -16,7 +16,7 @@
 
 package cfa.vo.iris.common;
 
-import cfa.vo.interop.SAMPControllerBuilder;
+import cfa.vo.interop.SAMPServiceBuilder;
 import cfa.vo.iris.interop.AbstractSedMessageHandler;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.test.unit.SAMPClientResource;
@@ -34,18 +34,18 @@ public class SedMessageIT {
     private Sed mySed;
 
     @Rule
-    public SAMPClientResource sender = new SAMPClientResource(new SAMPControllerBuilder("TestSender").withResourceServer("/test"));
+    public SAMPClientResource sender = new SAMPClientResource(new SAMPServiceBuilder("TestSender").withResourceServer("/test"));
 
     @Rule
-    public SAMPClientResource clientResource = new SAMPClientResource(new SAMPControllerBuilder("TestReceiver"));
+    public SAMPClientResource clientResource = new SAMPClientResource(new SAMPServiceBuilder("TestReceiver"));
 
     @Test
     public void sedMessageTest() throws Exception {
-        clientResource.getHubController().addMessageHandler(new SedHandler());
+        clientResource.getSampService().addMessageHandler(new SedHandler());
 
         ExtSed sed = ExtSed.read(this.getClass().getResource("/test_data/3c273.xml").getFile(), SedFormat.VOT);
 
-        sed.sendSedMessage(sender.getHubController());
+        sed.sendSedMessage(sender.getSampService());
 
         int i=0;
 

@@ -20,10 +20,7 @@
  */
 package cfa.vo.iris.sed;
 
-import cfa.vo.interop.ISAMPController;
-import cfa.vo.interop.SAMPController;
-import cfa.vo.interop.SAMPFactory;
-import cfa.vo.interop.SAMPMessage;
+import cfa.vo.interop.*;
 import cfa.vo.iris.events.MultipleSegmentEvent;
 import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
@@ -39,7 +36,7 @@ import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.units.UnitsException;
-import cfa.vo.iris.utils.Default;
+import cfa.vo.utils.Default;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.*;
 import cfa.vo.sedlib.common.SedInconsistentException;
@@ -56,10 +53,6 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author olaurino
- */
 public class ExtSed extends Sed {
 
     private Map<String, Object> attachments = new TreeMap();
@@ -323,10 +316,10 @@ public class ExtSed extends Sed {
      *
      * @throws SampException
      */
-    public void sendSedMessage(ISAMPController controller) throws SampException {
+    public void sendSedMessage(SampService service) throws SampException {
         try {
 
-            if(controller.getConnection().getSubscribedClients("table.load.votable").isEmpty())
+            if(service.getSampClient().getConnection().getSubscribedClients("table.load.votable").isEmpty())
                 throw new SampException("No clients can receive the SAMP Message");
 
             for (int i = 1; i < getNumberOfSegments()+1; i++) {
@@ -343,12 +336,12 @@ public class ExtSed extends Sed {
                 msg.getVaoPayload().setMessageType("sed");
                 msg.getVaoPayload().setSenderId("iris");
                 String filename = id + ".vot";
-                URL url = controller.addResource(filename, new SedServerResource(s));
+                URL url = service.addResource(filename, new SedServerResource(s));
                 msg.setUrl(url.toString());
 
                 SAMPMessage message = SAMPFactory.createMessage("table.load.votable", msg, VaoMessage.class);
                 ((Map)message.get().getParam("vao-payload")).put("sed-id", getId());
-                controller.sendMessage(message);
+                service.sendMessage(message);
             }
 
         } catch (Exception ex) {

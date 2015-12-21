@@ -72,10 +72,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author olaurino
- */
 public class ScienceFrame extends javax.swing.JInternalFrame implements SedListener {
 
     private IrisApplication app;
@@ -178,7 +174,7 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
             return;
         }
         setSed(_sed);
-        this.client = SherpaClient.create(app.getSAMPController());
+        this.client = SherpaClient.create(app.getSampService());
     }
 
     /**

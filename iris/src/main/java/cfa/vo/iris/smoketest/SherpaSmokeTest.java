@@ -21,12 +21,12 @@
 
 package cfa.vo.iris.smoketest;
 
-import cfa.vo.interop.ISAMPController;
-import cfa.vo.interop.SAMPControllerBuilder;
+import cfa.vo.interop.SAMPServiceBuilder;
+import cfa.vo.interop.SampService;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.interop.AbstractSedMessageHandler;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.utils.Default;
+import cfa.vo.utils.Default;
 import cfa.vo.sed.builder.SegmentImporter;
 import cfa.vo.sed.builder.photfilters.EnergyBin;
 import cfa.vo.sed.builder.photfilters.PassBand;
@@ -48,7 +48,7 @@ import java.util.logging.Logger;
 public class SherpaSmokeTest extends AbstractSmokeTest {
 
     private String testVotable;
-    private ISAMPController controller;
+    private SampService sampService;
     private boolean working = false;
     protected Boolean control;
 
@@ -58,7 +58,7 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
 
     public SherpaSmokeTest(String testVotable, int timeout, IrisApplication app) {
         super(timeout);
-        this.controller = app.getSAMPController();
+        this.sampService = app.getSampService();
 
         this.testVotable = testVotable;
 
@@ -83,7 +83,8 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
 
             //check that sherpa can be pinged
             log("Pinging Sherpa...");
-            SherpaClient c = SherpaClient.create(controller);
+            SherpaClient c = SherpaClient.create(sampService);
+            waitUntil(c, "ping", "Cannot find Sherpa!");
 
             //Import the file using SedImporter
             log("Creating a Setup for the SED Builder...");
@@ -97,7 +98,10 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
 
             //Setup a client that handles SEDs
             log("Setting up a SAMP SED receiver...");
-            ISAMPController mockReceiver = new SAMPControllerBuilder("MockReceiver").buildAndStart(TIMEOUT*1000);
+            SampService mockReceiver = new SAMPServiceBuilder("MockReceiver").build();
+            mockReceiver.start();
+
+            waitUntil(mockReceiver, "isSampUp", "Receiver never connected to the Hub");
 
             mockReceiver.addMessageHandler(new SmokeSedHandler());
 
@@ -105,7 +109,7 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
 
             //Send the Sed
             log("Broadcasting the SED...");
-            sed.sendSedMessage(controller);
+            sed.sendSedMessage(sampService);
 
             waitUntil("control", Boolean.TRUE, "It looks like the SED wasn't processed");
 
@@ -232,8 +236,8 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
     @Override
     protected int exit() {
 
-        if (controller != null) {
-            controller.stop();
+        if (sampService != null) {
+            sampService.shutdown();
         }
 
         String message = working ? "Everything seems to be working!" : "OOPS! Something went wrong!";
