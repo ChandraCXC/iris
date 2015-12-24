@@ -34,3 +34,5 @@ script: mvn -U verify
 
 # This runs with instrumentation
 after_success: mvn -Pjacoco clean verify coveralls:report
+
+after_failure: cat ~/.vao/iris/SherpaSAMP.log

@@ -174,7 +174,7 @@ public class ScienceFrame extends javax.swing.JInternalFrame implements SedListe
             return;
         }
         setSed(_sed);
-        this.client = SherpaClient.create(app.getSampService());
+        this.client = new SherpaClient(app.getSampService());
     }
 
     /**

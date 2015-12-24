@@ -1,7 +1,10 @@
 package cfa.vo.interop;
 
 import cfa.vo.sherpa.SherpaClient;
+import cfa.vo.utils.Default;
+import cfa.vo.utils.Time;
 import org.astrogrid.samp.Metadata;
+import org.astrogrid.samp.Response;
 import org.astrogrid.samp.client.*;
 import org.astrogrid.samp.httpd.ServerResource;
 import org.astrogrid.samp.hub.Hub;
@@ -13,21 +16,21 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SampService {
+    private final String PING_MTYPE = "samp.app.ping";
     private final int DEFAULT_TIMEOUT = 10;
+    private final int RETRY = 100;
+    private final int RETRY_INTERVAL = 100;
     private Logger logger = Logger.getLogger(SampService.class.getName());
 
     Hub hub;
     private ClientProfile sampClientProfile = StandardClientProfile.getInstance();
     private HubConnector sampClient;
-    private SherpaClient sherpaClient;
     private Metadata metadata;
     ResourceServer resourceServer;
 
@@ -151,7 +154,7 @@ public class SampService {
     private void monitorSherpaOnce() {
         boolean newState;
         try {
-            newState = sherpaClient.ping();
+            newState = pingSherpa();
             logger.log(Level.INFO, "Sherpa client connected: " + newState);
             if (newState != sherpaUp) {
                 logger.log(Level.INFO, "Sherpa Client connection status changed: "+sherpaUp+ " -> "+newState);
@@ -160,14 +163,13 @@ public class SampService {
                     listener.run(sherpaUp);
                 }
             }
-        } catch (SampException e) {
+        } catch (Exception e) {
             logger.log(Level.WARNING, "SampException while pinging Sherpa", e);
         }
     }
 
     private void startSherpa() {
         logger.log(Level.INFO, "Starting Sherpa monitor thread");
-        sherpaClient = SherpaClient.create(this);
         Runnable sherpaMonitor = new Runnable() {
             @Override
             public void run() {
@@ -182,7 +184,7 @@ public class SampService {
         sampClient = new HubConnector(sampClientProfile);
         sampClient.declareMetadata(metadata);
         sampClient.declareSubscriptions(sampClient.computeSubscriptions());
-        sampClient.setAutoconnect(2);
+        sampClient.setActive(true);
         Runnable sampMonitor = new Runnable() {
             @Override
             public void run() {
@@ -235,5 +237,95 @@ public class SampService {
     public void addSherpaConnectionListener(SAMPConnectionListener listener) {
         sherpaListeners.add(listener);
         listener.run(sherpaUp);
+    }
+
+    public Response callSherpaAndRetry(SAMPMessage message) throws SEDException, SampException {
+        String id = null;
+        for (int i=0; i<RETRY; i++) {
+            id = findSherpa(message.get().getMType());
+            if (id == null || id.isEmpty()) {
+                try {
+                    Thread.sleep(RETRY_INTERVAL);
+                } catch (InterruptedException e) {}
+                continue;
+            }
+            try {
+                Response response = getSampClient().callAndWait(id, message.get(), 10);
+                if (isException(response)) {
+                    throw getException(response);
+                }
+                return response;
+            } catch (SampException ex) {
+                try {
+                    Thread.sleep(RETRY_INTERVAL);
+                } catch (InterruptedException e) {}
+                continue;
+            }
+        }
+        String action = "calling";
+        if (id == null) {
+            action = "finding";
+        }
+        String msg = "Tried " + action + " Sherpa for " + RETRY + " times every " + RETRY_INTERVAL + " milliseconds. Giving up";
+        throw new SEDException(msg);
+    }
+
+    public boolean pingSherpa() {
+        Time step = Default.getInstance().getTimeStep().convertTo(TimeUnit.SECONDS);
+        long seconds = step.getAmount();
+        final int stepSeconds = seconds < 1? 1 : (int) seconds;
+        try {
+            logger.log(Level.INFO, "pinging Sherpa with a " + stepSeconds + " seconds timeout");
+            String id = findSherpa(PING_MTYPE);
+            if (!id.isEmpty()) {
+                getSampClient().callAndWait(id, new PingMessage().get(), stepSeconds);
+                logger.log(Level.INFO, "Sherpa replied");
+                return true;
+            }
+        } catch (Exception ex) {
+            logger.log(Level.WARNING, "Cannot ping Sherpa");
+        }
+        return false;
+    }
+
+    private String findSherpa(String mtype) throws SampException {
+        if (!isSampUp()) {
+            logger.log(Level.WARNING, "Not connected to the hub, giving up looking for Sherpa");
+            return "";
+        }
+        logger.log(Level.INFO, "looking for Sherpa");
+        Map clients = getSampClient().getConnection().getSubscribedClients(mtype);
+        if (!clients.isEmpty()) {
+            String retval = (String) clients.keySet().iterator().next();
+            logger.log(Level.INFO, "found Sherpa with id: "+retval);
+            return retval;
+        } else {
+            logger.log(Level.WARNING, "Sherpa not found connected to the hub");
+            return "";
+        }
+    }
+
+    protected boolean isException(Response rspns) {
+        return !rspns.isOK();
+    }
+
+    protected SEDException getException(Response rspns) {
+        try {
+            String message = (String) rspns.getResult().get("message");
+            return new SEDException(message);
+        } catch (Exception ex) {
+            Logger.getLogger(SherpaClient.class.getName()).log(Level.SEVERE, null, ex);
+            return new SEDException(ex);
+        }
+    }
+
+    public class SEDException extends Exception {
+        public SEDException(String msg) {
+            super(msg);
+        }
+
+        public SEDException(Exception ex) {
+            super(ex);
+        }
     }
 }

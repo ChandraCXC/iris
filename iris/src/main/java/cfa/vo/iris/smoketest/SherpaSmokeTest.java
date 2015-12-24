@@ -83,7 +83,7 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
 
             //check that sherpa can be pinged
             log("Pinging Sherpa...");
-            SherpaClient c = SherpaClient.create(sampService);
+            SherpaClient c = new SherpaClient(sampService);
             waitUntil(c, "ping", "Cannot find Sherpa!");
 
             //Import the file using SedImporter

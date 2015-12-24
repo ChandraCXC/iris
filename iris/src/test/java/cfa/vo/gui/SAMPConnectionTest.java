@@ -3,6 +3,7 @@ package cfa.vo.gui;
 import cfa.vo.iris.test.IrisAppResource;
 import cfa.vo.iris.test.IrisUISpecAdapter;
 import cfa.vo.iris.test.unit.AbstractUISpecTest;
+import org.astrogrid.samp.client.SampException;
 import org.astrogrid.samp.hub.Hub;
 import org.astrogrid.samp.hub.HubServiceMode;
 import org.junit.*;
@@ -92,7 +93,21 @@ public class SAMPConnectionTest extends AbstractUISpecTest {
 
         // But Iris should reconnect if a new hub is started
         logger.log(Level.INFO, "starting a new hub");
-        Hub newHub = Hub.runHub(HubServiceMode.NO_GUI);
+        boolean sampRestart = false;
+        Hub newHub = null;
+        for (int i=0; i<100; i++) {
+            try {
+                newHub = Hub.runHub(HubServiceMode.NO_GUI);
+                sampRestart = true;
+                break;
+            } catch (SampException ex) {
+                Thread.sleep(100); //give the old hub some time to clean up
+            }
+        }
+        if (!sampRestart) {
+            fail("Samp should be down by now");
+        }
+
         logger.log(Level.INFO, "making sure Iris is connected within few seconds");
         checkLabel(mainWindow, "SAMP", true);
         logger.log(Level.INFO, "shutting down the new hub");

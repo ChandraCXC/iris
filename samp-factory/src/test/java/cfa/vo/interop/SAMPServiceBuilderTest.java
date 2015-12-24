@@ -79,7 +79,7 @@ public class SAMPServiceBuilderTest {
 
         logger.log(Level.INFO, "starting hub");
         try {
-            hub = Hub.runHub(HubServiceMode.NO_GUI);
+            hub = Hub.runHub(HubServiceMode.MESSAGE_GUI);
         } catch (IOException ex) {
             logger.log(Level.INFO, "a hub is already running. It's good enough for us");
         }

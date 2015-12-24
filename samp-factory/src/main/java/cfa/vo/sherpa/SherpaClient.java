@@ -17,18 +17,9 @@
 package cfa.vo.sherpa;
 
 import cfa.vo.interop.*;
-
-import cfa.vo.utils.Default;
-import cfa.vo.utils.Time;
-import org.astrogrid.samp.Message;
 import org.astrogrid.samp.Response;
-import org.astrogrid.samp.client.SampException;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SherpaClient {
@@ -36,9 +27,9 @@ public class SherpaClient {
     private SampService sampService;
     private Map<String, AbstractModel> modelMap = new HashMap<>();
     private Integer stringCounter = 0;
-    private static Logger logger = Logger.getLogger(SherpaClient.class.getName());
+    private Logger logger = Logger.getLogger(SherpaClient.class.getName());
 
-    protected SherpaClient(SampService sampService) {
+    public SherpaClient(SampService sampService) {
         this.sampService = sampService;
     }
 
@@ -51,8 +42,6 @@ public class SherpaClient {
     }
 
     public FitResults fit(Data dataset, CompositeModel model, Stat stat, Method method) throws Exception {
-
-        String sherpaPublicId = findSherpa();
 
         FitConfiguration fc = (FitConfiguration) SAMPFactory.get(FitConfiguration.class);
 
@@ -80,7 +69,7 @@ public class SherpaClient {
         fc.setMethod(method);
 
         SAMPMessage message = SAMPFactory.createMessage("spectrum.fit.fit", fc, FitConfiguration.class);
-        Response response = sampService.getSampClient().callAndWait(sherpaPublicId, message.get(), 10);
+        Response response = sendMessage(message);
 
         return (FitResults) SAMPFactory.get(response.getResult(), FitResults.class);
     }
@@ -123,90 +112,21 @@ public class SherpaClient {
         return method;
     }
 
-    protected String findSherpa() throws SampException {
-        return findSherpa(sampService);
-    }
-
-    private static String findSherpa(SampService service) throws SampException {
-        if (!service.isSampUp()) {
-            logger.log(Level.WARNING, "Not connected to the hub, giving up looking for Sherpa");
-            return "";
-        }
-        logger.log(Level.INFO, "looking for Sherpa");
-        Message msg = new Message("x-samp.query.by-meta");
-        msg.addParam("key", "samp.name");
-        msg.addParam("value", "Sherpa");
-        List<String> ids = (List<String>) service.getSampClient().callAndWait("hub", msg, 3000).getResult().get("ids");
-        if (!ids.isEmpty()) {
-            String retval = ids.get(0);
-            logger.log(Level.INFO, "found Sherpa with id: "+retval);
-            return retval;
-        } else {
-            logger.log(Level.WARNING, "Sherpa not found connected to the hub");
-            return "";
-        }
-    }
-
     public SampService getService() {
         return this.sampService;
     }
 
-    protected boolean isException(Response rspns) {
-        return !rspns.isOK();
-    }
-
-    protected Exception getException(Response rspns) throws Exception {
-        try {
-            String message = (String) rspns.getResult().get("message");
-            return new SEDException(message);
-        } catch (Exception ex) {
-            Logger.getLogger(SherpaClient.class.getName()).log(Level.SEVERE, null, ex);
-            throw new Exception(ex);
-        } 
-    }
-    
-    public class SEDException extends Exception {
-        public SEDException(String msg) {
-            super(msg);
-        }
-    }
-
     public Response sendMessage(final SAMPMessage message) throws Exception {
-        Time timeout = Default.getInstance().getSampTimeout();
-        long amount = TimeUnit.SECONDS.convert(timeout.getAmount(), timeout.getUnit());
-        Response response = sampService.getSampClient().callAndWait(findSherpa(), message.get(), (int) amount);
-        if (isException(response)) {
-            throw getException(response);
-        }
-
-        return response;
+        return sampService.callSherpaAndRetry(message);
     }
 
-    public static boolean ping(SampService sampService) {
-        Time step = Default.getInstance().getTimeStep().convertTo(TimeUnit.SECONDS);
-        long seconds = step.getAmount();
-        final int stepSeconds = seconds < 1? 1 : (int) seconds;
-        try {
-            logger.log(Level.INFO, "pinging Sherpa with a " + stepSeconds + " seconds timeout");
-            String id = findSherpa(sampService);
-            if (!id.isEmpty()) {
-                sampService.getSampClient().callAndWait(id, new PingMessage().get(), stepSeconds);
-                logger.log(Level.INFO, "Sherpa replied");
-                return true;
-            }
-        } catch (Exception ex) {
-            logger.log(Level.WARNING, "Cannot ping Sherpa");
-        }
-        return false;
+    public boolean ping() {
+        return sampService.pingSherpa();
     }
 
-    public boolean ping() throws SampException {
-        return ping(this.sampService);
-    }
-
-    public boolean ping(int nTimes, long intervalMillis) throws SampException {
+    public boolean ping(int nTimes, long intervalMillis) {
         for (int i=0; i<nTimes; i++) {
-            if (ping(this.sampService)) {
+            if (ping()) {
                 return true;
             }
             try {
@@ -217,43 +137,7 @@ public class SherpaClient {
         return false;
     }
 
-    public static SherpaClient create(final SampService sampService) {
+    public SherpaClient create(final SampService sampService) {
         return new SherpaClient(sampService);
-//        ExecutorService executor = Executors.newSingleThreadExecutor();
-//        final Time timeout = Default.getInstance().getSampTimeout().convertTo(TimeUnit.SECONDS);
-//        Time step = Default.getInstance().getTimeStep().convertTo(TimeUnit.MILLISECONDS);
-//        final int stepMillis = (int) step.getAmount();
-//        Callable<SherpaClient> callable = new Callable<SherpaClient>() {
-//            @Override
-//            public SherpaClient call() throws Exception {
-//                SherpaClient client = new SherpaClient(sampService);
-//                String id = null;
-//                while (id == null) {
-//                    try {
-//                        id = findSherpa(sampService);
-//                    } catch (SampException ex) {
-//                        Thread.sleep(stepMillis); // This will be interrupted if a timeout occurs
-//                    }
-//                }
-//
-//                boolean sherpaConnected = false;
-//                while (!sherpaConnected) {
-//                    sherpaConnected = ping(sampService);
-//                    if (!sherpaConnected) {
-//                        logger.log(Level.INFO, "Sherpa did not respond to ping, retrying in "+ stepMillis + " milliseconds");
-//                        Thread.sleep(stepMillis); // This will be interrupted if a timeout occurs
-//                    }
-//                }
-//                return client;
-//            }
-//        };
-//        Future<SherpaClient> futureSherpaClient = executor.submit(callable);
-//        try {
-//            return futureSherpaClient.get(timeout.getAmount(), timeout.getUnit());
-//        } catch (Exception ex) {
-//            throw new RuntimeException("Cannot find Sherpa!", ex);
-//        } finally {
-//            executor.shutdown();
-//        }
     }
 }

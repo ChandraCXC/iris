@@ -16,7 +16,7 @@ public class SherpaResource extends ExternalResource {
     @Override
     protected void before() throws Throwable {
         sampClient.before();
-        client = SherpaClient.create(sampClient.getSampService());
+        client = new SherpaClient(sampClient.getSampService());
         assertTrue(client.ping(60, 500));
     }
 

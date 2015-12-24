@@ -75,7 +75,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 
         this.rootFrame = ws.getRootFrame();
         this.app = app;
-        this.client = SherpaClient.create(app.getSampService());
+        this.client = new SherpaClient(app.getSampService());
         this.manager = (SedlibSedManager) ws.getSedManager();
         this.ws = ws;
 

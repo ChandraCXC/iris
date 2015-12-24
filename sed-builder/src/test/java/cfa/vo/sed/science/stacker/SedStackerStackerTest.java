@@ -33,10 +33,7 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import org.astrogrid.samp.Response;
-import org.astrogrid.samp.client.HubConnector;
-import org.astrogrid.samp.client.SampException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -44,6 +41,8 @@ import org.junit.Test;
 import static org.mockito.Mockito.*;
 
 import cfa.vo.sedlib.common.SedNoDataException;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 public class SedStackerStackerTest {
     
@@ -79,10 +78,15 @@ public class SedStackerStackerTest {
     @Before
     public void setUp() throws Exception {
         this.service = mock(SampService.class);
-        HubConnector clientMock = mock(HubConnector.class);
+//        HubConnector clientMock = mock(HubConnector.class);
 
-        when(service.getSampClient()).thenReturn(clientMock);
-        when(clientMock.callAndWait(any(String.class), any(Map.class), any(Integer.class))).thenReturn(new Response());
+//        when(service.getSampClient()).thenReturn(clientMock);
+        when(service.callSherpaAndRetry(any(SAMPMessage.class))).then(new Answer<Response>() {
+            @Override
+            public Response answer(InvocationOnMock invocationOnMock) throws Throwable {
+                return client.getResponse();
+            }
+        });
 
         this.client = new SherpaClientStub(service);
         
@@ -250,21 +254,36 @@ public class SedStackerStackerTest {
         }
 
         public boolean findSherpa = true;
+
         @Override
-        public String findSherpa() throws SampException {
-            if (findSherpa) return "";
-            throw new SampException("Sherpa not found");
+        public boolean ping() {
+            return true;
+        }
+
+        @Override
+        public boolean ping(int times, long interval) {
+            return true;
         }
 
         public boolean hasException = false;
-        @Override
-        public boolean isException(Response rspns) {
-            return hasException;
+        public Exception getException() {
+            if (hasException) {
+                return new RuntimeException("client exception");
+            } else {
+                return null;
+            }
         }
-        
-        @Override
-        public Exception getException(Response rspns) {
-            return new RuntimeException("client exception");
+
+        public Response getResponse() throws Exception {
+            if (findSherpa && !hasException) {
+                return new Response();
+            }
+
+            if (findSherpa && hasException) {
+                throw new RuntimeException("client exception");
+            }
+
+            throw new Exception("Sherpa not found");
         }
     }
     
