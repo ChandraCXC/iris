@@ -240,15 +240,8 @@ public class SampService {
     public Response callSherpaAndRetry(SAMPMessage message) throws SEDException, SampException {
         String id = null;
         for (int i=0; i<RETRY; i++) {
-            id = findSherpa(message.get().getMType());
-            if (id == null || id.isEmpty()) {
-                try {
-                    Thread.sleep(RETRY_INTERVAL);
-                } catch (InterruptedException e) {}
-                continue;
-            }
             try {
-                Response response = getSampClient().callAndWait(id, message.get(), 10);
+                Response response = getSampClient().callAndWait(findSherpa(message.get().getMType()), message.get(), 10);
                 if (isException(response)) {
                     throw getException(response);
                 }
@@ -261,9 +254,6 @@ public class SampService {
             }
         }
         String action = "calling";
-        if (id == null) {
-            action = "finding";
-        }
         String msg = "Tried " + action + " Sherpa for " + RETRY + " times every " + RETRY_INTERVAL + " milliseconds. Giving up";
         throw new SEDException(msg);
     }
