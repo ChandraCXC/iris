@@ -8,6 +8,7 @@ import org.astrogrid.samp.hub.Hub;
 import org.astrogrid.samp.hub.HubServiceMode;
 import org.junit.*;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -100,7 +101,7 @@ public class SAMPConnectionTest extends AbstractUISpecTest {
                 newHub = Hub.runHub(HubServiceMode.NO_GUI);
                 sampRestart = true;
                 break;
-            } catch (SampException ex) {
+            } catch (IOException ex) {
                 Thread.sleep(100); //give the old hub some time to clean up
             }
         }
