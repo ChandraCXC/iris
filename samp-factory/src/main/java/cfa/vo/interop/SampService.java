@@ -1,8 +1,6 @@
 package cfa.vo.interop;
 
 import cfa.vo.sherpa.SherpaClient;
-import cfa.vo.utils.Default;
-import cfa.vo.utils.Time;
 import org.astrogrid.samp.Metadata;
 import org.astrogrid.samp.Response;
 import org.astrogrid.samp.client.*;
@@ -271,9 +269,7 @@ public class SampService {
     }
 
     public boolean pingSherpa() {
-        Time step = Default.getInstance().getTimeStep().convertTo(TimeUnit.SECONDS);
-        long seconds = step.getAmount();
-        final int stepSeconds = seconds < 1? 1 : (int) seconds;
+        final int stepSeconds = 1;
         try {
             logger.log(Level.INFO, "pinging Sherpa with a " + stepSeconds + " seconds timeout");
             String id = findSherpa(PING_MTYPE);

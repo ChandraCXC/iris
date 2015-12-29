@@ -45,8 +45,6 @@ import java.util.logging.Logger;
 
 import javax.swing.JOptionPane;
 
-import org.astrogrid.samp.client.SampException;
-
 
 /**
  *

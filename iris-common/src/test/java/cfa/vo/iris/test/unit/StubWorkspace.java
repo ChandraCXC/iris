@@ -30,8 +30,6 @@ import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.units.DefaultUnitsManager;
 import cfa.vo.iris.units.UnitsManager;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.*;
 
 public class StubWorkspace implements IWorkspace {
