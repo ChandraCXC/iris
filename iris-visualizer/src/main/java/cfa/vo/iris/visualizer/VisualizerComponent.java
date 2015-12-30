@@ -74,7 +74,7 @@ public class VisualizerComponent implements IrisComponent {
         public MenuItems() {
             super();
             add(new AbstractDesktopItem("Iris Visualizer", "Visualize SED data", 
-                    "/tool.png", "/tool_tiny.png") {
+                    "/iris_button_small.png", "/iris_button_tiny.png") {
                 @Override
                 public void onClick() {
                     if (view == null) {
