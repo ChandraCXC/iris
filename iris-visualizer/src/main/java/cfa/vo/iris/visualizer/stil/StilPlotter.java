@@ -36,6 +36,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -107,7 +108,8 @@ public class StilPlotter extends JPanel {
         return new PlanePlot2Task().createPlotComponent(env, true);
     }
     
-    private void addSegmentLayers(ExtSed sed, MapEnvironment env) {
+    // TODO: Preferences, etc....
+    private void addSegmentLayers(ExtSed sed, MapEnvironment env) throws IOException {
         if (sed == null) {
             return;
         }

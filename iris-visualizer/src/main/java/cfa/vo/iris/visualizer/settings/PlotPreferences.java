@@ -17,7 +17,8 @@ public class PlotPreferences {
     public static final String Y_LOG = "ylog";
 
     // Override-able Settings
-    public static final String TYPE = "layer";
+    public static final String TYPE = "type";
+    public static final String LAYER = "layer";
     public static final String IN = "in";
     public static final String X_COL = "x";
     public static final String Y_COL = "y";
@@ -30,6 +31,7 @@ public class PlotPreferences {
     
     public static PlotPreferences getDefaultPlotPreferences() {
         return new PlotPreferences()
+                .setType("mark")
                 .setColor("blue")
                 .setXlog(true)
                 .setYlog(true)

@@ -23,7 +23,8 @@ public class SegmentLayer {
             .setXerrhi(ColumnName.X_ERR_HI.name())
             .setXerrlo(ColumnName.X_ERR_LO.name())
             .setYerrhi(ColumnName.Y_ERR_HI.name())
-            .setYerrlo(ColumnName.Y_ERR_LO.name());
+            .setYerrlo(ColumnName.Y_ERR_LO.name())
+            .setLayer("mark");
     }
 
     /**
@@ -33,13 +34,17 @@ public class SegmentLayer {
         this.preferences.put(IN + suffix, arg1);
         return this;
     }
+    
+    public Object getInSource() {
+        return this.preferences.get(IN + suffix);
+    }
 
     public Map<String, Object> getPreferences() {
         return preferences;
     }
 
-    public SegmentLayer setType(String arg1) {
-        this.preferences.put(TYPE + suffix, arg1);
+    public SegmentLayer setLayer(String arg1) {
+        this.preferences.put(LAYER + suffix, arg1);
         return this;
     }
 
