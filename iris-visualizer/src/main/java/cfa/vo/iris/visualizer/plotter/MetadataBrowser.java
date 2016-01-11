@@ -40,7 +40,27 @@ public class MetadataBrowser extends JInternalFrame {
     private JTextField textField;
     private JTable metadataTable;
     private JTable segmentTable;
-
+    
+    // Window Objects
+    private JButton btnFilter;
+    private JScrollPane dataScrollPane;
+    private JScrollPane scrollPane;
+    private JButton selectAll;
+    
+    // Menu Items
+    JMenuBar menuBar = new JMenuBar();
+    JMenu extractMenu = new JMenu("Extract\n");
+    JMenuItem mntmExtraeextractlkj = new JMenuItem("Extract to new SED");
+    JMenuItem mntmSendToSamp = new JMenuItem("Broadcast to SAMP");
+    JMenuItem mntmCreate = new JMenuItem("Create Subset");
+    JMenu mnEdit = new JMenu("Edit");
+    JMenuItem menuItem_1 = new JMenuItem("Create New Colum");
+    JMenuItem menuItem_2 = new JMenuItem("Restore Set");
+    JMenu mnSelect = new JMenu("Select");
+    JMenuItem menuItem = new JMenuItem("Invert Selection");
+    JMenuItem mntmApplyMask = new JMenuItem("Apply Mask");
+    JMenuItem mntmNewMenuItem = new JMenuItem("New menu item");
+    
     /**
      * Create the frame.
      * 
@@ -66,34 +86,43 @@ public class MetadataBrowser extends JInternalFrame {
             }
         });
         setBounds(100, 100, 1013, 599);
+        
         textField = new JTextField();
         textField.setColumns(10);
-        JButton btnFilter = new JButton("Select Points");
+        
+        btnFilter = new JButton("Select Points");
         btnFilter.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
             }
         });
+        
         JButton button = new JButton("Apply Mask");
-        JScrollPane dataScrollPane = new JScrollPane();
+        
+        dataScrollPane = new JScrollPane();
         dataScrollPane.setHorizontalScrollBarPolicy(
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         dataScrollPane.setViewportBorder(
                 new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
         dataScrollPane.setVerticalScrollBarPolicy(
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        
         metadataTable = new JTable();
         dataScrollPane.setViewportView(metadataTable);
-        JScrollPane scrollPane = new JScrollPane();
+        
+        scrollPane = new JScrollPane();
         scrollPane.setViewportBorder(
                 new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
         scrollPane.setVerticalScrollBarPolicy(
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        
         segmentTable = new JTable(
                 new Object[][] { { "Segment 1" }, { "Segment 2" },
                         { "Subset 1" }, { "SED 2" } },
                 new String[] { "Object Names" });
         scrollPane.setViewportView(segmentTable);
-        JButton button_1 = new JButton("Select All");
+        
+        selectAll = new JButton("Select All");
+        
         GroupLayout groupLayout = new GroupLayout(getContentPane());
         groupLayout.setHorizontalGroup(groupLayout
                 .createParallelGroup(Alignment.LEADING)
@@ -108,7 +137,7 @@ public class MetadataBrowser extends JInternalFrame {
                                                 GroupLayout.DEFAULT_SIZE, 761,
                                                 Short.MAX_VALUE))
                                 .addGroup(groupLayout.createSequentialGroup()
-                                        .addComponent(button_1).addGap(117)
+                                        .addComponent(selectAll).addGap(117)
                                         .addComponent(textField,
                                                 GroupLayout.PREFERRED_SIZE, 305,
                                                 GroupLayout.PREFERRED_SIZE)
@@ -135,7 +164,7 @@ public class MetadataBrowser extends JInternalFrame {
                         .addGroup(groupLayout
                                 .createParallelGroup(Alignment.LEADING)
                                 .addGroup(groupLayout.createSequentialGroup()
-                                        .addGap(2).addComponent(button_1,
+                                        .addGap(2).addComponent(selectAll,
                                                 GroupLayout.PREFERRED_SIZE, 30,
                                                 GroupLayout.PREFERRED_SIZE))
                                 .addComponent(textField,
@@ -149,29 +178,18 @@ public class MetadataBrowser extends JInternalFrame {
                                         GroupLayout.PREFERRED_SIZE))
                         .addGap(10)));
         getContentPane().setLayout(groupLayout);
-        JMenuBar menuBar = new JMenuBar();
+        
         setJMenuBar(menuBar);
-        JMenu extractMenu = new JMenu("Extract\n");
         menuBar.add(extractMenu);
-        JMenuItem mntmExtraeextractlkj = new JMenuItem("Extract to new SED");
         extractMenu.add(mntmExtraeextractlkj);
-        JMenuItem mntmSendToSamp = new JMenuItem("Broadcast to SAMP");
         extractMenu.add(mntmSendToSamp);
-        JMenuItem mntmCreate = new JMenuItem("Create Subset");
         extractMenu.add(mntmCreate);
-        JMenu mnEdit = new JMenu("Edit");
         menuBar.add(mnEdit);
-        JMenuItem menuItem_1 = new JMenuItem("Create New Colum");
         mnEdit.add(menuItem_1);
-        JMenuItem menuItem_2 = new JMenuItem("Restore Set");
         mnEdit.add(menuItem_2);
-        JMenu mnSelect = new JMenu("Select");
         menuBar.add(mnSelect);
-        JMenuItem menuItem = new JMenuItem("Invert Selection");
         mnSelect.add(menuItem);
-        JMenuItem mntmApplyMask = new JMenuItem("Apply Mask");
         mnSelect.add(mntmApplyMask);
-        JMenuItem mntmNewMenuItem = new JMenuItem("New menu item");
         mnSelect.add(mntmNewMenuItem);
     }
 }
