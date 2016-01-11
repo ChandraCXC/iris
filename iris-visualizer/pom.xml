@@ -48,5 +48,10 @@
             <version>0.5.2</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>star.bristol.ac.uk</groupId>
+            <artifactId>STILTS</artifactId>
+            <version>3.0-12</version>
+        </dependency>
     </dependencies>
 </project>
