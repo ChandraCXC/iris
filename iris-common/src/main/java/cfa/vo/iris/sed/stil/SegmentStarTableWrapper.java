@@ -7,6 +7,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
+
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.DescribedValue;
 import uk.ac.starlink.table.RowSequence;
@@ -42,7 +44,11 @@ public class SegmentStarTableWrapper implements StarTable {
         this.data = data;
         this.columnInfo = createColumnInfo();
         
-        this.id = UUID.randomUUID().toString();
+        if (data.getDataID() != null && data.getDataID().getTitle() != null) {
+            this.id = data.getDataID().getTitle().getId();
+        } else {
+            this.id = UUID.randomUUID().toString();
+        }
     }
     
     private ColumnInfo[] createColumnInfo() {
@@ -61,10 +67,6 @@ public class SegmentStarTableWrapper implements StarTable {
         
         return infos.toArray(new ColumnInfo[0]);
     }
-    
-    public String getId() {
-        return this.id;
-    }
 
     @Override
     public int getColumnCount() {
@@ -78,7 +80,7 @@ public class SegmentStarTableWrapper implements StarTable {
 
     @Override
     public String getName() {
-        return data.getTarget().getName().getName();
+        return this.id;
     }
 
     @Override
@@ -104,7 +106,7 @@ public class SegmentStarTableWrapper implements StarTable {
 
     @Override
     public Object getCell(long irow, int icol) throws IOException {
-        throw new RuntimeException("Called getCell");
+        return this.getRow(irow)[icol];
     }
 
     @Override
@@ -142,7 +144,7 @@ public class SegmentStarTableWrapper implements StarTable {
     // Hopefully we won't need these?
     @Override
     public List getParameters() {
-        throw new RuntimeException("Called getParameters");
+        return new ArrayList();
     }
 
     @Override

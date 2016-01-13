@@ -32,16 +32,28 @@ import java.awt.event.ActionEvent;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.BevelBorder;
+
+import cfa.vo.iris.IWorkspace;
+import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.visualizer.stil.StarTableAdapter;
+import cfa.vo.sedlib.ISegment;
+import uk.ac.starlink.table.JoinStarTable;
+import uk.ac.starlink.table.StarTable;
+import uk.ac.starlink.table.gui.StarJTable;
+
 import javax.swing.JFrame;
 
 public class MetadataBrowser extends JInternalFrame {
     
     private static final long serialVersionUID = 1L;
+    
+    private IWorkspace ws;
+    private StarTableAdapter<ISegment> starTableAdapter;
+    
+    // Window Objects
     private JTextField textField;
     private JTable metadataTable;
     private JTable segmentTable;
-    
-    // Window Objects
     private JButton btnFilter;
     private JScrollPane dataScrollPane;
     private JScrollPane scrollPane;
@@ -66,7 +78,10 @@ public class MetadataBrowser extends JInternalFrame {
      * 
      * @throws Exception
      */
-    public MetadataBrowser() throws Exception {
+    public MetadataBrowser(IWorkspace ws, StarTableAdapter<ISegment> adapter) throws Exception {
+        this.ws = ws;
+        this.starTableAdapter = adapter;
+        
         setToolTipText(
                 "View and browse metadata for existing SEDs in the plotting window");
         setTitle("Metadata Browser");
@@ -106,8 +121,7 @@ public class MetadataBrowser extends JInternalFrame {
         dataScrollPane.setVerticalScrollBarPolicy(
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         
-        metadataTable = new JTable();
-        dataScrollPane.setViewportView(metadataTable);
+        createDataTable();
         
         scrollPane = new JScrollPane();
         scrollPane.setViewportBorder(
@@ -191,5 +205,23 @@ public class MetadataBrowser extends JInternalFrame {
         mnSelect.add(menuItem);
         mnSelect.add(mntmApplyMask);
         mnSelect.add(mntmNewMenuItem);
+    }
+    
+    private void createDataTable() {
+        ExtSed selected = (ExtSed) ws.getSedManager().getSelected();
+        
+        if (selected == null) {
+            return;
+        }
+        
+        StarTable[] tables = new StarTable[selected.getNumberOfSegments()];
+        for (int i=0; i<selected.getNumberOfSegments(); i++) {
+            tables[i] = starTableAdapter.convertStarTable(selected.getSegment(i));
+        }
+        
+        JoinStarTable table = new JoinStarTable(tables);
+        
+        metadataTable = new StarJTable(table, true);
+        dataScrollPane.setViewportView(metadataTable);
     }
 }

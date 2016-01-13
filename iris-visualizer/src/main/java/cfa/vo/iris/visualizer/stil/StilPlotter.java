@@ -20,7 +20,6 @@ import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.ISedManager;
-import cfa.vo.iris.sed.stil.SegmentStarTableWrapper;
 import cfa.vo.iris.visualizer.settings.PlotPreferences;
 import cfa.vo.iris.visualizer.settings.SegmentLayer;
 import cfa.vo.sedlib.ISegment;
@@ -31,8 +30,6 @@ import uk.ac.starlink.ttools.task.MapEnvironment;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.border.BevelBorder;
-
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import java.awt.GridLayout;
 import java.awt.Insets;
@@ -52,13 +49,13 @@ public class StilPlotter extends JPanel {
     private IrisApplication app;
     private IWorkspace ws;
     private ISedManager<ExtSed> sedManager;
-    private StarTableAdapter adapter;
+    private StarTableAdapter<ISegment> adapter;
     
     // How can we keep this in sync with the iris application?
     private Map<ISegment, SegmentLayer> segments;
     private PlotPreferences plotPreferences;
     
-    public StilPlotter(IrisApplication app, IWorkspace ws, StarTableAdapter adapter) {
+    public StilPlotter(IrisApplication app, IWorkspace ws, StarTableAdapter<ISegment> adapter) {
         this.adapter = adapter;
         this.ws = ws;
         this.app = app;
@@ -120,7 +117,7 @@ public class StilPlotter extends JPanel {
             ISegment segment = sed.getSegment(i);
             
             if (!segments.containsKey(segment)) {
-                segments.put(segment, new SegmentLayer(new SegmentStarTableWrapper(segment)));
+                segments.put(segment, new SegmentLayer(adapter.convertStarTable(segment)));
             }
             
             SegmentLayer layer = segments.get(segment);

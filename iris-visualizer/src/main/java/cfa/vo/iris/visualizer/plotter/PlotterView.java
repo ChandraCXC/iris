@@ -38,8 +38,11 @@ import javax.swing.JCheckBox;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.gui.NarrowOptionPane;
-import cfa.vo.iris.visualizer.stil.SedStarTableAdapter;
+import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.visualizer.stil.SegmentStarTableAdapter;
+import cfa.vo.iris.visualizer.stil.StarTableAdapter;
 import cfa.vo.iris.visualizer.stil.StilPlotter;
+import cfa.vo.sedlib.ISegment;
 import cfa.vo.iris.IWorkspace;
 import javax.swing.JFrame;
 
@@ -53,7 +56,7 @@ public class PlotterView extends JInternalFrame {
     // Plotting Components
     private StilPlotter plotter;
     private JInternalFrame residuals;
-    
+    private StarTableAdapter<ISegment> starTableAdapter;
     protected MetadataBrowser metadataBrowser;
     
     // Buttons, etc.
@@ -114,13 +117,14 @@ public class PlotterView extends JInternalFrame {
         setBounds(100, 100, 1096, 800);
         toFront();
         
-        this.metadataBrowser = new MetadataBrowser();
+        this.starTableAdapter = new SegmentStarTableAdapter();
+        this.metadataBrowser = new MetadataBrowser(ws, starTableAdapter);
         
         this.ws = ws;
         this.app = app;
         
         // TODO: StarTableAdapters?
-        plotter = new StilPlotter(app, ws, new SedStarTableAdapter());
+        plotter = new StilPlotter(app, ws, starTableAdapter);
         residuals = new JInternalFrame();
         
         initializeComponents();

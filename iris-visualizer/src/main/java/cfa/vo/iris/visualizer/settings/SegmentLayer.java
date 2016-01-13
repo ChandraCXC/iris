@@ -3,8 +3,8 @@ package cfa.vo.iris.visualizer.settings;
 import java.util.HashMap;
 import java.util.Map;
 
-import cfa.vo.iris.sed.stil.SegmentStarTableWrapper;
 import cfa.vo.iris.sed.stil.SegmentStarTableWrapper.ColumnName;
+import uk.ac.starlink.table.StarTable;
 
 import static cfa.vo.iris.visualizer.settings.PlotPreferences.*;
 
@@ -13,9 +13,9 @@ public class SegmentLayer {
     private Map<String, Object> preferences;
     private String suffix;
 
-    public SegmentLayer(SegmentStarTableWrapper table) {
+    public SegmentLayer(StarTable table) {
         this.preferences = new HashMap<String, Object>();
-        this.suffix = '_' + table.getId();
+        this.suffix = '_' + table.getName();
         
         this.setInSource(table)
             .setXCol(ColumnName.X_COL.name())
