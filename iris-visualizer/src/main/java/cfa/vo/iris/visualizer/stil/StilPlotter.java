@@ -20,6 +20,7 @@ import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.ISedManager;
+import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.visualizer.settings.PlotPreferences;
 import cfa.vo.iris.visualizer.settings.SegmentLayer;
 import cfa.vo.sedlib.ISegment;

@@ -1,6 +1,5 @@
-package cfa.vo.iris.visualizer.stil;
+package cfa.vo.iris.sed.stil;
 
-import cfa.vo.iris.sed.stil.SegmentStarTableWrapper;
 import cfa.vo.sedlib.ISegment;
 import uk.ac.starlink.table.StarTable;
 

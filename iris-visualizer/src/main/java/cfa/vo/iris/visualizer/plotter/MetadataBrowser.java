@@ -35,7 +35,7 @@ import javax.swing.border.BevelBorder;
 
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.visualizer.stil.StarTableAdapter;
+import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.sedlib.ISegment;
 import uk.ac.starlink.table.JoinStarTable;
 import uk.ac.starlink.table.StarTable;

@@ -1,4 +1,4 @@
-package cfa.vo.iris.visualizer.stil;
+package cfa.vo.iris.sed.stil;
 
 import uk.ac.starlink.table.StarTable;
 
