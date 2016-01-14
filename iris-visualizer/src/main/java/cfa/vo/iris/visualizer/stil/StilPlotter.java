@@ -96,9 +96,16 @@ public class StilPlotter extends JPanel {
         
         MapEnvironment env = new MapEnvironment();
         env.setValue("type", "plot2plane");
-        env.setValue("insets", new Insets(50, 40, 40, 40));
+        env.setValue("insets", new Insets(50, 80, 50, 50)); 
+        // TODO: force numbers on Y axis to only be 3-5 digits long. Keeps
+        // Y-label from falling off the jpanel. Conversely, don't set "insets"
+        // and let the plotter dynamically change size to keep axes labels
+        // on the plot.
         
         ExtSed sed = sedManager.getSelected();
+        
+        // set title of plot
+        env.setValue("title", sed.getId());
         
         // Add high level plot preferences
         for (String key : plotPreferences.getPreferences().keySet()) {
