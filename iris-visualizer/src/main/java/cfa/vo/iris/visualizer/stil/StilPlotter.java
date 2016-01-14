@@ -77,15 +77,18 @@ public class StilPlotter extends JPanel {
         if (display != null) {
             display.removeAll();
             remove(display);
+            display = null; // just to be safe
         }
         
         try {
-            this.display = createPlotComponent();
+            display = createPlotComponent();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         
         add(display, BorderLayout.CENTER);
+        display.revalidate();
+        display.repaint();
     }
     
     private PlotDisplay createPlotComponent() throws Exception {
