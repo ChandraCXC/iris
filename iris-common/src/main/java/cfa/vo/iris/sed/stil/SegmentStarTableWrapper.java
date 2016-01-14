@@ -44,7 +44,10 @@ public class SegmentStarTableWrapper implements StarTable {
         this.data = data;
         this.columnInfo = createColumnInfo();
         
-        if (data.getDataID() != null && data.getDataID().getTitle() != null) {
+        if (data.getDataID() != null && 
+            data.getDataID().getTitle() != null &&
+            !StringUtils.isEmpty(data.getDataID().getTitle().getId())) 
+        {
             this.id = data.getDataID().getTitle().getId();
         } else {
             this.id = UUID.randomUUID().toString();
