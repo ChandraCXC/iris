@@ -152,7 +152,7 @@ public class PlotterView extends JInternalFrame {
     
     private void openMetadataBrowser() throws Exception {
         if (!metadataBrowser.isVisible()) {
-            this.ws.getDesktop().add("Metadata Browser", metadataBrowser);
+            ws.addFrame(metadataBrowser);
             GUIUtils.moveToFront(metadataBrowser);
         }
         else {

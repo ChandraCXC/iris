@@ -83,7 +83,7 @@ public class VisualizerComponent implements IrisComponent {
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);
                         }
-                        ws.getDesktop().add(view);
+                        ws.addFrame(view);
                     }
                     GUIUtils.moveToFront(view);
                 }
