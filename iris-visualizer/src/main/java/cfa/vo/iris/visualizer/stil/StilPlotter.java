@@ -34,8 +34,8 @@ import javax.swing.border.BevelBorder;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 import java.util.logging.Logger;
 
 public class StilPlotter extends JPanel {
@@ -51,7 +51,7 @@ public class StilPlotter extends JPanel {
     private ISedManager<ExtSed> sedManager;
     private StarTableAdapter<ISegment> adapter;
     
-    // How can we keep this in sync with the iris application?
+    // TODO: How can we keep this in sync with the iris application?
     private Map<ISegment, SegmentLayer> segments;
     private PlotPreferences plotPreferences;
     
@@ -60,7 +60,9 @@ public class StilPlotter extends JPanel {
         this.ws = ws;
         this.app = app;
         this.sedManager = ws.getSedManager();
-        this.segments = new HashMap<>();
+        
+        // Use weak key references so that unused segments will be caught by the gc.
+        this.segments = new WeakHashMap<>();
         this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
         
         setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
