@@ -21,8 +21,8 @@ import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.ISedManager;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
-import cfa.vo.iris.visualizer.settings.PlotPreferences;
-import cfa.vo.iris.visualizer.settings.SegmentLayer;
+import cfa.vo.iris.visualizer.stil.preferences.PlotPreferences;
+import cfa.vo.iris.visualizer.stil.preferences.SegmentLayer;
 import cfa.vo.sedlib.ISegment;
 import uk.ac.starlink.ttools.plot2.task.PlanePlot2Task;
 import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
@@ -31,6 +31,8 @@ import uk.ac.starlink.ttools.task.MapEnvironment;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.border.BevelBorder;
+
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import java.awt.GridLayout;
 import java.awt.Insets;

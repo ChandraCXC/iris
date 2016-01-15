@@ -1,4 +1,4 @@
-package cfa.vo.iris.visualizer.settings;
+package cfa.vo.iris.visualizer.stil.preferences;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +32,7 @@ public class PlotPreferences {
     public static final String Y_ERR_LO = "yerrlo";
     public static final String COLOR = "color";
     public static final String ERROR_BAR = "errorbar";
+    public static final String SIZE = "size";
     
     public static PlotPreferences getDefaultPlotPreferences() {
         return new PlotPreferences()
