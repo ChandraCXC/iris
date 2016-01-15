@@ -7,7 +7,7 @@ public class SegmentStarTableAdapter implements StarTableAdapter<ISegment> {
 
     @Override
     public StarTable convertStarTable(ISegment data) {
-        return new SegmentStarTableWrapper(data);
+        return new SegmentStarTable(data);
     }
 
 }

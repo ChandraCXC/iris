@@ -3,7 +3,7 @@ package cfa.vo.iris.visualizer.settings;
 import java.util.HashMap;
 import java.util.Map;
 
-import cfa.vo.iris.sed.stil.SegmentStarTableWrapper.ColumnName;
+import cfa.vo.iris.sed.stil.SegmentStarTable.ColumnName;
 import uk.ac.starlink.table.StarTable;
 
 import static cfa.vo.iris.visualizer.settings.PlotPreferences.*;

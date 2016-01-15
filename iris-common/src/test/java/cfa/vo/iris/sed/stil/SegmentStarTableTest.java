@@ -3,7 +3,7 @@ package cfa.vo.iris.sed.stil;
 import org.junit.Before;
 import org.junit.Test;
 
-import cfa.vo.iris.sed.stil.SegmentStarTableWrapper.ColumnName;
+import cfa.vo.iris.sed.stil.SegmentStarTable.ColumnName;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.io.SedFormat;
 import uk.ac.starlink.table.RowSequence;
@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 
 import org.apache.commons.lang.StringUtils;
 
-public class SegmentStarTableWrapperTest {
+public class SegmentStarTableTest {
     
     private Sed sed;
     
@@ -24,7 +24,7 @@ public class SegmentStarTableWrapperTest {
 
     @Test
     public void testStarTable() throws Exception {
-        SegmentStarTableWrapper table = new SegmentStarTableWrapper(sed.getSegment(0)); 
+        SegmentStarTable table = new SegmentStarTable(sed.getSegment(0)); 
         
         assertTrue(!StringUtils.isEmpty(table.getName()));
         assertEquals(455, table.getRowCount());

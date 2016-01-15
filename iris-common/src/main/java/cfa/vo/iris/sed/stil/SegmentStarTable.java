@@ -16,7 +16,7 @@ import uk.ac.starlink.table.StarTable;
 import cfa.vo.sedlib.ISegment;
 import cfa.vo.sedlib.Point;
 
-public class SegmentStarTableWrapper implements StarTable {
+public class SegmentStarTable implements StarTable {
     
     private ISegment data;
     private ColumnInfo[] columnInfo;
@@ -40,7 +40,7 @@ public class SegmentStarTableWrapper implements StarTable {
         }
     }
     
-    public SegmentStarTableWrapper(ISegment data) {
+    public SegmentStarTable(ISegment data) {
         this.data = data;
         this.columnInfo = createColumnInfo();
         
