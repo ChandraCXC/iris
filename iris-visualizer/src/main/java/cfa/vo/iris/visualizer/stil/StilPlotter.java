@@ -104,25 +104,24 @@ public class StilPlotter extends JPanel {
         
         ExtSed sed = sedManager.getSelected();
         
-        // set title of plot
-        env.setValue("title", sed.getId());
-        
         // Add high level plot preferences
         for (String key : plotPreferences.getPreferences().keySet()) {
             env.setValue(key, plotPreferences.getPreferences().get(key));
         }
         
-        // Add segments and segment preferences
-        addSegmentLayers(sed, env);
+        if (sed != null) {
+            // set title of plot if available
+            env.setValue("title", sed.getId());
+            
+            // Add segments and segment preferences
+            addSegmentLayers(sed, env);
+        }
         
         return new PlanePlot2Task().createPlotComponent(env, true);
     }
     
     // TODO: Preferences, etc....
     private void addSegmentLayers(ExtSed sed, MapEnvironment env) throws IOException {
-        if (sed == null) {
-            return;
-        }
         
         logger.info(String.format("Plotting SED with %s segments...", sed.getNamespace()));
         
