@@ -8,13 +8,16 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.DescribedValue;
 import uk.ac.starlink.table.RowSequence;
 import uk.ac.starlink.table.StarTable;
+import cfa.vo.sedlib.Accuracy;
 import cfa.vo.sedlib.ISegment;
 import cfa.vo.sedlib.Point;
+import cfa.vo.sedlib.SedQuantity;
 
 public class SegmentStarTable implements StarTable {
     
@@ -25,9 +28,9 @@ public class SegmentStarTable implements StarTable {
     public enum ColumnName {
         // Order is important. DO NOT CHANGE.
         X_COL("X axis values", Double.class),
+        Y_COL("Y axis values", Double.class),
         X_ERR_HI("X axis high error values", Double.class),
         X_ERR_LO("X axis low error values", Double.class),
-        Y_COL("Y axis values", Double.class),
         Y_ERR_HI("Y axis high error values", Double.class),
         Y_ERR_LO("Y axis low error values", Double.class);
         
@@ -122,21 +125,47 @@ public class SegmentStarTable implements StarTable {
 
         Object[] row = new Object[ColumnName.values().length];
 
+        // X and Y values
         Double xCol = new Double(point.getSpectralAxis().getValue().getValue());
-        Double xErrHi = xCol;
-        Double xErrLo = xCol;
         Double yCol = new Double(point.getFluxAxis().getValue().getValue());
-        Double yErrHi = yCol;
-        Double yErrLo = yCol;
 
         row[0] = xCol;
-        row[1] = xErrHi;
-        row[2] = xErrLo;
-        row[3] = yCol;
-        row[4] = yErrHi;
-        row[5] = yErrLo;
+        row[1] = yCol;
+        
+        // X axis error values
+        Double[] xvalues = getAccuracy(point.getSpectralAxis().getAccuracy(), xCol);
+        row[2] = xvalues[0];
+        row[3] = xvalues[1];
+        
+        // Y axis error values
+        Double[] yvalues = getAccuracy(point.getFluxAxis().getAccuracy(), yCol);
+        row[4] = yvalues[0];
+        row[5] = yvalues[1];
 
         return row;
+    }
+    
+    private Double[] getAccuracy(Accuracy accuracy, Double x) {
+        Double[] values = new Double[2];
+        
+        if (accuracy == null) {
+            return values;
+        }
+        
+        if (accuracy.isSetStatErrHigh()) {
+            values[0] = new Double(accuracy.getStatErrHigh().getValue());
+        }
+        if (accuracy.isSetStatErrLow()) {
+            values[1] = new Double(accuracy.getStatErrLow().getValue());
+        }
+        
+        if (accuracy.isSetStatError()) {
+            Double acc = new Double(accuracy.getStatError().getValue());
+            values[0] = x + acc;
+            values[1] = x - acc;
+        }
+        
+        return values;
     }
 
     @Override

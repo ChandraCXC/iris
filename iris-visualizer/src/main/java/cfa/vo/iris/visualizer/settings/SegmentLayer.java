@@ -18,13 +18,18 @@ public class SegmentLayer {
         this.suffix = '_' + table.getName();
         
         this.setInSource(table)
+        
+            // TODO: Rework when we have more intelligent column implementation
             .setXCol(ColumnName.X_COL.name())
             .setYCol(ColumnName.Y_COL.name())
             .setXerrhi(ColumnName.X_ERR_HI.name())
             .setXerrlo(ColumnName.X_ERR_LO.name())
             .setYerrhi(ColumnName.Y_ERR_HI.name())
             .setYerrlo(ColumnName.Y_ERR_LO.name())
-            .setLayer("mark");
+            
+            // TODO: include actual value on plot.
+            .setLayerType("xyerror")
+            .setErrBar("capped_lines");
     }
 
     /**
@@ -43,8 +48,13 @@ public class SegmentLayer {
         return preferences;
     }
 
-    public SegmentLayer setLayer(String arg1) {
+    public SegmentLayer setLayerType(String arg1) {
         this.preferences.put(LAYER + suffix, arg1);
+        return this;
+    }    
+    
+    public SegmentLayer setErrBar(String arg1) {
+        this.preferences.put(ERROR_BAR + suffix, arg1);
         return this;
     }
 

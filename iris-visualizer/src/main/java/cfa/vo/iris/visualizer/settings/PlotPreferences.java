@@ -3,6 +3,10 @@ package cfa.vo.iris.visualizer.settings;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
+import cfa.vo.iris.sed.stil.SegmentStarTable.ColumnName;
+
 public class PlotPreferences {
     
     // This is only a small sample of the preferences available in STILTS, for
@@ -31,15 +35,10 @@ public class PlotPreferences {
     
     public static PlotPreferences getDefaultPlotPreferences() {
         return new PlotPreferences()
-                .setType("mark")
                 .setColor("blue")
                 .setXlog(true)
                 .setYlog(true)
-                .setGrid(true)
-                .setxCol("DataSpectralValue")
-                .setyCol("DataFluxValue")
-                .setYerrhi("DataFluxStatErr")
-                .setErrBar("capped_lines");
+                .setGrid(true);
     }
     
     private Map<String, Object> preferences;

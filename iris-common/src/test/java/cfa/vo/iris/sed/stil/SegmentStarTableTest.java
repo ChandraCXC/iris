@@ -11,6 +11,7 @@ import uk.ac.starlink.table.RowSequence;
 import static org.junit.Assert.*;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 public class SegmentStarTableTest {
     
@@ -31,7 +32,8 @@ public class SegmentStarTableTest {
         assertTrue(table.isRandom());
         
         assertEquals(new Double("6.17E23"), (Double) table.getCell(0, 0), 100);
-        assertEquals(new Double("6.17E23"), (Double) table.getRow(0)[0]);
+        assertEquals(new Double("6.17E23"), (Double) table.getRow(0)[0], 100);
+        assertEquals(new Double("5.019E-7"), (Double) table.getCell(1, 4), .00001);
 
         assertEquals(6, table.getColumnCount());
         assertEquals(6, table.getColumnAuxDataInfos().size());
