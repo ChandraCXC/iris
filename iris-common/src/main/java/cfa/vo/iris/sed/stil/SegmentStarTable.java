@@ -160,9 +160,7 @@ public class SegmentStarTable implements StarTable {
         }
         
         if (accuracy.isSetStatError()) {
-            Double acc = new Double(accuracy.getStatError().getValue());
-            values[0] = x + acc;
-            values[1] = x - acc;
+            values[0] = new Double(accuracy.getStatError().getValue());
         }
         
         return values;
