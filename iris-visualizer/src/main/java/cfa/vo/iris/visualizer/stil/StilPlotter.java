@@ -39,6 +39,7 @@ import java.awt.Insets;
 import java.io.IOException;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class StilPlotter extends JPanel {
@@ -118,6 +119,9 @@ public class StilPlotter extends JPanel {
             // Add segments and segment preferences
             addSegmentLayers(sed, env);
         }
+        
+        logger.log(Level.FINE, "plot environment:");
+        logger.log(Level.FINE, ReflectionToStringBuilder.toString(env));
         
         return new PlanePlot2Task().createPlotComponent(env, true);
     }
