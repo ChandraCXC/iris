@@ -224,4 +224,8 @@ public class MetadataBrowser extends JInternalFrame {
         metadataTable = new StarJTable(table, true);
         dataScrollPane.setViewportView(metadataTable);
     }
+
+    public void reset() {
+        createDataTable();
+    }
 }

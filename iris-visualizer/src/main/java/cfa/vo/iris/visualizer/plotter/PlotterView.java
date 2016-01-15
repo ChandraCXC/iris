@@ -161,6 +161,7 @@ public class PlotterView extends JInternalFrame {
     }
     
     private void resetPlot() {
+        this.metadataBrowser.reset();
         this.plotter.reset();
     }
     
