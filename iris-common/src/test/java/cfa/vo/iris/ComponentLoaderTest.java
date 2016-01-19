@@ -40,7 +40,7 @@ public class ComponentLoaderTest {
 
     @Test
     public void testLoadComponents() {
-        ComponentLoader loader = new ComponentLoader(testUrl);
+        ComponentLoader loader = new ComponentLoader(testUrl, new ArrayList());
         Collection<IrisComponent> components = loader.getComponents();
 
         assertEquals(1, components.size());
@@ -54,6 +54,19 @@ public class ComponentLoaderTest {
         IrisComponent comp = loader.getComponent("testcomponent");
         assertNotNull(comp);
         assertTrue(comp instanceof TestIrisComponent);
+    }
+    
+    public void testLoadExtraComponents() {
+        Collection<Class<? extends IrisComponent>> comps = new ArrayList<>();
+        comps.add(TestIrisComponent.class);
+        ComponentLoader loader = new ComponentLoader(null, comps);
+        
+        Collection<IrisComponent> components = loader.getComponents();
+        
+        assertEquals(1, components.size());
+        Iterator<IrisComponent> it = components.iterator();
+        assertTrue(it.hasNext());
+        assertTrue(it.next() instanceof TestIrisComponent);
     }
 
     @Test
