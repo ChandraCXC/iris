@@ -26,11 +26,11 @@
  */
 package cfa.vo.sed.gui;
 
+import cfa.vo.interop.SampService;
 import cfa.vo.iris.events.*;
 import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.gui.widgets.SedList;
-import cfa.vo.iris.interop.SedSAMPController;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.sed.quantities.IUnit;
@@ -48,6 +48,7 @@ import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import org.astrogrid.samp.client.SampException;
 import org.jdesktop.application.Action;
+import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
 import org.jdesktop.swingx.JXBusyLabel;
 
@@ -65,13 +66,10 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author olaurino
- */
 public class SedBuilderMainView extends JInternalFrame {
 
     private SedlibSedManager manager;
+    private SampService sampService;
     private JFrame rootFrame;
     private LoadSegmentFrame loadFrame;
     JXBusyLabel busy = new JXBusyLabel();
@@ -79,12 +77,13 @@ public class SedBuilderMainView extends JInternalFrame {
     public static final String PROP_SED = "sed";
 
     /** Creates new form SedBuilderMainView */
-    public SedBuilderMainView(final SedlibSedManager manager, JFrame rootFrame) {
+    public SedBuilderMainView(final SedlibSedManager manager, JFrame rootFrame, SampService sampService) {
         initComponents();
 
         jToolBar3.add(busy);
 
         this.manager = manager;
+        this.sampService = sampService;
 
         loadFrame = new LoadSegmentFrame(manager);
         SedBuilder.getWorkspace().addFrame(loadFrame);
@@ -800,10 +799,8 @@ public class SedBuilderMainView extends JInternalFrame {
     @Action
     public void broadcast() {
         try {
-
-            //            ((SedSAMPController)SedBuilder.getApplication().getSAMPController()).sendSedMessage(sed);
-            ((SedSAMPController) SedBuilder.getApplication().getSAMPController()).sendSedMessage(ExtSed.flatten(sed, xunit, yunit));
-
+            ExtSed flattened = ExtSed.flatten(sed, xunit, yunit);
+            flattened.sendSedMessage(sampService);
 
         } catch (Exception ex) {
             NarrowOptionPane.showMessageDialog(SedBuilder.getWorkspace().getRootFrame(),
@@ -1058,7 +1055,7 @@ public class SedBuilderMainView extends JInternalFrame {
         try {
             ExtSed s = new ExtSed(sed.getId() + "Selection", false);
             s.addSegment(selectedSegments);
-            ((SedSAMPController) SedBuilder.getApplication().getSAMPController()).sendSedMessage(s);
+            s.sendSedMessage(sampService);
         } catch (SedInconsistentException ex) {//If the segment is already in the SED this exception can't be thrown.
             Logger.getLogger(SedBuilderMainView.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SedNoDataException ex) {//If the segment is alreadt in the SED this exception can't be thrown.

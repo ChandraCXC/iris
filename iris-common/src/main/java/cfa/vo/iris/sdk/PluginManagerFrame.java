@@ -21,11 +21,11 @@
  */
 package cfa.vo.iris.sdk;
 
-import cfa.vo.iris.AbstractIrisApplication;
 import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,16 +40,13 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import org.jdesktop.application.Action;
 
-/**
- *
- * @author olaurino
- */
 public class PluginManagerFrame extends javax.swing.JInternalFrame {
 
     private List<PluginJar> jars = new ArrayList();
     private PluginManager manager;
     private TreeModel pluginsTree;
     public static final String PROP_PLUGINSTREE = "pluginsTree";
+    private final String COMPONENTS_DIR = "/components/";
 
     /**
      * Get the value of pluginsTree
@@ -76,12 +73,12 @@ public class PluginManagerFrame extends javax.swing.JInternalFrame {
     }
 
     /** Creates new form PluginManager */
-    public PluginManagerFrame(PluginManager manager) {
+    public PluginManagerFrame(PluginManager manager, File configurationDir) {
         this.manager = manager;
         jars.addAll(manager.getPluginJars());
         refreshTree();
         initComponents();
-        jTextField1.setText(AbstractIrisApplication.CONFIGURATION_DIR.getAbsolutePath()+"/components/");
+        jTextField1.setText(configurationDir.getAbsolutePath() + COMPONENTS_DIR);
         jTree1.addMouseListener(ma);
     }
 

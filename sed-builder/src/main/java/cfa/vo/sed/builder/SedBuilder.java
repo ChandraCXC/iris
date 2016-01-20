@@ -77,7 +77,7 @@ public class SedBuilder implements IrisComponent {
 
     public static void show() {
         if (view == null) {
-            view = new SedBuilderMainView(sedManager, workspace.getRootFrame());
+            view = new SedBuilderMainView(sedManager, workspace.getRootFrame(), iris.getSampService());
             workspace.addFrame(view);
         }
 //        view.show();
@@ -170,7 +170,7 @@ public class SedBuilder implements IrisComponent {
     public void initCli(IrisApplication app) {
         iris = app;
     }
-    public static boolean SSA = false;
+    public static boolean SSA = true;
 
     private class BuilderMenuItems extends ArrayList<IMenuItem> {
 
@@ -215,7 +215,7 @@ public class SedBuilder implements IrisComponent {
                         pManager = new PluginManager();
                         workspace.addFrame(pManager);
                         if (view == null) {
-                            view = new SedBuilderMainView(sedManager, workspace.getRootFrame());
+                            view = new SedBuilderMainView(sedManager, workspace.getRootFrame(), iris.getSampService());
                             workspace.addFrame(view);
                         }
                         pManager.setLoadFrame(view.getLoadSegmentFrame());
@@ -283,7 +283,7 @@ public class SedBuilder implements IrisComponent {
 
         @Override
         public Map processCall(HubConnection hc, String senderId, Message msg) throws MalformedURLException {
-            senderId = iris.getSAMPController().getClientMap().get(senderId).toString();
+            senderId = iris.getSampService().getSampClient().getClientMap().get(senderId).toString();
             String formatName = msg.getMType().toLowerCase().equals("table.load.votable") ? "VOT" : "FITS";
             String tableName = (String) msg.getParam("name");
             if (tableName == null || tableName.isEmpty()) {

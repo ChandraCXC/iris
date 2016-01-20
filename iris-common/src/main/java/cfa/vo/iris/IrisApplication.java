@@ -21,14 +21,15 @@
 
 package cfa.vo.iris;
 
-import cfa.vo.interop.SAMPController;
-import cfa.vo.iris.sed.ExtSed;
 import java.io.File;
 import java.net.URL;
-
-import cfa.vo.sherpa.SherpaClient;
+import java.util.Collection;
+import cfa.vo.interop.SAMPConnectionListener;
+import cfa.vo.interop.SampService;
 import org.astrogrid.samp.Message;
+import org.astrogrid.samp.client.MessageHandler;
 import org.astrogrid.samp.client.SampException;
+import javax.swing.*;
 
 /**
  *
@@ -36,7 +37,6 @@ import org.astrogrid.samp.client.SampException;
  * interface is provided to the components when they are initialized, so that they can
  * access application-wide information and operations.
  *
- * @author olaurino
  */
 public interface IrisApplication {
     /**
@@ -52,18 +52,36 @@ public interface IrisApplication {
      * @return True if SAMP is enabled in this session.
      */
     boolean isSampEnabled();
-    /**
-     * Convenience shortcut that allows components to broadcast a SED message to the SAMP hub.
-     *
-     * @param sed The SED file that has to be sent through SAMP
-     * @param sedId The ID of the SED file sent
-     * @throws SampException If an exception is thrown while the message is being sent
-     */
-    void sendSedMessage(ExtSed sed) throws SampException;
 
     void sendSampMessage(Message msg) throws SampException;
 
-    SAMPController getSAMPController();
+    SampService getSampService();
 
     URL getHelpURL();
+
+    JDialog getAboutBox();
+
+    String getName();
+
+    String getDescription();
+
+    URL getSAMPIcon();
+
+    Collection<? extends IrisComponent> getComponents();
+
+    void addMessageHandler(MessageHandler handler);
+
+    ComponentLoader getComponentLoader();
+
+    void exitApp(int status);
+
+    void addConnectionListener(SAMPConnectionListener sampConnectionListener);
+
+    void addSherpaConnectionListener(SAMPConnectionListener sampConnectionListener);
+
+    URL getDesktopIcon();
+
+    boolean isPlatformOSX();
+
+    void setAutoRunHub(boolean autoHub);
 }

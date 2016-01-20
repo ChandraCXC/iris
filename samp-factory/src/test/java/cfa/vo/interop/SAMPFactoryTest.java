@@ -26,33 +26,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import cfa.vo.iris.test.unit.SAMPClientResource;
 import junit.framework.TestCase;
 import org.astrogrid.samp.Message;
+import org.junit.Rule;
 
-/**
- *
- * @author olaurino
- */
 public class SAMPFactoryTest extends TestCase {
 
-    private SAMPController controller;
+    @Rule
+    private SAMPClientResource sampClient = new SAMPClientResource();
     
     public SAMPFactoryTest(String testName) {
         super(testName);
-    }
-
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        System.setProperty("jsamp.hub.profiles", "std");
-        controller = new SAMPController("test", "test", SAMPController.class.getResource("/iris_button_tiny.png").toString());
-        controller.start(false);
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        controller.stop();
     }
 
     /**
@@ -60,8 +46,8 @@ public class SAMPFactoryTest extends TestCase {
      */
     public void testGet_Class() {
         TestInterface result = (TestInterface) SAMPFactory.get(TestInterface.class);
-        List<String> methods = new ArrayList();
-        List<String> exp_methods = new ArrayList();
+        List<String> methods = new ArrayList<>();
+        List<String> exp_methods = new ArrayList<>();
 
         for(Method m : result.getClass().getDeclaredMethods())
             methods.add(m.getName());
@@ -202,7 +188,7 @@ public class SAMPFactoryTest extends TestCase {
 
             @Override
             public List<String> getThings() {
-                return Arrays.asList(new String[]{"One", "Two"});
+                return Arrays.asList("One", "Two");
             }
 
             @Override

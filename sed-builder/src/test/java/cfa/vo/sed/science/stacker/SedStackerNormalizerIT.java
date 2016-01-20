@@ -19,7 +19,7 @@ import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
 import cfa.vo.iris.sed.ExtSed;
 import static cfa.vo.sed.science.stacker.SedStackerAttachments.NORM_CONSTANT;
-import cfa.vo.iris.utils.Default;
+import cfa.vo.utils.Default;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.Segment;
 

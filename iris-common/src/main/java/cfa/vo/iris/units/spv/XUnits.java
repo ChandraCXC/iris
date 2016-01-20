@@ -36,10 +36,8 @@ import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.units.XUnit;
 
 import java.io.Serializable;
-import java.util.Enumeration;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
 
 /**
  *  This class supports physical units associated with the independent

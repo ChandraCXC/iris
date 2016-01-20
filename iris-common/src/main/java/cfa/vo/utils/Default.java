@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cfa.vo.iris.utils;
+package cfa.vo.utils;
 
 import cfa.vo.iris.units.DefaultUnitsManager;
 import cfa.vo.iris.units.UnitsManager;

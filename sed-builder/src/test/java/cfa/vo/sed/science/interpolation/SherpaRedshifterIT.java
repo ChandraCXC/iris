@@ -24,41 +24,25 @@ package cfa.vo.sed.science.interpolation;
 
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SAMPMessage;
-import cfa.vo.iris.interop.SedSAMPController;
-import cfa.vo.sherpa.SherpaClient;
-import cfa.vo.iris.test.unit.it.AbstractSAMPTest;
 
 import java.util.logging.Logger;
+
+import cfa.vo.iris.test.unit.SherpaResource;
 import org.astrogrid.samp.Response;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-/**
- *
- * @author jbudynk
- */
-public class SherpaRedshifterIT extends AbstractSAMPTest {
+
+public class SherpaRedshifterIT {
     
     private static final Logger logger = Logger.getLogger(SherpaRedshifterIT.class.getName());
     private static String REDSHIFT_MTYPE = "spectrum.redshift.calc";
 
-    public SherpaRedshifterIT() {
+    @Rule
+    public SherpaResource sherpa = new SherpaResource();
 
-    }
-
-    @Before
-    public void setup() {
-    }
-
-    @After
-    public void teardown() {
-    }
-
-    @Ignore("need sherpa-samp running")
     @Test
     public void testShift() throws Exception {
 
@@ -78,8 +62,6 @@ public class SherpaRedshifterIT extends AbstractSAMPTest {
                 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
         };
 
-//	ExtSed inputSed = ExtSed.flatten(sed, "Angstrom", "Jy");
-
         RedshiftPayload payload = (RedshiftPayload) SAMPFactory.get(RedshiftPayload.class);
         payload.setX(x);
         payload.setY(y);
@@ -88,7 +70,7 @@ public class SherpaRedshifterIT extends AbstractSAMPTest {
         payload.setToRedshift(0);
         SAMPMessage message = SAMPFactory.createMessage(REDSHIFT_MTYPE, payload, RedshiftPayload.class);
 
-        Response rspns = client.sendMessage(message);
+        Response rspns = sherpa.getClient().sendMessage(message);
         RedshiftPayload response = (RedshiftPayload) SAMPFactory.get(rspns.getResult(), RedshiftPayload.class);
 
         double[] controlYerr = new double[]{

@@ -21,7 +21,7 @@
  */
 package cfa.vo.sed.science.stacker;
 
-import cfa.vo.interop.SAMPController;
+import cfa.vo.interop.*;
 import cfa.vo.iris.sed.ExtSed;
 
 import cfa.vo.sedlib.Segment;
@@ -33,14 +33,16 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import org.astrogrid.samp.Response;
-import org.astrogrid.samp.client.SampException;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import static org.mockito.Mockito.*;
 
 import cfa.vo.sedlib.common.SedNoDataException;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 public class SedStackerStackerTest {
     
@@ -71,12 +73,22 @@ public class SedStackerStackerTest {
     private StackerPayloadStub response;
     
     protected SherpaClientStub client;
-    protected SAMPControllerStub controller;
+    protected SampService service;
     
     @Before
     public void setUp() throws Exception {
-        this.controller = new SAMPControllerStub("name", "description", "url");
-        this.client = new SherpaClientStub(controller);
+        this.service = mock(SampService.class);
+//        HubConnector clientMock = mock(HubConnector.class);
+
+//        when(service.getSampClient()).thenReturn(clientMock);
+        when(service.callSherpaAndRetry(any(SAMPMessage.class))).then(new Answer<Response>() {
+            @Override
+            public Response answer(InvocationOnMock invocationOnMock) throws Throwable {
+                return client.getResponse();
+            }
+        });
+
+        this.client = new SherpaClientStub(service);
         
         this.stacker = new SedStackerStacker(client) {
             @Override
@@ -88,6 +100,11 @@ public class SedStackerStackerTest {
                 return response;
             }
         };
+    }
+
+    @After
+    public void tearDown() {
+        this.service.shutdown();
     }
     
     private void initialize() throws Exception {
@@ -124,8 +141,6 @@ public class SedStackerStackerTest {
         seds.add(sed3);
         
         sedStack = new SedStack("test", seds);
-        
-        controller.rspns = new Response();
         
         response = new StackerPayloadStub();
     }
@@ -226,49 +241,49 @@ public class SedStackerStackerTest {
         
         stacker.stack(sedStack);
     }
-    
+
     //
     //
     // Stubs, use these to set expectations
     //
     //
-    
-    private static class SAMPControllerStub extends SAMPController {
-        public SAMPControllerStub(String name, String description, String iconUrl) {
-            super(name, description, iconUrl);
-        }
-        
-        public Response rspns;
-        
-        @SuppressWarnings("rawtypes")
-        @Override
-        public Response callAndWait(String arg0, Map arg1, int arg2) throws SampException {
-            return rspns;
-        }
-    }
-    
     private static class SherpaClientStub extends SherpaClient {
         
-        public SherpaClientStub(SAMPController controller) {
-            super(controller);
+        public SherpaClientStub(SampService service) {
+            super(service);
         }
 
         public boolean findSherpa = true;
+
         @Override
-        public String findSherpa() throws SampException {
-            if (findSherpa) return "";
-            throw new SampException("Sherpa not found");
+        public boolean ping() {
+            return true;
+        }
+
+        @Override
+        public boolean ping(int times, long interval) {
+            return true;
         }
 
         public boolean hasException = false;
-        @Override
-        public boolean isException(Response rspns) {
-            return hasException;
+        public Exception getException() {
+            if (hasException) {
+                return new RuntimeException("client exception");
+            } else {
+                return null;
+            }
         }
-        
-        @Override
-        public Exception getException(Response rspns) {
-            return new RuntimeException("client exception");
+
+        public Response getResponse() throws Exception {
+            if (findSherpa && !hasException) {
+                return new Response();
+            }
+
+            if (findSherpa && hasException) {
+                throw new RuntimeException("client exception");
+            }
+
+            throw new Exception("Sherpa not found");
         }
     }
     

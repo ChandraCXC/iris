@@ -15,15 +15,18 @@
  */
 package cfa.vo.iris.test.unit;
 
-import cfa.vo.interop.SAMPController;
+import cfa.vo.interop.SAMPConnectionListener;
+import cfa.vo.interop.SampService;
 import cfa.vo.iris.*;
-import cfa.vo.iris.sed.ExtSed;
 import com.google.common.io.Files;
 import org.astrogrid.samp.Message;
+import org.astrogrid.samp.client.MessageHandler;
 import org.astrogrid.samp.client.SampException;
 
+import javax.swing.*;
 import java.io.File;
 import java.net.URL;
+import java.util.Collection;
 
 /**
  * A basic Iris desktop application for unit testing of Iris components.
@@ -53,17 +56,12 @@ public class ApplicationStub implements IrisApplication {
     }
 
     @Override
-    public void sendSedMessage(ExtSed sed) throws SampException {
-        throw new UnsupportedOperationException("not implemented yet");
-    }
-
-    @Override
     public void sendSampMessage(Message msg) throws SampException {
         throw new UnsupportedOperationException("not implemented yet");
     }
 
     @Override
-    public SAMPController getSAMPController() {
+    public SampService getSampService() {
         return null;
     }
 
@@ -74,5 +72,74 @@ public class ApplicationStub implements IrisApplication {
     @Override
     public URL getHelpURL() {
         return null;
+    }
+
+    @Override
+    public JDialog getAboutBox() {
+        return null;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public String getDescription() {
+        return null;
+    }
+
+    @Override
+    public URL getSAMPIcon() {
+        return null;
+    }
+
+    @Override
+    public Collection<? extends IrisComponent> getComponents() {
+        return null;
+    }
+
+    @Override
+    public void addMessageHandler(MessageHandler handler) {
+
+    }
+
+    @Override
+    public ComponentLoader getComponentLoader() {
+        return null;
+    }
+
+    @Override
+    public void exitApp(int status) {
+
+    }
+
+    @Override
+    public void addConnectionListener(SAMPConnectionListener sampConnectionListener) {
+
+    }
+
+    @Override
+    public void addSherpaConnectionListener(SAMPConnectionListener sampConnectionListener) {
+
+    }
+
+    @Override
+    public URL getDesktopIcon() {
+        return null;
+    }
+
+    @Override
+    public boolean isPlatformOSX() {
+        return false;
+    }
+
+    @Override
+    public void setAutoRunHub(boolean autoHub) {
+
+    }
+
+    public void exit() {
+        wSpace.shutdown();
     }
 }
