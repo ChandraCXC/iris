@@ -15,6 +15,7 @@
  */
 package cfa.vo.iris.test.unit;
 
+import cfa.vo.iris.IrisApplication;
 import org.uispec4j.UISpecAdapter;
 import org.uispec4j.Window;
 
@@ -22,9 +23,13 @@ public class StubAdapter implements UISpecAdapter {
     private ApplicationStub stub;
     private Window mainWindow;
 
+    public StubAdapter(ApplicationStub app) {
+        stub = app;
+        mainWindow = new Window(app.getWorkspace().getRootFrame());
+    }
+
     public StubAdapter() {
-        stub = new ApplicationStub();
-        mainWindow = new Window(stub.getWorkspace().getRootFrame());
+        this(new ApplicationStub());
     }
 
     @Override

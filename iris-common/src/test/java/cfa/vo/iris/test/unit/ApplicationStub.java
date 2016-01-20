@@ -26,6 +26,7 @@ import org.astrogrid.samp.client.SampException;
 import javax.swing.*;
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -39,7 +40,7 @@ import java.util.Collection;
  *
  */
 public class ApplicationStub implements IrisApplication {
-    private StubWorkspace wSpace = new StubWorkspace();
+    protected StubWorkspace wSpace = new StubWorkspace();
     
     public IWorkspace getWorkspace() {
         return wSpace;

@@ -71,7 +71,6 @@ public class IrisDesktop extends JFrame implements PluginListener {
         this.ws = ws;
     }
 
-    /** Creates new form SedImporterMainView */
     public IrisDesktop(final IrisApplication app) throws Exception {
 
         PluginJarEvent.getInstance().add(this);
