@@ -122,7 +122,8 @@ public class Iris extends Application implements IrisApplication {
     protected void initialize(String[] args) {
         commandLine = new CommandLine(args);
         new Configuration(commandLine).apply();
-        componentLoader = new ComponentLoader(getClass().getResource("/components"));
+        componentLoader = new ComponentLoader(getClass().getResource("/components"),
+                                              commandLine.getAdditionalComponents());
         sampSetup();
     }
 

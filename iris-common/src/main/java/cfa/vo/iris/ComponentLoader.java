@@ -32,18 +32,28 @@ public class ComponentLoader {
     protected List<String> failures = new ArrayList<>();
 
     public ComponentLoader(Collection<Class<? extends IrisComponent>> componentList) {
-        for (Class c : componentList) {
-            loadComponent(c);
-        }
+        addComponents(componentList);
     }
     
-    public ComponentLoader(URL componentsURL) {
+    public ComponentLoader(URL componentsURL, Collection<Class<? extends IrisComponent>> componentList) {
         try {
             initComponents(readComponentsFile(componentsURL));
         } catch (IOException ex) {
             String message = "Cannot read components file at: " + componentsURL;
             System.err.println(message);
             Logger.getLogger(ComponentLoader.class.getName()).log(Level.SEVERE, message, ex);
+        }
+        
+        addComponents(componentList);
+    }
+    
+    private void addComponents(Collection<Class<? extends IrisComponent>> componentList) {
+        if (componentList == null) {
+            return;
+        }
+        
+        for (Class<? extends IrisComponent> c : componentList) {
+            loadComponent(c);
         }
     }
 
