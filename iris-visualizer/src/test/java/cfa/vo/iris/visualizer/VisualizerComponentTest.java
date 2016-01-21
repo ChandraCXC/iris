@@ -73,7 +73,8 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
                 .getSubMenu(windowName)
                 .getSubMenu(windowName)
                 .click();
-        assertSame(sedManager.getSelected(), comp.getDefaultPlotterView().getSed());
+        ExtSed initialSed = sedManager.getSelected();
+        assertNull(initialSed);
 
         // Test the plotter reacts to a sed event
         final ExtSed sed = sedManager.newSed("sampleSed");
@@ -97,6 +98,27 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
                 assertTrue(comp.getDefaultPlotterView().getSegmentsMap().containsKey(segment));
             }
         });
+
+        // Just double checking this works more than once.
+        final ExtSed sed2 = sedManager.newSed("oneMoreSed");
+        // Make sure this is enqueued in the Swing EDT
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                assertSame(sed2, comp.getDefaultPlotterView().getSed());
+            }
+        });
+
+        // Just double checking we can go back through select
+        sedManager.select(sed);
+        // Make sure this is enqueued in the Swing EDT
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                assertSame(sed, comp.getDefaultPlotterView().getSed());
+            }
+        });
+
 
 //        assertEquals("sampleSed", comp.getDefaultPlotterView().getLegend().getTitle());
     }
