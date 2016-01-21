@@ -27,7 +27,7 @@ public class VisualizerComponent implements IrisComponent {
     
     private IrisApplication app;
     private IWorkspace ws;
-    private List<IMenuItem> menuItems = new MenuItems();
+    private MenuItems menuItems = new MenuItems();
 
     @Override
     public void init(IrisApplication irisApplication, IWorkspace iWorkspace) {
@@ -66,6 +66,10 @@ public class VisualizerComponent implements IrisComponent {
 
     @Override
     public void shutdown() {
+    }
+
+    public PlotterView getDefaultPlotterView() {
+        return menuItems.view;
     }
 
     private class MenuItems extends ArrayList<IMenuItem> {

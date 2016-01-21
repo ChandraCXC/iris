@@ -29,6 +29,8 @@ import javax.swing.JPopupMenu;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
+import java.util.Map;
 
 import javax.swing.JSpinner;
 import javax.swing.SpinnerListModel;
@@ -36,12 +38,16 @@ import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import cfa.vo.iris.IrisApplication;
+import cfa.vo.iris.events.SedCommand;
+import cfa.vo.iris.events.SedEvent;
+import cfa.vo.iris.events.SedListener;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.SegmentStarTableAdapter;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.visualizer.stil.StilPlotter;
+import cfa.vo.iris.visualizer.stil.preferences.SegmentLayer;
 import cfa.vo.sedlib.ISegment;
 import cfa.vo.iris.IWorkspace;
 import javax.swing.JFrame;
@@ -144,11 +150,20 @@ public class PlotterView extends JInternalFrame {
         // Action for resetting plot
         btnReset.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                resetPlot();
+                resetPlot(null);
             }
         });
+
+        SedEvent.getInstance().add(new PlotSedListener());
     }
 
+    public ExtSed getSed() {
+        return plotter.getSed();
+    }
+
+    public Map<ISegment, SegmentLayer> getSegmentsMap() {
+        return plotter.getSegmentsMap();
+    }
     
     private void openMetadataBrowser() throws Exception {
         if (!metadataBrowser.isVisible()) {
@@ -160,9 +175,9 @@ public class PlotterView extends JInternalFrame {
         }
     }
     
-    private void resetPlot() {
+    private void resetPlot(ExtSed sed) {
         this.metadataBrowser.reset();
-        this.plotter.reset();
+        this.plotter.reset(sed);
     }
     
     private static void addPopup(Component component, final JPopupMenu popup) {
@@ -346,5 +361,13 @@ public class PlotterView extends JInternalFrame {
         
         mntmCoplot = new JMenuItem("Coplot");
         mnView.add(mntmCoplot);
+    }
+
+    private class PlotSedListener implements SedListener {
+
+        @Override
+        public void process(ExtSed source, SedCommand payload) {
+            resetPlot(source);
+        }
     }
 }

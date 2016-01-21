@@ -41,7 +41,7 @@ public abstract class AbstractGUITest extends AbstractUISpecTest {
 
     protected Desktop desktop;
     protected Window window;
-    private ApplicationStub app;
+    protected ApplicationStub app;
     private StubAdapter adapter;
     
     @Before
