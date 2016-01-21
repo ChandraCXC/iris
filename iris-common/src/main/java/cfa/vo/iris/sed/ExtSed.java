@@ -26,6 +26,7 @@ import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SegmentEvent;
 import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
+import cfa.vo.iris.interop.SedPayload;
 import cfa.vo.iris.interop.SedServerResource;
 import cfa.vo.iris.interop.VaoMessage;
 import cfa.vo.iris.logging.LogEntry;
@@ -119,6 +120,7 @@ public class ExtSed extends Sed {
         super.removeSegment(i);
         if (managed) {
             SegmentEvent.getInstance().fire(seg, new SegmentPayload(this, SedCommand.REMOVED));
+            SedEvent.getInstance().fire(this, SedCommand.CHANGED);
             LogEvent.getInstance().fire(this, new LogEntry("Segment removed from SED: " + id, this));
         }
     }
@@ -163,6 +165,7 @@ public class ExtSed extends Sed {
         boolean resp = super.segmentList.remove(s);
         if (managed) {
             SegmentEvent.getInstance().fire(s, new SegmentPayload(this, SedCommand.REMOVED));
+            SedEvent.getInstance().fire(this, SedCommand.CHANGED);
             LogEvent.getInstance().fire(this, new LogEntry("Segments removed from SED: " + id, this));
         }
         return resp;
@@ -176,6 +179,7 @@ public class ExtSed extends Sed {
 
         if (managed) {
             MultipleSegmentEvent.getInstance().fire(segments, new SegmentPayload(this, SedCommand.REMOVED));
+            SedEvent.getInstance().fire(this, SedCommand.CHANGED);
             LogEvent.getInstance().fire(this, new LogEntry("Segments removed from SED: " + id, this));
         }
         return resp;
