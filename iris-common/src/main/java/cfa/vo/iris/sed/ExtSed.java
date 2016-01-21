@@ -26,7 +26,6 @@ import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SegmentEvent;
 import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
-import cfa.vo.iris.interop.SedPayload;
 import cfa.vo.iris.interop.SedServerResource;
 import cfa.vo.iris.interop.VaoMessage;
 import cfa.vo.iris.logging.LogEntry;
@@ -49,6 +48,7 @@ import org.astrogrid.samp.client.SampException;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
 import java.util.logging.Level;
@@ -197,6 +197,20 @@ public class ExtSed extends Sed {
         Sed sed = Sed.read(filename, format);
         String[] path = filename.split(File.separator);
         String id = path[path.length - 1].split("\\.")[0];
+        return wrap(sed, id, managed);
+    }
+
+    public static ExtSed read(InputStream stream, SedFormat format) throws SedParsingException, SedInconsistentException, IOException, SedNoDataException {
+        return read(stream, format, true);
+    }
+
+    public static ExtSed read(InputStream stream, SedFormat format, boolean managed) throws SedParsingException, SedInconsistentException, IOException, SedNoDataException {
+        Sed sed = Sed.read(stream, format);
+        String id = stream.toString();
+        return wrap(sed, id, managed);
+    }
+
+    private static ExtSed wrap(Sed sed, String id, boolean managed) throws SedNoDataException, SedInconsistentException {
         ExtSed s = new ExtSed(id, managed);
         for (int i = 0; i < sed.getNumberOfSegments(); i++) {
             s.addSegment(sed.getSegment(i));

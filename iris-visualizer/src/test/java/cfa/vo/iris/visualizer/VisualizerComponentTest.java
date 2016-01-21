@@ -21,10 +21,12 @@ import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.IrisComponent;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedNoDataException;
+import cfa.vo.sedlib.io.SedFormat;
+import cfa.vo.testdata.TestData;
 import org.junit.Before;
 import org.junit.Test;
-
 import javax.swing.*;
+import java.net.URL;
 
 import static org.junit.Assert.*;
 
@@ -121,6 +123,32 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
 
 
 //        assertEquals("sampleSed", comp.getDefaultPlotterView().getLegend().getTitle());
+    }
+
+    @Test(timeout=2500)
+    public void testReadPerformance() throws Exception {
+        URL benchmarkURL = TestData.class.getResource("test300k_VO.fits");
+        final ExtSed sed = ExtSed.read(benchmarkURL.openStream(), SedFormat.FITS);
+        SedlibSedManager manager = (SedlibSedManager) app.getWorkspace().getSedManager();
+        manager.add(sed);
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                window.getMenuBar()
+                        .getMenu("Tools")
+                        .getSubMenu(windowName)
+                        .getSubMenu(windowName)
+                        .click();
+            }
+        });
+
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                assertSame(sed, comp.getDefaultPlotterView().getSed());
+            }
+        });
     }
 
     private Segment createSampleSegment() throws SedNoDataException {

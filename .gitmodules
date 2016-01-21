@@ -16,3 +16,6 @@
 [submodule "iris-docs"]
 	path = iris-docs
 	url = https://github.com/ChandraCXC/iris-docs.git
+[submodule "iris-test-data"]
+	path = iris-test-data
+	url = https://github.com/ChandraCXC/iris-test-data.git
