@@ -14,6 +14,7 @@ import cfa.vo.iris.visualizer.VisualizerComponent;
 import cfa.vo.sedlib.Segment;
 import static org.junit.Assert.*;
 
+import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
 public class MetadataBrowserViewTest extends AbstractComponentGUITest {
@@ -58,11 +59,17 @@ public class MetadataBrowserViewTest extends AbstractComponentGUITest {
         TitledBorder sedTitle = (TitledBorder) mbView.segmentListScrollPane.getBorder();
         assertEquals(sed.getId(), sedTitle.getTitle());
         
-        // Get the relevant tables
-        ListBox segmentTable = mbWindow.getPanel("content").getPanel("segmentListScrollPane")
-                .getListBox("selectedTables");
-        Table metadataTable = mbWindow.getPanel("content").getPanel("segmentDataScrollPane")
-                .getTable("metadataTable");
+        // Ensure these are initialized prior to grabbing the two tables
+        final Object[] tables = new Object[2];
+        SwingUtilities.invokeAndWait(new Runnable() {
+            @Override
+            public void run() {
+                tables[0] = mbWindow.getPanel("content").getPanel("segmentListScrollPane").getListBox("selectedTables");
+                tables[1] = mbWindow.getPanel("content").getPanel("segmentDataScrollPane").getTable("metadataTable");
+            }
+        });
+        final ListBox segmentTable = (ListBox) tables[0];
+        final Table metadataTable = (Table) tables[1];
 
         // Nothing should be selected
         assertEquals(0, metadataTable.getRowCount());
@@ -95,10 +102,15 @@ public class MetadataBrowserViewTest extends AbstractComponentGUITest {
         assertEquals(1, Double.parseDouble((String) metadataTable.getContentAt(0, 0)), .1);
         
         // Set selected segment to seg2 by clicking on segment list
-        segmentTable.clearSelection();
-        segmentTable.click(1);
+        SwingUtilities.invokeAndWait(new Runnable() {
+            @Override
+            public void run() {
+                segmentTable.clearSelection();
+                segmentTable.click(1);
+            }
+        });
         
-        // Second segment should be selected
+        // Second segment should be selected, verify table and value
         assertEquals(100.0, mbView.selectedStarTable.getCell(0, 0));
         assertEquals(2, metadataTable.getRowCount());
         

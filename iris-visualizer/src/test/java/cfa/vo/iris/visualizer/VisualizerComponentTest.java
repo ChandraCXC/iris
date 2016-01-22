@@ -20,13 +20,9 @@ import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.IrisComponent;
 import cfa.vo.sedlib.Segment;
-import cfa.vo.sedlib.io.SedFormat;
-import cfa.vo.testdata.TestData;
 import org.junit.Before;
 import org.junit.Test;
 import javax.swing.*;
-import java.net.URL;
-
 import static org.junit.Assert.*;
 
 public class VisualizerComponentTest extends AbstractComponentGUITest {
@@ -80,7 +76,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         // Test the plotter reacts to a sed event
         final ExtSed sed = sedManager.newSed("sampleSed");
         // Make sure this is enqueued in the Swing EDT
-        SwingUtilities.invokeLater(new Runnable() {
+        SwingUtilities.invokeAndWait(new Runnable() {
             @Override
             public void run() {
                 assertSame(sed, comp.getDefaultPlotterView().getSed());
@@ -93,7 +89,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         sed.addSegment(segment);
 
         // Make sure this is enqueued in the Swing EDT
-        SwingUtilities.invokeLater(new Runnable() {
+        SwingUtilities.invokeAndWait(new Runnable() {
             @Override
             public void run() {
                 assertTrue(comp.getDefaultPlotterView().getSegmentsMap().containsKey(segment));
@@ -103,7 +99,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         // Just double checking this works more than once.
         final ExtSed sed2 = sedManager.newSed("oneMoreSed");
         // Make sure this is enqueued in the Swing EDT
-        SwingUtilities.invokeLater(new Runnable() {
+        SwingUtilities.invokeAndWait(new Runnable() {
             @Override
             public void run() {
                 assertSame(sed2, comp.getDefaultPlotterView().getSed());
@@ -113,7 +109,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         // Just double checking we can go back through select
         sedManager.select(sed);
         // Make sure this is enqueued in the Swing EDT
-        SwingUtilities.invokeLater(new Runnable() {
+        SwingUtilities.invokeAndWait(new Runnable() {
             @Override
             public void run() {
                 assertSame(sed, comp.getDefaultPlotterView().getSed());
@@ -122,31 +118,5 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
 
 
 //        assertEquals("sampleSed", comp.getDefaultPlotterView().getLegend().getTitle());
-    }
-
-    @Test(timeout=10000)
-    public void testReadPerformance() throws Exception {
-        URL benchmarkURL = TestData.class.getResource("test300k_VO.fits");
-        final ExtSed sed = ExtSed.read(benchmarkURL.openStream(), SedFormat.FITS);
-        SedlibSedManager manager = (SedlibSedManager) app.getWorkspace().getSedManager();
-        manager.add(sed);
-
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                window.getMenuBar()
-                        .getMenu("Tools")
-                        .getSubMenu(windowName)
-                        .getSubMenu(windowName)
-                        .click();
-            }
-        });
-
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                assertSame(sed, comp.getDefaultPlotterView().getSed());
-            }
-        });
     }
 }
