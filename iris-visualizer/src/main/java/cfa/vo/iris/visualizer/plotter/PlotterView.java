@@ -46,6 +46,7 @@ import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.SegmentStarTableAdapter;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
+import cfa.vo.iris.visualizer.metadata.MetadataBrowserView;
 import cfa.vo.iris.visualizer.stil.StilPlotter;
 import cfa.vo.iris.visualizer.stil.preferences.SegmentLayer;
 import cfa.vo.sedlib.ISegment;
@@ -63,7 +64,7 @@ public class PlotterView extends JInternalFrame {
     private StilPlotter plotter;
     private JInternalFrame residuals;
     private StarTableAdapter<ISegment> starTableAdapter;
-    protected MetadataBrowser metadataBrowser;
+    private MetadataBrowserView metadataBrowser;
     
     // Buttons, etc.
     private JButton btnReset;
@@ -124,7 +125,7 @@ public class PlotterView extends JInternalFrame {
         toFront();
         
         this.starTableAdapter = new SegmentStarTableAdapter();
-        this.metadataBrowser = new MetadataBrowser(ws, starTableAdapter);
+        this.metadataBrowser = new MetadataBrowserView(ws, starTableAdapter);
         
         this.ws = ws;
         this.app = app;
@@ -173,6 +174,10 @@ public class PlotterView extends JInternalFrame {
         else {
             GUIUtils.moveToFront(metadataBrowser);
         }
+    }    
+    
+    public MetadataBrowserView getMetadataBrowserView() {
+        return this.metadataBrowser;
     }
     
     private void resetPlot(ExtSed sed) {

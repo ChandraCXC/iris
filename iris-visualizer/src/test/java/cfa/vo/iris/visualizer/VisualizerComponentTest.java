@@ -20,7 +20,6 @@ import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.IrisComponent;
 import cfa.vo.sedlib.Segment;
-import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sedlib.io.SedFormat;
 import cfa.vo.testdata.TestData;
 import org.junit.Before;
@@ -125,7 +124,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
 //        assertEquals("sampleSed", comp.getDefaultPlotterView().getLegend().getTitle());
     }
 
-    @Test(timeout=2500)
+    @Test(timeout=10000)
     public void testReadPerformance() throws Exception {
         URL benchmarkURL = TestData.class.getResource("test300k_VO.fits");
         final ExtSed sed = ExtSed.read(benchmarkURL.openStream(), SedFormat.FITS);
@@ -149,16 +148,5 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
                 assertSame(sed, comp.getDefaultPlotterView().getSed());
             }
         });
-    }
-
-    private Segment createSampleSegment() throws SedNoDataException {
-        double[] x = new double[]{1.0, 2.0, 3.0};
-        double[] y = new double[]{1.0, 2.0, 3.0};
-        Segment segment = new Segment();
-        segment.setFluxAxisValues(y);
-        segment.setFluxAxisUnits("Jy");
-        segment.setSpectralAxisValues(x);
-        segment.setSpectralAxisUnits("Angstrom");
-        return segment;
     }
 }

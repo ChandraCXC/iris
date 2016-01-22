@@ -23,7 +23,7 @@ public class SegmentStarTable implements StarTable {
     
     private ISegment data;
     private ColumnInfo[] columnInfo;
-    private final String id;
+    private String id;
     
     public enum ColumnName {
         // Order is important. DO NOT CHANGE.
@@ -47,11 +47,9 @@ public class SegmentStarTable implements StarTable {
         this.data = data;
         this.columnInfo = createColumnInfo();
         
-        if (data.getDataID() != null && 
-            data.getDataID().getTitle() != null &&
-            !StringUtils.isEmpty(data.getDataID().getTitle().getId())) 
-        {
-            this.id = data.getDataID().getTitle().getId();
+        if (data.isSetTarget() &&
+            data.getTarget().isSetName()) {
+            this.id = data.getTarget().getName().getValue();
         } else {
             this.id = UUID.randomUUID().toString();
         }
@@ -87,6 +85,11 @@ public class SegmentStarTable implements StarTable {
     @Override
     public String getName() {
         return this.id;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.id = name;
     }
 
     @Override
@@ -195,11 +198,6 @@ public class SegmentStarTable implements StarTable {
     @Override
     public void setURL(URL url) {
         throw new RuntimeException("Called setURL");
-    }
-
-    @Override
-    public void setName(String name) {
-        throw new RuntimeException("Called setName");
     }
 
     
