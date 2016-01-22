@@ -62,21 +62,25 @@ public class MetadataBrowserView extends JInternalFrame {
     
     public static final String PROP_SELECTED_TABLE = "selectedTables";
     public static final String PROP_SELECTED_SED = "selectedSed";
+    protected static final String MB_WINDOW_TITLE = "Metadata Browser";
     
     private static final StarTable EMPTY_STARTABLE = new EmptyStarTable();
     
-    private IWorkspace ws;
-    private StarTableAdapter<ISegment> starTableAdapter;
+    protected IWorkspace ws;
+    protected StarTableAdapter<ISegment> starTableAdapter;
     
-    private JList<StarTable> selectedTables;
-    private ExtSed selected;
+    protected JList<StarTable> selectedTables;
+    protected StarTable selectedStarTable;
+    protected ExtSed selected;
     
     // Window Objects
-    private JTextField textField;
-    private StarJTable metadataTable;
-    private JButton btnFilter;
-    private JButton btnApplyMask;
-    private JButton selectAll;
+    protected StarJTable metadataTable;
+    protected final JTextField textField;
+    protected final JButton btnFilter;
+    protected final JButton btnApplyMask;
+    protected final JButton selectAll;
+    protected final JScrollPane segmentListScrollPane = new JScrollPane();
+    protected final JScrollPane segmentDataScrollPane = new JScrollPane();
     
     // Menu Items
     final JMenuBar menuBar = new JMenuBar();
@@ -92,8 +96,6 @@ public class MetadataBrowserView extends JInternalFrame {
     final JMenuItem mntmApplyMask = new JMenuItem("Apply Mask");
     final JMenuItem mntmNewMenuItem = new JMenuItem("New menu item");
     final JPanel segmentListPanel = new JPanel();
-    final JScrollPane segmentListScrollPane = new JScrollPane();
-    final JScrollPane segmentDataScrollPane = new JScrollPane();
     
     final StarTableCellRenderer starTableCellRenderer = new StarTableCellRenderer();
     
@@ -115,9 +117,11 @@ public class MetadataBrowserView extends JInternalFrame {
         setMaximizable(true);
         setIconifiable(true);
         setClosable(true);
-        setTitle("Metadata Browser");
+        setName(MB_WINDOW_TITLE);
+        setTitle(MB_WINDOW_TITLE);
         
         getContentPane().setForeground(Color.WHITE);
+        getContentPane().setName("content");
         getContentPane().setBackground(Color.LIGHT_GRAY);
         setBackground(Color.LIGHT_GRAY);
         getContentPane().addMouseListener(new MouseAdapter() {
@@ -144,6 +148,7 @@ public class MetadataBrowserView extends JInternalFrame {
 
         // List of startables (segments) setup
         selectedTables = new JList<>(new DefaultListModel<StarTable>());
+        selectedTables.setName("selectedTables");
         selectedTables.setCellRenderer(starTableCellRenderer);
         selectedTables.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         selectedTables.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -157,11 +162,13 @@ public class MetadataBrowserView extends JInternalFrame {
             }
         });
         
+        segmentListScrollPane.setName("segmentListScrollPane");
         segmentListScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         segmentListScrollPane.setBorder(new TitledBorder(
                 new EtchedBorder(EtchedBorder.LOWERED, new Color(0, 0, 0), null), "Selected SED", TitledBorder.CENTER, TitledBorder.TOP, null, null));
         
         // Primary data table scroll pane setup
+        segmentDataScrollPane.setName("segmentDataScrollPane");
         segmentDataScrollPane.setHorizontalScrollBarPolicy(
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         segmentDataScrollPane.setViewportBorder(
@@ -170,6 +177,7 @@ public class MetadataBrowserView extends JInternalFrame {
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         
         metadataTable = new StarJTable(true);
+        metadataTable.setName("metadataTable");
         metadataTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         segmentDataScrollPane.setViewportView(metadataTable);
         metadataTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -251,7 +259,12 @@ public class MetadataBrowserView extends JInternalFrame {
     }
 
     public void reset() {
-        setSelectedSed();
+        
+        // Multiple threads resetting this simultaneously can do weird things
+        // to JList and JTable objects.
+        synchronized(this) {
+            setSelectedSed();
+        }
     }
     
     private void setSelectedSed() {
@@ -275,7 +288,7 @@ public class MetadataBrowserView extends JInternalFrame {
         DefaultListModel<StarTable> model = (DefaultListModel<StarTable>) selectedTables.getModel();
         model.clear();
         
-        // Readd all startables to list
+        // Read all startables to list
         for (int i=0; i<selected.getNumberOfSegments(); i++) {
             model.addElement(starTableAdapter.convertStarTable(selected.getSegment(i)));
         }
@@ -290,10 +303,11 @@ public class MetadataBrowserView extends JInternalFrame {
         // Select nothing if there is nothing, or if the selected index is greater than the 
         // number of segments (say if the list is empty).
         if (i >= selectedTables.getModel().getSize() || i < 0) {
-            metadataTable.setStarTable(EMPTY_STARTABLE, true);
+            selectedStarTable = EMPTY_STARTABLE;
         } else {
-            metadataTable.setStarTable(selectedTables.getModel().getElementAt(i), true);
+            selectedStarTable = selectedTables.getModel().getElementAt(i);
         }
+        metadataTable.setStarTable(selectedStarTable, true);
         
         segmentDataScrollPane.setViewportView(metadataTable);
         segmentDataScrollPane.repaint();

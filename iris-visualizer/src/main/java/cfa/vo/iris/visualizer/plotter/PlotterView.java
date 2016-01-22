@@ -64,7 +64,7 @@ public class PlotterView extends JInternalFrame {
     private StilPlotter plotter;
     private JInternalFrame residuals;
     private StarTableAdapter<ISegment> starTableAdapter;
-    protected MetadataBrowserView metadataBrowser;
+    private MetadataBrowserView metadataBrowser;
     
     // Buttons, etc.
     private JButton btnReset;
@@ -174,6 +174,10 @@ public class PlotterView extends JInternalFrame {
         else {
             GUIUtils.moveToFront(metadataBrowser);
         }
+    }    
+    
+    public MetadataBrowserView getMetadataBrowserView() {
+        return this.metadataBrowser;
     }
     
     private void resetPlot(ExtSed sed) {
