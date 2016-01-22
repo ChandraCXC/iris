@@ -20,6 +20,7 @@ import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.ISedManager;
+import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.visualizer.stil.preferences.PlotPreferences;
 import cfa.vo.iris.visualizer.stil.preferences.SegmentLayer;
@@ -37,6 +38,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.logging.Level;
@@ -52,7 +54,8 @@ public class StilPlotter extends JPanel {
     
     private IrisApplication app;
     private IWorkspace ws;
-    private ISedManager<ExtSed> sedManager;
+    private SedlibSedManager sedManager;
+    private ExtSed currentSed;
     private StarTableAdapter<ISegment> adapter;
     
     // TODO: How can we keep this in sync with the iris application?
@@ -63,7 +66,7 @@ public class StilPlotter extends JPanel {
         this.adapter = adapter;
         this.ws = ws;
         this.app = app;
-        this.sedManager = ws.getSedManager();
+        this.sedManager = (SedlibSedManager) ws.getSedManager();
         
         // Use weak key references so that unused segments will be caught by the gc.
         this.segments = new WeakHashMap<>();
@@ -73,10 +76,10 @@ public class StilPlotter extends JPanel {
         setBackground(Color.WHITE);
         setLayout(new GridLayout(1, 0, 0, 0));
         
-        reset();
+        reset(null);
     }
     
-    public void reset() {
+    public void reset(ExtSed sed) {
         if (display != null) {
             display.removeAll();
             remove(display);
@@ -84,7 +87,7 @@ public class StilPlotter extends JPanel {
         }
         
         try {
-            display = createPlotComponent();
+            display = createPlotComponent(sed);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -93,9 +96,22 @@ public class StilPlotter extends JPanel {
         display.revalidate();
         display.repaint();
     }
+
+    public ExtSed getSed() {
+        return currentSed;
+    }
+
+    public Map<ISegment, SegmentLayer> getSegmentsMap() {
+        return Collections.unmodifiableMap(segments);
+    }
     
-    private PlotDisplay createPlotComponent() throws Exception {
+    private PlotDisplay createPlotComponent(ExtSed sed) throws Exception {
         logger.info("Creating new plot from selected SED");
+
+        if (sed == null) {
+            sed = sedManager.getSelected();
+        }
+        this.currentSed = sed;
         
         MapEnvironment env = new MapEnvironment();
         env.setValue("type", "plot2plane");
@@ -104,8 +120,6 @@ public class StilPlotter extends JPanel {
         // Y-label from falling off the jpanel. Conversely, don't set "insets"
         // and let the plotter dynamically change size to keep axes labels
         // on the plot.
-        
-        ExtSed sed = sedManager.getSelected();
         
         // Add high level plot preferences
         for (String key : plotPreferences.getPreferences().keySet()) {
