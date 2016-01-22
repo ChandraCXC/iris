@@ -47,7 +47,8 @@ public class SegmentStarTable implements StarTable {
         this.data = data;
         this.columnInfo = createColumnInfo();
         
-        if (data.getTarget().isSetName()) {
+        if (data.isSetTarget() &&
+            data.getTarget().isSetName()) {
             this.id = data.getTarget().getName().getValue();
         } else {
             this.id = UUID.randomUUID().toString();
