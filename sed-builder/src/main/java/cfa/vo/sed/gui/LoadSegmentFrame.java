@@ -64,15 +64,11 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Task;
 
-/**
- *
- * @author olaurino
- */
+
 public final class LoadSegmentFrame extends JInternalFrame {
 
     private ISedManager<ExtSed> manager;
@@ -717,31 +713,6 @@ public final class LoadSegmentFrame extends JInternalFrame {
         GUIUtils.moveToFront(this);
     }
 
-    private void spectralWarningCheck(Segment seg) throws SedInconsistentException, SedNoDataException {
-	int numOfPoints = spectraWarning(seg);
-	if(numOfPoints < 2500 && numOfPoints > 1000) {
-	    sed.addSegment(seg);
-	    NarrowOptionPane.showMessageDialog(this, 
-		    "Over 1000 data points. Viewer may be slightly slower than usual", 
-		    "", 
-		    NarrowOptionPane.INFORMATION_MESSAGE);
-	}
-	else if(numOfPoints > 2500) {
-	    int answer = NarrowOptionPane.showConfirmDialog(this, 
-		    "Over 2500 data points. Viewer may be slow. Do you want to continue import?", 
-		    "", 
-		    NarrowOptionPane.YES_NO_OPTION);
-	    if (answer == JOptionPane.NO_OPTION) {
-		return;
-	    } else {
-		sed.addSegment(seg);
-	    }
-	}
-	else {
-	    sed.addSegment(seg);
-	}
-    }
-
     private class FormatRenderer extends BasicComboBoxRenderer {
 
         @Override
@@ -785,41 +756,6 @@ public final class LoadSegmentFrame extends JInternalFrame {
         List<Integer> unsuc = readCompliant();
 
         try {
-	    
-	    /* Spectra warning. If there are 1000 < points < 2500, just warn user that
-	    * visualizer may be slow.
-	    * If there are over 2500 points, give user decision to add to Iris or not.
-	    */
-	    int numOfPoints = format.getFilter(getURL()).getColumnData(0,0).length;
-	    if(numOfPoints < 2500 && numOfPoints > 1000) {
-		NarrowOptionPane.showMessageDialog(this, 
-			"There are over 1000 data points in this file.\n"+
-				"Visualization tools may be slightly slower than usual for this SED.", 
-			"Large File Detected", 
-			NarrowOptionPane.INFORMATION_MESSAGE);
-	    }
-	    else if(numOfPoints > 2500) {
-		int answer = NarrowOptionPane.showOptionDialog(this, 
-			"The number of data points exceeds the limit supported by Iris visualization tools (number of points detected: "+String.valueOf(numOfPoints)+").\n"+
-			//"There are over 2500 points in this file (number detected: "+String.valueOf(numOfPoints)+").\n"+
-				//"Iris visualization tools do not support spectra, meaning"+
-				"Visualization tools will be slow for this SED.\n\n"+
-				"Do you want to continue import?", 
-			"Large Segment Detected", 
-			NarrowOptionPane.YES_NO_OPTION, 
-			NarrowOptionPane.WARNING_MESSAGE, null, new String[]{"Yes", "No"}, "No");
-		if (answer == JOptionPane.NO_OPTION) {
-		    return;
-		}
-//			    } else if (numOfPoints > 7500) {
-//				int answer = NarrowOptionPane.showConfirmDialog(this, 
-//					"There are over 7500 data points in this file. The Viewer and Fitting Tool WILL be slow for this SED! \nDo you want to continue import?", 
-//					"Large File Detected", 
-//					NarrowOptionPane.YES_NO_OPTION);
-//				if (answer == JOptionPane.YES_OPTION) {
-//				}
-	    }
-	    
             if (unsuc != null) {
                 if (!segList.isEmpty()) {
 //                    for (Segment seg : segList) {
@@ -861,7 +797,7 @@ public final class LoadSegmentFrame extends JInternalFrame {
                 try {
                     SetupBean conf = new AsciiConf().makeConf(getURL());
                     Segment seg = SegmentImporter.getSegments(conf).get(0);
-		    
+
                     sed.addSegment(seg);
                 } catch (Exception ex) {
                     SetupBean conf = new SetupBean();
@@ -1088,35 +1024,9 @@ public final class LoadSegmentFrame extends JInternalFrame {
     public void loadCatalog() {
         segList = new ArrayList();
         List<Integer> unsuc = readCompliant();
-	
+
         try {
-	    
-	    /* Spectra warning. If there are 1000 < points < 2500, just warn user that
-	    * visualizer may be slow.
-	    * If there are over 2500 points, give user decision to add to Iris or not.
-	    */
-	    int numOfPoints = format.getFilter(getURL()).getColumnData(0,0).length;
-	    if(numOfPoints < 2500 && numOfPoints > 1000) {
-		NarrowOptionPane.showMessageDialog(this, 
-			"There are over 1000 data points in this file.\n"+
-				"Visualization tools may be slightly slower than usual for this SED.", 
-			"Large File Detected", 
-			NarrowOptionPane.INFORMATION_MESSAGE);
-	    } else if(numOfPoints > 2500) {
-		int answer = NarrowOptionPane.showOptionDialog(this, 
-			"The number of data points exceeds the limit supported by Iris visualization tools (number of points detected: "+String.valueOf(numOfPoints)+").\n"+
-			//"There are over 2500 points in this file (number detected: "+String.valueOf(numOfPoints)+").\n"+
-				//"Iris visualization tools do not support spectra, meaning"+
-				"Visualization tools will be slow for this SED.\n\n"+
-				"Do you want to continue import?",
-			"Large Segment Detected", 
-			NarrowOptionPane.YES_NO_OPTION, 
-			NarrowOptionPane.WARNING_MESSAGE, null, new String[]{"Yes", "No"}, "No");
-		if (answer == JOptionPane.NO_OPTION) {
-		    return;
-		}
-	    }
-	    
+
             if (unsuc != null) {
                 if (!segList.isEmpty()) {		    
                     for (Segment seg : segList) {
@@ -1152,7 +1062,7 @@ public final class LoadSegmentFrame extends JInternalFrame {
                         if (!(filter instanceof AbstractSingleStarTableFilter)) {
                             throw new Exception("Plugins are not supported yet for Photometry Catalogs. Only native file formats are supported");
                         }
-			
+
                         PhotometryCatalogBuilder conf = new PhotometryCatalogBuilder((AbstractSingleStarTableFilter) filter, sed, i);
                         PhotometryCatalogFrame frame = new PhotometryCatalogFrame(conf);
 
@@ -1168,7 +1078,7 @@ public final class LoadSegmentFrame extends JInternalFrame {
                 if (!(filter instanceof AbstractSingleStarTableFilter)) {
                     throw new Exception("Plugins are not supported yet for Photometry Catalogs. Only native file formats are supported");
                 }
-		
+
                 PhotometryCatalogBuilder conf = new PhotometryCatalogBuilder((AbstractSingleStarTableFilter) filter, sed, 0);
                 PhotometryCatalogFrame frame = new PhotometryCatalogFrame(conf);
 
@@ -1182,22 +1092,6 @@ public final class LoadSegmentFrame extends JInternalFrame {
             Logger.getLogger(LoadSegmentFrame.class.getName()).log(Level.SEVERE, "", ex);
             NarrowOptionPane.showMessageDialog(this, "An error occurred. Please check the file", "Error", NarrowOptionPane.ERROR_MESSAGE);
         }
-    }
-    
-    /* Given a list of Segments, returns the number of data points in all the
-     * Segments.
-     */
-    private int spectraWarning(List<Segment> segList) {
-        int numOfPoints = 0;
-        
-	for (Segment segList1 : segList) {
-	    numOfPoints += segList1.getLength();
-	}
-        
-        return numOfPoints;
-    }
-    private int spectraWarning(Segment seg) {
-            return seg.getLength();
     }
     
 }
