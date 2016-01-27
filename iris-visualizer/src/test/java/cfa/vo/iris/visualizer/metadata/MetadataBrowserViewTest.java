@@ -84,7 +84,7 @@ public class MetadataBrowserViewTest extends AbstractComponentGUITest {
         // 1 segment should have been added to table
         assertEquals(1, mbView.selectedTables.getModel().getSize());
         assertEquals(3, metadataTable.getRowCount());
-        assertEquals(1, Double.parseDouble((String) metadataTable.getContentAt(0, 0)), .1);
+        assertEquals(1, Double.parseDouble((String) metadataTable.getContentAt(0, 1)), .1);
 
         // Add another segment
         double x[] = new double[] { 100, 200 };
@@ -99,7 +99,7 @@ public class MetadataBrowserViewTest extends AbstractComponentGUITest {
         // First segment should still be selected 
         assertEquals(3, metadataTable.getRowCount());
         assertEquals(1.0, mbView.selectedStarTable.getCell(0, 0));
-        assertEquals(1, Double.parseDouble((String) metadataTable.getContentAt(0, 0)), .1);
+        assertEquals(1, Double.parseDouble((String) metadataTable.getContentAt(0, 1)), .1);
         
         // Set selected segment to seg2 by clicking on segment list
         SwingUtilities.invokeAndWait(new Runnable() {
@@ -113,6 +113,7 @@ public class MetadataBrowserViewTest extends AbstractComponentGUITest {
         // Second segment should be selected, verify table and value
         assertEquals(100.0, mbView.selectedStarTable.getCell(0, 0));
         assertEquals(2, metadataTable.getRowCount());
+        assertEquals(100, Double.parseDouble((String) metadataTable.getContentAt(0, 1)), .1);
         
         // Add a new SED
         final ExtSed sed2 = sedManager.newSed("test2");
@@ -126,5 +127,53 @@ public class MetadataBrowserViewTest extends AbstractComponentGUITest {
         // Verify the metadata and segment tables have cleared
         assertEquals(0, metadataTable.getRowCount());
         assertEquals(0, segmentTable.getSize());
+    }
+    
+    @Test
+    public void testMetadataBrowserEventListener() throws Exception {
+
+        // Load an sed into the workspace and ensure it shows up in the MB
+        final ExtSed sed = sedManager.newSed("testMetadataBrowserEventListener");
+        sedManager.select(sed);
+        
+        final Object[] tables = new Object[2];
+        SwingUtilities.invokeAndWait(new Runnable() {
+            @Override
+            public void run() {
+                tables[0] = mbWindow.getPanel("content").getPanel("segmentListScrollPane").getListBox("selectedTables");
+                tables[1] = mbWindow.getPanel("content").getPanel("segmentDataScrollPane").getTable("metadataTable");
+            }
+        });
+        final ListBox segmentTable = (ListBox) tables[0];
+        final Table metadataTable = (Table) tables[1];
+
+        // Nothing should be selected
+        assertEquals(0, metadataTable.getRowCount());
+        assertEquals(0, mbView.selectedTables.getModel().getSize());
+        assertEquals(0, segmentTable.getSize());
+        
+        SwingUtilities.invokeAndWait(new Runnable() {
+            @Override
+            public void run() {
+                // Verify title is correct
+                TitledBorder sedTitle = (TitledBorder) mbView.segmentListScrollPane.getBorder();
+                assertEquals(sed.getId(), sedTitle.getTitle());
+            }
+        });
+        
+        // Add a segment
+        final Segment seg1 = createSampleSegment();
+        sed.addSegment(seg1);
+        
+        // 1 segment should have been added to table
+        SwingUtilities.invokeAndWait(new Runnable() {
+            @Override
+            public void run() {
+                // Verify values in table are correct
+                assertEquals(1, mbView.selectedTables.getModel().getSize());
+                assertEquals(3, metadataTable.getRowCount());
+                assertEquals(1, Double.parseDouble((String) metadataTable.getContentAt(0, 1)), .1);
+            }
+        });
     }
 }
