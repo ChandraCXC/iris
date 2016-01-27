@@ -27,7 +27,7 @@ public class VisualizerComponent implements IrisComponent {
     
     private IrisApplication app;
     private IWorkspace ws;
-    private List<IMenuItem> menuItems = new MenuItems();
+    private MenuItems menuItems = new MenuItems();
 
     @Override
     public void init(IrisApplication irisApplication, IWorkspace iWorkspace) {
@@ -68,13 +68,17 @@ public class VisualizerComponent implements IrisComponent {
     public void shutdown() {
     }
 
+    public PlotterView getDefaultPlotterView() {
+        return menuItems.view;
+    }
+
     private class MenuItems extends ArrayList<IMenuItem> {
         private PlotterView view;
 
         public MenuItems() {
             super();
             add(new AbstractDesktopItem("Iris Visualizer", "Visualize SED data", 
-                    "/tool.png", "/tool_tiny.png") {
+                    "/iris_button_small.png", "/iris_button_tiny.png") {
                 @Override
                 public void onClick() {
                     if (view == null) {
@@ -83,7 +87,7 @@ public class VisualizerComponent implements IrisComponent {
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);
                         }
-                        ws.getDesktop().add(view);
+                        ws.addFrame(view);
                     }
                     GUIUtils.moveToFront(view);
                 }

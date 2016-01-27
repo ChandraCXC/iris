@@ -15,10 +15,14 @@
  */
 package cfa.vo.iris.visualizer;
 
+import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.IrisComponent;
+import cfa.vo.sedlib.Segment;
 import org.junit.Before;
 import org.junit.Test;
+import javax.swing.*;
 import static org.junit.Assert.*;
 
 public class VisualizerComponentTest extends AbstractComponentGUITest {
@@ -51,5 +55,68 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         mbButton.click();
         
         assertTrue(desktop.containsWindow("Metadata Browser").isTrue());
+    }
+
+    @Test
+    public void testEventSubscription() throws Exception {
+        SedlibSedManager sedManager = (SedlibSedManager) app.getWorkspace().getSedManager();
+
+        // No view when starting application up
+        assertNull(comp.getDefaultPlotterView());
+
+        // When the viewer button is clicked, the displayed SED should be the one selected in the SedManager
+        window.getMenuBar()
+                .getMenu("Tools")
+                .getSubMenu(windowName)
+                .getSubMenu(windowName)
+                .click();
+        ExtSed initialSed = sedManager.getSelected();
+        assertNull(initialSed);
+
+        // Test the plotter reacts to a sed event
+        final ExtSed sed = sedManager.newSed("sampleSed");
+        // Make sure this is enqueued in the Swing EDT
+        SwingUtilities.invokeAndWait(new Runnable() {
+            @Override
+            public void run() {
+                assertSame(sed, comp.getDefaultPlotterView().getSed());
+            }
+        });
+
+
+        // Test the plotter reacts to a segment event (although this only requires subscribing to SedEvents)
+        final Segment segment = createSampleSegment();
+        sed.addSegment(segment);
+
+        // Make sure this is enqueued in the Swing EDT
+        SwingUtilities.invokeAndWait(new Runnable() {
+            @Override
+            public void run() {
+                assertTrue(comp.getDefaultPlotterView().getSegmentsMap().containsKey(segment));
+            }
+        });
+
+        // Just double checking this works more than once.
+        final ExtSed sed2 = sedManager.newSed("oneMoreSed");
+        // Make sure this is enqueued in the Swing EDT
+        SwingUtilities.invokeAndWait(new Runnable() {
+            @Override
+            public void run() {
+                assertSame(sed2, comp.getDefaultPlotterView().getSed());
+            }
+        });
+
+        // Just double checking we can go back through select
+        sedManager.select(sed);
+        // Make sure this is enqueued in the Swing EDT
+        SwingUtilities.invokeAndWait(new Runnable() {
+            @Override
+            public void run() {
+                assertSame(sed, comp.getDefaultPlotterView().getSed());
+            }
+        });
+
+
+//        assertEquals("sampleSed", comp.getDefaultPlotterView().getLegend().getTitle());
     }
 }

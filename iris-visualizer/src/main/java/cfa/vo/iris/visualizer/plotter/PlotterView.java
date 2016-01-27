@@ -29,6 +29,8 @@ import javax.swing.JPopupMenu;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Collections;
+import java.util.Map;
 
 import javax.swing.JSpinner;
 import javax.swing.SpinnerListModel;
@@ -36,25 +38,75 @@ import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import cfa.vo.iris.IrisApplication;
+import cfa.vo.iris.events.SedCommand;
+import cfa.vo.iris.events.SedEvent;
+import cfa.vo.iris.events.SedListener;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.gui.NarrowOptionPane;
+import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.stil.SegmentStarTableAdapter;
+import cfa.vo.iris.sed.stil.StarTableAdapter;
+import cfa.vo.iris.visualizer.metadata.MetadataBrowserView;
+import cfa.vo.iris.visualizer.stil.StilPlotter;
+import cfa.vo.iris.visualizer.stil.preferences.SegmentLayer;
+import cfa.vo.sedlib.ISegment;
 import cfa.vo.iris.IWorkspace;
 import javax.swing.JFrame;
 
 public class PlotterView extends JInternalFrame {
     
     private static final long serialVersionUID = 1L;
-
-    private StilPlotter plotter;
-    private StilPlotter residuals;
-    private JTextField txtXposistion;
-    private JTextField txtYposition;
+    
     private IWorkspace ws;
     private IrisApplication app;
+
+    // Plotting Components
+    private StilPlotter plotter;
+    private JInternalFrame residuals;
+    private StarTableAdapter<ISegment> starTableAdapter;
+    private MetadataBrowserView metadataBrowser;
     
-    protected MetadataBrowser metadataBrowser;
+    // Buttons, etc.
+    private JButton btnReset;
+    private JToggleButton tglbtnShowhideResiduals;
+    private JSpinner secondaryPlotOptions;
+    private JButton zoomIn;
+    private JButton zoomOut;
+    private BasicArrowButton left;
+    private BasicArrowButton right;
+    private BasicArrowButton up;
+    private BasicArrowButton down;
+    private JCheckBox chckbxAbsolute;
+    private JButton btnUnits;
+    private JTextField txtXposistion;
+    private JTextField txtYposition;
+    private JSpinner fluxOrDensity;
+    private JButton metadataButton;
     
+    // Menu items
+    private JMenuBar menuBar;
+    private JMenu mnF;
+    private JMenuItem mntmExport;
+    private JMenuItem mntmProperties;
+    private JMenuItem mntmOpen;
+    private JMenuItem mntmSave;
+    private JMenuItem mntmPrint;
+    private JMenu mnEdit;
+    private JMenuItem mntmSomething;
+    private JMenu mnView;
+    private JMenu mnPlotType;
+    private JMenu mnLog;
+    private JMenuItem mntmRegularLog;
+    private JMenuItem mntmExcendedLog;
+    private JMenuItem mntmLinear;
+    private JMenuItem mntmXlog;
+    private JMenuItem mntmYlog;
+    private JMenuItem mntmErrorBars;
+    private JMenuItem mntmAutofixed;
+    private JMenuItem mntmGridOnoff;
+    private JMenuItem mntmCoplot;
     
+
     /**
      * Create the frame.
      * @param ws 
@@ -67,58 +119,25 @@ public class PlotterView extends JInternalFrame {
         setSelected(true);
         setResizable(true);
         setClosable(true);
-        toFront();
-        this.metadataBrowser = new MetadataBrowser();
-        
         setMaximizable(true);
         setIconifiable(true);
         setBounds(100, 100, 1096, 800);
+        toFront();
+        
+        this.starTableAdapter = new SegmentStarTableAdapter();
+        this.metadataBrowser = new MetadataBrowserView(ws, starTableAdapter);
         
         this.ws = ws;
         this.app = app;
         
-        plotter = new StilPlotter((String) null, app, ws);
-        residuals = new StilPlotter((String) null, app, ws);
+        // TODO: StarTableAdapters?
+        plotter = new StilPlotter(app, ws, starTableAdapter);
+        residuals = new JInternalFrame();
         
-        JButton btnReset = new JButton("Reset");
+        initializeComponents();
+        initializeMenuItems();
         
-        JToggleButton tglbtnShowhideResiduals = new JToggleButton("Show Residuals");
-        
-        JSpinner spinner = new JSpinner();
-        spinner.setModel(new SpinnerListModel(new String[] {"Residuals", "Ratios", "Something"}));
-        
-        JButton button = new JButton("In");
-        
-        JButton button_1 = new JButton("Out");
-        
-        BasicArrowButton basicArrowButton = new BasicArrowButton(0);
-        basicArrowButton.setDirection(7);
-        
-        BasicArrowButton basicArrowButton_1 = new BasicArrowButton(0);
-        basicArrowButton_1.setDirection(3);
-        
-        BasicArrowButton basicArrowButton_2 = new BasicArrowButton(0);
-        basicArrowButton_2.setDirection(1);
-        
-        BasicArrowButton basicArrowButton_3 = new BasicArrowButton(0);
-        basicArrowButton_3.setDirection(5);
-        
-        txtXposistion = new JTextField();
-        txtXposistion.setText("x-position");
-        txtXposistion.setColumns(10);
-        
-        txtYposition = new JTextField();
-        txtYposition.setText("y-position");
-        txtYposition.setColumns(10);
-        
-        JCheckBox chckbxAbsolute = new JCheckBox("Absolute");
-        
-        JButton btnUnits = new JButton("Units");
-        
-        JSpinner spinner_1 = new JSpinner();
-        spinner_1.setModel(new SpinnerListModel(new String[] {"Flux", "Flux Density"}));
-        
-        JButton metadataButton = new JButton("Metadata");
+        // Action for opening metadata browser
         metadataButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -129,6 +148,88 @@ public class PlotterView extends JInternalFrame {
             }
         });
         
+        // Action for resetting plot
+        btnReset.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                resetPlot(null);
+            }
+        });
+
+        SedEvent.getInstance().add(new PlotSedListener());
+    }
+
+    public ExtSed getSed() {
+        return plotter.getSed();
+    }
+
+    public Map<ISegment, SegmentLayer> getSegmentsMap() {
+        return plotter.getSegmentsMap();
+    }
+    
+    private void openMetadataBrowser() throws Exception {
+        if (!metadataBrowser.isVisible()) {
+            ws.addFrame(metadataBrowser);
+            GUIUtils.moveToFront(metadataBrowser);
+        }
+        else {
+            GUIUtils.moveToFront(metadataBrowser);
+        }
+    }    
+    
+    public MetadataBrowserView getMetadataBrowserView() {
+        return this.metadataBrowser;
+    }
+    
+    private void resetPlot(ExtSed sed) {
+        this.metadataBrowser.reset();
+        this.plotter.reset(sed);
+    }
+    
+    private static void addPopup(Component component, final JPopupMenu popup) {
+    }
+    
+    private void initializeComponents() {
+        
+        // Construct buttons etc.
+        btnReset = new JButton("Reset");
+        tglbtnShowhideResiduals = new JToggleButton("Show Residuals");
+        
+        secondaryPlotOptions = new JSpinner();
+        secondaryPlotOptions.setModel(new SpinnerListModel(new String[] {"Residuals", "Ratios", "Something"}));
+        
+        zoomIn = new JButton("In");
+        zoomOut = new JButton("Out");
+        
+        left = new BasicArrowButton(0);
+        left.setDirection(7);
+        
+        right = new BasicArrowButton(0);
+        right.setDirection(3);
+        
+        up = new BasicArrowButton(0);
+        up.setDirection(1);
+        
+        down = new BasicArrowButton(0);
+        down.setDirection(5);
+        
+        txtXposistion = new JTextField();
+        txtXposistion.setText("x-position");
+        txtXposistion.setColumns(10);
+        
+        txtYposition = new JTextField();
+        txtYposition.setText("y-position");
+        txtYposition.setColumns(10);
+        
+        chckbxAbsolute = new JCheckBox("Absolute");
+        
+        btnUnits = new JButton("Units");
+        
+        fluxOrDensity = new JSpinner();
+        fluxOrDensity.setModel(new SpinnerListModel(new String[] {"Flux", "Flux Density"}));
+        
+        metadataButton = new JButton("Metadata");
+        
+        // Set layout
         GroupLayout groupLayout = new GroupLayout(getContentPane());
         groupLayout.setHorizontalGroup(
             groupLayout.createParallelGroup(Alignment.LEADING)
@@ -140,17 +241,17 @@ public class PlotterView extends JInternalFrame {
                         .addGroup(groupLayout.createSequentialGroup()
                             .addComponent(btnReset)
                             .addPreferredGap(ComponentPlacement.RELATED)
-                            .addComponent(button)
+                            .addComponent(zoomIn)
                             .addPreferredGap(ComponentPlacement.RELATED)
-                            .addComponent(button_1)
+                            .addComponent(zoomOut)
                             .addPreferredGap(ComponentPlacement.RELATED)
-                            .addComponent(basicArrowButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(left, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(ComponentPlacement.RELATED)
-                            .addComponent(basicArrowButton_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(right, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(ComponentPlacement.RELATED)
-                            .addComponent(basicArrowButton_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(up, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(ComponentPlacement.RELATED)
-                            .addComponent(basicArrowButton_3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(down, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                             .addGap(82)
                             .addComponent(chckbxAbsolute)
                             .addPreferredGap(ComponentPlacement.RELATED)
@@ -160,13 +261,13 @@ public class PlotterView extends JInternalFrame {
                             .addPreferredGap(ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
                             .addComponent(metadataButton)
                             .addPreferredGap(ComponentPlacement.UNRELATED)
-                            .addComponent(spinner_1, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(fluxOrDensity, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(ComponentPlacement.UNRELATED)
                             .addComponent(btnUnits))
                         .addGroup(groupLayout.createSequentialGroup()
                             .addComponent(tglbtnShowhideResiduals)
                             .addPreferredGap(ComponentPlacement.RELATED)
-                            .addComponent(spinner, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(secondaryPlotOptions, GroupLayout.PREFERRED_SIZE, 97, GroupLayout.PREFERRED_SIZE)))
                     .addContainerGap())
         );
         groupLayout.setVerticalGroup(
@@ -179,102 +280,99 @@ public class PlotterView extends JInternalFrame {
                             .addComponent(chckbxAbsolute)
                             .addComponent(txtYposition, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnUnits)
-                            .addComponent(spinner_1, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(fluxOrDensity, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
                             .addComponent(metadataButton))
-                        .addComponent(basicArrowButton_3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(basicArrowButton_2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(basicArrowButton_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(button_1)
-                        .addComponent(button, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(down, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(up, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(right, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(zoomOut)
+                        .addComponent(zoomIn, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnReset, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(basicArrowButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                        .addComponent(left, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                     .addPreferredGap(ComponentPlacement.RELATED)
                     .addComponent(plotter, GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE)
                     .addPreferredGap(ComponentPlacement.UNRELATED)
                     .addComponent(residuals, GroupLayout.PREFERRED_SIZE, 126, GroupLayout.PREFERRED_SIZE)
                     .addPreferredGap(ComponentPlacement.RELATED)
                     .addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-                        .addComponent(spinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(secondaryPlotOptions, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                         .addComponent(tglbtnShowhideResiduals, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addContainerGap())
         );
         getContentPane().setLayout(groupLayout);
-        
-        JMenuBar menuBar = new JMenuBar();
+    }
+    
+    private void initializeMenuItems() {
+
+        menuBar = new JMenuBar();
         setJMenuBar(menuBar);
         
-        JMenu mnF = new JMenu("File");
+        mnF = new JMenu("File");
         menuBar.add(mnF);
         
-        JMenuItem mntmExport = new JMenuItem("Export");
+        mntmExport = new JMenuItem("Export");
         mnF.add(mntmExport);
         
-        JMenuItem mntmProperties = new JMenuItem("Properties");
+        mntmProperties = new JMenuItem("Properties");
         mnF.add(mntmProperties);
         
-        JMenuItem mntmOpen = new JMenuItem("Open");
+        mntmOpen = new JMenuItem("Open");
         mnF.add(mntmOpen);
         
-        JMenuItem mntmSave = new JMenuItem("Save");
+        mntmSave = new JMenuItem("Save");
         mnF.add(mntmSave);
         
-        JMenuItem mntmPrint = new JMenuItem("Print");
+        mntmPrint = new JMenuItem("Print");
         mnF.add(mntmPrint);
         
-        JMenu mnEdit = new JMenu("Edit");
+        mnEdit = new JMenu("Edit");
         menuBar.add(mnEdit);
         
-        JMenuItem mntmSomething = new JMenuItem("Something");
+        mntmSomething = new JMenuItem("Something");
         mnEdit.add(mntmSomething);
         
-        JMenu mnView = new JMenu("View");
+        mnView = new JMenu("View");
         menuBar.add(mnView);
         
-        JMenu mnPlotType = new JMenu("Plot Type");
+        mnPlotType = new JMenu("Plot Type");
         mnView.add(mnPlotType);
         
-        JMenu mnLog = new JMenu("Log");
+        mnLog = new JMenu("Log");
         mnPlotType.add(mnLog);
         
-        JMenuItem mntmRegularLog = new JMenuItem("Regular Log");
+        mntmRegularLog = new JMenuItem("Regular Log");
         mnLog.add(mntmRegularLog);
         
-        JMenuItem mntmExcendedLog = new JMenuItem("Extended Log");
+        mntmExcendedLog = new JMenuItem("Extended Log");
         mnLog.add(mntmExcendedLog);
         
-        JMenuItem mntmLinear = new JMenuItem("Linear");
+        mntmLinear = new JMenuItem("Linear");
         mnPlotType.add(mntmLinear);
         
-        JMenuItem mntmXlog = new JMenuItem("xLog");
+        mntmXlog = new JMenuItem("xLog");
         mnPlotType.add(mntmXlog);
         
-        JMenuItem mntmYlog = new JMenuItem("yLog");
+        mntmYlog = new JMenuItem("yLog");
         mnPlotType.add(mntmYlog);
         
-        JMenuItem mntmErrorBars = new JMenuItem("Error Bars");
+        mntmErrorBars = new JMenuItem("Error Bars");
         mnView.add(mntmErrorBars);
         
-        JMenuItem mntmAutofixed = new JMenuItem("Auto/Fixed");
+        mntmAutofixed = new JMenuItem("Auto/Fixed");
         mnView.add(mntmAutofixed);
         
-        JMenuItem mntmGridOnoff = new JMenuItem("Grid on/off");
+        mntmGridOnoff = new JMenuItem("Grid on/off");
         mnView.add(mntmGridOnoff);
         
-        JMenuItem mntmCoplot = new JMenuItem("Coplot");
+        mntmCoplot = new JMenuItem("Coplot");
         mnView.add(mntmCoplot);
+    }
 
-    }
-    
-    private void openMetadataBrowser() throws Exception {
-        if (!metadataBrowser.isVisible()) {
-            this.ws.getDesktop().add("Metadata Browser", metadataBrowser);
-            GUIUtils.moveToFront(metadataBrowser);
+    private class PlotSedListener implements SedListener {
+
+        @Override
+        public void process(ExtSed source, SedCommand payload) {
+            resetPlot(source);
         }
-        else {
-            GUIUtils.moveToFront(metadataBrowser);
-        }
-    }
-    
-    private static void addPopup(Component component, final JPopupMenu popup) {
     }
 }

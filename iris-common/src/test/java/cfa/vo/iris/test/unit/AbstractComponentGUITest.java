@@ -16,6 +16,8 @@
 package cfa.vo.iris.test.unit;
 
 import cfa.vo.iris.IrisComponent;
+import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.common.SedNoDataException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +34,25 @@ public abstract class AbstractComponentGUITest extends AbstractGUITest {
     protected List<IrisComponent> getComponents() {
         return Arrays.asList(new IrisComponent[]{getComponent()});
     }
-
+    
     protected abstract IrisComponent getComponent();
+    
+    // Common Util functions
+    protected Segment createSampleSegment(double[] x, double[] y) throws SedNoDataException {
+        Segment segment = new Segment();
+        segment.setFluxAxisValues(y);
+        segment.setFluxAxisUnits("Jy");
+        segment.createChar().createFluxAxis().setUcd("ucdf");
+        segment.setSpectralAxisValues(x);
+        segment.setSpectralAxisUnits("Angstrom");
+        segment.getChar().createSpectralAxis().setUcd("ucds");
+        return segment;
+        
+    }
+    
+    protected Segment createSampleSegment() throws SedNoDataException  {
+        double[] x = new double[]{1.0, 2.0, 3.0};
+        double[] y = new double[]{1.0, 2.0, 3.0};
+        return createSampleSegment(x, y);
+    }
 }
