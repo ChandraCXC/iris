@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SampService {
-    private final String PING_MTYPE = "samp.app.ping";
+    private final String PING_MTYPE = "sherpa.ping";
     private final int DEFAULT_TIMEOUT = 10;
     private final int RETRY = 100;
     private final int RETRY_INTERVAL = 100;

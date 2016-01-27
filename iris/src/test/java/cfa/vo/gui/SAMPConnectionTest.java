@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
 
 public class SAMPConnectionTest extends AbstractUISpecTest {
 
-    private Logger logger = Logger.getLogger(IrisUISpecAdapter.class.getName());
+    private Logger logger = Logger.getLogger(SAMPConnectionTest.class.getName());
     private ExecutorService executor;
     private Window mainWindow;
 
@@ -91,6 +91,7 @@ public class SAMPConnectionTest extends AbstractUISpecTest {
 
         logger.log(Level.INFO, "making sure Iris disconnects");
         checkLabel(mainWindow, "SAMP", false);
+        checkLabel(mainWindow, "Sherpa", false);
 
         // But Iris should reconnect if a new hub is started
         logger.log(Level.INFO, "starting a new hub");

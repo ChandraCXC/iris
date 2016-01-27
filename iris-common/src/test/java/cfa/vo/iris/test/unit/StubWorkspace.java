@@ -34,7 +34,7 @@ import javax.swing.*;
 
 public class StubWorkspace implements IWorkspace {
     private UnitsManager unitsManager = new DefaultUnitsManager();
-    private JFrame mainWindow = new JFrame("Test App");
+    private JFrame mainWindow;
     private JDesktopPane desktop;
     private SedlibSedManager manager = new SedlibSedManager();
     private JFileChooser chooser = new JFileChooser();
@@ -42,8 +42,12 @@ public class StubWorkspace implements IWorkspace {
     private JMenu toolsMenu = new JMenu("Tools");
 
     public StubWorkspace() {
-        mainWindow = new JFrame("Test App");
-        desktop = new JDesktopPane();
+        this(new MainWindow());
+    }
+
+    public StubWorkspace(IMainWindow window) {
+        mainWindow = window.getMainFrame();
+        desktop = window.getDesktop();
         JMenuBar menuBar = new JMenuBar();
         mainWindow.setContentPane(desktop);
         mainWindow.setJMenuBar(menuBar);
@@ -106,4 +110,5 @@ public class StubWorkspace implements IWorkspace {
     public void shutdown() {
         mainWindow.dispose();
     }
+
 }
