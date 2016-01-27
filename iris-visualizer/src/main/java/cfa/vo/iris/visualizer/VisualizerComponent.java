@@ -28,6 +28,7 @@ public class VisualizerComponent implements IrisComponent {
     private IrisApplication app;
     private IWorkspace ws;
     private MenuItems menuItems = new MenuItems();
+    private PlotterView view;
 
     @Override
     public void init(IrisApplication irisApplication, IWorkspace iWorkspace) {
@@ -67,11 +68,23 @@ public class VisualizerComponent implements IrisComponent {
     @Override
     public void shutdown() {
     }
-
+    
+    public void show() {
+        if (view == null) {
+            try {
+                view = new PlotterView("Iris Visualizer", app, ws);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+            ws.addFrame(view);
+        }
+        GUIUtils.moveToFront(view);
+    }
+    
     public PlotterView getDefaultPlotterView() {
         return menuItems.view;
     }
-
+    
     private class MenuItems extends ArrayList<IMenuItem> {
         private PlotterView view;
 
@@ -81,15 +94,7 @@ public class VisualizerComponent implements IrisComponent {
                     "/iris_button_small.png", "/iris_button_tiny.png") {
                 @Override
                 public void onClick() {
-                    if (view == null) {
-                        try {
-                            view = new PlotterView("Iris Visualizer", app, ws);
-                        } catch (Exception ex) {
-                            throw new RuntimeException(ex);
-                        }
-                        ws.addFrame(view);
-                    }
-                    GUIUtils.moveToFront(view);
+                    show();
                 }
             });
         }

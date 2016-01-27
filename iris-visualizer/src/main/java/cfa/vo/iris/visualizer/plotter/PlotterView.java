@@ -180,6 +180,10 @@ public class PlotterView extends JInternalFrame {
         this.plotter.reset(sed);
     }
     
+    public StilPlotter getPlot() {
+        return plotter;
+    }
+    
     private static void addPopup(Component component, final JPopupMenu popup) {
     }
     

@@ -61,6 +61,7 @@ public class StilPlotter extends JPanel {
     // TODO: How can we keep this in sync with the iris application?
     private Map<ISegment, SegmentLayer> segments;
     private PlotPreferences plotPreferences;
+    private MapEnvironment env;
     
     public StilPlotter(IrisApplication app, IWorkspace ws, StarTableAdapter<ISegment> adapter) {
         this.adapter = adapter;
@@ -105,7 +106,38 @@ public class StilPlotter extends JPanel {
         return Collections.unmodifiableMap(segments);
     }
     
-    private PlotDisplay createPlotComponent(ExtSed sed) throws Exception {
+    public PlotDisplay getPlotDisplay() {
+        return display;
+    }
+
+    /**
+     * Get the value of env
+     *
+     * @return the value of env
+     */
+    public MapEnvironment getEnv() {
+        return env;
+    }
+
+    /**
+     * Set the value of env
+     *
+     * @param env new value of env
+     */
+    public void setEnv(MapEnvironment env) {
+        this.env = env;
+    }
+
+    
+    protected PlotDisplay createPlotComponent(MapEnvironment env, boolean cached) throws Exception {
+        
+        logger.log(Level.FINE, "plot environment:");
+        logger.log(Level.FINE, ReflectionToStringBuilder.toString(env));
+        
+        return new PlanePlot2Task().createPlotComponent(env, cached);
+    }
+    
+    protected PlotDisplay createPlotComponent(ExtSed sed) throws Exception {
         logger.info("Creating new plot from selected SED");
 
         if (sed == null) {
@@ -113,7 +145,7 @@ public class StilPlotter extends JPanel {
         }
         this.currentSed = sed;
         
-        MapEnvironment env = new MapEnvironment();
+        env = new MapEnvironment();
         env.setValue("type", "plot2plane");
         env.setValue("insets", new Insets(50, 80, 50, 50)); 
         // TODO: force numbers on Y axis to only be 3-5 digits long. Keeps
@@ -134,10 +166,7 @@ public class StilPlotter extends JPanel {
             addSegmentLayers(sed, env);
         }
         
-        logger.log(Level.FINE, "plot environment:");
-        logger.log(Level.FINE, ReflectionToStringBuilder.toString(env));
-        
-        return new PlanePlot2Task().createPlotComponent(env, true);
+        return createPlotComponent(env, true);
     }
     
     // TODO: Preferences, etc....

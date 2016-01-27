@@ -19,25 +19,39 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.IrisComponent;
+import cfa.vo.iris.visualizer.plotter.PlotterView;
+import cfa.vo.iris.visualizer.stil.StilPlotter;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sedlib.io.SedFormat;
 import cfa.vo.testdata.TestData;
+import java.lang.reflect.Field;
 import org.junit.Before;
 import org.junit.Test;
 import javax.swing.*;
 import java.net.URL;
+import org.apache.commons.lang.ArrayUtils;
 
 import static org.junit.Assert.*;
+import uk.ac.starlink.task.StringParameter;
+import uk.ac.starlink.ttools.plot2.PlotLayer;
+import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
+import uk.ac.starlink.ttools.task.MapEnvironment;
 
 public class VisualizerComponentTest extends AbstractComponentGUITest {
     
     private VisualizerComponent comp = new VisualizerComponent();
     private String windowName;
+    
+    //private SedlibSedManager manager;
 
     @Before
     public void setUp() throws Exception {
         windowName = comp.getName();
+        //manager = (SedlibSedManager) app.getWorkspace().getSedManager();
+        //comp.show();
+        
+        //desktop.containsWindow(windowName).check();
     }
 
     @Override
@@ -45,21 +59,73 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         return comp;
     }
 
+    
+    // check that the metadata browser opens when clickied on
     @Test
-    public void testVisualizerStub() throws Exception {
-        
-        window.getMenuBar()
-            .getMenu("Tools")
-            .getSubMenu(windowName)
-            .getSubMenu(windowName)
-            .click();
-        
-        assertTrue(desktop.containsWindow(windowName).isTrue());
-        
+    public void testMetadataBrowserPresent() throws Exception {
+
         org.uispec4j.Button mbButton = desktop.getWindow(windowName).getButton("Metadata");
         mbButton.click();
         
         assertTrue(desktop.containsWindow("Metadata Browser").isTrue());
+    }
+    
+    
+    // basic test to check default layer settings on plot window when SED is
+    // added to the plotter.
+    @Test
+    public void testAddSEDToPlotter() throws Exception {
+        
+        window.getMenuBar()
+                .getMenu("Tools")
+                .getSubMenu(windowName)
+                .getSubMenu(windowName)
+                .click();
+        
+        String filename = getClass().getResource("/test_data/3c273.vot").getFile();
+        ExtSed sed = ExtSed.read(filename, SedFormat.VOT, false);
+//        SedlibSedManager manager = (SedlibSedManager) app.getWorkspace().getSedManager();
+//        manager.add(sed);
+        
+        StilPlotter plot = comp.getDefaultPlotterView().getPlot();
+        
+        assertTrue(desktop.containsWindow(windowName).isTrue());
+        
+//        StilPlotter plot = comp.getDefaultPlotterView().getPlot();
+//        PlotDisplay display = plot.getPlotDisplay();
+//        
+//        // using reflection to access layers in plot display
+//        Field layers_ = PlotDisplay.class.getDeclaredField("layers_");
+//        layers_.setAccessible(true);
+//        PlotLayer[] layers = (PlotLayer[]) layers_.get(display);
+//        
+//        assertTrue(!ArrayUtils.isEmpty(layers));
+//        
+//        // create the default plot view for an SED
+//        //plot.createPlotComponent(sed);
+//        
+//        // check that plot env is correctly set
+//        MapEnvironment env = plot.getEnv();
+//        for (String string : env.getNames()) {
+//            
+//        }
+//        StringParameter par = new StringParameter("color");
+//        env.acquireValue(par);
+//        assertEquals(par.objectValue(env), "blue");
+//        for (String string : env.getNames()) {
+//            System.err.println(string);
+//        }
+        
+        
+    }
+    
+    @Test
+    public void testResetEmptySed() {
+        
+        comp.show();
+        
+        org.uispec4j.Button resetButton = desktop.getWindow(windowName).getButton("Reset");
+        resetButton.click();
     }
 
     @Test
