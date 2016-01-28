@@ -1,6 +1,9 @@
 package cfa.vo.iris.sed.stil;
 
+import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.utils.UTYPE;
+import cfa.vo.utils.Default;
+import org.apache.commons.lang.ArrayUtils;
 import org.junit.Before;
 import org.junit.Test;
 import uk.ac.starlink.table.*;
@@ -19,8 +22,8 @@ public class FlattenMultipleStarTablesTest {
     private final String SPECTRAL_NAME = "spectral";
     private final String FLUX_NAME = "flux";
     private final String STRING_NAME = "stringField";
-    private final String SPECTRAL_UTYPE = "test:spectral";
-    private final String FLUX_UTYPE = "test:flux";
+    private final String SPECTRAL_UTYPE = "spec:Data.SpectralAxis.Value";
+    private final String FLUX_UTYPE = "ssa:Data.FluxAxis.Value";
     private ColumnInfo spectralInfo;
     private ColumnInfo fluxInfo;
     private ColumnInfo stringInfo;
@@ -38,7 +41,7 @@ public class FlattenMultipleStarTablesTest {
 
         ColumnData columnSpectral2 = PrimitiveArrayColumn.makePrimitiveColumn(spectralInfo, SPECTRAL);
         // insert a "Spectrum String"
-        ColumnInfo newFluxInfo = new ColumnInfo(FLUX_NAME.replace("flux", "Spectrum.flux"), Double.class, "");
+        ColumnInfo newFluxInfo = new ColumnInfo(FLUX_NAME.replaceAll("(?i)flux", "Spectrum.flux"), Double.class, "");
         newFluxInfo.setUtype(FLUX_UTYPE.toUpperCase());
         ColumnData columnFlux2 = PrimitiveArrayColumn.makePrimitiveColumn(newFluxInfo, FLUX);
         stringInfo = new ColumnInfo(STRING_NAME, String.class, "");
@@ -80,7 +83,7 @@ public class FlattenMultipleStarTablesTest {
 
     @Test
     public void testStarTableFlatten() throws Exception {
-        ColumnStarTable table = manager.flatten(table1, table2);
+        ColumnStarTable table = manager.flatten(null, null, table1, table2);
 
         assertEquals(3, table.getColumnCount());
         assertEquals(6, table.getRowCount());
@@ -165,5 +168,38 @@ public class FlattenMultipleStarTablesTest {
         assertEquals(0, StilColumnManager.getColumnIndex(table2, fluxInfo));
         assertEquals(2, StilColumnManager.getColumnIndex(table2, spectralInfo));
         assertEquals(1, StilColumnManager.getColumnIndex(table2, stringInfo));
+    }
+
+    @Test
+    public void testUnits() throws Exception {
+        // I am going to assume unit conversions work
+
+        // Indexes come from testGetColumnIndex test.
+        ColumnInfo spInfo = table1.getColumnInfo(0);
+        spInfo.setUnitString("Angstrom");
+
+        ColumnInfo spInfo2 = table2.getColumnInfo(2);
+        spInfo2.setUnitString("Hz");
+
+        ColumnInfo flInfo = table1.getColumnInfo(1);
+        flInfo.setUnitString("erg/s/cm2/Angstrom");
+
+        ColumnInfo flInfo2 = table2.getColumnInfo(0);
+        flInfo2.setUnitString("Jy");
+
+        UnitsManager unitsManager = Default.getInstance().getUnitsManager();
+        double[] newSpectral = unitsManager.convertX(SPECTRAL, spInfo.getUnitString(), spInfo2.getUnitString());
+        double[] newFlux = unitsManager.convertY(FLUX, SPECTRAL, flInfo.getUnitString(), spInfo.getUnitString(), flInfo2.getUnitString());
+
+        // expected arrays has converted elements first, then non-converted elements
+        newSpectral = ArrayUtils.addAll(newSpectral, SPECTRAL);
+        newFlux = ArrayUtils.addAll(newFlux, FLUX);
+
+        ColumnStarTable table = manager.flatten(spInfo2.getUnitString(), flInfo2.getUnitString(), table1, table2);
+
+        int spectralIndex = StilColumnManager.getColumnIndex(table, spectralInfo);
+        assertArrayEquals(ArrayUtils.toObject(newSpectral), (Object[])((ArrayColumn)table.getColumnData(spectralIndex)).getArray());
+        int fluxIndex = StilColumnManager.getColumnIndex(table, fluxInfo);
+        assertArrayEquals(ArrayUtils.toObject(newFlux), (Object[])((ArrayColumn)table.getColumnData(fluxIndex)).getArray());
     }
 }

@@ -323,6 +323,21 @@ public class DefaultUnitsManagerTest {
         assertArrayEquals(expected, observed, Math.abs(Math.abs(expected[0])) / PRECISION);
     }
 
+    @Test
+    public void testEquals() throws Exception {
+        XUnit unit = manager.newXUnits("A");
+        XUnit other = manager.newXUnits("Angstrom");
+        assertTrue(unit.equals(other) && other.equals(unit));
+
+        YUnit yUnit = manager.newYUnits("10*Jy");
+        YUnit yOther = manager.newYUnits("Jy");
+        assertTrue(yUnit.equals(yOther) && yOther.equals(yUnit));
+
+        unit = manager.newXUnits("Angstrom");
+        other = manager.newXUnits("Hz");
+        assertFalse(unit.equals(other) || other.equals(unit));
+    }
+
     @BeforeClass
     public static void setUpClass() throws Exception {
         manager = new DefaultUnitsManager();

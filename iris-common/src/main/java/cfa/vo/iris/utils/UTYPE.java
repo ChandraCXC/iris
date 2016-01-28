@@ -9,6 +9,8 @@ public class UTYPE {
     String main;
 
     public final static String FLUX_STAT_ERROR = "Spectrum.Data.FluxAxis.Accuracy.StatError";
+    public final static String SPECTRAL_VALUES = "Data.SpectralAxis.Value";
+    public final static String FLUX_VALUES = "Data.FluxAxis.Value";
 
     public UTYPE(String utypeString) {
         if (utypeString == null || utypeString.isEmpty()) {

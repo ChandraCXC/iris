@@ -1,6 +1,11 @@
 package cfa.vo.iris.sed.stil;
 
+import cfa.vo.iris.units.UnitsException;
+import cfa.vo.iris.units.UnitsManager;
+import cfa.vo.iris.units.XUnit;
+import cfa.vo.iris.units.YUnit;
 import cfa.vo.iris.utils.UTYPE;
+import cfa.vo.utils.Default;
 import uk.ac.starlink.table.*;
 
 import java.io.IOException;
@@ -32,8 +37,8 @@ public class StilColumnManager {
 
     }
 
-    public ColumnStarTable flatten(StarTable... tables) throws IOException {
-        return new FlattenedStarTable(tables);
+    public ColumnStarTable flatten(String xUnit, String yUnit, StarTable... tables) throws IOException, UnitsException {
+        return new FlattenedStarTable(xUnit, yUnit, tables);
     }
 
     public static int getColumnIndex(StarTable table, ColumnInfo info) {
@@ -155,7 +160,7 @@ public class StilColumnManager {
     private class FlattenedStarTable extends uk.ac.starlink.table.ColumnStarTable {
         private long nRows;
 
-        public FlattenedStarTable(StarTable... tables) throws IOException {
+        public FlattenedStarTable(String xUnit, String yUnit, StarTable... tables) throws IOException, UnitsException {
             ColumnInfo[] infos = extractColumns(tables);
             int nCols = infos.length;
 
@@ -165,7 +170,7 @@ public class StilColumnManager {
             }
             this.nRows = nRows;
 
-            List<Object[]> dataMatrix = readData(tables);
+            List<Object[]> dataMatrix = readData(xUnit, yUnit, tables);
 
             for (int i=0; i<nCols; i++) {
                 ColumnInfo info = infos[i];
@@ -186,17 +191,60 @@ public class StilColumnManager {
             return nRows;
         }
 
-        private List<Object[]> readData(StarTable... tables) throws IOException {
+        private List<Object[]> readData(String xUnitString, String yUnitString, StarTable... tables) throws IOException, UnitsException {
+            UnitsManager unitsManager = Default.getInstance().getUnitsManager();
+            XUnit toXUnit = null;
+            YUnit toYUnit = null;
+            if (xUnitString != null && !xUnitString.isEmpty()) {
+                toXUnit = unitsManager.newXUnits(xUnitString);
+            }
+
+            if (yUnitString != null && !yUnitString.isEmpty()) {
+                toYUnit = unitsManager.newYUnits(yUnitString);
+            }
+
             List<Object[]> retValue = new ArrayList<>();
 
             for (ColumnInfo info : index.getValues()) {
                 List<Object> arrayList = new ArrayList<>();
                 tableLoop:
                 for (StarTable t : tables) {
+
+                    ColumnInfo spectralInfo = new ColumnInfo("");
+                    spectralInfo.setUtype(UTYPE.SPECTRAL_VALUES);
+                    int spectralIndex = StilColumnManager.getColumnIndex(t, spectralInfo);
+                    String fromXUnits = t.getColumnInfo(spectralIndex).getUnitString();
+                    XUnit fromXUnit = unitsManager.newXUnits(fromXUnits != null ? fromXUnits : "");
+
+                    ColumnInfo fluxInfo = new ColumnInfo("");
+                    fluxInfo.setUtype(UTYPE.FLUX_VALUES);
+                    int fluxIndex = StilColumnManager.getColumnIndex(t, fluxInfo);
+                    String fromYUnits = t.getColumnInfo(fluxIndex).getUnitString();
+                    YUnit fromYUnit = unitsManager.newYUnits(fromYUnits != null ? fromYUnits: "");
+
                     for (int i=0; i<t.getColumnCount(); i++) {
-                        if (ColumnInfoIndex.sameId(info, t.getColumnInfo(i))) {
+                        ColumnInfo columnInfo = t.getColumnInfo(i);
+                        if (ColumnInfoIndex.sameId(info, columnInfo)) {
+                            boolean convertX = false;
+                            boolean convertY = false;
+                            if (i == spectralIndex) {
+                                convertX = toXUnit != null && toXUnit.isValid() && !toXUnit.equals(toYUnit);
+                            }
+
+                            if (i == fluxIndex) {
+                                convertY = toYUnit != null && toXUnit != null && toYUnit.isValid() && toXUnit.isValid() && !fromXUnit.equals(toXUnit) && !fromYUnit.equals(toYUnit);
+                            }
+
                             for (long j = 0; j < t.getRowCount(); j++) {
-                                arrayList.add(t.getCell(j, i));
+                                Object value = t.getCell(j, i);
+                                if (convertX) {
+                                    value = unitsManager.convertX(new double[]{(double)value}, fromXUnit, toXUnit)[0];
+                                }
+                                if (convertY) {
+                                    double spectralValue = (double) t.getCell(j, spectralIndex);
+                                    value = unitsManager.convertY(new double[]{(double)value}, new double[]{spectralValue}, fromYUnit, fromXUnit, toYUnit)[0];
+                                }
+                                arrayList.add(value);
                             }
                             continue tableLoop;
                         }
