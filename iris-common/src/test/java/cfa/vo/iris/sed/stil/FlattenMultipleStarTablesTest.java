@@ -37,7 +37,8 @@ public class FlattenMultipleStarTablesTest {
         ColumnInfo info21 = new ColumnInfo(SPECTRAL_NAME, Double.class, "");
         info21.setUtype(SPECTRAL_UTYPE.toUpperCase());
         ColumnData columnSpectral2 = PrimitiveArrayColumn.makePrimitiveColumn(info21, SPECTRAL);
-        ColumnInfo info22 = new ColumnInfo(FLUX_NAME, Double.class, "");
+        // insert a "Spectrum String"
+        ColumnInfo info22 = new ColumnInfo(FLUX_NAME.replace("flux", "Spectrum.flux"), Double.class, "");
         info22.setUtype(FLUX_UTYPE.toUpperCase());
         ColumnData columnFlux2 = PrimitiveArrayColumn.makePrimitiveColumn(info22, FLUX);
         ColumnInfo info23 = new ColumnInfo(STRING_NAME, String.class, "");

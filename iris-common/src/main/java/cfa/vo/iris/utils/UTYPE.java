@@ -15,6 +15,8 @@ public class UTYPE {
             throw new IllegalArgumentException("UTYPE needs a non null, non empty string");
         }
 
+        utypeString = utypeString.replaceAll("(?i)spectrum.", "");
+
         if (utypeString.contains(":")) {
             String[] tokens = utypeString.split(":");
             prefix = tokens[0].toLowerCase();

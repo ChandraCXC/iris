@@ -48,6 +48,14 @@ public class UTYPETest {
     }
 
     @Test
+    public void testEqualitySpectrum() throws Exception {
+        UTYPE u = new UTYPE("test:SpEctruM.something");
+        UTYPE u2 = new UTYPE("someTHing");
+        assertTrue(u2.equals(u) && u.equals(u2));
+        assertTrue(u2.hashCode() == u.hashCode());
+    }
+
+    @Test
     public void testCanonicalString() throws Exception {
         UTYPE u = new UTYPE("test:something");
         UTYPE u2 = new UTYPE("TEST:someTHing");
