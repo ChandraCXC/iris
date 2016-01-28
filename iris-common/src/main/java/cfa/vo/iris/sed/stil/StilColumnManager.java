@@ -1,9 +1,9 @@
 package cfa.vo.iris.sed.stil;
 
+import cfa.vo.iris.utils.UTYPE;
 import uk.ac.starlink.table.*;
 
 import java.io.IOException;
-import java.security.KeyException;
 import java.util.*;
 
 public class StilColumnManager {
@@ -38,7 +38,9 @@ public class StilColumnManager {
 
     public static int getColumnIndex(StarTable table, String utype) {
         for (int i=0; i<table.getColumnCount(); i++) {
-            if (utype.equals(table.getColumnInfo(i).getUtype())) {
+            UTYPE required = new UTYPE(utype);
+            UTYPE found = new UTYPE(table.getColumnInfo(i).getUtype());
+            if (required.equals(found)) {
                 return i;
             }
         }
@@ -57,13 +59,16 @@ public class StilColumnManager {
          * get the ColumnInfo template for a specific ID
          * @param id the ID
          * @return A ColumnInfo instance if available
-         * @throws KeyException when no ColumnInfos in the index have that ID.
+         * @throws NoSuchElementException when no ColumnInfos in the index have that ID.
          */
-        public ColumnInfo get(String id) throws KeyException {
+        public ColumnInfo get(String id) throws NoSuchElementException {
+            // this works with utypes and names, might not work with other stuff we may add in the future
+            id = buildId(id);
+
             if(infosMap.containsKey(id)) {
                 return infosMap.get(id);
             }
-            throw new KeyException("Key "+ id + " not in index");
+            throw new NoSuchElementException("Key "+ id + " not in index");
         }
 
         /**
@@ -105,6 +110,10 @@ public class StilColumnManager {
             return Collections.unmodifiableCollection(infosMap.values());
         }
 
+        private static String buildId(String id) {
+            return new UTYPE(id).getMain();
+        }
+
         private Boolean containsId(ColumnInfo info) {
             String id = getId(info);
             if (!id.isEmpty() && infosMap.containsKey(id)) {
@@ -122,7 +131,7 @@ public class StilColumnManager {
             String utype = info.getUtype();
 
             if (utype != null && !utype.isEmpty()) {
-                return utype;
+                return buildId(utype);
             }
 
             String name = info.getName();
@@ -182,10 +191,10 @@ public class StilColumnManager {
         private List<Object[]> readData(StarTable... tables) throws IOException {
             List<Object[]> retValue = new ArrayList<>();
 
-            Map<ColumnInfo, List<Object>> map = new HashMap<>();
+//            Map<ColumnInfo, List<Object>> map = new HashMap<>();
             for (ColumnInfo info : index.getValues()) {
                 List<Object> arrayList = new ArrayList<>();
-                map.put(info, arrayList);
+//                map.put(info, arrayList);
                 tableLoop:
                 for (StarTable t : tables) {
                     for (int i=0; i<t.getColumnCount(); i++) {

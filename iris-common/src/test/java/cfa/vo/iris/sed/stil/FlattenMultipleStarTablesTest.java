@@ -1,12 +1,12 @@
 package cfa.vo.iris.sed.stil;
 
+import cfa.vo.iris.utils.UTYPE;
 import org.junit.Before;
 import org.junit.Test;
 import uk.ac.starlink.table.*;
 import uk.ac.starlink.ttools.filter.AssertException;
-
-import java.security.KeyException;
 import java.util.Collection;
+import java.util.NoSuchElementException;
 
 import static org.junit.Assert.*;
 
@@ -27,20 +27,21 @@ public class FlattenMultipleStarTablesTest {
     @Before
     public void setUp() {
         ColumnInfo info11 = new ColumnInfo(SPECTRAL_NAME, Double.class, "");
-        info11.setUtype(SPECTRAL_UTYPE);
+        // take only the main part of the utype
+        info11.setUtype(SPECTRAL_UTYPE.split(":")[1]);
         ColumnData columnSpectral1 = PrimitiveArrayColumn.makePrimitiveColumn(info11, SPECTRAL);
         ColumnInfo info12 = new ColumnInfo(FLUX_NAME, Double.class, "");
         info12.setUtype(FLUX_UTYPE);
         ColumnData columnFlux1 = PrimitiveArrayColumn.makePrimitiveColumn(info12, FLUX);
 
         ColumnInfo info21 = new ColumnInfo(SPECTRAL_NAME, Double.class, "");
-        info21.setUtype(SPECTRAL_UTYPE);
+        info21.setUtype(SPECTRAL_UTYPE.toUpperCase());
         ColumnData columnSpectral2 = PrimitiveArrayColumn.makePrimitiveColumn(info21, SPECTRAL);
         ColumnInfo info22 = new ColumnInfo(FLUX_NAME, Double.class, "");
-        info22.setUtype(FLUX_UTYPE);
+        info22.setUtype(FLUX_UTYPE.toUpperCase());
         ColumnData columnFlux2 = PrimitiveArrayColumn.makePrimitiveColumn(info22, FLUX);
         ColumnInfo info23 = new ColumnInfo(STRING_NAME, String.class, "");
-        info23.setUtype(STRING_UTYPE);
+        info23.setUtype(STRING_UTYPE.toUpperCase());
         ColumnData columnString2 = new ObjectArrayColumn(info23, STRING);
 
         table1 = new ColumnStarTable() {
@@ -71,9 +72,9 @@ public class FlattenMultipleStarTablesTest {
         assertEquals(3, columnInfos.length);
 
         // We are assuming a TreeMap implementation in index, so keys are sorted alphabetically.
-        assertEquals(FLUX_UTYPE, columnInfos[0].getUtype());
-        assertEquals(SPECTRAL_UTYPE, columnInfos[1].getUtype());
-        assertEquals(STRING_UTYPE, columnInfos[2].getUtype());
+        assertEquals(new UTYPE(FLUX_UTYPE), new UTYPE(columnInfos[0].getUtype()));
+        assertEquals(new UTYPE(SPECTRAL_UTYPE), new UTYPE(columnInfos[1].getUtype()));
+        assertEquals(new UTYPE(STRING_UTYPE), new UTYPE(columnInfos[2].getUtype()));
     }
 
     @Test
@@ -130,7 +131,7 @@ public class FlattenMultipleStarTablesTest {
         try {
             index.get(STRING_NAME);
             throw new AssertException("should have failed");
-        } catch (KeyException e) {
+        } catch (NoSuchElementException e) {
             // should throw exception because STRING_NAME is not an ID for any of the infos in the index
         }
 
