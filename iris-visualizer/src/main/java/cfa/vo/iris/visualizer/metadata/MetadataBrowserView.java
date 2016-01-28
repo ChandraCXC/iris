@@ -46,6 +46,7 @@ import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.sedlib.ISegment;
+import cfa.vo.sedlib.Segment;
 import uk.ac.starlink.table.EmptyStarTable;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.gui.StarJTable;
@@ -67,7 +68,7 @@ public class MetadataBrowserView extends JInternalFrame {
     private static final StarTable EMPTY_STARTABLE = new EmptyStarTable();
     
     protected IWorkspace ws;
-    protected StarTableAdapter<ISegment> starTableAdapter;
+    protected StarTableAdapter<Segment> starTableAdapter;
     
     protected JList<StarTable> selectedTables;
     protected StarTable selectedStarTable;
@@ -105,7 +106,7 @@ public class MetadataBrowserView extends JInternalFrame {
      * 
      * @throws Exception
      */
-    public MetadataBrowserView(IWorkspace ws, StarTableAdapter<ISegment> adapter) throws Exception {
+    public MetadataBrowserView(IWorkspace ws, StarTableAdapter<Segment> adapter) throws Exception {
         this.ws = ws;
         this.starTableAdapter = adapter;
         

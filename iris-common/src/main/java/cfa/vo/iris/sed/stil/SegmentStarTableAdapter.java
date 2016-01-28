@@ -3,15 +3,15 @@ package cfa.vo.iris.sed.stil;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import cfa.vo.sedlib.ISegment;
+import cfa.vo.sedlib.Segment;
 import uk.ac.starlink.table.StarTable;
 
-public class SegmentStarTableAdapter implements StarTableAdapter<ISegment> {
+public class SegmentStarTableAdapter implements StarTableAdapter<Segment> {
     
-    private Map<ISegment, StarTable> cache = new WeakHashMap<>();
+    private Map<Segment, StarTable> cache = new WeakHashMap<>();
 
     @Override
-    public StarTable convertStarTable(ISegment data) {
+    public StarTable convertStarTable(Segment data) {
         if (cache.containsKey(data)) {
             return cache.get(data);
         }

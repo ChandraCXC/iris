@@ -14,6 +14,7 @@ import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.visualizer.stil.preferences.SegmentLayer;
 import cfa.vo.sedlib.ISegment;
+import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 import cfa.vo.testdata.TestData;
 import uk.ac.starlink.table.StarTable;
@@ -65,7 +66,7 @@ public class PlottingPerformanceIT extends AbstractComponentGUITest {
                 assertSame(sed, comp.getDefaultPlotterView().getSed());
                 
                 // Verify the startable has loaded correctly
-                Map<ISegment, SegmentLayer> segmentMap = 
+                Map<Segment, SegmentLayer> segmentMap = 
                         comp.getDefaultPlotterView().getSegmentsMap();
                 
                 assertEquals(1, segmentMap.size());

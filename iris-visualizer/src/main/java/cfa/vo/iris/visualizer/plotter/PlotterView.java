@@ -29,7 +29,6 @@ import javax.swing.JPopupMenu;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collections;
 import java.util.Map;
 
 import javax.swing.JSpinner;
@@ -42,14 +41,13 @@ import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SedListener;
 import cfa.vo.iris.gui.GUIUtils;
-import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.SegmentStarTableAdapter;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserView;
 import cfa.vo.iris.visualizer.stil.StilPlotter;
 import cfa.vo.iris.visualizer.stil.preferences.SegmentLayer;
-import cfa.vo.sedlib.ISegment;
+import cfa.vo.sedlib.Segment;
 import cfa.vo.iris.IWorkspace;
 import javax.swing.JFrame;
 
@@ -63,7 +61,7 @@ public class PlotterView extends JInternalFrame {
     // Plotting Components
     private StilPlotter plotter;
     private JInternalFrame residuals;
-    private StarTableAdapter<ISegment> starTableAdapter;
+    private StarTableAdapter<Segment> starTableAdapter;
     private MetadataBrowserView metadataBrowser;
     
     // Buttons, etc.
@@ -162,7 +160,7 @@ public class PlotterView extends JInternalFrame {
         return plotter.getSed();
     }
 
-    public Map<ISegment, SegmentLayer> getSegmentsMap() {
+    public Map<Segment, SegmentLayer> getSegmentsMap() {
         return plotter.getSegmentsMap();
     }
     
