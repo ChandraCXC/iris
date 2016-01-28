@@ -21,29 +21,29 @@ public class FlattenMultipleStarTablesTest {
     private final String STRING_NAME = "stringField";
     private final String SPECTRAL_UTYPE = "test:spectral";
     private final String FLUX_UTYPE = "test:flux";
-    private final String STRING_UTYPE = "test:string";
+    private ColumnInfo spectralInfo;
+    private ColumnInfo fluxInfo;
+    private ColumnInfo stringInfo;
     private final StilColumnManager manager = new StilColumnManager();
 
     @Before
     public void setUp() {
-        ColumnInfo info11 = new ColumnInfo(SPECTRAL_NAME, Double.class, "");
+        spectralInfo = new ColumnInfo(SPECTRAL_NAME, Double.class, "");
         // take only the main part of the utype
-        info11.setUtype(SPECTRAL_UTYPE.split(":")[1]);
-        ColumnData columnSpectral1 = PrimitiveArrayColumn.makePrimitiveColumn(info11, SPECTRAL);
-        ColumnInfo info12 = new ColumnInfo(FLUX_NAME, Double.class, "");
-        info12.setUtype(FLUX_UTYPE);
-        ColumnData columnFlux1 = PrimitiveArrayColumn.makePrimitiveColumn(info12, FLUX);
+        spectralInfo.setUtype(SPECTRAL_UTYPE.split(":")[1]);
+        ColumnData columnSpectral1 = PrimitiveArrayColumn.makePrimitiveColumn(spectralInfo, SPECTRAL);
+        fluxInfo = new ColumnInfo(FLUX_NAME, Double.class, "");
+        fluxInfo.setUtype(FLUX_UTYPE);
+        ColumnData columnFlux1 = PrimitiveArrayColumn.makePrimitiveColumn(fluxInfo, FLUX);
 
-        ColumnInfo info21 = new ColumnInfo(SPECTRAL_NAME, Double.class, "");
-        info21.setUtype(SPECTRAL_UTYPE.toUpperCase());
-        ColumnData columnSpectral2 = PrimitiveArrayColumn.makePrimitiveColumn(info21, SPECTRAL);
+        ColumnData columnSpectral2 = PrimitiveArrayColumn.makePrimitiveColumn(spectralInfo, SPECTRAL);
         // insert a "Spectrum String"
-        ColumnInfo info22 = new ColumnInfo(FLUX_NAME.replace("flux", "Spectrum.flux"), Double.class, "");
-        info22.setUtype(FLUX_UTYPE.toUpperCase());
-        ColumnData columnFlux2 = PrimitiveArrayColumn.makePrimitiveColumn(info22, FLUX);
-        ColumnInfo info23 = new ColumnInfo(STRING_NAME, String.class, "");
-        info23.setUtype(STRING_UTYPE.toUpperCase());
-        ColumnData columnString2 = new ObjectArrayColumn(info23, STRING);
+        ColumnInfo newFluxInfo = new ColumnInfo(FLUX_NAME.replace("flux", "Spectrum.flux"), Double.class, "");
+        newFluxInfo.setUtype(FLUX_UTYPE.toUpperCase());
+        ColumnData columnFlux2 = PrimitiveArrayColumn.makePrimitiveColumn(newFluxInfo, FLUX);
+        stringInfo = new ColumnInfo(STRING_NAME, String.class, "");
+        // Only name, no type for String column
+        ColumnData columnString2 = new ObjectArrayColumn(stringInfo, STRING);
 
         table1 = new ColumnStarTable() {
             @Override
@@ -75,7 +75,7 @@ public class FlattenMultipleStarTablesTest {
         // We are assuming a TreeMap implementation in index, so keys are sorted alphabetically.
         assertEquals(new UTYPE(FLUX_UTYPE), new UTYPE(columnInfos[0].getUtype()));
         assertEquals(new UTYPE(SPECTRAL_UTYPE), new UTYPE(columnInfos[1].getUtype()));
-        assertEquals(new UTYPE(STRING_UTYPE), new UTYPE(columnInfos[2].getUtype()));
+        assertEquals(STRING_NAME, columnInfos[2].getName());
     }
 
     @Test
@@ -86,15 +86,15 @@ public class FlattenMultipleStarTablesTest {
         assertEquals(6, table.getRowCount());
 
         // assuming specific implementation is ArrayColumn
-        int spectralIndex = StilColumnManager.getColumnIndex(table, SPECTRAL_UTYPE);
+        int spectralIndex = StilColumnManager.getColumnIndex(table, spectralInfo);
         Object[] spectral = (Object[])((ArrayColumn)table.getColumnData(spectralIndex)).getArray();
         assertArrayEquals(new Double[]{1.0, 1.1, 1.2, 1.0, 1.1, 1.2}, spectral);
 
-        int fluxIndex = StilColumnManager.getColumnIndex(table, FLUX_UTYPE);
+        int fluxIndex = StilColumnManager.getColumnIndex(table, fluxInfo);
         Object[] flux = (Object[]) ((ArrayColumn)table.getColumnData(fluxIndex)).getArray();
         assertArrayEquals(new Double[]{2.0, 2.1, 2.2, 2.0, 2.1, 2.2}, flux);
 
-        int stringIndex = StilColumnManager.getColumnIndex(table, STRING_UTYPE);
+        int stringIndex = StilColumnManager.getColumnIndex(table, stringInfo);
         Object[] string = (Object[])((ArrayColumn)table.getColumnData(stringIndex)).getArray();
         assertArrayEquals(new String[]{null, null, null, "One", "Two", "Three"}, string);
     }
@@ -104,6 +104,7 @@ public class FlattenMultipleStarTablesTest {
         StilColumnManager.ColumnInfoIndex index = new StilColumnManager.ColumnInfoIndex();
         ColumnInfo info = new ColumnInfo(SPECTRAL_NAME);
         ColumnInfo info2 = new ColumnInfo(STRING_NAME);
+        final String STRING_UTYPE = "test:string";
         info2.setUtype(STRING_UTYPE);
 
         assertTrue(index.put(info));
@@ -158,11 +159,11 @@ public class FlattenMultipleStarTablesTest {
 
     @Test
     public void testGetColumnIndex() throws Exception {
-        assertEquals(0, StilColumnManager.getColumnIndex(table1, SPECTRAL_UTYPE));
-        assertEquals(1, StilColumnManager.getColumnIndex(table1, FLUX_UTYPE));
-        assertEquals(-1, StilColumnManager.getColumnIndex(table1, STRING_UTYPE));
-        assertEquals(0, StilColumnManager.getColumnIndex(table2, FLUX_UTYPE));
-        assertEquals(2, StilColumnManager.getColumnIndex(table2, SPECTRAL_UTYPE));
-        assertEquals(1, StilColumnManager.getColumnIndex(table2, STRING_UTYPE));
+        assertEquals(0, StilColumnManager.getColumnIndex(table1, spectralInfo));
+        assertEquals(1, StilColumnManager.getColumnIndex(table1, fluxInfo));
+        assertEquals(-1, StilColumnManager.getColumnIndex(table1, stringInfo));
+        assertEquals(0, StilColumnManager.getColumnIndex(table2, fluxInfo));
+        assertEquals(2, StilColumnManager.getColumnIndex(table2, spectralInfo));
+        assertEquals(1, StilColumnManager.getColumnIndex(table2, stringInfo));
     }
 }

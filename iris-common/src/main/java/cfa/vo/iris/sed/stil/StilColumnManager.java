@@ -36,11 +36,9 @@ public class StilColumnManager {
         return new FlattenedStarTable(tables);
     }
 
-    public static int getColumnIndex(StarTable table, String utype) {
+    public static int getColumnIndex(StarTable table, ColumnInfo info) {
         for (int i=0; i<table.getColumnCount(); i++) {
-            UTYPE required = new UTYPE(utype);
-            UTYPE found = new UTYPE(table.getColumnInfo(i).getUtype());
-            if (required.equals(found)) {
+            if (ColumnInfoIndex.sameId(info, table.getColumnInfo(i))) {
                 return i;
             }
         }
@@ -191,10 +189,8 @@ public class StilColumnManager {
         private List<Object[]> readData(StarTable... tables) throws IOException {
             List<Object[]> retValue = new ArrayList<>();
 
-//            Map<ColumnInfo, List<Object>> map = new HashMap<>();
             for (ColumnInfo info : index.getValues()) {
                 List<Object> arrayList = new ArrayList<>();
-//                map.put(info, arrayList);
                 tableLoop:
                 for (StarTable t : tables) {
                     for (int i=0; i<t.getColumnCount(); i++) {
