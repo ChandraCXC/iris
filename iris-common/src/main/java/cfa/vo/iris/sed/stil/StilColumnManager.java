@@ -207,6 +207,7 @@ public class StilColumnManager {
 
             for (ColumnInfo info : index.getValues()) {
                 List<Object> arrayList = new ArrayList<>();
+                Object fillValue = info.getContentClass() == Double.class? Double.NaN : null;
                 tableLoop:
                 for (StarTable t : tables) {
 
@@ -222,11 +223,17 @@ public class StilColumnManager {
                     String fromYUnits = t.getColumnInfo(fluxIndex).getUnitString();
                     YUnit fromYUnit = unitsManager.newYUnits(fromYUnits != null ? fromYUnits: "");
 
+                    ColumnInfo statErrorInfo = new ColumnInfo("");
+                    statErrorInfo.setUtype(UTYPE.FLUX_STAT_ERROR);
+                    int statErrorIndex = StilColumnManager.getColumnIndex(t, statErrorInfo);
+                    YUnit fromErrUnit = fromYUnit;
+
                     for (int i=0; i<t.getColumnCount(); i++) {
                         ColumnInfo columnInfo = t.getColumnInfo(i);
                         if (ColumnInfoIndex.sameId(info, columnInfo)) {
                             boolean convertX = false;
                             boolean convertY = false;
+                            boolean convertErr = false;
                             if (i == spectralIndex) {
                                 convertX = toXUnit != null && toXUnit.isValid() && !toXUnit.equals(toYUnit);
                             }
@@ -235,14 +242,24 @@ public class StilColumnManager {
                                 convertY = toYUnit != null && toXUnit != null && toYUnit.isValid() && toXUnit.isValid() && !fromXUnit.equals(toXUnit) && !fromYUnit.equals(toYUnit);
                             }
 
+                            if (i == statErrorIndex) {
+                                convertErr = toYUnit != null && toXUnit != null && toYUnit.isValid() && toXUnit.isValid() && !fromXUnit.equals(toXUnit) && !fromErrUnit.equals(toYUnit);
+                            }
+
                             for (long j = 0; j < t.getRowCount(); j++) {
                                 Object value = t.getCell(j, i);
                                 if (convertX) {
-                                    value = unitsManager.convertX(new double[]{(double)value}, fromXUnit, toXUnit)[0];
+                                    value = unitsManager.convertX(new double[]{(double) value}, fromXUnit, toXUnit)[0];
                                 }
                                 if (convertY) {
                                     double spectralValue = (double) t.getCell(j, spectralIndex);
-                                    value = unitsManager.convertY(new double[]{(double)value}, new double[]{spectralValue}, fromYUnit, fromXUnit, toYUnit)[0];
+                                    value = unitsManager.convertY(new double[]{(double) value}, new double[]{spectralValue}, fromYUnit, fromXUnit, toYUnit)[0];
+                                }
+
+                                if (convertErr) {
+                                    double spectralValue = (double) t.getCell(j, spectralIndex);
+                                    double fluxValue = (double) t.getCell(j, fluxIndex);
+                                    value = unitsManager.convertErrors(new double[]{(double) value}, new double[]{fluxValue}, new double[]{spectralValue}, fromYUnit, fromXUnit, toYUnit)[0];
                                 }
                                 arrayList.add(value);
                             }
@@ -251,8 +268,9 @@ public class StilColumnManager {
                     }
                     int tableRows = Tables.checkedLongToInt(t.getRowCount());
                     Object[] tableArray = new Object[tableRows];
-                    Arrays.fill(tableArray, null); // Not sure this is necessary, in any case this is not the final implementation.
+                    Arrays.fill(tableArray, fillValue); // Not sure this is necessary, in any case this is not the final implementation.
                     arrayList.addAll(Arrays.asList(tableArray));
+
                 }
                 retValue.add(arrayList.toArray());
             }

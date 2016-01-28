@@ -8,6 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 import uk.ac.starlink.table.*;
 import uk.ac.starlink.ttools.filter.AssertException;
+
+import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.NoSuchElementException;
 
@@ -171,7 +173,7 @@ public class FlattenMultipleStarTablesTest {
     }
 
     @Test
-    public void testUnits() throws Exception {
+    public void testUnitsNoErrors() throws Exception {
         // I am going to assume unit conversions work
 
         // Indexes come from testGetColumnIndex test.
@@ -201,5 +203,49 @@ public class FlattenMultipleStarTablesTest {
         assertArrayEquals(ArrayUtils.toObject(newSpectral), (Object[])((ArrayColumn)table.getColumnData(spectralIndex)).getArray());
         int fluxIndex = StilColumnManager.getColumnIndex(table, fluxInfo);
         assertArrayEquals(ArrayUtils.toObject(newFlux), (Object[])((ArrayColumn)table.getColumnData(fluxIndex)).getArray());
+    }
+
+    @Test
+    public void testUnitsErrors() throws Exception {
+        // I am going to assume unit conversions work
+
+        // Indexes come from testGetColumnIndex test.
+        ColumnInfo spInfo = table1.getColumnInfo(0);
+        spInfo.setUnitString("Angstrom");
+
+        ColumnInfo spInfo2 = table2.getColumnInfo(2);
+        spInfo2.setUnitString("Hz");
+
+        ColumnInfo flInfo = table1.getColumnInfo(1);
+        flInfo.setUnitString("erg/s/cm2/Angstrom");
+
+        ColumnInfo flInfo2 = table2.getColumnInfo(0);
+        flInfo2.setUnitString("Jy");
+
+        ColumnInfo errInfo1 = new ColumnInfo("err", Double.class, "");
+        errInfo1.setUtype(UTYPE.FLUX_STAT_ERROR);
+        errInfo1.setUnitString("erg/s/cm2/Angstrom");
+
+        ColumnData errData = PrimitiveArrayColumn.makePrimitiveColumn(errInfo1, FLUX);
+        table1.addColumn(errData);
+
+        UnitsManager unitsManager = Default.getInstance().getUnitsManager();
+        double[] newSpectral = unitsManager.convertX(SPECTRAL, spInfo.getUnitString(), spInfo2.getUnitString());
+        double[] newFlux = unitsManager.convertY(FLUX, SPECTRAL, flInfo.getUnitString(), spInfo.getUnitString(), flInfo2.getUnitString());
+        double[] newError = unitsManager.convertErrors(FLUX, FLUX, SPECTRAL, errInfo1.getUnitString(), spInfo.getUnitString(), flInfo2.getUnitString());
+
+        // expected arrays has converted elements first, then non-converted elements
+        newSpectral = ArrayUtils.addAll(newSpectral, SPECTRAL);
+        newFlux = ArrayUtils.addAll(newFlux, FLUX);
+        newError = ArrayUtils.addAll(newError, new double[]{Double.NaN, Double.NaN, Double.NaN});
+
+        ColumnStarTable table = manager.flatten(spInfo2.getUnitString(), flInfo2.getUnitString(), table1, table2);
+
+        int spectralIndex = StilColumnManager.getColumnIndex(table, spectralInfo);
+        assertArrayEquals(ArrayUtils.toObject(newSpectral), (Object[])((ArrayColumn)table.getColumnData(spectralIndex)).getArray());
+        int fluxIndex = StilColumnManager.getColumnIndex(table, fluxInfo);
+        assertArrayEquals(ArrayUtils.toObject(newFlux), (Object[])((ArrayColumn)table.getColumnData(fluxIndex)).getArray());
+        int errIndex = StilColumnManager.getColumnIndex(table, errInfo1);
+        assertArrayEquals(ArrayUtils.toObject(newError), (Object[])((ArrayColumn)table.getColumnData(errIndex)).getArray());
     }
 }
