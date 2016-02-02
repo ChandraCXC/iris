@@ -22,6 +22,7 @@ import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.test.App;
 import cfa.vo.iris.test.Ws;
 import cfa.vo.sedlib.ISegment;
+import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 import java.awt.Color;
 import java.lang.reflect.Field;
@@ -110,5 +111,33 @@ public class StilPlotterTest { //extends AbstractComponentGUITest {
         assertEquals(ArrayUtils.getLength(layers), 2);
         assertEquals(layers[0].getDataSpec().getSourceTable().getRowCount(), 
                 layers[1].getDataSpec().getSourceTable().getRowCount());
+    }
+    
+    @Test
+    public void testAddTwoSegments() throws Exception {
+        sed = ExtSed.read(TestData.class.getResource("3c273.vot").getFile(), SedFormat.VOT);
+        sed.addSegment(ExtSed.read(TestData.class.getResource("test300k_VO.fits").getFile(), SedFormat.FITS).getSegment(0));
+
+        StilPlotter plot = new StilPlotter(app, ws, adapter);
+        plot.reset(sed, true);
+        PlotDisplay display = plot.getPlotDisplay();
+        
+        // check that plot env is correctly set
+        MapEnvironment env = plot.getEnv();
+        
+        // using reflection to access layers in plot display
+        Field layers_ = PlotDisplay.class.getDeclaredField("layers_");
+        layers_.setAccessible(true);
+        PlotLayer[] layers = (PlotLayer[]) layers_.get(display);
+        
+        // there should be four layers: two for error bars of 3C273 and 300k_VO,
+        // and two for the corresponding (x, y) values.
+        assertEquals(ArrayUtils.getLength(layers), 4);
+        assertEquals(layers[0].getDataSpec().getSourceTable().getRowCount(), 
+                layers[1].getDataSpec().getSourceTable().getRowCount());
+        assertEquals(layers[2].getDataSpec().getSourceTable().getRowCount(), 
+                layers[3].getDataSpec().getSourceTable().getRowCount());
+        
+        // TODO: we should check that each segment has a different color
     }
 }
