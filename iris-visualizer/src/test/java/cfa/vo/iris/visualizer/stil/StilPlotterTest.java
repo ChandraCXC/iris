@@ -16,36 +16,22 @@
 package cfa.vo.iris.visualizer.stil;
 
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.sed.stil.SegmentStarTableAdapter;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.test.App;
 import cfa.vo.iris.test.Ws;
 import cfa.vo.sedlib.ISegment;
-import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
-import java.awt.Color;
 import java.lang.reflect.Field;
 import org.apache.commons.lang.ArrayUtils;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.task.StringParameter;
 import uk.ac.starlink.ttools.plot2.PlotLayer;
 import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 import uk.ac.starlink.ttools.task.MapEnvironment;
 import cfa.vo.testdata.TestData;
-import java.lang.reflect.Array;
-import java.util.List;
 import uk.ac.starlink.task.BooleanParameter;
-import uk.ac.starlink.task.Environment;
-import uk.ac.starlink.task.Parameter;
-import uk.ac.starlink.task.TaskException;
-import uk.ac.starlink.ttools.plot.Style;
-import uk.ac.starlink.ttools.plot2.LayerOpt;
-import uk.ac.starlink.ttools.plot2.config.ConfigKey;
-import uk.ac.starlink.ttools.plot2.layer.AbstractPlotLayer;
-import uk.ac.starlink.ttools.plot2.layer.ShapeMode;
 
 /**
  *
@@ -64,7 +50,7 @@ public class StilPlotterTest { //extends AbstractComponentGUITest {
         adapter = new SegmentStarTableAdapter();
         
     }
-
+    
     @Test
     public void testAddSed() throws Exception {
         
