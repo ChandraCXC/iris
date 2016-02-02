@@ -97,6 +97,10 @@ public class StilPlotterTest { //extends AbstractComponentGUITest {
         assertEquals(ArrayUtils.getLength(layers), 2);
         assertEquals(layers[0].getDataSpec().getSourceTable().getRowCount(), 
                 layers[1].getDataSpec().getSourceTable().getRowCount());
+        
+        // assert that the plot has the same amount of data as the original SED
+        assertEquals(sed.getSegment(0).getLength(), 
+                layers[0].getDataSpec().getSourceTable().getRowCount());
     }
     
     @Test
@@ -123,6 +127,10 @@ public class StilPlotterTest { //extends AbstractComponentGUITest {
                 layers[1].getDataSpec().getSourceTable().getRowCount());
         assertEquals(layers[2].getDataSpec().getSourceTable().getRowCount(), 
                 layers[3].getDataSpec().getSourceTable().getRowCount());
+        
+        // assert that the plot has the same amount of data as the original SED
+        assertEquals(sed.getSegment(0).getLength(), 
+                layers[0].getDataSpec().getSourceTable().getRowCount());
         
         // TODO: we should check that each segment has a different color
     }
