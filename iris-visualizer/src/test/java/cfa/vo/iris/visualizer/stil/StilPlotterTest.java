@@ -110,39 +110,5 @@ public class StilPlotterTest { //extends AbstractComponentGUITest {
         assertEquals(ArrayUtils.getLength(layers), 2);
         assertEquals(layers[0].getDataSpec().getSourceTable().getRowCount(), 
                 layers[1].getDataSpec().getSourceTable().getRowCount());
-        
-        // loop through layers to check various plot properties
-//        TODO: get this to work! layer.getSingleColor() returns null.
-//        layer.getPlotter().getStyleKeys()[2] doesn't return the colors
-//        either.
-//        for (PlotLayer layer : layers) {
-//            ConfigKey style = layer.getPlotter().getStyleKeys()[2]; //.getSingleColor().getRGB();
-//            ConfigKey[] styles = layer.getPlotter().getStyleKeys();
-//            assertEquals(style, Color.RED.getRGB());
-//        }
-    }
-    
-    private class SegmentStarTableParameter extends Parameter {
-        public SegmentStarTableParameter(String string) {
-            super(string, SegmentStarTable.class, true);
-        }
-
-        // TODO: this isn't working as expected. This should return the string 
-        // value of the parameter in the Environment, specifically the 
-        // SegmentStarTable parameter.
-        @Override
-        public Object stringToObject(Environment e, String string) throws TaskException {
-            e.acquireValue(this);
-            for (String name : e.getNames()) {
-                if (name.equals(string)) {
-                    SegmentStarTableParameter par = new SegmentStarTableParameter(string);
-                    e.acquireValue(par);
-                    return par.objectValue(e);
-                }
-            }
-            return null;
-        }
-        
-        
     }
 }
