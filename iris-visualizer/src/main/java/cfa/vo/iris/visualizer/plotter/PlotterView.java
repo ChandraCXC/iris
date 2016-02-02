@@ -182,7 +182,11 @@ public class PlotterView extends JInternalFrame {
     
     private void resetPlot(ExtSed sed) {
         this.metadataBrowser.reset();
-        this.plotter.reset(sed);
+        // TODO: setting second argument to "false" forces the plot display
+        // to be cached. Do we want this behavior in the future?
+        // Note (jb): tried opening 300k sed with "fals" and "true." Both
+        // produce a .5 second lag in panning the viewer.
+        this.plotter.reset(sed, true);
     }
     
     private static void addPopup(Component component, final JPopupMenu popup) {
