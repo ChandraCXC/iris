@@ -5,6 +5,7 @@ import static cfa.vo.iris.visualizer.stil.preferences.PlotPreferences.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import cfa.vo.iris.sed.stil.SegmentStarTable.ColumnName;
 import uk.ac.starlink.table.StarTable;
 
 public class SegmentLayer {
@@ -23,6 +24,14 @@ public class SegmentLayer {
         this.suffix = '_' + table.getName();
         
         this.setInSource(table)
+        
+            // TODO: Rework when we have more intelligent column implementation
+            .setXCol(ColumnName.X_COL.name())
+            .setYCol(ColumnName.Y_COL.name())
+            .setXerrhi(ColumnName.X_ERR_HI.name())
+            .setXerrlo(ColumnName.X_ERR_LO.name())
+            .setYerrhi(ColumnName.Y_ERR_HI.name())
+            .setYerrlo(ColumnName.Y_ERR_LO.name())
             
             // TODO: put options into enums
             // Setting default values here
