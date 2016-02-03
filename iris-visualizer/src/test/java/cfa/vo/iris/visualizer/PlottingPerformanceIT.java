@@ -12,7 +12,7 @@ import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
-import cfa.vo.iris.visualizer.stil.preferences.SegmentLayer;
+import cfa.vo.iris.visualizer.plotter.SegmentLayer;
 import cfa.vo.sedlib.ISegment;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;

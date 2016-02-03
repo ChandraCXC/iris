@@ -45,8 +45,8 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.SegmentStarTableAdapter;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserView;
+import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.stil.StilPlotter;
-import cfa.vo.iris.visualizer.stil.preferences.SegmentLayer;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.iris.IWorkspace;
 import javax.swing.JFrame;
@@ -111,7 +111,12 @@ public class PlotterView extends JInternalFrame {
      * @param app 
      * @param title
      */
-    public PlotterView(String title, IrisApplication app, IWorkspace ws) throws Exception {
+    public PlotterView(String title, 
+                       IrisApplication app, 
+                       IWorkspace ws,
+                       VisualizerComponentPreferences preferences) 
+                               throws Exception 
+    {
         setTitle(title);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setSelected(true);
@@ -122,14 +127,13 @@ public class PlotterView extends JInternalFrame {
         setBounds(100, 100, 1096, 800);
         toFront();
         
-        this.starTableAdapter = new SegmentStarTableAdapter();
-        this.metadataBrowser = new MetadataBrowserView(ws, starTableAdapter);
-        
         this.ws = ws;
         this.app = app;
         
+        this.metadataBrowser = new MetadataBrowserView(ws, preferences.getAdapter());
+        
         // TODO: StarTableAdapters?
-        plotter = new StilPlotter(app, ws, starTableAdapter);
+        plotter = new StilPlotter(app, ws, preferences.getAdapter());
         residuals = new JInternalFrame();
         
         initializeComponents();

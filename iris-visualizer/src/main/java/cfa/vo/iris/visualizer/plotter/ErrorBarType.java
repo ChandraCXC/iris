@@ -1,4 +1,4 @@
-package cfa.vo.iris.visualizer.stil.preferences;
+package cfa.vo.iris.visualizer.plotter;
 
 // http://www.star.bris.ac.uk/~mbt/stilts/sun256/layer-xyerror.html
 public enum ErrorBarType {

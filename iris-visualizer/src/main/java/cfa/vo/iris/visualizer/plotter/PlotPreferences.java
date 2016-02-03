@@ -1,4 +1,4 @@
-package cfa.vo.iris.visualizer.stil.preferences;
+package cfa.vo.iris.visualizer.plotter;
 
 import java.util.HashMap;
 import java.util.Map;

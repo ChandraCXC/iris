@@ -1,6 +1,6 @@
-package cfa.vo.iris.visualizer.stil.preferences;
+package cfa.vo.iris.visualizer.plotter;
 
-import static cfa.vo.iris.visualizer.stil.preferences.PlotPreferences.*;
+import static cfa.vo.iris.visualizer.plotter.PlotPreferences.*;
 
 import java.util.HashMap;
 import java.util.Map;

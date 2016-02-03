@@ -18,6 +18,7 @@ package cfa.vo.iris.visualizer;
 import cfa.vo.iris.*;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
+import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 
 import org.astrogrid.samp.client.MessageHandler;
 import java.util.ArrayList;
@@ -27,12 +28,15 @@ public class VisualizerComponent implements IrisComponent {
     
     private IrisApplication app;
     private IWorkspace ws;
+    private VisualizerComponentPreferences preferences;
     private MenuItems menuItems = new MenuItems();
 
     @Override
     public void init(IrisApplication irisApplication, IWorkspace iWorkspace) {
         this.app = irisApplication;
         this.ws = iWorkspace;
+        
+        preferences = new VisualizerComponentPreferences(ws);
     }
 
     @Override
@@ -83,7 +87,7 @@ public class VisualizerComponent implements IrisComponent {
                 public void onClick() {
                     if (view == null) {
                         try {
-                            view = new PlotterView("Iris Visualizer", app, ws);
+                            view = new PlotterView("Iris Visualizer", app, ws, preferences);
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);
                         }
