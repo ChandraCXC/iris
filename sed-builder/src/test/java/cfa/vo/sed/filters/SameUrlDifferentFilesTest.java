@@ -17,8 +17,8 @@
 package cfa.vo.sed.filters;
 
 import cfa.vo.sed.builder.SedBuilder;
-import cfa.vo.sed.test.App;
-import cfa.vo.sed.test.Ws;
+import cfa.vo.iris.test.App;
+import cfa.vo.iris.test.Ws;
 import com.google.common.io.Files;
 import java.io.File;
 import java.net.URL;
