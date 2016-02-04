@@ -14,6 +14,7 @@ import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.visualizer.VisualizerComponent;
 import cfa.vo.sedlib.Segment;
 import static org.junit.Assert.*;
+import static cfa.vo.iris.test.unit.TestUtils.*;
 
 import javax.swing.border.TitledBorder;
 

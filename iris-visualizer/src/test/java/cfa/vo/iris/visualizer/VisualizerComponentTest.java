@@ -22,8 +22,8 @@ import cfa.vo.iris.IrisComponent;
 import cfa.vo.sedlib.Segment;
 import org.junit.Before;
 import org.junit.Test;
-import javax.swing.*;
 import static org.junit.Assert.*;
+import static cfa.vo.iris.test.unit.TestUtils.*;
 
 public class VisualizerComponentTest extends AbstractComponentGUITest {
     
