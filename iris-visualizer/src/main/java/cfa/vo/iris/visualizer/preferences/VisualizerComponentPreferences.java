@@ -14,6 +14,7 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.SegmentStarTableAdapter;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
+import cfa.vo.iris.visualizer.plotter.PlotterView;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
 import cfa.vo.sedlib.Segment;
 
@@ -24,9 +25,9 @@ import cfa.vo.sedlib.Segment;
  */
 public class VisualizerComponentPreferences {
     
-    private PlotPreferences plotPreferences;
-    private StarTableAdapter<Segment> adapter;
-    private IWorkspace ws;
+    PlotPreferences plotPreferences;
+    StarTableAdapter<Segment> adapter;
+    final IWorkspace ws;
     final Map<ExtSed, SedPreferences> sedPreferences;
     
     public VisualizerComponentPreferences(IWorkspace ws) {
@@ -115,6 +116,8 @@ public class VisualizerComponentPreferences {
                 sedPreferences.remove(source);
                 sedPreferences.get(source).remove(source);
             }
+            
+            VisualizerChangeEvent.getInstance().fire(source, VisualizerCommand.REDRAW);
         }
     }
 }

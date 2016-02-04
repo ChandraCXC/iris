@@ -170,6 +170,7 @@ public class MetadataBrowserView extends JInternalFrame {
         segmentListScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         segmentListScrollPane.setBorder(new TitledBorder(
                 new EtchedBorder(EtchedBorder.LOWERED, new Color(0, 0, 0), null), "Selected SED", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+        segmentListScrollPane.setViewportView(selectedTables);
         
         // Primary data table scroll pane setup
         segmentDataScrollPane.setName("segmentDataScrollPane");

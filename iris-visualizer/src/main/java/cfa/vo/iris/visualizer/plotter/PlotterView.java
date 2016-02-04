@@ -45,7 +45,10 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.SegmentStarTableAdapter;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserView;
+import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
+import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
+import cfa.vo.iris.visualizer.preferences.VisualizerListener;
 import cfa.vo.iris.visualizer.stil.StilPlotter;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.iris.IWorkspace;
@@ -61,7 +64,6 @@ public class PlotterView extends JInternalFrame {
     // Plotting Components
     private StilPlotter plotter;
     private JInternalFrame residuals;
-    private StarTableAdapter<Segment> starTableAdapter;
     private MetadataBrowserView metadataBrowser;
     
     // Buttons, etc.
@@ -131,10 +133,8 @@ public class PlotterView extends JInternalFrame {
         this.app = app;
         
         this.metadataBrowser = new MetadataBrowserView(ws, preferences);
-        
-        // TODO: StarTableAdapters?
-        plotter = new StilPlotter(ws, preferences);
-        residuals = new JInternalFrame();
+        this.plotter = new StilPlotter(ws, preferences);
+        this.residuals = new JInternalFrame();
         
         initializeComponents();
         initializeMenuItems();
@@ -156,8 +156,8 @@ public class PlotterView extends JInternalFrame {
                 resetPlot(null);
             }
         });
-
-        SedEvent.getInstance().add(new PlotSedListener());
+        
+        VisualizerChangeEvent.getInstance().add(new PlotChangeListener());
     }
 
     public ExtSed getSed() {
@@ -373,10 +373,10 @@ public class PlotterView extends JInternalFrame {
     
     // TODO: This should be attached to the preferences listener so as to 
     // ensure preference updates are complete before redrawing anything.
-    private class PlotSedListener implements SedListener {
+    private class PlotChangeListener implements VisualizerListener {
 
         @Override
-        public void process(ExtSed source, SedCommand payload) {
+        public void process(ExtSed source, VisualizerCommand payload) {
             resetPlot(source);
         }
     }
