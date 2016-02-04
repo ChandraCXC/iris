@@ -1,6 +1,5 @@
 package cfa.vo.iris.visualizer.metadata;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.uispec4j.ListBox;
@@ -16,7 +15,6 @@ import cfa.vo.iris.visualizer.VisualizerComponent;
 import cfa.vo.sedlib.Segment;
 import static org.junit.Assert.*;
 
-import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 
 public class MetadataBrowserViewTest extends AbstractComponentGUITest {
@@ -181,6 +179,19 @@ public class MetadataBrowserViewTest extends AbstractComponentGUITest {
                 assertEquals(1, mbView.selectedTables.getModel().getSize());
                 assertEquals(3, metadataTable.getRowCount());
                 assertEquals(1, Double.parseDouble((String) metadataTable.getContentAt(0, 1)), .1);
+            }
+        });
+        
+        // Remove the segment
+        sed.remove(seg1);
+        
+        // Segment should be removed from table
+        invokeWithRetry(10, 100, new Runnable() {
+            @Override
+            public void run() {
+                // Verify values in table are correct
+                assertEquals(0, mbView.selectedTables.getModel().getSize());
+                assertEquals(0, metadataTable.getRowCount());
             }
         });
     }

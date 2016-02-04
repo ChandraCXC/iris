@@ -183,7 +183,6 @@ public class PlotterView extends JInternalFrame {
     }
     
     private void resetPlot(ExtSed sed) {
-        this.metadataBrowser.reset();
         this.plotter.reset(sed);
     }
     
@@ -369,10 +368,7 @@ public class PlotterView extends JInternalFrame {
         mntmCoplot = new JMenuItem("Coplot");
         mnView.add(mntmCoplot);
     }
-
     
-    // TODO: This should be attached to the preferences listener so as to 
-    // ensure preference updates are complete before redrawing anything.
     private class PlotChangeListener implements VisualizerListener {
 
         @Override

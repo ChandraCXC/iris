@@ -325,7 +325,11 @@ public class MetadataBrowserView extends JInternalFrame {
                 int index, boolean isSelected, boolean cellHasFocus) 
         {
             StarTable entry = (StarTable) value;
-            setText(entry.getName());
+            if (entry != null) {
+                setText(entry.getName());
+                
+            }
+            
             setOpaque(true);
             
             if (isSelected) {

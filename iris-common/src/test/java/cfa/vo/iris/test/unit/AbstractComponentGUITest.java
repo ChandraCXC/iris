@@ -58,7 +58,11 @@ public abstract class AbstractComponentGUITest extends AbstractGUITest {
         return createSampleSegment(x, y);
     }
     
-    
+    /**
+     * For tests that use the mvc/swing infrastructure to make changes, it can be necessary to retry 
+     * certain verification steps if they rely on changes occurring in the UI.
+     * 
+     */
     protected static void invokeWithRetry(int maxRetries, long wait, Runnable runnable) throws Exception {
         Exception last = null;
         for (int i=0; i<maxRetries; i++) {
