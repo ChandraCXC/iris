@@ -24,6 +24,7 @@ import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
+import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.sedlib.ISegment;
 import cfa.vo.sedlib.Segment;
 import uk.ac.starlink.ttools.plot2.task.PlanePlot2Task;
@@ -57,22 +58,14 @@ public class StilPlotter extends JPanel {
     private IWorkspace ws;
     private SedlibSedManager sedManager;
     private ExtSed currentSed;
-    private StarTableAdapter<Segment> adapter;
+    private VisualizerComponentPreferences preferences;
     
-    // TODO: How can we keep this in sync with the iris application?
-    private Map<Segment, SegmentLayer> segments;
-    private PlotPreferences plotPreferences;
-    
-    public StilPlotter(IrisApplication app, IWorkspace ws, StarTableAdapter<Segment> adapter) {
-        this.adapter = adapter;
+    public StilPlotter(IWorkspace ws, VisualizerComponentPreferences preferences) {
         this.ws = ws;
-        this.app = app;
         this.sedManager = (SedlibSedManager) ws.getSedManager();
+        this.preferences = preferences;
         
         // Use weak key references so that unused segments will be caught by the gc.
-        this.segments = new WeakHashMap<>();
-        this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
-        
         setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
         setBackground(Color.WHITE);
         setLayout(new GridLayout(1, 0, 0, 0));
@@ -103,7 +96,7 @@ public class StilPlotter extends JPanel {
     }
 
     public Map<Segment, SegmentLayer> getSegmentsMap() {
-        return Collections.unmodifiableMap(segments);
+        return Collections.unmodifiableMap(preferences.getSelectedSedPreferences().getSegmentPreferences());
     }
     
     private PlotDisplay createPlotComponent(ExtSed sed) throws Exception {
@@ -123,8 +116,9 @@ public class StilPlotter extends JPanel {
         // on the plot.
         
         // Add high level plot preferences
-        for (String key : plotPreferences.getPreferences().keySet()) {
-            env.setValue(key, plotPreferences.getPreferences().get(key));
+        PlotPreferences pp = preferences.getPlotPreferences();
+        for (String key : pp.getPreferences().keySet()) {
+            env.setValue(key, pp.getPreferences().get(key));
         }
         
         if (sed != null) {
@@ -141,20 +135,11 @@ public class StilPlotter extends JPanel {
         return new PlanePlot2Task().createPlotComponent(env, true);
     }
     
-    // TODO: Preferences, etc....
     private void addSegmentLayers(ExtSed sed, MapEnvironment env) throws IOException {
         
         logger.info(String.format("Plotting SED with %s segments...", sed.getNamespace()));
         
-        for (int i=0; i<sed.getNumberOfSegments(); ++i) {
-            Segment segment = sed.getSegment(i);
-            
-            if (!segments.containsKey(segment)) {
-                segments.put(segment, new SegmentLayer(adapter.convertStarTable(segment)));
-            }
-            
-            SegmentLayer layer = segments.get(segment);
-            
+        for (SegmentLayer layer : preferences.getSelectedLayers()) {
             for (String key : layer.getPreferences().keySet()) {
                 env.setValue(key, layer.getPreferences().get(key));
             }

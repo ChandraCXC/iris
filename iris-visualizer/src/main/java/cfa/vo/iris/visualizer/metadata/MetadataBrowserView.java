@@ -21,6 +21,7 @@ import javax.swing.JList;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Map;
 import java.awt.Color;
 import java.awt.Component;
 
@@ -45,6 +46,8 @@ import javax.swing.event.ListSelectionListener;
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
+import cfa.vo.iris.visualizer.plotter.SegmentLayer;
+import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.sedlib.ISegment;
 import cfa.vo.sedlib.Segment;
 import uk.ac.starlink.table.EmptyStarTable;
@@ -68,7 +71,7 @@ public class MetadataBrowserView extends JInternalFrame {
     private static final StarTable EMPTY_STARTABLE = new EmptyStarTable();
     
     protected IWorkspace ws;
-    protected StarTableAdapter<Segment> starTableAdapter;
+    protected VisualizerComponentPreferences preferences;
     
     protected JList<StarTable> selectedTables;
     protected StarTable selectedStarTable;
@@ -106,9 +109,9 @@ public class MetadataBrowserView extends JInternalFrame {
      * 
      * @throws Exception
      */
-    public MetadataBrowserView(IWorkspace ws, StarTableAdapter<Segment> adapter) throws Exception {
+    public MetadataBrowserView(IWorkspace ws, VisualizerComponentPreferences preferences) throws Exception {
         this.ws = ws;
-        this.starTableAdapter = adapter;
+        this.preferences = preferences;
         
         setToolTipText(
                 "View and browse metadata for existing SEDs in the plotting window");
@@ -290,8 +293,8 @@ public class MetadataBrowserView extends JInternalFrame {
         model.clear();
         
         // Read all startables to list
-        for (int i=0; i<selected.getNumberOfSegments(); i++) {
-            model.addElement(starTableAdapter.convertStarTable(selected.getSegment(i)));
+        for (SegmentLayer layer : preferences.getSelectedLayers()) {
+            model.addElement(layer.getInSource());
         }
         
         segmentListScrollPane.setViewportView(selectedTables);

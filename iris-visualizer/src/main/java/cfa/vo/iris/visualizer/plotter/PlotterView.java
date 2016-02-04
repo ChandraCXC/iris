@@ -130,10 +130,10 @@ public class PlotterView extends JInternalFrame {
         this.ws = ws;
         this.app = app;
         
-        this.metadataBrowser = new MetadataBrowserView(ws, preferences.getAdapter());
+        this.metadataBrowser = new MetadataBrowserView(ws, preferences);
         
         // TODO: StarTableAdapters?
-        plotter = new StilPlotter(app, ws, preferences.getAdapter());
+        plotter = new StilPlotter(ws, preferences);
         residuals = new JInternalFrame();
         
         initializeComponents();
@@ -370,6 +370,9 @@ public class PlotterView extends JInternalFrame {
         mnView.add(mntmCoplot);
     }
 
+    
+    // TODO: This should be attached to the preferences listener so as to 
+    // ensure preference updates are complete before redrawing anything.
     private class PlotSedListener implements SedListener {
 
         @Override

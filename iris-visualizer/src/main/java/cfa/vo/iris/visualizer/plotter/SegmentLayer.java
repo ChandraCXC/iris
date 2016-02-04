@@ -25,7 +25,7 @@ public class SegmentLayer {
         
         this.setInSource(table)
         
-            // TODO: Rework when we have more intelligent column implementation
+            // TODO: put options into enums
             .setXCol(ColumnName.X_COL.name())
             .setYCol(ColumnName.Y_COL.name())
             .setXerrhi(ColumnName.X_ERR_HI.name())
@@ -33,7 +33,6 @@ public class SegmentLayer {
             .setYerrhi(ColumnName.Y_ERR_HI.name())
             .setYerrlo(ColumnName.Y_ERR_LO.name())
             
-            // TODO: put options into enums
             // Setting default values here
             .setErrBarShape(ErrorBarType.capped_lines)
             .setMarkShape(MarkType.open_circle)
@@ -61,6 +60,14 @@ public class SegmentLayer {
         }
         
         return newPreferences;
+    }
+    
+    public String getSuffix() {
+        return suffix;
+    }
+    
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
     }
     
     public SegmentLayer setShowMarks(boolean showMarks) {
@@ -96,8 +103,8 @@ public class SegmentLayer {
         return this;
     }
     
-    public Object getInSource() {
-        return this.preferences.get(IN + suffix);
+    public StarTable getInSource() {
+        return (StarTable) this.preferences.get(IN + suffix);
     }
 
     public SegmentLayer setColor(String arg1) {
