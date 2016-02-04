@@ -15,22 +15,26 @@
  */
 package cfa.vo.iris.sed.stil;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-import cfa.vo.iris.sed.stil.SegmentStarTable.ColumnName;
 import cfa.vo.sedlib.Sed;
+import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
-import uk.ac.starlink.table.RowSequence;
+import uk.ac.starlink.table.StarTable;
+import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
-import static org.junit.Assert.*;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-
-public class SegmentStarTableTest {
+public class SerializingStarTableTest {
     
     private Sed sed;
+    
+    private String utype = "utype$";
+    private final String seg_flux_utype = "spec:Spectrum.Data.FluxAxis.Value";
+    private final String seg_spec_utype = "spec:Spectrum.Data.SpectralAxis.Value";
     
     @Before
     public void setUp() throws Exception {
@@ -40,23 +44,21 @@ public class SegmentStarTableTest {
 
     @Test
     public void testStarTable() throws Exception {
-        SegmentStarTable table = new SegmentStarTable(sed.getSegment(0)); 
+        StarTableAdapter<Segment> adapter = new SerializingStarTableAdapater();
+        Segment seg = sed.getSegment(0);
+        
+        StarTable table = adapter.convertStarTable(seg);
         
         assertTrue(!StringUtils.isEmpty(table.getName()));
         assertEquals(455, table.getRowCount());
         assertTrue(table.isRandom());
         
-        assertEquals(new Double("6.17E23"), (Double) table.getCell(0, 0), 100);
-        assertEquals(new Double("6.17E23"), (Double) table.getRow(0)[0], 100);
-        assertEquals(new Double("5.019E-7"), (Double) table.getCell(1, 4), .00001);
-
-        assertEquals(6, table.getColumnCount());
-        assertEquals(6, table.getColumnAuxDataInfos().size());
-        assertEquals(ColumnName.X_COL.name(), table.getColumnInfo(0).getName());
+        int cc = table.getColumnCount();
+        assertEquals(cc, 16);
         
-        RowSequence seq = table.getRowSequence();
-        assertTrue(seq.next());
-        assertEquals(new Double("6.17E23"), (Double) seq.getRow()[0]);
-        assertTrue(seq.next());
+        ColumnIdentifier id = new ColumnIdentifier(table);
+
+        assertTrue(id.getColumnIndex(utype + seg_flux_utype) >= 0);
+        assertTrue(id.getColumnIndex(utype + seg_spec_utype) >= 0);
     }
 }
