@@ -54,7 +54,7 @@ public class StilPlotterTest { //extends AbstractComponentGUITest {
     @Test
     public void testAddSed() throws Exception {
         
-        sed = ExtSed.read(TestData.class.getResource("3c273.vot").getFile(), SedFormat.VOT);
+        sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
 
         StilPlotter plot = new StilPlotter(app, ws, adapter);
         plot.reset(sed, true);
@@ -105,8 +105,9 @@ public class StilPlotterTest { //extends AbstractComponentGUITest {
     
     @Test
     public void testAddTwoSegments() throws Exception {
-        sed = ExtSed.read(TestData.class.getResource("3c273.vot").getFile(), SedFormat.VOT);
-        sed.addSegment(ExtSed.read(TestData.class.getResource("test300k_VO.fits").getFile(), SedFormat.FITS).getSegment(0));
+        
+        sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
+        sed.addSegment(ExtSed.read(TestData.class.getResource("test300k_VO.fits").openStream(), SedFormat.FITS).getSegment(0));
 
         StilPlotter plot = new StilPlotter(app, ws, adapter);
         plot.reset(sed, true);
