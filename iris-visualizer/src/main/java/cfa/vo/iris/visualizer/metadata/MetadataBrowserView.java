@@ -48,7 +48,10 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
 import cfa.vo.iris.visualizer.preferences.SedPreferences;
+import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
+import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
+import cfa.vo.iris.visualizer.preferences.VisualizerListener;
 import cfa.vo.sedlib.ISegment;
 import cfa.vo.sedlib.Segment;
 import uk.ac.starlink.table.EmptyStarTable;
@@ -263,6 +266,7 @@ public class MetadataBrowserView extends JInternalFrame {
         mnSelect.add(mntmApplyMask);
         mnSelect.add(mntmNewMenuItem);
         
+        VisualizerChangeEvent.getInstance().add(new MetadataChangeListener());
         reset();
     }
 
@@ -347,5 +351,13 @@ public class MetadataBrowserView extends JInternalFrame {
             return this;
         }
         
+    }
+    
+    private class MetadataChangeListener implements VisualizerListener {
+
+        @Override
+        public void process(ExtSed source, VisualizerCommand payload) {
+            reset();
+        }
     }
 }
