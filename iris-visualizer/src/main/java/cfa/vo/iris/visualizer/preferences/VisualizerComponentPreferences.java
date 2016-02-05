@@ -18,6 +18,7 @@ package cfa.vo.iris.visualizer.preferences;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -99,7 +100,7 @@ public class VisualizerComponentPreferences {
             return Collections.emptyList();
         }
         
-        return p.getSegmentPreferences().values();
+        return p.getAllSegmentPreferences().values();
     }
 
     /**
@@ -136,7 +137,7 @@ public class VisualizerComponentPreferences {
             
             else if (payload.equals(SedCommand.REMOVED)) {
                 sedPreferences.remove(source);
-                sedPreferences.get(source).remove();
+                sedPreferences.get(source).removeAll();
             }
             
             VisualizerChangeEvent.getInstance().fire(source, VisualizerCommand.RESET);

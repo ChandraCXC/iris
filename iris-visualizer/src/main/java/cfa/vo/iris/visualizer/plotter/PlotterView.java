@@ -183,6 +183,7 @@ public class PlotterView extends JInternalFrame {
     }
     
     private void resetPlot(ExtSed sed) {
+        this.metadataBrowser.reset();
         this.plotter.reset(sed);
     }
     

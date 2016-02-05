@@ -22,6 +22,7 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
+import cfa.vo.iris.visualizer.preferences.SedPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.sedlib.Segment;
 import uk.ac.starlink.ttools.plot2.task.PlanePlot2Task;
@@ -92,7 +93,7 @@ public class StilPlotter extends JPanel {
     }
 
     public Map<Segment, SegmentLayer> getSegmentsMap() {
-        return Collections.unmodifiableMap(preferences.getSelectedSedPreferences().getSegmentPreferences());
+        return Collections.unmodifiableMap(preferences.getSelectedSedPreferences().getAllSegmentPreferences());
     }
     
     private PlotDisplay createPlotComponent(ExtSed sed) throws Exception {
@@ -135,7 +136,9 @@ public class StilPlotter extends JPanel {
         
         logger.info(String.format("Plotting SED with %s segments...", sed.getNamespace()));
         
-        for (SegmentLayer layer : preferences.getSelectedLayers()) {
+        SedPreferences prefs = preferences.getSelectedSedPreferences();
+        for (int i=0; i<sed.getNumberOfSegments(); i++) {
+            SegmentLayer layer = prefs.getSegmentPreferences((sed.getSegment(i)));
             for (String key : layer.getPreferences().keySet()) {
                 env.setValue(key, layer.getPreferences().get(key));
             }

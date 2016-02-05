@@ -17,8 +17,11 @@
 package cfa.vo.iris.visualizer.preferences;
 
 import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -34,35 +37,59 @@ import cfa.vo.sedlib.Segment;
  */
 public class SedPreferences {
     
-    private StarTableAdapter<Segment> adapter;
-    private final Map<Segment, SegmentLayer> segmentPreferences;
-    private final ExtSed sed;
+    StarTableAdapter<Segment> adapter;
+    final Map<MapKey, SegmentLayer> segmentPreferences;
+    final ExtSed sed;
     
     public SedPreferences(ExtSed sed, StarTableAdapter<Segment> adapter) {
         this.sed = sed;
-        this.segmentPreferences = Collections.synchronizedMap(new LinkedHashMap<Segment, SegmentLayer>());
+        this.segmentPreferences = Collections.synchronizedMap(new LinkedHashMap<MapKey, SegmentLayer>());
         this.adapter = adapter;
         
         refresh();
     }
     
-    public Map<Segment, SegmentLayer> getSegmentPreferences() {
-        return segmentPreferences;
+    /**
+     * Returns a map of each segment and its preferences currently in use by this
+     * SED. Since Segment equality is broken for normal HashMaps, this uses an
+     * IdentityHashMap for a memory location check. Order is not guaranteed.
+     *  
+     * @return
+     *  A map of all segments and layer preferences currently in use by this SED.
+     */
+    public Map<Segment, SegmentLayer> getAllSegmentPreferences() {
+        Map<Segment, SegmentLayer> ret = new IdentityHashMap<>();
+        
+        for (MapKey me : segmentPreferences.keySet()) {
+            ret.put(me.segment, segmentPreferences.get(me));
+        }
+        
+        return Collections.unmodifiableMap(ret);
     }
     
-    protected void refresh() {
+    public SegmentLayer getSegmentPreferences(Segment seg) {
+        return segmentPreferences.get(new MapKey(seg));
+    }
+    
+    void refresh() {
         for (int i=0; i < sed.getNumberOfSegments(); i++) {
             addSegment(sed.getSegment(i));
         }
         
         clean();
     }
+
+    void removeAll() {
+        segmentPreferences.clear();
+    }
     
-    private void addSegment(Segment seg) {
+    void addSegment(Segment seg) {
+        
+        MapKey me = new MapKey(seg);
         
         // If the segment is already in the map remake the star table
-        if (segmentPreferences.containsKey(seg)) {
-            segmentPreferences.get(seg).setInSource(adapter.convertStarTable(seg));
+        if (segmentPreferences.containsKey(me)) {
+            segmentPreferences.get(me).setInSource(adapter.convertStarTable(seg));
             return;
         }
         
@@ -74,19 +101,33 @@ public class SedPreferences {
             layer.setSuffix(layer.getSuffix() + " " + count);
         }
         
-        segmentPreferences.put(seg, layer);
+        segmentPreferences.put(me, layer);
     }
     
     // Removes any segments that are no longer in the SED
-    private void clean() {
-        for (Segment seg : segmentPreferences.keySet()) {
-            if (sed.indexOf(seg) < 0) {
-                segmentPreferences.remove(seg);
+    void clean() {
+        
+        // Use iterator for concurrent modification
+        Iterator<Entry<MapKey, SegmentLayer>> it = segmentPreferences.entrySet().iterator();
+        
+        boolean shouldRemove = true;
+        while (it.hasNext()) {
+            MapKey me = it.next().getKey();
+            
+            // Need to manual check for location equality test
+            for (int i=0; i<sed.getNumberOfSegments(); i++) {
+                if (me.segment == sed.getSegment(i)) {
+                    shouldRemove = false;
+                    break;
+                }
+            }
+            if (shouldRemove) {
+                it.remove();
             }
         }
     }
     
-    private boolean isUniqueLayerSuffix(String suffix) {
+    boolean isUniqueLayerSuffix(String suffix) {
         for (SegmentLayer layer : segmentPreferences.values()) {
             if (StringUtils.equals(layer.getSuffix(), suffix)) {
                 return false;
@@ -95,15 +136,39 @@ public class SedPreferences {
         
         return true;
     }
-
-    protected void remove() {
+    
+    /**
+     * Segment equality is based on flux and spectral axis values, whereas we
+     * require the memory location. This is a simple wrapper class for our segment
+     * preferences map to override the usual map expectation of .equals with a
+     * memory location check.
+     *
+     */
+    static class MapKey {
         
-        for (int i=0; i < sed.getNumberOfSegments(); i++) {
-            
-            Segment seg = sed.getSegment(i);
-            if (segmentPreferences.containsKey(seg)) {
-                segmentPreferences.remove(seg);
+        public Segment segment;
+        
+        public MapKey(Segment segment) {
+            this.segment = segment;
+        }
+        
+        @Override
+        public boolean equals(Object o) {
+            if (o == null) {
+                return false;
             }
+            
+            if (!(o instanceof MapKey)) {
+                return false;
+            }
+            
+            MapKey other = (MapKey) o;
+            return this.segment == other.segment;
+        }
+        
+        @Override
+        public int hashCode() {
+            return segment.hashCode();
         }
     }
 }

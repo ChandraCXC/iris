@@ -47,6 +47,7 @@ import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
+import cfa.vo.iris.visualizer.preferences.SedPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.sedlib.ISegment;
 import cfa.vo.sedlib.Segment;
@@ -71,7 +72,7 @@ public class MetadataBrowserView extends JInternalFrame {
     private static final StarTable EMPTY_STARTABLE = new EmptyStarTable();
     
     protected IWorkspace ws;
-    protected VisualizerComponentPreferences preferences;
+    protected final VisualizerComponentPreferences preferences;
     
     protected JList<StarTable> selectedTables;
     protected StarTable selectedStarTable;
@@ -154,6 +155,8 @@ public class MetadataBrowserView extends JInternalFrame {
         selectedTables = new JList<>(new DefaultListModel<StarTable>());
         selectedTables.setName("selectedTables");
         selectedTables.setCellRenderer(starTableCellRenderer);
+        
+        // TODO: Change this for selecting multiple star tables
         selectedTables.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         selectedTables.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -294,7 +297,9 @@ public class MetadataBrowserView extends JInternalFrame {
         model.clear();
         
         // Read all startables to list
-        for (SegmentLayer layer : preferences.getSelectedLayers()) {
+        SedPreferences prefs = preferences.getSelectedSedPreferences();
+        for (int i=0; i<selected.getNumberOfSegments(); i++) {
+            SegmentLayer layer = prefs.getSegmentPreferences(selected.getSegment(i));
             model.addElement(layer.getInSource());
         }
         
@@ -327,7 +332,6 @@ public class MetadataBrowserView extends JInternalFrame {
             StarTable entry = (StarTable) value;
             if (entry != null) {
                 setText(entry.getName());
-                
             }
             
             setOpaque(true);
