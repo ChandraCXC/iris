@@ -47,8 +47,9 @@ public class PlotPreferences {
     public static final String X_ERR_LO = "xerrlo";
     public static final String Y_ERR_LO = "yerrlo";
     public static final String COLOR = "color";
-    public static final String ERROR_BAR = "errorbar";
+    public static final String ERROR_BAR_TYPE = "errorbar";
     public static final String SIZE = "size";
+    public static final String SHADING = "shading";
     
     public static PlotPreferences getDefaultPlotPreferences() {
         return new PlotPreferences()
@@ -77,7 +78,7 @@ public class PlotPreferences {
         return this;
     }
     public PlotPreferences setErrBar(String arg1) {
-        this.preferences.put(ERROR_BAR, arg1);
+        this.preferences.put(ERROR_BAR_TYPE, arg1);
         return this;
     }
     public PlotPreferences setShape(String arg1) {

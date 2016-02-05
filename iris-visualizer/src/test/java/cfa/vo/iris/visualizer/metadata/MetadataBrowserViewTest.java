@@ -85,7 +85,6 @@ public class MetadataBrowserViewTest extends AbstractComponentGUITest {
         // Add a segment to the selected sed
         final Segment seg1 = createSampleSegment();
         sed.addSegment(seg1);
-        mbView.reset();
         
         // 1 segment should have been added to table
         invokeWithRetry(10, 100, new Runnable() {
@@ -104,7 +103,6 @@ public class MetadataBrowserViewTest extends AbstractComponentGUITest {
         double y[] = new double[] { 300, 400 };
         final Segment seg2 = createSampleSegment(x, y);
         sed.addSegment(seg2);
-        mbView.reset();
         
         invokeWithRetry(10, 100, new Runnable() {
             @Override
@@ -136,12 +134,16 @@ public class MetadataBrowserViewTest extends AbstractComponentGUITest {
         // Add a new SED
         final ExtSed sed2 = sedManager.newSed("test2");
         sedManager.select(sed2);
-        mbView.reset();
         
-        // Verify the title has changed
-        sedTitle = (TitledBorder) mbView.segmentListScrollPane.getBorder();
-        assertEquals(sed2.getId(), sedTitle.getTitle());
-        
+        invokeWithRetry(10, 100, new Runnable() {
+            @Override
+            public void run() {
+                // Verify the title has changed
+                TitledBorder sedTitle = (TitledBorder) mbView.segmentListScrollPane.getBorder();
+                assertEquals(sed2.getId(), sedTitle.getTitle());
+            }
+        });
+
         // Verify the metadata and segment tables have cleared
         assertEquals(0, metadataTable.getRowCount());
         assertEquals(0, segmentTable.getSize());
