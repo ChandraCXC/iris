@@ -19,7 +19,6 @@ import javax.swing.JPanel;
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.ISedManager;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.visualizer.stil.preferences.PlotPreferences;
@@ -124,7 +123,7 @@ public class StilPlotter extends JPanel {
      *
      * @return the value of env
      */
-    public MapEnvironment getEnv() {
+    protected MapEnvironment getEnv() {
         return env;
     }
 
@@ -133,7 +132,7 @@ public class StilPlotter extends JPanel {
      *
      * @param env new value of env
      */
-    public void setEnv(MapEnvironment env) {
+    protected void setEnv(MapEnvironment env) {
         this.env = env;
     }
 
