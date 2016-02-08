@@ -17,7 +17,6 @@ package cfa.vo.iris.visualizer.stil;
 
 import javax.swing.JPanel;
 import cfa.vo.iris.IWorkspace;
-import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
@@ -51,11 +50,10 @@ public class StilPlotter extends JPanel {
     
     private PlotDisplay display;
     
-    private IrisApplication app;
     private IWorkspace ws;
     private SedlibSedManager sedManager;
     private ExtSed currentSed;
-    private VisualizerComponentPreferences preferences;
+    private final VisualizerComponentPreferences preferences;
     
     public StilPlotter(IWorkspace ws, VisualizerComponentPreferences preferences) {
         this.ws = ws;

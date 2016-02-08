@@ -51,12 +51,17 @@ public class PlotPreferences {
     public static final String SIZE = "size";
     public static final String SHADING = "shading";
     
+    /**
+     * 
+     * @return default plot preferences
+     */
     public static PlotPreferences getDefaultPlotPreferences() {
         return new PlotPreferences()
-                .setColor("blue")
+                .setType(LayerType.mark)
+                .setShape(ShapeType.open_circle)
                 .setXlog(true)
                 .setYlog(true)
-                .setGrid(true);
+                .setShowGrid(true);
     }
     
     private Map<String, Object> preferences;
@@ -69,65 +74,67 @@ public class PlotPreferences {
         return preferences;
     }
     
-    public PlotPreferences setType(String arg1) {
+    public PlotPreferences setType(LayerType arg1) {
         this.preferences.put(TYPE, arg1);
         return this;
     }
-    public PlotPreferences setColor(String arg1) {
-        this.preferences.put(COLOR, arg1);
-        return this;
+    
+    public LayerType getType() {
+        return (LayerType) this.preferences.get(TYPE);
     }
-    public PlotPreferences setErrBar(String arg1) {
-        this.preferences.put(ERROR_BAR_TYPE, arg1);
-        return this;
-    }
-    public PlotPreferences setShape(String arg1) {
+    
+    public PlotPreferences setShape(ShapeType arg1) {
         this.preferences.put(SHAPE, arg1);
         return this;
     }
-    public PlotPreferences setGrid(boolean arg1) {
+    
+    public ShapeType getShape() {
+        return (ShapeType) this.preferences.get(SHAPE);
+    }
+    
+    public PlotPreferences setShowGrid(boolean arg1) {
         this.preferences.put(GRID, arg1);
         return this;
     }
-    public PlotPreferences setxCol(String arg1) {
-        this.preferences.put(X_COL, arg1);
-        return this;
+    
+    public boolean getShowGrid() {
+        return (boolean) this.preferences.get(GRID);
     }
-    public PlotPreferences setyCol(String arg1) {
-        this.preferences.put(Y_COL, arg1);
-        return this;
-    }
-    public PlotPreferences setXerrhi(String arg1) {
-        this.preferences.put(X_ERR_HI, arg1);
-        return this;
-    }
-    public PlotPreferences setXerrlo(String arg1) {
-        this.preferences.put(X_ERR_LO, arg1);
-        return this;
-    }
-    public PlotPreferences setYerrhi(String arg1) {
-        this.preferences.put(Y_ERR_HI, arg1);
-        return this;
-    }
-    public PlotPreferences setYerrlo(String arg1) {
-        this.preferences.put(Y_ERR_LO, arg1);
-        return this;
-    }
+    
     public PlotPreferences setYlabel(String arg1) {
         this.preferences.put(Y_LABEL, arg1);
         return this;
     }
+    
+    public String getYlabel() {
+        return (String) this.preferences.get(Y_LABEL);
+    }
+    
     public PlotPreferences setXlabel(String arg1) {
         this.preferences.put(X_LABEL, arg1);
         return this;
     }
+    
+    public String getXlabel() {
+        return (String) this.preferences.get(X_LABEL);
+    }
+    
     public PlotPreferences setXlog(boolean arg1) {
         this.preferences.put(X_LOG, arg1);
         return this;
     }
+    
+    public boolean getXlog() {
+        return (boolean) this.preferences.get(X_LOG);
+    }
+    
     public PlotPreferences setYlog(boolean arg1) {
         this.preferences.put(Y_LOG, arg1);
         return this;
+    }
+    
+    public boolean getYlog() {
+        return (boolean) this.preferences.get(Y_LOG);
     }
 }
 
