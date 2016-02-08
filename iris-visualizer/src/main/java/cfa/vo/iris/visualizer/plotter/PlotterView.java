@@ -60,6 +60,7 @@ public class PlotterView extends JInternalFrame {
     
     private IWorkspace ws;
     private IrisApplication app;
+    private final VisualizerComponentPreferences preferences;
 
     // Plotting Components
     private StilPlotter plotter;
@@ -131,6 +132,7 @@ public class PlotterView extends JInternalFrame {
         
         this.ws = ws;
         this.app = app;
+        this.preferences = preferences;
         
         this.metadataBrowser = new MetadataBrowserView(ws, preferences);
         this.plotter = new StilPlotter(ws, preferences);

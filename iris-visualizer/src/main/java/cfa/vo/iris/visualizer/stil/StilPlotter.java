@@ -77,6 +77,8 @@ public class StilPlotter extends JPanel {
         
         try {
             display = createPlotComponent(sed);
+        } catch (RuntimeException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -131,12 +133,16 @@ public class StilPlotter extends JPanel {
     }
     
     private void addSegmentLayers(ExtSed sed, MapEnvironment env) throws IOException {
+        if (sed == null) {
+            logger.info("No SED selected, returning empty plot");
+            return;
+        }
         
         logger.info(String.format("Plotting SED with %s segments...", sed.getNamespace()));
         
-        SedPreferences prefs = preferences.getSelectedSedPreferences();
+        SedPreferences prefs = preferences.getSedPreferences(sed);
         for (int i=0; i<sed.getNumberOfSegments(); i++) {
-            SegmentLayer layer = prefs.getSegmentPreferences((sed.getSegment(i)));
+            SegmentLayer layer = prefs.getSegmentPreferences(sed.getSegment(i));
             for (String key : layer.getPreferences().keySet()) {
                 env.setValue(key, layer.getPreferences().get(key));
             }

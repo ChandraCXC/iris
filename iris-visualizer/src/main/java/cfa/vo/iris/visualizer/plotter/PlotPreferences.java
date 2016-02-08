@@ -34,22 +34,6 @@ public class PlotPreferences {
     public static final String Y_LABEL = "ylabel";
     public static final String X_LOG = "xlog";
     public static final String Y_LOG = "ylog";
-
-    // Override-able Settings
-    public static final String SHAPE = "shape";
-    public static final String TYPE = "type";
-    public static final String LAYER = "layer";
-    public static final String IN = "in";
-    public static final String X_COL = "x";
-    public static final String Y_COL = "y";
-    public static final String X_ERR_HI = "xerrhi";
-    public static final String Y_ERR_HI = "yerrhi";
-    public static final String X_ERR_LO = "xerrlo";
-    public static final String Y_ERR_LO = "yerrlo";
-    public static final String COLOR = "color";
-    public static final String ERROR_BAR_TYPE = "errorbar";
-    public static final String SIZE = "size";
-    public static final String SHADING = "shading";
     
     /**
      * 
@@ -57,8 +41,6 @@ public class PlotPreferences {
      */
     public static PlotPreferences getDefaultPlotPreferences() {
         return new PlotPreferences()
-                .setType(LayerType.mark)
-                .setShape(ShapeType.open_circle)
                 .setXlog(true)
                 .setYlog(true)
                 .setShowGrid(true);
@@ -72,24 +54,6 @@ public class PlotPreferences {
     
     public Map<String, Object> getPreferences() {
         return preferences;
-    }
-    
-    public PlotPreferences setType(LayerType arg1) {
-        this.preferences.put(TYPE, arg1);
-        return this;
-    }
-    
-    public LayerType getType() {
-        return (LayerType) this.preferences.get(TYPE);
-    }
-    
-    public PlotPreferences setShape(ShapeType arg1) {
-        this.preferences.put(SHAPE, arg1);
-        return this;
-    }
-    
-    public ShapeType getShape() {
-        return (ShapeType) this.preferences.get(SHAPE);
     }
     
     public PlotPreferences setShowGrid(boolean arg1) {

@@ -80,6 +80,14 @@ public class VisualizerComponentPreferences {
     public Map<ExtSed, SedPreferences> getSedPreferences() {
         return sedPreferences;
     }
+    
+    /**
+     * @return
+     *  Preferences for the given SED
+     */
+    public SedPreferences getSedPreferences(ExtSed sed) {
+        return sedPreferences.get(sed);
+    }
 
     /**
      * @return

@@ -1,6 +1,20 @@
-package cfa.vo.iris.visualizer.plotter;
+/**
+ * Copyright (C) 2016 Smithsonian Astrophysical Observatory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import static cfa.vo.iris.visualizer.plotter.PlotPreferences.*;
+package cfa.vo.iris.visualizer.plotter;
 
 import java.security.InvalidParameterException;
 import java.util.HashMap;
@@ -12,6 +26,21 @@ import cfa.vo.iris.sed.stil.SegmentStarTable.ColumnName;
 import uk.ac.starlink.table.StarTable;
 
 public class SegmentLayer {
+    
+    // Override-able Settings
+    public static final String SHAPE = "shape";
+    public static final String TYPE = "layer";
+    public static final String IN = "in";
+    public static final String X_COL = "x";
+    public static final String Y_COL = "y";
+    public static final String X_ERR_HI = "xerrhi";
+    public static final String Y_ERR_HI = "yerrhi";
+    public static final String X_ERR_LO = "xerrlo";
+    public static final String Y_ERR_LO = "yerrlo";
+    public static final String COLOR = "color";
+    public static final String ERROR_BAR_TYPE = "errorbar";
+    public static final String SIZE = "size";
+    public static final String SHADING = "shading";
     
     private static final String ERROR_SUFFIX = "_ERROR";
     
@@ -86,11 +115,12 @@ public class SegmentLayer {
     }
     
     private void addErrorFields(String suffix, Map<String, Object> prefs) {
-        
+
+        prefs.put(TYPE + suffix, LayerType.xyerror.name());
         if (errorShading != null)
             prefs.put(SHADING + suffix, markColor);
         if (errorBarType != null)
-            prefs.put(ERROR_BAR_TYPE + suffix, errorBarType);
+            prefs.put(ERROR_BAR_TYPE + suffix, errorBarType.name());
         if (errorColor != null)
             prefs.put(COLOR + suffix, errorColor);
         if (errorColorWeight != null)
@@ -100,10 +130,11 @@ public class SegmentLayer {
     }
     
     private void addMarkFields(String suffix, Map<String, Object> prefs) {
+        prefs.put(TYPE + suffix, LayerType.mark.name());
         if (markType != null)
-            prefs.put(SHAPE + suffix, markType);
+            prefs.put(SHAPE + suffix, markType.name());
         if (markShading != null)
-            prefs.put(SHADING + suffix, markShading);
+            prefs.put(SHADING + suffix, markShading.name());
         if (markColor != null)
             prefs.put(COLOR + suffix, markColor);
         if (markColorWeight != null)
