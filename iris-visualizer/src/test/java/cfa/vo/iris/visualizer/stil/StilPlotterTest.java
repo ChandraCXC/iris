@@ -37,16 +37,14 @@ import uk.ac.starlink.task.BooleanParameter;
  *
  * @author jbudynk
  */
-public class StilPlotterTest { //extends AbstractComponentGUITest {
+public class StilPlotterTest {
     
-//    private VisualizerComponent comp;
     private ExtSed sed;
     private Ws ws = new Ws();
     private final App app = new App();
     private StarTableAdapter<ISegment> adapter;
     
     public StilPlotterTest() {
-        //comp = new VisualizerComponent();
         adapter = new SegmentStarTableAdapter();
         
     }
@@ -133,6 +131,7 @@ public class StilPlotterTest { //extends AbstractComponentGUITest {
         assertEquals(sed.getSegment(0).getLength(), 
                 layers[0].getDataSpec().getSourceTable().getRowCount());
         
-        // TODO: we should check that each segment has a different color
+        // TODO: we should check that each segment has a different color in the
+        // future when iris-dev#14 is done
     }
 }
