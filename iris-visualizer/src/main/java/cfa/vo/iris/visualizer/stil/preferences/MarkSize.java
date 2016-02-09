@@ -15,24 +15,25 @@
  */
 package cfa.vo.iris.visualizer.stil.preferences;
 
-// http://www.star.bris.ac.uk/~mbt/stilts/sun256/layer-mark.html
-public enum MarkType {
-    filled_circle("filled_circle"),
-    open_circle("open_circle"),
-    cross("cross"),
-    x("x"),
-    open_square("open_square"),
-    open_diamond("open_diamond"),
-    open_triangle_up("open_triangle_up"),
-    open_triangle_down("open_triangle_down"),
-    filled_square("filled_square"),
-    filled_diamond("filled_diamond"),
-    filled_triangle_up("filled_triangle_up"),
-    filled_triangle_down("filled_triangle_down");
+/**
+ *
+ * @author jbudynk
+ */
+public enum MarkSize {
+    one("1"),
+    two("2"),
+    three("3"),
+    four("4"),
+    five("5"),
+    six("6"),
+    seven("7"),
+    eight("8"),
+    nine("9"),
+    ten("10");
     
     private final String name;       
 
-    private MarkType(String s) {
+    private MarkSize(String s) {
         name = s;
     }
 
@@ -40,9 +41,7 @@ public enum MarkType {
         return (otherName == null) ? false : name.equals(otherName);
     }
 
-    @Override
     public String toString() {
        return this.name;
     }
-    
 }
