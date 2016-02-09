@@ -33,10 +33,6 @@ import uk.ac.starlink.ttools.task.MapEnvironment;
 import cfa.vo.testdata.TestData;
 import uk.ac.starlink.task.BooleanParameter;
 
-/**
- *
- * @author jbudynk
- */
 public class StilPlotterTest {
     
     private ExtSed sed;

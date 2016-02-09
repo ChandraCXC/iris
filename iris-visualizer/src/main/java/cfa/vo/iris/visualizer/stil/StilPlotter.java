@@ -128,15 +128,6 @@ public class StilPlotter extends JPanel {
     }
 
     /**
-     * Set the value of env
-     *
-     * @param env new value of env
-     */
-    protected void setEnv(MapEnvironment env) {
-        this.env = env;
-    }
-
-    /**
      * 
      * @param env Plot display environment to use 
      * @param cached If true, cache the environment. Should be false if the data
@@ -168,7 +159,7 @@ public class StilPlotter extends JPanel {
         }
         this.currentSed = sed;
         
-        setEnv(new MapEnvironment());
+        env = new MapEnvironment();
         env.setValue("type", "plot2plane");
         env.setValue("insets", new Insets(50, 80, 50, 50)); 
         // TODO: force numbers on Y axis to only be 3-5 digits long. Keeps
