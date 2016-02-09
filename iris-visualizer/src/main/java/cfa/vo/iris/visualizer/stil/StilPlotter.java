@@ -55,20 +55,27 @@ public class StilPlotter extends JPanel {
     private ExtSed currentSed;
     private final VisualizerComponentPreferences preferences;
     
+    private MapEnvironment env;
+    
     public StilPlotter(IWorkspace ws, VisualizerComponentPreferences preferences) {
         this.ws = ws;
         this.sedManager = (SedlibSedManager) ws.getSedManager();
         this.preferences = preferences;
         
-        // Use weak key references so that unused segments will be caught by the gc.
         setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
         setBackground(Color.WHITE);
         setLayout(new GridLayout(1, 0, 0, 0));
         
-        reset(null);
+        reset(null, true);
     }
     
-    public void reset(ExtSed sed) {
+    /**
+     * 
+     * @param sed Sed to reset plot to
+     * @param dataMayChange indicates if the data on the plot may change while
+     * while the current display is active.
+     */
+    public void reset(ExtSed sed, boolean dataMayChange) {
         if (display != null) {
             display.removeAll();
             remove(display);
@@ -76,7 +83,10 @@ public class StilPlotter extends JPanel {
         }
         
         try {
-            display = createPlotComponent(sed);
+            // https://github.com/Starlink/starjava/blob/master/ttools/src/main/
+            // uk/ac/starlink/ttools/example/EnvPlanePlotter.java
+            boolean cached =! dataMayChange;
+            display = createPlotComponent(sed, cached);
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -96,7 +106,44 @@ public class StilPlotter extends JPanel {
         return Collections.unmodifiableMap(preferences.getSelectedSedPreferences().getAllSegmentPreferences());
     }
     
-    private PlotDisplay createPlotComponent(ExtSed sed) throws Exception {
+    public PlotDisplay getPlotDisplay() {
+        return display;
+    }
+
+    /**
+     * Get the value of env
+     *
+     * @return the value of env
+     */
+    protected MapEnvironment getEnv() {
+        return env;
+    }
+
+    /**
+     * 
+     * @param env Plot display environment to use 
+     * @param cached If true, cache the environment. Should be false if the data
+     * might change.
+     * @return PlotDisplay
+     * @throws Exception 
+     */
+    protected PlotDisplay createPlotComponent(MapEnvironment env, boolean cached) throws Exception {
+        
+        logger.log(Level.FINE, "plot environment:");
+        logger.log(Level.FINE, ReflectionToStringBuilder.toString(env));
+        
+        return new PlanePlot2Task().createPlotComponent(env, cached);
+    }
+    
+    /**
+     * 
+     * @param sed the SED to plot
+     * @param cached If true, cache the environment. Should be false if the data
+     * might change.
+     * @return
+     * @throws Exception 
+     */
+    protected PlotDisplay createPlotComponent(ExtSed sed, boolean cached) throws Exception {
         logger.info("Creating new plot from selected SED");
 
         if (sed == null) {
@@ -104,7 +151,7 @@ public class StilPlotter extends JPanel {
         }
         this.currentSed = sed;
         
-        MapEnvironment env = new MapEnvironment();
+        env = new MapEnvironment();
         env.setValue("type", "plot2plane");
         env.setValue("insets", new Insets(50, 80, 50, 50)); 
         // TODO: force numbers on Y axis to only be 3-5 digits long. Keeps
@@ -126,10 +173,7 @@ public class StilPlotter extends JPanel {
             addSegmentLayers(sed, env);
         }
         
-        logger.log(Level.FINE, "plot environment:");
-        logger.log(Level.FINE, ReflectionToStringBuilder.toString(env));
-        
-        return new PlanePlot2Task().createPlotComponent(env, true);
+        return createPlotComponent(env, cached);
     }
     
     private void addSegmentLayers(ExtSed sed, MapEnvironment env) throws IOException {

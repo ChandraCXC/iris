@@ -18,7 +18,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cfa.vo.sed.test;
+package cfa.vo.iris.test;
 
 import cfa.vo.interop.SAMPConnectionListener;
 import cfa.vo.interop.SampService;

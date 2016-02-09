@@ -37,13 +37,8 @@ import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import cfa.vo.iris.IrisApplication;
-import cfa.vo.iris.events.SedCommand;
-import cfa.vo.iris.events.SedEvent;
-import cfa.vo.iris.events.SedListener;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.stil.SegmentStarTableAdapter;
-import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserView;
 import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
 import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
@@ -185,7 +180,12 @@ public class PlotterView extends JInternalFrame {
     }
     
     private void resetPlot(ExtSed sed) {
-        this.plotter.reset(sed);
+        this.metadataBrowser.reset();
+        // TODO: setting second argument to "false" forces the plot display
+        // to be cached. Do we want this behavior in the future?
+        // Note (jb): tried opening 300k sed with "fals" and "true." Both
+        // produce a .5 second lag in panning the viewer.
+        this.plotter.reset(sed, true);
     }
     
     private static void addPopup(Component component, final JPopupMenu popup) {

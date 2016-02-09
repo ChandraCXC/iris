@@ -22,8 +22,8 @@
 package cfa.vo.sed.filters;
 
 import cfa.vo.sed.builder.SedBuilder;
-import cfa.vo.sed.test.App;
-import cfa.vo.sed.test.Ws;
+import cfa.vo.iris.test.App;
+import cfa.vo.iris.test.Ws;
 import cfa.vo.sed.setup.ISetup;
 import cfa.vo.sed.setup.SetupBean;
 import cfa.vo.sed.setup.SetupManager;

@@ -18,7 +18,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package cfa.vo.sed.test;
+package cfa.vo.iris.test;
 
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ISedManager;
