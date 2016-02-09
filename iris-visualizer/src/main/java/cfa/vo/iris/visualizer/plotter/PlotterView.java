@@ -52,6 +52,7 @@ import cfa.vo.iris.visualizer.preferences.VisualizerListener;
 import cfa.vo.iris.visualizer.stil.StilPlotter;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.iris.IWorkspace;
+import cfa.vo.iris.visualizer.preferences.SegmentPreferencesPanel;
 import javax.swing.JFrame;
 
 public class PlotterView extends JInternalFrame {
@@ -88,7 +89,7 @@ public class PlotterView extends JInternalFrame {
     private JMenuBar menuBar;
     private JMenu mnF;
     private JMenuItem mntmExport;
-    private JMenuItem mntmProperties;
+    private JMenuItem mntmPreferences;
     private JMenuItem mntmOpen;
     private JMenuItem mntmSave;
     private JMenuItem mntmPrint;
@@ -106,6 +107,7 @@ public class PlotterView extends JInternalFrame {
     private JMenuItem mntmAutofixed;
     private JMenuItem mntmGridOnoff;
     private JMenuItem mntmCoplot;
+    private JInternalFrame prefs;
     
 
     /**
@@ -138,6 +140,16 @@ public class PlotterView extends JInternalFrame {
         this.plotter = new StilPlotter(ws, preferences);
         this.residuals = new JInternalFrame();
         
+        // Preferences window.
+        // TODO: Replace with an extended JInternalFrame (or something similar)
+        // with a list of open SEDs / segments currently plotted.
+        prefs = new JInternalFrame();
+        prefs.setClosable(true);
+        prefs.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        prefs.setTitle("Preferences");
+        prefs.add(new SegmentPreferencesPanel());
+        prefs.pack();
+        
         initializeComponents();
         initializeMenuItems();
         
@@ -159,6 +171,14 @@ public class PlotterView extends JInternalFrame {
             }
         });
         
+        // edit segment preferences
+        mntmPreferences.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openPreferences();
+            }
+        });
+        
         VisualizerChangeEvent.getInstance().add(new PlotChangeListener());
     }
 
@@ -173,12 +193,16 @@ public class PlotterView extends JInternalFrame {
     private void openMetadataBrowser() throws Exception {
         if (!metadataBrowser.isVisible()) {
             ws.addFrame(metadataBrowser);
-            GUIUtils.moveToFront(metadataBrowser);
         }
-        else {
-            GUIUtils.moveToFront(metadataBrowser);
+        GUIUtils.moveToFront(metadataBrowser);
+    }
+
+    private void openPreferences() {
+        if (!prefs.isVisible()) {
+            ws.addFrame(prefs);
         }
-    }    
+        GUIUtils.moveToFront(prefs);
+    }
     
     public MetadataBrowserView getMetadataBrowserView() {
         return this.metadataBrowser;
@@ -316,8 +340,8 @@ public class PlotterView extends JInternalFrame {
         mntmExport = new JMenuItem("Export");
         mnF.add(mntmExport);
         
-        mntmProperties = new JMenuItem("Properties");
-        mnF.add(mntmProperties);
+        mntmPreferences = new JMenuItem("Preferences");
+        mnF.add(mntmPreferences);
         
         mntmOpen = new JMenuItem("Open");
         mnF.add(mntmOpen);
