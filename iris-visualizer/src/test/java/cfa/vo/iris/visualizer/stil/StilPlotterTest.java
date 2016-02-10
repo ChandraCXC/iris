@@ -50,6 +50,7 @@ public class StilPlotterTest {
     public void testAddSed() throws Exception {
         
         sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
+        preferences.update(sed);
 
         StilPlotter plot = new StilPlotter(ws, preferences);
         plot.reset(sed, true);
@@ -98,6 +99,7 @@ public class StilPlotterTest {
         
         sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
         sed.addSegment(ExtSed.read(TestData.class.getResource("test300k_VO.fits").openStream(), SedFormat.FITS).getSegment(0));
+        preferences.update(sed);
 
         StilPlotter plot = new StilPlotter(ws, preferences);
         plot.reset(sed, true);

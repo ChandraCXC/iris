@@ -75,29 +75,20 @@ public class VisualizerComponentPreferences {
 
     /**
      * @return
-     *  Preferences map for each SED.
-     */
-    public Map<ExtSed, SedPreferences> getSedPreferences() {
-        return sedPreferences;
-    }
-    
-    /**
-     * @return
-     *  Preferences for the given SED
-     */
-    public SedPreferences getSedPreferences(ExtSed sed) {
-        return sedPreferences.get(sed);
-    }
-
-    /**
-     * @return
      *  Preferences for the currently selected SED in the workspace.
      */
     public SedPreferences getSelectedSedPreferences() {
         return sedPreferences.get((ExtSed) ws.getSedManager().getSelected());
     }
-    
 
+    /**
+     * @return
+     *  The Segment -> StarTable adapter currently in use in the workspace.
+     */
+    public StarTableAdapter<Segment> getAdapter() {
+        return adapter;
+    }
+    
     /**
      * @return
      *  Collection of all the segment layers attached to the currently selected SED.
@@ -113,18 +104,45 @@ public class VisualizerComponentPreferences {
 
     /**
      * @return
-     *  The Segment -> StarTable adapter currently in use in the workspace.
+     *  Preferences map for each SED.
      */
-    public StarTableAdapter<Segment> getAdapter() {
-        return adapter;
+    public Map<ExtSed, SedPreferences> getSedPreferences() {
+        return sedPreferences;
+    }
+    
+    /**
+     * @return
+     *  Preferences for the given SED
+     */
+    public SedPreferences getSedPreferences(ExtSed sed) {
+        return sedPreferences.get(sed);
     }
 
-    private void update(ExtSed sed) {
+    /**
+     * Adds the SED to the preferences map.
+     * @param sed
+     */
+    public void update(ExtSed sed) {
         if (!sedPreferences.containsKey(sed)) {
             sedPreferences.put(sed, new SedPreferences(sed, adapter));
         } else {
             sedPreferences.get(sed).refresh();
         }
+        fire(sed, VisualizerCommand.RESET);
+    }
+    
+    /**
+     * Removes the SED from the preferences map.
+     * @param sed
+     */
+    public void remove(ExtSed sed) {
+        sedPreferences.remove(sed);
+        sedPreferences.get(sed).removeAll();
+        fire(sed, VisualizerCommand.RESET);
+    }
+    
+    protected void fire(ExtSed source, VisualizerCommand command) {
+        VisualizerChangeEvent.getInstance().fire(source, command);
     }
     
     /**
@@ -144,11 +162,12 @@ public class VisualizerComponentPreferences {
             }
             
             else if (payload.equals(SedCommand.REMOVED)) {
-                sedPreferences.remove(source);
-                sedPreferences.get(source).removeAll();
+                remove(source);
             }
             
-            VisualizerChangeEvent.getInstance().fire(source, VisualizerCommand.RESET);
+            else {
+                fire(source, VisualizerCommand.RESET);
+            }
         }
     }
 }
