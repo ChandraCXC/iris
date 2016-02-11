@@ -16,14 +16,11 @@
 
 package cfa.vo.iris.sed.stil;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.ColumnStarTable;
 import uk.ac.starlink.table.PrimitiveArrayColumn;
@@ -37,9 +34,19 @@ import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sedlib.common.Utypes;
 import cfa.vo.utils.Default;
 
+/**
+ * StarTable implementation based on the data contained in an SED segment - designed 
+ * specifically for use in plotting applications. The Star table will have at least 2 and 
+ * no more than 6 columns representing spectral and flux values and error ranges.
+ * 
+ * TODO: This should ultimately accept any primitive array data and units and manage its data
+ *   accordingly.
+ *
+ */
 public class SegmentStarTable extends ColumnStarTable {
     
     private static final Logger logger = Logger.getLogger(SegmentStarTable.class.getName());
+    private static final UnitsManager units = Default.getInstance().getUnitsManager();
     
     private Segment segment;
     private XUnit specUnits;
@@ -53,21 +60,17 @@ public class SegmentStarTable extends ColumnStarTable {
     private double[] fluxErrValues;
     private double[] fluxErrValuesLo;
     
-    private static final UnitsManager units = Default.getInstance().getUnitsManager();
-    
     public SegmentStarTable(Segment segment) 
             throws SedNoDataException, UnitsException, SedInconsistentException {
-        this(segment, null, 
-                units.newXUnits(segment.getSpectralAxisUnits()),
-                units.newYUnits(segment.getFluxAxisUnits()));
+        this(segment, null);
     }
     
-    public SegmentStarTable(Segment segment, String id, XUnit xunit, YUnit yunit) 
+    public SegmentStarTable(Segment segment, String id) 
             throws UnitsException, SedNoDataException, SedInconsistentException 
     {
         this.segment = segment;
-        this.specUnits = xunit;
-        this.fluxUnits = yunit;
+        this.specUnits = units.newXUnits(segment.getSpectralAxisUnits());
+        this.fluxUnits = units.newYUnits(segment.getFluxAxisUnits());
         this.setName(id);
         
         // Look for a name in the segment if we are not given one
@@ -79,55 +82,28 @@ public class SegmentStarTable extends ColumnStarTable {
             }
         }
         
-        // Add spectral data points
-        this.specValues = units.convertX(
-                segment.getSpectralAxisValues(), 
-                units.newXUnits(segment.getSpectralAxisUnits()), 
-                xunit);
-        addColumn(PrimitiveArrayColumn.makePrimitiveColumn(
-                Column.SPECTRAL_COL.getColumnInfo(), (Object) specValues));
+        setSpecValues(segment.getSpectralAxisValues());
+        setFluxValues(segment.getFluxAxisValues());
         
-        // Add flux data points
-        this.fluxValues = units.convertY(
-                segment.getFluxAxisValues(), 
-                specValues,
-                units.newYUnits(segment.getFluxAxisUnits()), 
-                specUnits,
-                yunit);
-        addColumn(PrimitiveArrayColumn.makePrimitiveColumn(
-                Column.FLUX_COL.getColumnInfo(), (Object) fluxValues));
-        
-        // Try to add spectral error columns
-        this.specErrValues = (double[]) getDataFromSegment(Utypes.SEG_DATA_SPECTRALAXIS_ACC_STATERR);
-        if (isEmpty(specErrValues)) {
-            specErrValues = (double[]) getDataFromSegment(Utypes.SEG_DATA_SPECTRALAXIS_ACC_STATERRHIGH);
-            specErrValuesLo = (double[]) getDataFromSegment(Utypes.SEG_DATA_SPECTRALAXIS_ACC_STATERRLOW);
-        }
-        if (!isEmpty(specErrValues)) {
-            addColumn(PrimitiveArrayColumn.makePrimitiveColumn(
-                    Column.SPECTRAL_ERR_HI.getColumnInfo(), (Object) specErrValues));
-        }
-        if (!isEmpty(specErrValuesLo)) {
-            addColumn(PrimitiveArrayColumn.makePrimitiveColumn(
-                    Column.SPECTRAL_ERR_LO.getColumnInfo(), (Object) specErrValuesLo));
-        }
-
         // Try to add flux error values
         this.fluxErrValues = (double[]) getDataFromSegment(Utypes.SEG_DATA_FLUXAXIS_ACC_STATERR);
         if (isEmpty(fluxErrValues)) {
             fluxErrValues = (double[]) getDataFromSegment(Utypes.SEG_DATA_FLUXAXIS_ACC_STATERRHIGH);
             fluxErrValuesLo = (double[]) getDataFromSegment(Utypes.SEG_DATA_FLUXAXIS_ACC_STATERRLOW);
         }
-        if (!isEmpty(fluxErrValues)) {
-            addColumn(PrimitiveArrayColumn.makePrimitiveColumn(
-                    Column.FLUX_ERR_HI.getColumnInfo(), (Object) fluxErrValues));
+        setFluxErrValues(fluxErrValues);
+        setFluxErrValuesLo(fluxErrValuesLo);
+        
+        // Try to add spectral error columns
+        specErrValues = (double[]) getDataFromSegment(Utypes.SEG_DATA_SPECTRALAXIS_ACC_STATERR);
+        if (isEmpty(specErrValues)) {
+            specErrValues = (double[]) getDataFromSegment(Utypes.SEG_DATA_SPECTRALAXIS_ACC_STATERRHIGH);
+            specErrValuesLo = (double[]) getDataFromSegment(Utypes.SEG_DATA_SPECTRALAXIS_ACC_STATERRLOW);
         }
-        if (!isEmpty(fluxErrValuesLo)) {
-            addColumn(PrimitiveArrayColumn.makePrimitiveColumn(
-                    Column.FLUX_ERR_LO.getColumnInfo(), (Object) fluxErrValuesLo));
-        }
+        setSpecErrValues(specErrValues);
+        setSpecErrValuesLo(specErrValuesLo);
     }
-    
+
     private double[] getDataFromSegment(int utype) {
         double[] ret = null;
         try {
@@ -137,7 +113,150 @@ public class SegmentStarTable extends ColumnStarTable {
         }
         return ret;
     }
+
+    @Override
+    public long getRowCount() {
+        return segment.getData().getLength();
+    }
+
+    // TODO: Make sure this logic makes sense W.R.T. what's in the Units package.
+    public void setXUnits(XUnit newUnit) throws UnitsException {
+        setSpecValues(units.convertX(specValues, specUnits, newUnit));
+        setSpecErrValues(units.convertX(specErrValues, specUnits, newUnit));
+        setSpecErrValuesLo(units.convertX(specErrValuesLo, specUnits, newUnit));
+        specUnits = newUnit;
+        
+        // This may change Y values, so update them accordingly.
+        setYUnits(fluxUnits);
+    }
     
+    public void setYUnits(YUnit newUnit) throws UnitsException {
+        if (specValues == null) return;
+        
+        if (fluxValues != null) {
+            setFluxValues(units.convertY(fluxValues, specValues, fluxUnits, specUnits, newUnit));
+        }
+        if (fluxErrValues != null) {
+            setFluxErrValues(units.convertY(fluxErrValues, specValues, fluxUnits, specUnits, newUnit));
+        }
+        if (fluxErrValuesLo != null) {
+            setFluxErrValuesLo(units.convertY(fluxErrValuesLo, specValues, fluxUnits, specUnits, newUnit));
+        }
+        
+        fluxUnits = newUnit;
+    }
+
+    public XUnit getSpecUnits() {
+        return specUnits;
+    }
+
+    public YUnit getFluxUnits() {
+        return fluxUnits;
+    }
+
+    /*
+     * Setters overwrite existing column data, package protected at the moment,
+     * but in the future we may want to be able to manually specify array data to
+     * plot.
+     * 
+     */
+    
+    void setSpecValues(double[] specValues) {
+        removeColumn(Column.SPECTRAL_COL);
+        this.specValues = specValues;
+        
+        if (!isEmpty(specValues))
+            addColumn(PrimitiveArrayColumn.makePrimitiveColumn(
+                Column.SPECTRAL_COL.getColumnInfo(), (Object) specValues));
+    }
+
+    void setFluxValues(double[] fluxValues) {
+        removeColumn(Column.FLUX_COL);
+        this.fluxValues = fluxValues;
+        
+        if (!isEmpty(fluxValues))
+            addColumn(PrimitiveArrayColumn.makePrimitiveColumn(
+                Column.FLUX_COL.getColumnInfo(), (Object) fluxValues));
+    }
+
+    void setSpecErrValues(double[] specErrValues) {
+        removeColumn(Column.SPECTRAL_ERR_HI);
+        this.specErrValues = specErrValues;
+        
+        if (!isEmpty(specErrValues))
+            addColumn(PrimitiveArrayColumn.makePrimitiveColumn(
+                Column.SPECTRAL_ERR_HI.getColumnInfo(), (Object) specErrValues));
+    }
+
+    void setSpecErrValuesLo(double[] specErrValuesLo) {
+        removeColumn(Column.SPECTRAL_ERR_LO);
+        this.specErrValuesLo = specErrValuesLo;
+        
+        if (!isEmpty(specErrValuesLo))
+            addColumn(PrimitiveArrayColumn.makePrimitiveColumn(
+                Column.SPECTRAL_ERR_LO.getColumnInfo(), (Object) specErrValuesLo));
+    }
+
+    void setFluxErrValues(double[] fluxErrValues) {
+        removeColumn(Column.FLUX_ERR_HI);
+        this.fluxErrValues = fluxErrValues;
+        
+        if (!isEmpty(fluxErrValues))
+            addColumn(PrimitiveArrayColumn.makePrimitiveColumn(
+                Column.FLUX_ERR_HI.getColumnInfo(), (Object) fluxErrValues));
+    }
+
+    void setFluxErrValuesLo(double[] fluxErrValuesLo) {
+        removeColumn(Column.FLUX_ERR_LO);
+        this.fluxErrValuesLo = fluxErrValuesLo;
+        
+        if (!isEmpty(fluxErrValuesLo))
+            addColumn(PrimitiveArrayColumn.makePrimitiveColumn(
+                Column.FLUX_ERR_LO.getColumnInfo(), (Object) fluxErrValuesLo));
+    }
+    
+    private void removeColumn(Column column) {
+        for (int i=0; i<columns.size(); i++) {
+            if (column.name().equals(getColumnData(i).getColumnInfo().getName())) {
+                columns.remove(i);
+            }
+        }
+    }
+
+    /*
+     * Getters for specific column values, as of now they are only used by the 
+     * unit tests, but we may want to expose this for efficiency at some point.
+     * 
+     */
+    
+    protected double[] getSpecValues() {
+        return specValues;
+    }
+
+    protected double[] getFluxValues() {
+        return fluxValues;
+    }
+
+    protected double[] getSpecErrValues() {
+        return specErrValues;
+    }
+
+    protected double[] getSpecErrValuesLo() {
+        return specErrValuesLo;
+    }
+
+    protected double[] getFluxErrValues() {
+        return fluxErrValues;
+    }
+
+    protected double[] getFluxErrValuesLo() {
+        return fluxErrValuesLo;
+    }
+    
+    /**
+     * Returns whether or not a double array is empty or contains all NaNs.
+     * 
+     */
     private static final boolean isEmpty(double[] data) {
         boolean ret = ArrayUtils.isEmpty(data);
         
@@ -148,25 +267,6 @@ public class SegmentStarTable extends ColumnStarTable {
         }
         
         return true;
-    }
-
-    public void setXUnits(XUnit newUnit) throws UnitsException {
-        specValues = units.convertX(specValues, specUnits, newUnit);
-        specUnits = newUnit;
-    }
-    
-    public void setYUnits(YUnit newUnit) throws UnitsException {
-        fluxValues = units.convertY(fluxValues, specValues, fluxUnits, specUnits, newUnit);
-        fluxUnits = newUnit;
-    }
-    
-    protected Object[] getPointRow(int irow) {
-        return new Object[] {specValues[(int) irow], fluxValues[(int) irow]};
-    }
-
-    @Override
-    public long getRowCount() {
-        return segment.getData().getLength();
     }
 
     /**
