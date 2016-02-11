@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
-import cfa.vo.iris.sed.stil.SegmentStarTable.ColumnName;
+import cfa.vo.iris.sed.stil.SegmentStarTable.Column;
 import uk.ac.starlink.table.StarTable;
 
 public class SegmentLayer {
@@ -78,17 +78,15 @@ public class SegmentLayer {
         this.setInSource(table)
         
             // TODO: put options into enums
-            .setxCol(ColumnName.X_COL.name())
-            .setyCol(ColumnName.Y_COL.name())
-            .setxErrHi(ColumnName.X_ERR_HI.name())
-            .setxErrLo(ColumnName.X_ERR_LO.name())
-            .setyErrHi(ColumnName.Y_ERR_HI.name())
-            .setyErrLo(ColumnName.Y_ERR_LO.name())
+            .setxCol(Column.SPECTRAL_COL.name())
+            .setyCol(Column.FLUX_COL.name())
             
             // Setting default values here
             .setErrorBarType(ErrorBarType.capped_lines)
             .setMarkType(ShapeType.open_circle)
             .setSize(4);
+        
+        
         
         this.showErrorBars = true;
         this.showMarks = true;

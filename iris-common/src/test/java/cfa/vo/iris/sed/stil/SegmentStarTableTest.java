@@ -3,7 +3,7 @@ package cfa.vo.iris.sed.stil;
 import org.junit.Before;
 import org.junit.Test;
 
-import cfa.vo.iris.sed.stil.SegmentStarTable.ColumnName;
+import cfa.vo.iris.sed.stil.SegmentStarTable.Column;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.io.SedFormat;
 import uk.ac.starlink.table.RowSequence;
@@ -33,11 +33,11 @@ public class SegmentStarTableTest {
         
         assertEquals(new Double("6.17E23"), (Double) table.getCell(0, 0), 100);
         assertEquals(new Double("6.17E23"), (Double) table.getRow(0)[0], 100);
-        assertEquals(new Double("5.019E-7"), (Double) table.getCell(1, 4), .00001);
 
-        assertEquals(6, table.getColumnCount());
-        assertEquals(6, table.getColumnAuxDataInfos().size());
-        assertEquals(ColumnName.X_COL.name(), table.getColumnInfo(0).getName());
+        assertEquals(3, table.getColumnCount());
+        assertEquals(Column.SPECTRAL_COL.name(), table.getColumnInfo(0).getName());
+        assertEquals(Column.FLUX_COL.name(), table.getColumnInfo(1).getName());
+        assertEquals(Column.FLUX_ERR_HI.name(), table.getColumnInfo(2).getName());
         
         RowSequence seq = table.getRowSequence();
         assertTrue(seq.next());

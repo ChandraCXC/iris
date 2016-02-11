@@ -27,7 +27,7 @@ import static cfa.vo.iris.test.unit.TestUtils.*;
 import org.junit.Test;
 
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.stil.SerializingStarTableAdapater;
+import cfa.vo.iris.sed.stil.SerializingStarTableAdapter;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
 import cfa.vo.sedlib.Segment;
@@ -37,7 +37,7 @@ public class SedPreferencesTest {
     @Test
     public void testPreferences() throws Exception {
         ExtSed sed = new ExtSed("test");
-        StarTableAdapter<Segment> adapter = new SerializingStarTableAdapater();
+        StarTableAdapter<Segment> adapter = new SerializingStarTableAdapter();
         
         SedPreferences prefs = new SedPreferences(sed, adapter);
         

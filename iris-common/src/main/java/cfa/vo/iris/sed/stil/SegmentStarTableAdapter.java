@@ -19,7 +19,10 @@ package cfa.vo.iris.sed.stil;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import cfa.vo.iris.units.UnitsException;
 import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.common.SedInconsistentException;
+import cfa.vo.sedlib.common.SedNoDataException;
 import uk.ac.starlink.table.StarTable;
 
 public class SegmentStarTableAdapter implements StarTableAdapter<Segment> {
@@ -31,10 +34,15 @@ public class SegmentStarTableAdapter implements StarTableAdapter<Segment> {
         if (cache.containsKey(data)) {
             return cache.get(data);
         }
-        
-        StarTable newTable = new SegmentStarTable(data);
-        cache.put(data, newTable);
-        return newTable;
+
+        StarTable newTable;
+        try {
+            newTable = new SegmentStarTable(data);
+            cache.put(data, newTable);
+            return newTable;
+        } catch (SedNoDataException | UnitsException | SedInconsistentException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
