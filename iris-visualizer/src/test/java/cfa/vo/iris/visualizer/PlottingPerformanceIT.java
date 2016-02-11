@@ -52,7 +52,7 @@ public class PlottingPerformanceIT extends AbstractComponentGUITest {
         return comp;
     }
     
-    @Test(timeout=20000)
+    @Test(timeout=30000)
     public void testReadPerformance() throws Exception {
         
         // Initialize the plotter
