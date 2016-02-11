@@ -21,6 +21,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import uk.ac.starlink.table.ColumnInfo;
@@ -54,33 +55,9 @@ public class SegmentStarTable extends ColumnStarTable {
     
     private static final UnitsManager units = Default.getInstance().getUnitsManager();
     
-    public enum Column {
-        SPECTRAL_COL("X axis values", "iris.spec.value"),
-        SPECTRAL_ERR_HI("X axis error values", "iris.spec.value"),
-        SPECTRAL_ERR_LO("X axis low error values", "iris.spec.value"),
-        FLUX_COL("Y axis values", "iris.flux.value"),
-        FLUX_ERR_HI("Y axis error values", "iris.flux.value"),
-        FLUX_ERR_LO("Y axis low error values", "iris.flux.value");
-        
-        public String description;
-        public String utype;
-        private ColumnInfo columnInfo;
-        
-        private Column(String description, String utype) {
-            this.description = description;
-            this.utype = utype;
-            this.columnInfo = new ColumnInfo(name(), Double.class, description);
-            columnInfo.setUtype(utype);
-        }
-        
-        public ColumnInfo getColumnInfo() {
-            return new ColumnInfo(columnInfo);
-        }
-    }
-    
     public SegmentStarTable(Segment segment) 
             throws SedNoDataException, UnitsException, SedInconsistentException {
-        this(segment, UUID.randomUUID().toString(), 
+        this(segment, null, 
                 units.newXUnits(segment.getSpectralAxisUnits()),
                 units.newYUnits(segment.getFluxAxisUnits()));
     }
@@ -92,6 +69,15 @@ public class SegmentStarTable extends ColumnStarTable {
         this.specUnits = xunit;
         this.fluxUnits = yunit;
         this.setName(id);
+        
+        // Look for a name in the segment if we are not given one
+        if (StringUtils.isBlank(id)) {
+            if (segment.isSetTarget() && segment.getTarget().isSetName()) {
+                setName(segment.getTarget().getName().getValue());
+            } else {
+                setName(UUID.randomUUID().toString());
+            }
+        }
         
         // Add spectral data points
         this.specValues = units.convertX(
@@ -147,7 +133,7 @@ public class SegmentStarTable extends ColumnStarTable {
         try {
             ret = (double[]) segment.getData().getDataValues(utype);
         } catch (SedNoDataException | SedInconsistentException e) {
-            logger.warning("Cannot read data for segment for utype: " + e.getLocalizedMessage());
+            logger.fine("Cannot read data for segment for utype: " + e.getLocalizedMessage());
         }
         return ret;
     }
@@ -181,5 +167,34 @@ public class SegmentStarTable extends ColumnStarTable {
     @Override
     public long getRowCount() {
         return segment.getData().getLength();
+    }
+
+    /**
+     * Column info, descriptions, name, and identifiers for flux and spectral
+     * values in an SED.
+     *
+     */
+    public enum Column {
+        SPECTRAL_COL("X axis values", "iris.spec.value"),
+        SPECTRAL_ERR_HI("X axis error values", "iris.spec.value"),
+        SPECTRAL_ERR_LO("X axis low error values", "iris.spec.value"),
+        FLUX_COL("Y axis values", "iris.flux.value"),
+        FLUX_ERR_HI("Y axis error values", "iris.flux.value"),
+        FLUX_ERR_LO("Y axis low error values", "iris.flux.value");
+        
+        public String description;
+        public String utype;
+        private ColumnInfo columnInfo;
+        
+        private Column(String description, String utype) {
+            this.description = description;
+            this.utype = utype;
+            this.columnInfo = new ColumnInfo(name(), Double.class, description);
+            columnInfo.setUtype(utype);
+        }
+        
+        public ColumnInfo getColumnInfo() {
+            return new ColumnInfo(columnInfo);
+        }
     }
 }

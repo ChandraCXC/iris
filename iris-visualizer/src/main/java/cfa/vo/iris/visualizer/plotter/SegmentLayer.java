@@ -16,16 +16,22 @@
 
 package cfa.vo.iris.visualizer.plotter;
 
+import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import cfa.vo.iris.sed.stil.SegmentStarTable.Column;
 import uk.ac.starlink.table.StarTable;
+import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
 public class SegmentLayer {
+    
+    private static final Logger logger = Logger.getLogger(SegmentLayer.class.getName());
     
     // Override-able Settings
     public static final String SHAPE = "shape";
@@ -73,20 +79,15 @@ public class SegmentLayer {
             throw new InvalidParameterException("star table cannot be null");
         }
         
+        this.setInSource(table);
         this.suffix = '_' + table.getName();
         
-        this.setInSource(table)
-        
-            // TODO: put options into enums
-            .setxCol(Column.SPECTRAL_COL.name())
+        // Setting default values here
+        this.setxCol(Column.SPECTRAL_COL.name())
             .setyCol(Column.FLUX_COL.name())
-            
-            // Setting default values here
             .setErrorBarType(ErrorBarType.capped_lines)
             .setMarkType(ShapeType.open_circle)
             .setSize(4);
-        
-        
         
         this.showErrorBars = true;
         this.showMarks = true;
@@ -114,6 +115,15 @@ public class SegmentLayer {
     
     private void addErrorFields(String suffix, Map<String, Object> prefs) {
 
+        if (StringUtils.isNotBlank(xErrHi))
+            prefs.put(X_ERR_HI + suffix, xErrHi);
+        if (StringUtils.isNotBlank(xErrLo))
+            prefs.put(X_ERR_LO + suffix, xErrLo);
+        if (StringUtils.isNotBlank(yErrHi))
+            prefs.put(Y_ERR_HI + suffix, yErrHi);
+        if (StringUtils.isNotBlank(yErrLo))
+            prefs.put(Y_ERR_LO + suffix, yErrLo);
+        
         prefs.put(TYPE + suffix, LayerType.xyerror.name());
         if (errorShading != null)
             prefs.put(SHADING + suffix, markColor);
@@ -152,16 +162,56 @@ public class SegmentLayer {
         prefs.put(X_COL + suffix, xCol);
         prefs.put(Y_COL + suffix, yCol);
         
-        if (StringUtils.isNotBlank(xErrHi))
-            prefs.put(X_ERR_HI + suffix, xErrHi);
-        if (StringUtils.isNotBlank(xErrLo))
-            prefs.put(X_ERR_LO + suffix, xErrLo);
-        if (StringUtils.isNotBlank(yErrHi))
-            prefs.put(Y_ERR_HI + suffix, yErrHi);
-        if (StringUtils.isNotBlank(yErrLo))
-            prefs.put(Y_ERR_LO + suffix, yErrLo);
         if (size != null)
             prefs.put(SIZE + suffix, size);
+    }
+
+    public StarTable getInSource() {
+        return inSource;
+    }
+    
+    public SegmentLayer setInSource(StarTable table) {
+        if (table == null) {
+            throw new InvalidParameterException("StarTable cannot be null!");
+        }
+        
+        this.inSource = table;
+        
+        // Clear and add table values as necessary.
+        
+        ColumnIdentifier id = new ColumnIdentifier(table);
+        // Add spectral error values if they're available.
+        setxErrHi(null);
+        if (shouldAddErrorColumn(Column.SPECTRAL_ERR_HI, id)) {
+            setxErrHi(Column.SPECTRAL_ERR_HI.name());
+        }
+        setxErrLo(null);
+        if (shouldAddErrorColumn(Column.SPECTRAL_ERR_LO, id)) {
+            setxErrLo(Column.SPECTRAL_ERR_LO.name());
+        }
+        
+        // Add flux error values if they're available.
+        setyErrHi(null);
+        if (shouldAddErrorColumn(Column.FLUX_ERR_HI, id)) {
+            setyErrHi(Column.FLUX_ERR_HI.name());
+        }
+        setyErrLo(null);
+        if (shouldAddErrorColumn(Column.FLUX_ERR_LO, id)) {
+            setyErrLo(Column.FLUX_ERR_LO.name());
+        }
+        return this;
+    }
+    
+    private boolean shouldAddErrorColumn(Column column, ColumnIdentifier id) {
+        try {
+            if (id.getColumnIndex(column.name()) >= 0) {
+                return true;
+            }
+        } catch (IOException e) {
+            // Ignore
+            logger.fine("could not add column " + column.name() + " : " + e.getMessage());
+        }
+        return false;
     }
     
     public String getSuffix() {
@@ -188,19 +238,6 @@ public class SegmentLayer {
 
     public SegmentLayer setShowMarks(boolean showMarks) {
         this.showMarks = showMarks;
-        return this;
-    }
-
-    public StarTable getInSource() {
-        return inSource;
-    }
-
-    public SegmentLayer setInSource(StarTable inSource) {
-        if (inSource == null) {
-            throw new InvalidParameterException("StarTable cannot be null!");
-        }
-        
-        this.inSource = inSource;
         return this;
     }
 
@@ -285,11 +322,14 @@ public class SegmentLayer {
         return this;
     }
 
+    /*
+     * TODO: These setter methods should be made public when we support plotting arbitrary columns.
+     */
     public String getxCol() {
         return xCol;
     }
 
-    public SegmentLayer setxCol(String xCol) {
+    private SegmentLayer setxCol(String xCol) {
         this.xCol = xCol;
         return this;
     }
@@ -298,7 +338,7 @@ public class SegmentLayer {
         return yCol;
     }
 
-    public SegmentLayer setyCol(String yCol) {
+    private SegmentLayer setyCol(String yCol) {
         this.yCol = yCol;
         return this;
     }
@@ -307,7 +347,7 @@ public class SegmentLayer {
         return xErrHi;
     }
 
-    public SegmentLayer setxErrHi(String xErrHi) {
+    private SegmentLayer setxErrHi(String xErrHi) {
         this.xErrHi = xErrHi;
         return this;
     }
@@ -316,7 +356,7 @@ public class SegmentLayer {
         return xErrLo;
     }
 
-    public SegmentLayer setxErrLo(String xErrLo) {
+    private SegmentLayer setxErrLo(String xErrLo) {
         this.xErrLo = xErrLo;
         return this;
     }
@@ -325,7 +365,7 @@ public class SegmentLayer {
         return yErrHi;
     }
 
-    public SegmentLayer setyErrHi(String yErrHi) {
+    private SegmentLayer setyErrHi(String yErrHi) {
         this.yErrHi = yErrHi;
         return this;
     }
@@ -334,7 +374,7 @@ public class SegmentLayer {
         return yErrLo;
     }
 
-    public SegmentLayer setyErrLo(String yErrLo) {
+    private SegmentLayer setyErrLo(String yErrLo) {
         this.yErrLo = yErrLo;
         return this;
     }
