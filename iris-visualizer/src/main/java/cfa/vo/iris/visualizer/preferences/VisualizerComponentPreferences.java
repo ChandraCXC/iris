@@ -18,7 +18,6 @@ package cfa.vo.iris.visualizer.preferences;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -28,11 +27,10 @@ import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SedListener;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.stil.SegmentStarTableAdapter;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
-import cfa.vo.iris.visualizer.plotter.PlotterView;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
+import cfa.vo.iris.visualizer.stil.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
 
 /**
@@ -51,7 +49,7 @@ public class VisualizerComponentPreferences {
         this.ws = ws;
         
         // TODO: change serialization when we have something that works
-        this.adapter = new SegmentStarTableAdapter();
+        this.adapter = new IrisStarTableAdapter();
         
         // Create and add preferences for the SED
         this.sedPreferences = Collections.synchronizedMap(new WeakHashMap<ExtSed, SedPreferences>());

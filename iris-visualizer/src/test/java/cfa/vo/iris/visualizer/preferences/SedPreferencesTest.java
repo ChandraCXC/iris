@@ -18,10 +18,6 @@ package cfa.vo.iris.visualizer.preferences;
 
 import static org.junit.Assert.*;
 
-import java.util.Map;
-
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-
 import static cfa.vo.iris.test.unit.TestUtils.*;
 
 import org.junit.Test;
