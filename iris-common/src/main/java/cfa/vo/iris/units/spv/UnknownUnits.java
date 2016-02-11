@@ -20,8 +20,14 @@ import cfa.vo.iris.units.XUnit;
 import cfa.vo.iris.units.YUnit;
 
 public class UnknownUnits implements XUnit, YUnit {
-    private static final String ERROR = "Cannot convert invalid units";
-
+    private static final String ERROR = "Cannot convert invalid units: ";
+    
+    private String msg;
+    
+    public UnknownUnits(String name) {
+        msg = ERROR + name;
+    }
+    
     @Override
     public boolean isValid() {
         return false;
@@ -39,17 +45,17 @@ public class UnknownUnits implements XUnit, YUnit {
 
     @Override
     public double[] convert(double[] y, double[] x, XUnit xUnit, YUnit toUnit) throws UnitsException {
-        throw new UnitsException(ERROR);
+        throw new UnitsException(msg);
     }
 
     @Override
     public double[] convertErrors(double[] e, double[] y, double[] x, XUnit xUnit, YUnit toUnit) throws UnitsException {
-        throw new UnitsException(ERROR);
+        throw new UnitsException(msg);
     }
 
     @Override
     public double[] convert(double[] x, XUnit toUnit) throws UnitsException {
-        throw new UnitsException(ERROR);
+        throw new UnitsException(msg);
     }
 
 }
