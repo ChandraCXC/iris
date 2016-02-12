@@ -60,6 +60,11 @@ public class VisualizerComponentPreferences {
         // Plotter global preferences
         this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
         
+        // Add SED listener
+        addSedListener();
+    }
+    
+    protected void addSedListener() {
         SedEvent.getInstance().add(new VisualizerSedListener());
     }
     
