@@ -23,10 +23,10 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import cfa.vo.iris.sed.stil.SegmentStarTable.Column;
-import uk.ac.starlink.table.StarTable;
+import cfa.vo.iris.units.UnitsException;
+import cfa.vo.iris.visualizer.stil.IrisStarTable;
 import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
 public class SegmentLayer {
@@ -55,7 +55,7 @@ public class SegmentLayer {
     private boolean showErrorBars;
     private boolean showMarks;
     
-    private StarTable inSource;
+    private IrisStarTable inSource;
     private ErrorBarType errorBarType;
     private ShapeType markType;
     private Integer size;
@@ -73,7 +73,7 @@ public class SegmentLayer {
     private String yErrHi;
     private String yErrLo;
     
-    public SegmentLayer(StarTable table) {
+    public SegmentLayer(IrisStarTable table) {
         
         if (table == null) {
             throw new InvalidParameterException("star table cannot be null");
@@ -165,12 +165,28 @@ public class SegmentLayer {
         if (size != null)
             prefs.put(SIZE + suffix, size);
     }
+    
+    public String getXUnits() {
+        return inSource.getXUnits();
+    }
+    
+    public void setXUnits(String xunits) throws UnitsException {
+        inSource.setXUnits(xunits);
+    }
+    
+    public String getYUnits() {
+        return inSource.getYUnits();
+    }
+    
+    public void setYUnits(String yunits) throws UnitsException {
+        inSource.setYUnits(yunits);
+    }
 
-    public StarTable getInSource() {
+    public IrisStarTable getInSource() {
         return inSource;
     }
     
-    public SegmentLayer setInSource(StarTable table) {
+    public SegmentLayer setInSource(IrisStarTable table) {
         if (table == null) {
             throw new InvalidParameterException("StarTable cannot be null!");
         }

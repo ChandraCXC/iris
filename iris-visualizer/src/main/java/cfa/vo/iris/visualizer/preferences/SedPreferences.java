@@ -26,9 +26,11 @@ import java.util.Map.Entry;
 import org.apache.commons.lang.StringUtils;
 
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.stil.StarTableAdapter;
+import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
+import cfa.vo.iris.visualizer.stil.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.common.SedNoDataException;
 
 /**
  * Maintains visualizer preferences for an SED currently in the 
@@ -37,11 +39,14 @@ import cfa.vo.sedlib.Segment;
  */
 public class SedPreferences {
     
-    StarTableAdapter<Segment> adapter;
+    IrisStarTableAdapter adapter;
     final Map<MapKey, SegmentLayer> segmentPreferences;
     final ExtSed sed;
     
-    public SedPreferences(ExtSed sed, StarTableAdapter<Segment> adapter) {
+    private String xunits;
+    private String yunits;
+    
+    public SedPreferences(ExtSed sed, IrisStarTableAdapter adapter) {
         this.sed = sed;
         this.segmentPreferences = Collections.synchronizedMap(new LinkedHashMap<MapKey, SegmentLayer>());
         this.adapter = adapter;
@@ -101,7 +106,32 @@ public class SedPreferences {
             layer.setSuffix(layer.getSuffix() + " " + count);
         }
         
+        setUnits(seg, layer);
         segmentPreferences.put(me, layer);
+    }
+    
+    /**
+     * Sets x and y units to the given SED if units are not already set.
+     * 
+     */
+    void setUnits(Segment seg, SegmentLayer layer) {
+        try {
+            if (StringUtils.isEmpty(xunits)) {
+                xunits = seg.getSpectralAxisUnits();
+            }
+            if (StringUtils.isEmpty(yunits)) {
+                yunits = seg.getFluxAxisUnits();
+            }
+        } catch (SedNoDataException e) {
+            // ignore;
+        }
+        
+        try {
+            layer.setXUnits(xunits);
+            layer.setYUnits(yunits);
+        } catch (UnitsException e) {
+            throw new RuntimeException(e);
+        }
     }
     
     // Removes any segments that are no longer in the SED
@@ -133,10 +163,31 @@ public class SedPreferences {
                 return false;
             }
         }
-        
         return true;
     }
     
+    public String getXunits() {
+        return xunits;
+    }
+
+    public void setXunits(String xunits) throws UnitsException {
+        this.xunits = xunits;
+        for (SegmentLayer layer : segmentPreferences.values()) {
+            layer.setXUnits(xunits);
+        }
+    }
+
+    public String getYunits() {
+        return yunits;
+    }
+
+    public void setYunits(String yunits) throws UnitsException {
+        this.yunits = yunits;
+        for (SegmentLayer layer : segmentPreferences.values()) {
+            layer.setYUnits(yunits);
+        }
+    }
+
     /**
      * Segment equality is based on flux and spectral axis values, whereas we
      * require the memory location. This is a simple wrapper class for our segment

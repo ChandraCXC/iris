@@ -120,17 +120,19 @@ public class SegmentStarTable extends ColumnStarTable {
     }
 
     // TODO: Make sure this logic makes sense W.R.T. what's in the Units package.
-    public void setXUnits(XUnit newUnit) throws UnitsException {
+    public void setSpecUnits(XUnit newUnit) throws UnitsException {
+        if (newUnit.equals(this.specUnits)) return;
+        
         setSpecValues(units.convertX(specValues, specUnits, newUnit));
         setSpecErrValues(units.convertX(specErrValues, specUnits, newUnit));
         setSpecErrValuesLo(units.convertX(specErrValuesLo, specUnits, newUnit));
         specUnits = newUnit;
         
         // This may change Y values, so update them accordingly.
-        setYUnits(fluxUnits);
+        setFluxUnits(fluxUnits);
     }
     
-    public void setYUnits(YUnit newUnit) throws UnitsException {
+    public void setFluxUnits(YUnit newUnit) throws UnitsException {
         if (specValues == null) return;
         
         if (fluxValues != null) {

@@ -23,9 +23,8 @@ import static cfa.vo.iris.test.unit.TestUtils.*;
 import org.junit.Test;
 
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.stil.SerializingStarTableAdapter;
-import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
+import cfa.vo.iris.visualizer.stil.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
 
 public class SedPreferencesTest {
@@ -33,7 +32,7 @@ public class SedPreferencesTest {
     @Test
     public void testPreferences() throws Exception {
         ExtSed sed = new ExtSed("test");
-        StarTableAdapter<Segment> adapter = new SerializingStarTableAdapter();
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter();
         
         SedPreferences prefs = new SedPreferences(sed, adapter);
         
@@ -72,5 +71,9 @@ public class SedPreferencesTest {
         
         assertNotNull(prefs.getSegmentPreferences(seg2));
         assertNotNull(prefs.getSegmentPreferences(seg2).getInSource());
+        
+        // Units are correct
+        assertEquals(sed.getSegment(0).getFluxAxisUnits(), prefs.getYunits());
+        assertEquals(sed.getSegment(0).getSpectralAxisUnits(), prefs.getXunits());
     }
 }

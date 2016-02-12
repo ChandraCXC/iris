@@ -27,11 +27,9 @@ import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SedListener;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
 import cfa.vo.iris.visualizer.stil.IrisStarTableAdapter;
-import cfa.vo.sedlib.Segment;
 
 /**
  * Single object location for data and preferences needed by the iris visualizer 
@@ -41,7 +39,7 @@ import cfa.vo.sedlib.Segment;
 public class VisualizerComponentPreferences {
     
     PlotPreferences plotPreferences;
-    StarTableAdapter<Segment> adapter;
+    IrisStarTableAdapter adapter;
     final IWorkspace ws;
     final Map<ExtSed, SedPreferences> sedPreferences;
     
@@ -88,7 +86,7 @@ public class VisualizerComponentPreferences {
      * @return
      *  The Segment -> StarTable adapter currently in use in the workspace.
      */
-    public StarTableAdapter<Segment> getAdapter() {
+    public IrisStarTableAdapter getAdapter() {
         return adapter;
     }
     

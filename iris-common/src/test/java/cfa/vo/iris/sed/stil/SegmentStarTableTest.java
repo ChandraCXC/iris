@@ -53,8 +53,8 @@ public class SegmentStarTableTest {
         assertEquals(new Double("6.17E23"), (Double) seq.getRow()[0]);
         
         // Basic unit conversion test
-        table.setXUnits(new XUnits('\u03BC' + "m")); // microns
-        table.setYUnits(new YUnits("ergs/cm**2/s/a"));
+        table.setSpecUnits(new XUnits('\u03BC' + "m")); // microns
+        table.setFluxUnits(new YUnits("ergs/cm**2/s/a"));
         assertEquals(new Double("4.85E-10"), (Double) table.getSpecValues()[0], 1E-12);
         assertEquals(new Double("4.85E-10"), (Double) table.getCell(0, 0), 1E-12);
         
