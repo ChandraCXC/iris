@@ -26,6 +26,8 @@ import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sedlib.common.SedWritingException;
 import cfa.vo.sedlib.common.ValidationError;
 import cfa.vo.sedlib.io.SedFormat;
+import cfa.vo.testdata.TestData;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
@@ -78,7 +80,7 @@ public class SedTest {
 //        s.addAttachment("test", "TEST");
 //        String string = (String) s.getAttachment("test");
 //        Assert.assertEquals("TEST", string);
-//        s.write(getClass().getResource("/test_data/test.vot").getPath(), SedFormat.VOT);
+//        s.write(TestData.class.getResource("test.vot").getPath(), SedFormat.VOT);
      }
 
     public class SedManager extends SedlibSedManager {

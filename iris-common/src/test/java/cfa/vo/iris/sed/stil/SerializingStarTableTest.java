@@ -10,6 +10,7 @@ import org.junit.Test;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
+import cfa.vo.testdata.TestData;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
@@ -23,7 +24,7 @@ public class SerializingStarTableTest {
     
     @Before
     public void setUp() throws Exception {
-        sed = Sed.read(getClass().getResource("/test_data/test.vot").getPath(), SedFormat.VOT);
+        sed = Sed.read(TestData.class.getResource("test.vot").openStream(), SedFormat.VOT);
         assertEquals(1, sed.getNumberOfSegments());
     }
 
