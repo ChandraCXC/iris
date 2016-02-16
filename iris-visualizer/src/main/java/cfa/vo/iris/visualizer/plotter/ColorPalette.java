@@ -23,17 +23,31 @@ import java.util.List;
  * create or return a list of colors.
  * 
  */
-public interface ColorPalette {
+public abstract class ColorPalette {
     /**
      * Get the next available color in the palette
      * @return a color
      */
-    public Color getNextColor();
+    public abstract Color getNextColor();
     
     /**
      * Returns a list of N colors 
      * @param n
      * @return a list of colors
      */
-    public List<Color> createPalette(int n);
+    public abstract List<Color> createPalette(int n);
+    
+    /**
+     * Returns the hexadecimal color code of the supplied color.
+     * @param color
+     * @return a hexadecimal color code
+     * @throws NullPointerException 
+     */
+    public final static String colorToHex(Color color) throws NullPointerException {
+        String hexColor = Integer.toHexString(color.getRGB() & 0xffffff);
+        if (hexColor.length() < 6) {
+            hexColor = "000000".substring(0, 6 - hexColor.length()) + hexColor;
+        }
+        return hexColor;
+    }
 }

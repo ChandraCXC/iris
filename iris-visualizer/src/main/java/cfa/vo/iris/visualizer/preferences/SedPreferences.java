@@ -106,7 +106,7 @@ public class SedPreferences {
         }
         
         // add colors to segment layer
-        String hexColor = HSVColorPalette.toHexString(colors.getNextColor());
+        String hexColor = HSVColorPalette.colorToHex(colors.getNextColor());
         layer.setMarkColor(hexColor);
         
         segmentPreferences.put(me, layer);

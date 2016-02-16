@@ -24,7 +24,7 @@ import java.util.Random;
  *
  * Generate N distinct colors
  */
-public class HSVColorPalette implements ColorPalette {
+public class HSVColorPalette extends ColorPalette {
     
     private Random random = new Random();
     private Color color = new Color(Color.black.getRGB());
@@ -58,6 +58,8 @@ public class HSVColorPalette implements ColorPalette {
     
     /**
      * Returns a new distinct color using the golden rule ratio.
+     * Algorithm adopted from
+     * http://martin.ankerl.com/2009/12/09/how-to-create-random-colors-programmatically/
      * 
      * @return color
      */
@@ -103,13 +105,4 @@ public class HSVColorPalette implements ColorPalette {
         
         return color;
     }
-    
-    public final static String toHexString(Color color) throws NullPointerException {
-        String hexColor = Integer.toHexString(color.getRGB() & 0xffffff);
-        if (hexColor.length() < 6) {
-            hexColor = "000000".substring(0, 6 - hexColor.length()) + hexColor;
-        }
-        return hexColor;
-    }
-
 }
