@@ -103,7 +103,9 @@ public class SedPreferences {
         int count = 0;
         while (!isUniqueLayerSuffix(layer.getSuffix())) {
             count++;
-            layer.setSuffix(layer.getSuffix() + " " + count);
+            String id = layer.getSuffix() + " " + count;
+            layer.setSuffix(id);
+            layer.getInSource().setName(id);
         }
         
         setUnits(seg, layer);
