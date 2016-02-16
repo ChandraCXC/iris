@@ -56,17 +56,6 @@ public class HSVColorPalette implements ColorPalette {
         return colors;
     }
     
-//    public Color getNextColor() {
-//        
-//        // make sure no color is too close to white, yellow, or black
-//        final float hue = random.nextFloat();
-//        // Saturation between 0.1 and 0.3
-//        final float saturation = (random.nextInt(2000) + 1000) / 10000f;
-//        final float luminance = 0.9f;
-//        
-//        return Color.getHSBColor(hue, saturation, luminance);
-//    }
-    
     /**
      * Returns a new distinct color using the golden rule ratio.
      * 
@@ -83,33 +72,34 @@ public class HSVColorPalette implements ColorPalette {
         hue += INVERSE_GOLDEN_RATION;
         hue %= 1;
         
-        // TODO: come up with a better algorithm for distinct colors of 
-        // different saturations and brightnesses. This one gives too
-        // many yellow colors.
+        // TODO: come up with an algorithm for distinct colors of 
+        // different saturations and brightnesses.
         
-        // reset the saturation and brightness
-        // if they get too low
-        if (brightness < BRIGHTNESS_THRESHOLD) {
-            brightness = 1.0;
-        }
-        if (saturation < SATURATION_THRESHOLD) {
-            saturation = 1.0;
-        }
+        brightness = 1.0;
         
-        // Close hues repeat themselves every 6 colors.
-        // when this happens, change the brightness and/or saturation
-        // so that we get colors that are more different from the first set
-        if (index !=0 && index % 12 == 0) {
-            brightness -= 0.25;
-        }
-        
-        // change saturation every 4 brightness decreases
-        if (index != 0 && index % 6 == 0) {
-            saturation -= -0.25;
-        }
-        
-        // counter for hues.
-        index++;
+//        // reset the saturation and brightness
+//        // if they get too low
+//        if (brightness < BRIGHTNESS_THRESHOLD) {
+//            brightness = 1.0;
+//        }
+//        if (saturation < SATURATION_THRESHOLD) {
+//            saturation = 1.0;
+//        }
+//        
+//        // Close hues repeat themselves every 6 colors.
+//        // when this happens, change the brightness and/or saturation
+//        // so that we get colors that are more different from the first set
+//        if (index !=0 && index % 12 == 0) {
+//            brightness -= 0.25;
+//        }
+//        
+//        // change saturation every 4 brightness decreases
+//        if (index != 0 && index % 6 == 0) {
+//            saturation -= -0.25;
+//        }
+//        
+//        // counter for hues.
+//        index++;
         
         return color;
     }
