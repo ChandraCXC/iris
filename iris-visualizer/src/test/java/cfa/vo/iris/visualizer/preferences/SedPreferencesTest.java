@@ -65,6 +65,12 @@ public class SedPreferencesTest {
         SegmentLayer layer2 = prefs.getSegmentPreferences(seg2);
         assertFalse(layer1.getSuffix().equals(layer2.getSuffix()));
         
+        // Check that the colors for each segment are different
+        String color2 = prefs.getSegmentPreferences(seg2).getMarkColor();
+        assertNotEquals(
+                prefs.getSegmentPreferences(seg1).getMarkColor(),
+                prefs.getSegmentPreferences(seg2).getMarkColor());
+        
         // Ensure we get the right startables back
         assertEquals(3, layer1.getInSource().getRowCount());
         assertEquals(3, layer2.getInSource().getRowCount());
@@ -73,6 +79,10 @@ public class SedPreferencesTest {
         sed.remove(seg1);
         prefs.refresh();
         assertEquals(1, prefs.getAllSegmentPreferences().size());
+        
+        // The color for seg2 should still be the same as it was before 
+        // seg1 was removed
+        assertEquals(color2, prefs.getSegmentPreferences(seg2).getMarkColor());
         
         assertNotNull(prefs.getSegmentPreferences(seg2));
         assertNotNull(prefs.getSegmentPreferences(seg2).getInSource());

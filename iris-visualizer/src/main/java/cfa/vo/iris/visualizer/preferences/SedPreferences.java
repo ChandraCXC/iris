@@ -27,6 +27,8 @@ import org.apache.commons.lang.StringUtils;
 
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
+import cfa.vo.iris.visualizer.plotter.ColorPalette;
+import cfa.vo.iris.visualizer.plotter.HSVColorPalette;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
 import cfa.vo.sedlib.Segment;
 
@@ -40,11 +42,13 @@ public class SedPreferences {
     StarTableAdapter<Segment> adapter;
     final Map<MapKey, SegmentLayer> segmentPreferences;
     final ExtSed sed;
+    final ColorPalette colors;
     
     public SedPreferences(ExtSed sed, StarTableAdapter<Segment> adapter) {
         this.sed = sed;
         this.segmentPreferences = Collections.synchronizedMap(new LinkedHashMap<MapKey, SegmentLayer>());
         this.adapter = adapter;
+        this.colors = new HSVColorPalette();
         
         refresh();
     }
@@ -100,6 +104,10 @@ public class SedPreferences {
             count++;
             layer.setSuffix(layer.getSuffix() + " " + count);
         }
+        
+        // add colors to segment layer
+        String hexColor = HSVColorPalette.toHexString(colors.getNextColor());
+        layer.setMarkColor(hexColor);
         
         segmentPreferences.put(me, layer);
     }
