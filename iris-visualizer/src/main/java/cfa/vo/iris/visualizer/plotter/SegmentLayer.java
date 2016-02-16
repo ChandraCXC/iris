@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.apache.commons.lang.StringUtils;
-
 import cfa.vo.iris.sed.stil.SegmentStarTable.Column;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.visualizer.stil.IrisStarTable;
@@ -66,13 +64,6 @@ public class SegmentLayer {
     private Double markColorWeight;
     private Double errorColorWeight;
     
-    private String xCol;
-    private String yCol;
-    private String xErrHi;
-    private String xErrLo;
-    private String yErrHi;
-    private String yErrLo;
-    
     public SegmentLayer(IrisStarTable table) {
         
         if (table == null) {
@@ -83,9 +74,7 @@ public class SegmentLayer {
         this.suffix = '_' + table.getName();
         
         // Setting default values here
-        this.setxCol(Column.SPECTRAL_COL.name())
-            .setyCol(Column.FLUX_COL.name())
-            .setErrorBarType(ErrorBarType.capped_lines)
+        this.setErrorBarType(ErrorBarType.capped_lines)
             .setMarkType(ShapeType.open_circle)
             .setSize(4);
         
@@ -115,14 +104,23 @@ public class SegmentLayer {
     
     private void addErrorFields(String suffix, Map<String, Object> prefs) {
 
-        if (StringUtils.isNotBlank(xErrHi))
-            prefs.put(X_ERR_HI + suffix, xErrHi);
-        if (StringUtils.isNotBlank(xErrLo))
-            prefs.put(X_ERR_LO + suffix, xErrLo);
-        if (StringUtils.isNotBlank(yErrHi))
-            prefs.put(Y_ERR_HI + suffix, yErrHi);
-        if (StringUtils.isNotBlank(yErrLo))
-            prefs.put(Y_ERR_LO + suffix, yErrLo);
+        // Clear and add table values as necessary.
+        
+        // If error columns are available in the underlying star table, the we
+        // add them here.
+        ColumnIdentifier id = new ColumnIdentifier(inSource);
+        if (shouldAddErrorColumn(Column.SPECTRAL_ERR_HI, id)) {
+            prefs.put(X_ERR_HI + suffix, Column.SPECTRAL_ERR_HI.name());
+        }
+        if (shouldAddErrorColumn(Column.SPECTRAL_ERR_LO, id)) {
+            prefs.put(X_ERR_LO + suffix, Column.SPECTRAL_ERR_LO.name());
+        }
+        if (shouldAddErrorColumn(Column.FLUX_ERR_HI, id)) {
+            prefs.put(Y_ERR_HI + suffix, Column.FLUX_ERR_HI.name());
+        }
+        if (shouldAddErrorColumn(Column.FLUX_ERR_LO, id)) {
+            prefs.put(Y_ERR_LO + suffix, Column.FLUX_ERR_LO.name());
+        }
         
         prefs.put(TYPE + suffix, LayerType.xyerror.name());
         if (errorShading != null)
@@ -152,15 +150,9 @@ public class SegmentLayer {
     }
     
     private void addCommonFields(String suffix, Map<String, Object> prefs) {
-        
-        // Required
-        if (StringUtils.isBlank(xCol) || StringUtils.isBlank(yCol)) {
-            throw new RuntimeException("Must define column names for plotting");
-        }
-
         prefs.put(IN + suffix, inSource);
-        prefs.put(X_COL + suffix, xCol);
-        prefs.put(Y_COL + suffix, yCol);
+        prefs.put(X_COL + suffix, Column.SPECTRAL_COL.name());
+        prefs.put(Y_COL + suffix, Column.FLUX_COL.name());
         
         if (size != null)
             prefs.put(SIZE + suffix, size);
@@ -192,29 +184,6 @@ public class SegmentLayer {
         }
         
         this.inSource = table;
-        
-        // Clear and add table values as necessary.
-        
-        ColumnIdentifier id = new ColumnIdentifier(table);
-        // Add spectral error values if they're available.
-        setxErrHi(null);
-        if (shouldAddErrorColumn(Column.SPECTRAL_ERR_HI, id)) {
-            setxErrHi(Column.SPECTRAL_ERR_HI.name());
-        }
-        setxErrLo(null);
-        if (shouldAddErrorColumn(Column.SPECTRAL_ERR_LO, id)) {
-            setxErrLo(Column.SPECTRAL_ERR_LO.name());
-        }
-        
-        // Add flux error values if they're available.
-        setyErrHi(null);
-        if (shouldAddErrorColumn(Column.FLUX_ERR_HI, id)) {
-            setyErrHi(Column.FLUX_ERR_HI.name());
-        }
-        setyErrLo(null);
-        if (shouldAddErrorColumn(Column.FLUX_ERR_LO, id)) {
-            setyErrLo(Column.FLUX_ERR_LO.name());
-        }
         return this;
     }
     
@@ -339,59 +308,7 @@ public class SegmentLayer {
     }
 
     /*
-     * TODO: These setter methods should be made public when we support plotting arbitrary columns.
+     * TODO: Add setter methods for columns that allow users to plot any double column from 
+     * the data star table.
      */
-    public String getxCol() {
-        return xCol;
-    }
-
-    private SegmentLayer setxCol(String xCol) {
-        this.xCol = xCol;
-        return this;
-    }
-
-    public String getyCol() {
-        return yCol;
-    }
-
-    private SegmentLayer setyCol(String yCol) {
-        this.yCol = yCol;
-        return this;
-    }
-
-    public String getxErrHi() {
-        return xErrHi;
-    }
-
-    private SegmentLayer setxErrHi(String xErrHi) {
-        this.xErrHi = xErrHi;
-        return this;
-    }
-
-    public String getxErrLo() {
-        return xErrLo;
-    }
-
-    private SegmentLayer setxErrLo(String xErrLo) {
-        this.xErrLo = xErrLo;
-        return this;
-    }
-
-    public String getyErrHi() {
-        return yErrHi;
-    }
-
-    private SegmentLayer setyErrHi(String yErrHi) {
-        this.yErrHi = yErrHi;
-        return this;
-    }
-
-    public String getyErrLo() {
-        return yErrLo;
-    }
-
-    private SegmentLayer setyErrLo(String yErrLo) {
-        this.yErrLo = yErrLo;
-        return this;
-    }
 }
