@@ -18,7 +18,6 @@ package cfa.vo.iris.visualizer.preferences;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -28,12 +27,9 @@ import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SedListener;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.stil.SegmentStarTableAdapter;
-import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
-import cfa.vo.iris.visualizer.plotter.PlotterView;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
-import cfa.vo.sedlib.Segment;
+import cfa.vo.iris.visualizer.stil.IrisStarTableAdapter;
 
 /**
  * Single object location for data and preferences needed by the iris visualizer 
@@ -43,7 +39,7 @@ import cfa.vo.sedlib.Segment;
 public class VisualizerComponentPreferences {
     
     PlotPreferences plotPreferences;
-    StarTableAdapter<Segment> adapter;
+    IrisStarTableAdapter adapter;
     final IWorkspace ws;
     final Map<ExtSed, SedPreferences> sedPreferences;
     
@@ -51,7 +47,7 @@ public class VisualizerComponentPreferences {
         this.ws = ws;
         
         // TODO: change serialization when we have something that works
-        this.adapter = new SegmentStarTableAdapter();
+        this.adapter = new IrisStarTableAdapter();
         
         // Create and add preferences for the SED
         this.sedPreferences = Collections.synchronizedMap(new WeakHashMap<ExtSed, SedPreferences>());
@@ -62,6 +58,11 @@ public class VisualizerComponentPreferences {
         // Plotter global preferences
         this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
         
+        // Add SED listener
+        addSedListener();
+    }
+    
+    protected void addSedListener() {
         SedEvent.getInstance().add(new VisualizerSedListener());
     }
     
@@ -85,7 +86,7 @@ public class VisualizerComponentPreferences {
      * @return
      *  The Segment -> StarTable adapter currently in use in the workspace.
      */
-    public StarTableAdapter<Segment> getAdapter() {
+    public IrisStarTableAdapter getAdapter() {
         return adapter;
     }
     

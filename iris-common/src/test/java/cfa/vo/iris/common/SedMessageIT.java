@@ -23,7 +23,11 @@ import cfa.vo.iris.test.unit.SAMPClientResource;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
+import cfa.vo.testdata.TestData;
+
 import java.util.logging.Logger;
+
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -43,8 +47,8 @@ public class SedMessageIT {
     public void sedMessageTest() throws Exception {
         clientResource.getSampService().addMessageHandler(new SedHandler());
 
-        ExtSed sed = ExtSed.read(this.getClass().getResource("/test_data/3c273.xml").getFile(), SedFormat.VOT);
-
+        ExtSed sed = ExtSed.read(TestData.class.getResource("3c273.xml").openStream(), SedFormat.VOT);
+        sed.setId("3c273");
         sed.sendSedMessage(sender.getSampService());
 
         int i=0;
@@ -62,6 +66,7 @@ public class SedMessageIT {
 
         Assert.assertEquals("NASA/IPAC Extragalactic Database (NED)", segment.getCuration().getPublisher().getValue());
 
+        logger.info(ReflectionToStringBuilder.toString(sed));
         Assert.assertEquals("3c273", sed.getId());
 
     }

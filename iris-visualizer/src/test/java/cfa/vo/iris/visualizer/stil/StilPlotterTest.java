@@ -42,7 +42,10 @@ public class StilPlotterTest {
     private final VisualizerComponentPreferences preferences;
     
     public StilPlotterTest() {
-        preferences = new VisualizerComponentPreferences(ws);
+        preferences = new VisualizerComponentPreferences(ws) {
+            @Override
+            protected void addSedListener() {}
+        };
         
     }
     
@@ -75,7 +78,7 @@ public class StilPlotterTest {
         // check errorbars shape
         par.setName("errorbar_3C 273_ERROR");
         env.acquireValue(par);
-        assertEquals(par.objectValue(env), "capped_lines");       
+        assertEquals(par.objectValue(env), "capped_lines");
         
         // using reflection to access layers in plot display
         Field layers_ = PlotDisplay.class.getDeclaredField("layers_");
@@ -98,7 +101,7 @@ public class StilPlotterTest {
     public void testAddTwoSegments() throws Exception {
         
         sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
-        sed.addSegment(ExtSed.read(TestData.class.getResource("test300k_VO.fits").openStream(), SedFormat.FITS).getSegment(0));
+        sed.addSegment(ExtSed.read(TestData.class.getResource("test.vot").openStream(), SedFormat.VOT).getSegment(0));
         preferences.update(sed);
 
         StilPlotter plot = new StilPlotter(ws, preferences);
@@ -110,7 +113,7 @@ public class StilPlotterTest {
         layers_.setAccessible(true);
         PlotLayer[] layers = (PlotLayer[]) layers_.get(display);
         
-        // there should be four layers: two for error bars of 3C273 and 300k_VO,
+        // there should be four layers: two for error bars of 3C273 and test,
         // and two for the corresponding (x, y) values.
         assertEquals(ArrayUtils.getLength(layers), 4);
         assertEquals(layers[0].getDataSpec().getSourceTable().getRowCount(), 

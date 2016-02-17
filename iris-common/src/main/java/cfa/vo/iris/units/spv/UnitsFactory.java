@@ -60,7 +60,7 @@ public class UnitsFactory {
         XUnit result = new XUnits(units);
 
         if (!result.isValid()) {
-            result = new UnknownUnits();
+            result = new UnknownUnits(units);
         }
 
         return result;
@@ -82,7 +82,7 @@ public class UnitsFactory {
         YUnit result = new YUnits(units);
 
         if (!result.isValid()) {
-            result = new UnknownUnits();
+            result = new UnknownUnits(units);
         }
 
         return result;

@@ -19,10 +19,6 @@ package cfa.vo.iris.visualizer.plotter;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-
-import cfa.vo.iris.sed.stil.SegmentStarTable.ColumnName;
-
 public class PlotPreferences {
     
     // This is only a small sample of the preferences available in STILTS, for
