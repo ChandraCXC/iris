@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package cfa.vo.iris.sed.stil;
+package cfa.vo.iris.visualizer.plotter;
 
-import uk.ac.starlink.table.StarTable;
-
-public interface StarTableAdapter<T> {
+public enum ShadingType {
+    auto("auto"),
+    flat("flat"),
+    translucent("translevel"),
+    transparent("opaque");
     
-    /**
-     * Takes a data object and returns a StarTable representation of the data for use in a 
-     * stil plotter.
-     */
-    public StarTable convertStarTable(T data);
+    public String name;
+    
+    private ShadingType(String arg) {
+        this.name = arg;
+    }
 }

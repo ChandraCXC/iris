@@ -21,6 +21,7 @@ import javax.swing.JList;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Map;
 import java.awt.Color;
 import java.awt.Component;
 
@@ -45,7 +46,14 @@ import javax.swing.event.ListSelectionListener;
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
+import cfa.vo.iris.visualizer.plotter.SegmentLayer;
+import cfa.vo.iris.visualizer.preferences.SedPreferences;
+import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
+import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
+import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
+import cfa.vo.iris.visualizer.preferences.VisualizerListener;
 import cfa.vo.sedlib.ISegment;
+import cfa.vo.sedlib.Segment;
 import uk.ac.starlink.table.EmptyStarTable;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.gui.StarJTable;
@@ -67,7 +75,7 @@ public class MetadataBrowserView extends JInternalFrame {
     private static final StarTable EMPTY_STARTABLE = new EmptyStarTable();
     
     protected IWorkspace ws;
-    protected StarTableAdapter<ISegment> starTableAdapter;
+    protected final VisualizerComponentPreferences preferences;
     
     protected JList<StarTable> selectedTables;
     protected StarTable selectedStarTable;
@@ -105,9 +113,9 @@ public class MetadataBrowserView extends JInternalFrame {
      * 
      * @throws Exception
      */
-    public MetadataBrowserView(IWorkspace ws, StarTableAdapter<ISegment> adapter) throws Exception {
+    public MetadataBrowserView(IWorkspace ws, VisualizerComponentPreferences preferences) throws Exception {
         this.ws = ws;
-        this.starTableAdapter = adapter;
+        this.preferences = preferences;
         
         setToolTipText(
                 "View and browse metadata for existing SEDs in the plotting window");
@@ -150,6 +158,8 @@ public class MetadataBrowserView extends JInternalFrame {
         selectedTables = new JList<>(new DefaultListModel<StarTable>());
         selectedTables.setName("selectedTables");
         selectedTables.setCellRenderer(starTableCellRenderer);
+        
+        // TODO: Change this for selecting multiple star tables
         selectedTables.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         selectedTables.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -166,6 +176,7 @@ public class MetadataBrowserView extends JInternalFrame {
         segmentListScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         segmentListScrollPane.setBorder(new TitledBorder(
                 new EtchedBorder(EtchedBorder.LOWERED, new Color(0, 0, 0), null), "Selected SED", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+        segmentListScrollPane.setViewportView(selectedTables);
         
         // Primary data table scroll pane setup
         segmentDataScrollPane.setName("segmentDataScrollPane");
@@ -255,6 +266,7 @@ public class MetadataBrowserView extends JInternalFrame {
         mnSelect.add(mntmApplyMask);
         mnSelect.add(mntmNewMenuItem);
         
+        VisualizerChangeEvent.getInstance().add(new MetadataChangeListener());
         reset();
     }
 
@@ -289,8 +301,10 @@ public class MetadataBrowserView extends JInternalFrame {
         model.clear();
         
         // Read all startables to list
+        SedPreferences prefs = preferences.getSelectedSedPreferences();
         for (int i=0; i<selected.getNumberOfSegments(); i++) {
-            model.addElement(starTableAdapter.convertStarTable(selected.getSegment(i)));
+            SegmentLayer layer = prefs.getSegmentPreferences(selected.getSegment(i));
+            model.addElement(layer.getInSource());
         }
         
         segmentListScrollPane.setViewportView(selectedTables);
@@ -320,7 +334,10 @@ public class MetadataBrowserView extends JInternalFrame {
                 int index, boolean isSelected, boolean cellHasFocus) 
         {
             StarTable entry = (StarTable) value;
-            setText(entry.getName());
+            if (entry != null) {
+                setText(entry.getName());
+            }
+            
             setOpaque(true);
             
             if (isSelected) {
@@ -334,5 +351,13 @@ public class MetadataBrowserView extends JInternalFrame {
             return this;
         }
         
+    }
+    
+    private class MetadataChangeListener implements VisualizerListener {
+
+        @Override
+        public void process(ExtSed source, VisualizerCommand payload) {
+            reset();
+        }
     }
 }

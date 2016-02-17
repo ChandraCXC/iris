@@ -14,33 +14,27 @@
  * limitations under the License.
  */
 
-package cfa.vo.iris.sed.stil;
+package cfa.vo.iris.visualizer.stil;
 
-import java.util.Map;
-import java.util.WeakHashMap;
-
+import cfa.vo.iris.sed.stil.SegmentStarTable;
+import cfa.vo.iris.sed.stil.SerializingStarTableAdapter;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import uk.ac.starlink.table.StarTable;
 
-public class SegmentStarTableAdapter implements StarTableAdapter<Segment> {
+public class IrisStarTableAdapter {
     
-    private Map<Segment, StarTable> cache = new WeakHashMap<>();
+    private SerializingStarTableAdapter serializingAdapter = new SerializingStarTableAdapter();
 
-    @Override
-    public StarTable convertStarTable(Segment data) {
-        if (cache.containsKey(data)) {
-            return cache.get(data);
-        }
-
-        StarTable newTable;
+    public IrisStarTable convertStarTable(Segment data) {
         try {
-            newTable = new SegmentStarTable(data);
-            cache.put(data, newTable);
-            return newTable;
-        } catch (SedNoDataException | UnitsException | SedInconsistentException e) {
+            SegmentStarTable segTable = new SegmentStarTable(data);
+            StarTable dataTable = serializingAdapter.convertStarTable(data);
+            
+            return new IrisStarTable(segTable, dataTable);
+        } catch (SedNoDataException | SedInconsistentException | UnitsException e) {
             throw new RuntimeException(e);
         }
     }

@@ -29,7 +29,6 @@ import javax.swing.JPopupMenu;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Collections;
 import java.util.Map;
 
 import javax.swing.JSpinner;
@@ -38,18 +37,15 @@ import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.JTextField;
 import javax.swing.JCheckBox;
 import cfa.vo.iris.IrisApplication;
-import cfa.vo.iris.events.SedCommand;
-import cfa.vo.iris.events.SedEvent;
-import cfa.vo.iris.events.SedListener;
 import cfa.vo.iris.gui.GUIUtils;
-import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.stil.SegmentStarTableAdapter;
-import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserView;
+import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
+import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
+import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
+import cfa.vo.iris.visualizer.preferences.VisualizerListener;
 import cfa.vo.iris.visualizer.stil.StilPlotter;
-import cfa.vo.iris.visualizer.stil.preferences.SegmentLayer;
-import cfa.vo.sedlib.ISegment;
+import cfa.vo.sedlib.Segment;
 import cfa.vo.iris.IWorkspace;
 import javax.swing.JFrame;
 
@@ -59,11 +55,11 @@ public class PlotterView extends JInternalFrame {
     
     private IWorkspace ws;
     private IrisApplication app;
+    private final VisualizerComponentPreferences preferences;
 
     // Plotting Components
     private StilPlotter plotter;
     private JInternalFrame residuals;
-    private StarTableAdapter<ISegment> starTableAdapter;
     private MetadataBrowserView metadataBrowser;
     
     // Buttons, etc.
@@ -113,7 +109,12 @@ public class PlotterView extends JInternalFrame {
      * @param app 
      * @param title
      */
-    public PlotterView(String title, IrisApplication app, IWorkspace ws) throws Exception {
+    public PlotterView(String title, 
+                       IrisApplication app, 
+                       IWorkspace ws,
+                       VisualizerComponentPreferences preferences) 
+                               throws Exception 
+    {
         setTitle(title);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         setSelected(true);
@@ -124,15 +125,13 @@ public class PlotterView extends JInternalFrame {
         setBounds(100, 100, 1096, 800);
         toFront();
         
-        this.starTableAdapter = new SegmentStarTableAdapter();
-        this.metadataBrowser = new MetadataBrowserView(ws, starTableAdapter);
-        
         this.ws = ws;
         this.app = app;
+        this.preferences = preferences;
         
-        // TODO: StarTableAdapters?
-        plotter = new StilPlotter(app, ws, starTableAdapter);
-        residuals = new JInternalFrame();
+        this.metadataBrowser = new MetadataBrowserView(ws, preferences);
+        this.plotter = new StilPlotter(ws, preferences);
+        this.residuals = new JInternalFrame();
         
         initializeComponents();
         initializeMenuItems();
@@ -154,15 +153,15 @@ public class PlotterView extends JInternalFrame {
                 resetPlot(null);
             }
         });
-
-        SedEvent.getInstance().add(new PlotSedListener());
+        
+        VisualizerChangeEvent.getInstance().add(new PlotChangeListener());
     }
 
     public ExtSed getSed() {
         return plotter.getSed();
     }
 
-    public Map<ISegment, SegmentLayer> getSegmentsMap() {
+    public Map<Segment, SegmentLayer> getSegmentsMap() {
         return plotter.getSegmentsMap();
     }
     
@@ -182,7 +181,11 @@ public class PlotterView extends JInternalFrame {
     
     private void resetPlot(ExtSed sed) {
         this.metadataBrowser.reset();
-        this.plotter.reset(sed);
+        // TODO: setting second argument to "false" forces the plot display
+        // to be cached. Do we want this behavior in the future?
+        // Note (jb): tried opening 300k sed with "fals" and "true." Both
+        // produce a .5 second lag in panning the viewer.
+        this.plotter.reset(sed, true);
     }
     
     private static void addPopup(Component component, final JPopupMenu popup) {
@@ -367,11 +370,11 @@ public class PlotterView extends JInternalFrame {
         mntmCoplot = new JMenuItem("Coplot");
         mnView.add(mntmCoplot);
     }
-
-    private class PlotSedListener implements SedListener {
+    
+    private class PlotChangeListener implements VisualizerListener {
 
         @Override
-        public void process(ExtSed source, SedCommand payload) {
+        public void process(ExtSed source, VisualizerCommand payload) {
             resetPlot(source);
         }
     }

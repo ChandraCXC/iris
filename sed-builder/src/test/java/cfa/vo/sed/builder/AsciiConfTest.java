@@ -20,8 +20,8 @@
  */
 package cfa.vo.sed.builder;
 
-import cfa.vo.sed.test.Ws;
-import cfa.vo.sed.test.App;
+import cfa.vo.iris.test.Ws;
+import cfa.vo.iris.test.App;
 
 import java.net.URL;
 

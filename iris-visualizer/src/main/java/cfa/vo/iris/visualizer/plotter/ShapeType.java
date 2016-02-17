@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
-package cfa.vo.iris.sed.stil;
+package cfa.vo.iris.visualizer.plotter;
 
-import uk.ac.starlink.table.StarTable;
-
-public interface StarTableAdapter<T> {
-    
-    /**
-     * Takes a data object and returns a StarTable representation of the data for use in a 
-     * stil plotter.
-     */
-    public StarTable convertStarTable(T data);
+public enum ShapeType {
+    filled_circle,
+    open_circle,
+    cross,
+    x,
+    open_square,
+    open_diamond,
+    open_triangle_up,
+    open_triangle_down,
+    filled_square,
+    filled_diamond,
+    filled_triangle_up,
+    filled_triangle_down;
 }

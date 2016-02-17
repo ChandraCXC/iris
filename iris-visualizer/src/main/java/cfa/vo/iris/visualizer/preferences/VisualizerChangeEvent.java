@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-package cfa.vo.iris.sed.stil;
+package cfa.vo.iris.visualizer.preferences;
 
-import uk.ac.starlink.table.StarTable;
+import cfa.vo.iris.events.GenericEvent;
+import cfa.vo.iris.sed.ExtSed;
 
-public interface StarTableAdapter<T> {
+public class VisualizerChangeEvent
+        extends GenericEvent<ExtSed, VisualizerListener, VisualizerCommand> {
+
+    VisualizerChangeEvent() {}
     
-    /**
-     * Takes a data object and returns a StarTable representation of the data for use in a 
-     * stil plotter.
-     */
-    public StarTable convertStarTable(T data);
+    private static class holder {
+        private static final VisualizerChangeEvent INSTANCE = new VisualizerChangeEvent();
+    }
+
+    public static VisualizerChangeEvent getInstance() {
+        return holder.INSTANCE;
+    }
 }

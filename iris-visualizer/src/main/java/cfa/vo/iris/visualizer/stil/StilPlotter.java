@@ -17,14 +17,13 @@ package cfa.vo.iris.visualizer.stil;
 
 import javax.swing.JPanel;
 import cfa.vo.iris.IWorkspace;
-import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.ISedManager;
 import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.iris.sed.stil.StarTableAdapter;
-import cfa.vo.iris.visualizer.stil.preferences.PlotPreferences;
-import cfa.vo.iris.visualizer.stil.preferences.SegmentLayer;
-import cfa.vo.sedlib.ISegment;
+import cfa.vo.iris.visualizer.plotter.PlotPreferences;
+import cfa.vo.iris.visualizer.plotter.SegmentLayer;
+import cfa.vo.iris.visualizer.preferences.SedPreferences;
+import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
+import cfa.vo.sedlib.Segment;
 import uk.ac.starlink.ttools.plot2.task.PlanePlot2Task;
 import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 import uk.ac.starlink.ttools.task.MapEnvironment;
@@ -40,7 +39,6 @@ import java.awt.Insets;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -52,34 +50,32 @@ public class StilPlotter extends JPanel {
     
     private PlotDisplay display;
     
-    private IrisApplication app;
     private IWorkspace ws;
     private SedlibSedManager sedManager;
     private ExtSed currentSed;
-    private StarTableAdapter<ISegment> adapter;
+    private final VisualizerComponentPreferences preferences;
     
-    // TODO: How can we keep this in sync with the iris application?
-    private Map<ISegment, SegmentLayer> segments;
-    private PlotPreferences plotPreferences;
+    private MapEnvironment env;
     
-    public StilPlotter(IrisApplication app, IWorkspace ws, StarTableAdapter<ISegment> adapter) {
-        this.adapter = adapter;
+    public StilPlotter(IWorkspace ws, VisualizerComponentPreferences preferences) {
         this.ws = ws;
-        this.app = app;
         this.sedManager = (SedlibSedManager) ws.getSedManager();
-        
-        // Use weak key references so that unused segments will be caught by the gc.
-        this.segments = new WeakHashMap<>();
-        this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
+        this.preferences = preferences;
         
         setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
         setBackground(Color.WHITE);
         setLayout(new GridLayout(1, 0, 0, 0));
         
-        reset(null);
+        reset(null, true);
     }
     
-    public void reset(ExtSed sed) {
+    /**
+     * 
+     * @param sed Sed to reset plot to
+     * @param dataMayChange indicates if the data on the plot may change while
+     * while the current display is active.
+     */
+    public void reset(ExtSed sed, boolean dataMayChange) {
         if (display != null) {
             display.removeAll();
             remove(display);
@@ -87,7 +83,12 @@ public class StilPlotter extends JPanel {
         }
         
         try {
-            display = createPlotComponent(sed);
+            // https://github.com/Starlink/starjava/blob/master/ttools/src/main/
+            // uk/ac/starlink/ttools/example/EnvPlanePlotter.java
+            boolean cached =! dataMayChange;
+            display = createPlotComponent(sed, cached);
+        } catch (RuntimeException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -101,11 +102,48 @@ public class StilPlotter extends JPanel {
         return currentSed;
     }
 
-    public Map<ISegment, SegmentLayer> getSegmentsMap() {
-        return Collections.unmodifiableMap(segments);
+    public Map<Segment, SegmentLayer> getSegmentsMap() {
+        return Collections.unmodifiableMap(preferences.getSelectedSedPreferences().getAllSegmentPreferences());
     }
     
-    private PlotDisplay createPlotComponent(ExtSed sed) throws Exception {
+    public PlotDisplay getPlotDisplay() {
+        return display;
+    }
+
+    /**
+     * Get the value of env
+     *
+     * @return the value of env
+     */
+    protected MapEnvironment getEnv() {
+        return env;
+    }
+
+    /**
+     * 
+     * @param env Plot display environment to use 
+     * @param cached If true, cache the environment. Should be false if the data
+     * might change.
+     * @return PlotDisplay
+     * @throws Exception 
+     */
+    protected PlotDisplay createPlotComponent(MapEnvironment env, boolean cached) throws Exception {
+        
+        logger.log(Level.FINE, "plot environment:");
+        logger.log(Level.FINE, ReflectionToStringBuilder.toString(env));
+        
+        return new PlanePlot2Task().createPlotComponent(env, cached);
+    }
+    
+    /**
+     * 
+     * @param sed the SED to plot
+     * @param cached If true, cache the environment. Should be false if the data
+     * might change.
+     * @return
+     * @throws Exception 
+     */
+    protected PlotDisplay createPlotComponent(ExtSed sed, boolean cached) throws Exception {
         logger.info("Creating new plot from selected SED");
 
         if (sed == null) {
@@ -113,7 +151,7 @@ public class StilPlotter extends JPanel {
         }
         this.currentSed = sed;
         
-        MapEnvironment env = new MapEnvironment();
+        env = new MapEnvironment();
         env.setValue("type", "plot2plane");
         env.setValue("insets", new Insets(50, 80, 50, 50)); 
         // TODO: force numbers on Y axis to only be 3-5 digits long. Keeps
@@ -122,8 +160,9 @@ public class StilPlotter extends JPanel {
         // on the plot.
         
         // Add high level plot preferences
-        for (String key : plotPreferences.getPreferences().keySet()) {
-            env.setValue(key, plotPreferences.getPreferences().get(key));
+        PlotPreferences pp = preferences.getPlotPreferences();
+        for (String key : pp.getPreferences().keySet()) {
+            env.setValue(key, pp.getPreferences().get(key));
         }
         
         if (sed != null) {
@@ -134,26 +173,20 @@ public class StilPlotter extends JPanel {
             addSegmentLayers(sed, env);
         }
         
-        logger.log(Level.FINE, "plot environment:");
-        logger.log(Level.FINE, ReflectionToStringBuilder.toString(env));
-        
-        return new PlanePlot2Task().createPlotComponent(env, true);
+        return createPlotComponent(env, cached);
     }
     
-    // TODO: Preferences, etc....
     private void addSegmentLayers(ExtSed sed, MapEnvironment env) throws IOException {
+        if (sed == null) {
+            logger.info("No SED selected, returning empty plot");
+            return;
+        }
         
         logger.info(String.format("Plotting SED with %s segments...", sed.getNamespace()));
         
-        for (int i=0; i<sed.getNumberOfSegments(); ++i) {
-            ISegment segment = sed.getSegment(i);
-            
-            if (!segments.containsKey(segment)) {
-                segments.put(segment, new SegmentLayer(adapter.convertStarTable(segment)));
-            }
-            
-            SegmentLayer layer = segments.get(segment);
-            
+        SedPreferences prefs = preferences.getSedPreferences(sed);
+        for (int i=0; i<sed.getNumberOfSegments(); i++) {
+            SegmentLayer layer = prefs.getSegmentPreferences(sed.getSegment(i));
             for (String key : layer.getPreferences().keySet()) {
                 env.setValue(key, layer.getPreferences().get(key));
             }
