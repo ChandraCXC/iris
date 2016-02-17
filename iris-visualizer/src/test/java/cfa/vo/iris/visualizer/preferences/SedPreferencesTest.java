@@ -26,6 +26,8 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
 import cfa.vo.iris.visualizer.stil.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.Target;
+import cfa.vo.sedlib.TextParam;
 
 public class SedPreferencesTest {
     
@@ -75,5 +77,38 @@ public class SedPreferencesTest {
         // Units are correct
         assertEquals(sed.getSegment(0).getFluxAxisUnits(), prefs.getYunits());
         assertEquals(sed.getSegment(0).getSpectralAxisUnits(), prefs.getXunits());
+    }
+    
+    @Test
+    public void testSuffixesWithSameTargetNames() throws Exception {
+        ExtSed sed = new ExtSed("test");
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter();
+        
+        SedPreferences prefs = new SedPreferences(sed, adapter);
+        
+        // create two segments with the same Target name
+        Target targ = new Target();
+        targ.setName(new TextParam("my segment"));
+        
+        Segment seg1 = createSampleSegment();
+        seg1.setTarget(targ);
+        Segment seg2 = createSampleSegment();
+        seg2.setTarget(targ);
+        
+        sed.addSegment(seg1);
+        sed.addSegment(seg2);
+        
+        prefs.refresh();
+        assertEquals("_my segment", prefs.getSegmentPreferences(seg1).getSuffix());
+        assertEquals("_my segment 1", prefs.getSegmentPreferences(seg2).getSuffix());
+        
+        // add another segment of the same target name
+        // suffix number should go up 1
+        Segment seg3 = createSampleSegment();
+        seg3.setTarget(targ);
+        sed.addSegment(seg3);
+        
+        prefs.refresh();
+        assertEquals("_my segment 2", prefs.getSegmentPreferences(seg3).getSuffix());
     }
 }

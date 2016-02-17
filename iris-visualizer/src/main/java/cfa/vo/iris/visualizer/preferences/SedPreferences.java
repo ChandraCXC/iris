@@ -103,6 +103,12 @@ public class SedPreferences {
         int count = 0;
         while (!isUniqueLayerSuffix(layer.getSuffix())) {
             count++;
+            String suffix = layer.getSuffix();
+            
+            // increment the suffix count
+            if (Character.isDigit(suffix.charAt(suffix.length()-1))){
+                layer.setSuffix(suffix.substring(0, suffix.lastIndexOf(" ")));
+            }
             String id = layer.getSuffix() + " " + count;
             layer.setSuffix(id);
             layer.getInSource().setName(id);
