@@ -375,7 +375,12 @@ public class PlotterView extends JInternalFrame {
 
         @Override
         public void process(ExtSed source, VisualizerCommand payload) {
-            resetPlot(source);
+            if (VisualizerCommand.RESET.equals(payload)) {
+                resetPlot(source);
+            }
+            else if (VisualizerCommand.REDRAW.equals(payload)) {
+                
+            }
         }
     }
 }

@@ -80,6 +80,9 @@ public class SedPreferences {
         return segmentPreferences.get(new MapKey(seg));
     }
     
+    /**
+     * Reserializes all segments within the sed.
+     */
     void refresh() {
         for (int i=0; i < sed.getNumberOfSegments(); i++) {
             addSegment(sed.getSegment(i));
@@ -92,6 +95,10 @@ public class SedPreferences {
         segmentPreferences.clear();
     }
     
+    /**
+     * Add a segment to the sed preferences map.
+     * @param seg
+     */
     void addSegment(Segment seg) {
         
         MapKey me = new MapKey(seg);
@@ -105,18 +112,13 @@ public class SedPreferences {
         // Ensure that the layer has a unique identifier in the list of segments
         SegmentLayer layer = new SegmentLayer(adapter.convertStarTable(seg));
         int count = 0;
-        while (!isUniqueLayerSuffix(layer.getSuffix())) {
+        String id = layer.getSuffix();
+        while (!isUniqueLayerSuffix(id)) {
             count++;
-            String suffix = layer.getSuffix();
-            
-            // increment the suffix count
-            if (Character.isDigit(suffix.charAt(suffix.length()-1))){
-                layer.setSuffix(suffix.substring(0, suffix.lastIndexOf(" ")));
-            }
-            String id = layer.getSuffix() + " " + count;
-            layer.setSuffix(id);
-            layer.getInSource().setName(id);
+            id = layer.getSuffix() + " " + count;
         }
+        layer.setSuffix(id);
+        layer.getInSource().setName(id);
         
         // add colors to segment layer
         String hexColor = ColorPalette.colorToHex(colors.getNextColor());
@@ -125,6 +127,15 @@ public class SedPreferences {
         setUnits(seg, layer);
         
         segmentPreferences.put(me, layer);
+    }
+    
+    /**
+     * Removes a segment from the sed preferences map.
+     * @param segment
+     */
+    void removeSegment(Segment segment) {
+        MapKey me = new MapKey(segment);
+        segmentPreferences.remove(me);
     }
     
     /**

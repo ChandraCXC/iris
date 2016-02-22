@@ -357,7 +357,12 @@ public class MetadataBrowserView extends JInternalFrame {
 
         @Override
         public void process(ExtSed source, VisualizerCommand payload) {
-            reset();
+            if (VisualizerCommand.RESET.equals(payload)) {
+                reset();
+            }
+            else if (VisualizerCommand.REDRAW.equals(payload)) {
+                setSedId();
+            }
         }
     }
 }

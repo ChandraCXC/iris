@@ -44,7 +44,7 @@ public class StilPlotterTest {
     public StilPlotterTest() {
         preferences = new VisualizerComponentPreferences(ws) {
             @Override
-            protected void addSedListener() {}
+            protected void addSedListeners() {}
         };
         
     }
