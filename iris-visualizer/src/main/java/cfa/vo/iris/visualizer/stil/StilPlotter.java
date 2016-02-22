@@ -147,6 +147,11 @@ public class StilPlotter extends JPanel {
         display.repaint();
     }
     
+    /**
+     * Sets both axes to log or linear space.
+     * @param arg set axes to logarithmic space if "true," and linear space
+     * if "false."
+     */
     public void setLogAxes(boolean arg) {
         setupForPlotDisplayChange();
         
@@ -174,8 +179,75 @@ public class StilPlotter extends JPanel {
 //        display.repaint();
     }
     
-    public void setLogAxes(String axis, boolean log) {
-        setupForPlotDisplayChange();
+    /**
+     * Sets the specified axis to logarithmic space. This will switch the
+     * unspecified axis to linear space. If you want to make the X and Y axes'
+     * spacing independent of each other, use 
+     * setLogAxis(String axis, boolean log).
+     * @param axis the specified axis to convert to logarithmic space. 
+     */
+    public void setLogAxis(String axis) {
+        
+        try {
+            switch (axis) {
+                
+                case PlotPreferences.X_LOG:
+                    
+                    // if plot axes are in the right spacing, return.
+                    if (preferences.getPlotPreferences().getXlog() &&
+                            !preferences.getPlotPreferences().getYlog()) {
+                        return;
+                    }
+                    
+                    preferences.getPlotPreferences().setXlog(true);
+                    env.setValue(PlotPreferences.X_LOG, true);
+                    preferences.getPlotPreferences().setYlog(false);
+                    env.setValue(PlotPreferences.Y_LOG, false);
+                    break;
+                
+                case PlotPreferences.Y_LOG:
+                    
+                    // if plot axes are in the right spacing, return.
+                    if (preferences.getPlotPreferences().getYlog() &&
+                            !preferences.getPlotPreferences().getXlog()) {
+                        return;
+                    }
+                    
+                    preferences.getPlotPreferences().setYlog(true);
+                    env.setValue(PlotPreferences.Y_LOG, true);
+                    preferences.getPlotPreferences().setXlog(false);
+                    env.setValue(PlotPreferences.X_LOG, false);
+                    break;
+                
+                default:
+                    throw new IOException("Invalid axis specified. "
+                            + "Must be a PlotPreferences enum.");
+            }
+            
+            // don't move this. If the function returns before the preferences 
+            // are updated, then the display will remain null.
+            setupForPlotDisplayChange();
+            
+            display = createPlotComponent(env, false);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        
+        updatePlotDisplay();
+    }
+    
+    /**
+     * Sets the specified axis to logarithmic or linear space. Good to use if 
+     * you make the X and Y axis spacing independent from each other. If you 
+     * want to make only the X or Y axis logarithmic, use 
+     * setLogAxes(String axis, boolean log).
+     * @param axis the specified axis. 
+     * @param log set axis to logarithmic space if "true," and linear space
+     * if "false."
+     */
+    public void setLogAxis(String axis, boolean log) {
         
         try {
             switch (axis) {
@@ -189,7 +261,16 @@ public class StilPlotter extends JPanel {
                     preferences.getPlotPreferences().setYlog(log);
                     env.setValue(PlotPreferences.Y_LOG, log);
                     break;
+                
+                default:
+                    throw new IOException("Invalid axis specified. "
+                            + "Must be a PlotPreferences enum.");
             }
+            
+            // don't move this. If the exception is thrown before the 
+            // preferences are updated, then the display will remain null.
+            setupForPlotDisplayChange();
+            
             display = createPlotComponent(env, false);
         } catch (RuntimeException e) {
             throw e;
