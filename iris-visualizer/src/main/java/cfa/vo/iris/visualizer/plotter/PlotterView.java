@@ -47,9 +47,16 @@ import cfa.vo.iris.visualizer.preferences.VisualizerListener;
 import cfa.vo.iris.visualizer.stil.StilPlotter;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.iris.IWorkspace;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.ButtonGroup;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
+import javax.swing.JRadioButtonMenuItem;
 
 public class PlotterView extends JInternalFrame {
+    
+    private static final Logger logger = Logger.getLogger(StilPlotter.class.getName());
     
     private static final long serialVersionUID = 1L;
     
@@ -91,15 +98,13 @@ public class PlotterView extends JInternalFrame {
     private JMenuItem mntmSomething;
     private JMenu mnView;
     private JMenu mnPlotType;
-    private JMenu mnLog;
-    private JMenuItem mntmRegularLog;
-    private JMenuItem mntmExcendedLog;
-    private JMenuItem mntmLinear;
-    private JMenuItem mntmXlog;
-    private JMenuItem mntmYlog;
-    private JMenuItem mntmErrorBars;
-    private JMenuItem mntmAutofixed;
-    private JMenuItem mntmGridOnoff;
+    private JRadioButtonMenuItem mntmLog;
+    private JRadioButtonMenuItem mntmLinear;
+    private JRadioButtonMenuItem mntmXlog;
+    private JRadioButtonMenuItem mntmYlog;
+    private JCheckBoxMenuItem mntmErrorBars;
+    private JCheckBoxMenuItem mntmAutofixed;
+    private JCheckBoxMenuItem mntmGridOnOff;
     private JMenuItem mntmCoplot;
     
 
@@ -108,6 +113,8 @@ public class PlotterView extends JInternalFrame {
      * @param ws 
      * @param app 
      * @param title
+     * @param preferences
+     * @throws java.lang.Exception
      */
     public PlotterView(String title, 
                        IrisApplication app, 
@@ -149,8 +156,71 @@ public class PlotterView extends JInternalFrame {
         
         // Action for resetting plot
         btnReset.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 resetPlot(null);
+            }
+        });
+        
+        // Action to set linear plotting
+        mntmLinear.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mntmLinear.setSelected(true);
+                makeLinear();
+            }
+        });
+        
+        // Action to set log plotting
+        mntmLog.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mntmLog.setSelected(true);
+                makeLog();
+            }
+        });
+        
+        // Action to set x-axis to log
+        // TODO: this should be a toggle instead of always setting the axis
+        // to log
+        mntmXlog.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mntmXlog.setSelected(true);
+                //boolean on = !PlotterView.this.preferences.getPlotPreferences().getXlog();
+                makeXLog(true);
+            }
+        });
+        
+        // Action to set the y-axis to log
+        // TODO: this should be a toggle instead of always setting the axis
+        // to log
+        mntmYlog.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mntmYlog.setSelected(true);
+                //boolean on = !PlotterView.this.preferences.getPlotPreferences().getYlog();
+                makeYLog(true);
+            }
+        });
+        
+        // Action to toggle grid on/off
+        mntmGridOnOff.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean on = !PlotterView.this.preferences.getPlotPreferences().getShowGrid();
+                mntmGridOnOff.setSelected(on);
+                setGridOn(on);
+            }
+        });
+        
+        // Action to fix or unfix the plot viewport
+        // TODO: currently not implemented
+        mntmAutofixed.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean fixed = !PlotterView.this.preferences.getPlotPreferences().getFixed();
+                setFixedViewPort(fixed);
             }
         });
         
@@ -340,35 +410,71 @@ public class PlotterView extends JInternalFrame {
         mnPlotType = new JMenu("Plot Type");
         mnView.add(mnPlotType);
         
-        mnLog = new JMenu("Log");
-        mnPlotType.add(mnLog);
+        mntmLog = new JRadioButtonMenuItem("Log");
+        mnPlotType.add(mntmLog);
         
-        mntmRegularLog = new JMenuItem("Regular Log");
-        mnLog.add(mntmRegularLog);
-        
-        mntmExcendedLog = new JMenuItem("Extended Log");
-        mnLog.add(mntmExcendedLog);
-        
-        mntmLinear = new JMenuItem("Linear");
+        mntmLinear = new JRadioButtonMenuItem("Linear");
         mnPlotType.add(mntmLinear);
         
-        mntmXlog = new JMenuItem("xLog");
+        mntmXlog = new JRadioButtonMenuItem("xLog");
         mnPlotType.add(mntmXlog);
         
-        mntmYlog = new JMenuItem("yLog");
+        mntmYlog = new JRadioButtonMenuItem("yLog");
         mnPlotType.add(mntmYlog);
         
-        mntmErrorBars = new JMenuItem("Error Bars");
+        // plot type button group. Log space initially selected.
+        // TODO: should be taken from PlotPreferences.
+        ButtonGroup plotTypeGroup = new ButtonGroup();
+        plotTypeGroup.add(mntmLog);
+        plotTypeGroup.setSelected(mntmLog.getModel(), true);
+        plotTypeGroup.add(mntmLinear);
+        plotTypeGroup.add(mntmXlog);
+        plotTypeGroup.add(mntmYlog);
+        
+        mntmErrorBars = new JCheckBoxMenuItem("Error Bars");
+        mntmErrorBars.setSelected(true); // errors turned on automatically
         mnView.add(mntmErrorBars);
         
-        mntmAutofixed = new JMenuItem("Auto/Fixed");
+        mntmAutofixed = new JCheckBoxMenuItem("Auto/Fixed");
+        mntmAutofixed.setSelected(true);
+        // TODO: enable once auto/fix functionality is implemented
+        mntmAutofixed.setEnabled(false);
         mnView.add(mntmAutofixed);
         
-        mntmGridOnoff = new JMenuItem("Grid on/off");
-        mnView.add(mntmGridOnoff);
+        mntmGridOnOff = new JCheckBoxMenuItem("Grid on/off");
+        mntmGridOnOff.setSelected(this.preferences.getPlotPreferences().getShowGrid());
+        mnView.add(mntmGridOnOff);
         
-        mntmCoplot = new JMenuItem("Coplot");
+        mntmCoplot = new JMenuItem("Coplot...");
         mnView.add(mntmCoplot);
+    }
+    
+    private void makeLinear() {
+        plotter.setLogAxes(false);
+    }
+    
+    private void makeLog() {
+        plotter.setLogAxes(true);
+    }
+    
+    private void makeXLog(boolean arg) {
+        plotter.setLogAxis(PlotPreferences.X_LOG);
+    }
+    
+    private void makeYLog(boolean arg) {
+        plotter.setLogAxis(PlotPreferences.Y_LOG);
+    }
+    
+    private void setGridOn(boolean on) {
+        plotter.setGridOn(on);
+    }
+    
+    private void setFixedViewPort(boolean fixed) {
+        try {
+            plotter.setFixed(fixed);
+        } catch (UnsupportedOperationException ex) {
+            logger.log(Level.WARNING, ex.getMessage());
+        }
     }
     
     private class PlotChangeListener implements VisualizerListener {

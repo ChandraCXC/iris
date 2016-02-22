@@ -41,6 +41,9 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import uk.ac.starlink.ttools.plot.PlotState;
+import uk.ac.starlink.ttools.plot.SurfacePlot;
+import uk.ac.starlink.ttools.plot2.geom.PlaneSurface;
 
 public class StilPlotter extends JPanel {
     
@@ -76,11 +79,7 @@ public class StilPlotter extends JPanel {
      * while the current display is active.
      */
     public void reset(ExtSed sed, boolean dataMayChange) {
-        if (display != null) {
-            display.removeAll();
-            remove(display);
-            display = null; // just to be safe
-        }
+        setupForPlotDisplayChange();
         
         try {
             // https://github.com/Starlink/starjava/blob/master/ttools/src/main/
@@ -93,11 +92,204 @@ public class StilPlotter extends JPanel {
             throw new RuntimeException(e);
         }
         
-        add(display, BorderLayout.CENTER);
-        display.revalidate();
-        display.repaint();
+        updatePlotDisplay();
     }
-
+    
+    /**
+     * Sets both axes to log or linear space.
+     * @param arg set axes to logarithmic space if "true," and linear space
+     * if "false."
+     */
+    public void setLogAxes(boolean arg) {
+        setupForPlotDisplayChange();
+        
+        try {
+            preferences.getPlotPreferences().setXlog(arg);
+            preferences.getPlotPreferences().setYlog(arg);
+            env.setValue(PlotPreferences.X_LOG, arg);
+            env.setValue(PlotPreferences.Y_LOG, arg);
+            display = createPlotComponent(env, false);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        
+        updatePlotDisplay();
+        
+        // what I would like to do is get the SurfacePlot from the display
+        // so that we have a "live" plot with a state.
+        // PlaneSurface surface = (PlaneSurface) display.getSurface();
+//        SurfacePlot surface = (SurfacePlot) display.getSurface();
+//        surface.getSurface()..setLogFlags(new boolean[] {x, y});
+//        plott.setState(state);
+//        display.revalidate();
+//        display.repaint();
+    }
+    
+    /**
+     * Sets the specified axis to logarithmic space. This will switch the
+     * unspecified axis to linear space. If you want to make the X and Y axes'
+     * spacing independent of each other, use 
+     * setLogAxis(String axis, boolean log).
+     * @param axis the specified axis to convert to logarithmic space. 
+     */
+    public void setLogAxis(String axis) {
+        
+        try {
+            switch (axis) {
+                
+                case PlotPreferences.X_LOG:
+                    
+                    // if plot axes are in the right spacing, return.
+                    if (preferences.getPlotPreferences().getXlog() &&
+                            !preferences.getPlotPreferences().getYlog()) {
+                        return;
+                    }
+                    
+                    preferences.getPlotPreferences().setXlog(true);
+                    env.setValue(PlotPreferences.X_LOG, true);
+                    preferences.getPlotPreferences().setYlog(false);
+                    env.setValue(PlotPreferences.Y_LOG, false);
+                    break;
+                
+                case PlotPreferences.Y_LOG:
+                    
+                    // if plot axes are in the right spacing, return.
+                    if (preferences.getPlotPreferences().getYlog() &&
+                            !preferences.getPlotPreferences().getXlog()) {
+                        return;
+                    }
+                    
+                    preferences.getPlotPreferences().setYlog(true);
+                    env.setValue(PlotPreferences.Y_LOG, true);
+                    preferences.getPlotPreferences().setXlog(false);
+                    env.setValue(PlotPreferences.X_LOG, false);
+                    break;
+                
+                default:
+                    throw new IOException("Invalid axis specified. "
+                            + "Must be a PlotPreferences enum.");
+            }
+            
+            // don't move this. If the function returns before the preferences 
+            // are updated, then the display will remain null.
+            setupForPlotDisplayChange();
+            
+            display = createPlotComponent(env, false);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        
+        updatePlotDisplay();
+    }
+    
+    /**
+     * Sets the specified axis to logarithmic or linear space. Good to use if 
+     * you make the X and Y axis spacing independent from each other. If you 
+     * want to make only the X or Y axis logarithmic, use 
+     * setLogAxes(String axis, boolean log).
+     * @param axis the specified axis. 
+     * @param log set axis to logarithmic space if "true," and linear space
+     * if "false."
+     */
+    public void setLogAxis(String axis, boolean log) {
+        
+        try {
+            switch (axis) {
+                
+                case PlotPreferences.X_LOG:
+                    preferences.getPlotPreferences().setXlog(log);
+                    env.setValue(PlotPreferences.X_LOG, log);
+                    break;
+                
+                case PlotPreferences.Y_LOG:
+                    preferences.getPlotPreferences().setYlog(log);
+                    env.setValue(PlotPreferences.Y_LOG, log);
+                    break;
+                
+                default:
+                    throw new IOException("Invalid axis specified. "
+                            + "Must be a PlotPreferences enum.");
+            }
+            
+            // don't move this. If the exception is thrown before the 
+            // preferences are updated, then the display will remain null.
+            setupForPlotDisplayChange();
+            
+            display = createPlotComponent(env, false);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        
+        updatePlotDisplay();
+    }
+    
+    public void setGridOn(boolean on) {
+        setupForPlotDisplayChange();
+        
+        try {
+            preferences.getPlotPreferences().setShowGrid(on);
+            env.setValue(PlotPreferences.GRID, on);
+            display = createPlotComponent(env, false);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        
+        updatePlotDisplay();
+    }
+    
+    /**
+     * Fix the plot viewport, or let the viewport automatically resize itself
+     * when updated. Zooming and panning are disabled if the viewport is fixed.
+     * @param arg set to "true" to fix the viewport, "false" to let it resize
+     * with updates.
+     */
+    public void setFixed(boolean arg) {
+        
+        throw new UnsupportedOperationException("Fixed viewport not yet implemented.");
+        
+//        try {
+//            double xmin;
+//            double xmax;
+//            double ymin;
+//            double ymax;
+//            if (arg) {
+//                xmin = display.get;
+//                xmax = display.getSurface().getPlotBounds().getMaxX();
+//                ymin = display.getSurface().getPlotBounds().getMinY();
+//                ymax = display.getSurface().getPlotBounds().getMaxY();
+//            } else {
+//                xmin = 0;
+//                xmax = 1;
+//                ymin = 0;
+//                ymax = 1;
+//            }
+//            preferences.getPlotPreferences().setFixed(arg);
+//            preferences.getPlotPreferences().setXmax(xmax);
+//            preferences.getPlotPreferences().setYmax(ymax);
+//            preferences.getPlotPreferences().setXmin(xmin);
+//            preferences.getPlotPreferences().setYmin(ymin);
+//            env.setValue(PlotPreferences.NAV_AXES_XY, arg);
+//            
+//            setupForPlotDisplayChange();
+//            
+//            display = createPlotComponent(env, false);
+//        } catch (RuntimeException e) {
+//            throw e;
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//        
+//        updatePlotDisplay();
+    }
+    
     public ExtSed getSed() {
         return currentSed;
     }
@@ -191,5 +383,26 @@ public class StilPlotter extends JPanel {
                 env.setValue(key, layer.getPreferences().get(key));
             }
         }
+    }
+    
+    /**
+     * Sets PlotDisplay up for new changes, like changing a SED color,
+     * switching from linear to logarithmic plotting, etc.
+     */
+    private void setupForPlotDisplayChange() {
+        if (display != null) {
+            display.removeAll();
+            remove(display);
+            display = null; // just to be safe
+        }
+    }
+    
+    /**
+     * Add and update the PlotDisplay.
+     */
+    private void updatePlotDisplay() {
+        add(display, BorderLayout.CENTER);
+        display.revalidate();
+        display.repaint();
     }
 }
