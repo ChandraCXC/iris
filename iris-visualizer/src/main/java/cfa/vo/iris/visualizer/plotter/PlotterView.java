@@ -47,9 +47,13 @@ import cfa.vo.iris.visualizer.preferences.VisualizerListener;
 import cfa.vo.iris.visualizer.stil.StilPlotter;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.iris.IWorkspace;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 public class PlotterView extends JInternalFrame {
+    
+    private static final Logger logger = Logger.getLogger(StilPlotter.class.getName());
     
     private static final long serialVersionUID = 1L;
     
@@ -152,6 +156,63 @@ public class PlotterView extends JInternalFrame {
             public void actionPerformed(ActionEvent e) {
                 resetPlot(null);
                 metadataBrowser.resetData();
+            }
+        });
+        
+        // Action to set linear plotting
+        mntmLinear.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                makeLinear();
+            }
+        });
+        
+        // Action to set log plotting
+        mntmRegularLog.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                makeLog();
+            }
+        });
+        
+        // Action to set x-axis to log
+        // TODO: this should be a toggle instead of always setting the axis
+        // to log
+        mntmXlog.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean on = !PlotterView.this.preferences.getPlotPreferences().getXlog();
+                makeXLog(on);
+            }
+        });
+        
+        // Action to set the y-axis to log
+        // TODO: this should be a toggle instead of always setting the axis
+        // to log
+        mntmYlog.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean on = !PlotterView.this.preferences.getPlotPreferences().getYlog();
+                makeYLog(on);
+            }
+        });
+        
+        // Action to toggle grid on/off
+        mntmGridOnoff.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean on = !PlotterView.this.preferences.getPlotPreferences().getShowGrid();
+                setGridOn(on);
+            }
+        });
+        
+        // Action to fix or unfix the plot viewport
+        // TODO: currently not implemented
+        mntmAutofixed.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                boolean fixed = !PlotterView.this.preferences.getPlotPreferences().getFixed();
+                setFixedViewPort(fixed);
             }
         });
         
@@ -374,6 +435,34 @@ public class PlotterView extends JInternalFrame {
         
         mntmCoplot = new JMenuItem("Coplot");
         mnView.add(mntmCoplot);
+    }
+    
+    private void makeLinear() {
+        plotter.setLogAxes(false);
+    }
+    
+    private void makeLog() {
+        plotter.setLogAxes(true);
+    }
+    
+    private void makeXLog(boolean arg) {
+        plotter.setLogAxes(PlotPreferences.X_LOG, arg);
+    }
+    
+    private void makeYLog(boolean arg) {
+        plotter.setLogAxes(PlotPreferences.Y_LOG, arg);
+    }
+    
+    private void setGridOn(boolean on) {
+        plotter.setGridOn(on);
+    }
+    
+    private void setFixedViewPort(boolean fixed) {
+        try {
+            plotter.setFixed(fixed);
+        } catch (UnsupportedOperationException ex) {
+            logger.log(Level.WARNING, ex.getMessage());
+        }
     }
     
     private class PlotChangeListener implements VisualizerListener {

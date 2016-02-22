@@ -43,6 +43,9 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import uk.ac.starlink.ttools.plot.PlotState;
+import uk.ac.starlink.ttools.plot.SurfacePlot;
+import uk.ac.starlink.ttools.plot2.geom.PlaneSurface;
 
 public class StilPlotter extends JPanel {
 
@@ -143,7 +146,121 @@ public class StilPlotter extends JPanel {
         display.revalidate();
         display.repaint();
     }
-
+    
+    public void setLogAxes(boolean arg) {
+        setupForPlotDisplayChange();
+        
+        try {
+            preferences.getPlotPreferences().setXlog(arg);
+            preferences.getPlotPreferences().setYlog(arg);
+            env.setValue(PlotPreferences.X_LOG, arg);
+            env.setValue(PlotPreferences.Y_LOG, arg);
+            display = createPlotComponent(env, false);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        
+        updatePlotDisplay();
+        
+        // what I would like to do is get the SurfacePlot from the display
+        // so that we have a "live" plot with a state.
+        // PlaneSurface surface = (PlaneSurface) display.getSurface();
+//        SurfacePlot surface = (SurfacePlot) display.getSurface();
+//        surface.getSurface()..setLogFlags(new boolean[] {x, y});
+//        plott.setState(state);
+//        display.revalidate();
+//        display.repaint();
+    }
+    
+    public void setLogAxes(String axis, boolean log) {
+        setupForPlotDisplayChange();
+        
+        try {
+            switch (axis) {
+                
+                case PlotPreferences.X_LOG:
+                    preferences.getPlotPreferences().setXlog(log);
+                    env.setValue(PlotPreferences.X_LOG, log);
+                    break;
+                
+                case PlotPreferences.Y_LOG:
+                    preferences.getPlotPreferences().setYlog(log);
+                    env.setValue(PlotPreferences.Y_LOG, log);
+                    break;
+            }
+            display = createPlotComponent(env, false);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        
+        updatePlotDisplay();
+    }
+    
+    public void setGridOn(boolean on) {
+        setupForPlotDisplayChange();
+        
+        try {
+            preferences.getPlotPreferences().setShowGrid(on);
+            env.setValue(PlotPreferences.GRID, on);
+            display = createPlotComponent(env, false);
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        
+        updatePlotDisplay();
+    }
+    
+    /**
+     * Fix the plot viewport, or let the viewport automatically resize itself
+     * when updated. Zooming and panning are disabled if the viewport is fixed.
+     * @param arg set to "true" to fix the viewport, "false" to let it resize
+     * with updates.
+     */
+    public void setFixed(boolean arg) {
+        
+        throw new UnsupportedOperationException("Fixed viewport not yet implemented.");
+        
+//        try {
+//            double xmin;
+//            double xmax;
+//            double ymin;
+//            double ymax;
+//            if (arg) {
+//                xmin = display.get;
+//                xmax = display.getSurface().getPlotBounds().getMaxX();
+//                ymin = display.getSurface().getPlotBounds().getMinY();
+//                ymax = display.getSurface().getPlotBounds().getMaxY();
+//            } else {
+//                xmin = 0;
+//                xmax = 1;
+//                ymin = 0;
+//                ymax = 1;
+//            }
+//            preferences.getPlotPreferences().setFixed(arg);
+//            preferences.getPlotPreferences().setXmax(xmax);
+//            preferences.getPlotPreferences().setYmax(ymax);
+//            preferences.getPlotPreferences().setXmin(xmin);
+//            preferences.getPlotPreferences().setYmin(ymin);
+//            env.setValue(PlotPreferences.NAV_AXES_XY, arg);
+//            
+//            setupForPlotDisplayChange();
+//            
+//            display = createPlotComponent(env, false);
+//        } catch (RuntimeException e) {
+//            throw e;
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//        
+//        updatePlotDisplay();
+    }
+    
     public ExtSed getSed() {
         return currentSed;
     }
@@ -251,5 +368,26 @@ public class StilPlotter extends JPanel {
                 env.setValue(key, layer.getPreferences().get(key));
             }
         }
+    }
+    
+    /**
+     * Sets PlotDisplay up for new changes, like changing a SED color,
+     * switching from linear to logarithmic plotting, etc.
+     */
+    private void setupForPlotDisplayChange() {
+        if (display != null) {
+            display.removeAll();
+            remove(display);
+            display = null; // just to be safe
+        }
+    }
+    
+    /**
+     * Add and update the PlotDisplay.
+     */
+    private void updatePlotDisplay() {
+        add(display, BorderLayout.CENTER);
+        display.revalidate();
+        display.repaint();
     }
 }
