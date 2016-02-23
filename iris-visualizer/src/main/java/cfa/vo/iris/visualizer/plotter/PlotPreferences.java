@@ -35,6 +35,22 @@ public class PlotPreferences {
     public static final String X_MIN = "xmin";
     public static final String Y_MAX = "ymax";
     public static final String Y_MIN = "ymin";
+    public static final String PLOT_TYPE = "plot_type"; // not STILTS
+    //public static final String SHOW_ERRORS = "show_errors"; // not STILTS
+    
+    // Plot Types - Iris-specific, not STILTS.
+    public enum PlotType {
+        LOG("log"),
+        LINEAR("linear"),
+        X_LOG("xlog"),
+        Y_LOG("ylog");
+        
+        public String name;
+    
+        private PlotType(String arg) {
+            this.name = arg;
+        }
+    }
     
     /**
      * 
@@ -45,7 +61,9 @@ public class PlotPreferences {
                 .setXlog(true)
                 .setYlog(true)
                 .setShowGrid(true)
-                .setFixed(false);
+                .setFixed(false)
+//                .setShowErrors(true)
+                .setPlotType(PlotType.LOG);
     }
     
     private Map<String, Object> preferences;
@@ -147,5 +165,42 @@ public class PlotPreferences {
     public double getYmin() {
         return (double) this.preferences.get(Y_MIN);
     }
+    
+    public PlotPreferences setPlotType(PlotType arg1) {
+        this.preferences.put(PLOT_TYPE, arg1);
+        switch (arg1) {
+            
+            case LOG:
+                setXlog(true);
+                setYlog(true);
+                break;
+            case LINEAR:
+                setXlog(false);
+                setYlog(false);
+                break;
+            case X_LOG:
+                setXlog(true);
+                setYlog(false);
+                break;
+            case Y_LOG:
+                setXlog(false);
+                setYlog(true);
+                break;
+            default:
+                throw new EnumConstantNotPresentException(arg1.getClass(),
+                        "Invalid plot type specified.");
+
+        }
+        return this;
+    }
+    
+    public PlotType getPlotType() {
+        return (PlotType) preferences.get(PLOT_TYPE);
+    }
+    
+//    public PlotPreferences setShowErrors(boolean arg1) {
+//        this.preferences.put(SHOW_ERRORS, arg1);
+//        return this;
+//    }
 }
 
