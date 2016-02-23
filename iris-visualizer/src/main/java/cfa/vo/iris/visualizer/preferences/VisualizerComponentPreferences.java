@@ -18,10 +18,9 @@ package cfa.vo.iris.visualizer.preferences;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
-
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
@@ -54,7 +53,7 @@ public class VisualizerComponentPreferences {
         this.adapter = new IrisStarTableAdapter();
         
         // Create and add preferences for the SED
-        this.sedPreferences = Collections.synchronizedMap(new WeakHashMap<ExtSed, SedPreferences>());
+        this.sedPreferences = Collections.synchronizedMap(new IdentityHashMap<ExtSed, SedPreferences>());
         for (ExtSed sed : (List<ExtSed>) ws.getSedManager().getSeds()) {
             update(sed);
         }
@@ -129,10 +128,10 @@ public class VisualizerComponentPreferences {
      * @param sed
      */
     public void update(ExtSed sed) {
-        if (!sedPreferences.containsKey(sed)) {
-            sedPreferences.put(sed, new SedPreferences(sed, adapter));
-        } else {
+        if (sedPreferences.containsKey(sed)) {
             sedPreferences.get(sed).refresh();
+        } else {
+            sedPreferences.put(sed, new SedPreferences(sed, adapter));
         }
         fire(sed, VisualizerCommand.RESET);
     }
@@ -143,10 +142,10 @@ public class VisualizerComponentPreferences {
      * @param segment
      */
     public void update(ExtSed sed, Segment segment) {
-        if (!sedPreferences.containsKey(sed)) {
-            sedPreferences.put(sed, new SedPreferences(sed, adapter));
-        } else {
+        if (sedPreferences.containsKey(sed)) {
             sedPreferences.get(sed).addSegment(segment);
+        } else {
+            sedPreferences.put(sed, new SedPreferences(sed, adapter));
         }
         fire(sed, VisualizerCommand.RESET);
     }
@@ -156,8 +155,11 @@ public class VisualizerComponentPreferences {
      * @param sed
      */
     public void remove(ExtSed sed) {
-        sedPreferences.remove(sed);
+        if (sedPreferences.containsKey(sed)) {
+            
+        }
         sedPreferences.get(sed).removeAll();
+        sedPreferences.remove(sed);
         fire(sed, VisualizerCommand.RESET);
     }
     
@@ -197,8 +199,8 @@ public class VisualizerComponentPreferences {
             else if (SedCommand.REMOVED.equals(payload)) {
                 remove(sed);
             }
-            else if (SedCommand.SELECTED.equals(payload)) {
-                fire(sed, VisualizerCommand.RESET);
+            if (SedCommand.SELECTED.equals(payload)) {
+                fire(sed, VisualizerCommand.SELECTED);
             }
             else {
                 // Doesn't merit a full reset, this is basically just here for SED name changes
@@ -214,17 +216,17 @@ public class VisualizerComponentPreferences {
             ExtSed sed = payload.getSed();
             SedCommand command = payload.getSedCommand();
             
+            // Update the SED with the new or updated segment
             if (SedCommand.ADDED.equals(command) ||
-                    SedCommand.CHANGED.equals(command)) 
+                SedCommand.CHANGED.equals(command))
             {
                 update(sed, segment);
             }
+            
+            // Remove the deleted segment from the SED
             else if (SedCommand.REMOVED.equals(command)) {
                 remove(sed, segment);
             }
-//            else {
-//                fire(sed, VisualizerCommand.RESET);
-//            }
         }
     }
 }

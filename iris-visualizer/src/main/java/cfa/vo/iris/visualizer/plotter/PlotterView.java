@@ -147,13 +147,18 @@ public class PlotterView extends JInternalFrame {
             }
         });
         
-        // Action for resetting plot
+        // Action for resetting the visualizer component from the UI using the reset button
         btnReset.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 resetPlot(null);
+                metadataBrowser.reset();
             }
         });
         
+        addPlotChangeListener();
+    }
+    
+    protected void addPlotChangeListener() {
         VisualizerChangeEvent.getInstance().add(new PlotChangeListener());
     }
 
@@ -180,12 +185,11 @@ public class PlotterView extends JInternalFrame {
     }
     
     private void resetPlot(ExtSed sed) {
-        this.metadataBrowser.reset();
         // TODO: setting second argument to "false" forces the plot display
         // to be cached. Do we want this behavior in the future?
         // Note (jb): tried opening 300k sed with "fals" and "true." Both
         // produce a .5 second lag in panning the viewer.
-        this.plotter.reset(sed, true);
+        this.plotter.reset(sed, false);
     }
     
     private static void addPopup(Component component, final JPopupMenu popup) {
@@ -375,7 +379,9 @@ public class PlotterView extends JInternalFrame {
 
         @Override
         public void process(ExtSed source, VisualizerCommand payload) {
-            if (VisualizerCommand.RESET.equals(payload)) {
+            if (VisualizerCommand.RESET.equals(payload) ||
+                VisualizerCommand.SELECTED.equals(payload)) 
+            {
                 resetPlot(source);
             }
             else if (VisualizerCommand.REDRAW.equals(payload)) {

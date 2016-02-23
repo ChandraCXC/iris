@@ -163,7 +163,7 @@ public class SedPreferences {
     }
     
     // Removes any segments that are no longer in the SED
-    void clean() {
+    private void clean() {
         
         // Use iterator for concurrent modification
         Iterator<Entry<MapKey, SegmentLayer>> it = segmentPreferences.entrySet().iterator();

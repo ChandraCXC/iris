@@ -21,7 +21,6 @@ import javax.swing.JList;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Map;
 import java.awt.Color;
 import java.awt.Component;
 
@@ -45,15 +44,12 @@ import javax.swing.event.ListSelectionListener;
 
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
 import cfa.vo.iris.visualizer.preferences.SedPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
 import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerListener;
-import cfa.vo.sedlib.ISegment;
-import cfa.vo.sedlib.Segment;
 import uk.ac.starlink.table.EmptyStarTable;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.gui.StarJTable;
@@ -291,6 +287,10 @@ public class MetadataBrowserView extends JInternalFrame {
     }
     
     private void setSedId() {
+        if (selected == null) {
+            return;
+        }
+        
         TitledBorder border = (TitledBorder) segmentListScrollPane.getBorder();
         border.setTitle(selected.getId());
     }
@@ -357,7 +357,9 @@ public class MetadataBrowserView extends JInternalFrame {
 
         @Override
         public void process(ExtSed source, VisualizerCommand payload) {
-            if (VisualizerCommand.RESET.equals(payload)) {
+            if (VisualizerCommand.RESET.equals(payload) ||
+                VisualizerCommand.SELECTED.equals(payload))
+            {
                 reset();
             }
             else if (VisualizerCommand.REDRAW.equals(payload)) {
