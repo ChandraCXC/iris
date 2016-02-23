@@ -133,7 +133,6 @@
     <Component class="javax.swing.JCheckBox" name="fixedCheckBox">
       <Properties>
         <Property name="text" type="java.lang.String" value="Automatic"/>
-        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
     </Component>
     <Container class="javax.swing.JPanel" name="jPanel1">
