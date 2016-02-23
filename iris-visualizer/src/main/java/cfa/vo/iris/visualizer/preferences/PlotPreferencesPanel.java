@@ -16,6 +16,8 @@
 package cfa.vo.iris.visualizer.preferences;
 
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 /**
  *
@@ -39,6 +41,22 @@ public class PlotPreferencesPanel extends javax.swing.JPanel {
         boolean plotRangeOptionsVisible = this.prefs.getFixed();
         fixedCheckBox.setSelected(plotRangeOptionsVisible);
         setPlotRangeOptionsVisible(fixedCheckBox.isSelected());
+        
+        // Action listener to show plot range options.
+        // TODO: Update the panel size when the check box is selected.
+        fixedCheckBox.addItemListener(new ItemListener() {
+
+            @Override
+            public void itemStateChanged(ItemEvent ie) {
+                if (fixedCheckBox.isSelected()) {
+                    setPlotRangeOptionsVisible(true);
+                    fixedCheckBox.setText("Fixed");
+                } else {
+                    setPlotRangeOptionsVisible(false);
+                    fixedCheckBox.setText("Automatic");
+                }
+            }
+        });
     }
 
     /**
@@ -92,7 +110,6 @@ public class PlotPreferencesPanel extends javax.swing.JPanel {
         gridLinesOffRadioButton.setText("Off");
 
         fixedCheckBox.setText("Automatic");
-        fixedCheckBox.setEnabled(false);
 
         jPanel1.setVisible(false);
 
@@ -224,17 +241,7 @@ public class PlotPreferencesPanel extends javax.swing.JPanel {
      * fixed.
      */
     private void setPlotRangeOptionsVisible(boolean visible) {
-        xmaxLabel.setVisible(visible);
-        xminLabel.setVisible(visible);
-        xunitComboBox.setVisible(visible);
-        xminTextField.setVisible(visible);
-        xmaxTextField.setVisible(visible);
-        
-        ymaxLabel.setVisible(visible);
-        yminLabel.setVisible(visible);
-        ymaxTextField.setVisible(visible);
-        yminTextField.setVisible(visible);
-        yunitComboBox.setVisible(visible);
+        jPanel1.setVisible(visible);
    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
