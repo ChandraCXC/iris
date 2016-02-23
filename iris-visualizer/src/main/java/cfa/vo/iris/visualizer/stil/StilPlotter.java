@@ -148,19 +148,24 @@ public class StilPlotter extends JPanel {
     }
     
     /**
-     * Sets both axes to log or linear space.
-     * @param arg set axes to logarithmic space if "true," and linear space
-     * if "false."
+     * Change the plotting space between logarithmic and linear. One of the axes
+     * can be logarithmic, while the other is linear.
+     * @param plotType the plot type to use. Must be one of the 
+     * PlotPreferences.PlotType enums. Choices are LOG, LINEAR, XLOG, and YLOG.
      */
-    public void setLogAxes(boolean arg) {
-        setupForPlotDisplayChange();
+    public void changePlotType(PlotPreferences.PlotType plotType) {
         
         try {
-            preferences.getPlotPreferences().setXlog(arg);
-            preferences.getPlotPreferences().setYlog(arg);
-            env.setValue(PlotPreferences.X_LOG, arg);
-            env.setValue(PlotPreferences.Y_LOG, arg);
+            preferences.getPlotPreferences().setPlotType(plotType);
+            env.setValue(PlotPreferences.X_LOG, 
+                    preferences.getPlotPreferences().getXlog());
+            env.setValue(PlotPreferences.Y_LOG, 
+                    preferences.getPlotPreferences().getYlog());
+            
+            setupForPlotDisplayChange();
             display = createPlotComponent(env, false);
+        } catch (EnumConstantNotPresentException ex) {
+            logger.log(Level.WARNING, ex.getMessage());
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -175,110 +180,6 @@ public class StilPlotter extends JPanel {
 //        SurfacePlot surface = (SurfacePlot) display.getSurface();
 //        surface.getSurface()..setLogFlags(new boolean[] {x, y});
 //        plott.setState(state);
-//        display.revalidate();
-//        display.repaint();
-    }
-    
-    /**
-     * Sets the specified axis to logarithmic space. This will switch the
-     * unspecified axis to linear space. If you want to make the X and Y axes'
-     * spacing independent of each other, use 
-     * setLogAxis(String axis, boolean log).
-     * @param axis the specified axis to convert to logarithmic space. 
-     */
-    public void setLogAxis(String axis) {
-        
-        try {
-            switch (axis) {
-                
-                case PlotPreferences.X_LOG:
-                    
-                    // if plot axes are in the right spacing, return.
-                    if (preferences.getPlotPreferences().getXlog() &&
-                            !preferences.getPlotPreferences().getYlog()) {
-                        return;
-                    }
-                    
-                    preferences.getPlotPreferences().setXlog(true);
-                    env.setValue(PlotPreferences.X_LOG, true);
-                    preferences.getPlotPreferences().setYlog(false);
-                    env.setValue(PlotPreferences.Y_LOG, false);
-                    break;
-                
-                case PlotPreferences.Y_LOG:
-                    
-                    // if plot axes are in the right spacing, return.
-                    if (preferences.getPlotPreferences().getYlog() &&
-                            !preferences.getPlotPreferences().getXlog()) {
-                        return;
-                    }
-                    
-                    preferences.getPlotPreferences().setYlog(true);
-                    env.setValue(PlotPreferences.Y_LOG, true);
-                    preferences.getPlotPreferences().setXlog(false);
-                    env.setValue(PlotPreferences.X_LOG, false);
-                    break;
-                
-                default:
-                    throw new IOException("Invalid axis specified. "
-                            + "Must be a PlotPreferences enum.");
-            }
-            
-            // don't move this. If the function returns before the preferences 
-            // are updated, then the display will remain null.
-            setupForPlotDisplayChange();
-            
-            display = createPlotComponent(env, false);
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        
-        updatePlotDisplay();
-    }
-    
-    /**
-     * Sets the specified axis to logarithmic or linear space. Good to use if 
-     * you make the X and Y axis spacing independent from each other. If you 
-     * want to make only the X or Y axis logarithmic, use 
-     * setLogAxes(String axis, boolean log).
-     * @param axis the specified axis. 
-     * @param log set axis to logarithmic space if "true," and linear space
-     * if "false."
-     */
-    public void setLogAxis(String axis, boolean log) {
-        
-        try {
-            switch (axis) {
-                
-                case PlotPreferences.X_LOG:
-                    preferences.getPlotPreferences().setXlog(log);
-                    env.setValue(PlotPreferences.X_LOG, log);
-                    break;
-                
-                case PlotPreferences.Y_LOG:
-                    preferences.getPlotPreferences().setYlog(log);
-                    env.setValue(PlotPreferences.Y_LOG, log);
-                    break;
-                
-                default:
-                    throw new IOException("Invalid axis specified. "
-                            + "Must be a PlotPreferences enum.");
-            }
-            
-            // don't move this. If the exception is thrown before the 
-            // preferences are updated, then the display will remain null.
-            setupForPlotDisplayChange();
-            
-            display = createPlotComponent(env, false);
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        
-        updatePlotDisplay();
     }
     
     public void setGridOn(boolean on) {
@@ -340,6 +241,13 @@ public class StilPlotter extends JPanel {
 //        }
 //        
 //        updatePlotDisplay();
+    }
+    
+    /**
+     * Hide the error bars from the plot display.
+     */
+    public void hideErrorBars() {
+        
     }
     
     public ExtSed getSed() {

@@ -455,19 +455,19 @@ public class PlotterView extends JInternalFrame {
     }
     
     private void makeLinear() {
-        plotter.setLogAxes(false);
+        plotter.changePlotType(PlotPreferences.PlotType.LINEAR);
     }
     
     private void makeLog() {
-        plotter.setLogAxes(true);
+        plotter.changePlotType(PlotPreferences.PlotType.LOG);
     }
     
     private void makeXLog(boolean arg) {
-        plotter.setLogAxis(PlotPreferences.X_LOG);
+        plotter.changePlotType(PlotPreferences.PlotType.X_LOG);
     }
     
     private void makeYLog(boolean arg) {
-        plotter.setLogAxis(PlotPreferences.Y_LOG);
+        plotter.changePlotType(PlotPreferences.PlotType.Y_LOG);
     }
     
     private void setGridOn(boolean on) {
