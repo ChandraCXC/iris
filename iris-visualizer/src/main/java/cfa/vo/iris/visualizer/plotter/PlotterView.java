@@ -191,6 +191,10 @@ public class PlotterView extends JInternalFrame {
         // produce a .5 second lag in panning the viewer.
         this.plotter.reset(sed, false);
     }
+
+    private void redrawPlow() {
+        this.plotter.redraw();
+    }
     
     private static void addPopup(Component component, final JPopupMenu popup) {
     }
@@ -385,7 +389,7 @@ public class PlotterView extends JInternalFrame {
                 resetPlot(source);
             }
             else if (VisualizerCommand.REDRAW.equals(payload)) {
-                
+                redrawPlow();
             }
         }
     }

@@ -15,19 +15,25 @@
  */
 package cfa.vo.iris.visualizer.stil;
 
+import static org.junit.Assert.*;
+import static cfa.vo.iris.test.unit.TestUtils.*;
+
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.test.App;
 import cfa.vo.iris.test.Ws;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.sedlib.ISegment;
+import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 import java.lang.reflect.Field;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import uk.ac.starlink.task.StringParameter;
 import uk.ac.starlink.ttools.plot2.PlotLayer;
+import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
+import uk.ac.starlink.ttools.plot2.geom.PlaneSurfaceFactory.Profile;
 import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 import uk.ac.starlink.ttools.task.MapEnvironment;
 import cfa.vo.testdata.TestData;
@@ -127,5 +133,47 @@ public class StilPlotterTest {
         
         // TODO: we should check that each segment has a different color in the
         // future when iris-dev#14 is done
+    }
+    
+    @Test
+    public void testReset() throws Exception {
+        
+        sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
+        Segment seg = sed.getSegment(0);
+        StilPlotter plot = new StilPlotter(ws, preferences);
+        preferences.update(sed);
+        
+        // Get initial bounds
+        plot.reset(sed, false);
+        PlotDisplay<Profile, PlaneAspect> display = plot.getPlotDisplay();
+        PlaneAspect aspect1 = display.getAspect();
+        
+        sed.removeSegment(0);
+        preferences.remove(sed, seg);
+        plot.redraw();
+        display = plot.getPlotDisplay();
+
+        // Verify no layers
+        Field layers_ = PlotDisplay.class.getDeclaredField("layers_");
+        layers_.setAccessible(true);
+        PlotLayer[] layers = (PlotLayer[]) layers_.get(display);
+        assertEquals(0, ArrayUtils.getLength(layers));
+        
+        // Bounds should not have changed
+        PlaneAspect aspect2 = display.getAspect();
+        assertEquals(aspect1.getXMax(), aspect2.getXMax(), .0001);
+        assertEquals(aspect1.getYMax(), aspect2.getYMax(), .0001);
+        assertEquals(aspect1.getXMin(), aspect2.getXMin(), .0001);
+        assertEquals(aspect1.getYMin(), aspect2.getYMin(), .0001);
+        
+        plot.reset(null, false);
+        display = plot.getPlotDisplay();
+        
+        // Bounds should reset
+        PlaneAspect aspect3 = display.getAspect();
+        assertEquals(10, aspect3.getXMax(), .0001);
+        assertEquals(10, aspect3.getYMax(), .0001);
+        assertEquals(1, aspect3.getXMin(), .0001);
+        assertEquals(1, aspect3.getYMin(), .0001);
     }
 }
