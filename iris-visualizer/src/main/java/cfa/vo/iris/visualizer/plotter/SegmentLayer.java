@@ -71,7 +71,7 @@ public class SegmentLayer {
         }
         
         this.setInSource(table);
-        this.suffix = '_' + table.getName();
+        this.suffix = table.getName();
         
         // Setting default values here
         this.setErrorBarType(ErrorBarType.capped_lines)
