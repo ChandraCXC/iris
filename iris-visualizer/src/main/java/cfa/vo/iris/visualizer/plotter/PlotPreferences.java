@@ -40,15 +40,19 @@ public class PlotPreferences {
     
     // Plot Types - Iris-specific, not STILTS.
     public enum PlotType {
-        LOG("log"),
-        LINEAR("linear"),
-        X_LOG("xlog"),
-        Y_LOG("ylog");
+        LOG("log", true, true),
+        LINEAR("linear", false, false),
+        X_LOG("xlog", true, false),
+        Y_LOG("ylog", true, false);
         
         public String name;
+        public boolean xlog;
+        public boolean ylog;
     
-        private PlotType(String arg) {
-            this.name = arg;
+        private PlotType(String name, boolean x, boolean y) {
+            this.name = name;
+            this.xlog = x;
+            this.ylog = y;
         }
     }
     
@@ -168,29 +172,8 @@ public class PlotPreferences {
     
     public PlotPreferences setPlotType(PlotType arg1) {
         this.preferences.put(PLOT_TYPE, arg1);
-        switch (arg1) {
-            
-            case LOG:
-                setXlog(true);
-                setYlog(true);
-                break;
-            case LINEAR:
-                setXlog(false);
-                setYlog(false);
-                break;
-            case X_LOG:
-                setXlog(true);
-                setYlog(false);
-                break;
-            case Y_LOG:
-                setXlog(false);
-                setYlog(true);
-                break;
-            default:
-                throw new EnumConstantNotPresentException(arg1.getClass(),
-                        "Invalid plot type specified.");
-
-        }
+        setXlog(arg1.xlog);
+        setYlog(arg1.ylog);
         return this;
     }
     
