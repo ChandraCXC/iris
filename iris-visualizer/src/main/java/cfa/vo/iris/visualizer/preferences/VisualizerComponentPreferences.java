@@ -72,7 +72,11 @@ public class VisualizerComponentPreferences {
         this.columnInfoMatcher = new UtypeColumnInfoMatcher();
         
         // Plotter global preferences
-        this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
+        if (this.sedPreferences.isEmpty()) {
+            this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
+        } else {
+            this.plotPreferences = this.getSelectedSedPreferences().getPlotPreferences();
+        }
         
         // Add SED listener
         addSedListeners();
@@ -83,7 +87,7 @@ public class VisualizerComponentPreferences {
         SedEvent.getInstance().add(new VisualizerSedListener());
         MultipleSegmentEvent.getInstance().add(new VisualizerMultipleSegmentListener());
     }
-    
+
     /**
      * @return
      *  Top level plot preferences for the stil plotter.
@@ -343,6 +347,9 @@ public class VisualizerComponentPreferences {
             else if (SedCommand.REMOVED.equals(command)) {
                 remove(sed, segments);
             }
+            // update plot preferences
+            VisualizerComponentPreferences.this.plotPreferences = 
+                    VisualizerComponentPreferences.this.getSelectedSedPreferences().getPlotPreferences();
         }
     }
 }
