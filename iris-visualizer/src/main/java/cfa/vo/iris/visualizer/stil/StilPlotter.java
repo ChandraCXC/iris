@@ -43,9 +43,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import uk.ac.starlink.ttools.plot.PlotState;
-import uk.ac.starlink.ttools.plot.SurfacePlot;
-import uk.ac.starlink.ttools.plot2.geom.PlaneSurface;
 
 public class StilPlotter extends JPanel {
 

@@ -47,6 +47,7 @@ import cfa.vo.iris.visualizer.preferences.VisualizerListener;
 import cfa.vo.iris.visualizer.stil.StilPlotter;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.iris.IWorkspace;
+import cfa.vo.iris.visualizer.preferences.PlotPreferencesPanel;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ButtonGroup;
@@ -182,26 +183,20 @@ public class PlotterView extends JInternalFrame {
         });
         
         // Action to set x-axis to log
-        // TODO: this should be a toggle instead of always setting the axis
-        // to log
         mntmXlog.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mntmXlog.setSelected(true);
-                //boolean on = !PlotterView.this.preferences.getPlotPreferences().getXlog();
-                makeXLog(true);
+                makeXLog();
             }
         });
         
         // Action to set the y-axis to log
-        // TODO: this should be a toggle instead of always setting the axis
-        // to log
         mntmYlog.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mntmYlog.setSelected(true);
-                //boolean on = !PlotterView.this.preferences.getPlotPreferences().getYlog();
-                makeYLog(true);
+                makeYLog();
             }
         });
         
@@ -462,11 +457,11 @@ public class PlotterView extends JInternalFrame {
         plotter.changePlotType(PlotPreferences.PlotType.LOG);
     }
     
-    private void makeXLog(boolean arg) {
+    private void makeXLog() {
         plotter.changePlotType(PlotPreferences.PlotType.X_LOG);
     }
     
-    private void makeYLog(boolean arg) {
+    private void makeYLog() {
         plotter.changePlotType(PlotPreferences.PlotType.Y_LOG);
     }
     
