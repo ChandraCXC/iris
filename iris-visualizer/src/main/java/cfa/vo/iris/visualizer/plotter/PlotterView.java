@@ -189,7 +189,7 @@ public class PlotterView extends JInternalFrame {
         this.plotter.reset(sed, true);
     }
 
-    private void redrawPlow() {
+    private void redrawPlot() {
         this.plotter.redraw(true);
     }
     
@@ -386,7 +386,7 @@ public class PlotterView extends JInternalFrame {
                 resetPlot(source);
             }
             else if (VisualizerCommand.REDRAW.equals(payload)) {
-                redrawPlow();
+                redrawPlot();
             }
         }
     }

@@ -57,7 +57,7 @@ public class StilPlotter extends JPanel {
     private SedlibSedManager sedManager;
     private ExtSed currentSed;
     private final VisualizerComponentPreferences preferences;
-
+    
     private MapEnvironment env;
 
     public StilPlotter(IWorkspace ws,
@@ -82,7 +82,7 @@ public class StilPlotter extends JPanel {
      *            current display is active.
      */
     public void reset(ExtSed sed, boolean dataMayChange) {
-        resetPlot(sed, null, dataMayChange);
+        resetPlot(sed, false, dataMayChange);
     }
 
     /**
@@ -91,23 +91,36 @@ public class StilPlotter extends JPanel {
      *
      */
     public void redraw(boolean dataMayChange) {
+        // If there's no display then don't change anything
         if (display == null) {
             return;
         }
         
-        // Use the aspect to maintain existing positioning
-        PlaneAspect aspect = display.getAspect();
-        resetPlot(currentSed, aspect, dataMayChange);
+        resetPlot(currentSed, true, dataMayChange);
     }
     
+    /**
+     * Resets the plot.
+     * 
+     * TODO: Allow users to fix a plot in place either from plot preferences or from the
+     *  PlotterView.
+     *  
+     * @param sed - the sed to plot
+     * @param fixed - if set to true, the plot bounds will not change
+     * @param dataMayChange - if the data in the sed will change (usually true)
+     */
     private void resetPlot(ExtSed sed,
-                           PlaneAspect plane, 
+                           boolean fixed, 
                            boolean dataMayChange) 
     {
+        // Get initial bounds if available
+        PlaneAspect existingAspect = null;
+        
         // Clear the display if it's available
         if (display != null) {
             display.removeAll();
             remove(display);
+            existingAspect = display.getAspect();
         }
         
         // Update the current SED
@@ -120,9 +133,9 @@ public class StilPlotter extends JPanel {
         boolean cached = !dataMayChange;
         display = createPlotComponent(currentSed, cached);
         
-        // Set the bounds using the aspect if provided one
-        if (plane != null) {
-            display.setAspect(plane);
+        // Set the bounds using the aspect if provided one and if the plot is fixed
+        if (existingAspect != null && fixed) {
+            display.setAspect(existingAspect);
         }
         
         // Add the display to the plot view
