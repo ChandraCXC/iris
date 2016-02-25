@@ -267,7 +267,6 @@ public class MetadataBrowserView extends JInternalFrame {
     }
 
     public void reset() {
-        
         // Multiple threads resetting this simultaneously can do weird things
         // to JList and JTable objects.
         synchronized(this) {
@@ -358,12 +357,10 @@ public class MetadataBrowserView extends JInternalFrame {
         @Override
         public void process(ExtSed source, VisualizerCommand payload) {
             if (VisualizerCommand.RESET.equals(payload) ||
-                VisualizerCommand.SELECTED.equals(payload))
+                VisualizerCommand.SELECTED.equals(payload) ||
+                VisualizerCommand.REDRAW.equals(payload))
             {
                 reset();
-            }
-            else if (VisualizerCommand.REDRAW.equals(payload)) {
-                setSedId();
             }
         }
     }

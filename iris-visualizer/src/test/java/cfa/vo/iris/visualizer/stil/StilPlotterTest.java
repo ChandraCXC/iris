@@ -150,7 +150,7 @@ public class StilPlotterTest {
         
         sed.removeSegment(0);
         preferences.remove(sed, seg);
-        plot.redraw();
+        plot.redraw(true);
         display = plot.getPlotDisplay();
 
         // Verify no layers

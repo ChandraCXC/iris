@@ -138,13 +138,15 @@ public class VisualizerComponentPreferences {
     
     /**
      * Adds or updates the segment within the specified SED.
-     * @param sed
+     * @param sed - the sed to which the segment is attached
      * @param segment
      */
     public void update(ExtSed sed, Segment segment) {
         if (sedPreferences.containsKey(sed)) {
             sedPreferences.get(sed).addSegment(segment);
         } else {
+            // The segment will automatically be serialized and attached the the 
+            // SedPrefrences since it's assumed to be attached to the SED.
             sedPreferences.put(sed, new SedPreferences(sed, adapter));
         }
         fire(sed, VisualizerCommand.RESET);
@@ -155,8 +157,8 @@ public class VisualizerComponentPreferences {
      * @param sed
      */
     public void remove(ExtSed sed) {
-        if (sedPreferences.containsKey(sed)) {
-            
+        if (!sedPreferences.containsKey(sed)) {
+            return;
         }
         sedPreferences.get(sed).removeAll();
         sedPreferences.remove(sed);

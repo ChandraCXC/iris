@@ -65,7 +65,7 @@ public class StilPlotter extends JPanel {
         this.ws = ws;
         this.sedManager = (SedlibSedManager) ws.getSedManager();
         this.preferences = preferences;
-
+        
         setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
         setBackground(Color.WHITE);
         setLayout(new GridLayout(1, 0, 0, 0));
@@ -82,14 +82,7 @@ public class StilPlotter extends JPanel {
      *            current display is active.
      */
     public void reset(ExtSed sed, boolean dataMayChange) {
-        removeDisplay();
-        
-        // https://github.com/Starlink/starjava/blob/master/ttools/src/main/
-        // uk/ac/starlink/ttools/example/EnvPlanePlotter.java
-        boolean cached = !dataMayChange;
-        display = createPlotComponent(sed, cached);
-        
-        addDisplay();
+        resetPlot(sed, null, dataMayChange);
     }
 
     /**
@@ -97,29 +90,42 @@ public class StilPlotter extends JPanel {
      * preferences.
      *
      */
-    public void redraw() {
-        removeDisplay();
+    public void redraw(boolean dataMayChange) {
         if (display == null) {
             return;
         }
         
         // Use the aspect to maintain existing positioning
-        final PlaneAspect aspect = display.getAspect();
-        display = createPlotComponent(currentSed, false);
-        display.setAspect(aspect);
-        
-        addDisplay();
+        PlaneAspect aspect = display.getAspect();
+        resetPlot(currentSed, aspect, dataMayChange);
     }
     
-    private void removeDisplay() {
-        if (display == null) {
-            return;
+    private void resetPlot(ExtSed sed,
+                           PlaneAspect plane, 
+                           boolean dataMayChange) 
+    {
+        // Clear the display if it's available
+        if (display != null) {
+            display.removeAll();
+            remove(display);
         }
-        display.removeAll();
-        remove(display);
-    }
-    
-    private void addDisplay() {
+        
+        // Update the current SED
+        if (sed == null) {
+            sed = sedManager.getSelected();
+        }
+        this.currentSed = sed;
+        
+        // Setup new plot component
+        boolean cached = !dataMayChange;
+        display = createPlotComponent(currentSed, cached);
+        
+        // Set the bounds using the aspect if provided one
+        if (plane != null) {
+            display.setAspect(plane);
+        }
+        
+        // Add the display to the plot view
         add(display, BorderLayout.CENTER);
         display.revalidate();
         display.repaint();
@@ -156,14 +162,10 @@ public class StilPlotter extends JPanel {
      *            might change.
      * @return
      */
-    protected PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> createPlotComponent(
-            ExtSed sed, boolean cached) {
+    protected PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> 
+        createPlotComponent(ExtSed sed, boolean cached) 
+    {
         logger.info("Creating new plot from selected SED");
-
-        if (sed == null) {
-            sed = sedManager.getSelected();
-        }
-        this.currentSed = sed;
 
         try {
             setupMapEnvironment(currentSed);
@@ -190,7 +192,7 @@ public class StilPlotter extends JPanel {
 
         logger.log(Level.FINE, "plot environment:");
         logger.log(Level.FINE, ReflectionToStringBuilder.toString(env));
-
+        
         return new PlanePlot2Task().createPlotComponent(env, cached);
     }
 
