@@ -15,14 +15,22 @@
  */
 package cfa.vo.iris.visualizer.metadata;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.stil.SegmentStarTable;
+import cfa.vo.iris.visualizer.plotter.SegmentLayer;
+import cfa.vo.iris.visualizer.preferences.SedPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
 import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerListener;
+import cfa.vo.iris.visualizer.stil.IrisStarTable;
+import cfa.vo.iris.visualizer.stil.IrisStarTableUtils;
 import uk.ac.starlink.table.EmptyStarTable;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.gui.StarJTable;
@@ -48,7 +56,8 @@ public class MetadataBrowser extends javax.swing.JInternalFrame {
      * Creates new form MetadataBrowser
      */
     public MetadataBrowser(IWorkspace ws,
-            VisualizerComponentPreferences preferences) {
+            VisualizerComponentPreferences preferences) 
+    {
         this.preferences = preferences;
         this.ws = ws;
 
@@ -84,6 +93,31 @@ public class MetadataBrowser extends javax.swing.JInternalFrame {
     
     protected void setDataTables() {
         
+        List<SegmentStarTable> plotterDataTables = new LinkedList<>();
+        List<StarTable> dataTables = new LinkedList<>();
+        
+        for (SegmentLayer layer : preferences.getSelectedLayers()) {
+            plotterDataTables.add(layer.getInSource().getPlotterTable());
+            dataTables.add(layer.getInSource().getDataTable());
+        }
+        
+        try {
+            plotMetadataTable = new StarJTable(
+                    IrisStarTableUtils.concatPlotDataTables(plotterDataTables), true);
+            pointMetadataTable = new StarJTable(
+                    IrisStarTableUtils.concatDataTables(dataTables), false);
+            
+            // TODO: Segment metadata tables
+            segmentMetadataTable = EMPTY_JTABLE;
+        } catch (RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        
+        plotMetadataTable.configureColumnWidths(200, 20);
+        pointMetadataTable.configureColumnWidths(200, 20);
+        segmentMetadataTable.configureColumnWidths(200, 20);
     }
 
     private class MetadataChangeListener implements VisualizerListener {
