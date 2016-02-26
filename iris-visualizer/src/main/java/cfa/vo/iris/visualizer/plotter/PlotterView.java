@@ -39,7 +39,7 @@ import javax.swing.JCheckBox;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.visualizer.metadata.MetadataBrowser;
+import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
 import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
 import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
@@ -60,7 +60,7 @@ public class PlotterView extends JInternalFrame {
     // Plotting Components
     private StilPlotter plotter;
     private JInternalFrame residuals;
-    private MetadataBrowser metadataBrowser;
+    private MetadataBrowserMainView metadataBrowser;
     
     // Buttons, etc.
     private JButton btnReset;
@@ -129,7 +129,7 @@ public class PlotterView extends JInternalFrame {
         this.app = app;
         this.preferences = preferences;
         
-        this.metadataBrowser = new MetadataBrowser(ws, preferences);
+        this.metadataBrowser = new MetadataBrowserMainView(ws, preferences);
         this.plotter = new StilPlotter(ws, preferences);
         this.residuals = new JInternalFrame();
         
@@ -180,7 +180,7 @@ public class PlotterView extends JInternalFrame {
         }
     }    
     
-    public MetadataBrowser getMetadataBrowserView() {
+    public MetadataBrowserMainView getMetadataBrowserView() {
         return this.metadataBrowser;
     }
     

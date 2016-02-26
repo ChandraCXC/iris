@@ -37,6 +37,14 @@ public class IrisStarTable extends JoinStarTable {
         setName(plotterTable.getName());
     }
     
+    public StarTable getDataTable() {
+        return dataTable;
+    }
+    
+    public SegmentStarTable getPlotterTable() {
+        return plotterTable;
+    }
+    
     public void setXUnits(String xunit) throws UnitsException {
         plotterTable.setSpecUnits(Default.getInstance().getUnitsManager().newXUnits(xunit));
     }
