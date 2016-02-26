@@ -201,6 +201,21 @@ public class MetadataBrowserViewTest extends AbstractComponentGUITest {
             }
         });
         
+        // Add another segment
+        final Segment seg2 = createSampleSegment(new double[] {100}, new double[] {200});
+        sed.addSegment(seg2);
+        
+        // 1 segment should have been added to table
+        invokeWithRetry(10, 100, new Runnable() {
+            @Override
+            public void run() {
+                // Verify values in table are correct
+                assertEquals(2, mbView.selectedTables.getModel().getSize());
+                assertEquals(3, metadataTable.getRowCount());
+                assertEquals(1, Double.parseDouble((String) metadataTable.getContentAt(0, 1)), .1);
+            }
+        });
+        
         // Remove the segment
         sed.remove(seg1);
         
@@ -209,8 +224,8 @@ public class MetadataBrowserViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 // Verify values in table are correct
-                assertEquals(0, mbView.selectedTables.getModel().getSize());
-                assertEquals(0, metadataTable.getRowCount());
+                assertEquals(1, mbView.selectedTables.getModel().getSize());
+                assertEquals(1, metadataTable.getRowCount());
             }
         });
     }

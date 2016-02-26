@@ -18,5 +18,6 @@ package cfa.vo.iris.visualizer.preferences;
 
 public enum VisualizerCommand {
     RESET,
-    REDRAW;
+    REDRAW, 
+    SELECTED;
 }
