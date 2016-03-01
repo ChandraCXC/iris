@@ -115,6 +115,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             public void run() {
                 assertEquals(1, mbView.selectedTables.size());
                 assertEquals(1, starTableList.getSize());
+                assertEquals(1, segmentTable.getRowCount());
 
                 assertEquals(1, Double.parseDouble((String) plotterTable.getContentAt(0, 1)), 0.1);
                 assertEquals(2, Double.parseDouble((String) plotterTable.getContentAt(1, 1)), 0.1);
@@ -132,6 +133,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             public void run() {
                 assertEquals(2, mbView.selectedTables.size());
                 assertEquals(2, starTableList.getSize());
+                assertEquals(2, segmentTable.getRowCount());
 
                 assertEquals(1, Double.parseDouble((String) plotterTable.getContentAt(0, 1)), 0.1);
                 assertEquals(2, Double.parseDouble((String) plotterTable.getContentAt(1, 1)), 0.1);
@@ -140,6 +142,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
                 assertEquals(1, Double.parseDouble((String) dataTable.getContentAt(0, 1)), 0.1);
                 assertEquals(2, Double.parseDouble((String) dataTable.getContentAt(1, 1)), 0.1);
                 assertEquals(3, Double.parseDouble((String) dataTable.getContentAt(2, 1)), 0.1);
+
             }
         });
         
@@ -192,6 +195,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
                 assertTrue(StringUtils.contains(mbWindow.getTitle(), sed.getId()));
                 assertEquals(2, mbView.selectedTables.size());
                 assertEquals(2, starTableList.getSize());
+                assertEquals(2, segmentTable.getRowCount());
 
                 assertEquals(1, Double.parseDouble((String) plotterTable.getContentAt(0, 1)), 0.1);
                 assertEquals(2, Double.parseDouble((String) plotterTable.getContentAt(1, 1)), 0.1);

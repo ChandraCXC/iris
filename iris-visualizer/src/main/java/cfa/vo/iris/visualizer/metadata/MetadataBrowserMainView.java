@@ -31,9 +31,11 @@ import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerListener;
 import cfa.vo.iris.visualizer.stil.IrisStarTable;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import uk.ac.starlink.table.EmptyStarTable;
 import uk.ac.starlink.table.StarTable;
+import uk.ac.starlink.table.gui.StarJTable;
 
 public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
@@ -103,6 +105,9 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             }
         }
         
+        segmentJTable.setModel(new IrisMetadataTableModel((List<StarTable>)(List<?>) newTables));
+        StarJTable.configureColumnWidths(segmentJTable, 200, 10);
+        
         setSelectedTables(newTables);
     }
     
@@ -128,11 +133,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         plotterStarJTable.configureColumnWidths(200, 20);
         pointStarJTable.configureColumnWidths(200, 20);
         
-        // TODO: Implement some method for viewing StarTable metadata
-        segmentStarJTable.setStarTable(EMPTY_STARTABLE, false);
-        segmentStarJTable.configureColumnWidths(200, 20);
-        //
-        
         setSelectedStarTable(newTable);
     }
     
@@ -144,7 +144,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     
     public List<IrisStarTable> getSelectedTables() {
         return selectedTables;
-    }    
+    }
     
     public void setSelectedTables(List<IrisStarTable> newTables) {
         List<IrisStarTable> oldTables = selectedTables;
@@ -231,7 +231,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         pointStarJTable = new cfa.vo.iris.visualizer.stil.IrisStarJTable();
         segmentMetadataPanel = new javax.swing.JPanel();
         segmentMetadataScrollPane = new javax.swing.JScrollPane();
-        segmentStarJTable = new cfa.vo.iris.visualizer.stil.IrisStarJTable();
+        segmentJTable = new javax.swing.JTable();
         starTableScrollPane = new javax.swing.JScrollPane();
         starTableList = new javax.swing.JList<IrisStarTable>();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -292,7 +292,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         );
         plotterMetadataPanelLayout.setVerticalGroup(
             plotterMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(plotterMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
+            .addComponent(plotterMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
         );
 
         dataTabsPane.addTab("Plotter Data", plotterMetadataPanel);
@@ -307,12 +307,14 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         );
         pointMetadataPanelLayout.setVerticalGroup(
             pointMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pointMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
+            .addComponent(pointMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
         );
 
         dataTabsPane.addTab("Point Metadata", pointMetadataPanel);
 
-        segmentMetadataScrollPane.setViewportView(segmentStarJTable);
+        segmentJTable.setModel(new IrisMetadataTableModel());
+        segmentJTable.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        segmentMetadataScrollPane.setViewportView(segmentJTable);
 
         javax.swing.GroupLayout segmentMetadataPanelLayout = new javax.swing.GroupLayout(segmentMetadataPanel);
         segmentMetadataPanel.setLayout(segmentMetadataPanelLayout);
@@ -322,7 +324,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         );
         segmentMetadataPanelLayout.setVerticalGroup(
             segmentMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(segmentMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 676, Short.MAX_VALUE)
+            .addComponent(segmentMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
         );
 
         dataTabsPane.addTab("Segment Metadata", segmentMetadataPanel);
@@ -471,9 +473,9 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane pointMetadataScrollPane;
     private cfa.vo.iris.visualizer.stil.IrisStarJTable pointStarJTable;
     private javax.swing.JMenuItem restoreSetMenuItem;
+    private javax.swing.JTable segmentJTable;
     private javax.swing.JPanel segmentMetadataPanel;
     private javax.swing.JScrollPane segmentMetadataScrollPane;
-    private cfa.vo.iris.visualizer.stil.IrisStarJTable segmentStarJTable;
     private javax.swing.JButton selectAllButton;
     private javax.swing.JMenu selectMenu;
     private javax.swing.JButton selectPointsButton;
