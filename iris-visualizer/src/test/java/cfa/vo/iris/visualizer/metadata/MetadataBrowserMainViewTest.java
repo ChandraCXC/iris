@@ -30,6 +30,9 @@ import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.visualizer.VisualizerComponent;
 import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.io.SedFormat;
+import cfa.vo.testdata.TestData;
+
 import static org.junit.Assert.*;
 
 import static cfa.vo.iris.test.unit.TestUtils.*;
@@ -202,5 +205,71 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
                 assertEquals(3, Double.parseDouble((String) plotterTable.getContentAt(2, 1)), 0.1);
             }
         });
+    }
+    
+    @Test
+    public void testDataSelectionActions() throws Exception {
+        
+        final ExtSed sed = new ExtSed("sed");
+        sed.addSegment(createSampleSegment());
+        sed.addSegment(createSampleSegment(new double[] {1}, new double[] {2}));
+        sedManager.add(sed);
+
+        // verify selected sed
+        invokeWithRetry(10, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertEquals(mbView.getTitle(), mbWindow.getTitle());
+                assertEquals(sed, mbView.selectedSed);
+                assertEquals(2, mbView.selectedTables.size());
+                assertEquals(2, starTableList.getSize());
+                assertEquals(3, plotterTable.getRowCount());
+                assertEquals(3, dataTable.getRowCount());
+                assertEquals(2, segmentTable.getRowCount());
+            }
+        });
+        
+        // Select some rows in the plotter data table
+        plotterTable.addRowToSelection(0);
+        plotterTable.addRowToSelection(1);
+        
+        // dataTable should have the same selected rows
+        dataTable.rowsAreSelected(0,1).check();
+        
+        // Select some rows the the dataTable
+        dataTable.selectRow(2);
+        dataTable.addRowToSelection(0);
+        
+        // Plotter data table should have same rows selected
+        plotterTable.rowsAreSelected(2,0).check();
+        
+        // Click select all button
+        mbWindow.getButton("Select All").click();
+        
+        // Everything should be selected
+        plotterTable.rowsAreSelected(0,1,2).check();
+        dataTable.rowsAreSelected(0,1,2).check();
+        segmentTable.rowsAreSelected(0,1).check();
+        
+        // Clear selections
+        plotterTable.clearSelection();
+        dataTable.clearSelection();
+        segmentTable.clearSelection();
+        
+        // select 0th index in tables
+        plotterTable.selectRow(0);
+        segmentTable.selectRow(0);
+        
+        // Invert selection
+        mbWindow.getButton("Invert Selection").click();
+        
+        // verify inversion
+        plotterTable.rowsAreSelected(1,2).check();
+        dataTable.rowsAreSelected(1,2).check();
+        segmentTable.rowsAreSelected(1).check();
+        
+        assertFalse(plotterTable.rowIsSelected(0).isTrue());
+        assertFalse(dataTable.rowIsSelected(0).isTrue());
+        assertFalse(segmentTable.rowIsSelected(0).isTrue());
     }
 }

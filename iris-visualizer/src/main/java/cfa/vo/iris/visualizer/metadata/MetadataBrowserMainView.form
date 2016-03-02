@@ -156,6 +156,9 @@
         <Property name="text" type="java.lang.String" value="Invert Selection"/>
         <Property name="actionCommand" type="java.lang.String" value=""/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="invertSelectionButtonActionPerformed"/>
+      </Events>
     </Component>
     <Container class="javax.swing.JPanel" name="dataPane">
       <Properties>
@@ -194,7 +197,7 @@
             <Property name="name" type="java.lang.String" value="dataTabsPane" noResource="true"/>
           </Properties>
           <AccessibilityProperties>
-            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="Point Metadata"/>
+            <Property name="AccessibleContext.accessibleName" type="java.lang.String" value=""/>
           </AccessibilityProperties>
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
@@ -202,8 +205,8 @@
             <Container class="javax.swing.JPanel" name="plotterMetadataPanel">
               <Constraints>
                 <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
-                  <JTabbedPaneConstraints tabName="Plotter Data">
-                    <Property name="tabTitle" type="java.lang.String" value="Plotter Data"/>
+                  <JTabbedPaneConstraints tabName="Data">
+                    <Property name="tabTitle" type="java.lang.String" value="Data"/>
                   </JTabbedPaneConstraints>
                 </Constraint>
               </Constraints>
@@ -219,7 +222,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="plotterMetadataScrollPane" alignment="0" pref="450" max="32767" attributes="0"/>
+                      <Component id="plotterMetadataScrollPane" alignment="0" pref="456" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -254,7 +257,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="pointMetadataScrollPane" alignment="0" pref="450" max="32767" attributes="0"/>
+                      <Component id="pointMetadataScrollPane" alignment="0" pref="456" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -264,6 +267,9 @@
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
                     <Component class="cfa.vo.iris.visualizer.stil.IrisStarJTable" name="pointStarJTable">
+                      <BindingProperties>
+                        <BindingProperty name="selectionModel" source="plotterStarJTable" sourcePath="${selectionModel}" target="pointStarJTable" targetPath="selectionModel" updateStrategy="0" immediately="false"/>
+                      </BindingProperties>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -286,7 +292,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="segmentMetadataScrollPane" alignment="0" pref="450" max="32767" attributes="0"/>
+                      <Component id="segmentMetadataScrollPane" alignment="0" pref="456" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
