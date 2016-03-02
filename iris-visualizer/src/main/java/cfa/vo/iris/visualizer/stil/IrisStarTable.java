@@ -19,19 +19,22 @@ package cfa.vo.iris.visualizer.stil;
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.utils.Default;
-import uk.ac.starlink.table.JoinStarTable;
+import uk.ac.starlink.table.EmptyStarTable;
 import uk.ac.starlink.table.StarTable;
+import uk.ac.starlink.table.WrapperStarTable;
 
-public class IrisStarTable extends JoinStarTable {
+public class IrisStarTable extends WrapperStarTable {
+
+    private static final StarTable EMPTY_STARTABLE = new EmptyStarTable();
     
-    private StarTable dataTable;
+    private volatile StarTable dataTable;
     private SegmentStarTable plotterTable;
     
-    public IrisStarTable(SegmentStarTable plotterTable, StarTable dataTable)
+    public IrisStarTable(SegmentStarTable plotterTable)
     {
-        super(new StarTable[] {plotterTable, dataTable});
+        super(plotterTable);
         
-        this.dataTable = dataTable;
+        this.dataTable = EMPTY_STARTABLE;
         this.plotterTable = plotterTable;
         
         setName(plotterTable.getName());
@@ -39,6 +42,10 @@ public class IrisStarTable extends JoinStarTable {
     
     public StarTable getDataTable() {
         return dataTable;
+    }
+    
+    public void setDataTable(StarTable dataTable) {
+        this.dataTable = dataTable;
     }
     
     public SegmentStarTable getPlotterTable() {

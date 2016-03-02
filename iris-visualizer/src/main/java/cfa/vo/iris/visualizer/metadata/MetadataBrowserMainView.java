@@ -93,6 +93,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private void setDataTables() {
         
         List<IrisStarTable> newTables = new ArrayList<>();
+        List<StarTable> metadataTables = new ArrayList<>();
         
         // If no SED selected then just leave an empty list
         if (selectedSed != null) {
@@ -102,10 +103,11 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             for (int i=0; i<selectedSed.getNumberOfSegments(); i++) {
                 SegmentLayer layer = prefs.getSegmentPreferences(selectedSed.getSegment(i));
                 newTables.add(layer.getInSource());
+                metadataTables.add(layer.getInSource().getDataTable());
             }
         }
         
-        segmentJTable.setModel(new IrisMetadataTableModel((List<StarTable>)(List<?>) newTables));
+        segmentJTable.setModel(new IrisMetadataTableModel(metadataTables));
         StarJTable.configureColumnWidths(segmentJTable, 200, 10);
         
         setSelectedTables(newTables);

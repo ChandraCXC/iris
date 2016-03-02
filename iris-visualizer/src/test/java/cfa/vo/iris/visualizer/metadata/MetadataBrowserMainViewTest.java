@@ -30,9 +30,6 @@ import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.visualizer.VisualizerComponent;
 import cfa.vo.sedlib.Segment;
-import cfa.vo.sedlib.io.SedFormat;
-import cfa.vo.testdata.TestData;
-
 import static org.junit.Assert.*;
 
 import static cfa.vo.iris.test.unit.TestUtils.*;
@@ -98,7 +95,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         sedManager.select(sed);
 
         // verify selected sed
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
@@ -113,7 +110,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         sed.addSegment(seg1);
 
         // 1 segment should have been added to table
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertEquals(1, mbView.selectedTables.size());
@@ -131,7 +128,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         sed.addSegment(seg2);
         
         // 2 segments should have been added to table, first segment still selected
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertEquals(2, mbView.selectedTables.size());
@@ -145,7 +142,6 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
                 assertEquals(1, Double.parseDouble((String) dataTable.getContentAt(0, 1)), 0.1);
                 assertEquals(2, Double.parseDouble((String) dataTable.getContentAt(1, 1)), 0.1);
                 assertEquals(3, Double.parseDouble((String) dataTable.getContentAt(2, 1)), 0.1);
-
             }
         });
         
@@ -153,7 +149,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         starTableList.selectIndex(1);
         
         // 2 segments should have been added to table, first segment still selected
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertEquals(100, Double.parseDouble((String) plotterTable.getContentAt(0, 1)), 0.1);
@@ -170,7 +166,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         
         // Verify changes in the browser
         // 2 segments should have been added to table, first segment still selected
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertTrue(StringUtils.contains(mbWindow.getTitle(), sed2.getId()));
@@ -182,7 +178,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         
         // Window changes on rename
         sedManager.rename(sed2, "purplemonkeydishwasher");
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertTrue(StringUtils.contains(mbWindow.getTitle(), sed2.getId()));
