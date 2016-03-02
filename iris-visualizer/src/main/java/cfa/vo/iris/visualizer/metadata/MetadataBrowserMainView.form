@@ -50,10 +50,21 @@
             <Property name="name" type="java.lang.String" value="" noResource="true"/>
           </Properties>
           <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="selectAllMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Select All"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="selectAllButtonActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="invertSelectionMenuItem">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Invert Selection"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="invertSelectionButtonActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="applyMaskMenuItem">
               <Properties>
@@ -222,7 +233,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="plotterMetadataScrollPane" alignment="0" pref="456" max="32767" attributes="0"/>
+                      <Component id="plotterMetadataScrollPane" alignment="0" pref="462" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -257,7 +268,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="pointMetadataScrollPane" alignment="0" pref="456" max="32767" attributes="0"/>
+                      <Component id="pointMetadataScrollPane" alignment="0" pref="462" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -292,7 +303,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="segmentMetadataScrollPane" alignment="0" pref="456" max="32767" attributes="0"/>
+                      <Component id="segmentMetadataScrollPane" alignment="0" pref="462" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>

@@ -243,6 +243,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         createNewColumnMenuItem = new javax.swing.JMenuItem();
         restoreSetMenuItem = new javax.swing.JMenuItem();
         selectMenu = new javax.swing.JMenu();
+        selectAllMenuItem = new javax.swing.JMenuItem();
         invertSelectionMenuItem = new javax.swing.JMenuItem();
         applyMaskMenuItem = new javax.swing.JMenuItem();
 
@@ -297,7 +298,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         );
         plotterMetadataPanelLayout.setVerticalGroup(
             plotterMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(plotterMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
+            .addComponent(plotterMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
         );
 
         dataTabsPane.addTab("Data", plotterMetadataPanel);
@@ -315,7 +316,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         );
         pointMetadataPanelLayout.setVerticalGroup(
             pointMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pointMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
+            .addComponent(pointMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
         );
 
         dataTabsPane.addTab("Point Metadata", pointMetadataPanel);
@@ -332,7 +333,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         );
         segmentMetadataPanelLayout.setVerticalGroup(
             segmentMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(segmentMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
+            .addComponent(segmentMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
         );
 
         dataTabsPane.addTab("Segment Metadata", segmentMetadataPanel);
@@ -403,7 +404,20 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         selectMenu.setText("Select");
         selectMenu.setName(""); // NOI18N
 
+        selectAllMenuItem.setText("Select All");
+        selectAllMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectAllButtonActionPerformed(evt);
+            }
+        });
+        selectMenu.add(selectAllMenuItem);
+
         invertSelectionMenuItem.setText("Invert Selection");
+        invertSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                invertSelectionButtonActionPerformed(evt);
+            }
+        });
         selectMenu.add(invertSelectionMenuItem);
 
         applyMaskMenuItem.setText("Apply Mask");
@@ -511,6 +525,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private javax.swing.JPanel segmentMetadataPanel;
     private javax.swing.JScrollPane segmentMetadataScrollPane;
     private javax.swing.JButton selectAllButton;
+    private javax.swing.JMenuItem selectAllMenuItem;
     private javax.swing.JMenu selectMenu;
     private javax.swing.JButton selectPointsButton;
     private javax.swing.JList<IrisStarTable> starTableList;
