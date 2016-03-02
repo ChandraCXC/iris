@@ -471,7 +471,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private void invertSelectionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_invertSelectionButtonActionPerformed
         
         int[] dataSelectedIndexes = plotterStarJTable.getSelectedRows();
-        int[] segmentSelectedIndexes = segmentJTable.getSelectedRows();
         
         selectAllButtonActionPerformed(null);
         
@@ -480,22 +479,13 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             plotterStarJTable.removeRowSelectionInterval(sel, sel);
         }
         plotterStarJTable.getSelectionModel().setValueIsAdjusting(false);
-        
-        segmentJTable.getSelectionModel().setValueIsAdjusting(true);
-        for (int sel : segmentSelectedIndexes) {
-            segmentJTable.removeRowSelectionInterval(sel, sel);
-        }
-        segmentJTable.getSelectionModel().setValueIsAdjusting(false);
-        
     }//GEN-LAST:event_invertSelectionButtonActionPerformed
 
     private void selectAllButtonActionPerformed(
             java.awt.event.ActionEvent evt) {// GEN-FIRST:event_selectAllButtonActionPerformed
-        
         // Will select everything in the plotter table as the selection models
         // are bound.
         plotterStarJTable.selectAll();
-        segmentJTable.selectAll();
         
     }// GEN-LAST:event_selectAllButtonActionPerformed
 

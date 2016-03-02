@@ -249,16 +249,13 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         // Everything should be selected
         plotterTable.rowsAreSelected(0,1,2).check();
         dataTable.rowsAreSelected(0,1,2).check();
-        segmentTable.rowsAreSelected(0,1).check();
         
         // Clear selections
         plotterTable.clearSelection();
         dataTable.clearSelection();
-        segmentTable.clearSelection();
         
         // select 0th index in tables
         plotterTable.selectRow(0);
-        segmentTable.selectRow(0);
         
         // Invert selection
         mbWindow.getButton("Invert Selection").click();
@@ -266,10 +263,8 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         // verify inversion
         plotterTable.rowsAreSelected(1,2).check();
         dataTable.rowsAreSelected(1,2).check();
-        segmentTable.rowsAreSelected(1).check();
         
         assertFalse(plotterTable.rowIsSelected(0).isTrue());
         assertFalse(dataTable.rowIsSelected(0).isTrue());
-        assertFalse(segmentTable.rowIsSelected(0).isTrue());
     }
 }
