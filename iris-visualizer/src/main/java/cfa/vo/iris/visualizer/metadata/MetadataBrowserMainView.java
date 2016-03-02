@@ -220,6 +220,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         selectPointsButton = new javax.swing.JButton();
         applyMaskButton = new javax.swing.JButton();
         selectAllButton = new javax.swing.JButton();
+        clearSelectionButton = new javax.swing.JButton();
         invertSelectionButton = new javax.swing.JButton();
         dataPane = new javax.swing.JPanel();
         dataTabsPane = new javax.swing.JTabbedPane();
@@ -244,6 +245,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         restoreSetMenuItem = new javax.swing.JMenuItem();
         selectMenu = new javax.swing.JMenu();
         selectAllMenuItem = new javax.swing.JMenuItem();
+        clearSelectionMenuItem = new javax.swing.JMenuItem();
         invertSelectionMenuItem = new javax.swing.JMenuItem();
         applyMaskMenuItem = new javax.swing.JMenuItem();
 
@@ -266,6 +268,13 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         selectAllButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 selectAllButtonActionPerformed(evt);
+            }
+        });
+
+        clearSelectionButton.setText("Clear Selection");
+        clearSelectionButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearSelectionButtonActionPerformed(evt);
             }
         });
 
@@ -412,6 +421,14 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         });
         selectMenu.add(selectAllMenuItem);
 
+        clearSelectionMenuItem.setText("Clear Selection");
+        clearSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearSelectionButtonActionPerformed(evt);
+            }
+        });
+        selectMenu.add(clearSelectionMenuItem);
+
         invertSelectionMenuItem.setText("Invert Selection");
         invertSelectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -435,6 +452,8 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(selectAllButton, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(clearSelectionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(invertSelectionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(filterExpressionField, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -455,6 +474,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
                     .addComponent(selectPointsButton)
                     .addComponent(applyMaskButton)
                     .addComponent(selectAllButton)
+                    .addComponent(clearSelectionButton)
                     .addComponent(invertSelectionButton))
                 .addContainerGap())
         );
@@ -481,6 +501,10 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         plotterStarJTable.getSelectionModel().setValueIsAdjusting(false);
     }//GEN-LAST:event_invertSelectionButtonActionPerformed
 
+    private void clearSelectionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearSelectionButtonActionPerformed
+        plotterStarJTable.clearSelection();
+    }//GEN-LAST:event_clearSelectionButtonActionPerformed
+
     private void selectAllButtonActionPerformed(
             java.awt.event.ActionEvent evt) {// GEN-FIRST:event_selectAllButtonActionPerformed
         // Will select everything in the plotter table as the selection models
@@ -493,6 +517,8 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private javax.swing.JButton applyMaskButton;
     private javax.swing.JMenuItem applyMaskMenuItem;
     private javax.swing.JMenuItem broadcastToSampMenuItem;
+    private javax.swing.JButton clearSelectionButton;
+    private javax.swing.JMenuItem clearSelectionMenuItem;
     private javax.swing.JMenuItem createNewColumnMenuItem;
     private javax.swing.JMenuItem createSubsetMenuItem;
     private javax.swing.JPanel dataPane;

@@ -251,8 +251,11 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         dataTable.rowsAreSelected(0,1,2).check();
         
         // Clear selections
-        plotterTable.clearSelection();
-        dataTable.clearSelection();
+        mbWindow.getButton("Clear Selection").click();
+        
+        // Verify selections are empty
+        plotterTable.selectionIsEmpty().check();
+        dataTable.selectionIsEmpty().check();
         
         // select 0th index in tables
         plotterTable.selectRow(0);

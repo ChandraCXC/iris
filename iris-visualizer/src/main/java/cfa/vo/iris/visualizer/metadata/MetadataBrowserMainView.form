@@ -58,6 +58,14 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="selectAllButtonActionPerformed"/>
               </Events>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="clearSelectionMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Clear Selection"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="clearSelectionButtonActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="invertSelectionMenuItem">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Invert Selection"/>
@@ -108,6 +116,8 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="selectAllButton" min="-2" pref="122" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
+              <Component id="clearSelectionButton" min="-2" pref="122" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="invertSelectionButton" min="-2" pref="119" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
               <Component id="filterExpressionField" min="-2" pref="312" max="-2" attributes="0"/>
@@ -130,6 +140,7 @@
                   <Component id="selectPointsButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="applyMaskButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="selectAllButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="clearSelectionButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="invertSelectionButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -160,6 +171,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="selectAllButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="clearSelectionButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Clear Selection"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="clearSelectionButtonActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JButton" name="invertSelectionButton">
