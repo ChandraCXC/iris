@@ -20,6 +20,9 @@ import java.util.logging.Logger;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
@@ -93,7 +96,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private void setDataTables() {
         
         List<IrisStarTable> newTables = new ArrayList<>();
-        List<StarTable> metadataTables = new ArrayList<>();
         
         // If no SED selected then just leave an empty list
         if (selectedSed != null) {
@@ -103,11 +105,10 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             for (int i=0; i<selectedSed.getNumberOfSegments(); i++) {
                 SegmentLayer layer = prefs.getSegmentPreferences(selectedSed.getSegment(i));
                 newTables.add(layer.getInSource());
-                metadataTables.add(layer.getInSource().getDataTable());
             }
         }
         
-        segmentJTable.setModel(new IrisMetadataTableModel(metadataTables));
+        segmentJTable.setModel(new IrisMetadataTableModel((List<StarTable>)(List<?>) newTables));
         StarJTable.configureColumnWidths(segmentJTable, 200, 10);
         
         setSelectedTables(newTables);
@@ -491,30 +492,48 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_handleStarTableSelection
 
     private void invertSelectionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_invertSelectionButtonActionPerformed
+        JTable table = getSelectedJTable();
+        if (table == null) {
+            return;
+        }
         
-        int[] dataSelectedIndexes = plotterStarJTable.getSelectedRows();
+        int[] dataSelectedIndexes = table.getSelectedRows();
         
         selectAllButtonActionPerformed(null);
         
-        plotterStarJTable.getSelectionModel().setValueIsAdjusting(true);
+        table.getSelectionModel().setValueIsAdjusting(true);
         for (int sel : dataSelectedIndexes) {
-            plotterStarJTable.removeRowSelectionInterval(sel, sel);
+            table.removeRowSelectionInterval(sel, sel);
         }
-        plotterStarJTable.getSelectionModel().setValueIsAdjusting(false);
+        table.getSelectionModel().setValueIsAdjusting(false);
     }//GEN-LAST:event_invertSelectionButtonActionPerformed
 
     private void clearSelectionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearSelectionButtonActionPerformed
-        plotterStarJTable.clearSelection();
+        JTable table = getSelectedJTable();
+        if (table == null) {
+            return;
+        }
+        table.clearSelection();
     }//GEN-LAST:event_clearSelectionButtonActionPerformed
 
     private void selectAllButtonActionPerformed(
             java.awt.event.ActionEvent evt) {// GEN-FIRST:event_selectAllButtonActionPerformed
-        // Will select everything in the plotter table as the selection models
-        // are bound.
-        plotterStarJTable.selectAll();
-        
+        JTable table = getSelectedJTable();
+        if (table == null) {
+            return;
+        }
+        table.selectAll();
     }// GEN-LAST:event_selectAllButtonActionPerformed
 
+    private JTable getSelectedJTable() {
+        JPanel panel = (JPanel) dataTabsPane.getSelectedComponent();
+        if (panel == null) {
+            return null;
+        }
+        
+        return (JTable) ((JScrollPane) panel.getComponent(0)).getViewport().getComponent(0);
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton applyMaskButton;
     private javax.swing.JMenuItem applyMaskMenuItem;

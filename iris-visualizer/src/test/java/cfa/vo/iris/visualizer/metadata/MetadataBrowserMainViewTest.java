@@ -73,6 +73,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         starTableList = dataPanel.getListBox();
         
         // Data table with plotter info
+        dataPanel.getTabGroup().selectTab("Data");
         plotterTable = dataPanel.getTabGroup().getSelectedTab().getTable();
         
         // Data table with all info
@@ -82,6 +83,8 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         // Data table with segment info
         dataPanel.getTabGroup().selectTab("Segment Metadata");
         segmentTable = dataPanel.getTabGroup().getSelectedTab().getTable();
+        
+        dataPanel.getTabGroup().selectTab("Data");
     }
 
     @Test
@@ -242,9 +245,10 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         // Click select all button
         mbWindow.getButton("Select All").click();
         
-        // Everything should be selected
+        // Everything should be selected, nothing in the segment tab
         plotterTable.rowsAreSelected(0,1,2).check();
         dataTable.rowsAreSelected(0,1,2).check();
+        segmentTable.rowsAreSelected().check();
         
         // Clear selections
         mbWindow.getButton("Clear Selection").click();
@@ -265,5 +269,18 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         
         assertFalse(plotterTable.rowIsSelected(0).isTrue());
         assertFalse(dataTable.rowIsSelected(0).isTrue());
+        
+        // Set to segment tab
+        mbWindow.getButton("Clear Selection").click();
+        dataPanel.getTabGroup().selectTab("Segment Metadata");
+        segmentTable.selectionIsEmpty().check();
+        
+        mbWindow.getButton("Select All").click();
+        segmentTable.rowsAreSelected(0,1).check();
+        
+        // Verify other tables still empty
+        plotterTable.selectionIsEmpty().check();
+        dataTable.selectionIsEmpty().check();
+        
     }
 }
