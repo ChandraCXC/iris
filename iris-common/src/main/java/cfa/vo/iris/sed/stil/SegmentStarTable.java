@@ -23,6 +23,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.ColumnStarTable;
+import uk.ac.starlink.table.ConstantColumn;
 import uk.ac.starlink.table.PrimitiveArrayColumn;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.units.UnitsManager;
@@ -83,6 +84,10 @@ public class SegmentStarTable extends ColumnStarTable {
             }
         }
         
+        // Add a constant column for name
+        this.addColumn(new ConstantColumn(Column.Segment_Id.getColumnInfo(), getName()));
+        
+        // Add spectral, flux, and original flux values
         setSpecValues(segment.getSpectralAxisValues());
         setFluxValues(segment.getFluxAxisValues());
         setOriginalFluxValues(segment.getFluxAxisValues());
@@ -132,11 +137,16 @@ public class SegmentStarTable extends ColumnStarTable {
         
         // This may change Y values, so update them accordingly.
         setFluxUnits(fluxUnits);
+        for (int i=0; i<this.getColumnCount(); i++) {
+            if (StringUtils.contains(getColumnInfo(i).getUtype(), "spec"))
+                getColumnInfo(i).setUnitString(newUnit.toString());
+        }
     }
     
     public void setFluxUnits(YUnit newUnit) throws UnitsException {
         if (specValues == null) return;
         
+        // Convert units
         if (fluxValues != null) {
             setFluxValues(units.convertY(fluxValues, specValues, fluxUnits, specUnits, newUnit));
         }
@@ -150,7 +160,12 @@ public class SegmentStarTable extends ColumnStarTable {
             setFluxErrValuesLo(units.convertY(fluxErrValuesLo, specValues, fluxUnits, specUnits, newUnit));
         }
         
+        // Update values
         fluxUnits = newUnit;
+        for (int i=0; i<this.getColumnCount(); i++) {
+            if (StringUtils.contains(getColumnInfo(i).getUtype(), "flux"))
+                getColumnInfo(i).setUnitString(newUnit.toString());
+        }
     }
 
     public XUnit getSpecUnits() {
@@ -169,60 +184,60 @@ public class SegmentStarTable extends ColumnStarTable {
      */
     
     void setSpecValues(double[] specValues) {
-        removeColumn(Column.SPECTRAL_COL);
+        removeColumn(Column.Spectral_Value);
         this.specValues = specValues;
         addColumn(PrimitiveArrayColumn.makePrimitiveColumn(
-            Column.SPECTRAL_COL.getColumnInfo(), (Object) specValues));
+            Column.Spectral_Value.getColumnInfo(), (Object) specValues));
     }
 
     void setFluxValues(double[] fluxValues) {
-        removeColumn(Column.FLUX_COL);
+        removeColumn(Column.Flux_Value);
         this.fluxValues = fluxValues;
         addColumn(PrimitiveArrayColumn.makePrimitiveColumn(
-            Column.FLUX_COL.getColumnInfo(), (Object) fluxValues));
+            Column.Flux_Value.getColumnInfo(), (Object) fluxValues));
     }
     
     void setOriginalFluxValues(double[] originalFluxValues) {
-        removeColumn(Column.ORIGINAL_FLUX_COL);
+        removeColumn(Column.Original_Flux_Value);
         this.originalFluxValues = originalFluxValues;
         addColumn(PrimitiveArrayColumn.makePrimitiveColumn(
-            Column.ORIGINAL_FLUX_COL.getColumnInfo(), (Object) originalFluxValues));
+            Column.Original_Flux_Value.getColumnInfo(), (Object) originalFluxValues));
     }
 
     void setSpecErrValues(double[] specErrValues) {
-        removeColumn(Column.SPECTRAL_ERR_HI);
+        removeColumn(Column.Spectral_Error);
         this.specErrValues = specErrValues;
         
         if (!isEmpty(specErrValues))
             addColumn(PrimitiveArrayColumn.makePrimitiveColumn(
-                Column.SPECTRAL_ERR_HI.getColumnInfo(), (Object) specErrValues));
+                Column.Spectral_Error.getColumnInfo(), (Object) specErrValues));
     }
 
     void setSpecErrValuesLo(double[] specErrValuesLo) {
-        removeColumn(Column.SPECTRAL_ERR_LO);
+        removeColumn(Column.Spectral_Error_Low);
         this.specErrValuesLo = specErrValuesLo;
         
         if (!isEmpty(specErrValuesLo))
             addColumn(PrimitiveArrayColumn.makePrimitiveColumn(
-                Column.SPECTRAL_ERR_LO.getColumnInfo(), (Object) specErrValuesLo));
+                Column.Spectral_Error_Low.getColumnInfo(), (Object) specErrValuesLo));
     }
 
     void setFluxErrValues(double[] fluxErrValues) {
-        removeColumn(Column.FLUX_ERR_HI);
+        removeColumn(Column.Flux_Error);
         this.fluxErrValues = fluxErrValues;
         
         if (!isEmpty(fluxErrValues))
             addColumn(PrimitiveArrayColumn.makePrimitiveColumn(
-                Column.FLUX_ERR_HI.getColumnInfo(), (Object) fluxErrValues));
+                Column.Flux_Error.getColumnInfo(), (Object) fluxErrValues));
     }
 
     void setFluxErrValuesLo(double[] fluxErrValuesLo) {
-        removeColumn(Column.FLUX_ERR_LO);
+        removeColumn(Column.FLux_Error_Low);
         this.fluxErrValuesLo = fluxErrValuesLo;
         
         if (!isEmpty(fluxErrValuesLo))
             addColumn(PrimitiveArrayColumn.makePrimitiveColumn(
-                Column.FLUX_ERR_LO.getColumnInfo(), (Object) fluxErrValuesLo));
+                Column.FLux_Error_Low.getColumnInfo(), (Object) fluxErrValuesLo));
     }
     
     private int removeColumn(Column column) {
@@ -247,6 +262,10 @@ public class SegmentStarTable extends ColumnStarTable {
 
     protected double[] getFluxValues() {
         return fluxValues;
+    }
+    
+    protected double[] getOriginalFluxValues() {
+        return originalFluxValues;
     }
 
     protected double[] getSpecErrValues() {
@@ -287,22 +306,23 @@ public class SegmentStarTable extends ColumnStarTable {
      *
      */
     public enum Column {
-        SPECTRAL_COL("X axis values", "iris.spec.value"),
-        SPECTRAL_ERR_HI("X axis error values", "iris.spec.value"),
-        SPECTRAL_ERR_LO("X axis low error values", "iris.spec.value"),
-        FLUX_COL("Y axis values", "iris.flux.value"),
-        FLUX_ERR_HI("Y axis error values", "iris.flux.value"),
-        FLUX_ERR_LO("Y axis low error values", "iris.flux.value"),
-        ORIGINAL_FLUX_COL("Original flux values", "iris.flux.value.original");
+        Segment_Id("Segment ID", "iris.segment.id", String.class),
+        Spectral_Value("X axis values", "iris.spec.value", Double.class),
+        Spectral_Error("X axis error values", "iris.spec.value", Double.class),
+        Spectral_Error_Low("X axis low error values", "iris.spec.value", Double.class),
+        Flux_Value("Y axis values", "iris.flux.value", Double.class),
+        Flux_Error("Y axis error values", "iris.flux.value", Double.class),
+        FLux_Error_Low("Y axis low error values", "iris.flux.value", Double.class),
+        Original_Flux_Value("Original flux values", "iris.flux.value.original", Double.class);
         
         public String description;
         public String utype;
         private ColumnInfo columnInfo;
         
-        private Column(String description, String utype) {
+        private Column(String description, String utype, Class<?> clazz) {
             this.description = description;
             this.utype = utype;
-            this.columnInfo = new ColumnInfo(name(), Double.class, description);
+            this.columnInfo = new ColumnInfo(name(), clazz, description);
             columnInfo.setUtype(utype);
         }
         
