@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 
 import cfa.vo.iris.sed.stil.SegmentStarTable.Column;
 import cfa.vo.iris.units.UnitsException;
-import cfa.vo.iris.visualizer.stil.IrisStarTable;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
 public class SegmentLayer {

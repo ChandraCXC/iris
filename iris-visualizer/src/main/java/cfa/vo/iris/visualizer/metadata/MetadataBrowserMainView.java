@@ -32,7 +32,8 @@ import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
 import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerListener;
-import cfa.vo.iris.visualizer.stil.IrisStarTable;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;

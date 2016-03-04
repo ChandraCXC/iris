@@ -24,7 +24,7 @@ import org.junit.Test;
 
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
-import cfa.vo.iris.visualizer.stil.IrisStarTableAdapter;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.Target;
 import cfa.vo.sedlib.TextParam;

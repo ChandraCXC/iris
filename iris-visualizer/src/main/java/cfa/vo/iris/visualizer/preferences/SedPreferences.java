@@ -30,7 +30,7 @@ import cfa.vo.iris.visualizer.plotter.ColorPalette;
 import cfa.vo.iris.visualizer.plotter.HSVColorPalette;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
-import cfa.vo.iris.visualizer.stil.IrisStarTableAdapter;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedNoDataException;
 
