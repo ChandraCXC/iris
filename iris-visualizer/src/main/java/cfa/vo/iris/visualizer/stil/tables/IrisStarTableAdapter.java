@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cfa.vo.iris.visualizer.stil;
+package cfa.vo.iris.visualizer.stil.tables;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
