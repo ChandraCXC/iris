@@ -21,6 +21,9 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.events.MultipleSegmentEvent;
 import cfa.vo.iris.events.MultipleSegmentListener;
@@ -249,6 +252,7 @@ public class VisualizerComponentPreferences {
 
         @Override
         public void process(Segment segment, SegmentPayload payload) {
+            System.out.println(ReflectionToStringBuilder.toString(segment));
             ExtSed sed = payload.getSed();
             SedCommand command = payload.getSedCommand();
             

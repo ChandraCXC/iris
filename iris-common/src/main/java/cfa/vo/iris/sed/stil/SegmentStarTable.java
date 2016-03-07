@@ -308,11 +308,11 @@ public class SegmentStarTable extends ColumnStarTable {
     public enum Column {
         Segment_Id("Segment ID", "iris.segment.id", String.class),
         Spectral_Value("X axis values", "iris.spec.value", Double.class),
-        Spectral_Error("X axis error values", "iris.spec.value", Double.class),
-        Spectral_Error_Low("X axis low error values", "iris.spec.value", Double.class),
+        Spectral_Error("X axis error values", "iris.spec.value.error", Double.class),
+        Spectral_Error_Low("X axis low error values", "iris.spec.value.error.low", Double.class),
         Flux_Value("Y axis values", "iris.flux.value", Double.class),
-        Flux_Error("Y axis error values", "iris.flux.value", Double.class),
-        FLux_Error_Low("Y axis low error values", "iris.flux.value", Double.class),
+        Flux_Error("Y axis error values", "iris.flux.value.error", Double.class),
+        FLux_Error_Low("Y axis low error values", "iris.flux.value.error.low", Double.class),
         Original_Flux_Value("Original flux values", "iris.flux.value.original", Double.class);
         
         public String description;

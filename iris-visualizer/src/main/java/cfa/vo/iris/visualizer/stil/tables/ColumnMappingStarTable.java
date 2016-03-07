@@ -33,7 +33,9 @@ public class ColumnMappingStarTable extends ColumnPermutedStarTable {
         
         // Verify input
         if (baseTable.getColumnCount() > metadataTable.getColumnCount()) {
-            throw new IllegalArgumentException("baseTable must have fewer columns than metadataTable");
+            throw new IllegalArgumentException("baseTable (" + 
+                       baseTable.getColumnCount() + " columns) must have fewer columns than metadataTable (" +
+                       metadataTable.getColumnCount() + ")");
         }
         
         // Init map to all -1

@@ -15,10 +15,10 @@ import uk.ac.starlink.table.StarTable;
 
 public class StackedStarTableTest {
     
+    ColumnMatcher matcher = new UtypeColumnMatcher();
+    
     @Test
     public void testStackedStarTable() throws Exception {
-        
-        ColumnMatcher matcher = new UtypeColumnMatcher();
         
         ColumnInfo c1 = new ColumnInfo("c1");
         ColumnInfo c2 = new ColumnInfo("c2");
@@ -59,6 +59,14 @@ public class StackedStarTableTest {
         assertEquals(2, test.getRowCount());
         ArrayUtils.assertEquals(new Object[] {1.0, 3.0, null, null}, test.getRow(0));
         ArrayUtils.assertEquals(new Object[] {null, 3.0, 2.0, 4.0}, test.getRow(1));
+    }
+    
+    @Test
+    public void testEmptyStarTable() throws Exception {
+        StackedStarTable test = new StackedStarTable(new ArrayList<StarTable>(), null);
+
+        assertEquals(0, test.getColumnCount());
+        assertEquals(0, test.getRowCount());
     }
 
 }
