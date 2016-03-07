@@ -8,8 +8,10 @@ public class UtypeColumnMatcher implements ColumnMatcher {
 
     @Override
     public boolean isCompatible(ColumnInfo c1, ColumnInfo c2) {
-        if (StringUtils.containsIgnoreCase(c1.getUtype(), c2.getUtype()) ||
-            StringUtils.containsIgnoreCase(c2.getUtype(), c1.getUtype())) 
+        if (StringUtils.isEmpty(c1.getUtype()) || StringUtils.isEmpty(c2.getUtype())) {
+            return false;
+        }
+        if (StringUtils.equalsIgnoreCase(c1.getUtype(), c2.getUtype()))
         {
             return true;
         }

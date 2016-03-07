@@ -23,6 +23,7 @@ import org.uispec4j.ListBox;
 import org.uispec4j.Panel;
 import org.uispec4j.Table;
 import org.uispec4j.Window;
+import org.uispec4j.utils.ArrayUtils;
 
 import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.sed.ExtSed;
@@ -213,7 +214,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         sed.addSegment(createSampleSegment());
         sed.addSegment(createSampleSegment(new double[] {1}, new double[] {2}));
         sedManager.add(sed);
-
+        
         // verify selected sed
         invokeWithRetry(10, 100, new Runnable() {
             @Override

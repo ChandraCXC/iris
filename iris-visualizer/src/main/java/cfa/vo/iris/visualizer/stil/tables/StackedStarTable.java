@@ -17,8 +17,7 @@ public class StackedStarTable extends WrapperStarTable {
     private ColumnMetadataStarTable metadataTable;
     private ColumnMappingStarTable[] dataTables;
 
-    public StackedStarTable(List<? extends StarTable> tables, ColumnMatcher matcher) 
-            throws IOException 
+    public StackedStarTable(List<? extends StarTable> tables, ColumnMatcher matcher)
     {
         super(null);
         
@@ -29,6 +28,10 @@ public class StackedStarTable extends WrapperStarTable {
             dataTables[i] = new ColumnMappingStarTable(tables.get(i), metadataTable, matcher);
         }
         
-        this.baseTable = new ConcatStarTable(metadataTable, dataTables);
+        try {
+            this.baseTable = new ConcatStarTable(metadataTable, dataTables);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 }
