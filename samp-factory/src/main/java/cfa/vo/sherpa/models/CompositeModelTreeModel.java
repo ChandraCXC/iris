@@ -19,7 +19,9 @@
  * and open the template in the editor.
  */
 
-package cfa.vo.sherpa;
+package cfa.vo.sherpa.models;
+
+import cfa.vo.sherpa.Parameter;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;

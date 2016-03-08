@@ -14,12 +14,22 @@
  * limitations under the License.
  */
 
-package cfa.vo.sherpa;
+package cfa.vo.sherpa.models;
+
+import cfa.vo.sherpa.Parameter;
+
+import java.util.List;
 
 /**
  *
  * @author olaurino
  */
-public interface Stat {
+public interface Model {
     String getName();
+
+    void setName(String name);
+
+    List<Parameter> getPars();
+
+    void addPar(Parameter par);
 }

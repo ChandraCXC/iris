@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012, 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,23 @@
  * limitations under the License.
  */
 
-package cfa.vo.sherpa;
+package cfa.vo.sherpa.models;
+
+import cfa.vo.sherpa.models.Model;
+
+import java.util.List;
 
 /**
  *
  * @author olaurino
  */
-public interface NelderMead extends Method {
-    
+public interface CompositeModel {
+
+    String getName();
+
+    void setName(String name);
+
+    List<Model> getParts();
+
+    void addPart(Model model);
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012, 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cfa.vo.sherpa;
+package cfa.vo.sherpa.models;
 
 import java.util.Arrays;
 
@@ -22,11 +22,11 @@ import java.util.Arrays;
  *
  * @author olaurino
  */
-public class PowerLaw1D extends AbstractModel implements Model {
+public class Polynom1D extends AbstractModel implements Model {
 
-    public PowerLaw1D(String id) {
-        super("powlaw1d", id);
-        String[] parNames = new String[]{"gamma", "ampl", "ref"};
+    public Polynom1D(String id) {
+        super("polynom1d", id);
+        String[] parNames = new String[]{"c0", "c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "offset"};
         addParams(Arrays.asList(parNames));
     }
 

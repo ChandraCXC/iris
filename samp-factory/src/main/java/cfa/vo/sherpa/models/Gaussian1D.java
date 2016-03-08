@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package cfa.vo.sherpa;
+package cfa.vo.sherpa.models;
+
+import java.util.Arrays;
 
 /**
- * Created by olaurino on 11/14/14.
+ *
+ * @author olaurino
  */
-public interface UserModel {
-    public String getName();
+public class Gaussian1D extends AbstractModel implements Model {
 
-    public void setName(String name);
+    public Gaussian1D(String id) {
+        super("gauss1d", id);
+        String[] parNames = new String[]{"fwhm", "pos", "ampl"};
+        addParams(Arrays.asList(parNames));
+    }
 
-    public String getFile();
-
-    public void setFile(String path);
-
-    public String getFunction();
-
-    public void setFunction(String function);
 }

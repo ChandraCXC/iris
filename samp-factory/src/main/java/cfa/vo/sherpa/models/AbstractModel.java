@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package cfa.vo.sherpa;
+package cfa.vo.sherpa.models;
 
 import cfa.vo.interop.SAMPFactory;
+import cfa.vo.sherpa.Parameter;
+import cfa.vo.sherpa.models.Model;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

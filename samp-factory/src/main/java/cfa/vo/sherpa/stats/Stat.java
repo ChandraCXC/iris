@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package cfa.vo.sherpa;
-
-import java.util.Arrays;
+package cfa.vo.sherpa.stats;
 
 /**
  *
  * @author olaurino
  */
-public class Gaussian1D extends AbstractModel implements Model {
-
-    public Gaussian1D(String id) {
-        super("gauss1d", id);
-        String[] parNames = new String[]{"fwhm", "pos", "ampl"};
-        addParams(Arrays.asList(parNames));
-    }
-
+public interface Stat {
+    String getName();
 }

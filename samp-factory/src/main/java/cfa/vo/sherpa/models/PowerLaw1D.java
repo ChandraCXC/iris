@@ -14,12 +14,20 @@
  * limitations under the License.
  */
 
-package cfa.vo.sherpa;
+package cfa.vo.sherpa.models;
+
+import java.util.Arrays;
 
 /**
  *
  * @author olaurino
  */
-public interface LevMar extends Method {
-    
+public class PowerLaw1D extends AbstractModel implements Model {
+
+    public PowerLaw1D(String id) {
+        super("powlaw1d", id);
+        String[] parNames = new String[]{"gamma", "ampl", "ref"};
+        addParams(Arrays.asList(parNames));
+    }
+
 }

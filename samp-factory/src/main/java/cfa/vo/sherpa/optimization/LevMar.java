@@ -14,24 +14,12 @@
  * limitations under the License.
  */
 
-package cfa.vo.sherpa;
+package cfa.vo.sherpa.optimization;
 
 /**
  *
  * @author olaurino
  */
-public enum OptimizationMethod {
-    MonteCarlo(MonCar.class),
-    LevenbergMarquardt(LevMar.class),
-    NelderMeadSimplex(NelderMead.class);
-
-    private Class<? extends Method> clazz;
-
-    private OptimizationMethod(Class<? extends Method> clazz) {
-        this.clazz = clazz;
-    }
-
-    public Class<? extends Method> getMethodClass() {
-        return clazz;
-    }
+public interface LevMar extends Method {
+    
 }

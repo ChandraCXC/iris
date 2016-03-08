@@ -29,6 +29,8 @@ import cfa.vo.sed.builder.photfilters.EnergyBin;
 import cfa.vo.sed.builder.photfilters.PassBand;
 import cfa.vo.sed.builder.photfilters.PhotometryFilter;
 import cfa.vo.sherpa.*;
+import cfa.vo.sherpa.models.CompositeModel;
+import cfa.vo.sherpa.models.UserModel;
 
 import java.util.ArrayList;
 import java.util.List;

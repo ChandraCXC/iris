@@ -16,6 +16,11 @@
 
 package cfa.vo.sherpa;
 
+import cfa.vo.sherpa.models.CompositeModel;
+import cfa.vo.sherpa.models.UserModel;
+import cfa.vo.sherpa.optimization.Method;
+import cfa.vo.sherpa.stats.Stat;
+
 import java.util.List;
 
 /**

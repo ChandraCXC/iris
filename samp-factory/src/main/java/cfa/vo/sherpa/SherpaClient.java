@@ -17,6 +17,13 @@
 package cfa.vo.sherpa;
 
 import cfa.vo.interop.*;
+import cfa.vo.sherpa.models.AbstractModel;
+import cfa.vo.sherpa.models.CompositeModel;
+import cfa.vo.sherpa.models.Model;
+import cfa.vo.sherpa.models.Models;
+import cfa.vo.sherpa.optimization.Method;
+import cfa.vo.sherpa.optimization.OptimizationMethod;
+import cfa.vo.sherpa.stats.Stat;
 import org.astrogrid.samp.Response;
 import java.util.HashMap;
 import java.util.Map;

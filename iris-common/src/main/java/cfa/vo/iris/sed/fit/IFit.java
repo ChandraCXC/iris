@@ -1,7 +1,7 @@
 package cfa.vo.iris.sed.fit;
 
-import cfa.vo.sherpa.CompositeModel;
-import cfa.vo.sherpa.UserModel;
+import cfa.vo.sherpa.models.CompositeModel;
+import cfa.vo.sherpa.models.UserModel;
 
 import java.util.List;
 

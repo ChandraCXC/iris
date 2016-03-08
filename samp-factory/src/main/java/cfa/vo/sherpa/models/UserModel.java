@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2015 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,21 @@
  * limitations under the License.
  */
 
-package cfa.vo.sherpa;
+package cfa.vo.sherpa.models;
 
 /**
- *
- * @author olaurino
+ * Created by olaurino on 11/14/14.
  */
-public interface MonCar extends Method {
-    
+public interface UserModel {
+    public String getName();
+
+    public void setName(String name);
+
+    public String getFile();
+
+    public void setFile(String path);
+
+    public String getFunction();
+
+    public void setFunction(String function);
 }

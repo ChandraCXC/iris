@@ -17,7 +17,7 @@ package cfa.vo.visualizer.fitting;
 
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.sherpa.AbstractModel;
+import cfa.vo.sherpa.models.AbstractModel;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -53,9 +53,9 @@ import cfa.vo.sed.science.interpolation.ZConfig;
 import cfa.vo.sedlib.Param;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedException;
-import cfa.vo.sherpa.CompositeModel;
+import cfa.vo.sherpa.models.CompositeModel;
 import cfa.vo.sherpa.SherpaClient;
-import cfa.vo.sherpa.UserModel;
+import cfa.vo.sherpa.models.UserModel;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Task;
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cfa.vo.sherpa;
+package cfa.vo.sherpa.models;
 
 import java.lang.reflect.Constructor;
 import java.util.logging.Level;

@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package cfa.vo.sherpa;
-
-import java.util.List;
+package cfa.vo.sherpa.optimization;
 
 /**
  *
  * @author olaurino
  */
-public interface Model {
-    String getName();
-
-    void setName(String name);
-
-    List<Parameter> getPars();
-
-    void addPar(Parameter par);
+public interface MonCar extends Method {
+    
 }
