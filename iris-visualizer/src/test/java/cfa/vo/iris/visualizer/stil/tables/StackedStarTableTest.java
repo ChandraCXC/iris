@@ -1,13 +1,35 @@
+/**
+ * Copyright (C) 2016 Smithsonian Astrophysical Observatory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package cfa.vo.iris.visualizer.stil.tables;
 
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
 import org.uispec4j.utils.ArrayUtils;
 
+import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.test.unit.TestUtils;
+import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.io.SedFormat;
+import cfa.vo.testdata.TestData;
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.ColumnStarTable;
 import uk.ac.starlink.table.PrimitiveArrayColumn;
@@ -67,6 +89,51 @@ public class StackedStarTableTest {
 
         assertEquals(0, test.getColumnCount());
         assertEquals(0, test.getRowCount());
+    }
+    
+    @Test
+    public void testVOTableData() throws Exception {
+        
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter();
+        
+        Segment seg1 = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT).getSegment(0);
+        IrisStarTable table1 = adapter.convertStarTable(seg1);
+        
+        StarTable dataTable = table1.getDataTable();
+        
+        List<StarTable> tables = new ArrayList<>();
+        tables.add(dataTable);
+        
+        StackedStarTable test = new StackedStarTable(tables, matcher);
+        assertEquals(16, test.getColumnCount());
+        for (int i=0; i<test.getColumnCount(); i++) {
+            assertNotNull(test.getRow(0)[i]);
+        }
+        
+        Segment seg2 = TestUtils.createSampleSegment(new double[] {1,2,3}, new double[] {1,2,3});
+        IrisStarTable table2 = adapter.convertStarTable(seg2);
+        tables.add(table2);
+
+        StarTable pt1 = table1.getPlotterTable();
+        StarTable pt2 = table2.getPlotterTable();
+        
+        tables.clear();
+        tables.add(pt1);
+        tables.add(pt2);
+        
+        test = new StackedStarTable(tables, matcher);
+        
+        // pt2 fits inside pt1 since it doesn't have errors
+        assertEquals(pt1.getColumnCount(), test.getColumnCount());
+        assertEquals(pt1.getRowCount() + pt2.getRowCount(), test.getRowCount());
+        
+        // First rows should match values
+        ArrayUtils.assertEquals(pt1.getRow(0), test.getRow(0));
+        
+        // First row of pt2 should have a null value at the end of it - in the error column
+        long start = pt1.getRowCount();
+        ArrayUtils.assertEquals(pt2.getRow(0), Arrays.copyOfRange(test.getRow(start), 0, pt2.getColumnCount()));
+        assertNull(test.getRow(start)[test.getColumnCount() - 1]);
     }
 
 }

@@ -36,7 +36,6 @@ import cfa.vo.iris.visualizer.preferences.VisualizerListener;
 import cfa.vo.iris.visualizer.stil.tables.ColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.StackedStarTable;
-import cfa.vo.iris.visualizer.stil.tables.UtypeColumnInfoMatcher;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -54,12 +53,12 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     final VisualizerComponentPreferences preferences;
     final IWorkspace ws;
     
-    ExtSed selectedSed;
-    List<IrisStarTable> selectedTables;
-    List<IrisStarTable> selectedStarTables;
-    StackedStarTable plotterDataTable;
-    StackedStarTable segmentDataTable;
-    ColumnInfoMatcher columnInfoMatcher;
+    ExtSed selectedSed; // Selected ws sed
+    List<IrisStarTable> selectedTables; // list of star tables associated with selectedSed
+    List<IrisStarTable> selectedStarTables; // list of selected StarTables from selectedTables
+    StackedStarTable plotterDataTable; // Single star table container for all plotted data
+    StackedStarTable segmentDataTable; // Single star table container for all point metadata
+    ColumnInfoMatcher columnInfoMatcher; // Used for star table stacking
     
     /**
      * Creates new form MetadataBrowser
@@ -69,9 +68,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     {
         this.ws = ws;
         this.preferences = preferences;
-        
-        // TODO: Should this be in preferences?
-        this.columnInfoMatcher = new UtypeColumnInfoMatcher();
+        this.columnInfoMatcher = preferences.getColumnInfoMatcher();
         
         initComponents();
         setChangeListener();
@@ -88,7 +85,16 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         
         updateTitle();
         updateSelectedTables();
+        
+        // Select 0th indexed segment if available
+        starTableList.setSelectedIndex(0);
         updateSelectedStarTables(new int[] {0});
+        updateDataTables();
+    }
+    
+    public void redrawData() {
+        updateTitle();
+        updateSelectedTables();
         updateDataTables();
     }
     
@@ -113,8 +119,8 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         }
         
         // Update segment metadata table
-        segmentJTable.setModel(new IrisMetadataTableModel(
-                (List<StarTable>)(List<?>) newTables));
+        // TODO: Should this be synced with the selectedStarTable
+        segmentJTable.setModel(new IrisMetadataTableModel((List<StarTable>)(List<?>) newTables));
         StarJTable.configureColumnWidths(segmentJTable, 200, 10);
         
         setSelectedTables(newTables);
@@ -195,7 +201,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         this.plotterDataTable = newTable;
         
         // TODO: Bindings?
-        plotterStarJTable.setStarTable(plotterDataTable, true);
+        plotterStarJTable.setStarTable(plotterDataTable);
         plotterStarJTable.configureColumnWidths(200, 20);
         
         firePropertyChange(PROP_PLOTTER_TABLE, oldTable, plotterDataTable);
@@ -211,7 +217,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         this.segmentDataTable = newTable;
 
         // TODO: Bindings?
-        pointStarJTable.setStarTable(segmentDataTable, true);
+        pointStarJTable.setStarTable(segmentDataTable);
         pointStarJTable.configureColumnWidths(200, 20);
         
         firePropertyChange(PROP_SEGMENT_TABLE, oldTable, plotterDataTable);
@@ -226,10 +232,12 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         @Override
         public void process(ExtSed source, VisualizerCommand payload) {
             if (VisualizerCommand.RESET.equals(payload)
-                || VisualizerCommand.SELECTED.equals(payload)
-                || VisualizerCommand.REDRAW.equals(payload)) 
+                || VisualizerCommand.SELECTED.equals(payload))
             {
                 resetData();
+            }
+            else if (VisualizerCommand.REDRAW.equals(payload)) {
+                redrawData();
             }
         }
     }
@@ -344,9 +352,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         dataPane.setToolTipText("");
         dataPane.setName("dataPanel"); // NOI18N
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedSed.id}"), dataPane, org.jdesktop.beansbinding.BeanProperty.create("border"));
-        bindingGroup.addBinding(binding);
-
         dataTabsPane.setName("dataTabsPane"); // NOI18N
 
         plotterMetadataScrollPane.setToolTipText("");
@@ -367,7 +372,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
         dataTabsPane.addTab("Data", plotterMetadataPanel);
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, plotterStarJTable, org.jdesktop.beansbinding.ELProperty.create("${selectionModel}"), pointStarJTable, org.jdesktop.beansbinding.BeanProperty.create("selectionModel"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, plotterStarJTable, org.jdesktop.beansbinding.ELProperty.create("${selectionModel}"), pointStarJTable, org.jdesktop.beansbinding.BeanProperty.create("selectionModel"));
         bindingGroup.addBinding(binding);
 
         pointMetadataScrollPane.setViewportView(pointStarJTable);
@@ -540,6 +545,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
     private void handleStarTableSelection(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_handleStarTableSelection
         updateSelectedStarTables(starTableList.getSelectedIndices());
+        updateDataTables();
     }//GEN-LAST:event_handleStarTableSelection
 
     private void invertSelectionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_invertSelectionButtonActionPerformed
