@@ -23,7 +23,6 @@ import org.uispec4j.ListBox;
 import org.uispec4j.Panel;
 import org.uispec4j.Table;
 import org.uispec4j.Window;
-import org.uispec4j.utils.ArrayUtils;
 
 import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.sed.ExtSed;
@@ -113,7 +112,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         final Segment seg1 = createSampleSegment();
         sed.addSegment(seg1);
 
-        // 1 segment should have been added to table
+        // 1 segment should have been added to table and selected
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
@@ -121,9 +120,9 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
                 assertEquals(1, starTableList.getSize());
                 assertEquals(1, segmentTable.getRowCount());
 
-                assertEquals(1, Double.parseDouble((String) plotterTable.getContentAt(0, 1)), 0.1);
-                assertEquals(2, Double.parseDouble((String) plotterTable.getContentAt(1, 1)), 0.1);
-                assertEquals(3, Double.parseDouble((String) plotterTable.getContentAt(2, 1)), 0.1);
+                assertEquals(1, Double.parseDouble((String) plotterTable.getContentAt(0, 2)), 0.1);
+                assertEquals(2, Double.parseDouble((String) plotterTable.getContentAt(1, 2)), 0.1);
+                assertEquals(3, Double.parseDouble((String) plotterTable.getContentAt(2, 2)), 0.1);
             }
         });
         
@@ -139,9 +138,9 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
                 assertEquals(2, starTableList.getSize());
                 assertEquals(2, segmentTable.getRowCount());
 
-                assertEquals(1, Double.parseDouble((String) plotterTable.getContentAt(0, 1)), 0.1);
-                assertEquals(2, Double.parseDouble((String) plotterTable.getContentAt(1, 1)), 0.1);
-                assertEquals(3, Double.parseDouble((String) plotterTable.getContentAt(2, 1)), 0.1);
+                assertEquals(1, Double.parseDouble((String) plotterTable.getContentAt(0, 2)), 0.1);
+                assertEquals(2, Double.parseDouble((String) plotterTable.getContentAt(1, 2)), 0.1);
+                assertEquals(3, Double.parseDouble((String) plotterTable.getContentAt(2, 2)), 0.1);
                 
                 assertEquals(1, Double.parseDouble((String) dataTable.getContentAt(0, 1)), 0.1);
                 assertEquals(2, Double.parseDouble((String) dataTable.getContentAt(1, 1)), 0.1);
@@ -150,14 +149,15 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         });
         
         // Select the second segment
+        starTableList.clearSelection();
         starTableList.selectIndex(1);
         
         // 2 segments should have been added to table, first segment still selected
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertEquals(100, Double.parseDouble((String) plotterTable.getContentAt(0, 1)), 0.1);
-                assertEquals(200, Double.parseDouble((String) plotterTable.getContentAt(1, 1)), 0.1);
+                assertEquals(100, Double.parseDouble((String) plotterTable.getContentAt(0, 2)), 0.1);
+                assertEquals(200, Double.parseDouble((String) plotterTable.getContentAt(1, 2)), 0.1);
                 
                 assertEquals(100, Double.parseDouble((String) dataTable.getContentAt(0, 1)), 0.1);
                 assertEquals(200, Double.parseDouble((String) dataTable.getContentAt(1, 1)), 0.1);
@@ -196,13 +196,14 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 assertTrue(StringUtils.contains(mbWindow.getTitle(), sed.getId()));
+                System.out.println(mbWindow.getTitle() + " ::: " + sed.getId());
                 assertEquals(2, mbView.selectedTables.size());
                 assertEquals(2, starTableList.getSize());
                 assertEquals(2, segmentTable.getRowCount());
 
-                assertEquals(1, Double.parseDouble((String) plotterTable.getContentAt(0, 1)), 0.1);
-                assertEquals(2, Double.parseDouble((String) plotterTable.getContentAt(1, 1)), 0.1);
-                assertEquals(3, Double.parseDouble((String) plotterTable.getContentAt(2, 1)), 0.1);
+                assertEquals(1, Double.parseDouble((String) plotterTable.getContentAt(0, 2)), 0.1);
+                assertEquals(2, Double.parseDouble((String) plotterTable.getContentAt(1, 2)), 0.1);
+                assertEquals(3, Double.parseDouble((String) plotterTable.getContentAt(2, 2)), 0.1);
             }
         });
     }

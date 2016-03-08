@@ -16,6 +16,7 @@
 
 package cfa.vo.iris.visualizer.stil;
 
+import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.gui.StarJTable;
 
 /**
@@ -27,5 +28,10 @@ public class IrisStarJTable extends StarJTable {
     public IrisStarJTable() {
         super(false);
     }
-
+    
+    public void setStarTable(StarTable table) {
+        // Include the index column for non-null/non-empty star tables.
+        boolean showIndex = (table != null && table.getRowCount() > 0);
+        super.setStarTable(table, showIndex);
+    }
 }

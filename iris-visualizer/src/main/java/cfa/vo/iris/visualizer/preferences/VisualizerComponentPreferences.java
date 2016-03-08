@@ -22,8 +22,6 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.events.MultipleSegmentEvent;
 import cfa.vo.iris.events.MultipleSegmentListener;
@@ -36,7 +34,9 @@ import cfa.vo.iris.events.SegmentListener;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
+import cfa.vo.iris.visualizer.stil.tables.ColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
+import cfa.vo.iris.visualizer.stil.tables.UtypeColumnInfoMatcher;
 import cfa.vo.sedlib.Segment;
 
 /**
@@ -48,6 +48,7 @@ public class VisualizerComponentPreferences {
     
     PlotPreferences plotPreferences;
     IrisStarTableAdapter adapter;
+    ColumnInfoMatcher columnInfoMatcher;
     final IWorkspace ws;
     final Map<ExtSed, SedPreferences> sedPreferences;
     
@@ -62,6 +63,9 @@ public class VisualizerComponentPreferences {
         for (ExtSed sed : (List<ExtSed>) ws.getSedManager().getSeds()) {
             update(sed);
         }
+        
+        // TODO: Should this be in preferences?
+        this.columnInfoMatcher = new UtypeColumnInfoMatcher();
         
         // Plotter global preferences
         this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
@@ -82,6 +86,14 @@ public class VisualizerComponentPreferences {
      */
     public PlotPreferences getPlotPreferences() {
         return plotPreferences;
+    }
+    
+    /**
+     * @return
+     *  ColumnInfoMatcher used in stacking star tables.
+     */
+    public ColumnInfoMatcher getColumnInfoMatcher() {
+        return columnInfoMatcher;
     }
 
     /**
@@ -252,7 +264,6 @@ public class VisualizerComponentPreferences {
 
         @Override
         public void process(Segment segment, SegmentPayload payload) {
-            System.out.println(ReflectionToStringBuilder.toString(segment));
             ExtSed sed = payload.getSed();
             SedCommand command = payload.getSedCommand();
             

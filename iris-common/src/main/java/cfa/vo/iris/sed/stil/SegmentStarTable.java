@@ -16,14 +16,16 @@
 
 package cfa.vo.iris.sed.stil;
 
+import java.io.IOException;
 import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+
+import uk.ac.starlink.table.ColumnData;
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.ColumnStarTable;
-import uk.ac.starlink.table.ConstantColumn;
 import uk.ac.starlink.table.PrimitiveArrayColumn;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.units.UnitsManager;
@@ -50,6 +52,7 @@ public class SegmentStarTable extends ColumnStarTable {
     private static final UnitsManager units = Default.getInstance().getUnitsManager();
     
     private Segment segment;
+    private NameColumn nameColumn;
     private XUnit specUnits;
     private YUnit fluxUnits;
 
@@ -73,6 +76,8 @@ public class SegmentStarTable extends ColumnStarTable {
         this.segment = segment;
         this.specUnits = units.newXUnits(segment.getSpectralAxisUnits());
         this.fluxUnits = units.newYUnits(segment.getFluxAxisUnits());
+        
+        this.nameColumn = new NameColumn(null);
         this.setName(id);
         
         // Look for a name in the segment if we are not given one
@@ -85,7 +90,7 @@ public class SegmentStarTable extends ColumnStarTable {
         }
         
         // Add a constant column for name
-        this.addColumn(new ConstantColumn(Column.Segment_Id.getColumnInfo(), getName()));
+        this.addColumn(nameColumn);
         
         // Add spectral, flux, and original flux values
         setSpecValues(segment.getSpectralAxisValues());
@@ -124,6 +129,12 @@ public class SegmentStarTable extends ColumnStarTable {
     @Override
     public long getRowCount() {
         return segment.getData().getLength();
+    }
+    
+    @Override
+    public void setName(String name) {
+        super.setName(name);
+        nameColumn.setName(name);
     }
 
     // TODO: Make sure this logic makes sense W.R.T. what's in the Units package.
@@ -328,6 +339,29 @@ public class SegmentStarTable extends ColumnStarTable {
         
         public ColumnInfo getColumnInfo() {
             return new ColumnInfo(columnInfo);
+        }
+    }
+    
+    /**
+     * Similar to a ConstantColumn, but with an adjustable name value.
+     *
+     */
+    private static class NameColumn extends ColumnData {
+        
+        private String name;
+        
+        public NameColumn(String name) {
+            super(Column.Segment_Id.getColumnInfo());
+            this.name = name;
+        }
+        
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public Object readValue(long arg0) throws IOException {
+            return name;
         }
     }
 }

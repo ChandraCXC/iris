@@ -58,6 +58,13 @@ public class IrisStarTable extends WrapperStarTable {
         dataTable.setParameter(value);
     }
     
+    @Override
+    public void setName(String name) {
+        super.setName(name);
+        plotterTable.setName(name);
+        dataTable.setName(name);
+    }
+    
     public StarTable getDataTable() {
         return dataTable;
     }

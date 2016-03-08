@@ -195,9 +195,6 @@
         <Property name="toolTipText" type="java.lang.String" value=""/>
         <Property name="name" type="java.lang.String" value="dataPanel" noResource="true"/>
       </Properties>
-      <BindingProperties>
-        <BindingProperty name="border" source="Form" sourcePath="${selectedSed.id}" target="dataPane" targetPath="border" updateStrategy="0" immediately="false"/>
-      </BindingProperties>
 
       <Layout>
         <DimensionLayout dim="0">
