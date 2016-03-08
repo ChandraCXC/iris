@@ -18,9 +18,9 @@ public class ColumnMetadataStarTable extends ColumnStarTable {
     
     private List<ColumnInfo> columnInfoList;
     private List<StarTable> starTables;
-    private ColumnMatcher matcher;
+    private ColumnInfoMatcher matcher;
 
-    public ColumnMetadataStarTable(List<? extends StarTable> tables, ColumnMatcher matcher) {
+    public ColumnMetadataStarTable(List<? extends StarTable> tables, ColumnInfoMatcher matcher) {
         super();
         this.columnInfoList = new LinkedList<>();
         this.starTables = new ArrayList<>(tables.size());

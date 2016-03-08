@@ -4,7 +4,7 @@ import org.apache.commons.lang.StringUtils;
 
 import uk.ac.starlink.table.ColumnInfo;
 
-public class UtypeColumnMatcher implements ColumnMatcher {
+public class UtypeColumnInfoMatcher implements ColumnInfoMatcher {
 
     @Override
     public boolean isCompatible(ColumnInfo c1, ColumnInfo c2) {

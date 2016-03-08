@@ -23,11 +23,11 @@ public class ColumnMappingStarTable extends ColumnPermutedStarTable {
     
     private final StarTable metadataTable;
     private final StarTable originalStarTable;
-    private final ColumnMatcher matcher;
+    private final ColumnInfoMatcher matcher;
 
     public ColumnMappingStarTable(final StarTable baseTable,
                                   StarTable metadataTable,
-                                  ColumnMatcher matcher) 
+                                  ColumnInfoMatcher matcher) 
     {
         super(baseTable, new int[metadataTable.getColumnCount()]);
         

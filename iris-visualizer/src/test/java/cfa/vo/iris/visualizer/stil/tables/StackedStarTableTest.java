@@ -15,7 +15,7 @@ import uk.ac.starlink.table.StarTable;
 
 public class StackedStarTableTest {
     
-    ColumnMatcher matcher = new UtypeColumnMatcher();
+    ColumnInfoMatcher matcher = new UtypeColumnInfoMatcher();
     
     @Test
     public void testStackedStarTable() throws Exception {

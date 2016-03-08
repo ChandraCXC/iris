@@ -25,8 +25,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
@@ -35,16 +33,15 @@ import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
 import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerListener;
-import cfa.vo.iris.visualizer.stil.tables.ColumnMatcher;
+import cfa.vo.iris.visualizer.stil.tables.ColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.StackedStarTable;
-import cfa.vo.iris.visualizer.stil.tables.UtypeColumnMatcher;
+import cfa.vo.iris.visualizer.stil.tables.UtypeColumnInfoMatcher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import uk.ac.starlink.table.EmptyStarTable;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.gui.StarJTable;
 
@@ -68,7 +65,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     
     protected StackedStarTable selectedPlotterTable;
     protected StackedStarTable selectedDataTable;
-    protected ColumnMatcher columnMatcher;
+    protected ColumnInfoMatcher columnMatcher;
     
     /**
      * Creates new form MetadataBrowser
@@ -80,7 +77,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         this.ws = ws;
         
         // TODO: Where should this live?
-        this.columnMatcher = new UtypeColumnMatcher();
+        this.columnMatcher = new UtypeColumnInfoMatcher();
 
         initComponents();
         setChangeListener();
