@@ -16,7 +16,7 @@ public class ColumnMappingStarTableTest {
     @Test
     public void testColumnMappingStarTable() throws Exception {
         
-        ColumnMatcher matcher = new UtypeColumnMatcher();
+        ColumnInfoMatcher matcher = new UtypeColumnInfoMatcher();
         
         ColumnInfo c1 = new ColumnInfo("c1");
         ColumnInfo c2 = new ColumnInfo("c2");

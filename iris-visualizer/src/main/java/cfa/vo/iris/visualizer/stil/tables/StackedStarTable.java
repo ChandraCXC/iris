@@ -17,7 +17,7 @@ public class StackedStarTable extends WrapperStarTable {
     private ColumnMetadataStarTable metadataTable;
     private ColumnMappingStarTable[] dataTables;
 
-    public StackedStarTable(List<? extends StarTable> tables, ColumnMatcher matcher)
+    public StackedStarTable(List<? extends StarTable> tables, ColumnInfoMatcher matcher)
     {
         super(null);
         
