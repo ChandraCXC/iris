@@ -25,6 +25,11 @@ import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.test.unit.StubWorkspace;
 import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.io.SedFormat;
+import cfa.vo.testdata.TestData;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VisualizerComponentPreferencesTest {
 
@@ -62,9 +67,24 @@ public class VisualizerComponentPreferencesTest {
         assertEquals(2, prefs.getSedPreferences(sed).getAllSegmentPreferences().size());
         
         // Remove the first segment
+        sed.remove(seg1);
         prefs.remove(sed, seg1);
         assertEquals(1, prefs.getSedPreferences().size());
         assertEquals(1, prefs.getSedPreferences(sed).getAllSegmentPreferences().size());
+        
+        // Add a list of segments at once (test MultipleSegmentEvent listener)
+        Segment seg3 = createSampleSegment();
+        List<Segment> segments = new ArrayList<>();
+        segments.add(seg3); segments.add(seg1); // add two segments
+        sed.addSegment(segments);
+        prefs.update(sed, segments);
+        assertEquals(1, prefs.getSedPreferences().size());
+        assertEquals(3, prefs.getSedPreferences(sed).getAllSegmentPreferences().size());
+        
+        sed.remove(segments);
+        prefs.remove(sed, segments);
+        assertEquals(1, prefs.getSedPreferences(sed).getAllSegmentPreferences().size());        
+        
         
         // Remove the SED
         prefs.remove(sed);

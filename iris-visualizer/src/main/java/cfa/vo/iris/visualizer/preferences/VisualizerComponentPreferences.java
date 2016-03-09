@@ -22,6 +22,8 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import cfa.vo.iris.IWorkspace;
+import cfa.vo.iris.events.MultipleSegmentEvent;
+import cfa.vo.iris.events.MultipleSegmentListener;
 import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SedListener;
@@ -68,6 +70,7 @@ public class VisualizerComponentPreferences {
     protected void addSedListeners() {
         SegmentEvent.getInstance().add(new VisualizerSegmentListener());
         SedEvent.getInstance().add(new VisualizerSedListener());
+        MultipleSegmentEvent.getInstance().add(new VisualizerMultipleSegmentListener());
     }
     
     /**
@@ -153,6 +156,23 @@ public class VisualizerComponentPreferences {
     }
     
     /**
+     * Adds or updates the segments within the specified SED.
+     * @param sed - the sed to which the segment is attached
+     * @param segments - the list of segments to add
+     */
+    public void update(ExtSed sed, List<Segment> segments) {
+        if (sedPreferences.containsKey(sed)) {
+            for (Segment segment : segments)
+                sedPreferences.get(sed).addSegment(segment);
+        } else {
+            // The segment will automatically be serialized and attached the the 
+            // SedPrefrences since it's assumed to be attached to the SED.
+            sedPreferences.put(sed, new SedPreferences(sed, adapter));
+        }
+        fire(sed, VisualizerCommand.RESET);
+    }
+    
+    /**
      * Removes the SED from the preferences map.
      * @param sed
      */
@@ -173,6 +193,20 @@ public class VisualizerComponentPreferences {
     public void remove(ExtSed sed, Segment segment) {
         if (sedPreferences.containsKey(sed)) {
             sedPreferences.get(sed).removeSegment(segment);
+        }
+        
+        fire(sed, VisualizerCommand.RESET);
+    }
+    
+    /**
+     * Removes the segments from the specified Sed Preferences map.
+     * @param sed
+     * @param segments
+     */
+    public void remove(ExtSed sed, List<Segment> segments) {
+        if (sedPreferences.containsKey(sed)) {
+            for (Segment segment : segments)
+                sedPreferences.get(sed).removeSegment(segment);
         }
         
         fire(sed, VisualizerCommand.RESET);
@@ -228,6 +262,27 @@ public class VisualizerComponentPreferences {
             // Remove the deleted segment from the SED
             else if (SedCommand.REMOVED.equals(command)) {
                 remove(sed, segment);
+            }
+        }
+    }
+    
+    private class VisualizerMultipleSegmentListener implements MultipleSegmentListener {
+
+        @Override
+        public void process(java.util.List<Segment> segments, SegmentPayload payload) {
+            ExtSed sed = payload.getSed();
+            SedCommand command = payload.getSedCommand();
+            
+            // Update the SED with the new or updated segments
+            if (SedCommand.ADDED.equals(command) ||
+                SedCommand.CHANGED.equals(command))
+            {
+                update(sed, segments);
+            }
+            
+            // Remove the deleted segments from the SED
+            else if (SedCommand.REMOVED.equals(command)) {
+                remove(sed, segments);
             }
         }
     }
