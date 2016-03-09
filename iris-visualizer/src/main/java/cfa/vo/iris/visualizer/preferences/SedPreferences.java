@@ -30,6 +30,7 @@ import cfa.vo.iris.visualizer.plotter.ColorPalette;
 import cfa.vo.iris.visualizer.plotter.HSVColorPalette;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedNoDataException;
@@ -105,12 +106,12 @@ public class SedPreferences {
         
         // If the segment is already in the map remake the star table
         if (segmentPreferences.containsKey(me)) {
-            segmentPreferences.get(me).setInSource(adapter.convertStarTable(seg));
+            segmentPreferences.get(me).setInSource(convertSegment(seg));
             return;
         }
         
         // Ensure that the layer has a unique identifier in the list of segments
-        SegmentLayer layer = new SegmentLayer(adapter.convertStarTable(seg));
+        SegmentLayer layer = new SegmentLayer(convertSegment(seg));
         int count = 0;
         String id = layer.getSuffix();
         while (!isUniqueLayerSuffix(id)) {
@@ -127,6 +128,14 @@ public class SedPreferences {
         setUnits(seg, layer);
         
         segmentPreferences.put(me, layer);
+    }
+    
+    private IrisStarTable convertSegment(Segment seg) {
+        // Convert segments with more than 3000 points asynchronously.
+        if (seg.getLength() > 3000) {
+            return adapter.convertSegmentAsync(seg);
+        }
+        return adapter.convertSegment(seg);
     }
     
     /**

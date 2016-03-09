@@ -112,13 +112,18 @@ public class SegmentLayer {
         if (shouldAddErrorColumn(Column.Spectral_Error, id)) {
             prefs.put(X_ERR_HI + suffix, Column.Spectral_Error.name());
         }
-        if (shouldAddErrorColumn(Column.Spectral_Error_Low, id)) {
-            prefs.put(X_ERR_LO + suffix, Column.Spectral_Error_Low.name());
-        }
         if (shouldAddErrorColumn(Column.Flux_Error, id)) {
             prefs.put(Y_ERR_HI + suffix, Column.Flux_Error.name());
         }
+        
+        // If lower and upper ranges are specified then we override existing
+        // single bounds.
+        if (shouldAddErrorColumn(Column.Spectral_Error_Low, id)) {
+            prefs.put(X_ERR_HI + suffix, Column.Spectral_Error_High.name());
+            prefs.put(X_ERR_LO + suffix, Column.Spectral_Error_Low.name());
+        }
         if (shouldAddErrorColumn(Column.FLux_Error_Low, id)) {
+            prefs.put(Y_ERR_HI + suffix, Column.Flux_Error_High.name());
             prefs.put(Y_ERR_LO + suffix, Column.FLux_Error_Low.name());
         }
         
@@ -152,7 +157,7 @@ public class SegmentLayer {
     private void addCommonFields(String suffix, Map<String, Object> prefs) {
         prefs.put(IN + suffix, inSource);
         prefs.put(X_COL + suffix, Column.Spectral_Value.name());
-        prefs.put(Y_COL + suffix, Column.Spectral_Value.name());
+        prefs.put(Y_COL + suffix, Column.Flux_Value.name());
         
         if (size != null)
             prefs.put(SIZE + suffix, size);

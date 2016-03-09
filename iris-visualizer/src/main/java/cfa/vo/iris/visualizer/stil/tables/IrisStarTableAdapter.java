@@ -18,7 +18,6 @@ package cfa.vo.iris.visualizer.stil.tables;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.sed.stil.SerializingStarTableAdapter;
@@ -33,16 +32,27 @@ import uk.ac.starlink.table.StarTable;
 
 public class IrisStarTableAdapter {
     
-    private static final ExecutorService executor = Executors.newFixedThreadPool(2);
+    private final ExecutorService executor;
+    
+    public IrisStarTableAdapter(ExecutorService executor) {
+        this.executor = executor;
+    }
 
-    public IrisStarTable convertStarTable(Segment data) {
+    public IrisStarTable convertSegment(Segment data) {
+        return convert(data, false);
+    }
+    
+    public IrisStarTable convertSegmentAsync(Segment data) {
+        return convert(data, true);
+    }
+    
+    private IrisStarTable convert(Segment data, boolean async) {
         try {
             SegmentStarTable segTable = new SegmentStarTable(data);
             IrisStarTable ret = new IrisStarTable(segTable);
             
-            // Only serialized asynchronously for segments of length >= 3000.
             SerializingStarTableAdapter adapter = new SerializingStarTableAdapter();
-            if (data.getLength() > 3000) {
+            if (async) {
                 executor.submit(new AsyncSerializer(data, ret, adapter));
             } else {
                 ret.setDataTable(adapter.convertStarTable(data));
@@ -53,7 +63,6 @@ public class IrisStarTableAdapter {
             throw new RuntimeException(e);
         }
     }
-    
     
     private static class AsyncSerializer implements Callable<StarTable> {
         
@@ -69,8 +78,11 @@ public class IrisStarTableAdapter {
         
         @Override
         public StarTable call() throws Exception {
+            // Convert and update the datatable
             StarTable converted = adapter.convertStarTable(data);
             table.setDataTable(converted);
+            
+            // Notify components of a change
             notifyVisualizerComponents();
             return converted;
         }
