@@ -34,7 +34,7 @@ public class SedPreferencesTest {
     @Test
     public void testPreferences() throws Exception {
         ExtSed sed = new ExtSed("test");
-        IrisStarTableAdapter adapter = new IrisStarTableAdapter();
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
         
         SedPreferences prefs = new SedPreferences(sed, adapter);
         
@@ -92,7 +92,7 @@ public class SedPreferencesTest {
     @Test
     public void testSuffixesWithSameTargetNames() throws Exception {
         ExtSed sed = new ExtSed("test");
-        IrisStarTableAdapter adapter = new IrisStarTableAdapter();
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
         
         SedPreferences prefs = new SedPreferences(sed, adapter);
         

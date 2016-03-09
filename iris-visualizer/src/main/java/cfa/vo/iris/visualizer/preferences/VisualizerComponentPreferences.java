@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.events.MultipleSegmentEvent;
@@ -46,6 +48,8 @@ import cfa.vo.sedlib.Segment;
  */
 public class VisualizerComponentPreferences {
     
+    private static final ExecutorService visualizerExecutor = Executors.newFixedThreadPool(5);
+    
     PlotPreferences plotPreferences;
     IrisStarTableAdapter adapter;
     ColumnInfoMatcher columnInfoMatcher;
@@ -56,7 +60,7 @@ public class VisualizerComponentPreferences {
         this.ws = ws;
         
         // TODO: change serialization when we have something that works
-        this.adapter = new IrisStarTableAdapter();
+        this.adapter = new IrisStarTableAdapter(visualizerExecutor);
         
         // Create and add preferences for the SED
         this.sedPreferences = Collections.synchronizedMap(new IdentityHashMap<ExtSed, SedPreferences>());
@@ -240,7 +244,15 @@ public class VisualizerComponentPreferences {
         
         @Override
         public void process(ExtSed sed, SedCommand payload) {
-            
+            try {
+                processNotification(sed, payload);
+            } catch (Exception e) {
+                // TODO: This happens asynchronously, what should we do with exceptions?
+                e.printStackTrace();
+            }
+        }
+        
+        private void processNotification(ExtSed sed, SedCommand payload) {
             // Only take actions if an SED was added, removed, or selected.
             // Rely on Segment events to pick up changes within an SED.
             if (SedCommand.ADDED.equals(payload))
@@ -264,6 +276,15 @@ public class VisualizerComponentPreferences {
 
         @Override
         public void process(Segment segment, SegmentPayload payload) {
+            try {
+                processNotification(segment, payload);
+            } catch (Exception e) {
+                // TODO: This happens asynchronously, what should we do with exceptions?
+                e.printStackTrace();
+            }
+        }
+        
+        private void processNotification(Segment segment, SegmentPayload payload) {
             ExtSed sed = payload.getSed();
             SedCommand command = payload.getSedCommand();
             

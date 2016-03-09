@@ -94,10 +94,10 @@ public class StackedStarTableTest {
     @Test
     public void testVOTableData() throws Exception {
         
-        IrisStarTableAdapter adapter = new IrisStarTableAdapter();
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
         
         Segment seg1 = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT).getSegment(0);
-        IrisStarTable table1 = adapter.convertStarTable(seg1);
+        IrisStarTable table1 = adapter.convertSegment(seg1);
         
         StarTable dataTable = table1.getDataTable();
         
@@ -111,7 +111,7 @@ public class StackedStarTableTest {
         }
         
         Segment seg2 = TestUtils.createSampleSegment(new double[] {1,2,3}, new double[] {1,2,3});
-        IrisStarTable table2 = adapter.convertStarTable(seg2);
+        IrisStarTable table2 = adapter.convertSegment(seg2);
         tables.add(table2);
 
         StarTable pt1 = table1.getPlotterTable();
