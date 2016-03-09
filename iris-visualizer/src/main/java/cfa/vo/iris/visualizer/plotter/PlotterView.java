@@ -39,7 +39,7 @@ import javax.swing.JCheckBox;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.visualizer.metadata.MetadataBrowserView;
+import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
 import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
 import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
@@ -60,7 +60,7 @@ public class PlotterView extends JInternalFrame {
     // Plotting Components
     private StilPlotter plotter;
     private JInternalFrame residuals;
-    private MetadataBrowserView metadataBrowser;
+    private MetadataBrowserMainView metadataBrowser;
     
     // Buttons, etc.
     private JButton btnReset;
@@ -129,7 +129,7 @@ public class PlotterView extends JInternalFrame {
         this.app = app;
         this.preferences = preferences;
         
-        this.metadataBrowser = new MetadataBrowserView(ws, preferences);
+        this.metadataBrowser = new MetadataBrowserMainView(ws, preferences);
         this.plotter = new StilPlotter(ws, preferences);
         this.residuals = new JInternalFrame();
         
@@ -147,13 +147,18 @@ public class PlotterView extends JInternalFrame {
             }
         });
         
-        // Action for resetting plot
+        // Action for resetting the visualizer component from the UI using the reset button
         btnReset.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 resetPlot(null);
+                metadataBrowser.resetData();
             }
         });
         
+        addPlotChangeListener();
+    }
+    
+    protected void addPlotChangeListener() {
         VisualizerChangeEvent.getInstance().add(new PlotChangeListener());
     }
 
@@ -175,17 +180,17 @@ public class PlotterView extends JInternalFrame {
         }
     }    
     
-    public MetadataBrowserView getMetadataBrowserView() {
+    public MetadataBrowserMainView getMetadataBrowserView() {
         return this.metadataBrowser;
     }
     
     private void resetPlot(ExtSed sed) {
-        this.metadataBrowser.reset();
-        // TODO: setting second argument to "false" forces the plot display
-        // to be cached. Do we want this behavior in the future?
-        // Note (jb): tried opening 300k sed with "fals" and "true." Both
-        // produce a .5 second lag in panning the viewer.
+        // TODO: At somepoint we may want this to be a feature if we ever have static SEDs.
         this.plotter.reset(sed, true);
+    }
+
+    private void redrawPlot() {
+        this.plotter.redraw(true);
     }
     
     private static void addPopup(Component component, final JPopupMenu popup) {
@@ -375,7 +380,14 @@ public class PlotterView extends JInternalFrame {
 
         @Override
         public void process(ExtSed source, VisualizerCommand payload) {
-            resetPlot(source);
+            if (VisualizerCommand.RESET.equals(payload) ||
+                VisualizerCommand.SELECTED.equals(payload)) 
+            {
+                resetPlot(source);
+            }
+            else if (VisualizerCommand.REDRAW.equals(payload)) {
+                redrawPlot();
+            }
         }
     }
 }

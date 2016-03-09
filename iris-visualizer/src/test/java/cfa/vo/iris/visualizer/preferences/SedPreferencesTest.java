@@ -109,8 +109,8 @@ public class SedPreferencesTest {
         sed.addSegment(seg2);
         
         prefs.refresh();
-        assertEquals("_my segment", prefs.getSegmentPreferences(seg1).getSuffix());
-        assertEquals("_my segment 1", prefs.getSegmentPreferences(seg2).getSuffix());
+        assertEquals("my segment", prefs.getSegmentPreferences(seg1).getSuffix());
+        assertEquals("my segment 1", prefs.getSegmentPreferences(seg2).getSuffix());
         
         // add another segment of the same target name
         // suffix number should go up 1
@@ -119,6 +119,6 @@ public class SedPreferencesTest {
         sed.addSegment(seg3);
         
         prefs.refresh();
-        assertEquals("_my segment 2", prefs.getSegmentPreferences(seg3).getSuffix());
+        assertEquals("my segment 2", prefs.getSegmentPreferences(seg3).getSuffix());
     }
 }

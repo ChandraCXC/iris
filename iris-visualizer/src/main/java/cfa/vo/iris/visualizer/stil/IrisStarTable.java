@@ -16,25 +16,58 @@
 
 package cfa.vo.iris.visualizer.stil;
 
+import java.util.List;
+
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.utils.Default;
-import uk.ac.starlink.table.JoinStarTable;
+import uk.ac.starlink.table.DescribedValue;
+import uk.ac.starlink.table.EmptyStarTable;
 import uk.ac.starlink.table.StarTable;
+import uk.ac.starlink.table.WrapperStarTable;
 
-public class IrisStarTable extends JoinStarTable {
+public class IrisStarTable extends WrapperStarTable {
+
+    private static final StarTable EMPTY_STARTABLE = new EmptyStarTable();
     
-    private StarTable dataTable;
+    private volatile StarTable dataTable;
     private SegmentStarTable plotterTable;
     
-    public IrisStarTable(SegmentStarTable plotterTable, StarTable dataTable)
+    public IrisStarTable(SegmentStarTable plotterTable)
     {
-        super(new StarTable[] {plotterTable, dataTable});
+        super(plotterTable);
         
-        this.dataTable = dataTable;
+        this.dataTable = EMPTY_STARTABLE;
         this.plotterTable = plotterTable;
         
         setName(plotterTable.getName());
+    }
+    
+    @Override 
+    public List getParameters() {
+        return dataTable.getParameters();
+    }
+    
+    @Override
+    public DescribedValue getParameterByName(String parameter) {
+        return dataTable.getParameterByName(parameter);
+    }
+    
+    @Override
+    public void setParameter(DescribedValue value) {
+        dataTable.setParameter(value);
+    }
+    
+    public StarTable getDataTable() {
+        return dataTable;
+    }
+    
+    public void setDataTable(StarTable dataTable) {
+        this.dataTable = dataTable;
+    }
+    
+    public SegmentStarTable getPlotterTable() {
+        return plotterTable;
     }
     
     public void setXUnits(String xunit) throws UnitsException {

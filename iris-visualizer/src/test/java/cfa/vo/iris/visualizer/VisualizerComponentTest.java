@@ -50,11 +50,6 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
             .click();
         
         assertTrue(desktop.containsWindow(windowName).isTrue());
-        
-        org.uispec4j.Button mbButton = desktop.getWindow(windowName).getButton("Metadata");
-        mbButton.click();
-        
-        assertTrue(desktop.containsWindow("Metadata Browser").isTrue());
     }
 
     @Test

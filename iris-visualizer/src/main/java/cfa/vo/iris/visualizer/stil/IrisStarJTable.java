@@ -14,10 +14,18 @@
  * limitations under the License.
  */
 
-package cfa.vo.iris.visualizer.preferences;
+package cfa.vo.iris.visualizer.stil;
 
-public enum VisualizerCommand {
-    RESET,
-    REDRAW, 
-    SELECTED;
+import uk.ac.starlink.table.gui.StarJTable;
+
+/**
+ * Simple bean wrapper for the StarJTable class.
+ *
+ */
+public class IrisStarJTable extends StarJTable {
+
+    public IrisStarJTable() {
+        super(false);
+    }
+
 }
