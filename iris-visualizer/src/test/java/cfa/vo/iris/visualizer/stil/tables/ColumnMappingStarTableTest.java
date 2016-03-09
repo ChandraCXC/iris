@@ -27,22 +27,10 @@ import uk.ac.starlink.table.MetadataStarTable;
 import uk.ac.starlink.table.PrimitiveArrayColumn;
 import uk.ac.starlink.table.StarTable;
 
-public class ColumnMappingStarTableTest {
+public class ColumnMappingStarTableTest extends VisualizerStarTableTest {
     
     @Test
     public void testColumnMappingStarTable() throws Exception {
-        
-        ColumnInfoMatcher matcher = new UtypeColumnInfoMatcher();
-        
-        ColumnInfo c1 = new ColumnInfo("c1");
-        ColumnInfo c2 = new ColumnInfo("c2");
-        ColumnInfo c3 = new ColumnInfo("c3");
-        ColumnInfo c4 = new ColumnInfo("c4");
-        
-        c1.setUtype("c1");
-        c2.setUtype("c2");
-        c3.setUtype("c3");
-        c4.setUtype("c4");
         
         StarTable metadata = new MetadataStarTable(new ColumnInfo[] {c1,c2,c3,c4});
         
