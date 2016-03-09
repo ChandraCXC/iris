@@ -303,9 +303,19 @@ public class VisualizerComponentPreferences {
     }
     
     private class VisualizerMultipleSegmentListener implements MultipleSegmentListener {
-
+        
         @Override
         public void process(java.util.List<Segment> segments, SegmentPayload payload) {
+            try {
+                processNotification(segments, payload);
+            } catch (Exception e) {
+                // TODO: This happens asynchronously, what should we do with
+                // exceptions?
+                e.printStackTrace();
+            }
+        }
+        
+        private void processNotification(java.util.List<Segment> segments, SegmentPayload payload) {
             ExtSed sed = payload.getSed();
             SedCommand command = payload.getSedCommand();
             
