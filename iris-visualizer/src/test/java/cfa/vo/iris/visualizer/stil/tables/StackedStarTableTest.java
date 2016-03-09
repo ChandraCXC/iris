@@ -30,27 +30,14 @@ import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 import cfa.vo.testdata.TestData;
-import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.ColumnStarTable;
 import uk.ac.starlink.table.PrimitiveArrayColumn;
 import uk.ac.starlink.table.StarTable;
 
-public class StackedStarTableTest {
-    
-    ColumnInfoMatcher matcher = new UtypeColumnInfoMatcher();
+public class StackedStarTableTest extends VisualizerStarTableTest {
     
     @Test
     public void testStackedStarTable() throws Exception {
-        
-        ColumnInfo c1 = new ColumnInfo("c1");
-        ColumnInfo c2 = new ColumnInfo("c2");
-        ColumnInfo c3 = new ColumnInfo("c3");
-        ColumnInfo c4 = new ColumnInfo("c4");
-        
-        c1.setUtype("c1");
-        c2.setUtype("c2");
-        c3.setUtype("c3");
-        c4.setUtype("c4");
         
         ColumnStarTable data1 = new ColumnStarTable() {
             @Override
@@ -103,6 +90,15 @@ public class StackedStarTableTest {
         
         List<StarTable> tables = new ArrayList<>();
         tables.add(dataTable);
+        
+        for (int i=0; i<dataTable.getColumnCount(); i++) {
+            System.out.println("o " + dataTable.getColumnInfo(i).getUtype());
+        }
+        
+        StarTable meta = new ColumnMetadataStarTable(tables, matcher);
+        for (int i=0; i<meta.getColumnCount(); i++) {
+            System.out.println("x " + meta.getColumnInfo(i).getUtype());
+        }
         
         StackedStarTable test = new StackedStarTable(tables, matcher);
         assertEquals(16, test.getColumnCount());
