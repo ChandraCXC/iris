@@ -21,8 +21,6 @@
 
 package cfa.vo.sherpa.models;
 
-import cfa.vo.sherpa.Parameter;
-
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.util.List;

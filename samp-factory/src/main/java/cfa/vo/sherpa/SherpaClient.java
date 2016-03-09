@@ -17,10 +17,7 @@
 package cfa.vo.sherpa;
 
 import cfa.vo.interop.*;
-import cfa.vo.sherpa.models.AbstractModel;
-import cfa.vo.sherpa.models.CompositeModel;
-import cfa.vo.sherpa.models.Model;
-import cfa.vo.sherpa.models.Models;
+import cfa.vo.sherpa.models.*;
 import cfa.vo.sherpa.optimization.Method;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Stat;
@@ -31,8 +28,9 @@ import java.util.logging.Logger;
 
 public class SherpaClient {
 
+    private ModelFactory modelFactory = new ModelFactory();
     private SampService sampService;
-    private Map<String, AbstractModel> modelMap = new HashMap<>();
+    private Map<String, ModelImpl> modelMap = new HashMap<>();
     private Integer stringCounter = 0;
     private Logger logger = Logger.getLogger(SherpaClient.class.getName());
 
@@ -40,7 +38,7 @@ public class SherpaClient {
         this.sampService = sampService;
     }
 
-    public Parameter getParameter(AbstractModel model, String name) throws Exception {
+    public Parameter getParameter(ModelImpl model, String name) throws Exception {
         Parameter par = model.getParameter(model.getId() + "." + name);
         if (par == null) {
             throw new Exception("Parameter "+ name+ " not found in model " + model.getName());
@@ -96,13 +94,13 @@ public class SherpaClient {
         return cm;
     }
 
-    public AbstractModel createModel(Models model) {
+    public ModelImpl createModel(String name) {
         String id = "m" + (++stringCounter).toString();
-        return createModel(model, id);
+        return createModel(name, id);
     }
 
-    public AbstractModel createModel(Models model, String id) {
-        AbstractModel m = model.getModel(id);
+    public ModelImpl createModel(String name, String id) {
+        ModelImpl m = modelFactory.getModel(name, id);
         modelMap.put(id, m);
         return m;
     }

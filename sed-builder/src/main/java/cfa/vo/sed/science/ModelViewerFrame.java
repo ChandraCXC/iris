@@ -35,7 +35,7 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.fit.IFit;
 import cfa.vo.sherpa.models.CompositeModel;
 import cfa.vo.sherpa.models.CompositeModelTreeModel;
-import cfa.vo.sherpa.Parameter;
+import cfa.vo.sherpa.models.Parameter;
 import cfa.vo.sherpa.models.UserModel;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;

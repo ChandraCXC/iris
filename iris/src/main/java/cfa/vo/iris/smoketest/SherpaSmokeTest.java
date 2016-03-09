@@ -26,9 +26,10 @@ import cfa.vo.interop.SampService;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.interop.AbstractSedMessageHandler;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.sherpa.models.AbstractModel;
+import cfa.vo.sherpa.models.Model;
+import cfa.vo.sherpa.models.ModelImpl;
 import cfa.vo.sherpa.models.CompositeModel;
-import cfa.vo.sherpa.models.Models;
+import cfa.vo.sherpa.models.Parameter;
 import cfa.vo.sherpa.optimization.Method;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Stat;
@@ -131,11 +132,11 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
             data.setY(y);
             data.setStaterror(err);
 
-            AbstractModel m1 = c.createModel(Models.PowerLaw1D);
+            ModelImpl m1 = c.createModel("powerlaw");
 
-            c.getParameter(m1, "ref").setVal(5000.);
+            c.getParameter(m1, "refer").setVal(5000.);
             c.getParameter(m1, "ampl").setVal(1.0);
-            c.getParameter(m1, "gamma").setVal(-0.5);
+            c.getParameter(m1, "index").setVal(-0.5);
 
             CompositeModel cm = c.createCompositeModel("m1", m1);
 
@@ -168,12 +169,12 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
             pbs.add(b2);
             pbs.add(b1);
 
-            AbstractModel p1 = c.createModel(Models.PowerLaw1D, "p1");
-            Parameter gamma = c.getParameter(p1, "gamma");
+            ModelImpl p1 = c.createModel("powerlaw", "p1");
+            Parameter gamma = c.getParameter(p1, "index");
             gamma.setFrozen(0);
             gamma.setVal(0.0);
 
-            Parameter ref = c.getParameter(p1, "ref");
+            Parameter ref = c.getParameter(p1, "refer");
 //            ref.setFrozen(0);
             ref.setVal(1.0);
 
@@ -181,12 +182,12 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
             ampl.setFrozen(0);
             ampl.setVal(1.0);
 
-            AbstractModel p2 = c.createModel(Models.PowerLaw1D, "p2");
-            gamma = c.getParameter(p2, "gamma");
+            ModelImpl p2 = c.createModel("powerlaw", "p2");
+            gamma = c.getParameter(p2, "index");
             gamma.setFrozen(0);
             gamma.setVal(0.0);
 
-            ref = c.getParameter(p2, "ref");
+            ref = c.getParameter(p2, "refer");
 //            ref.setFrozen(0);
             ref.setVal(1.0);
 

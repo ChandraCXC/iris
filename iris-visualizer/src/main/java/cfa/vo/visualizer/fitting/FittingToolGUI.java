@@ -17,7 +17,7 @@ package cfa.vo.visualizer.fitting;
 
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.sherpa.models.AbstractModel;
+import cfa.vo.sherpa.models.ModelImpl;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -673,7 +673,7 @@ public class FittingToolGUI extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public class TestModel extends AbstractModel {
+    public class TestModel extends ModelImpl {
         public TestModel(String name, String id) {
             super(name, id);
         }
