@@ -18,6 +18,7 @@ package cfa.vo.iris.visualizer.stil.tables;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.sed.stil.SerializingStarTableAdapter;
@@ -49,13 +50,14 @@ public class IrisStarTableAdapter {
     private IrisStarTable convert(Segment data, boolean async) {
         try {
             SegmentStarTable segTable = new SegmentStarTable(data);
-            IrisStarTable ret = new IrisStarTable(segTable);
+            IrisStarTable ret;
             
             SerializingStarTableAdapter adapter = new SerializingStarTableAdapter();
             if (async) {
-                executor.submit(new AsyncSerializer(data, ret, adapter));
+                Future<StarTable> val = executor.submit(new AsyncSerializer(data, adapter));
+                ret = new IrisStarTable(segTable, val);
             } else {
-                ret.setDataTable(adapter.convertStarTable(data));
+                ret = new IrisStarTable(segTable, adapter.convertStarTable(data));
             }
             
             return ret;
@@ -67,12 +69,10 @@ public class IrisStarTableAdapter {
     private static class AsyncSerializer implements Callable<StarTable> {
         
         private final Segment data;
-        private final IrisStarTable table;
         private final StarTableAdapter<Segment> adapter;
 
-        public AsyncSerializer(Segment data, IrisStarTable table, StarTableAdapter<Segment> adapter) {
+        public AsyncSerializer(Segment data, StarTableAdapter<Segment> adapter) {
             this.data = data;
-            this.table = table;
             this.adapter = adapter;
         }
         
@@ -80,7 +80,6 @@ public class IrisStarTableAdapter {
         public StarTable call() throws Exception {
             // Convert and update the datatable
             StarTable converted = adapter.convertStarTable(data);
-            table.setDataTable(converted);
             
             // Notify components of a change
             notifyVisualizerComponents();
