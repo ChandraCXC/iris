@@ -55,13 +55,17 @@ public class IrisStarTableAdapterTest {
     public void testConvertAsync() throws Exception {
         Segment seg = TestUtils.createSampleSegment();
         
-        IrisStarTable table = adapter.convertSegmentAsync(seg);
+        final IrisStarTable table = adapter.convertSegmentAsync(seg);
         
         // Name, spec values, flux values, original flux values
         assertEquals(4, table.getColumnCount());
         
         // Wait for serialization to finish
-        Thread.sleep(100);
-        assertEquals(2, table.getDataTable().getColumnCount());
+        TestUtils.invokeWithRetry(10, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertEquals(2, table.getDataTable().getColumnCount());
+            }
+        });
     }
 }
