@@ -16,10 +16,6 @@
 
 package cfa.vo.sherpa.stats;
 
-/**
- *
- * @author olaurino
- */
 public interface Stat {
     String getName();
 }

@@ -23,10 +23,6 @@ import cfa.vo.sherpa.stats.Stat;
 
 import java.util.List;
 
-/**
- *
- * @author olaurino
- */
 public interface FitConfiguration {
     List<Data> getDatasets();
 

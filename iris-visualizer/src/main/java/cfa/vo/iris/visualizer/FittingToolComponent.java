@@ -18,7 +18,7 @@ package cfa.vo.iris.visualizer;
 
 import cfa.vo.iris.*;
 import cfa.vo.iris.gui.GUIUtils;
-import cfa.vo.visualizer.fitting.FittingToolGUI;
+import cfa.vo.iris.fitting.FittingMainView;
 
 import org.astrogrid.samp.client.MessageHandler;
 import java.util.ArrayList;
@@ -48,7 +48,7 @@ public class FittingToolComponent implements IrisComponent {
 
     @Override
     public ICommandLineInterface getCli() {
-        return new NullCommandLineInterface("fitting");
+        return new NullCommandLineInterface("cfa/vo/iris/fitting");
     }
 
     @Override
@@ -70,7 +70,7 @@ public class FittingToolComponent implements IrisComponent {
     }
 
     private class MenuItems extends ArrayList<IMenuItem> {
-        private FittingToolGUI view;
+        private FittingMainView view;
         
         public MenuItems() {
             super();
@@ -80,7 +80,7 @@ public class FittingToolComponent implements IrisComponent {
                 public void onClick() {
                     if (view == null) {
                         try {
-                            view = new FittingToolGUI(ws);
+                            view = new FittingMainView(ws);
                             ws.getDesktop().add(view);
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);

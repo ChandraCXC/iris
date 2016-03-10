@@ -16,17 +16,8 @@
 
 package cfa.vo.sherpa.optimization;
 
-import cfa.vo.sherpa.Config;
-
-/**
- *
- * @author olaurino
- */
 public interface Method {
     String getName();
 
     void setName(String name);
-
-    Config getConfig();
-
 }

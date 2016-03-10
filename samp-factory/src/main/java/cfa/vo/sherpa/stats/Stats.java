@@ -16,10 +16,6 @@
 
 package cfa.vo.sherpa.stats;
 
-/**
- *
- * @author olaurino
- */
 public enum Stats implements Stat {
     Chi2Gehrels("chi2gehrels"),
     LeastSquares("leastsq");

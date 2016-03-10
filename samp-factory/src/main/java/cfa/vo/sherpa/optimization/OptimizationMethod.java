@@ -16,22 +16,24 @@
 
 package cfa.vo.sherpa.optimization;
 
-/**
- *
- * @author olaurino
- */
-public enum OptimizationMethod {
-    MonteCarlo(MonCar.class),
-    LevenbergMarquardt(LevMar.class),
-    NelderMeadSimplex(NelderMead.class);
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-    private Class<? extends Method> clazz;
+public enum OptimizationMethod implements Method {
+    MonteCarlo("moncar"),
+    LevenbergMarquardt("levmar"),
+    NelderMeadSimplex("neldermead");
 
-    private OptimizationMethod(Class<? extends Method> clazz) {
-        this.clazz = clazz;
+    private String name;
+
+    OptimizationMethod(String name) {
+        this.name = name;
     }
 
-    public Class<? extends Method> getMethodClass() {
-        return clazz;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        throw new NotImplementedException();
     }
 }

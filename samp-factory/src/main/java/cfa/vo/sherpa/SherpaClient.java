@@ -48,7 +48,7 @@ public class SherpaClient {
 
     public FitResults fit(Data dataset, CompositeModel model, Stat stat, Method method) throws Exception {
 
-        FitConfiguration fc = (FitConfiguration) SAMPFactory.get(FitConfiguration.class);
+        FitConfiguration fc = SAMPFactory.get(FitConfiguration.class);
 
         if (dataset.getStaterror() == null) {
             int len = dataset.getX().length;
@@ -80,13 +80,13 @@ public class SherpaClient {
     }
 
     public Data createData(String name) {
-        Data data = (Data) SAMPFactory.get(Data.class);
+        Data data = SAMPFactory.get(Data.class);
         data.setName(name);
         return data;
     }
 
     public CompositeModel createCompositeModel(String expression, Model... models) {
-        CompositeModel cm = (CompositeModel) SAMPFactory.get(CompositeModel.class);
+        CompositeModel cm = SAMPFactory.get(CompositeModel.class);
         cm.setName(expression);
         for (Model model : models) {
             cm.addPart(model);
@@ -109,12 +109,6 @@ public class SherpaClient {
         Parameter p = (Parameter) SAMPFactory.get(Parameter.class);
         p.setName(name);
         return p;
-    }
-
-    public Method getMethod(OptimizationMethod optMethod) {
-        Method method = (Method) SAMPFactory.get(optMethod.getMethodClass());
-        method.setName(optMethod.getMethodClass().getSimpleName());
-        return method;
     }
 
     public SampService getService() {

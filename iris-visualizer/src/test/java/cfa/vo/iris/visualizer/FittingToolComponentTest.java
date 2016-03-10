@@ -29,7 +29,7 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
 
     @Before
     public void setUp() throws Exception {
-        windowName = "Fitting Tool: Sed0";
+        windowName = "Fitting Tool";
     }
 
     @Override

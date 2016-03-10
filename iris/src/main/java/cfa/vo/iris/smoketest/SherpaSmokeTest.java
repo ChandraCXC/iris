@@ -26,7 +26,6 @@ import cfa.vo.interop.SampService;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.interop.AbstractSedMessageHandler;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.sherpa.models.Model;
 import cfa.vo.sherpa.models.ModelImpl;
 import cfa.vo.sherpa.models.CompositeModel;
 import cfa.vo.sherpa.models.Parameter;
@@ -142,7 +141,7 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
 
             Stat s = Stats.LeastSquares;
 
-            Method method = c.getMethod(OptimizationMethod.NelderMeadSimplex);
+            Method method = OptimizationMethod.NelderMeadSimplex;
 
             log("Calling Sherpa and waiting for results...");
             FitResults fr = c.fit(data, cm, s, method);
