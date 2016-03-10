@@ -17,10 +17,13 @@ package cfa.vo.iris.visualizer;
 
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.IrisComponent;
+import cfa.vo.iris.sed.SedlibSedManager;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import org.uispec4j.interception.BasicHandler;
+import org.uispec4j.interception.WindowInterceptor;
 
 public class FittingToolComponentTest extends AbstractComponentGUITest {
 
@@ -38,7 +41,23 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
     }
 
     @Test
-    public void testVisualizerStub() throws Exception {
+    public void testFittingNoSed() throws Exception {
+        WindowInterceptor wi = WindowInterceptor.init(
+            window.getMenuBar()
+                .getMenu("Tools")
+                .getSubMenu(comp.getName())
+                .getSubMenu(comp.getName())
+                .triggerClick()
+        );
+        
+        wi.process(BasicHandler.init().triggerButtonClick("OK")).run();
+    }
+    
+    @Test
+    public void testFittingSed() throws Exception {
+        
+        SedlibSedManager sedManager = (SedlibSedManager) app.getWorkspace().getSedManager();
+        sedManager.newSed("Sed0");
         
         window.getMenuBar()
             .getMenu("Tools")
@@ -48,4 +67,5 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         
         assertTrue(desktop.containsWindow(windowName).isTrue());
     }
+    
 }

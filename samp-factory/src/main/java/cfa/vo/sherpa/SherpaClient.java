@@ -48,7 +48,7 @@ public class SherpaClient {
 
     public FitResults fit(Data dataset, CompositeModel model, Stat stat, Method method) throws Exception {
 
-        FitConfiguration fc = SAMPFactory.get(FitConfiguration.class);
+        SherpaFitConfiguration fc = SAMPFactory.get(SherpaFitConfiguration.class);
 
         if (dataset.getStaterror() == null) {
             int len = dataset.getX().length;
@@ -73,7 +73,7 @@ public class SherpaClient {
         fc.setStat(stat);
         fc.setMethod(method);
 
-        SAMPMessage message = SAMPFactory.createMessage("spectrum.fit.fit", fc, FitConfiguration.class);
+        SAMPMessage message = SAMPFactory.createMessage("spectrum.fit.fit", fc, SherpaFitConfiguration.class);
         Response response = sendMessage(message);
 
         return (FitResults) SAMPFactory.get(response.getResult(), FitResults.class);

@@ -19,6 +19,9 @@ package cfa.vo.iris.visualizer;
 import cfa.vo.iris.*;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.fitting.FittingMainView;
+import cfa.vo.iris.gui.NarrowOptionPane;
+import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.sherpa.IFitConfiguration;
 
 import org.astrogrid.samp.client.MessageHandler;
 import java.util.ArrayList;
@@ -80,7 +83,14 @@ public class FittingToolComponent implements IrisComponent {
                 public void onClick() {
                     if (view == null) {
                         try {
-                            view = new FittingMainView(ws);
+                            ExtSed sed = (ExtSed) ws.getSedManager().getSelected();
+                            IFitConfiguration fit = null;
+                            if (sed == null) {
+                                NarrowOptionPane.showMessageDialog(null, "No SEDs open. Please start building SEDs using the SED builder", "Error", NarrowOptionPane.ERROR_MESSAGE);
+                                return;
+                            }
+                            fit = (IFitConfiguration) sed.getAttachment("fit.model");
+                            view = new FittingMainView(fit);
                             ws.getDesktop().add(view);
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);

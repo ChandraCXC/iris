@@ -38,7 +38,6 @@ import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.iris.sed.fit.IFit;
 import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sed.builder.photfilters.*;
 import cfa.vo.sed.gui.PhotometryPointFrame.PhotometryFilterSelector;
@@ -53,6 +52,7 @@ import cfa.vo.sed.science.interpolation.ZConfig;
 import cfa.vo.sedlib.Param;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedException;
+import cfa.vo.sherpa.IFitConfiguration;
 import cfa.vo.sherpa.models.CompositeModel;
 import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.models.UserModel;
@@ -1285,12 +1285,12 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
 
         Response response = (Response) SAMPFactory.get(Response.class);
         if (integrateModel) {
-            IFit fit = (IFit) sed.getAttachment("fit.model");
+            IFitConfiguration fit = (IFitConfiguration) sed.getAttachment("fit.model");
 
             CompositeModel model = fit.getModel();
             model.setName(modelExpression);
 
-            List<UserModel> userModels = fit.getUserModels();
+            List<UserModel> userModels = fit.getUserModelList();
 
             for (PassBand pb : pbs) {
                 List pbl = new ArrayList();
@@ -1529,9 +1529,9 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
         } else {
             integrateModelButton.setText("Integrate Model (NO)");
         }
-        IFit fit = (IFit) sed.getAttachment("fit.model");
+        IFitConfiguration fit = (IFitConfiguration) sed.getAttachment("fit.model");
         if (fit != null) {
-            setModelExpression(fit.getExpression());
+            setModelExpression(fit.getModel().getName());
         } else {
             setModelExpression("No Model");
         }
@@ -1616,7 +1616,8 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
     public void showModel() {
 
         if (mvf == null) {
-            mvf = new ModelViewerFrame(sed);
+            IFitConfiguration fit = (IFitConfiguration) sed.getAttachment("fit.model");
+            mvf = new ModelViewerFrame(fit);
             ws.addFrame(mvf);
         }
         GUIUtils.moveToFront(mvf);

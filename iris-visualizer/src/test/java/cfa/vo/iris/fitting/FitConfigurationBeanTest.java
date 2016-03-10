@@ -4,7 +4,7 @@ import cfa.vo.interop.SAMPFactory;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sherpa.Data;
-import cfa.vo.sherpa.FitConfiguration;
+import cfa.vo.sherpa.SherpaFitConfiguration;
 import cfa.vo.sherpa.models.CompositeModel;
 import cfa.vo.sherpa.models.ModelFactory;
 import cfa.vo.sherpa.models.ModelImpl;
@@ -19,6 +19,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class FitConfigurationBeanTest {
+    private ExtSed sed;
     private FitConfigurationBean conf;
     private CompositeModel cm;
     double[] x = {1.0, 2.0, 3.0};
@@ -51,7 +52,6 @@ public class FitConfigurationBeanTest {
         Method method = OptimizationMethod.LevenbergMarquardt;
 
         conf = new FitConfigurationBean();
-        conf.setSed(sed);
         conf.setMethod(method);
         conf.setModel(cm);
         conf.setStat(s);
@@ -60,7 +60,7 @@ public class FitConfigurationBeanTest {
 
     @Test
     public void testMake() throws Exception {
-        FitConfiguration fitConf = conf.make();
+        SherpaFitConfiguration fitConf = conf.make(sed);
         assertEquals(1, fitConf.getDatasets().size());
         Data data = fitConf.getDatasets().get(0);
         for (int i=0; i<3; i++) {
