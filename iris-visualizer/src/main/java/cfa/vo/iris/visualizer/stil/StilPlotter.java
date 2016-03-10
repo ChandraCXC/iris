@@ -56,11 +56,17 @@ public class StilPlotter extends JPanel {
     private IWorkspace ws;
     private SedlibSedManager sedManager;
     private ExtSed currentSed;
-    private final VisualizerComponentPreferences preferences;
+    private VisualizerComponentPreferences preferences;
     
     private MapEnvironment env;
-
-    public StilPlotter(IWorkspace ws,
+    
+    public StilPlotter() {
+        setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+        setBackground(Color.WHITE);
+        setLayout(new GridLayout(1, 0, 0, 0));
+    }
+    
+    public StilPlotter(IWorkspace ws, 
             VisualizerComponentPreferences preferences) {
         this.ws = ws;
         this.sedManager = (SedlibSedManager) ws.getSedManager();
@@ -245,6 +251,33 @@ public class StilPlotter extends JPanel {
      */
     public void hideErrorBars() {
         
+    }
+    
+    public StilPlotter setWorkSpace(IWorkspace ws) {
+        this.ws = ws;
+        return this;
+    }
+    
+    public IWorkspace getWorkSpace() {
+        return this.ws;
+    }
+    
+    public StilPlotter setVisualizerPreferences(VisualizerComponentPreferences prefs) {
+        this.preferences = prefs;
+        return this;
+    }
+    
+    public VisualizerComponentPreferences getVisualizerPreferences() {
+        return this.preferences;
+    }
+    
+    public StilPlotter setSedManager(SedlibSedManager sedManager) {
+        this.sedManager = sedManager;
+        return this;
+    }
+    
+    public SedlibSedManager getSedManager() {
+        return this.sedManager;
     }
     
     public ExtSed getSed() {
