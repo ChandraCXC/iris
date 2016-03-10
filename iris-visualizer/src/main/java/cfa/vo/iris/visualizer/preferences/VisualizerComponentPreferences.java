@@ -164,6 +164,9 @@ public class VisualizerComponentPreferences {
      * @param segment
      */
     public void update(ExtSed sed, Segment segment) {
+        // Do nothing for null segments
+        if (segment == null) return;
+        
         if (sedPreferences.containsKey(sed)) {
             sedPreferences.get(sed).addSegment(segment);
         } else {
@@ -181,8 +184,11 @@ public class VisualizerComponentPreferences {
      */
     public void update(ExtSed sed, List<Segment> segments) {
         if (sedPreferences.containsKey(sed)) {
-            for (Segment segment : segments)
+            for (Segment segment : segments) {
+                // Do nothing for null segments
+                if (segment == null) continue;
                 sedPreferences.get(sed).addSegment(segment);
+            }
         } else {
             // The segment will automatically be serialized and attached the the 
             // SedPrefrences since it's assumed to be attached to the SED.
@@ -210,6 +216,9 @@ public class VisualizerComponentPreferences {
      * @param segment
      */
     public void remove(ExtSed sed, Segment segment) {
+        // Do nothing for null segments
+        if (segment == null) return;
+        
         if (sedPreferences.containsKey(sed)) {
             sedPreferences.get(sed).removeSegment(segment);
         }
@@ -224,8 +233,11 @@ public class VisualizerComponentPreferences {
      */
     public void remove(ExtSed sed, List<Segment> segments) {
         if (sedPreferences.containsKey(sed)) {
-            for (Segment segment : segments)
+            for (Segment segment : segments) {
+                // Do nothing for null segments
+                if (segment == null) continue;
                 sedPreferences.get(sed).removeSegment(segment);
+            }
         }
         
         fire(sed, VisualizerCommand.RESET);
@@ -285,6 +297,7 @@ public class VisualizerComponentPreferences {
         }
         
         private void processNotification(Segment segment, SegmentPayload payload) {
+            
             ExtSed sed = payload.getSed();
             SedCommand command = payload.getSedCommand();
             
