@@ -102,6 +102,9 @@ public class SedPreferences {
      */
     void addSegment(Segment seg) {
         
+        // Do not keep track of empty segments
+        if (seg == null) return;
+        
         MapKey me = new MapKey(seg);
         
         // If the segment is already in the map remake the star table
@@ -142,8 +145,11 @@ public class SedPreferences {
      * Removes a segment from the sed preferences map.
      * @param segment
      */
-    void removeSegment(Segment segment) {
-        MapKey me = new MapKey(segment);
+    void removeSegment(Segment seg) {
+        // Do not keep track of empty segments
+        if (seg == null) return;
+        
+        MapKey me = new MapKey(seg);
         segmentPreferences.remove(me);
     }
     
