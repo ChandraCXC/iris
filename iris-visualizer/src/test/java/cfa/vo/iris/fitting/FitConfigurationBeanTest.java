@@ -3,7 +3,6 @@ package cfa.vo.iris.fitting;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sedlib.Segment;
-import cfa.vo.sedlib.io.SedFormat;
 import cfa.vo.sherpa.Data;
 import cfa.vo.sherpa.FitConfiguration;
 import cfa.vo.sherpa.models.CompositeModel;
@@ -14,7 +13,6 @@ import cfa.vo.sherpa.optimization.Method;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Stat;
 import cfa.vo.sherpa.stats.Stats;
-import cfa.vo.testdata.TestData;
 import org.junit.Before;
 import org.junit.Test;
 
