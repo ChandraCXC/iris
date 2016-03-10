@@ -43,7 +43,7 @@ public class PlotPreferences {
         LOG("log", true, true),
         LINEAR("linear", false, false),
         X_LOG("xlog", true, false),
-        Y_LOG("ylog", true, false);
+        Y_LOG("ylog", false, true);
         
         public String name;
         public boolean xlog;
