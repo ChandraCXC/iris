@@ -26,7 +26,9 @@
  */
 package cfa.vo.iris.test;
 
+import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SimpleSAMPMessage;
+import cfa.vo.iris.fitting.FitConfigurationBean;
 import cfa.vo.iris.gui.widgets.SedList;
 import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
@@ -45,6 +47,12 @@ import javax.swing.JInternalFrame;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+
+import cfa.vo.sherpa.IFitConfiguration;
+import cfa.vo.sherpa.models.CompositeModel;
+import cfa.vo.sherpa.models.ModelFactory;
+import cfa.vo.sherpa.models.ModelImpl;
+import cfa.vo.sherpa.models.Parameter;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.SampException;
 
@@ -305,6 +313,22 @@ public final class TestBuilderFrame extends JInternalFrame {
                 }
             }
             manager.getSelected().addSegment(seg);
+            IFitConfiguration fit = new FitConfigurationBean();
+
+            ModelFactory factory = new ModelFactory();
+            ModelImpl m = factory.getModel("polynomial", "m");
+            Parameter c0 = m.getParameter("m.c0");
+            c0.setFrozen(0);
+
+            Parameter c1 = m.getParameter("m.c1");
+            c1.setFrozen(0);
+
+            CompositeModel cm = SAMPFactory.get(CompositeModel.class);
+            cm.setName("m");
+            cm.addPart(m);
+            fit.setModel(cm);
+
+            manager.getSelected().addAttachment("fit.model", fit);
         } catch (Exception ex) {
             Logger.getLogger(TestBuilderFrame.class.getName()).log(Level.SEVERE, null, ex);
         }

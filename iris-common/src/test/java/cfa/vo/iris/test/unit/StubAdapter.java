@@ -15,7 +15,6 @@
  */
 package cfa.vo.iris.test.unit;
 
-import cfa.vo.iris.IrisApplication;
 import org.uispec4j.UISpecAdapter;
 import org.uispec4j.Window;
 

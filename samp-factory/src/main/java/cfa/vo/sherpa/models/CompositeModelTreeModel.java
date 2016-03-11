@@ -25,10 +25,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.util.List;
 
-/**
- *
- * @author olaurino
- */
 public class CompositeModelTreeModel extends DefaultTreeModel {
 
     public CompositeModelTreeModel(CompositeModel model, List<UserModel> userModels) {

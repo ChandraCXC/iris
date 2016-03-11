@@ -90,7 +90,7 @@ public class FittingToolComponent implements IrisComponent {
                                 return;
                             }
                             fit = (IFitConfiguration) sed.getAttachment("fit.model");
-                            view = new FittingMainView(fit);
+                            view = new FittingMainView(sed, fit);
                             ws.getDesktop().add(view);
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);

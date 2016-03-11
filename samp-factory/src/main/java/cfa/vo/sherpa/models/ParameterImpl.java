@@ -125,4 +125,9 @@ public final class ParameterImpl implements Parameter {
     public void setLink(String link) {
         this.link = link;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

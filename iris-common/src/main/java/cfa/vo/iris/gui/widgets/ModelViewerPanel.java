@@ -49,20 +49,23 @@ import java.util.logging.Logger;
 
 public final class ModelViewerPanel extends javax.swing.JPanel implements SedListener {
 
+    private IFitConfiguration fit;
+    
     private final String[] values = new String[]{"Val", "Min", "Max", "Frozen"};
 
     /**
      * Creates new form NewJInternalFrame
      */
-    public ModelViewerPanel(IFitConfiguration fitConfig) {
+    public ModelViewerPanel(ExtSed sed, IFitConfiguration fitConfig) {
         initComponents();
+        setSed(sed);
         setFitConfiguration(fitConfig);
         SedEvent.getInstance().add(this);
-        jTree1.setPreferredSize(null);
-        jTree1.addMouseListener(new MouseAdapter() {
+        modelsTree.setPreferredSize(null);
+        modelsTree.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                TreePath selPath = jTree1.getPathForLocation(e.getX(), e.getY());
+                TreePath selPath = modelsTree.getPathForLocation(e.getX(), e.getY());
                 if (selPath != null) {
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode) selPath.getLastPathComponent();
                     if (node.isLeaf()) {
@@ -75,10 +78,15 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         });
     }
 
+    public IFitConfiguration getFitConfiguration() {
+        return fit;
+    }
+    
     private java.util.List<UserModel> userModels;
-
+    
     private void setFitConfiguration(IFitConfiguration fit) {
         try {
+            this.fit = fit;
             CompositeModel m = fit.getModel();
             userModels = fit.getUserModelList();
             setModel(m);
@@ -144,6 +152,7 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
                         panel.add(l);
                         JTextField textField = new JTextField();
                         l.setLabelFor(textField);
+                        textField.setName(name);
                         textField.setEditable(false);
                         textField.setText(getValue(selectedParameter, name));
                         panel.add(textField);
@@ -163,6 +172,29 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         });
     }
 
+    private ExtSed sed;
+
+    public static final String PROP_SED = "sed";
+
+    /**
+     * Get the value of sed
+     *
+     * @return the value of sed
+     */
+    public ExtSed getSed() {
+        return sed;
+    }
+
+    /**
+     * Set the value of sed
+     *
+     * @param sed new value of sed
+     */
+    private void setSed(ExtSed sed) {
+        ExtSed oldSed = this.sed;
+        this.sed = sed;
+        firePropertyChange(PROP_SED, oldSed, sed);
+    }
 
 
     private CompositeModel model;
@@ -238,8 +270,11 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
 
     @Override
     public void process(ExtSed source, SedCommand payload) {
-        IFitConfiguration fit = (IFitConfiguration) source.getAttachment("fit.model");
-        setFitConfiguration(fit);
+        if (SedCommand.SELECTED.equals(payload) || SedCommand.CHANGED.equals(payload) && source.equals(sed)) {
+            IFitConfiguration fitConf = (IFitConfiguration) source.getAttachment("fit.model");
+            setFitConfiguration(fitConf);
+            setSed(source);
+        }
     }
 
 
@@ -255,20 +290,20 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        modelExpressionField = new javax.swing.JTextField();
         jSplitPane1 = new javax.swing.JSplitPane();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTree1 = new javax.swing.JTree();
+        modelsTree = new javax.swing.JTree();
 
         jLabel1.setText("Model Expression: ");
         jLabel1.setName("jLabel1"); // NOI18N
 
-        jTextField1.setEditable(false);
-        jTextField1.setName("jTextField1"); // NOI18N
+        modelExpressionField.setEditable(false);
+        modelExpressionField.setName("modelExpressionField"); // NOI18N
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${expression}"), jTextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${expression}"), modelExpressionField, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         jSplitPane1.setDividerLocation(150);
@@ -295,7 +330,7 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 385, Short.MAX_VALUE)
+            .add(0, 467, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -306,12 +341,12 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        jTree1.setName("jTree1"); // NOI18N
+        modelsTree.setName("modelsTree"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${treeModel}"), jTree1, org.jdesktop.beansbinding.BeanProperty.create("model"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${treeModel}"), modelsTree, org.jdesktop.beansbinding.BeanProperty.create("model"));
         bindingGroup.addBinding(binding);
 
-        jScrollPane1.setViewportView(jTree1);
+        jScrollPane1.setViewportView(modelsTree);
 
         jSplitPane1.setLeftComponent(jScrollPane1);
 
@@ -326,7 +361,7 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
                     .add(layout.createSequentialGroup()
                         .add(jLabel1)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jTextField1)))
+                        .add(modelExpressionField)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -335,7 +370,7 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(jLabel1)
-                    .add(jTextField1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(modelExpressionField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
                 .addContainerGap())
@@ -350,8 +385,8 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTree jTree1;
+    private javax.swing.JTextField modelExpressionField;
+    private javax.swing.JTree modelsTree;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }

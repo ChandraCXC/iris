@@ -16,7 +16,6 @@
 
 package cfa.vo.sherpa.models;
 
-import cfa.vo.interop.SAMPFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -28,13 +27,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Properties;
+import java.util.*;
 
 public class ModelFactory {
-    private Map<String, Model> modelsMap = new HashMap<>();
+    private Map<String, Model> modelsMap = new TreeMap<>();
 
     public ModelFactory() {
         try {
@@ -75,5 +71,9 @@ public class ModelFactory {
             throw new NoSuchElementException("No such model: "+ name);
         }
         return new ModelImpl(modelsMap.get(name), id);
+    }
+
+    public Collection<Model> getModels() {
+        return modelsMap.values();
     }
 }

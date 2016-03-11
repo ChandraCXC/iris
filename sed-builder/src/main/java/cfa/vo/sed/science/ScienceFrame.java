@@ -1617,7 +1617,7 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
 
         if (mvf == null) {
             IFitConfiguration fit = (IFitConfiguration) sed.getAttachment("fit.model");
-            mvf = new ModelViewerFrame(fit);
+            mvf = new ModelViewerFrame(sed, fit);
             ws.addFrame(mvf);
         }
         GUIUtils.moveToFront(mvf);

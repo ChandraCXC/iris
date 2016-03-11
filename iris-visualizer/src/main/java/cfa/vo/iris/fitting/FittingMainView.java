@@ -15,29 +15,129 @@
  */
 package cfa.vo.iris.fitting;
 
+import cfa.vo.iris.events.SedCommand;
+import cfa.vo.iris.events.SedEvent;
+import cfa.vo.iris.events.SedListener;
 import cfa.vo.iris.gui.widgets.ModelViewerPanel;
+import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.utils.IPredicate;
 import cfa.vo.sherpa.IFitConfiguration;
-import java.awt.GridLayout;
-import javax.swing.JPanel;
+import cfa.vo.sherpa.models.Model;
+import cfa.vo.sherpa.models.ModelFactory;
+import cfa.vo.sherpa.models.Parameter;
 
-public class FittingMainView extends javax.swing.JInternalFrame {
+import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
+import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
+
+public class FittingMainView extends javax.swing.JInternalFrame implements SedListener {
+    private ModelViewerPanel modelViewerPanel;
+    private ExtSed sed;
+    private String sedId;
+    private ModelsTreeModel model;
+    private ModelFactory factory = new ModelFactory();
+    private StringPredicate predicate = new StringPredicate("");
+    public static final String PROP_SEDID = "sedId";
     
     /**
      * Creates new form FittingMainView
+     * @param sed
      * @param fit
      */
-    public FittingMainView(IFitConfiguration fit) {
+    public FittingMainView(ExtSed sed, IFitConfiguration fit) {
         initComponents();
-        JPanel modelViewerPanel = new ModelViewerPanel(fit);
-        modelViewerPanel.setVisible(true);
-        modelPanel.setLayout(new GridLayout(1, 1));
-        modelPanel.add(modelViewerPanel);
-        modelPanel.setPreferredSize(modelViewerPanel.getPreferredSize());
+        SedEvent.getInstance().add(this);
+        setUpModelViewerPanel(fit, sed);
+        setUpAvailableModelsTree();
         revalidate();
         repaint();
         pack();
     }
 
+    /**
+     * Get the value of sedId
+     *
+     * @return the value of sedId
+     */
+    public String getSedId() {
+        return sedId;
+    }
+
+    /**
+     * Set the value of sedId
+     *
+     * @param sedId new value of sedId
+     */
+    public void setSedId(String sedId) {
+        String oldSedId = this.sedId;
+        this.sedId = sedId;
+        firePropertyChange(PROP_SEDID, oldSedId, sedId);
+    }
+
+    
+    @Override
+    public void process(ExtSed source, SedCommand payload) {
+        if (SedCommand.SELECTED.equals(payload) || SedCommand.CHANGED.equals(payload) && source.equals(sed)) {
+            setSed(source);
+        }
+    }
+
+    private void setUpModelViewerPanel(IFitConfiguration fit, ExtSed sed) {
+        setSed(sed);
+        modelViewerPanel = new ModelViewerPanel(sed, fit);
+        modelViewerPanel.setVisible(true);
+        modelPanel.setLayout(new GridLayout(1, 1));
+        modelPanel.add(modelViewerPanel);
+        modelPanel.setPreferredSize(modelViewerPanel.getPreferredSize());
+    }
+
+    private void setUpAvailableModelsTree() {
+        List<Model> models = new ArrayList<>(factory.getModels());
+        model = new ModelsTreeModel(models);
+        availableTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+        availableTree.setModel(model);
+        availableTree.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                TreePath selPath = availableTree.getPathForLocation(e.getX(), e.getY());
+                if (selPath != null) {
+                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) selPath.getLastPathComponent();
+                    if (node.isLeaf()) {
+                        Model m = (Model) node.getUserObject();
+                        descriptionArea.setText(m.getDescription());
+                    }
+                }
+
+            }
+        });
+        JRootPane rootPane = SwingUtilities.getRootPane(searchButton);
+        rootPane.setDefaultButton(searchButton);
+    }
+
+    private void filterModels(String searchString) {
+        predicate.setString(searchString);
+        List<Model> sub = predicate.apply(model.getList());
+        availableTree.setModel(new ModelsTreeModel(sub));
+    }
+
+    /**
+     * Set the value of sed
+     *
+     * @param sed new value of sed
+     */
+    private void setSed(ExtSed sed) {
+        this.sed = sed;
+        setSedId(sed.getId());
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -46,19 +146,20 @@ public class FittingMainView extends javax.swing.JInternalFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         jPanel1 = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
         jPanel2 = new javax.swing.JPanel();
         modelPanel = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
-        jPanel5 = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        availableComponentsList = new javax.swing.JList();
+        availableComponents = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         descriptionArea = new javax.swing.JTextArea();
         searchButton = new javax.swing.JButton();
         searchField = new javax.swing.JTextField();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        availableTree = new javax.swing.JTree();
         currentSedLabel = new javax.swing.JLabel();
         currentSedField = new javax.swing.JTextField();
         jMenuBar1 = new javax.swing.JMenuBar();
@@ -88,7 +189,7 @@ public class FittingMainView extends javax.swing.JInternalFrame {
         );
         modelPanelLayout.setVerticalGroup(
             modelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 344, Short.MAX_VALUE)
+            .addGap(0, 343, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -104,43 +205,48 @@ public class FittingMainView extends javax.swing.JInternalFrame {
 
         jSplitPane1.setRightComponent(jPanel2);
 
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Available Components"));
-
-        availableComponentsList.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(availableComponentsList);
+        availableComponents.setBorder(javax.swing.BorderFactory.createTitledBorder("Available Components"));
 
         descriptionArea.setColumns(20);
         descriptionArea.setLineWrap(true);
         descriptionArea.setRows(3);
         descriptionArea.setText("Double click on a Component to add it to the list of selected Components.");
         descriptionArea.setWrapStyleWord(true);
+        descriptionArea.setName("descriptionArea"); // NOI18N
         jScrollPane2.setViewportView(descriptionArea);
 
         searchButton.setText("Search");
+        searchButton.setName("searchButton"); // NOI18N
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
 
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
+        searchField.setName("searchField"); // NOI18N
+
+        availableTree.setName("availableTree"); // NOI18N
+        jScrollPane3.setViewportView(availableTree);
+
+        javax.swing.GroupLayout availableComponentsLayout = new javax.swing.GroupLayout(availableComponents);
+        availableComponents.setLayout(availableComponentsLayout);
+        availableComponentsLayout.setHorizontalGroup(
+            availableComponentsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(availableComponentsLayout.createSequentialGroup()
                 .addComponent(searchField, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(jScrollPane1)
             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(jScrollPane3)
         );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        availableComponentsLayout.setVerticalGroup(
+            availableComponentsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(availableComponentsLayout.createSequentialGroup()
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(availableComponentsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchButton)
                     .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -151,13 +257,13 @@ public class FittingMainView extends javax.swing.JInternalFrame {
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(availableComponents, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(0, 0, 0))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 340, Short.MAX_VALUE)
+                .addComponent(availableComponents, javax.swing.GroupLayout.PREFERRED_SIZE, 340, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -166,8 +272,11 @@ public class FittingMainView extends javax.swing.JInternalFrame {
         currentSedLabel.setText("Current Sed: ");
 
         currentSedField.setEditable(false);
-        currentSedField.setText("Sed0");
         currentSedField.setEnabled(false);
+        currentSedField.setName("currentSedField"); // NOI18N
+
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sedId}"), currentSedField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -192,7 +301,7 @@ public class FittingMainView extends javax.swing.JInternalFrame {
                     .addComponent(currentSedField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(390, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel1);
@@ -205,12 +314,19 @@ public class FittingMainView extends javax.swing.JInternalFrame {
 
         setJMenuBar(jMenuBar1);
 
+        bindingGroup.bind();
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        filterModels(searchField.getText());
+    }//GEN-LAST:event_searchButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JList availableComponentsList;
+    private javax.swing.JPanel availableComponents;
+    private javax.swing.JTree availableTree;
     private javax.swing.JTextField currentSedField;
     private javax.swing.JLabel currentSedLabel;
     private javax.swing.JTextArea descriptionArea;
@@ -219,13 +335,57 @@ public class FittingMainView extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPanel jPanel5;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JMenu menuBar;
     private javax.swing.JPanel modelPanel;
     private javax.swing.JButton searchButton;
     private javax.swing.JTextField searchField;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
+
+    private class StringPredicate implements IPredicate<Model> {
+
+        private String string;
+
+        public StringPredicate(String string) {
+            this.string = string.toLowerCase();
+        }
+
+        public void setString(String string) {
+            this.string = string.toLowerCase();
+        }
+
+        @Override
+        public boolean apply(Model object) {
+            boolean resp = false;
+            if (object.getName() != null) {
+                resp = resp || object.getName().toLowerCase().contains(string);
+            }
+            if (object.getDescription() != null) {
+                resp = resp || object.getDescription().toLowerCase().contains(string);
+            }
+            if (object.getPars() != null) {
+                for (Parameter p : object.getPars()) {
+                    resp = resp || p.getName().toLowerCase().contains(string);
+                }
+            }
+
+            return resp;
+        }
+
+        // TODO Refactoring: This can be added as a concrete method in an abstract class
+        public List<Model> apply(List<Model> all) {
+            List<Model> sub = new ArrayList<>();
+
+            for (Model m : all) {
+                if (predicate.apply(m)) {
+                    sub.add(m);
+                }
+            }
+
+            return sub;
+        }
+    }
 }

@@ -19,7 +19,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class FitConfigurationBeanTest {
-    private ExtSed sed;
+    ExtSed sed;
     private FitConfigurationBean conf;
     private CompositeModel cm;
     double[] x = {1.0, 2.0, 3.0};
@@ -27,7 +27,7 @@ public class FitConfigurationBeanTest {
 
     @Before
     public void setUp() throws Exception {
-        ExtSed sed = new ExtSed("testsed", false);
+        sed = new ExtSed("testsed", false);
         Segment segment = new Segment();
         segment.setSpectralAxisValues(x);
         segment.setFluxAxisValues(y);
