@@ -16,16 +16,23 @@
 
 package cfa.vo.iris.visualizer.stil.tables;
 
+
 import java.util.Iterator;
+import java.io.IOException;
+import java.util.BitSet;
 import java.util.List;
 import java.util.concurrent.Future;
 
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.units.UnitsException;
+import cfa.vo.iris.visualizer.filters.Filter;
+import cfa.vo.iris.visualizer.filters.FilterSet;
 import cfa.vo.utils.Default;
 import uk.ac.starlink.table.DescribedValue;
 import uk.ac.starlink.table.EmptyStarTable;
+import uk.ac.starlink.table.RowSequence;
 import uk.ac.starlink.table.StarTable;
+import uk.ac.starlink.table.WrapperRowSequence;
 import uk.ac.starlink.table.WrapperStarTable;
 
 public class IrisStarTable extends WrapperStarTable {
@@ -35,6 +42,8 @@ public class IrisStarTable extends WrapperStarTable {
     private Future<StarTable> dataTableHolder;
     private StarTable segmentDataTable;
     private SegmentStarTable plotterTable;
+    
+    private FilterSet filters;
     
     IrisStarTable(SegmentStarTable plotterTable, Future<StarTable> dataTableHolder) {
         this(plotterTable, EMPTY_STARTABLE);
@@ -47,6 +56,7 @@ public class IrisStarTable extends WrapperStarTable {
         
         this.segmentDataTable = dataTable;
         this.plotterTable = plotterTable;
+        this.filters = new FilterSet(this);
         
         setName(plotterTable.getName());
     }
@@ -82,7 +92,7 @@ public class IrisStarTable extends WrapperStarTable {
     }
     
     private void checkDataTable() {
-        if (!dataTableHolder.isDone()) {
+        if (dataTableHolder == null || !dataTableHolder.isDone()) {
             return;
         }
         
@@ -129,5 +139,65 @@ public class IrisStarTable extends WrapperStarTable {
         }
         
         return -1;
+    }
+
+    public void addFilter(Filter filter) {
+        filters.add(filter);
+    }
+    
+    public void removeFilter(Filter filter) {
+        filters.remove(filter);
+    }
+    
+    public FilterSet getFilters() {
+        return filters;
+    }
+    
+    /**
+     * We provide random access iff there are no filters applied to this
+     * star table.
+     */
+    @Override
+    public boolean isRandom() {
+        return filters.isEmpty();
+    }
+    
+    @Override
+    public long getRowCount() {
+        return super.getRowCount() - filters.cardinality();
+    }
+    
+    /**
+     * Returns a RowSequence relevant to the StarTable and the filters that have
+     * been applied.
+     * 
+     */
+    @Override
+    public RowSequence getRowSequence() throws IOException {
+        
+        if (filters.isEmpty()) {
+            return super.getRowSequence();
+        }
+        
+        final BitSet mask = filters.getMasked();
+        return new WrapperRowSequence( baseTable.getRowSequence() ) {
+            int iBase = -1;
+
+            public boolean next() throws IOException {
+                int leng = mask.length();
+                while ( mask.get( iBase + 1 ) ) {
+                    if ( iBase + 1 >= leng ) {
+                        return false;
+                    }
+                    else {
+                        super.next();
+                        iBase++;
+                    }
+                }
+                super.next();
+                iBase++;
+                return true;
+            }
+        };
     }
 }
