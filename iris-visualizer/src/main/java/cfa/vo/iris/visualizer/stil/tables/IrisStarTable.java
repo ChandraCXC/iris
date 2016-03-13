@@ -153,6 +153,40 @@ public class IrisStarTable extends WrapperStarTable {
         return filters;
     }
     
+    public void setFilters(FilterSet filters) {
+        this.filters = filters;
+    }
+    
+    /**
+     * @return the filtered set of spectral axis data values.
+     */
+    public double[] getSpectralDataValues() {
+        return getFilteredValues(plotterTable.getSpecValues());
+    }
+    
+    /**
+     * @return the filtered set of flux axis data values.
+     */
+    public double[] getFluxDataValues() {
+        return getFilteredValues(plotterTable.getFluxValues());
+    }
+    
+    private double[] getFilteredValues(double[] data) {
+        
+        int rows = (int) getRowCount();
+        double[] values = new double[rows];
+        
+        BitSet masked = filters.getMasked();
+        int c = 0;
+        for (int i=0; i<(int) plotterTable.getRowCount(); i++) {
+            // Add only non-masked values.
+            if (!masked.get(i)) {
+                values[c++] = data[i];
+            }
+        }
+        return values;
+    }
+    
     /**
      * We provide random access iff there are no filters applied to this
      * star table.
@@ -182,7 +216,8 @@ public class IrisStarTable extends WrapperStarTable {
         final BitSet mask = filters.getMasked();
         return new WrapperRowSequence( baseTable.getRowSequence() ) {
             int iBase = -1;
-
+            
+            // The iterator skips over masked values
             public boolean next() throws IOException {
                 int leng = mask.length();
                 while ( mask.get( iBase + 1 ) ) {

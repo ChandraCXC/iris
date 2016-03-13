@@ -10,20 +10,24 @@ import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
  * be filtered in the corresponding table.
  *
  */
-public class RowSubsetFilter implements Filter {
+public class RowSubsetFilter extends Filter {
     
+    private int size;
     private BitSet mask;
     private IrisStarTable table;
     
     public RowSubsetFilter(int[] rows, IrisStarTable table) {
         this.table = table;
-        this.mask = new BitSet((int) table.getRowCount());
+        
+        // The size of this filter is the size of the underlying plot table.
+        this.size = (int) table.getPlotterTable().getRowCount();
+        this.mask = new BitSet();
         
         for (int i : rows) {
             mask.set(i);
         }
     }
-
+    
     @Override
     public BitSet getFilteredRows(IrisStarTable table) {
         if (this.table == table) {
@@ -32,5 +36,9 @@ public class RowSubsetFilter implements Filter {
         
         return new NullFilter().getFilteredRows(table);
     }
-
+    
+    @Override
+    public void invert() {
+        mask.flip(0, size);
+    }
 }

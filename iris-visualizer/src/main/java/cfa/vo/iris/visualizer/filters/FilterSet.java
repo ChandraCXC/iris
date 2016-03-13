@@ -43,11 +43,18 @@ public class FilterSet extends LinkedHashSet<Filter> {
         return masked.cardinality();
     }
     
-    private BitSet updateMasked() {
-        BitSet mask = new BitSet((int) table.getRowCount());
-        mask.set(0, mask.size());
+    public void invert() {
         for (Filter f : this) {
-            mask.and(f.getFilteredRows(table));
+            f.invert();
+        }
+        
+        this.masked = updateMasked();
+    }
+    
+    private BitSet updateMasked() {
+        BitSet mask = new BitSet();
+        for (Filter f : this) {
+            mask.or(f.getFilteredRows(table));
         }
         return mask;
     }
