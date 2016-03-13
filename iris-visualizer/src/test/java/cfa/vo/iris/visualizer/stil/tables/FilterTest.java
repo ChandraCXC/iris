@@ -2,6 +2,8 @@ package cfa.vo.iris.visualizer.stil.tables;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+
 import org.junit.Test;
 import org.uispec4j.utils.ArrayUtils;
 
@@ -61,6 +63,55 @@ public class FilterTest {
         // Move to end of StarTable
         seq.next(); seq.next();
         ArrayUtils.assertEquals(new Object[] {test.getName(), 4.0, 9.0, 9.0}, test.getRow(3));
+        
+        // verify values
+        checkEquals(new double[] {7,8,9}, test.getFluxDataValues());
+        checkEquals(new double[] {2,3,4}, test.getSpectralDataValues());
+        
+        // Apply a filter to row 1
+        RowSubsetFilter rowFilter2 = new RowSubsetFilter(new int[] {2}, test);
+        test.addFilter(rowFilter2);
+        assertEquals(2, test.getRowCount());
+        
+        // verify values
+        checkEquals(new double[] {7,9}, test.getFluxDataValues());
+        checkEquals(new double[] {2,4}, test.getSpectralDataValues());
+        
+        // Remove the first filter
+        test.removeFilter(rowFilter);
+        assertEquals(4, test.getRowCount());
+        
+        // verify values
+        checkEquals(new double[] {6,7,9,10}, test.getFluxDataValues());
+        checkEquals(new double[] {1,2,4,5}, test.getSpectralDataValues());
+        
+        // Invert the FilterSet, since there is a null filter everything should be empty.
+        test.getFilters().invert();
+        assertEquals(0, test.getRowCount());
+        checkEquals(new double[] {}, test.getFluxDataValues());
+        checkEquals(new double[] {}, test.getSpectralDataValues());
+        
+        // Remove the NullFilter, one row (2) should not be filtered
+        test.removeFilter(nullFilter);
+        assertEquals(1,  test.getRowCount());
+        checkEquals(new double[] {8}, test.getFluxDataValues());
+        checkEquals(new double[] {3}, test.getSpectralDataValues());
     }
+    
+    
+    public static void checkEquals(double[] expected, double[] values) {
 
+        String msg = String.format("expected: %s but was: %s", 
+                Arrays.toString(expected), Arrays.toString(values));
+        
+        if (expected.length != values.length) {
+            throw new AssertionError(msg);
+        }
+        
+        for (int i=0; i<expected.length; i++) {
+            if (expected[i] != values[i]) {
+                throw new AssertionError(msg);
+            }
+        }
+    }
 }
