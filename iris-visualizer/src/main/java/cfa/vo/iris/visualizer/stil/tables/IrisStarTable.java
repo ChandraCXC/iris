@@ -25,6 +25,7 @@ import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.visualizer.filters.Filter;
 import cfa.vo.iris.visualizer.filters.FilterSet;
+import cfa.vo.iris.visualizer.filters.RowSubsetFilter;
 import cfa.vo.utils.Default;
 import uk.ac.starlink.table.DescribedValue;
 import uk.ac.starlink.table.EmptyStarTable;
@@ -106,36 +107,69 @@ public class IrisStarTable extends WrapperStarTable {
         return plotterTable;
     }
     
+    /**
+     * Set the spectral axis units for this startable.
+     * @param xunit
+     * @throws UnitsException
+     */
     public void setXUnits(String xunit) throws UnitsException {
         plotterTable.setSpecUnits(Default.getInstance().getUnitsManager().newXUnits(xunit));
     }
     
+    /**
+     * Set the flux axis units for this startable.
+     * @param yunit
+     * @throws UnitsException
+     */
     public void setYUnits(String yunit) throws UnitsException {
         plotterTable.setFluxUnits(Default.getInstance().getUnitsManager().newYUnits(yunit));
     }
     
+    /**
+     *
+     * @return the spectral axis units for this startable.
+     */
     public String getXUnits() {
         return plotterTable.getSpecUnits().toString();
     }
     
+    /**
+     * 
+     * @return the flux axis units for this startable.
+     */
     public String getYUnits() {
         return plotterTable.getFluxUnits().toString();
     }
 
+    /**
+     * Add a filter to this startable.
+     * @param filter
+     */
     public void addFilter(Filter filter) {
         filters.add(filter);
     }
     
+    /**
+     * Remove a filter from this startable.
+     * @param filter
+     */
     public void removeFilter(Filter filter) {
         filters.remove(filter);
     }
     
+    /**
+     * 
+     * @return the set of filters that have been applied to this startable.
+     */
     public FilterSet getFilters() {
         return filters;
     }
     
-    public void setFilters(FilterSet filters) {
-        this.filters = filters;
+    /**
+     * Remove all filters that have been applied to this startable.
+     */
+    public void clearFilters() {
+        this.filters.clear();
     }
     
     /**
@@ -152,6 +186,10 @@ public class IrisStarTable extends WrapperStarTable {
         return getFilteredValues(plotterTable.getFluxValues());
     }
     
+    /*
+     * Uses the BitSet masked to return a subset of data from the 
+     * provided double[].
+     */
     private double[] getFilteredValues(double[] data) {
         
         int rows = (int) getRowCount();
@@ -215,5 +253,24 @@ public class IrisStarTable extends WrapperStarTable {
                 return true;
             }
         };
+    }
+    
+    /**
+     * Applies a set of RowSubsetFilters to a list of startables, in order. In particular, for
+     * two startables <t1, t2> with 3 rows each, providing the array int[] {0,3} would filter t
+     * the first row in each t1 and t2.
+     * 
+     * @param tables
+     * @param selectedRows
+     */
+    public static void applyFilters(List<IrisStarTable> tables, int[] selectedRows) {
+        // Apply each filter to the selected star tables in order.
+        int index = 0;
+        
+        for (IrisStarTable table : tables) {
+            int length = (int) table.getPlotterTable().getRowCount();
+            table.addFilter(new RowSubsetFilter(selectedRows, index, table));
+            index = index + length;
+        }
     }
 }

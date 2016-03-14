@@ -27,6 +27,12 @@ public class FilterSet extends LinkedHashSet<Filter> {
         return changed;
     }
     
+    @Override
+    public void clear() {
+        super.clear();
+        this.masked.clear();
+    }
+    
     public boolean remove(Filter filter) {
         boolean changed = super.remove(filter);
         if (changed) {

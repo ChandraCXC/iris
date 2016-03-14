@@ -82,6 +82,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
     public void resetData() {
         setSelectedSed((ExtSed) ws.getSedManager().getSelected());
+        logger.info("Resetting metadata browser");
         
         updateTitle();
         updateSelectedTables();
@@ -93,6 +94,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     }
     
     public void redrawData() {
+        logger.info("Re-drawing metadata browser");
         updateTitle();
         updateSelectedTables();
         updateDataTables();
@@ -298,7 +300,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         segmentMetadataScrollPane = new javax.swing.JScrollPane();
         segmentJTable = new javax.swing.JTable();
         starTableScrollPane = new javax.swing.JScrollPane();
-        starTableList = new javax.swing.JList<IrisStarTable>();
+        starTableList = new javax.swing.JList<>();
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         extractToSedMenuItem = new javax.swing.JMenuItem();
@@ -327,6 +329,11 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
         applyMaskButton.setText("Apply Mask");
         applyMaskButton.setName(""); // NOI18N
+        applyMaskButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                applyMaskButtonActionPerformed(evt);
+            }
+        });
 
         selectAllButton.setText("Select All");
         selectAllButton.addActionListener(new java.awt.event.ActionListener() {
@@ -514,14 +521,14 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(clearSelectionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(invertSelectionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(invertSelectionButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(filterExpressionField, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(selectPointsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(applyMaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(220, 220, 220))
+                .addComponent(applyMaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(171, 171, 171))
             .addComponent(dataPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -573,6 +580,15 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         }
         table.clearSelection();
     }//GEN-LAST:event_clearSelectionButtonActionPerformed
+
+    private void applyMaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyMaskButtonActionPerformed
+        // Applying a mask always acts on the selections from the plotter and 
+        // segment data tables.
+        int[] selected = this.plotterStarJTable.getSelectedRows();
+        
+        logger.info(String.format("Applying mask of %s points to %s tables", selected.length, selectedStarTables.size()));
+        IrisStarTable.applyFilters(selectedStarTables, selected);
+    }//GEN-LAST:event_applyMaskButtonActionPerformed
 
     private void selectAllButtonActionPerformed(
             java.awt.event.ActionEvent evt) {// GEN-FIRST:event_selectAllButtonActionPerformed
