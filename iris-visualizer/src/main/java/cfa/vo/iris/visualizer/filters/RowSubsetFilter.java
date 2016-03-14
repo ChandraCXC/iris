@@ -17,6 +17,19 @@ public class RowSubsetFilter extends Filter {
     private IrisStarTable table;
     
     public RowSubsetFilter(int[] rows, IrisStarTable table) {
+        this(rows, 0, table);
+    }
+    
+    /**
+     * Create a filter which filters out the given rows in the star table, presuming
+     * that the first row of the star table is indexed by startIndex. Rows that do not 
+     * apply to this star table are ignored.
+     * 
+     * @param rows
+     * @param startIndex
+     * @param table
+     */
+    public RowSubsetFilter(int[] rows, int startIndex, IrisStarTable table) {
         this.table = table;
         
         // The size of this filter is the size of the underlying plot table.
@@ -24,17 +37,21 @@ public class RowSubsetFilter extends Filter {
         this.mask = new BitSet();
         
         for (int i : rows) {
-            mask.set(i);
+            int index = i - startIndex;
+            if (index >= 0 && index < size) {
+                mask.set(index);
+            }
+            
         }
     }
     
     @Override
     public BitSet getFilteredRows(IrisStarTable table) {
+        // These filters only apply to a single star table.
         if (this.table == table) {
             return mask;
         }
-        
-        return new NullFilter().getFilteredRows(table);
+        return new BitSet();
     }
     
     @Override
