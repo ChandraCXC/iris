@@ -52,7 +52,6 @@ public class VisualizerComponentPreferences {
     
     PlotPreferences plotPreferences;
     IrisStarTableAdapter adapter;
-    ColumnInfoMatcher columnInfoMatcher;
     final IWorkspace ws;
     final Map<ExtSed, SedPreferences> sedPreferences;
     
@@ -67,9 +66,6 @@ public class VisualizerComponentPreferences {
         for (ExtSed sed : (List<ExtSed>) ws.getSedManager().getSeds()) {
             update(sed);
         }
-        
-        // TODO: Should this be in preferences?
-        this.columnInfoMatcher = new UtypeColumnInfoMatcher();
         
         // Plotter global preferences
         if (this.sedPreferences.isEmpty()) {
@@ -94,14 +90,6 @@ public class VisualizerComponentPreferences {
      */
     public PlotPreferences getPlotPreferences() {
         return plotPreferences;
-    }
-    
-    /**
-     * @return
-     *  ColumnInfoMatcher used in stacking star tables.
-     */
-    public ColumnInfoMatcher getColumnInfoMatcher() {
-        return columnInfoMatcher;
     }
 
     /**
