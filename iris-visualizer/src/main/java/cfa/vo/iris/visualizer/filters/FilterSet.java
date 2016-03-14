@@ -15,7 +15,7 @@ public class FilterSet extends LinkedHashSet<Filter> {
     public FilterSet(IrisStarTable table) {
         super();
         this.table = table;
-        this.masked = new BitSet();
+        this.masked = new BitSet((int) table.getPlotterTable().getRowCount());
     }
     
     @Override

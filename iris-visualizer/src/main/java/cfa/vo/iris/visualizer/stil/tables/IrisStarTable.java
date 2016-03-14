@@ -245,28 +245,31 @@ public class IrisStarTable extends WrapperStarTable {
     @Override
     public RowSequence getRowSequence() throws IOException {
         
-        if (filters.isEmpty()) {
-            return super.getRowSequence();
-        }
-        
         final BitSet mask = filters.getMasked();
         return new WrapperRowSequence( baseTable.getRowSequence() ) {
-            int iBase = -1;
+            int row = -1; // Current row in plotterTable
+            int baseLength = (int) plotterTable.getRowCount();
             
             // The iterator skips over masked values
             public boolean next() throws IOException {
-                int leng = mask.length();
-                while ( mask.get( iBase + 1 ) ) {
-                    if ( iBase + 1 >= leng ) {
+                row++;
+                
+                // If we are past the last row in the filtered table, we are done
+                if (!super.next()) {
+                    return false;
+                }
+                
+                // Skip over filtered points
+                while (mask.get(row)) {
+                    // If we are past the last row in the actual table then there 
+                    // are no more points
+                    if (row + 1 >= baseLength) {
                         return false;
                     }
-                    else {
-                        super.next();
-                        iBase++;
-                    }
+                    
+                    super.next();
+                    row++;
                 }
-                super.next();
-                iBase++;
                 return true;
             }
         };
@@ -288,6 +291,17 @@ public class IrisStarTable extends WrapperStarTable {
             int length = (int) table.getPlotterTable().getRowCount();
             table.addFilter(new RowSubsetFilter(selectedRows, index, table));
             index = index + length;
+        }
+    }
+    
+    /**
+     * Removes all filters from the specified star tables.
+     * @param tables
+     * @param selectedRows
+     */
+    public static void clearFilters(List<IrisStarTable> tables) {
+        for (IrisStarTable table : tables) {
+            table.clearFilters();
         }
     }
 }
