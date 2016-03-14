@@ -373,6 +373,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         });
 
         selectAllButton.setText("Select All");
+        selectAllButton.setToolTipText("Select all rows");
         selectAllButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 selectAllButtonActionPerformed(evt);
@@ -380,6 +381,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         });
 
         clearSelectionButton.setText("Clear Selection");
+        clearSelectionButton.setToolTipText("Clear selection");
         clearSelectionButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 clearSelectionButtonActionPerformed(evt);
@@ -387,6 +389,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         });
 
         invertSelectionButton.setText("Invert Selection");
+        invertSelectionButton.setToolTipText("Select non-selected rows");
         invertSelectionButton.setActionCommand("");
         invertSelectionButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -436,7 +439,10 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         dataTabsPane.addTab("Point Metadata", pointMetadataPanel);
 
         segmentJTable.setModel(new IrisMetadataTableModel());
-        segmentJTable.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, starTableList, org.jdesktop.beansbinding.ELProperty.create("${selectionModel}"), segmentJTable, org.jdesktop.beansbinding.BeanProperty.create("selectionModel"));
+        bindingGroup.addBinding(binding);
+
         segmentMetadataScrollPane.setViewportView(segmentJTable);
 
         javax.swing.GroupLayout segmentMetadataPanelLayout = new javax.swing.GroupLayout(segmentMetadataPanel);
