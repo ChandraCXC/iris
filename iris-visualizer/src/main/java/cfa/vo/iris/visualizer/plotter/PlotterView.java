@@ -21,6 +21,7 @@ import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
 import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
 import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
 import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
@@ -29,6 +30,8 @@ import cfa.vo.iris.visualizer.stil.StilPlotter;
 import cfa.vo.sedlib.Segment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -36,6 +39,7 @@ import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.plaf.basic.BasicArrowButton;
+import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
 
 public class PlotterView extends JInternalFrame {
     
@@ -54,6 +58,8 @@ public class PlotterView extends JInternalFrame {
     
     // for getting components
     private HashMap componentMap;
+    
+    private static double ZOOM_SCALE = 0.5;
     
     /**
      * Create the frame.
@@ -92,7 +98,7 @@ public class PlotterView extends JInternalFrame {
         stilPlotter1.setWorkSpace(ws);
         stilPlotter1.setSedManager((SedlibSedManager) ws.getSedManager());
         stilPlotter1.setVisualizerPreferences(preferences);
-        this.plotter = stilPlotter1; //new StilPlotter(ws, preferences);
+        this.plotter = stilPlotter1;
         this.plotter.reset(null, true);
         
         // Action for opening metadata browser
@@ -155,7 +161,7 @@ public class PlotterView extends JInternalFrame {
         mntmGridOnOff.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean on = !PlotterView.this.preferences.getPlotPreferences().getShowGrid();
+                boolean on = !PlotterView.this.stilPlotter1.getVisualizerPreferences().getSelectedSedPreferences().getPlotPreferences().getShowGrid();
                 mntmGridOnOff.setSelected(on);
                 setGridOn(on);
             }
@@ -166,7 +172,7 @@ public class PlotterView extends JInternalFrame {
         mntmAutoFixed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean fixed = !PlotterView.this.preferences.getPlotPreferences().getFixed();
+                boolean fixed = !PlotterView.this.stilPlotter1.getVisualizerPreferences().getSelectedSedPreferences().getPlotPreferences().getShowGrid();
                 setFixedViewPort(fixed);
             }
         });
@@ -266,6 +272,11 @@ public class PlotterView extends JInternalFrame {
         right.setText("jButtonArrow2");
 
         zoomIn.setText("In");
+        zoomIn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                zoomInActionPerformed(evt);
+            }
+        });
 
         btnUnits.setText("Units");
 
@@ -278,6 +289,11 @@ public class PlotterView extends JInternalFrame {
         left.setText("jButtonArrow1");
 
         zoomOut.setText("Out");
+        zoomOut.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                zoomOutActionPerformed(evt);
+            }
+        });
 
         metadataButton.setText("Metadata");
 
@@ -367,6 +383,8 @@ public class PlotterView extends JInternalFrame {
                 .addContainerGap())
         );
 
+        menuBar.setName("menuBar"); // NOI18N
+
         mnF.setText("File");
 
         mntmExport.setText("Export");
@@ -400,18 +418,22 @@ public class PlotterView extends JInternalFrame {
         plotTypeButtonGroup.add(mntmLog);
         mntmLog.setSelected(true);
         mntmLog.setText("Log");
+        mntmLog.setName("mntmLog"); // NOI18N
         mnPlotType.add(mntmLog);
 
         plotTypeButtonGroup.add(mntmLinear);
         mntmLinear.setText("Linear");
+        mntmLinear.setName("mntmLinear"); // NOI18N
         mnPlotType.add(mntmLinear);
 
         plotTypeButtonGroup.add(mntmXlog);
         mntmXlog.setText("X Log");
+        mntmXlog.setName("mntmXlog"); // NOI18N
         mnPlotType.add(mntmXlog);
 
         plotTypeButtonGroup.add(mntmYlog);
         mntmYlog.setText("Y Log");
+        mntmYlog.setName("mntmYlog"); // NOI18N
         mnPlotType.add(mntmYlog);
 
         jMenu1.add(mnPlotType);
@@ -460,6 +482,16 @@ public class PlotterView extends JInternalFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void zoomInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomInActionPerformed
+        // zoom in by a factor.
+        this.plotter.zoom(1 + ZOOM_SCALE);
+    }//GEN-LAST:event_zoomInActionPerformed
+
+    private void zoomOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomOutActionPerformed
+        // zoom out by a factor
+        this.plotter.zoom(1 - ZOOM_SCALE);
+    }//GEN-LAST:event_zoomOutActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -531,6 +563,40 @@ public class PlotterView extends JInternalFrame {
         }
     }
     
+    /**
+     * Update the plot preference items in the Viewer to the selected SED's
+     * preferences
+     */
+    public void updatePreferences() {
+        // Plot Type
+        this.mntmLinear.setSelected(this.plotter.getVisualizerPreferences()
+                .getSelectedSedPreferences().getPlotPreferences()
+                .getPlotType()==PlotType.LINEAR);
+        this.mntmLog.setSelected(this.plotter.getVisualizerPreferences()
+                .getSelectedSedPreferences().getPlotPreferences()
+                .getPlotType()==PlotType.LOG);
+        this.mntmXlog.setSelected(this.plotter.getVisualizerPreferences()
+                .getSelectedSedPreferences().getPlotPreferences()
+                .getPlotType()==PlotType.X_LOG);
+        this.mntmYlog.setSelected(this.plotter.getVisualizerPreferences()
+                .getSelectedSedPreferences().getPlotPreferences()
+                .getPlotType()==PlotType.Y_LOG);
+        
+        // Grid on/off
+        this.mntmGridOnOff.setSelected(this.plotter.getVisualizerPreferences()
+                .getSelectedSedPreferences().getPlotPreferences().getShowGrid());
+        
+        // turn errorbars on/off
+//        this.mntmErrorBars.setSelected(this.plotter.getVisualizerPreferences()
+//                .getSelectedSedPreferences().getPlotPreferences()
+//                .getShowErrorBars());
+        
+        // set plot window fixed
+        this.mntmAutoFixed.setSelected(this.plotter.getVisualizerPreferences()
+                .getSelectedSedPreferences().getPlotPreferences()
+                .getFixed());
+    }
+    
     private class PlotChangeListener implements VisualizerListener {
 
         @Override
@@ -539,6 +605,7 @@ public class PlotterView extends JInternalFrame {
                 VisualizerCommand.SELECTED.equals(payload)) 
             {
                 resetPlot(source);
+                updatePreferences();
             }
             else if (VisualizerCommand.REDRAW.equals(payload)) {
                 redrawPlot();

@@ -5,6 +5,9 @@
     <Component class="javax.swing.ButtonGroup" name="plotTypeButtonGroup">
     </Component>
     <Menu class="javax.swing.JMenuBar" name="menuBar">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="menuBar" noResource="true"/>
+      </Properties>
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="mnF">
           <Properties>
@@ -67,6 +70,7 @@
                     </Property>
                     <Property name="selected" type="boolean" value="true"/>
                     <Property name="text" type="java.lang.String" value="Log"/>
+                    <Property name="name" type="java.lang.String" value="mntmLog" noResource="true"/>
                   </Properties>
                 </MenuItem>
                 <MenuItem class="javax.swing.JRadioButtonMenuItem" name="mntmLinear">
@@ -75,6 +79,7 @@
                       <ComponentRef name="plotTypeButtonGroup"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Linear"/>
+                    <Property name="name" type="java.lang.String" value="mntmLinear" noResource="true"/>
                   </Properties>
                 </MenuItem>
                 <MenuItem class="javax.swing.JRadioButtonMenuItem" name="mntmXlog">
@@ -83,6 +88,7 @@
                       <ComponentRef name="plotTypeButtonGroup"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="X Log"/>
+                    <Property name="name" type="java.lang.String" value="mntmXlog" noResource="true"/>
                   </Properties>
                 </MenuItem>
                 <MenuItem class="javax.swing.JRadioButtonMenuItem" name="mntmYlog">
@@ -91,6 +97,7 @@
                       <ComponentRef name="plotTypeButtonGroup"/>
                     </Property>
                     <Property name="text" type="java.lang.String" value="Y Log"/>
+                    <Property name="name" type="java.lang.String" value="mntmYlog" noResource="true"/>
                   </Properties>
                 </MenuItem>
               </SubComponents>
@@ -251,6 +258,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="In"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="zoomInActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnUnits">
           <Properties>
@@ -292,6 +302,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Out"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="zoomOutActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="metadataButton">
           <Properties>

@@ -24,6 +24,16 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static cfa.vo.iris.test.unit.TestUtils.*;
+import cfa.vo.iris.visualizer.plotter.PlotPreferences;
+import cfa.vo.iris.visualizer.stil.StilPlotter;
+import javax.swing.ButtonGroup;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JRadioButtonMenuItem;
+import org.uispec4j.MenuItem;
+import org.uispec4j.Window;
 
 public class VisualizerComponentTest extends AbstractComponentGUITest {
     
@@ -113,5 +123,100 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
 
 
 //        assertEquals("sampleSed", comp.getDefaultPlotterView().getLegend().getTitle());
+    }
+    
+    @Test
+    public void testPlotPreferences() throws Exception {
+        SedlibSedManager sedManager = (SedlibSedManager) app.getWorkspace().getSedManager();
+        
+        window.getMenuBar()
+                .getMenu("Tools")
+                .getSubMenu(windowName)
+                .getSubMenu(windowName)
+                .click();
+        
+        Window viewer = desktop.getWindow(windowName);
+        StilPlotter plotter = viewer.findSwingComponent(StilPlotter.class);
+        
+        final ExtSed sed1 = sedManager.newSed("sampleSed1");
+        // Make sure this is enqueued in the Swing EDT
+        invokeWithRetry(10, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertSame(sed1, comp.getDefaultPlotterView().getSed());
+            }
+        });
+        
+        // on by default. switch grids off
+        viewer.getMenuBar()
+                .getMenu("View")
+                .getSubMenu("Grid on/off")
+                .click();
+        
+        PlotPreferences prefs = plotter.getVisualizerPreferences().getSelectedSedPreferences().getPlotPreferences();
+        JMenuBar menu = viewer.findSwingComponent(JMenuBar.class, "menuBar");
+        JCheckBoxMenuItem gridMenuItem = (JCheckBoxMenuItem) menu.getMenu(2).getMenuComponent(3);
+        
+        // check that box is unchecked
+        assertTrue(!gridMenuItem.isSelected()); 
+        assertFalse(prefs.getShowGrid());
+        
+        
+        // add another SED
+        final ExtSed sed2 = sedManager.newSed("sampleSed2");
+        // Make sure this is enqueued in the Swing EDT
+        invokeWithRetry(10, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertSame(sed2, comp.getDefaultPlotterView().getSed());
+            }
+        });
+        
+        // when a new SED is added, it should have the default plot preferences.
+        // check that the Grid on/off checkbox is selected.
+        gridMenuItem = (JCheckBoxMenuItem) menu.getMenu(2).getMenuComponent(3);
+        assertTrue(gridMenuItem.isSelected());
+        
+        // switch to sed1.
+        sedManager.select(sed1);
+        
+        // Make sure this is enqueued in the Swing EDT
+        invokeWithRetry(10, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertSame(sed1, comp.getDefaultPlotterView().getSed());
+            }
+        });
+        
+        // grid check box should still be unselected.
+        gridMenuItem = (JCheckBoxMenuItem) menu.getMenu(2).getMenuComponent(3);
+        assertTrue(!gridMenuItem.isSelected());
+        
+        // now, switch sed1 to linear space
+        viewer.getMenuBar()
+                .getMenu("View")
+                .getSubMenu("Plot Type")
+                .getSubMenu("Linear")
+                .click();
+        
+        JMenu plotTypeMenu = (JMenu) menu.getMenu(2).getMenuComponent(0);
+        JRadioButtonMenuItem linear = (JRadioButtonMenuItem) plotTypeMenu.getItem(1);
+        assertTrue(linear.isSelected());
+        
+        // go back to sed2
+        sedManager.select(sed2);
+        // Make sure this is enqueued in the Swing EDT
+        invokeWithRetry(10, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertSame(sed2, comp.getDefaultPlotterView().getSed());
+            }
+        });
+        
+        // make sure it's still in log space
+        JRadioButtonMenuItem log = (JRadioButtonMenuItem) plotTypeMenu.getItem(0);
+        assertTrue(log.isSelected());
+        assertTrue(!linear.isSelected());
+        
     }
 }
