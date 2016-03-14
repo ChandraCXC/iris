@@ -101,9 +101,16 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     
     public void redrawData() {
         logger.info("Re-drawing metadata browser");
+        
+        // Attempt to maintain segment selection
+        int[] selection = starTableList.getSelectedIndices();
+        
         updateTitle();
         updateSelectedTables();
         updateDataTables();
+
+        starTableList.setSelectedIndices(selection);
+        updateSelectedStarTables(selection);
     }
     
     private void updateTitle() {
