@@ -189,7 +189,7 @@ public class StilPlotter extends JPanel {
         setupForPlotDisplayChange();
         
         try {
-            preferences.getPlotPreferences().setShowGrid(on);
+            preferences.getSelectedSedPreferences().getPlotPreferences().setShowGrid(on);
             env.setValue(PlotPreferences.GRID, on);
             display = createPlotComponent(env, false);
         } catch (RuntimeException e) {
@@ -199,6 +199,25 @@ public class StilPlotter extends JPanel {
         }
         
         updatePlotDisplay();
+    }
+    
+    /**
+     * Zoom in or out of plot by a given scale factor.
+     * @param zoomFactor 
+     */
+    public void zoom(double zoomFactor) {
+        
+        double xmax = this.getPlotDisplay().getAspect().getXMax();
+        double xmin = this.getPlotDisplay().getAspect().getXMin();
+        double ymax = this.getPlotDisplay().getAspect().getYMax();
+        double ymin = this.getPlotDisplay().getAspect().getYMin();
+        
+        double[] ylimits = new double[] {ymin*zoomFactor, ymax-ymax*(zoomFactor-1)};
+        double[] xlimits = new double[] {xmin*zoomFactor, xmax-xmax*(zoomFactor-1)};
+        
+        PlaneAspect zoomedAspect = new PlaneAspect(xlimits, ylimits);
+        
+        this.getPlotDisplay().setAspect(zoomedAspect);
     }
     
     /**
