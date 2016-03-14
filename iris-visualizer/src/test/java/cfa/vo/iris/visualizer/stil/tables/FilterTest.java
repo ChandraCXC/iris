@@ -76,11 +76,11 @@ public class FilterTest {
         
         seq = test.getRowSequence();
         seq.next();
-        ArrayUtils.assertEquals(new Object[] {test.getName(), false, 2.0, 7.0, 7.0}, seq.getRow());
+        ArrayUtils.assertEquals(new Object[] {false, test.getName(), 2.0, 7.0, 7.0}, seq.getRow());
         
         // Move to end of StarTable
         seq.next(); seq.next();
-        ArrayUtils.assertEquals(new Object[] {test.getName(), false, 4.0, 9.0, 9.0}, test.getRow(3));
+        ArrayUtils.assertEquals(new Object[] {false, test.getName(), 4.0, 9.0, 9.0}, test.getRow(3));
         
         // verify values
         checkEquals(new double[] {7,8,9}, test.getFluxDataValues());
