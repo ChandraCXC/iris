@@ -122,7 +122,7 @@ abstract class SegmentColumn extends ColumnData
         private BitSet masked;
         
         public FilterColumn() {
-            super(Column.Filtered);
+            super(Column.Masked);
             this.masked = new BitSet();
         }
         
