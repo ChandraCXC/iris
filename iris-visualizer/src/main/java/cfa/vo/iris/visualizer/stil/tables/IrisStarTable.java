@@ -296,7 +296,7 @@ public class IrisStarTable extends WrapperStarTable {
     
     /**
      * Applies a set of RowSubsetFilters to a list of startables, in order. In particular, for
-     * two startables <t1, t2> with 3 rows each, providing the array int[] {0,3} would filter t
+     * two startables <t1, t2> with 3 rows each, providing the array int[] {0,3} would filter
      * the first row in each t1 and t2.
      * 
      * @param tables
@@ -316,7 +316,6 @@ public class IrisStarTable extends WrapperStarTable {
     /**
      * Removes all filters from the specified star tables.
      * @param tables
-     * @param selectedRows
      */
     public static void clearFilters(List<IrisStarTable> tables) {
         for (IrisStarTable table : tables) {
