@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 import org.uispec4j.utils.ArrayUtils;
 
@@ -60,11 +61,11 @@ public class FilterTest {
         
         seq = test.getRowSequence();
         seq.next();
-        ArrayUtils.assertEquals(new Object[] {test.getName(), 2.0, 7.0, 7.0}, seq.getRow());
+        ArrayUtils.assertEquals(new Object[] {test.getName(), false, 2.0, 7.0, 7.0}, seq.getRow());
         
         // Move to end of StarTable
         seq.next(); seq.next();
-        ArrayUtils.assertEquals(new Object[] {test.getName(), 4.0, 9.0, 9.0}, test.getRow(3));
+        ArrayUtils.assertEquals(new Object[] {test.getName(), false, 4.0, 9.0, 9.0}, test.getRow(3));
         
         // verify values
         checkEquals(new double[] {7,8,9}, test.getFluxDataValues());
@@ -132,6 +133,72 @@ public class FilterTest {
         checkEquals(new double[] {200}, t2.getSpectralDataValues());
     }
     
+    
+    @Test
+    public void testFilteredRowSequence() throws Exception {
+        RowSequence seq;
+        
+        double[] x = new double[] {100,200,300};
+        double[] y = new double[] {100,200,300};
+        Segment seg = TestUtils.createSampleSegment(x, y);
+        
+        // Should have no rows filtered, and the spec axis values should all match
+        IrisStarTable test = adapter.convertSegment(seg);
+        seq = test.getRowSequence();
+        for (int i=0; i<x.length; i++) {
+            assertTrue(seq.next());
+            assertEquals(x[i], seq.getRow()[2]);
+        }
+        assertFalse(seq.next());
+        
+        // Filter first point
+        test.addFilter(new RowSubsetFilter(new int[] {0}, test));
+        seq = test.getRowSequence();
+        
+        // Should not have the first point
+        double[] check = new double[] {200,300};
+        for (int i=0; i<check.length; i++) {
+            assertTrue(seq.next());
+            assertEquals(check[i], seq.getRow()[2]);
+        }
+        assertFalse(seq.next());
+        
+        // Verify clearing filters returns table to normal.
+        test.clearFilters();
+        seq = test.getRowSequence();
+        for (int i=0; i<x.length; i++) {
+            assertTrue(seq.next());
+            assertEquals(x[i], seq.getRow()[2]);
+        }
+        assertFalse(seq.next());
+        
+        // Filter first and last rows
+        test.addFilter(new RowSubsetFilter(new int[] {0, 2}, test));
+        seq = test.getRowSequence();
+        
+        check = new double[] {200};
+        for (int i=0; i<check.length; i++) {
+            assertTrue(seq.next());
+            assertEquals(check[i], seq.getRow()[2]);
+        }
+        assertFalse(seq.next());
+        
+        // Filter all points
+        test.clearFilters();
+        test.addFilter(new RowSubsetFilter(new int[] {0, 1, 2}, test));
+        seq = test.getRowSequence();
+        assertFalse(test.getRowSequence().next());
+        
+        // Check exception
+        try {
+            seq.getRow();
+        } catch (IllegalStateException e) {
+            assertTrue(StringUtils.contains(e.getMessage(), "No current row"));
+            return;
+        }
+        
+        fail();
+    }
     
     public static void checkEquals(double[] expected, double[] values) {
 
