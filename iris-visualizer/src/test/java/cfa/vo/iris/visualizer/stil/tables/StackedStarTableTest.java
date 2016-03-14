@@ -91,15 +91,6 @@ public class StackedStarTableTest extends VisualizerStarTableTest {
         List<StarTable> tables = new ArrayList<>();
         tables.add(dataTable);
         
-        for (int i=0; i<dataTable.getColumnCount(); i++) {
-            System.out.println("o " + dataTable.getColumnInfo(i).getUtype());
-        }
-        
-        StarTable meta = new ColumnMetadataStarTable(tables, matcher);
-        for (int i=0; i<meta.getColumnCount(); i++) {
-            System.out.println("x " + meta.getColumnInfo(i).getUtype());
-        }
-        
         StackedStarTable test = new StackedStarTable(tables, matcher);
         assertEquals(16, test.getColumnCount());
         for (int i=0; i<test.getColumnCount(); i++) {
