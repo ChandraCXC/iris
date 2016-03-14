@@ -98,10 +98,10 @@ public class SegmentStarTableTest {
         table.setMasked(mask);
 
         ColumnIdentifier id = new ColumnIdentifier(table);
-        assertEquals(1, id.getColumnIndex(Column.Filtered.name()));
+        assertEquals(1, id.getColumnIndex(Column.Masked.name()));
         
         assertEquals(Column.Segment_Id.name(), table.getColumnInfo(0).getName());
-        assertEquals(Column.Filtered.name(), table.getColumnInfo(1).getName());
+        assertEquals(Column.Masked.name(), table.getColumnInfo(1).getName());
         assertEquals(Column.Spectral_Value.name(), table.getColumnInfo(2).getName());
 
         assertEquals(true, table.getCell(0, 1));

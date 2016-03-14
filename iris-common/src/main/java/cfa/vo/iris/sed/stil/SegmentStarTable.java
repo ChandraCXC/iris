@@ -378,8 +378,8 @@ public class SegmentStarTable extends RandomStarTable {
      */
     public enum Column {
         // Columns will always appear in this order!
+        Masked("Plotter filtered state", "iris.segment.filtered", Boolean.class),
         Segment_Id("Segment ID", "iris.segment.id", String.class),
-        Filtered("Plotter filtered state", "iris.segment.filtered", Boolean.class),
         Spectral_Value("X axis values", "iris.spec.value", Double.class),
         Flux_Value("Y axis values", "iris.flux.value", Double.class),
         Original_Flux_Value("Original flux values", "iris.flux.value.original", Double.class),
