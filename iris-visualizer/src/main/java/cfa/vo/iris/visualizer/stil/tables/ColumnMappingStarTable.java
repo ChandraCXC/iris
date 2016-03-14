@@ -20,9 +20,10 @@ import java.util.ArrayList;
 
 import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.utils.Default;
+import uk.ac.starlink.table.ColumnData;
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.ColumnPermutedStarTable;
-import uk.ac.starlink.table.ConstantStarTable;
+import uk.ac.starlink.table.ColumnStarTable;
 import uk.ac.starlink.table.JoinStarTable;
 import uk.ac.starlink.table.StarTable;
 
@@ -91,7 +92,7 @@ public class ColumnMappingStarTable extends ColumnPermutedStarTable {
      * Need to fill in base table with empty columns to match the metadataTable.
      */
     private void addNullColumns() {
-        ArrayList<ColumnInfo> infos = new ArrayList<>(
+        ArrayList<ColumnData> newColumnData = new ArrayList<>(
                 metadataTable.getColumnCount() - baseTable.getColumnCount());
         
         // Used to map
@@ -99,18 +100,20 @@ public class ColumnMappingStarTable extends ColumnPermutedStarTable {
         int[] map = getColumnMap();
         
         for (int i=0; i<map.length; i++) {
-            // If there is no mapping from the base table, then we need to add a new column.
+            // If there is no mapping from the base table, then we need to add a new column. We
+            // get default values from the column info matcher.
             if (map[i] == -1) {
                 ColumnInfo inf = metadataTable.getColumnInfo(i);
                 inf.setNullable(true);
-                infos.add(inf);
+                newColumnData.add(matcher.getDefaultValueColumn(inf));
                 map[i] = counter;
                 counter++;
             }
         }
         
-        StarTable table = new ConstantStarTable(infos.toArray(new ColumnInfo[0]),
-                new Object[infos.size()], baseTable.getRowCount());
+        ColumnStarTable table = ColumnStarTable.makeTableWithRows(baseTable.getRowCount());
+        for (ColumnData c : newColumnData) table.addColumn(c);
+        
         this.baseTable = new JoinStarTable(new StarTable[] {baseTable, table});
     }
     

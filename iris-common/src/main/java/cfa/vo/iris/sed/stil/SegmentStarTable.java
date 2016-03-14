@@ -29,6 +29,7 @@ import org.apache.commons.lang.StringUtils;
 import uk.ac.starlink.table.ColumnData;
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.RandomStarTable;
+import cfa.vo.iris.sed.stil.SegmentColumn.Column;
 import cfa.vo.iris.sed.stil.SegmentColumn.FilterColumn;
 import cfa.vo.iris.sed.stil.SegmentColumn.NameColumn;
 import cfa.vo.iris.sed.stil.SegmentColumn.SegmentDataColumn;
@@ -369,49 +370,5 @@ public class SegmentStarTable extends RandomStarTable {
         }
         
         return true;
-    }
-    
-    /**
-     * Column info, descriptions, name, and identifiers for flux and spectral
-     * values in an SED.
-     *
-     */
-    public enum Column {
-        // Columns will always appear in this order!
-        Masked("Plotter filtered state", "iris.segment.filtered", Boolean.class),
-        Segment_Id("Segment ID", "iris.segment.id", String.class),
-        Spectral_Value("X axis values", "iris.spec.value", Double.class),
-        Flux_Value("Y axis values", "iris.flux.value", Double.class),
-        Original_Flux_Value("Original flux values", "iris.flux.value.original", Double.class),
-        Spectral_Error("X axis error values", "iris.spec.value.error", Double.class),
-        Spectral_Error_High("X axis error values", "iris.spec.value.error.high", Double.class),
-        Spectral_Error_Low("X axis low error values", "iris.spec.value.error.low", Double.class),
-        Flux_Error("Y axis error values", "iris.flux.value.error", Double.class),
-        Flux_Error_High("Y axis error values", "iris.flux.value.error.high", Double.class),
-        FLux_Error_Low("Y axis low error values", "iris.flux.value.error.low", Double.class);
-        
-        public String description;
-        public String utype;
-        private ColumnInfo columnInfo;
-        
-        private Column(String description, String utype, Class<?> clazz) {
-            this.description = description;
-            this.utype = utype;
-            this.columnInfo = new ColumnInfo(name(), clazz, description);
-            columnInfo.setUtype(utype);
-        }
-        
-        public ColumnInfo getColumnInfo() {
-            return new ColumnInfo(columnInfo);
-        }
-        
-        public static Column getColumn(String columnName) {
-            for (Column c : Column.values()) {
-                if (c.name().equals(columnName)) {
-                    return c;
-                }
-            }
-            throw new IllegalArgumentException("No such columnName: " + columnName);
-        }
     }
 }
