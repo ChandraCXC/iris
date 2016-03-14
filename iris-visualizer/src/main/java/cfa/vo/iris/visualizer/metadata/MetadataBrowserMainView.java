@@ -37,7 +37,9 @@ import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerListener;
 import cfa.vo.iris.visualizer.stil.tables.ColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
+import cfa.vo.iris.visualizer.stil.tables.SegmentColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.StackedStarTable;
+import cfa.vo.iris.visualizer.stil.tables.UtypeColumnInfoMatcher;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -60,7 +62,10 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     List<IrisStarTable> selectedStarTables; // list of selected StarTables from selectedTables
     StackedStarTable plotterDataTable; // Single star table container for all plotted data
     StackedStarTable segmentDataTable; // Single star table container for all point metadata
-    ColumnInfoMatcher columnInfoMatcher; // Used for star table stacking
+    
+    // Used for star table stacking the plotter and segment data startables.
+    ColumnInfoMatcher plotterInfoMatcher;
+    ColumnInfoMatcher segmentInfoMatcher;
     
     /**
      * Creates new form MetadataBrowser
@@ -70,7 +75,8 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     {
         this.ws = ws;
         this.preferences = preferences;
-        this.columnInfoMatcher = preferences.getColumnInfoMatcher();
+        this.plotterInfoMatcher = new SegmentColumnInfoMatcher();
+        this.segmentInfoMatcher = new UtypeColumnInfoMatcher();
         
         initComponents();
         setChangeListener();
@@ -150,8 +156,8 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             segmentDataTables.add(table.getSegmentDataTable());
         }
         
-        plotterDataTable = new StackedStarTable(plotterDataTables, columnInfoMatcher);
-        segmentDataTable = new StackedStarTable(segmentDataTables, columnInfoMatcher);
+        plotterDataTable = new StackedStarTable(plotterDataTables, plotterInfoMatcher);
+        segmentDataTable = new StackedStarTable(segmentDataTables, segmentInfoMatcher);
         
         setPlotterDataTable(plotterDataTable);
         setSegmentDataTable(segmentDataTable);
