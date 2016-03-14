@@ -114,20 +114,22 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="selectAllButton" min="-2" pref="122" max="-2" attributes="0"/>
+              <Component id="selectAllButton" min="-2" pref="101" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="clearSelectionButton" min="-2" pref="122" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="invertSelectionButton" max="32767" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="filterExpressionField" min="-2" pref="312" max="-2" attributes="0"/>
+              <Component id="invertSelectionButton" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="filterExpressionField" min="-2" pref="255" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="selectPointsButton" min="-2" pref="110" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="applyMaskButton" min="-2" pref="109" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="clearMaskButton" min="-2" pref="109" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="93" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="clearAllButton" min="-2" pref="109" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
           <Component id="dataPane" alignment="1" max="32767" attributes="0"/>
       </Group>
@@ -145,6 +147,7 @@
                   <Component id="clearSelectionButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="invertSelectionButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="clearMaskButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="clearAllButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -160,11 +163,13 @@
     <Component class="javax.swing.JButton" name="selectPointsButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Select Points"/>
+        <Property name="toolTipText" type="java.lang.String" value="Select points matching the filter expression"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="applyMaskButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Apply Mask"/>
+        <Property name="toolTipText" type="java.lang.String" value="Mask the selected points"/>
         <Property name="name" type="java.lang.String" value="" noResource="true"/>
       </Properties>
       <Events>
@@ -216,7 +221,7 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="dataTabsPane" alignment="1" pref="511" max="32767" attributes="0"/>
+              <Component id="dataTabsPane" alignment="1" max="32767" attributes="0"/>
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="starTableScrollPane" max="32767" attributes="0"/>
@@ -255,7 +260,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="plotterMetadataScrollPane" alignment="0" pref="468" max="32767" attributes="0"/>
+                      <Component id="plotterMetadataScrollPane" alignment="0" pref="470" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -290,7 +295,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="pointMetadataScrollPane" alignment="0" pref="468" max="32767" attributes="0"/>
+                      <Component id="pointMetadataScrollPane" alignment="0" pref="470" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -325,7 +330,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="segmentMetadataScrollPane" alignment="0" pref="468" max="32767" attributes="0"/>
+                      <Component id="segmentMetadataScrollPane" alignment="0" pref="470" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -386,10 +391,21 @@
     <Component class="javax.swing.JButton" name="clearMaskButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Clear Mask"/>
+        <Property name="toolTipText" type="java.lang.String" value="Remove the mask from the selected segments"/>
         <Property name="name" type="java.lang.String" value="" noResource="true"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="clearMaskButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="clearAllButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Clear All"/>
+        <Property name="toolTipText" type="java.lang.String" value="Remove all masks"/>
+        <Property name="name" type="java.lang.String" value="" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="clearAllButtonActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>

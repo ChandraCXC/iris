@@ -329,6 +329,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         starTableScrollPane = new javax.swing.JScrollPane();
         starTableList = new javax.swing.JList<IrisStarTable>();
         clearMaskButton = new javax.swing.JButton();
+        clearAllButton = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         extractToSedMenuItem = new javax.swing.JMenuItem();
@@ -354,8 +355,10 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         filterExpressionField.setText("Filter Expression");
 
         selectPointsButton.setText("Select Points");
+        selectPointsButton.setToolTipText("Select points matching the filter expression");
 
         applyMaskButton.setText("Apply Mask");
+        applyMaskButton.setToolTipText("Mask the selected points");
         applyMaskButton.setName(""); // NOI18N
         applyMaskButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -403,7 +406,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         );
         plotterMetadataPanelLayout.setVerticalGroup(
             plotterMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(plotterMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE)
+            .addComponent(plotterMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
         );
 
         dataTabsPane.addTab("Data", plotterMetadataPanel);
@@ -421,7 +424,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         );
         pointMetadataPanelLayout.setVerticalGroup(
             pointMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pointMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE)
+            .addComponent(pointMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
         );
 
         dataTabsPane.addTab("Point Metadata", pointMetadataPanel);
@@ -438,7 +441,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         );
         segmentMetadataPanelLayout.setVerticalGroup(
             segmentMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(segmentMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE)
+            .addComponent(segmentMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
         );
 
         dataTabsPane.addTab("Segment Metadata", segmentMetadataPanel);
@@ -473,7 +476,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         );
         dataPaneLayout.setVerticalGroup(
             dataPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(dataTabsPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 511, Short.MAX_VALUE)
+            .addComponent(dataTabsPane, javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dataPaneLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(starTableScrollPane))
@@ -482,10 +485,20 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         dataTabsPane.getAccessibleContext().setAccessibleName("");
 
         clearMaskButton.setText("Clear Mask");
+        clearMaskButton.setToolTipText("Remove the mask from the selected segments");
         clearMaskButton.setName(""); // NOI18N
         clearMaskButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 clearMaskButtonActionPerformed(evt);
+            }
+        });
+
+        clearAllButton.setText("Clear All");
+        clearAllButton.setToolTipText("Remove all masks");
+        clearAllButton.setName(""); // NOI18N
+        clearAllButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearAllButtonActionPerformed(evt);
             }
         });
 
@@ -553,20 +566,22 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(selectAllButton, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(selectAllButton, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(clearSelectionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(invertSelectionButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(filterExpressionField, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(invertSelectionButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(filterExpressionField, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(selectPointsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(applyMaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(clearMaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(93, 93, 93))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(clearAllButton, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(dataPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -581,7 +596,8 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
                     .addComponent(selectAllButton)
                     .addComponent(clearSelectionButton)
                     .addComponent(invertSelectionButton)
-                    .addComponent(clearMaskButton))
+                    .addComponent(clearMaskButton)
+                    .addComponent(clearAllButton))
                 .addContainerGap())
         );
 
@@ -635,6 +651,11 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         VisualizerChangeEvent.getInstance().fire(selectedSed, VisualizerCommand.REDRAW);
     }//GEN-LAST:event_clearMaskButtonActionPerformed
 
+    private void clearAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearAllButtonActionPerformed
+        IrisStarTable.clearFilters(selectedTables);
+        VisualizerChangeEvent.getInstance().fire(selectedSed, VisualizerCommand.REDRAW);
+    }//GEN-LAST:event_clearAllButtonActionPerformed
+
     private void selectAllButtonActionPerformed(
             java.awt.event.ActionEvent evt) {// GEN-FIRST:event_selectAllButtonActionPerformed
         JTable table = getSelectedJTable();
@@ -657,6 +678,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private javax.swing.JButton applyMaskButton;
     private javax.swing.JMenuItem applyMaskMenuItem;
     private javax.swing.JMenuItem broadcastToSampMenuItem;
+    private javax.swing.JButton clearAllButton;
     private javax.swing.JButton clearMaskButton;
     private javax.swing.JButton clearSelectionButton;
     private javax.swing.JMenuItem clearSelectionMenuItem;
