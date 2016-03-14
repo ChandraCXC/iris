@@ -36,6 +36,20 @@ import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.WrapperRowSequence;
 import uk.ac.starlink.table.WrapperStarTable;
 
+/**
+ * The primary startable and data holder for the Iris visualization. An IrisStarTable
+ * provides all necessary applications for viewing and manipulating data associated
+ * with a Segment. In particular,
+ * 
+ * 1) Is a container for the plotterStarTable - which maintains information associated
+ *  with the plotter (e.g. spectral and flux axis values).
+ * 2) Maintains a pointer to a the segment's metadata star table - which maintains all
+ *  metadata associated with the segment and each point in the segment.
+ * 3) Provides functionality for setting spectral and flux axis units for plotting data.
+ * 4) Allows filtering of data points for visualization on the plotter and for extraction
+ *  to the fitting tool.
+ *
+ */
 public class IrisStarTable extends WrapperStarTable {
 
     private static final StarTable EMPTY_STARTABLE = new EmptyStarTable();
@@ -166,6 +180,7 @@ public class IrisStarTable extends WrapperStarTable {
      */
     public void addFilter(Filter filter) {
         filters.add(filter);
+        plotterTable.setMasked(filters.getMasked());
     }
     
     /**
@@ -174,6 +189,7 @@ public class IrisStarTable extends WrapperStarTable {
      */
     public void removeFilter(Filter filter) {
         filters.remove(filter);
+        plotterTable.setMasked(filters.getMasked());
     }
     
     /**
@@ -189,6 +205,7 @@ public class IrisStarTable extends WrapperStarTable {
      */
     public void clearFilters() {
         this.filters.clear();
+        plotterTable.setMasked(filters.getMasked());
     }
     
     /**
