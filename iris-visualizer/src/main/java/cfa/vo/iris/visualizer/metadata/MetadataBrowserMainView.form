@@ -118,14 +118,14 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="clearSelectionButton" min="-2" pref="122" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="invertSelectionButton" min="-2" pref="119" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
+              <Component id="invertSelectionButton" max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="filterExpressionField" min="-2" pref="312" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="selectPointsButton" min="-2" pref="110" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="applyMaskButton" min="-2" pref="85" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="220" max="-2" attributes="0"/>
+              <Component id="applyMaskButton" min="-2" pref="134" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="171" max="-2" attributes="0"/>
           </Group>
           <Component id="dataPane" alignment="1" max="32767" attributes="0"/>
       </Group>
@@ -164,6 +164,9 @@
         <Property name="text" type="java.lang.String" value="Apply Mask"/>
         <Property name="name" type="java.lang.String" value="" noResource="true"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="applyMaskButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="selectAllButton">
       <Properties>

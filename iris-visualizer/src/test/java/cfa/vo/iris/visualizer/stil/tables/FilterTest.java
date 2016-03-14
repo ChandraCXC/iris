@@ -3,6 +3,8 @@ package cfa.vo.iris.visualizer.stil.tables;
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.junit.Test;
 import org.uispec4j.utils.ArrayUtils;
@@ -96,6 +98,38 @@ public class FilterTest {
         assertEquals(1,  test.getRowCount());
         checkEquals(new double[] {8}, test.getFluxDataValues());
         checkEquals(new double[] {3}, test.getSpectralDataValues());
+    }
+    
+    @Test
+    public void testMultipleFilters() throws Exception {
+
+        double[] x = new double[] {100,200,300};
+        double[] y = new double[] {100,200,300};
+        
+        Segment seg1 = TestUtils.createSampleSegment();
+        Segment seg2 = TestUtils.createSampleSegment(x,y);
+        
+        IrisStarTable t1 = adapter.convertSegment(seg1);
+        IrisStarTable t2 = adapter.convertSegment(seg2);
+        
+        List<IrisStarTable> tables = new LinkedList<>();
+        tables.add(t1); 
+        tables.add(t2);
+        
+        // Filter the 1st row in t1, and 1st and 3rd row in t2.
+        IrisStarTable.applyFilters(tables, new int[] {0,3,5});
+        
+        assertEquals(1, t1.getFilters().size());
+        assertEquals(1, t2.getFilters().size());
+
+        assertEquals(2, t1.getRowCount());
+        assertEquals(1, t2.getRowCount());
+        
+        checkEquals(new double[] {2,3}, t1.getFluxDataValues());
+        checkEquals(new double[] {2,3}, t1.getSpectralDataValues());
+        
+        checkEquals(new double[] {200}, t2.getFluxDataValues());
+        checkEquals(new double[] {200}, t2.getSpectralDataValues());
     }
     
     
