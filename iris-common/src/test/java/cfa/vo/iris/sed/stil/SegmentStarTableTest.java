@@ -2,7 +2,6 @@ package cfa.vo.iris.sed.stil;
 
 import org.junit.Before;
 import org.junit.Test;
-
 import cfa.vo.iris.sed.stil.SegmentStarTable.Column;
 import cfa.vo.iris.units.spv.XUnits;
 import cfa.vo.iris.units.spv.YUnits;
@@ -13,6 +12,8 @@ import uk.ac.starlink.table.RowSequence;
 import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
 import static org.junit.Assert.*;
+
+import java.util.BitSet;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -65,5 +66,36 @@ public class SegmentStarTableTest {
         col = id.getColumnIndex(Column.Flux_Error.name());
         assertTrue(col >= 0);
         assertEquals(new Double("5.61E-6"), (Double) table.getCell(0, col), 1E-8);
+    }
+    
+    @Test
+    public void testMasking() throws Exception {
+        SegmentStarTable table = new SegmentStarTable(sed.getSegment(0));
+        
+        // No filter column should be present
+        assertEquals(Column.Segment_Id.name(), table.getColumnInfo(0).getName());
+        assertEquals(Column.Spectral_Value.name(), table.getColumnInfo(1).getName());
+        assertFalse(table.columns.contains(table.filteredColumn));
+        
+        // Apply a mask
+        BitSet mask = new BitSet();
+        mask.set(0);
+        table.setMasked(mask);
+
+        ColumnIdentifier id = new ColumnIdentifier(table);
+        assertEquals(1, id.getColumnIndex(Column.Filtered.name()));
+        
+        assertEquals(Column.Segment_Id.name(), table.getColumnInfo(0).getName());
+        assertEquals(Column.Filtered.name(), table.getColumnInfo(1).getName());
+        assertEquals(Column.Spectral_Value.name(), table.getColumnInfo(2).getName());
+
+        assertEquals(true, table.getCell(0, 1));
+        assertEquals(false, table.getCell(1, 1));
+        
+        // Remove the mask and the column should be gone
+        table.setMasked(new BitSet());
+        assertEquals(Column.Segment_Id.name(), table.getColumnInfo(0).getName());
+        assertEquals(Column.Spectral_Value.name(), table.getColumnInfo(1).getName());
+        assertFalse(table.columns.contains(table.filteredColumn));
     }
 }
