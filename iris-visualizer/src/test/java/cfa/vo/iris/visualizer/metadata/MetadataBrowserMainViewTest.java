@@ -29,8 +29,14 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.visualizer.VisualizerComponent;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.io.SedFormat;
+import cfa.vo.testdata.TestData;
+
 import static org.junit.Assert.*;
+
+import java.util.BitSet;
 
 import static cfa.vo.iris.test.unit.TestUtils.*;
 
@@ -282,6 +288,52 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         // Verify other tables still empty
         plotterTable.selectionIsEmpty().check();
         dataTable.selectionIsEmpty().check();
+    }
+    
+    @Test
+    public void testMetadataBrowserMasking() throws Exception {
+        final ExtSed sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
+        sedManager.add(sed);
         
+        invokeWithRetry(20, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertEquals(mbView.getTitle(), mbWindow.getTitle());
+                assertEquals(sed, mbView.selectedSed);
+                assertEquals(1, mbView.selectedTables.size());
+                assertEquals(1, starTableList.getSize());
+                assertEquals(455, plotterTable.getRowCount());
+            }
+        });
+        
+        // Apply a mask on the first and last rows
+        final BitSet masked = new BitSet();
+        masked.set(0);
+        masked.set(454);
+        
+        dataPanel.getTabGroup().selectTab("Data");
+        plotterTable.selectRows(0, 454);
+        mbWindow.getButton("Apply Mask").click();
+        
+        invokeWithRetry(20, 100, new Runnable() {
+            @Override
+            public void run() {
+                IrisStarTable table = mbView.selectedStarTables.get(0);
+                assertEquals(masked, table.getFilters().getMasked());
+            }
+        });
+        
+        // Apply a mask to all rows
+        plotterTable.selectAllRows();
+        masked.set(0, plotterTable.getRowCount());
+        mbWindow.getButton("Apply Mask").click();
+        
+        invokeWithRetry(20, 100, new Runnable() {
+            @Override
+            public void run() {
+                IrisStarTable table = mbView.selectedStarTables.get(0);
+                assertEquals(masked, table.getFilters().getMasked());
+            }
+        });
     }
 }
