@@ -17,6 +17,7 @@
 package cfa.vo.iris.sed.stil;
 
 import java.io.IOException;
+import java.util.BitSet;
 import java.util.Iterator;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -28,6 +29,9 @@ import org.apache.commons.lang.StringUtils;
 import uk.ac.starlink.table.ColumnData;
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.RandomStarTable;
+import cfa.vo.iris.sed.stil.SegmentColumn.FilterColumn;
+import cfa.vo.iris.sed.stil.SegmentColumn.NameColumn;
+import cfa.vo.iris.sed.stil.SegmentColumn.SegmentDataColumn;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.units.XUnit;
@@ -54,11 +58,12 @@ public class SegmentStarTable extends RandomStarTable {
     private YUnit fluxUnits;
     private final long rows;
 
-    // nameColumn will always be the first column in this star table
-    private NameColumn nameColumn;
+    // Columns for name and filtered state
+    final NameColumn nameColumn;
+    final FilterColumn filteredColumn;
     
     // Maintain a sorted set of data columns
-    private TreeSet<SegmentDataColumn> columns;
+    TreeSet<SegmentColumn> columns;
     
     // Data holders
     private double[] specValues;
@@ -82,9 +87,14 @@ public class SegmentStarTable extends RandomStarTable {
         this.segment = segment;
         this.specUnits = units.newXUnits(segment.getSpectralAxisUnits());
         this.fluxUnits = units.newYUnits(segment.getFluxAxisUnits());
-        this.columns = new TreeSet<SegmentDataColumn>();
+        this.columns = new TreeSet<SegmentColumn>();
         
-        this.nameColumn = new NameColumn(null);
+        // Name column will always be first
+        this.nameColumn = new NameColumn("");
+        columns.add(nameColumn);
+        
+        // Only add a filtered column if there is a non-empty mask
+        this.filteredColumn = new FilterColumn();
         
         // Look for a name in the segment if we are not given one
         if (StringUtils.isBlank(id)) {
@@ -123,16 +133,12 @@ public class SegmentStarTable extends RandomStarTable {
 
     @Override
     public int getColumnCount() {
-        return 1 + columns.size();
+        return columns.size();
     }
     
     public ColumnData getColumnData(int index) {
-        if (index == 0) {
-            return nameColumn;
-        }
-        
-        Iterator<SegmentDataColumn> it = columns.iterator();
-        for (int i=0; i<index-1; i++) it.next();
+        Iterator<SegmentColumn> it = columns.iterator();
+        for (int i=0; i<index; i++) it.next();
         return it.next();
     }
     
@@ -141,6 +147,11 @@ public class SegmentStarTable extends RandomStarTable {
     public ColumnInfo getColumnInfo(int index) {
         return getColumnData(index).getColumnInfo();
     }
+    
+    @Override
+    public Object getCell(long row, int col) throws IOException {
+        return getColumnData(col).readValue(row);
+    }
 
     @Override
     public long getRowCount() {
@@ -148,14 +159,18 @@ public class SegmentStarTable extends RandomStarTable {
     }
     
     @Override
-    public Object getCell( long lrow, int icol ) throws IOException {
-        return getColumnData(icol).readValue( lrow );
-    }
-    
-    @Override
     public void setName(String name) {
         super.setName(name);
         nameColumn.setName(name);
+    }
+    
+    public void setMasked(BitSet masked) {
+        filteredColumn.setMasked(masked);
+        if (filteredColumn.isEmpty()) {
+            columns.remove(filteredColumn);
+        } else {
+            columns.add(filteredColumn);
+        }
     }
     
     /**
@@ -375,6 +390,7 @@ public class SegmentStarTable extends RandomStarTable {
     public enum Column {
         // Columns will always appear in this order!
         Segment_Id("Segment ID", "iris.segment.id", String.class),
+        Filtered("Plotter filtered state", "iris.segment.filtered", Boolean.class),
         Spectral_Value("X axis values", "iris.spec.value", Double.class),
         Flux_Value("Y axis values", "iris.flux.value", Double.class),
         Original_Flux_Value("Original flux values", "iris.flux.value.original", Double.class),
@@ -407,83 +423,6 @@ public class SegmentStarTable extends RandomStarTable {
                 }
             }
             throw new IllegalArgumentException("No such columnName: " + columnName);
-        }
-    }
-    /**
-     * ColumnData class which stores relevant double array data for spectral/flux values.
-     * Note that comperable and compare are all over the Column enum. This is so that the 
-     * set of columns in the star table will remain in line and in order with what data is
-     * available to consumers of this class.
-     *
-     */
-    private static class SegmentDataColumn extends ColumnData implements Comparable<SegmentDataColumn> {
-        
-        public final Column column;
-        public double[] data;
-        
-        public SegmentDataColumn(Column column, double[] data) {
-            this.column = column;
-            this.data = data;
-            this.setColumnInfo(column.getColumnInfo());
-        }
-
-        @Override
-        public Object readValue(long i) throws IOException {
-            if (i > Integer.MAX_VALUE) {
-                throw new IOException("Segment data columns backed by integer indexed arrays");
-            }
-            return data[(int) i];
-        }
-        
-        @Override
-        public void storeValue( long i, Object val ) throws IOException {
-            if (!(val instanceof Double)) {
-                throw new IOException("Segment data columns only store doubles");
-            }
-            if (i > Integer.MAX_VALUE) {
-                throw new IOException("Segment data columns backed by integer indexed arrays");
-            }
-            data[(int) i] = (Double) val;
-        }
-
-        @Override
-        public int compareTo(SegmentDataColumn arg0) {
-            SegmentDataColumn o = (SegmentDataColumn) arg0;
-            return column.compareTo(o.column);
-        }
-        
-        @Override
-        public boolean equals(Object arg0) {
-            SegmentDataColumn o = (SegmentDataColumn) arg0;
-            return column.equals(o.column);
-        }
-        
-        @Override
-        public int hashCode() {
-            return column.hashCode();
-        }
-    }
-    
-    /**
-     * Similar to a ConstantColumn, but with an adjustable name value.
-     *
-     */
-    private static class NameColumn extends ColumnData {
-        
-        private String name;
-        
-        public NameColumn(String name) {
-            super(Column.Segment_Id.getColumnInfo());
-            this.name = name;
-        }
-        
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public Object readValue(long arg0) throws IOException {
-            return name;
         }
     }
 }
