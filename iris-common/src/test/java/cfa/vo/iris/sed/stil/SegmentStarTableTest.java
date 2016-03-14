@@ -98,14 +98,14 @@ public class SegmentStarTableTest {
         table.setMasked(mask);
 
         ColumnIdentifier id = new ColumnIdentifier(table);
-        assertEquals(1, id.getColumnIndex(Column.Masked.name()));
-        
-        assertEquals(Column.Segment_Id.name(), table.getColumnInfo(0).getName());
-        assertEquals(Column.Masked.name(), table.getColumnInfo(1).getName());
+        assertEquals(0, id.getColumnIndex(Column.Masked.name()));
+
+        assertEquals(Column.Masked.name(), table.getColumnInfo(0).getName());
+        assertEquals(Column.Segment_Id.name(), table.getColumnInfo(1).getName());
         assertEquals(Column.Spectral_Value.name(), table.getColumnInfo(2).getName());
 
-        assertEquals(true, table.getCell(0, 1));
-        assertEquals(false, table.getCell(1, 1));
+        assertEquals(true, table.getCell(0, 0));
+        assertEquals(false, table.getCell(1, 0));
         
         // Remove the mask and the column should be gone
         table.setMasked(new BitSet());
