@@ -267,7 +267,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         // Everything should be selected, nothing in the segment tab
         plotterTable.rowsAreSelected(0,1,2).check();
         dataTable.rowsAreSelected(0,1,2).check();
-        segmentTable.rowsAreSelected().check();
+        segmentTable.rowsAreSelected(0).check();
         
         // Clear selections
         mbWindow.getButton("Clear Selection").click();
@@ -292,6 +292,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         // Set to segment tab
         mbWindow.getButton("Clear Selection").click();
         dataPanel.getTabGroup().selectTab("Segment Metadata");
+        mbWindow.getButton("Clear Selection").click();
         segmentTable.selectionIsEmpty().check();
         
         mbWindow.getButton("Select All").click();
