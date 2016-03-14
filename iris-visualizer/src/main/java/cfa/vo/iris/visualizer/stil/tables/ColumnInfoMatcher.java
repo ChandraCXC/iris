@@ -16,12 +16,21 @@
 
 package cfa.vo.iris.visualizer.stil.tables;
 
+import uk.ac.starlink.table.ColumnData;
 import uk.ac.starlink.table.ColumnInfo;
+import uk.ac.starlink.table.ConstantColumn;
 
 /**
  * Interface for compatibility checks between columns of a StarTable.
  *
  */
-public interface ColumnInfoMatcher {
-    public boolean isCompatible(ColumnInfo c1, ColumnInfo c2);
+public abstract class ColumnInfoMatcher {
+    
+    public boolean isCompatible(ColumnInfo c1, ColumnInfo c2) {
+        return false;
+    }
+    
+    public ColumnData getDefaultValueColumn(ColumnInfo c) {
+        return new ConstantColumn(c, null);
+    }
 }

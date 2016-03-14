@@ -18,8 +18,8 @@ package cfa.vo.iris.sed.stil;
 import java.io.IOException;
 import java.util.BitSet;
 
-import cfa.vo.iris.sed.stil.SegmentStarTable.Column;
 import uk.ac.starlink.table.ColumnData;
+import uk.ac.starlink.table.ColumnInfo;
 
 /**
  * Primary class for column information in a SegmentStarTable.
@@ -29,7 +29,7 @@ import uk.ac.starlink.table.ColumnData;
  * with what data is available to consumers of SegmentStarTable class.
  * 
  */
-abstract class SegmentColumn extends ColumnData
+public abstract class SegmentColumn extends ColumnData
         implements Comparable<SegmentColumn> {
 
     public Column column;
@@ -138,6 +138,50 @@ abstract class SegmentColumn extends ColumnData
         @Override
         public Object readValue(long index) throws IOException {
             return masked.get((int) index);
+        }
+    }
+    
+    /**
+     * Column info, descriptions, name, and identifiers for flux and spectral
+     * values in an SED.
+     *
+     */
+    public enum Column {
+        // Columns will always appear in this order!
+        Masked("Plotter filtered state", "iris.segment.filtered", Boolean.class),
+        Segment_Id("Segment ID", "iris.segment.id", String.class),
+        Spectral_Value("X axis values", "iris.spec.value", Double.class),
+        Flux_Value("Y axis values", "iris.flux.value", Double.class),
+        Original_Flux_Value("Original flux values", "iris.flux.value.original", Double.class),
+        Spectral_Error("X axis error values", "iris.spec.value.error", Double.class),
+        Spectral_Error_High("X axis error values", "iris.spec.value.error.high", Double.class),
+        Spectral_Error_Low("X axis low error values", "iris.spec.value.error.low", Double.class),
+        Flux_Error("Y axis error values", "iris.flux.value.error", Double.class),
+        Flux_Error_High("Y axis error values", "iris.flux.value.error.high", Double.class),
+        FLux_Error_Low("Y axis low error values", "iris.flux.value.error.low", Double.class);
+        
+        public String description;
+        public String utype;
+        private ColumnInfo columnInfo;
+        
+        private Column(String description, String utype, Class<?> clazz) {
+            this.description = description;
+            this.utype = utype;
+            this.columnInfo = new ColumnInfo(name(), clazz, description);
+            columnInfo.setUtype(utype);
+        }
+        
+        public ColumnInfo getColumnInfo() {
+            return new ColumnInfo(columnInfo);
+        }
+        
+        public static Column getColumn(String columnName) {
+            for (Column c : Column.values()) {
+                if (c.name().equals(columnName)) {
+                    return c;
+                }
+            }
+            throw new IllegalArgumentException("No such columnName: " + columnName);
         }
     }
 }

@@ -61,13 +61,7 @@ public class ColumnMetadataStarTableTest {
     }
     
     private static StarTable getStarTable(ColumnData[] data) {
-        ColumnStarTable c = new ColumnStarTable() {
-            @Override
-            public long getRowCount() {
-                return 0;
-            }
-        };
-        
+        ColumnStarTable c = ColumnStarTable.makeTableWithRows(0);
         for (ColumnData d : data) {
             c.addColumn(d);
         }

@@ -17,7 +17,7 @@ package cfa.vo.iris.sed.stil;
 
 import org.junit.Before;
 import org.junit.Test;
-import cfa.vo.iris.sed.stil.SegmentStarTable.Column;
+import cfa.vo.iris.sed.stil.SegmentColumn.Column;
 import cfa.vo.iris.units.spv.XUnits;
 import cfa.vo.iris.units.spv.YUnits;
 import cfa.vo.sedlib.Sed;
