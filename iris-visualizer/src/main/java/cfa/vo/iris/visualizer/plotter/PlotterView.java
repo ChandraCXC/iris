@@ -56,9 +56,6 @@ public class PlotterView extends JInternalFrame {
     private JInternalFrame residuals;
     private MetadataBrowserMainView metadataBrowser;
     
-    // for getting components
-    private HashMap componentMap;
-    
     private static double ZOOM_SCALE = 0.5;
     
     /**
@@ -172,7 +169,7 @@ public class PlotterView extends JInternalFrame {
         mntmAutoFixed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean fixed = !PlotterView.this.stilPlotter1.getVisualizerPreferences().getSelectedSedPreferences().getPlotPreferences().getShowGrid();
+                boolean fixed = !PlotterView.this.stilPlotter1.getVisualizerPreferences().getSelectedSedPreferences().getPlotPreferences().getFixed();
                 setFixedViewPort(fixed);
             }
         });
@@ -224,6 +221,7 @@ public class PlotterView extends JInternalFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         plotTypeButtonGroup = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
@@ -442,8 +440,12 @@ public class PlotterView extends JInternalFrame {
         mntmErrorBars.setText("Error Bars");
         jMenu1.add(mntmErrorBars);
 
-        mntmAutoFixed.setSelected(true);
-        mntmAutoFixed.setText("Auto/Fixed");
+        mntmAutoFixed.setText("Fixed");
+        mntmAutoFixed.setToolTipText("<html>Fix the plot ranges when the SED changes. Otherwise, <br/> \nthe plot ranges automatically update when a SED changes.</html>");
+
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, stilPlotter1, org.jdesktop.beansbinding.ELProperty.create("${visualizerPreferences.selectedSedPreferences.plotPreferences.fixed}"), mntmAutoFixed, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        bindingGroup.addBinding(binding);
+
         jMenu1.add(mntmAutoFixed);
 
         mntmGridOnOff.setSelected(true);
@@ -479,6 +481,8 @@ public class PlotterView extends JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
+
+        bindingGroup.bind();
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -533,6 +537,7 @@ public class PlotterView extends JInternalFrame {
     private cfa.vo.iris.gui.JButtonArrow up;
     private javax.swing.JButton zoomIn;
     private javax.swing.JButton zoomOut;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
     private void makeLinear() {
@@ -555,9 +560,15 @@ public class PlotterView extends JInternalFrame {
         plotter.setGridOn(on);
     }
     
+    /**
+     * Fix the plot viewport, or let the viewport automatically resize itself
+     * when updated. Zooming and panning are disabled if the viewport is fixed.
+     * @param arg set to "true" to fix the viewport, "false" to let it resize
+     * with updates.
+     */
     private void setFixedViewPort(boolean fixed) {
         try {
-            plotter.setFixed(fixed);
+            this.preferences.getSelectedSedPreferences().getPlotPreferences().setFixed(fixed);
         } catch (UnsupportedOperationException ex) {
             logger.log(Level.WARNING, ex.getMessage());
         }

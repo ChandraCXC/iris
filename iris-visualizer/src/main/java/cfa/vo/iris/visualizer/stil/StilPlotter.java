@@ -88,7 +88,14 @@ public class StilPlotter extends JPanel {
      *            current display is active.
      */
     public void reset(ExtSed sed, boolean dataMayChange) {
-        resetPlot(sed, false, dataMayChange);
+        boolean fixed;
+        try {
+            fixed = this.getVisualizerPreferences()
+                    .getSelectedSedPreferences().getPlotPreferences().getFixed();
+        } catch (NullPointerException ex) {
+            fixed = this.getVisualizerPreferences().getPlotPreferences().getFixed();
+        }
+        resetPlot(sed, fixed, dataMayChange);
     }
 
     /**
@@ -218,51 +225,6 @@ public class StilPlotter extends JPanel {
         PlaneAspect zoomedAspect = new PlaneAspect(xlimits, ylimits);
         
         this.getPlotDisplay().setAspect(zoomedAspect);
-    }
-    
-    /**
-     * Fix the plot viewport, or let the viewport automatically resize itself
-     * when updated. Zooming and panning are disabled if the viewport is fixed.
-     * @param arg set to "true" to fix the viewport, "false" to let it resize
-     * with updates.
-     */
-    public void setFixed(boolean arg) {
-        
-        throw new UnsupportedOperationException("Fixed viewport not yet implemented.");
-        
-//        try {
-//            double xmin;
-//            double xmax;
-//            double ymin;
-//            double ymax;
-//            if (arg) {
-//                xmin = display.get;
-//                xmax = display.getSurface().getPlotBounds().getMaxX();
-//                ymin = display.getSurface().getPlotBounds().getMinY();
-//                ymax = display.getSurface().getPlotBounds().getMaxY();
-//            } else {
-//                xmin = 0;
-//                xmax = 1;
-//                ymin = 0;
-//                ymax = 1;
-//            }
-//            preferences.getPlotPreferences().setFixed(arg);
-//            preferences.getPlotPreferences().setXmax(xmax);
-//            preferences.getPlotPreferences().setYmax(ymax);
-//            preferences.getPlotPreferences().setXmin(xmin);
-//            preferences.getPlotPreferences().setYmin(ymin);
-//            env.setValue(PlotPreferences.NAV_AXES_XY, arg);
-//            
-//            setupForPlotDisplayChange();
-//            
-//            display = createPlotComponent(env, false);
-//        } catch (RuntimeException e) {
-//            throw e;
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//        
-//        updatePlotDisplay();
     }
     
     /**

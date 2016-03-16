@@ -110,9 +110,12 @@
             </MenuItem>
             <MenuItem class="javax.swing.JCheckBoxMenuItem" name="mntmAutoFixed">
               <Properties>
-                <Property name="selected" type="boolean" value="true"/>
-                <Property name="text" type="java.lang.String" value="Auto/Fixed"/>
+                <Property name="text" type="java.lang.String" value="Fixed"/>
+                <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;Fix the plot ranges when the SED changes. Otherwise, &lt;br/&gt; &#xa;the plot ranges automatically update when a SED changes.&lt;/html&gt;"/>
               </Properties>
+              <BindingProperties>
+                <BindingProperty name="selected" source="stilPlotter1" sourcePath="${visualizerPreferences.selectedSedPreferences.plotPreferences.fixed}" target="mntmAutoFixed" targetPath="selected" updateStrategy="0" immediately="false"/>
+              </BindingProperties>
             </MenuItem>
             <MenuItem class="javax.swing.JCheckBoxMenuItem" name="mntmGridOnOff">
               <Properties>
