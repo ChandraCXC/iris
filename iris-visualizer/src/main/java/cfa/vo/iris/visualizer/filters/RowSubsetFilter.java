@@ -25,7 +25,7 @@ import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
  * be filtered in the corresponding table.
  *
  */
-public class RowSubsetFilter extends Filter {
+public class RowSubsetFilter implements Filter {
     
     private int size;
     private BitSet mask;
