@@ -51,13 +51,7 @@ public class RowSubsetFilter extends Filter {
         this.size = (int) table.getPlotterTable().getRowCount();
         this.mask = new BitSet();
         
-        for (int i : rows) {
-            int index = i - startIndex;
-            if (index >= 0 && index < size) {
-                mask.set(index);
-            }
-            
-        }
+        applyMasks(rows, startIndex);
     }
     
     @Override
@@ -70,7 +64,28 @@ public class RowSubsetFilter extends Filter {
     }
     
     @Override
-    public void invert() {
-        mask.flip(0, size);
+    public long cardinality() {
+        return mask.cardinality();
+    }
+
+    @Override
+    public void clearMasks(int[] rows, int startIndex) {
+        for (int i : rows) {
+            int index = i - startIndex;
+            if (index >= 0 && index < size) {
+                mask.clear(index);
+            }
+        }
+    }
+
+    @Override
+    public void applyMasks(int[] rows, int startIndex) {
+        for (int i : rows) {
+            int index = i - startIndex;
+            if (index >= 0 && index < size) {
+                mask.set(index);
+            }
+            
+        }
     }
 }
