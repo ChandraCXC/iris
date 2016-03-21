@@ -332,7 +332,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 IrisStarTable table = mbView.selectedStarTables.get(0);
-                assertEquals(masked, table.getFilters().getMasked());
+                assertEquals(masked, table.getMasked());
             }
         });
         
@@ -345,7 +345,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 IrisStarTable table = mbView.selectedStarTables.get(0);
-                assertEquals(masked, table.getFilters().getMasked());
+                assertEquals(masked, table.getMasked());
             }
         });
     }

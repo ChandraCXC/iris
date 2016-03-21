@@ -46,5 +46,9 @@ public abstract class Filter {
     
     public abstract BitSet getFilteredRows(IrisStarTable table);
     
-    public abstract void invert();
+    public abstract long cardinality();
+    
+    public abstract void applyMasks(int[] rows, int startIndex);
+    
+    public abstract void clearMasks(int[] rows, int startIndex);
 }

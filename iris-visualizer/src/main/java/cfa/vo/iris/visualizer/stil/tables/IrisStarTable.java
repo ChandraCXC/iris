@@ -26,7 +26,7 @@ import java.util.concurrent.Future;
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.visualizer.filters.Filter;
-import cfa.vo.iris.visualizer.filters.FilterSet;
+import cfa.vo.iris.visualizer.filters.NullFilter;
 import cfa.vo.iris.visualizer.filters.RowSubsetFilter;
 import cfa.vo.utils.Default;
 import uk.ac.starlink.table.DescribedValue;
@@ -58,7 +58,7 @@ public class IrisStarTable extends WrapperStarTable {
     private StarTable segmentDataTable;
     private SegmentStarTable plotterTable;
     
-    private FilterSet filters;
+    private Filter filter;
     
     IrisStarTable(SegmentStarTable plotterTable, Future<StarTable> dataTableHolder) {
         this(plotterTable, EMPTY_STARTABLE);
@@ -71,7 +71,7 @@ public class IrisStarTable extends WrapperStarTable {
         
         this.segmentDataTable = dataTable;
         this.plotterTable = plotterTable;
-        this.filters = new FilterSet(this);
+        this.filter = new NullFilter();
         
         setName(plotterTable.getName());
     }
@@ -175,37 +175,38 @@ public class IrisStarTable extends WrapperStarTable {
     }
 
     /**
-     * Add a filter to this startable.
+     * Mask rows from this StarTable.
      * @param filter
      */
-    public void addFilter(Filter filter) {
-        filters.add(filter);
-        plotterTable.setMasked(filters.getMasked());
+    public void applyMasks(int[] rows, int startIndex) {
+        if (filter.cardinality() == 0) {
+            filter = new RowSubsetFilter(rows, startIndex, this);
+        } else {
+            filter.applyMasks(rows, startIndex);
+        }
+        plotterTable.setMasked(filter.getFilteredRows(this));
     }
     
     /**
-     * Remove a filter from this startable.
+     * Remove the mask from rows on this StarTable.
      * @param filter
      */
-    public void removeFilter(Filter filter) {
-        filters.remove(filter);
-        plotterTable.setMasked(filters.getMasked());
+    public void clearMasks(int[] rows, int startIndex) {
+        filter.clearMasks(rows, startIndex);
+        plotterTable.setMasked(filter.getFilteredRows(this));
     }
     
     /**
-     * 
-     * @return the set of filters that have been applied to this startable.
+     * Remove the mask from rows on this StarTable.
+     * @param filter
      */
-    public FilterSet getFilters() {
-        return filters;
+    public void clearMasks() {
+        filter = new NullFilter();
+        plotterTable.setMasked(filter.getFilteredRows(this));
     }
     
-    /**
-     * Remove all filters that have been applied to this startable.
-     */
-    public void clearFilters() {
-        this.filters.clear();
-        plotterTable.setMasked(filters.getMasked());
+    public BitSet getMasked() {
+        return filter.getFilteredRows(this);
     }
     
     /**
@@ -231,7 +232,7 @@ public class IrisStarTable extends WrapperStarTable {
         int rows = (int) getRowCount();
         double[] values = new double[rows];
         
-        BitSet masked = filters.getMasked();
+        BitSet masked = filter.getFilteredRows(this);
         int c = 0;
         for (int i=0; i<(int) plotterTable.getRowCount(); i++) {
             // Add only non-masked values.
@@ -248,12 +249,12 @@ public class IrisStarTable extends WrapperStarTable {
      */
     @Override
     public boolean isRandom() {
-        return filters.isEmpty();
+        return filter.cardinality() == 0;
     }
     
     @Override
     public long getRowCount() {
-        return super.getRowCount() - filters.cardinality();
+        return super.getRowCount() - filter.cardinality();
     }
     
     /**
@@ -264,7 +265,7 @@ public class IrisStarTable extends WrapperStarTable {
     @Override
     public RowSequence getRowSequence() throws IOException {
         
-        final BitSet mask = filters.getMasked();
+        final BitSet mask = filter.getFilteredRows(this);
         return new WrapperRowSequence( baseTable.getRowSequence() ) {
             int row = -1; // Current row in plotterTable
             int baseLength = (int) plotterTable.getRowCount();
@@ -308,7 +309,23 @@ public class IrisStarTable extends WrapperStarTable {
         
         for (IrisStarTable table : tables) {
             int length = (int) table.getPlotterTable().getRowCount();
-            table.addFilter(new RowSubsetFilter(selectedRows, index, table));
+            table.applyMasks(selectedRows, index);
+            index = index + length;
+        }
+    }
+    
+    /**
+     * Clears the masks from the selected rows.
+     * 
+     * @param tables
+     * @param selectedRows
+     */
+    public static void clearFilters(List<IrisStarTable> tables, int[] selectedRows) {
+        int index = 0;
+        
+        for (IrisStarTable table : tables) {
+            int length = (int) table.getPlotterTable().getRowCount();
+            table.clearMasks(selectedRows, index);
             index = index + length;
         }
     }
@@ -317,9 +334,9 @@ public class IrisStarTable extends WrapperStarTable {
      * Removes all filters from the specified star tables.
      * @param tables
      */
-    public static void clearFilters(List<IrisStarTable> tables) {
+    public static void clearAllFilters(List<IrisStarTable> tables) {
         for (IrisStarTable table : tables) {
-            table.clearFilters();
+            table.clearMasks();
         }
     }
 }
