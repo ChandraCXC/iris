@@ -134,7 +134,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         }
         
         // Update segment metadata table
-        // TODO: Should this be synced with the selectedStarTable
         segmentJTable.setModel(new IrisMetadataTableModel((List<StarTable>)(List<?>) newTables));
         StarJTable.configureColumnWidths(segmentJTable, 200, 10);
         
@@ -639,12 +638,15 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_applyMaskButtonActionPerformed
 
     private void clearMaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearMaskButtonActionPerformed
-        IrisStarTable.clearFilters(selectedStarTables);
+        int[] selected = this.plotterStarJTable.getSelectedRows();
+        
+        logger.info(String.format("Removing masks of %s points from %s tables", selected.length, selectedStarTables.size()));
+        IrisStarTable.clearFilters(selectedStarTables, selected);
         VisualizerChangeEvent.getInstance().fire(selectedSed, VisualizerCommand.REDRAW);
     }//GEN-LAST:event_clearMaskButtonActionPerformed
 
     private void clearAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearAllButtonActionPerformed
-        IrisStarTable.clearFilters(selectedTables);
+        IrisStarTable.clearAllFilters(selectedTables);
         VisualizerChangeEvent.getInstance().fire(selectedSed, VisualizerCommand.REDRAW);
     }//GEN-LAST:event_clearAllButtonActionPerformed
 

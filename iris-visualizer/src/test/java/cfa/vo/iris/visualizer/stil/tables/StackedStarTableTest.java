@@ -28,7 +28,6 @@ import org.uispec4j.utils.ArrayUtils;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.SegmentColumn.Column;
 import cfa.vo.iris.test.unit.TestUtils;
-import cfa.vo.iris.visualizer.filters.RowSubsetFilter;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 import cfa.vo.testdata.TestData;
@@ -151,7 +150,8 @@ public class StackedStarTableTest extends VisualizerStarTableTest {
         IrisStarTable table1 = adapter.convertSegment(TestUtils.createSampleSegment());
         IrisStarTable table2 = adapter.convertSegment(TestUtils.createSampleSegment());
         
-        table1.addFilter(new RowSubsetFilter(new int[] {0}, table1));
+        // Mask first row
+        table1.applyMasks(new int[] {0}, 0);
 
         List<StarTable> tables = new ArrayList<>();
         tables.add(table1);
