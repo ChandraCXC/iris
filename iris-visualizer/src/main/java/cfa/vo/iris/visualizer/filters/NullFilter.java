@@ -19,7 +19,7 @@ import java.util.BitSet;
 
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 
-public class NullFilter extends Filter {
+public class NullFilter implements Filter {
     
     @Override
     public BitSet getFilteredRows(IrisStarTable table) {
