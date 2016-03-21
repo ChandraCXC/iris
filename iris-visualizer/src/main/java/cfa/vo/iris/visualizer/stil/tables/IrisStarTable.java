@@ -24,7 +24,6 @@ import java.util.concurrent.Future;
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.visualizer.filters.Filter;
-import cfa.vo.iris.visualizer.filters.NullFilter;
 import cfa.vo.iris.visualizer.filters.RowSubsetFilter;
 import cfa.vo.utils.Default;
 import uk.ac.starlink.table.DescribedValue;
@@ -69,7 +68,7 @@ public class IrisStarTable extends WrapperStarTable {
         
         this.segmentDataTable = dataTable;
         this.plotterTable = plotterTable;
-        this.filter = new NullFilter();
+        this.filter = new RowSubsetFilter(new int[0], this);
         
         setName(plotterTable.getName());
     }
@@ -160,11 +159,7 @@ public class IrisStarTable extends WrapperStarTable {
      * @param filter
      */
     public void applyMasks(int[] rows, int startIndex) {
-        if (filter.cardinality() == 0) {
-            filter = new RowSubsetFilter(rows, startIndex, this);
-        } else {
-            filter.applyMasks(rows, startIndex);
-        }
+        filter.applyMasks(rows, startIndex);
         plotterTable.setMasked(filter.getFilteredRows(this));
     }
     
@@ -182,7 +177,7 @@ public class IrisStarTable extends WrapperStarTable {
      * @param filter
      */
     public void clearMasks() {
-        filter = new NullFilter();
+        filter = new RowSubsetFilter(new int[0], this);
         plotterTable.setMasked(filter.getFilteredRows(this));
     }
     
