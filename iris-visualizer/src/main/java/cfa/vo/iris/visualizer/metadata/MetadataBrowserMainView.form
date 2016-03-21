@@ -76,8 +76,30 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="applyMaskMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Apply Mask"/>
+                <Property name="text" type="java.lang.String" value="Apply Masks"/>
+                <Property name="toolTipText" type="java.lang.String" value="Apply mask to the selected points"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="applyMaskButtonActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="removeMasksMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Remove Masks"/>
+                <Property name="toolTipText" type="java.lang.String" value="Remove masks from selected poins"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="clearMaskButtonActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="clearAllMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Clear All"/>
+                <Property name="toolTipText" type="java.lang.String" value="Remove masks from all segments"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="clearAllButtonActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -162,13 +184,19 @@
     </Component>
     <Component class="javax.swing.JButton" name="selectPointsButton">
       <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="DejaVu Sans" size="12" style="0"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Select Points"/>
         <Property name="toolTipText" type="java.lang.String" value="Select points matching the filter expression"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="applyMaskButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Apply Mask"/>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="DejaVu Sans" size="12" style="0"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Apply Masks"/>
         <Property name="toolTipText" type="java.lang.String" value="Mask the selected points"/>
         <Property name="name" type="java.lang.String" value="" noResource="true"/>
       </Properties>
@@ -178,6 +206,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="selectAllButton">
       <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="DejaVu Sans" size="12" style="0"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Select All"/>
         <Property name="toolTipText" type="java.lang.String" value="Select all rows"/>
       </Properties>
@@ -187,6 +218,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="clearSelectionButton">
       <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="DejaVu Sans" size="12" style="0"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Clear Selection"/>
         <Property name="toolTipText" type="java.lang.String" value="Clear selection"/>
       </Properties>
@@ -196,6 +230,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="invertSelectionButton">
       <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="DejaVu Sans" size="12" style="0"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Invert Selection"/>
         <Property name="toolTipText" type="java.lang.String" value="Select non-selected rows"/>
         <Property name="actionCommand" type="java.lang.String" value=""/>
@@ -393,8 +430,11 @@
     </Container>
     <Component class="javax.swing.JButton" name="clearMaskButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Clear Mask"/>
-        <Property name="toolTipText" type="java.lang.String" value="Remove the mask from the selected segments"/>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="DejaVu Sans" size="12" style="0"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Remove Masks"/>
+        <Property name="toolTipText" type="java.lang.String" value="Remove the mask from the selected points"/>
         <Property name="name" type="java.lang.String" value="" noResource="true"/>
       </Properties>
       <Events>
@@ -403,8 +443,11 @@
     </Component>
     <Component class="javax.swing.JButton" name="clearAllButton">
       <Properties>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="DejaVu Sans" size="12" style="0"/>
+        </Property>
         <Property name="text" type="java.lang.String" value="Clear All"/>
-        <Property name="toolTipText" type="java.lang.String" value="Remove all masks"/>
+        <Property name="toolTipText" type="java.lang.String" value="Remove all masks from all segments"/>
         <Property name="name" type="java.lang.String" value="" noResource="true"/>
       </Properties>
       <Events>
