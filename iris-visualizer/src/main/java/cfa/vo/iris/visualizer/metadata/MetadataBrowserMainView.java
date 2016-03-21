@@ -328,6 +328,8 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         clearSelectionMenuItem = new javax.swing.JMenuItem();
         invertSelectionMenuItem = new javax.swing.JMenuItem();
         applyMaskMenuItem = new javax.swing.JMenuItem();
+        removeMasksMenuItem = new javax.swing.JMenuItem();
+        clearAllMenuItem = new javax.swing.JMenuItem();
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -339,10 +341,12 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
         filterExpressionField.setText("Filter Expression");
 
+        selectPointsButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
         selectPointsButton.setText("Select Points");
         selectPointsButton.setToolTipText("Select points matching the filter expression");
 
-        applyMaskButton.setText("Apply Mask");
+        applyMaskButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
+        applyMaskButton.setText("Apply Masks");
         applyMaskButton.setToolTipText("Mask the selected points");
         applyMaskButton.setName(""); // NOI18N
         applyMaskButton.addActionListener(new java.awt.event.ActionListener() {
@@ -351,6 +355,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             }
         });
 
+        selectAllButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
         selectAllButton.setText("Select All");
         selectAllButton.setToolTipText("Select all rows");
         selectAllButton.addActionListener(new java.awt.event.ActionListener() {
@@ -359,6 +364,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             }
         });
 
+        clearSelectionButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
         clearSelectionButton.setText("Clear Selection");
         clearSelectionButton.setToolTipText("Clear selection");
         clearSelectionButton.addActionListener(new java.awt.event.ActionListener() {
@@ -367,6 +373,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             }
         });
 
+        invertSelectionButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
         invertSelectionButton.setText("Invert Selection");
         invertSelectionButton.setToolTipText("Select non-selected rows");
         invertSelectionButton.setActionCommand("");
@@ -475,8 +482,9 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
         dataTabsPane.getAccessibleContext().setAccessibleName("");
 
-        clearMaskButton.setText("Clear Mask");
-        clearMaskButton.setToolTipText("Remove the mask from the selected segments");
+        clearMaskButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
+        clearMaskButton.setText("Remove Masks");
+        clearMaskButton.setToolTipText("Remove the mask from the selected points");
         clearMaskButton.setName(""); // NOI18N
         clearMaskButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -484,8 +492,9 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             }
         });
 
+        clearAllButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
         clearAllButton.setText("Clear All");
-        clearAllButton.setToolTipText("Remove all masks");
+        clearAllButton.setToolTipText("Remove all masks from all segments");
         clearAllButton.setName(""); // NOI18N
         clearAllButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -544,8 +553,32 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         });
         selectMenu.add(invertSelectionMenuItem);
 
-        applyMaskMenuItem.setText("Apply Mask");
+        applyMaskMenuItem.setText("Apply Masks");
+        applyMaskMenuItem.setToolTipText("Apply mask to the selected points");
+        applyMaskMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                applyMaskButtonActionPerformed(evt);
+            }
+        });
         selectMenu.add(applyMaskMenuItem);
+
+        removeMasksMenuItem.setText("Remove Masks");
+        removeMasksMenuItem.setToolTipText("Remove masks from selected poins");
+        removeMasksMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearMaskButtonActionPerformed(evt);
+            }
+        });
+        selectMenu.add(removeMasksMenuItem);
+
+        clearAllMenuItem.setText("Clear All");
+        clearAllMenuItem.setToolTipText("Remove masks from all segments");
+        clearAllMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearAllButtonActionPerformed(evt);
+            }
+        });
+        selectMenu.add(clearAllMenuItem);
 
         jMenuBar1.add(selectMenu);
 
@@ -673,6 +706,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private javax.swing.JMenuItem applyMaskMenuItem;
     private javax.swing.JMenuItem broadcastToSampMenuItem;
     private javax.swing.JButton clearAllButton;
+    private javax.swing.JMenuItem clearAllMenuItem;
     private javax.swing.JButton clearMaskButton;
     private javax.swing.JButton clearSelectionButton;
     private javax.swing.JMenuItem clearSelectionMenuItem;
@@ -693,6 +727,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private javax.swing.JPanel pointMetadataPanel;
     private javax.swing.JScrollPane pointMetadataScrollPane;
     private cfa.vo.iris.visualizer.stil.IrisStarJTable pointStarJTable;
+    private javax.swing.JMenuItem removeMasksMenuItem;
     private javax.swing.JMenuItem restoreSetMenuItem;
     private javax.swing.JTable segmentJTable;
     private javax.swing.JPanel segmentMetadataPanel;
