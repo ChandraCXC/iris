@@ -86,7 +86,7 @@ public class StackedStarTableTest extends VisualizerStarTableTest {
         Segment seg1 = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT).getSegment(0);
         IrisStarTable table1 = adapter.convertSegment(seg1);
         
-        StarTable dataTable = table1.getDataTable();
+        StarTable dataTable = table1.getSegmentDataTable();
         
         List<StarTable> tables = new ArrayList<>();
         tables.add(dataTable);
