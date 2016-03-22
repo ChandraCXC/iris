@@ -192,21 +192,11 @@ public class SegmentStarTable extends RandomStarTable {
         if (specValues == null) return;
         
         // Convert units
-        if (fluxValues != null) {
-            setFluxValues(units.convertY(fluxValues, specValues, fluxUnits, specUnits, newUnit));
-        }
-        if (originalFluxValues != null) {
-            setOriginalFluxValues(units.convertY(originalFluxValues, specValues, fluxUnits, specUnits, newUnit));
-        }
-        if (fluxErrValues != null) {
-            setFluxErrValues(units.convertY(fluxErrValues, specValues, fluxUnits, specUnits, newUnit));
-        }
-        if (fluxErrValuesLo != null) {
-            setFluxErrValuesLo(units.convertY(fluxErrValuesLo, specValues, fluxUnits, specUnits, newUnit));
-        }
-        if (fluxErrValuesHi != null) {
-            setFluxErrValuesHi(units.convertY(fluxErrValuesLo, specValues, fluxUnits, specUnits, newUnit));
-        }
+        setFluxValues(units.convertY(fluxValues, specValues, fluxUnits, specUnits, newUnit));
+        setOriginalFluxValues(units.convertY(originalFluxValues, specValues, fluxUnits, specUnits, newUnit));
+        setFluxErrValues(units.convertY(fluxErrValues, specValues, fluxUnits, specUnits, newUnit));
+        setFluxErrValuesLo(units.convertY(fluxErrValuesLo, specValues, fluxUnits, specUnits, newUnit));
+        setFluxErrValuesHi(units.convertY(fluxErrValuesLo, specValues, fluxUnits, specUnits, newUnit));
         
         // Update values
         fluxUnits = newUnit;
@@ -232,16 +222,15 @@ public class SegmentStarTable extends RandomStarTable {
 
     /*
      * 
-     * Getters and setters for data columns. As of now protected, but we may want
-     * to make them public at some point for updating data directly.
+     * Getters and setters for data columns.
      * 
      */
     
-    protected double[] getSpecValues() {
+    public double[] getSpecValues() {
         return specValues;
     }
     
-    protected void setSpecValues(double[] specValues) {
+    public void setSpecValues(double[] specValues) {
         this.specValues = specValues;
         updateColumnValues(specValues, Column.Spectral_Value);
     }
