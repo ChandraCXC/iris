@@ -30,6 +30,7 @@ import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 import cfa.vo.testdata.TestData;
+import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.ColumnStarTable;
 import uk.ac.starlink.table.PrimitiveArrayColumn;
 import uk.ac.starlink.table.StarTable;
@@ -121,6 +122,43 @@ public class StackedStarTableTest extends VisualizerStarTableTest {
         long start = pt1.getRowCount();
         ArrayUtils.assertEquals(pt2.getRow(0), Arrays.copyOfRange(test.getRow(start), 0, pt2.getColumnCount()));
         assertNull(test.getRow(start)[test.getColumnCount() - 1]);
+    }
+    
+    @Test
+    public void testDifferentUtypePrefixes() {
+        
+        // These should line up to the same column
+        String utype1 = "spec:Spectrum.Char.FluxAxis.Accuracy.StatError";
+        String utype2 = "phot:Spectrum.Char.FluxAxis.Accuracy.StatError";
+        
+        ColumnInfo c1 = new ColumnInfo("c1");
+        ColumnInfo c2 = new ColumnInfo("c2");
+        
+        c1.setUtype(utype1);
+        c2.setUtype(utype2);
+        
+        ColumnStarTable data1 = new ColumnStarTable() {
+            @Override
+            public long getRowCount() {
+                return 1;
+            }
+        };
+        data1.addColumn(PrimitiveArrayColumn.makePrimitiveColumn(c1, new double[] {1.0}));
+        
+        ColumnStarTable data2 = new ColumnStarTable() {
+            @Override
+            public long getRowCount() {
+                return 1;
+            }
+        };
+        data2.addColumn(PrimitiveArrayColumn.makePrimitiveColumn(c2, new double[] {2.0}));
+        
+        List<StarTable> tables = new ArrayList<>(2);
+        tables.add(data1);
+        tables.add(data2);
+        
+        StackedStarTable test = new StackedStarTable(tables, matcher);
+        assertEquals(1, test.getColumnCount());
     }
 
 }

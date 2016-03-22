@@ -55,6 +55,14 @@ public class UtypeColumnInfoMatcher implements ColumnInfoMatcher {
             return true;
         }
         
+        // Remove prefixes if present
+        if (StringUtils.contains(utype1, ":")) {
+            utype1 = utype1.split(":")[1];
+        }
+        if (StringUtils.contains(utype2, ":")) {
+            utype2 = utype2.split(":")[1];
+        }
+        
         // Use Utype comparisons
         int u1 = Utypes.getUtypeFromString(utype1);
         int u2 = Utypes.getUtypeFromString(utype2);
