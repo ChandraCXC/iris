@@ -32,7 +32,7 @@ public class IrisStarTable extends WrapperStarTable {
     private static final StarTable EMPTY_STARTABLE = new EmptyStarTable();
     
     private Future<StarTable> dataTableHolder;
-    private StarTable dataTable;
+    private StarTable segmentDataTable;
     private SegmentStarTable plotterTable;
     
     IrisStarTable(SegmentStarTable plotterTable, Future<StarTable> dataTableHolder) {
@@ -44,7 +44,7 @@ public class IrisStarTable extends WrapperStarTable {
     {
         super(plotterTable);
         
-        this.dataTable = dataTable;
+        this.segmentDataTable = dataTable;
         this.plotterTable = plotterTable;
         
         setName(plotterTable.getName());
@@ -53,31 +53,31 @@ public class IrisStarTable extends WrapperStarTable {
     @SuppressWarnings("rawtypes")
     @Override 
     public List getParameters() {
-        return dataTable.getParameters();
+        return segmentDataTable.getParameters();
     }
     
     @Override
     public DescribedValue getParameterByName(String parameter) {
-        return dataTable.getParameterByName(parameter);
+        return segmentDataTable.getParameterByName(parameter);
     }
     
     @Override
     public void setParameter(DescribedValue value) {
-        dataTable.setParameter(value);
+        segmentDataTable.setParameter(value);
     }
     
     @Override
     public void setName(String name) {
         super.setName(name);
         plotterTable.setName(name);
-        dataTable.setName(name);
+        segmentDataTable.setName(name);
     }
     
-    public StarTable getDataTable() {
-        if (EMPTY_STARTABLE == dataTable) {
+    public StarTable getSegmentDataTable() {
+        if (EMPTY_STARTABLE == segmentDataTable) {
             checkDataTable();
         }
-        return dataTable;
+        return segmentDataTable;
     }
     
     private void checkDataTable() {
@@ -86,7 +86,7 @@ public class IrisStarTable extends WrapperStarTable {
         }
         
         try {
-            dataTable = dataTableHolder.get();
+            segmentDataTable = dataTableHolder.get();
         } catch (Exception e) {
             // TODO: Maybe show a warning message to users?
             throw new RuntimeException("Could not serialize segment", e);

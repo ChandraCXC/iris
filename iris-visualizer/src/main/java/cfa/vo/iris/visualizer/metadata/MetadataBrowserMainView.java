@@ -143,7 +143,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         
         for (IrisStarTable table : selectedStarTables) {
             plotterDataTables.add(table.getPlotterTable());
-            segmentDataTables.add(table.getDataTable());
+            segmentDataTables.add(table.getSegmentDataTable());
         }
         
         plotterDataTable = new StackedStarTable(plotterDataTables, columnInfoMatcher);
