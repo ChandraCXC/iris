@@ -212,6 +212,11 @@ public class PlotterView extends JInternalFrame {
         this.plotter.redraw(true);
     }
     
+    private void updatePlot(ExtSed source) {
+        //this.plotter.getVisualizerPreferences().getSelectedSedPreferences().getPlotPreferences().setAspect(); //this.plotter.getPlotDisplay().getAspect());
+        this.plotter.reset(source, true);
+    }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -562,13 +567,16 @@ public class PlotterView extends JInternalFrame {
     
     /**
      * Fix the plot viewport, or let the viewport automatically resize itself
-     * when updated. Zooming and panning are disabled if the viewport is fixed.
-     * @param arg set to "true" to fix the viewport, "false" to let it resize
-     * with updates.
+     * when updated. Zooming and panning are enabled in both states.
+     * @param fixed set to "true" to fix the viewport when SED changes occur, 
+     * and set to "false" to let the viewport resize automatically with changes.
      */
     private void setFixedViewPort(boolean fixed) {
         try {
             this.preferences.getSelectedSedPreferences().getPlotPreferences().setFixed(fixed);
+            
+            // needs to be set whenever viewport changes
+            this.preferences.getSelectedSedPreferences().getPlotPreferences().setAspect(this.plotter.getPlotDisplay().getAspect());
         } catch (UnsupportedOperationException ex) {
             logger.log(Level.WARNING, ex.getMessage());
         }
@@ -612,14 +620,17 @@ public class PlotterView extends JInternalFrame {
 
         @Override
         public void process(ExtSed source, VisualizerCommand payload) {
-            if (VisualizerCommand.RESET.equals(payload) ||
-                VisualizerCommand.SELECTED.equals(payload)) 
+            if (VisualizerCommand.RESET.equals(payload)) 
             {
                 resetPlot(source);
                 updatePreferences();
             }
             else if (VisualizerCommand.REDRAW.equals(payload)) {
                 redrawPlot();
+            }
+            else if (VisualizerCommand.SELECTED.equals(payload)) {
+                updatePlot(source);
+                updatePreferences();
             }
         }
     }
