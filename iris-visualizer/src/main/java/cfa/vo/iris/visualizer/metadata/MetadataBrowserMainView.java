@@ -214,9 +214,8 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         StackedStarTable oldTable = plotterDataTable;
         this.plotterDataTable = newTable;
         
-        // TODO: Bindings?
         plotterStarJTable.setStarTable(plotterDataTable);
-        plotterStarJTable.configureColumnWidths(200, 20);
+        plotterStarJTable.configureColumnWidths(200, 30);
         
         firePropertyChange(PROP_PLOTTER_TABLE, oldTable, plotterDataTable);
     }
@@ -230,10 +229,9 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         StackedStarTable oldTable = segmentDataTable;
         this.segmentDataTable = newTable;
 
-        // TODO: Bindings?
         pointStarJTable.setUtypeAsNames(true);
         pointStarJTable.setStarTable(segmentDataTable);
-        pointStarJTable.configureColumnWidths(200, 20);
+        pointStarJTable.configureColumnWidths(200, 30);
         
         firePropertyChange(PROP_SEGMENT_TABLE, oldTable, plotterDataTable);
     }
@@ -292,6 +290,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         filterExpressionField = new javax.swing.JTextField();
@@ -300,7 +299,11 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         selectAllButton = new javax.swing.JButton();
         clearSelectionButton = new javax.swing.JButton();
         invertSelectionButton = new javax.swing.JButton();
-        dataPane = new javax.swing.JPanel();
+        clearMaskButton = new javax.swing.JButton();
+        clearAllButton = new javax.swing.JButton();
+        dataPane = new javax.swing.JSplitPane();
+        starTableScrollPane = new javax.swing.JScrollPane();
+        starTableList = new javax.swing.JList<IrisStarTable>();
         dataTabsPane = new javax.swing.JTabbedPane();
         plotterMetadataPanel = new javax.swing.JPanel();
         plotterMetadataScrollPane = new javax.swing.JScrollPane();
@@ -311,10 +314,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         segmentMetadataPanel = new javax.swing.JPanel();
         segmentMetadataScrollPane = new javax.swing.JScrollPane();
         segmentJTable = new javax.swing.JTable();
-        starTableScrollPane = new javax.swing.JScrollPane();
-        starTableList = new javax.swing.JList<IrisStarTable>();
-        clearMaskButton = new javax.swing.JButton();
-        clearAllButton = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         extractToSedMenuItem = new javax.swing.JMenuItem();
@@ -338,12 +337,28 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         setResizable(true);
         setTitle("Metadata Browser");
         setName(""); // NOI18N
+        getContentPane().setLayout(new java.awt.GridBagLayout());
 
         filterExpressionField.setText("Filter Expression");
+        filterExpressionField.setToolTipText("Enter a column selection expression");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        getContentPane().add(filterExpressionField, gridBagConstraints);
 
         selectPointsButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
         selectPointsButton.setText("Select Points");
         selectPointsButton.setToolTipText("Select points matching the filter expression");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 7;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        getContentPane().add(selectPointsButton, gridBagConstraints);
 
         applyMaskButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
         applyMaskButton.setText("Apply Masks");
@@ -354,6 +369,12 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
                 applyMaskButtonActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 7;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        getContentPane().add(applyMaskButton, gridBagConstraints);
 
         selectAllButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
         selectAllButton.setText("Select All");
@@ -363,6 +384,12 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
                 selectAllButtonActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        getContentPane().add(selectAllButton, gridBagConstraints);
 
         clearSelectionButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
         clearSelectionButton.setText("Clear Selection");
@@ -372,6 +399,12 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
                 clearSelectionButtonActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        getContentPane().add(clearSelectionButton, gridBagConstraints);
 
         invertSelectionButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
         invertSelectionButton.setText("Invert Selection");
@@ -382,71 +415,54 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
                 invertSelectionButtonActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        getContentPane().add(invertSelectionButton, gridBagConstraints);
+
+        clearMaskButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
+        clearMaskButton.setText("Remove Masks");
+        clearMaskButton.setToolTipText("Remove the mask from the selected points");
+        clearMaskButton.setName(""); // NOI18N
+        clearMaskButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearMaskButtonActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 8;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        getContentPane().add(clearMaskButton, gridBagConstraints);
+
+        clearAllButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
+        clearAllButton.setText("Clear All");
+        clearAllButton.setToolTipText("Remove all masks from all segments");
+        clearAllButton.setName(""); // NOI18N
+        clearAllButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearAllButtonActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 9;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        getContentPane().add(clearAllButton, gridBagConstraints);
 
         dataPane.setToolTipText("");
-        dataPane.setName("dataPanel"); // NOI18N
-
-        dataTabsPane.setName("dataTabsPane"); // NOI18N
-
-        plotterMetadataScrollPane.setToolTipText("");
-        plotterMetadataScrollPane.setViewportView(plotterStarJTable);
-
-        javax.swing.GroupLayout plotterMetadataPanelLayout = new javax.swing.GroupLayout(plotterMetadataPanel);
-        plotterMetadataPanel.setLayout(plotterMetadataPanelLayout);
-        plotterMetadataPanelLayout.setHorizontalGroup(
-            plotterMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(plotterMetadataPanelLayout.createSequentialGroup()
-                .addComponent(plotterMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 965, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        plotterMetadataPanelLayout.setVerticalGroup(
-            plotterMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(plotterMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
-        );
-
-        dataTabsPane.addTab("Data", plotterMetadataPanel);
-
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, plotterStarJTable, org.jdesktop.beansbinding.ELProperty.create("${selectionModel}"), pointStarJTable, org.jdesktop.beansbinding.BeanProperty.create("selectionModel"));
-        bindingGroup.addBinding(binding);
-
-        pointMetadataScrollPane.setViewportView(pointStarJTable);
-
-        javax.swing.GroupLayout pointMetadataPanelLayout = new javax.swing.GroupLayout(pointMetadataPanel);
-        pointMetadataPanel.setLayout(pointMetadataPanelLayout);
-        pointMetadataPanelLayout.setHorizontalGroup(
-            pointMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pointMetadataScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 977, Short.MAX_VALUE)
-        );
-        pointMetadataPanelLayout.setVerticalGroup(
-            pointMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pointMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
-        );
-
-        dataTabsPane.addTab("Point Metadata", pointMetadataPanel);
-
-        segmentJTable.setModel(new IrisMetadataTableModel());
-
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, starTableList, org.jdesktop.beansbinding.ELProperty.create("${selectionModel}"), segmentJTable, org.jdesktop.beansbinding.BeanProperty.create("selectionModel"));
-        bindingGroup.addBinding(binding);
-
-        segmentMetadataScrollPane.setViewportView(segmentJTable);
-
-        javax.swing.GroupLayout segmentMetadataPanelLayout = new javax.swing.GroupLayout(segmentMetadataPanel);
-        segmentMetadataPanel.setLayout(segmentMetadataPanelLayout);
-        segmentMetadataPanelLayout.setHorizontalGroup(
-            segmentMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(segmentMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 977, Short.MAX_VALUE)
-        );
-        segmentMetadataPanelLayout.setVerticalGroup(
-            segmentMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(segmentMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE)
-        );
-
-        dataTabsPane.addTab("Segment Metadata", segmentMetadataPanel);
+        dataPane.setLastDividerLocation(25);
+        dataPane.setMinimumSize(new java.awt.Dimension(50, 50));
+        dataPane.setName("dataPane"); // NOI18N
 
         starTableScrollPane.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Segments", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.ABOVE_TOP));
         starTableScrollPane.setName("starTableScrollPane"); // NOI18N
         starTableScrollPane.setOpaque(false);
+        starTableScrollPane.setPreferredSize(new java.awt.Dimension(270, 100));
 
         starTableList.setCellRenderer(new StarTableCellRenderer());
 
@@ -461,46 +477,80 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         });
         starTableScrollPane.setViewportView(starTableList);
 
-        javax.swing.GroupLayout dataPaneLayout = new javax.swing.GroupLayout(dataPane);
-        dataPane.setLayout(dataPaneLayout);
-        dataPaneLayout.setHorizontalGroup(
-            dataPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(dataPaneLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(starTableScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(dataTabsPane)
-                .addContainerGap())
+        dataPane.setLeftComponent(starTableScrollPane);
+
+        dataTabsPane.setName("dataTabsPane"); // NOI18N
+
+        plotterMetadataScrollPane.setToolTipText("");
+        plotterMetadataScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        plotterMetadataScrollPane.setViewportView(plotterStarJTable);
+
+        javax.swing.GroupLayout plotterMetadataPanelLayout = new javax.swing.GroupLayout(plotterMetadataPanel);
+        plotterMetadataPanel.setLayout(plotterMetadataPanelLayout);
+        plotterMetadataPanelLayout.setHorizontalGroup(
+            plotterMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(plotterMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
         );
-        dataPaneLayout.setVerticalGroup(
-            dataPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(dataTabsPane, javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dataPaneLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(starTableScrollPane))
+        plotterMetadataPanelLayout.setVerticalGroup(
+            plotterMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(plotterMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
         );
 
+        dataTabsPane.addTab("Data", plotterMetadataPanel);
+
+        pointMetadataScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, plotterStarJTable, org.jdesktop.beansbinding.ELProperty.create("${selectionModel}"), pointStarJTable, org.jdesktop.beansbinding.BeanProperty.create("selectionModel"));
+        bindingGroup.addBinding(binding);
+
+        pointMetadataScrollPane.setViewportView(pointStarJTable);
+
+        javax.swing.GroupLayout pointMetadataPanelLayout = new javax.swing.GroupLayout(pointMetadataPanel);
+        pointMetadataPanel.setLayout(pointMetadataPanelLayout);
+        pointMetadataPanelLayout.setHorizontalGroup(
+            pointMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pointMetadataScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
+        );
+        pointMetadataPanelLayout.setVerticalGroup(
+            pointMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pointMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+        );
+
+        dataTabsPane.addTab("Point Metadata", pointMetadataPanel);
+
+        segmentMetadataScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        segmentJTable.setModel(new IrisMetadataTableModel());
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, starTableList, org.jdesktop.beansbinding.ELProperty.create("${selectionModel}"), segmentJTable, org.jdesktop.beansbinding.BeanProperty.create("selectionModel"));
+        bindingGroup.addBinding(binding);
+
+        segmentMetadataScrollPane.setViewportView(segmentJTable);
+
+        javax.swing.GroupLayout segmentMetadataPanelLayout = new javax.swing.GroupLayout(segmentMetadataPanel);
+        segmentMetadataPanel.setLayout(segmentMetadataPanelLayout);
+        segmentMetadataPanelLayout.setHorizontalGroup(
+            segmentMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(segmentMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
+        );
+        segmentMetadataPanelLayout.setVerticalGroup(
+            segmentMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(segmentMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+        );
+
+        dataTabsPane.addTab("Segment Metadata", segmentMetadataPanel);
+
+        dataPane.setRightComponent(dataTabsPane);
         dataTabsPane.getAccessibleContext().setAccessibleName("");
 
-        clearMaskButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
-        clearMaskButton.setText("Remove Masks");
-        clearMaskButton.setToolTipText("Remove the mask from the selected points");
-        clearMaskButton.setName(""); // NOI18N
-        clearMaskButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                clearMaskButtonActionPerformed(evt);
-            }
-        });
-
-        clearAllButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
-        clearAllButton.setText("Clear All");
-        clearAllButton.setToolTipText("Remove all masks from all segments");
-        clearAllButton.setName(""); // NOI18N
-        clearAllButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                clearAllButtonActionPerformed(evt);
-            }
-        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 11;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        getContentPane().add(dataPane, gridBagConstraints);
 
         fileMenu.setText("File");
         fileMenu.setName("Extract"); // NOI18N
@@ -583,47 +633,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         jMenuBar1.add(selectMenu);
 
         setJMenuBar(jMenuBar1);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(selectAllButton, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(clearSelectionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(invertSelectionButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(filterExpressionField, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(selectPointsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(applyMaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(clearMaskButton, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(clearAllButton, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addComponent(dataPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(dataPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(filterExpressionField, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
-                    .addComponent(selectPointsButton)
-                    .addComponent(applyMaskButton)
-                    .addComponent(selectAllButton)
-                    .addComponent(clearSelectionButton)
-                    .addComponent(invertSelectionButton)
-                    .addComponent(clearMaskButton)
-                    .addComponent(clearAllButton))
-                .addContainerGap())
-        );
 
         bindingGroup.bind();
 
@@ -712,7 +721,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private javax.swing.JMenuItem clearSelectionMenuItem;
     private javax.swing.JMenuItem createNewColumnMenuItem;
     private javax.swing.JMenuItem createSubsetMenuItem;
-    private javax.swing.JPanel dataPane;
+    private javax.swing.JSplitPane dataPane;
     private javax.swing.JTabbedPane dataTabsPane;
     private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem extractToSedMenuItem;
