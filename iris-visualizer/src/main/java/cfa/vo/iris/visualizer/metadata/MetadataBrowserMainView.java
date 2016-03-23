@@ -217,6 +217,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         this.segmentDataTable = newTable;
 
         // TODO: Bindings?
+        pointStarJTable.setUtypeAsNames(true);
         pointStarJTable.setStarTable(segmentDataTable);
         pointStarJTable.configureColumnWidths(200, 20);
         
