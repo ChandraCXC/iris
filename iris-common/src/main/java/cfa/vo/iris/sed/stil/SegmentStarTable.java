@@ -134,6 +134,10 @@ public class SegmentStarTable extends RandomStarTable {
     }
     
     public ColumnData getColumnData(int index) {
+        if (index > columns.size()) { 
+            throw new IllegalArgumentException(
+                    String.format("index out of bounds (%d > %d)", index, columns.size()));
+        }
         Iterator<SegmentColumn> it = columns.iterator();
         for (int i=0; i<index; i++) it.next();
         return it.next();
