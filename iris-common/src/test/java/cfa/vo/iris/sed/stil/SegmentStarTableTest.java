@@ -123,4 +123,16 @@ public class SegmentStarTableTest {
         assertEquals(Column.Spectral_Value.name(), table.getColumnInfo(1).getName());
         assertFalse(table.columns.contains(table.filteredColumn));
     }
+
+    @Test
+    public void testException() throws Exception {
+        SegmentStarTable table = new SegmentStarTable(sed.getSegment(0));
+        try {
+            table.getColumnData(200);
+        } catch (IllegalArgumentException e) {
+            assertTrue(StringUtils.contains(e.getMessage(), "index out of bounds"));
+            return;
+        }
+        fail();
+    }
 }
