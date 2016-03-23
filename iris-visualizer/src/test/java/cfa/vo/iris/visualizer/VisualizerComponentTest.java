@@ -27,6 +27,7 @@ import static cfa.vo.iris.test.unit.TestUtils.*;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.stil.StilPlotter;
 import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -34,6 +35,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 import org.uispec4j.MenuItem;
 import org.uispec4j.Window;
+import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
 
 public class VisualizerComponentTest extends AbstractComponentGUITest {
     
@@ -126,7 +128,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
     }
     
     @Test
-    public void testPlotPreferences() throws Exception {
+    public void testPlotPreferencesGridAndPlotType() throws Exception {
         SedlibSedManager sedManager = (SedlibSedManager) app.getWorkspace().getSedManager();
         
         window.getMenuBar()
@@ -217,6 +219,128 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         JRadioButtonMenuItem log = (JRadioButtonMenuItem) plotTypeMenu.getItem(0);
         assertTrue(log.isSelected());
         assertTrue(!linear.isSelected());
+        
+    }
+    
+    @Test
+    public void testPlotPreferencesFixed() throws Exception {
+        SedlibSedManager sedManager = (SedlibSedManager) app.getWorkspace().getSedManager();
+        
+        window.getMenuBar()
+                .getMenu("Tools")
+                .getSubMenu(windowName)
+                .getSubMenu(windowName)
+                .click();
+        
+        Window viewer = desktop.getWindow(windowName);
+        StilPlotter plotter = viewer.findSwingComponent(StilPlotter.class);
+        
+        // create a new sed with a segment
+        final Segment seg1 = createSampleSegment();
+        final ExtSed sed1 = sedManager.newSed("sampleSed1");
+        sed1.addSegment(seg1);
+        // Make sure this is enqueued in the Swing EDT
+        invokeWithRetry(10, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertSame(sed1, comp.getDefaultPlotterView().getSed());
+            }
+        });
+        
+        // get components: PlotPreferences and autoFixed menuCheckBox
+        PlotPreferences prefs = plotter.getVisualizerPreferences().getSelectedSedPreferences().getPlotPreferences();
+        JMenuBar menu = viewer.findSwingComponent(JMenuBar.class, "menuBar");
+        JCheckBoxMenuItem autoFixed = (JCheckBoxMenuItem) menu.getMenu(2).getMenuComponent(2);
+        
+        // check that box is unchecked (auto range viewport by default)
+        assertFalse(autoFixed.isSelected());
+        assertFalse(prefs.getFixed());
+        
+        // now, make it so the viewport is fixed
+        viewer.getMenuBar()
+                .getMenu("View")
+                .getSubMenu("Fixed")
+                .click();
+        
+        // zoom in on the viewport
+        plotter.zoom(3.0);
+        PlaneAspect aspect = plotter.getPlotDisplay().getAspect();
+        double xmin = aspect.getXMin();
+        double xmax = aspect.getXMax();
+        double ymin = aspect.getYMin();
+        double ymax = aspect.getYMax();
+        
+        // add another segment.
+        sed1.addSegment(createSampleSegment());
+        // Make sure this is enqueued in the Swing EDT
+        invokeWithRetry(10, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertSame(sed1, comp.getDefaultPlotterView().getSed());
+            }
+        });
+        
+        // because the plot is fixed, 
+        // the X and Y ranges should be the same as they were before
+        PlaneAspect newAspect = plotter.getPlotDisplay().getAspect();
+        assertEquals(xmin, newAspect.getXMin(), 0.000001);
+        assertEquals(xmax, newAspect.getXMax(), 0.000001);
+        assertEquals(ymin, newAspect.getYMin(), 0.000001);
+        assertEquals(ymax, newAspect.getYMax(), 0.000001);
+        
+        // check that clicking "Reset" resets the plot to the full plot range
+        viewer.getButton("Reset").click();
+        newAspect = plotter.getPlotDisplay().getAspect();
+        assertTrue(xmin > newAspect.getXMin());
+        assertTrue(ymin > newAspect.getYMin());
+        assertTrue(xmax < newAspect.getXMax());
+        assertTrue(ymax < newAspect.getYMax());
+        
+        // zoom back in
+        plotter.zoom(3.0);
+        xmin = newAspect.getXMin();
+        xmax = newAspect.getXMax();
+        ymin = newAspect.getYMin();
+        ymax = newAspect.getYMax();
+        
+        // create a new sed and switch to it
+        final Segment seg2 = createSampleSegment();
+        final ExtSed sed2 = sedManager.newSed("sampleSed2");
+        sed2.addSegment(seg2);
+        // Make sure this is enqueued in the Swing EDT
+        invokeWithRetry(10, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertSame(sed2, comp.getDefaultPlotterView().getSed());
+            }
+        });
+        
+        // check that the fixed check box is unmarked (default value)
+        autoFixed = (JCheckBoxMenuItem) menu.getMenu(2).getMenuComponent(2);
+        assertFalse(autoFixed.isSelected());
+        
+        newAspect = plotter.getPlotDisplay().getAspect();
+        
+        // now switch back to sed1
+        sedManager.select(sed1);
+        invokeWithRetry(10, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertSame(sed1, comp.getDefaultPlotterView().getSed());
+            }
+        });
+        
+        // check that the fixed check box is marked since we're on sed1 now
+        autoFixed = (JCheckBoxMenuItem) menu.getMenu(2).getMenuComponent(2);
+        assertTrue(autoFixed.isSelected());
+        
+        // make sure the view port is the same as it was before switching
+        // to sed2
+        newAspect = plotter.getPlotDisplay().getAspect();
+        assertEquals(xmin, newAspect.getXMin(), 0.000001);
+        assertEquals(xmax, newAspect.getXMax(), 0.000001);
+        assertEquals(ymin, newAspect.getYMin(), 0.000001);
+        assertEquals(ymax, newAspect.getYMax(), 0.000001);
         
     }
 }
