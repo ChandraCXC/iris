@@ -135,7 +135,16 @@ public class StilPlotter extends JPanel {
         if (display != null) {
             display.removeAll();
             remove(display);
-            existingAspect = display.getAspect();
+            try {
+                this.preferences.getSedPreferences(currentSed).getPlotPreferences().setAspect(display.getAspect());
+                existingAspect = this.preferences.getSelectedSedPreferences().getPlotPreferences().getAspect(); // CHANGED THIS FROM WORKING VERSION. was getselectedsedpreferences() before
+                if (existingAspect == null)
+                    existingAspect = display.getAspect();
+            } catch (NullPointerException ex) {
+                // if no aspect has been set yet, just use the current one
+                existingAspect = display.getAspect();
+            }
+
         }
         
         // Update the current SED
@@ -150,13 +159,7 @@ public class StilPlotter extends JPanel {
         
         // Set the bounds using the aspect if provided one and if the plot is fixed
         if (fixed) {
-            try {
-                display.setAspect(this.preferences.getSelectedSedPreferences().getPlotPreferences().getAspect());
-            } catch (NullPointerException ex) {
-                // if no aspect has been set yet, just use the one previous
-                // to updating the plotter.
-                display.setAspect(existingAspect);
-            }
+            display.setAspect(existingAspect);
         }
         
         // Add the display to the plot view

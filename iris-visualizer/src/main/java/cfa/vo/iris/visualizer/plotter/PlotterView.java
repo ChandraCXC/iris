@@ -30,16 +30,12 @@ import cfa.vo.iris.visualizer.stil.StilPlotter;
 import cfa.vo.sedlib.Segment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.plaf.basic.BasicArrowButton;
-import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
 
 public class PlotterView extends JInternalFrame {
     
@@ -113,7 +109,18 @@ public class PlotterView extends JInternalFrame {
         btnReset.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                resetPlot(null);
+                PlotPreferences plotPrefs = stilPlotter1
+                                .getVisualizerPreferences()
+                                .getSelectedSedPreferences()
+                                .getPlotPreferences();
+                boolean fixed = plotPrefs.getFixed();
+                if (fixed) {
+                   plotPrefs.setFixed(false);
+                }
+                resetPlot(getSed());
+                if (fixed) {
+                   plotPrefs.setFixed(true);
+                }
                 metadataBrowser.resetData();
             }
         });
@@ -213,7 +220,6 @@ public class PlotterView extends JInternalFrame {
     }
     
     private void updatePlot(ExtSed source) {
-        //this.plotter.getVisualizerPreferences().getSelectedSedPreferences().getPlotPreferences().setAspect(); //this.plotter.getPlotDisplay().getAspect());
         this.plotter.reset(source, true);
     }
     
