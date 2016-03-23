@@ -16,18 +16,28 @@
 
 package cfa.vo.sherpa.stats;
 
-public enum Stats implements Stat {
-    Chi2Gehrels("chi2gehrels"),
-    LeastSquares("leastsq");
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+public enum Stats implements Stat {
+    Chi2("chi2"),
+    Poisson("poisson"),
+    LeastSquares("leastsquares");
     private String name;
 
-    private Stats(String name) {
+    Stats(String name) {
         this.name = name;
     }
 
-    @Override
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        throw new NotImplementedException();
+    }
+
+    @Override
+    public String toString() {
+        return name();
     }
 }

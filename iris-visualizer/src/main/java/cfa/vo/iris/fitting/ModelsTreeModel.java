@@ -1,18 +1,20 @@
 package cfa.vo.iris.fitting;
 
+import cfa.vo.iris.fitting.custom.CustomModelsManager;
 import cfa.vo.sherpa.models.Model;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ModelsTreeModel extends DefaultTreeModel {
-    private Map<String, List<Model>> map = new TreeMap();
     private List<Model> presetList;
 
-    public ModelsTreeModel(List<Model> presetList) {
+    public ModelsTreeModel(List<Model> presetList, CustomModelsManager manager) {
         super(new DefaultMutableTreeNode("Model Components"));
-        this.presetList = presetList;
         Collections.sort(presetList, new Comparator<Model>() {
 
             @Override
@@ -20,17 +22,22 @@ public class ModelsTreeModel extends DefaultTreeModel {
                 return m1.getName().compareTo(m1.getName());
             }
         });
+        this.presetList = presetList;
 
-        map.put("Preset Model Components", presetList);
+        DefaultMutableTreeNode r = (DefaultMutableTreeNode) this.getRoot();
+        DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode("Preset Model Components");
+        r.add(parentNode);
 
-        for(Map.Entry<String, List<Model>> parent : map.entrySet()) {
-            DefaultMutableTreeNode r = (DefaultMutableTreeNode) this.getRoot();
-            DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(parent.getKey());
-            r.add(parentNode);
-
-            for(Model m : parent.getValue())
-                parentNode.add(new DefaultMutableTreeNode(m));
+        for(Model m : presetList) {
+            parentNode.add(new DefaultMutableTreeNode(m));
         }
+
+        try {
+            r.add(manager.getCustomModels());
+        } catch (IOException e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Error while reading custom models", e);
+        }
+
     }
 
     public List<Model> getList() {

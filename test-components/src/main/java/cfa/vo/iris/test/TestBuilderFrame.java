@@ -53,6 +53,8 @@ import cfa.vo.sherpa.models.CompositeModel;
 import cfa.vo.sherpa.models.ModelFactory;
 import cfa.vo.sherpa.models.ModelImpl;
 import cfa.vo.sherpa.models.Parameter;
+import cfa.vo.sherpa.optimization.OptimizationMethod;
+import cfa.vo.sherpa.stats.Stats;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.SampException;
 
@@ -327,6 +329,9 @@ public final class TestBuilderFrame extends JInternalFrame {
             cm.setName("m");
             cm.addPart(m);
             fit.setModel(cm);
+
+            fit.setMethod(OptimizationMethod.LevenbergMarquardt);
+            fit.setStat(Stats.LeastSquares);
 
             manager.getSelected().addAttachment("fit.model", fit);
         } catch (Exception ex) {

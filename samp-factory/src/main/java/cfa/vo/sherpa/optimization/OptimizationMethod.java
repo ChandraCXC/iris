@@ -36,4 +36,8 @@ public enum OptimizationMethod implements Method {
     public void setName(String name) {
         throw new NotImplementedException();
     }
+
+    public String toString() {
+        return name();
+    }
 }

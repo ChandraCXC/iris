@@ -13,6 +13,8 @@ import cfa.vo.sherpa.models.UserModel;
 import cfa.vo.sherpa.optimization.Method;
 import cfa.vo.sherpa.stats.Stat;
 
+import java.beans.PropertyChangeSupport;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,9 @@ public class FitConfigurationBean implements IFitConfiguration {
     private Stat stat;
     private Method method;
     private List<UserModel> userModelList = new ArrayList<>();
+
+    public static final String PROP_FIT = "fit";
+    private transient final PropertyChangeSupport propertyChangeSupport = new java.beans.PropertyChangeSupport(this);
 
     @Override
     public CompositeModel getModel() {
@@ -40,6 +45,7 @@ public class FitConfigurationBean implements IFitConfiguration {
     @Override
     public void setStat(Stat stat) {
         this.stat = stat;
+        fireChange();
     }
 
     @Override
@@ -50,6 +56,7 @@ public class FitConfigurationBean implements IFitConfiguration {
     @Override
     public void setMethod(Method method) {
         this.method = method;
+        fireChange();
     }
 
     @Override
@@ -90,5 +97,29 @@ public class FitConfigurationBean implements IFitConfiguration {
         conf.setMethod(method);
 
         return conf;
+    }
+
+    /**
+     * Add PropertyChangeListener.
+     *
+     * @param listener
+     */
+    public void addPropertyChangeListener(java.beans.PropertyChangeListener listener )
+    {
+        propertyChangeSupport.addPropertyChangeListener( listener );
+    }
+
+    /**
+     * Remove PropertyChangeListener.
+     *
+     * @param listener
+     */
+    public void removePropertyChangeListener(java.beans.PropertyChangeListener listener )
+    {
+        propertyChangeSupport.removePropertyChangeListener( listener );
+    }
+
+    private void fireChange() {
+        propertyChangeSupport.firePropertyChange(PROP_FIT, null, this);
     }
 }

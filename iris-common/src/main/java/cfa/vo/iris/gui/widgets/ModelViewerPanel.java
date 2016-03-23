@@ -56,10 +56,9 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
     /**
      * Creates new form NewJInternalFrame
      */
-    public ModelViewerPanel(ExtSed sed, IFitConfiguration fitConfig) {
+    public ModelViewerPanel(ExtSed sed) {
         initComponents();
         setSed(sed);
-        setFitConfiguration(fitConfig);
         SedEvent.getInstance().add(this);
         modelsTree.setPreferredSize(null);
         modelsTree.addMouseListener(new MouseAdapter() {
@@ -78,24 +77,21 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         });
     }
 
-    public IFitConfiguration getFitConfiguration() {
-        return fit;
-    }
-    
     private java.util.List<UserModel> userModels;
     
     private void setFitConfiguration(IFitConfiguration fit) {
-        try {
-            this.fit = fit;
+        this.fit = fit;
+        if (fit != null) {
             CompositeModel m = fit.getModel();
             userModels = fit.getUserModelList();
-            setModel(m);
-            setExpression(m.getName());
-        } catch (Exception ex) {
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, null, ex);
-            setModel(SAMPFactory.get(CompositeModel.class));
-            setExpression("No Model");
-            setSelectedParameter(null);
+            if (m != null) {
+                setModel(m);
+                setExpression(m.getName());
+            } else {
+                setModel(SAMPFactory.get(CompositeModel.class));
+                setExpression("No Model");
+                setSelectedParameter(null);
+            }
         }
     }
 
@@ -174,26 +170,15 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
 
     private ExtSed sed;
 
-    public static final String PROP_SED = "sed";
-
-    /**
-     * Get the value of sed
-     *
-     * @return the value of sed
-     */
-    public ExtSed getSed() {
-        return sed;
-    }
-
     /**
      * Set the value of sed
      *
      * @param sed new value of sed
      */
     private void setSed(ExtSed sed) {
-        ExtSed oldSed = this.sed;
         this.sed = sed;
-        firePropertyChange(PROP_SED, oldSed, sed);
+        IFitConfiguration fitConf = (IFitConfiguration) sed.getAttachment("fit.model");
+        setFitConfiguration(fitConf);
     }
 
 
@@ -271,8 +256,6 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
     @Override
     public void process(ExtSed source, SedCommand payload) {
         if (SedCommand.SELECTED.equals(payload) || SedCommand.CHANGED.equals(payload) && source.equals(sed)) {
-            IFitConfiguration fitConf = (IFitConfiguration) source.getAttachment("fit.model");
-            setFitConfiguration(fitConf);
             setSed(source);
         }
     }

@@ -29,14 +29,17 @@ import cfa.vo.sherpa.models.CompositeModel;
 import cfa.vo.sherpa.models.ModelFactory;
 import cfa.vo.sherpa.models.ModelImpl;
 import cfa.vo.sherpa.models.Parameter;
-import java.util.ArrayList;
 import java.util.Iterator;
+import cfa.vo.sherpa.optimization.OptimizationMethod;
+import cfa.vo.sherpa.stats.Stats;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import org.uispec4j.ComboBox;
 import org.uispec4j.TextBox;
 import org.uispec4j.Tree;
 import org.uispec4j.Window;
@@ -108,30 +111,12 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
     }
 
     @Test
-    public void testFittingNonEmptySed() throws Exception {
+    public void testViewNonEmptySed() throws Exception {
         ExtSed sed = sedManager.newSed("TestSed");
 
         final Window mainFit = openWindow();
-        
-        IFitConfiguration fit = new FitConfigurationBean();
 
-        ModelFactory factory = new ModelFactory();
-        ModelImpl m = factory.getModel("polynomial", "m");
-        Parameter c0 = m.getParameter("m.c0");
-        c0.setFrozen(0);
-
-        Parameter c1 = m.getParameter("m.c1");
-        c1.setFrozen(0);
-
-        CompositeModel cm = SAMPFactory.get(CompositeModel.class);
-        cm.setName("m");
-        cm.addPart(m);
-        fit.setModel(cm);
-
-        sed.addAttachment("fit.model", fit);
-        SedEvent.getInstance().fire(sed, SedCommand.CHANGED);
-
-        assertTrue(mainFit.containsLabel("No Parameter Selected").isTrue());
+        addFit(sed);
 
         TestUtils.invokeWithRetry(50, 100, new Runnable(){
             @Override
@@ -150,6 +135,58 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
             }
         });
 
+        final ComboBox statisticCombo = mainFit.getComboBox("statisticCombo");
+        final ComboBox optimizationCombo = mainFit.getComboBox("optimizationCombo");
+        TestUtils.invokeWithRetry(50, 100, new Runnable(){
+            @Override
+            public void run() {
+                assertTrue(statisticCombo.selectionEquals("LeastSquares").isTrue());
+                assertTrue(optimizationCombo.selectionEquals("LevenbergMarquardt").isTrue());
+            }
+        });
+
+    }
+
+    @Test
+    public void testSwitchSed() throws Exception {
+        ExtSed sed = sedManager.newSed("TestSed");
+        final Window mainFit = openWindow();
+        addFit(sed);
+        final ComboBox statisticCombo = mainFit.getComboBox("statisticCombo");
+        final ComboBox optimizationCombo = mainFit.getComboBox("optimizationCombo");
+        TestUtils.invokeWithRetry(50, 100, new Runnable(){
+            @Override
+            public void run() {
+                assertTrue(statisticCombo.selectionEquals("LeastSquares").isTrue());
+                assertTrue(optimizationCombo.selectionEquals("LevenbergMarquardt").isTrue());
+            }
+        });
+        sedManager.newSed("empty");
+        TestUtils.invokeWithRetry(50, 100, new Runnable(){
+            @Override
+            public void run() {
+                assertTrue(statisticCombo.selectionEquals("").isTrue());
+                assertTrue(optimizationCombo.selectionEquals("").isTrue());
+            }
+        });
+    }
+
+    @Test
+    public void testSelection() throws Exception {
+        final ExtSed sed = sedManager.newSed("TestSed");
+        final Window mainFit = openWindow();
+        final ComboBox statisticCombo = mainFit.getComboBox("statisticCombo");
+        final ComboBox optimizationCombo = mainFit.getComboBox("optimizationCombo");
+        statisticCombo.select("Poisson");
+        optimizationCombo.select("MonteCarlo");
+        TestUtils.invokeWithRetry(50, 100, new Runnable(){
+            @Override
+            public void run() {
+                IFitConfiguration fit = (IFitConfiguration) sed.getAttachment("fit.model");
+                assertEquals(Stats.Poisson, fit.getStat());
+                assertEquals(OptimizationMethod.MonteCarlo, fit.getMethod());
+            }
+        });
     }
 
     @Test
@@ -193,5 +230,28 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
                 .click();
         return desktop.getWindow(windowName);
     }
-    
+
+    private IFitConfiguration addFit(ExtSed sed) {
+        IFitConfiguration fit = new FitConfigurationBean();
+
+        ModelFactory factory = new ModelFactory();
+        ModelImpl m = factory.getModel("polynomial", "m");
+        Parameter c0 = m.getParameter("m.c0");
+        c0.setFrozen(0);
+
+        Parameter c1 = m.getParameter("m.c1");
+        c1.setFrozen(0);
+
+        CompositeModel cm = SAMPFactory.get(CompositeModel.class);
+        cm.setName("m");
+        cm.addPart(m);
+        fit.setModel(cm);
+
+        fit.setMethod(OptimizationMethod.LevenbergMarquardt);
+        fit.setStat(Stats.LeastSquares);
+
+        sed.addAttachment("fit.model", fit);
+        SedEvent.getInstance().fire(sed, SedCommand.CHANGED);
+        return fit;
+    }
 }

@@ -17,26 +17,48 @@
 package cfa.vo.iris.visualizer;
 
 import cfa.vo.iris.*;
+import cfa.vo.iris.fitting.custom.CustomModelsManager;
+import cfa.vo.iris.fitting.custom.CustomModelsManagerView;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.fitting.FittingMainView;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.sherpa.IFitConfiguration;
 
 import org.astrogrid.samp.client.MessageHandler;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class FittingToolComponent implements IrisComponent {
     
     protected IrisApplication app;
     private IWorkspace ws;
     private List<IMenuItem> menuItems = new MenuItems();
+    CustomModelsManager customManager;
+    private CustomModelsManagerView customManagerView;
+    private File customRootDir;
+    private final String CUSTOM_PATH = File.separator + "analysis" + File.separator + "custom_models";
+    private static final Logger LOGGER = Logger.getLogger(FittingToolComponent.class.getName());
 
     @Override
     public void init(IrisApplication irisApplication, IWorkspace iWorkspace) {
         this.app = irisApplication;
         this.ws = iWorkspace;
+        customRootDir = new File(app.getConfigurationDir() + CUSTOM_PATH);
+        try {
+            customManager = new CustomModelsManager(customRootDir);
+        } catch (IOException e) {
+            manageException(e);
+            try {
+                customManager = new CustomModelsManager(customRootDir);
+            } catch (IOException ex) {
+                LOGGER.log(Level.SEVERE, "Cannot initialize CustomModelManager", ex);
+            }
+        }
     }
 
     @Override
@@ -65,11 +87,39 @@ public class FittingToolComponent implements IrisComponent {
 
     @Override
     public List<MessageHandler> getSampHandlers() {
-        return new ArrayList<MessageHandler>();
+        return new ArrayList<>();
     }
 
     @Override
     public void shutdown() {
+    }
+
+    private void manageException(Exception ex) {
+        LOGGER.log(Level.SEVERE, null, ex);
+        int ans = NarrowOptionPane.showConfirmDialog(ws.getRootFrame(), "Error initializing Custom Fit Component Manager: " + ex.getMessage()
+                + "\nDo you want to reset custom models?", "Iris Fitting Tool", NarrowOptionPane.ERROR_MESSAGE);
+        if (ans == NarrowOptionPane.OK_OPTION) {
+            if (customRootDir.isDirectory()) {
+                deleteDirectory(customRootDir);
+            } else {
+                customRootDir.delete();
+            }
+            customRootDir.mkdir();
+        }
+    }
+
+    private boolean deleteDirectory(File path) {
+        if (path.exists()) {
+            File[] files = path.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].isDirectory()) {
+                    deleteDirectory(files[i]);
+                } else {
+                    files[i].delete();
+                }
+            }
+        }
+        return (path.delete());
     }
 
     private class MenuItems extends ArrayList<IMenuItem> {
@@ -77,6 +127,7 @@ public class FittingToolComponent implements IrisComponent {
         
         public MenuItems() {
             super();
+
             add(new AbstractDesktopItem("Fitting Tool",
                     "Fitting Tool Prototype", "/tool.png", "/tool_tiny.png") {
                 @Override
@@ -84,19 +135,38 @@ public class FittingToolComponent implements IrisComponent {
                     if (view == null) {
                         try {
                             ExtSed sed = (ExtSed) ws.getSedManager().getSelected();
-                            IFitConfiguration fit = null;
                             if (sed == null) {
                                 NarrowOptionPane.showMessageDialog(null, "No SEDs open. Please start building SEDs using the SED builder", "Error", NarrowOptionPane.ERROR_MESSAGE);
                                 return;
                             }
-                            fit = (IFitConfiguration) sed.getAttachment("fit.model");
-                            view = new FittingMainView(sed, fit);
+                            view = new FittingMainView(sed, customManager);
                             ws.getDesktop().add(view);
+                            GUIUtils.moveToFront(view);
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);
                         }
                     }
                     GUIUtils.moveToFront(view);
+                }
+            });
+
+            add(new AbstractMenuItem("Custom Models Manager", "Install Custom Components that can be used for fitting SEDs", true,
+                    "/ruler_small.png", "/ruler_tiny.png") {
+                public void onClick() {
+                    if (customManagerView == null) {
+                        try {
+                            customManagerView = new CustomModelsManagerView(customManager, ws.getFileChooser());
+                        } catch (IOException ex) {
+                            FittingToolComponent.this.manageException(ex);
+                            try {
+                                customManagerView = new CustomModelsManagerView(customManager, ws.getFileChooser());
+                            } catch (IOException e) {
+                                LOGGER.log(Level.SEVERE, "Cannot initialize CustomModelsManagerView", e);
+                            }
+                        }
+                        ws.addFrame(customManagerView);
+                    }
+                    GUIUtils.moveToFront(customManagerView);
                 }
             });
         }
