@@ -339,13 +339,16 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         setName(""); // NOI18N
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
+        filterExpressionField.setColumns(2);
         filterExpressionField.setText("Filter Expression");
         filterExpressionField.setToolTipText("Enter a column selection expression");
+        filterExpressionField.setMaximumSize(new java.awt.Dimension(75, 75));
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         getContentPane().add(filterExpressionField, gridBagConstraints);
@@ -354,9 +357,10 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         selectPointsButton.setText("Select Points");
         selectPointsButton.setToolTipText("Select points matching the filter expression");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 7;
+        gridBagConstraints.gridx = 6;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         getContentPane().add(selectPointsButton, gridBagConstraints);
 
@@ -373,6 +377,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         gridBagConstraints.gridx = 7;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         getContentPane().add(applyMaskButton, gridBagConstraints);
 
@@ -388,6 +393,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         getContentPane().add(selectAllButton, gridBagConstraints);
 
@@ -403,6 +409,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         getContentPane().add(clearSelectionButton, gridBagConstraints);
 
@@ -419,6 +426,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         getContentPane().add(invertSelectionButton, gridBagConstraints);
 
@@ -435,6 +443,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         gridBagConstraints.gridx = 8;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         getContentPane().add(clearMaskButton, gridBagConstraints);
 
@@ -451,15 +460,17 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         gridBagConstraints.gridx = 9;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         getContentPane().add(clearAllButton, gridBagConstraints);
 
         dataPane.setToolTipText("");
         dataPane.setLastDividerLocation(25);
-        dataPane.setMinimumSize(new java.awt.Dimension(50, 50));
+        dataPane.setMinimumSize(new java.awt.Dimension(25, 25));
         dataPane.setName("dataPane"); // NOI18N
 
         starTableScrollPane.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Segments", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.ABOVE_TOP));
+        starTableScrollPane.setMinimumSize(new java.awt.Dimension(0, 0));
         starTableScrollPane.setName("starTableScrollPane"); // NOI18N
         starTableScrollPane.setOpaque(false);
         starTableScrollPane.setPreferredSize(new java.awt.Dimension(270, 100));
@@ -479,6 +490,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
         dataPane.setLeftComponent(starTableScrollPane);
 
+        dataTabsPane.setMinimumSize(new java.awt.Dimension(0, 0));
         dataTabsPane.setName("dataTabsPane"); // NOI18N
 
         plotterMetadataScrollPane.setToolTipText("");
@@ -489,11 +501,11 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         plotterMetadataPanel.setLayout(plotterMetadataPanelLayout);
         plotterMetadataPanelLayout.setHorizontalGroup(
             plotterMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(plotterMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
+            .addComponent(plotterMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 864, Short.MAX_VALUE)
         );
         plotterMetadataPanelLayout.setVerticalGroup(
             plotterMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(plotterMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+            .addComponent(plotterMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
         );
 
         dataTabsPane.addTab("Data", plotterMetadataPanel);
@@ -509,11 +521,11 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         pointMetadataPanel.setLayout(pointMetadataPanelLayout);
         pointMetadataPanelLayout.setHorizontalGroup(
             pointMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pointMetadataScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
+            .addComponent(pointMetadataScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 864, Short.MAX_VALUE)
         );
         pointMetadataPanelLayout.setVerticalGroup(
             pointMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pointMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+            .addComponent(pointMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
         );
 
         dataTabsPane.addTab("Point Metadata", pointMetadataPanel);
@@ -531,11 +543,11 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         segmentMetadataPanel.setLayout(segmentMetadataPanelLayout);
         segmentMetadataPanelLayout.setHorizontalGroup(
             segmentMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(segmentMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
+            .addComponent(segmentMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 864, Short.MAX_VALUE)
         );
         segmentMetadataPanelLayout.setVerticalGroup(
             segmentMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(segmentMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+            .addComponent(segmentMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 362, Short.MAX_VALUE)
         );
 
         dataTabsPane.addTab("Segment Metadata", segmentMetadataPanel);
