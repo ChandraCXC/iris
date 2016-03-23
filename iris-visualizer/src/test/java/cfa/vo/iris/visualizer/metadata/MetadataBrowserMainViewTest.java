@@ -17,6 +17,7 @@
 package cfa.vo.iris.visualizer.metadata;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.uispec4j.ListBox;
@@ -85,7 +86,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         
         desktop.containsWindow(mbView.getTitle()).check();
         mbWindow = desktop.getWindow(mbView.getTitle());
-        dataPanel = mbWindow.getPanel("dataPanel");
+        dataPanel = mbWindow.getPanel("contentPane");
         
         // Segment list
         starTableList = dataPanel.getListBox();
