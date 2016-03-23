@@ -1,9 +1,23 @@
+/**
+ * Copyright 2016 Chandra X-Ray Observatory.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package cfa.vo.iris.sed.stil;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import cfa.vo.iris.sed.stil.SegmentStarTable.Column;
+import cfa.vo.iris.sed.stil.SegmentColumn.Column;
 import cfa.vo.iris.units.spv.XUnits;
 import cfa.vo.iris.units.spv.YUnits;
 import cfa.vo.sedlib.Sed;
@@ -13,6 +27,8 @@ import uk.ac.starlink.table.RowSequence;
 import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
 import static org.junit.Assert.*;
+
+import java.util.BitSet;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -65,5 +81,48 @@ public class SegmentStarTableTest {
         col = id.getColumnIndex(Column.Flux_Error.name());
         assertTrue(col >= 0);
         assertEquals(new Double("5.61E-6"), (Double) table.getCell(0, col), 1E-8);
+    }
+    
+    @Test
+    public void testMasking() throws Exception {
+        SegmentStarTable table = new SegmentStarTable(sed.getSegment(0));
+        
+        // No filter column should be present
+        assertEquals(Column.Segment_Id.name(), table.getColumnInfo(0).getName());
+        assertEquals(Column.Spectral_Value.name(), table.getColumnInfo(1).getName());
+        assertFalse(table.columns.contains(table.filteredColumn));
+        
+        // Apply a mask
+        BitSet mask = new BitSet();
+        mask.set(0);
+        table.setMasked(mask);
+
+        ColumnIdentifier id = new ColumnIdentifier(table);
+        assertEquals(0, id.getColumnIndex(Column.Masked.name()));
+
+        assertEquals(Column.Masked.name(), table.getColumnInfo(0).getName());
+        assertEquals(Column.Segment_Id.name(), table.getColumnInfo(1).getName());
+        assertEquals(Column.Spectral_Value.name(), table.getColumnInfo(2).getName());
+
+        assertEquals(true, table.getCell(0, 0));
+        assertEquals(false, table.getCell(1, 0));
+        
+        // Remove the mask and the column should be gone
+        table.setMasked(new BitSet());
+        assertEquals(Column.Segment_Id.name(), table.getColumnInfo(0).getName());
+        assertEquals(Column.Spectral_Value.name(), table.getColumnInfo(1).getName());
+        assertFalse(table.columns.contains(table.filteredColumn));
+    }
+
+    @Test
+    public void testException() throws Exception {
+        SegmentStarTable table = new SegmentStarTable(sed.getSegment(0));
+        try {
+            table.getColumnData(200);
+        } catch (IllegalArgumentException e) {
+            assertTrue(StringUtils.contains(e.getMessage(), "index out of bounds"));
+            return;
+        }
+        fail();
     }
 }

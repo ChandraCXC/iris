@@ -21,7 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import cfa.vo.iris.utils.UTYPE;
 import uk.ac.starlink.table.ColumnInfo;
 
-public class UtypeColumnInfoMatcher implements ColumnInfoMatcher {
+public class UtypeColumnInfoMatcher extends ColumnInfoMatcher {
 
     @Override
     public boolean isCompatible(ColumnInfo c1, ColumnInfo c2) {

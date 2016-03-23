@@ -16,17 +16,37 @@
 
 package cfa.vo.iris.visualizer.stil.tables;
 
+import java.io.IOException;
+import java.util.BitSet;
 import java.util.List;
 import java.util.concurrent.Future;
 
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.units.UnitsException;
+import cfa.vo.iris.visualizer.filters.Filter;
+import cfa.vo.iris.visualizer.filters.RowSubsetFilter;
 import cfa.vo.utils.Default;
 import uk.ac.starlink.table.DescribedValue;
 import uk.ac.starlink.table.EmptyStarTable;
+import uk.ac.starlink.table.RowSequence;
 import uk.ac.starlink.table.StarTable;
+import uk.ac.starlink.table.WrapperRowSequence;
 import uk.ac.starlink.table.WrapperStarTable;
 
+/**
+ * The primary startable and data holder for the Iris visualization. An IrisStarTable
+ * provides all necessary applications for viewing and manipulating data associated
+ * with a Segment. In particular,
+ * 
+ * 1) Is a container for the plotterStarTable - which maintains information associated
+ *  with the plotter (e.g. spectral and flux axis values).
+ * 2) Maintains a pointer to a the segment's metadata star table - which maintains all
+ *  metadata associated with the segment and each point in the segment.
+ * 3) Provides functionality for setting spectral and flux axis units for plotting data.
+ * 4) Allows filtering of data points for visualization on the plotter and for extraction
+ *  to the fitting tool.
+ *
+ */
 public class IrisStarTable extends WrapperStarTable {
 
     private static final StarTable EMPTY_STARTABLE = new EmptyStarTable();
@@ -34,6 +54,8 @@ public class IrisStarTable extends WrapperStarTable {
     private Future<StarTable> dataTableHolder;
     private StarTable segmentDataTable;
     private SegmentStarTable plotterTable;
+    
+    private Filter filter;
     
     IrisStarTable(SegmentStarTable plotterTable, Future<StarTable> dataTableHolder) {
         this(plotterTable, EMPTY_STARTABLE);
@@ -46,6 +68,7 @@ public class IrisStarTable extends WrapperStarTable {
         
         this.segmentDataTable = dataTable;
         this.plotterTable = plotterTable;
+        this.filter = new RowSubsetFilter(new int[0], this);
         
         setName(plotterTable.getName());
     }
@@ -81,7 +104,7 @@ public class IrisStarTable extends WrapperStarTable {
     }
     
     private void checkDataTable() {
-        if (!dataTableHolder.isDone()) {
+        if (dataTableHolder == null || !dataTableHolder.isDone()) {
             return;
         }
         
@@ -97,19 +120,199 @@ public class IrisStarTable extends WrapperStarTable {
         return plotterTable;
     }
     
+    /**
+     * Set the spectral axis units for this startable.
+     * @param xunit
+     * @throws UnitsException
+     */
     public void setXUnits(String xunit) throws UnitsException {
         plotterTable.setSpecUnits(Default.getInstance().getUnitsManager().newXUnits(xunit));
     }
     
+    /**
+     * Set the flux axis units for this startable.
+     * @param yunit
+     * @throws UnitsException
+     */
     public void setYUnits(String yunit) throws UnitsException {
         plotterTable.setFluxUnits(Default.getInstance().getUnitsManager().newYUnits(yunit));
     }
     
+    /**
+     *
+     * @return the spectral axis units for this startable.
+     */
     public String getXUnits() {
         return plotterTable.getSpecUnits().toString();
     }
     
+    /**
+     * 
+     * @return the flux axis units for this startable.
+     */
     public String getYUnits() {
         return plotterTable.getFluxUnits().toString();
+    }
+
+    /**
+     * Mask rows from this StarTable.
+     * @param filter
+     */
+    public void applyMasks(int[] rows, int startIndex) {
+        filter.applyMasks(rows, startIndex);
+        plotterTable.setMasked(filter.getFilteredRows(this));
+    }
+    
+    /**
+     * Remove the mask from rows on this StarTable.
+     * @param filter
+     */
+    public void clearMasks(int[] rows, int startIndex) {
+        filter.clearMasks(rows, startIndex);
+        plotterTable.setMasked(filter.getFilteredRows(this));
+    }
+    
+    /**
+     * Remove the mask from rows on this StarTable.
+     * @param filter
+     */
+    public void clearMasks() {
+        filter = new RowSubsetFilter(new int[0], this);
+        plotterTable.setMasked(filter.getFilteredRows(this));
+    }
+    
+    public BitSet getMasked() {
+        return filter.getFilteredRows(this);
+    }
+    
+    /**
+     * @return the filtered set of spectral axis data values.
+     */
+    public double[] getSpectralDataValues() {
+        return getFilteredValues(plotterTable.getSpecValues());
+    }
+    
+    /**
+     * @return the filtered set of flux axis data values.
+     */
+    public double[] getFluxDataValues() {
+        return getFilteredValues(plotterTable.getFluxValues());
+    }
+    
+    /*
+     * Uses the BitSet masked to return a subset of data from the 
+     * provided double[].
+     */
+    private double[] getFilteredValues(double[] data) {
+        
+        int rows = (int) getRowCount();
+        double[] values = new double[rows];
+        
+        BitSet masked = filter.getFilteredRows(this);
+        int c = 0;
+        for (int i=0; i<(int) plotterTable.getRowCount(); i++) {
+            // Add only non-masked values.
+            if (!masked.get(i)) {
+                values[c++] = data[i];
+            }
+        }
+        return values;
+    }
+    
+    /**
+     * We provide random access iff there are no filters applied to this
+     * star table.
+     */
+    @Override
+    public boolean isRandom() {
+        return filter.cardinality() == 0;
+    }
+    
+    @Override
+    public long getRowCount() {
+        return super.getRowCount() - filter.cardinality();
+    }
+    
+    /**
+     * Returns a RowSequence relevant to the StarTable and the filters that have
+     * been applied.
+     * 
+     */
+    @Override
+    public RowSequence getRowSequence() throws IOException {
+        
+        final BitSet mask = filter.getFilteredRows(this);
+        return new WrapperRowSequence( baseTable.getRowSequence() ) {
+            int row = -1; // Current row in plotterTable
+            int baseLength = (int) plotterTable.getRowCount();
+            
+            // The iterator skips over masked values
+            public boolean next() throws IOException {
+                row++;
+                
+                // If we are past the last row in the filtered table, we are done
+                if (!super.next()) {
+                    return false;
+                }
+                
+                // Skip over filtered points
+                while (mask.get(row)) {
+                    // If we are past the last row in the actual table then there 
+                    // are no more points
+                    if (row + 1 >= baseLength) {
+                        return false;
+                    }
+                    
+                    super.next();
+                    row++;
+                }
+                return true;
+            }
+        };
+    }
+    
+    /**
+     * Applies a set of RowSubsetFilters to a list of startables, in order. In particular, for
+     * two startables <t1, t2> with 3 rows each, providing the array int[] {0,3} would filter
+     * the first row in each t1 and t2.
+     * 
+     * @param tables
+     * @param selectedRows
+     */
+    public static void applyFilters(List<IrisStarTable> tables, int[] selectedRows) {
+        // Apply each filter to the selected star tables in order.
+        int index = 0;
+        
+        for (IrisStarTable table : tables) {
+            int length = (int) table.getPlotterTable().getRowCount();
+            table.applyMasks(selectedRows, index);
+            index = index + length;
+        }
+    }
+    
+    /**
+     * Clears the masks from the selected rows.
+     * 
+     * @param tables
+     * @param selectedRows
+     */
+    public static void clearFilters(List<IrisStarTable> tables, int[] selectedRows) {
+        int index = 0;
+        
+        for (IrisStarTable table : tables) {
+            int length = (int) table.getPlotterTable().getRowCount();
+            table.clearMasks(selectedRows, index);
+            index = index + length;
+        }
+    }
+    
+    /**
+     * Removes all filters from the specified star tables.
+     * @param tables
+     */
+    public static void clearAllFilters(List<IrisStarTable> tables) {
+        for (IrisStarTable table : tables) {
+            table.clearMasks();
+        }
     }
 }
