@@ -53,6 +53,10 @@ public class PlotterView extends JInternalFrame {
     private MetadataBrowserMainView metadataBrowser;
     private UnitsManagerFrame unitsManagerFrame;
     
+    // Plot mouse coordinate locations
+    private String xcoord;
+    private String ycoord;
+    
     private static double ZOOM_SCALE = 0.5;
     
     /**
@@ -213,7 +217,28 @@ public class PlotterView extends JInternalFrame {
         this.plotter.reset(source, true);
     }
     
-
+    public String getXcoord() {
+        return xcoord;
+    }
+    
+    private static final String XCOORD_PROPERTY = "xcoord";
+    public void setXcoord(String x) {
+        String old = this.xcoord;
+        this.xcoord = x;
+        firePropertyChange(XCOORD_PROPERTY, old, xcoord);
+    }
+    
+    public String getYcoord() {
+        return ycoord;
+    }
+    
+    private static final String YCOORD_PROPERTY = "ycoord";
+    public void setYcoord(String y) {
+        String old = this.ycoord;
+        this.ycoord = y;
+        firePropertyChange(YCOORD_PROPERTY, old, ycoord);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
