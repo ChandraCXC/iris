@@ -38,11 +38,21 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Point;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import uk.ac.starlink.ttools.plot.PlotSurface;
+import uk.ac.starlink.ttools.plot.SurfacePlot;
+import uk.ac.starlink.ttools.plot2.Decoration;
+import uk.ac.starlink.ttools.plot2.NavAction;
+import uk.ac.starlink.ttools.plot2.PlotUtil;
+import uk.ac.starlink.ttools.plot2.Surface;
+import uk.ac.starlink.ttools.plot2.geom.NavDecorations;
+import uk.ac.starlink.ttools.plot2.geom.PlaneNavigator;
+import uk.ac.starlink.ttools.plot2.geom.PlaneSurface;
 
 public class StilPlotter extends JPanel {
 
@@ -137,7 +147,7 @@ public class StilPlotter extends JPanel {
             remove(display);
             try {
                 this.preferences.getSedPreferences(currentSed).getOtherPlotPreferences().setAspect(display.getAspect());
-                existingAspect = this.preferences.getSelectedSedPreferences().getOtherPlotPreferences().getAspect(); // CHANGED THIS FROM WORKING VERSION. was getselectedsedpreferences() before
+                existingAspect = this.preferences.getSelectedSedPreferences().getOtherPlotPreferences().getAspect();
                 if (existingAspect == null)
                     existingAspect = display.getAspect();
             } catch (NullPointerException ex) {
@@ -207,7 +217,7 @@ public class StilPlotter extends JPanel {
         setupForPlotDisplayChange();
         
         try {
-            preferences.getSelectedSedPreferences().getPlotPreferences().setShowGrid(on);
+            preferences.getSedPreferences(currentSed).getPlotPreferences().setShowGrid(on);
             env.setValue(PlotPreferences.GRID, on);
             display = createPlotComponent(env, false);
         } catch (RuntimeException e) {
@@ -348,7 +358,7 @@ public class StilPlotter extends JPanel {
         // on the plot.
 
         // Add high level plot preferences
-        PlotPreferences pp = preferences.getPlotPreferences();
+        PlotPreferences pp = getPlotPreferences(); //preferences.getPlotPreferences(); //ISSUE HERE
         for (String key : pp.getPreferences().keySet()) {
             env.setValue(key, pp.getPreferences().get(key));
         }
@@ -400,5 +410,13 @@ public class StilPlotter extends JPanel {
         add(display, BorderLayout.CENTER);
         display.revalidate();
         display.repaint();
+    }
+    
+    private PlotPreferences getPlotPreferences() {
+        try {
+            return preferences.getSedPreferences(currentSed).getPlotPreferences();
+        } catch (NullPointerException ex) {
+            return preferences.getPlotPreferences();
+        }
     }
 }

@@ -119,9 +119,11 @@
             </MenuItem>
             <MenuItem class="javax.swing.JCheckBoxMenuItem" name="mntmGridOnOff">
               <Properties>
-                <Property name="selected" type="boolean" value="true"/>
                 <Property name="text" type="java.lang.String" value="Grid on/off"/>
               </Properties>
+              <BindingProperties>
+                <BindingProperty name="selected" source="stilPlotter1" sourcePath="${visualizerPreferences.selectedSedPreferences.plotPreferences.showGrid}" target="mntmGridOnOff" targetPath="selected" updateStrategy="0" immediately="false"/>
+              </BindingProperties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="mntmCoplot">
               <Properties>
@@ -242,6 +244,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Reset"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnResetActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="txtXposition">
           <Properties>
