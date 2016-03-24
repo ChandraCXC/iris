@@ -41,6 +41,7 @@ public class MouseCoordinateMotionListener extends StilPlotterMouseListener
 
     @Override
     public void activate(PlotDisplay display) {
+        this.display = display;
         display.addMouseMotionListener(this);
     }
 

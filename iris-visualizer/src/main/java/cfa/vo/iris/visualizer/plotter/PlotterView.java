@@ -176,6 +176,9 @@ public class PlotterView extends JInternalFrame {
         });
         
         addPlotChangeListener();
+        
+        // Set listeners to point to this view
+        preferences.getMouseListenerManager().setPlotterView(this);
     }
     
     protected void addPlotChangeListener() {
