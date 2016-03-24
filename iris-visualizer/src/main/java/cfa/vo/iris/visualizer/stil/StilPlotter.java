@@ -136,8 +136,8 @@ public class StilPlotter extends JPanel {
             display.removeAll();
             remove(display);
             try {
-                this.preferences.getSedPreferences(currentSed).getPlotPreferences().setAspect(display.getAspect());
-                existingAspect = this.preferences.getSelectedSedPreferences().getPlotPreferences().getAspect(); // CHANGED THIS FROM WORKING VERSION. was getselectedsedpreferences() before
+                this.preferences.getSedPreferences(currentSed).getOtherPlotPreferences().setAspect(display.getAspect());
+                existingAspect = this.preferences.getSelectedSedPreferences().getOtherPlotPreferences().getAspect(); // CHANGED THIS FROM WORKING VERSION. was getselectedsedpreferences() before
                 if (existingAspect == null)
                     existingAspect = display.getAspect();
             } catch (NullPointerException ex) {
