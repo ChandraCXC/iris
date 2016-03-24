@@ -173,6 +173,16 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         gridMenuItem = (JCheckBoxMenuItem) menu.getMenu(2).getMenuComponent(3);
         assertTrue(gridMenuItem.isSelected());
         
+        // switch sed2's plot type to xlog
+        viewer.getMenuBar()
+                .getMenu("View")
+                .getSubMenu("Plot Type")
+                .getSubMenu("X Log")
+                .click();
+        JMenu plotTypeMenu = (JMenu) menu.getMenu(2).getMenuComponent(0);
+        JRadioButtonMenuItem xlog = (JRadioButtonMenuItem) plotTypeMenu.getItem(2);
+        assertTrue(xlog.isSelected());
+        
         // switch to sed1.
         sedManager.select(sed1);
         
@@ -195,7 +205,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
                 .getSubMenu("Linear")
                 .click();
         
-        JMenu plotTypeMenu = (JMenu) menu.getMenu(2).getMenuComponent(0);
+        plotTypeMenu = (JMenu) menu.getMenu(2).getMenuComponent(0);
         JRadioButtonMenuItem linear = (JRadioButtonMenuItem) plotTypeMenu.getItem(1);
         assertTrue(linear.isSelected());
         
@@ -209,9 +219,9 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
             }
         });
         
-        // make sure it's still in log space
-        JRadioButtonMenuItem log = (JRadioButtonMenuItem) plotTypeMenu.getItem(0);
-        assertTrue(log.isSelected());
+        // make sure it's still in xlog space
+        xlog = (JRadioButtonMenuItem) plotTypeMenu.getItem(2);
+        assertTrue(xlog.isSelected());
         assertTrue(!linear.isSelected());
         
     }
