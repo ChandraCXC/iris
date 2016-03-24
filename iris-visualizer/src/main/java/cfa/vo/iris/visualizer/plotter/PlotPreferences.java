@@ -18,7 +18,6 @@ package cfa.vo.iris.visualizer.plotter;
 
 import java.util.HashMap;
 import java.util.Map;
-import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
 
 public class PlotPreferences {
     
