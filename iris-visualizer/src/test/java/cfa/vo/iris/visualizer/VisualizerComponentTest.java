@@ -265,7 +265,10 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         double origYmax = aspect.getYMax();
         
         // zoom in on the viewport
-        plotter.zoom(3.0);
+        double[] ylimits = new double[] {1.2, 2.8};
+        double[] xlimits = new double[] {1.2, 2.8};
+        PlaneAspect newAspect = new PlaneAspect(xlimits, ylimits);
+        plotter.getPlotDisplay().setAspect(newAspect);
         aspect = plotter.getPlotDisplay().getAspect();
         double xmin = aspect.getXMin();
         double xmax = aspect.getXMax();
@@ -284,7 +287,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         
         // because the plot is fixed, 
         // the X and Y ranges should be the same as they were before
-        PlaneAspect newAspect = plotter.getPlotDisplay().getAspect();
+        newAspect = plotter.getPlotDisplay().getAspect();
         assertEquals(xmin, newAspect.getXMin(), 0.000001);
         assertEquals(xmax, newAspect.getXMax(), 0.000001);
         assertEquals(ymin, newAspect.getYMin(), 0.000001);
@@ -301,7 +304,8 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         assertEquals(origYmax, newAspect.getYMax(), 0.000001);
         
         // zoom back in
-        plotter.zoom(3.0);
+        newAspect = new PlaneAspect(xlimits, ylimits);
+        plotter.getPlotDisplay().setAspect(newAspect);
         xmin = newAspect.getXMin();
         xmax = newAspect.getXMax();
         ymin = newAspect.getYMin();
@@ -323,6 +327,14 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         autoFixed = (JCheckBoxMenuItem) menu.getMenu(2).getMenuComponent(2);
         assertFalse(autoFixed.isSelected());
         
+        // assert that the plot range is for sed2, which should be the default
+        // range of sed1 since it's the same data.
+        newAspect = plotter.getPlotDisplay().getAspect();
+        assertEquals(origXmin, newAspect.getXMin(), 0.000001);
+        assertEquals(origYmin, newAspect.getYMin(), 0.000001);
+        assertEquals(origXmax, newAspect.getXMax(), 0.000001);
+        assertEquals(origYmax, newAspect.getYMax(), 0.000001);
+        
         // now switch back to sed1
         sedManager.select(sed1);
         invokeWithRetry(10, 100, new Runnable() {
@@ -342,11 +354,11 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         // update correctly. Its values are as if one clicked the "Reset" button
         // However, in building and testing Iris by hand, I get the expected
         // behavior.
-//        newAspect = plotter.getPlotDisplay().getAspect();
-//        assertEquals(xmin, newAspect.getXMin(), 0.000001);
-//        assertEquals(xmax, newAspect.getXMax(), 0.000001);
-//        assertEquals(ymin, newAspect.getYMin(), 0.000001);
-//        assertEquals(ymax, newAspect.getYMax(), 0.000001);
+        newAspect = plotter.getPlotDisplay().getAspect();
+        assertEquals(xmin, newAspect.getXMin(), 0.000001);
+        assertEquals(xmax, newAspect.getXMax(), 0.000001);
+        assertEquals(ymin, newAspect.getYMin(), 0.000001);
+        assertEquals(ymax, newAspect.getYMax(), 0.000001);
         
     }
 }

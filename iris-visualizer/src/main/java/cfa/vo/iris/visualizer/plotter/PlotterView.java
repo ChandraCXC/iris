@@ -105,26 +105,6 @@ public class PlotterView extends JInternalFrame {
             }
         });
         
-        // Action for resetting the visualizer component from the UI using the reset button
-        btnReset.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                PlotPreferences plotPrefs = stilPlotter1
-                                .getVisualizerPreferences()
-                                .getSelectedSedPreferences()
-                                .getPlotPreferences();
-                boolean fixed = plotPrefs.getFixed();
-                if (fixed) {
-                   plotPrefs.setFixed(false);
-                }
-                resetPlot(getSed());
-                if (fixed) {
-                   plotPrefs.setFixed(true);
-                }
-                metadataBrowser.resetData();
-            }
-        });
-        
         // Action to set linear plotting
         mntmLinear.addActionListener(new ActionListener() {
             @Override
@@ -172,7 +152,6 @@ public class PlotterView extends JInternalFrame {
         });
         
         // Action to fix or unfix the plot viewport
-        // TODO: currently not implemented
         mntmAutoFixed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -274,6 +253,11 @@ public class PlotterView extends JInternalFrame {
         mntmCoplot = new javax.swing.JMenuItem();
 
         btnReset.setText("Reset");
+        btnReset.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnResetActionPerformed(evt);
+            }
+        });
 
         txtXposition.setEditable(false);
         txtXposition.setText("x-position");
@@ -459,8 +443,11 @@ public class PlotterView extends JInternalFrame {
 
         jMenu1.add(mntmAutoFixed);
 
-        mntmGridOnOff.setSelected(true);
         mntmGridOnOff.setText("Grid on/off");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, stilPlotter1, org.jdesktop.beansbinding.ELProperty.create("${visualizerPreferences.selectedSedPreferences.plotPreferences.showGrid}"), mntmGridOnOff, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        bindingGroup.addBinding(binding);
+
         jMenu1.add(mntmGridOnOff);
 
         mntmCoplot.setText("Coplot...");
@@ -507,6 +494,22 @@ public class PlotterView extends JInternalFrame {
         // zoom out by a factor
         this.plotter.zoom(1 - ZOOM_SCALE);
     }//GEN-LAST:event_zoomOutActionPerformed
+
+    private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
+        PlotPreferences plotPrefs = stilPlotter1
+                        .getVisualizerPreferences()
+                        .getSelectedSedPreferences()
+                        .getPlotPreferences();
+        boolean fixed = plotPrefs.getFixed();
+        if (fixed) {
+           plotPrefs.setFixed(false);
+        }
+        resetPlot(getSed());
+        if (fixed) {
+           plotPrefs.setFixed(true);
+        }
+        metadataBrowser.resetData();
+    }//GEN-LAST:event_btnResetActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
