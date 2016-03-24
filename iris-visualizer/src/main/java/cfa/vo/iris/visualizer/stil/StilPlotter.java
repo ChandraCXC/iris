@@ -187,11 +187,11 @@ public class StilPlotter extends JPanel {
     public void changePlotType(PlotPreferences.PlotType plotType) {
         
         try {
-            preferences.getPlotPreferences().setPlotType(plotType);
+            preferences.getSelectedSedPreferences().getPlotPreferences().setPlotType(plotType);
             env.setValue(PlotPreferences.X_LOG, 
-                    preferences.getPlotPreferences().getXlog());
+                    preferences.getSelectedSedPreferences().getPlotPreferences().getXlog());
             env.setValue(PlotPreferences.Y_LOG, 
-                    preferences.getPlotPreferences().getYlog());
+                    preferences.getSelectedSedPreferences().getPlotPreferences().getYlog());
             
             setupForPlotDisplayChange();
             display = createPlotComponent(env, false);
@@ -358,7 +358,7 @@ public class StilPlotter extends JPanel {
         // on the plot.
 
         // Add high level plot preferences
-        PlotPreferences pp = getPlotPreferences(); //preferences.getPlotPreferences(); //ISSUE HERE
+        PlotPreferences pp = getPlotPreferences();
         for (String key : pp.getPreferences().keySet()) {
             env.setValue(key, pp.getPreferences().get(key));
         }
