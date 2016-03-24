@@ -38,7 +38,6 @@ public class PlotPreferences {
     public static final String Y_MIN = "ymin";
     public static final String PLOT_TYPE = "plot_type"; // not STILTS
     //public static final String SHOW_ERRORS = "show_errors"; // not STILTS
-    public static final String ASPECT = "aspect"; // not STILTS
     
     // Plot Types - Iris-specific, not STILTS.
     public enum PlotType {
@@ -187,14 +186,5 @@ public class PlotPreferences {
 //        this.preferences.put(SHOW_ERRORS, arg1);
 //        return this;
 //    }
-    
-    public PlotPreferences setAspect(PlaneAspect arg1) {
-        this.preferences.put(ASPECT, arg1);
-        return this;
-    }
-    
-    public PlaneAspect getAspect() {
-        return (PlaneAspect) preferences.get(ASPECT);
-    }
 }
 
