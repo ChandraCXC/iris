@@ -235,17 +235,21 @@ public class StilPlotter extends JPanel {
      */
     public void zoom(double zoomFactor) {
         
-        double xmax = this.getPlotDisplay().getAspect().getXMax();
-        double xmin = this.getPlotDisplay().getAspect().getXMin();
-        double ymax = this.getPlotDisplay().getAspect().getYMax();
-        double ymin = this.getPlotDisplay().getAspect().getYMin();
-        
-        double[] ylimits = new double[] {ymin*zoomFactor, ymax-ymax*(zoomFactor-1)};
-        double[] xlimits = new double[] {xmin*zoomFactor, xmax-xmax*(zoomFactor-1)};
-        
-        PlaneAspect zoomedAspect = new PlaneAspect(xlimits, ylimits);
-        
-        this.getPlotDisplay().setAspect(zoomedAspect);
+        throw new UnsupportedOperationException("The zoom functionality is"
+                + "currently unsupported.");
+
+        // TODO: this algorithm is BAD! Need to implement a better one.
+//        double xmax = this.getPlotDisplay().getAspect().getXMax();
+//        double xmin = this.getPlotDisplay().getAspect().getXMin();
+//        double ymax = this.getPlotDisplay().getAspect().getYMax();
+//        double ymin = this.getPlotDisplay().getAspect().getYMin();
+//        
+//        double[] ylimits = new double[] {ymin*zoomFactor, ymax-ymax*(zoomFactor-1)};
+//        double[] xlimits = new double[] {xmin*zoomFactor, xmax-xmax*(zoomFactor-1)};
+//        
+//        PlaneAspect zoomedAspect = new PlaneAspect(xlimits, ylimits);
+//        
+//        this.getPlotDisplay().setAspect(zoomedAspect);
     }
     
     /**
