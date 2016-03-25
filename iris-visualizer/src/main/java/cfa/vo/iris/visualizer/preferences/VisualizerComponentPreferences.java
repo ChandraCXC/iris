@@ -61,7 +61,11 @@ public class VisualizerComponentPreferences {
         }
         
         // Plotter global preferences
-        this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
+        if (this.sedPreferences.isEmpty()) {
+            this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
+        } else {
+            this.plotPreferences = this.getSelectedSedPreferences().getPlotPreferences();
+        }
         
         // Add SED listener
         addSedListeners();
@@ -72,7 +76,7 @@ public class VisualizerComponentPreferences {
         SedEvent.getInstance().add(new VisualizerSedListener());
         MultipleSegmentEvent.getInstance().add(new VisualizerMultipleSegmentListener());
     }
-    
+
     /**
      * @return
      *  Top level plot preferences for the stil plotter.
@@ -136,7 +140,7 @@ public class VisualizerComponentPreferences {
         } else {
             sedPreferences.put(sed, new SedPreferences(sed, adapter));
         }
-        fire(sed, VisualizerCommand.RESET);
+        //fire(sed, VisualizerCommand.RESET);
     }
     
     /**
@@ -152,7 +156,13 @@ public class VisualizerComponentPreferences {
             // SedPrefrences since it's assumed to be attached to the SED.
             sedPreferences.put(sed, new SedPreferences(sed, adapter));
         }
+        
+        // added to fix issue when plot view should be fixed
+//        if (this.getSelectedSedPreferences().getPlotPreferences().getFixed()) {
+//            fire(sed, VisualizerCommand.REDRAW);
+//        } else {
         fire(sed, VisualizerCommand.RESET);
+//        }
     }
     
     /**
@@ -169,7 +179,12 @@ public class VisualizerComponentPreferences {
             // SedPrefrences since it's assumed to be attached to the SED.
             sedPreferences.put(sed, new SedPreferences(sed, adapter));
         }
-        fire(sed, VisualizerCommand.RESET);
+        // added to fix issue when plot view should be fixed
+//        if (this.getSelectedSedPreferences().getPlotPreferences().getFixed()) {
+//            fire(sed, VisualizerCommand.REDRAW);
+//        } else {
+            fire(sed, VisualizerCommand.RESET);
+//        }
     }
     
     /**
@@ -182,7 +197,7 @@ public class VisualizerComponentPreferences {
         }
         sedPreferences.get(sed).removeAll();
         sedPreferences.remove(sed);
-        fire(sed, VisualizerCommand.RESET);
+        //fire(sed, VisualizerCommand.RESET);
     }
     
     /**
@@ -234,13 +249,13 @@ public class VisualizerComponentPreferences {
             }
             else if (SedCommand.REMOVED.equals(payload)) {
                 remove(sed);
-            }
-            if (SedCommand.SELECTED.equals(payload)) {
+            } 
+            else if (SedCommand.SELECTED.equals(payload)) {
                 fire(sed, VisualizerCommand.SELECTED);
             }
             else {
                 // Doesn't merit a full reset, this is basically just here for SED name changes
-                fire(sed, VisualizerCommand.REDRAW);
+                fire(sed, VisualizerCommand.REDRAW); // should remove this
             }
         }
     }
@@ -284,6 +299,9 @@ public class VisualizerComponentPreferences {
             else if (SedCommand.REMOVED.equals(command)) {
                 remove(sed, segments);
             }
+            // update plot preferences
+            VisualizerComponentPreferences.this.plotPreferences = 
+                    VisualizerComponentPreferences.this.getSelectedSedPreferences().getPlotPreferences();
         }
     }
 }

@@ -30,6 +30,31 @@ public class PlotPreferences {
     public static final String Y_LABEL = "ylabel";
     public static final String X_LOG = "xlog";
     public static final String Y_LOG = "ylog";
+    public static final String AUTO_FIX = "auto_fix"; // not STILTS
+    public static final String X_MAX = "xmax";
+    public static final String X_MIN = "xmin";
+    public static final String Y_MAX = "ymax";
+    public static final String Y_MIN = "ymin";
+    public static final String PLOT_TYPE = "plot_type"; // not STILTS
+    //public static final String SHOW_ERRORS = "show_errors"; // not STILTS
+    
+    // Plot Types - Iris-specific, not STILTS.
+    public enum PlotType {
+        LOG("log", true, true),
+        LINEAR("linear", false, false),
+        X_LOG("xlog", true, false),
+        Y_LOG("ylog", false, true);
+        
+        public String name;
+        public boolean xlog;
+        public boolean ylog;
+    
+        private PlotType(String name, boolean x, boolean y) {
+            this.name = name;
+            this.xlog = x;
+            this.ylog = y;
+        }
+    }
     
     /**
      * 
@@ -39,7 +64,10 @@ public class PlotPreferences {
         return new PlotPreferences()
                 .setXlog(true)
                 .setYlog(true)
-                .setShowGrid(true);
+                .setShowGrid(true)
+                .setFixed(false)
+//                .setShowErrors(true)
+                .setPlotType(PlotType.LOG);
     }
     
     private Map<String, Object> preferences;
@@ -96,5 +124,66 @@ public class PlotPreferences {
     public boolean getYlog() {
         return (boolean) this.preferences.get(Y_LOG);
     }
+    
+    public PlotPreferences setFixed(boolean arg1) {
+        this.preferences.put(AUTO_FIX, arg1);
+        return this;
+    }
+    
+    public boolean getFixed() {
+        return (boolean) this.preferences.get(AUTO_FIX);
+    }
+    
+    public PlotPreferences setXmax(double arg1) {
+        this.preferences.put(X_MAX, arg1);
+        return this;
+    }
+    
+    public double getXmax() {
+        return (double) this.preferences.get(X_MAX);
+    }
+    
+    public PlotPreferences setXmin(double arg1) {
+        this.preferences.put(X_MIN, arg1);
+        return this;
+    }
+    
+    public double getXmin() {
+        return (double) this.preferences.get(X_MIN);
+    }
+    
+    public PlotPreferences setYmax(double arg1) {
+        this.preferences.put(Y_MAX, arg1);
+        return this;
+    }
+    
+    public double getYmax() {
+        return (double) this.preferences.get(Y_MAX);
+    }
+    
+    public PlotPreferences setYmin(double arg1) {
+        this.preferences.put(Y_MIN, arg1);
+        return this;
+    }
+    
+    public double getYmin() {
+        return (double) this.preferences.get(Y_MIN);
+    }
+    
+    public PlotPreferences setPlotType(PlotType arg1) {
+        this.preferences.put(PLOT_TYPE, arg1);
+        setXlog(arg1.xlog);
+        setYlog(arg1.ylog);
+        return this;
+    }
+    
+    public PlotType getPlotType() {
+        return (PlotType) preferences.get(PLOT_TYPE);
+    }
+    
+//    public PlotPreferences setShowErrors(boolean arg1) {
+//        this.preferences.put(SHOW_ERRORS, arg1);
+//        return this;
+//    }
 }
 

@@ -29,6 +29,8 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.ColorPalette;
 import cfa.vo.iris.visualizer.plotter.HSVColorPalette;
 import cfa.vo.iris.units.UnitsException;
+import cfa.vo.iris.visualizer.plotter.OtherPlotPreferences;
+import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
 import cfa.vo.iris.visualizer.stil.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
@@ -45,6 +47,8 @@ public class SedPreferences {
     final Map<MapKey, SegmentLayer> segmentPreferences;
     final ExtSed sed;
     final ColorPalette colors;
+    final PlotPreferences plotPreferences;
+    final OtherPlotPreferences otherPlotPreferences;
     
     private String xunits;
     private String yunits;
@@ -54,6 +58,8 @@ public class SedPreferences {
         this.segmentPreferences = Collections.synchronizedMap(new LinkedHashMap<MapKey, SegmentLayer>());
         this.adapter = adapter;
         this.colors = new HSVColorPalette();
+        this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
+        this.otherPlotPreferences = OtherPlotPreferences.getDefaultPreferences();
         
         refresh();
     }
@@ -214,6 +220,22 @@ public class SedPreferences {
         for (SegmentLayer layer : segmentPreferences.values()) {
             layer.setYUnits(yunits);
         }
+    }
+    
+    /**
+     * @return
+     *  Top level plot preferences for the stil plotter.
+     */
+    public PlotPreferences getPlotPreferences() {
+        return plotPreferences;
+    }
+    
+    /**
+     * @return
+     *  Top level plot preferences relevant for Iris.
+     */
+    public OtherPlotPreferences getOtherPlotPreferences() {
+        return otherPlotPreferences;
     }
 
     /**
