@@ -578,12 +578,12 @@ public class PlotterView extends JInternalFrame {
      */
     private void setFixedViewPort(boolean fixed) {
         
-        if (this.preferences.getSelectedSedPreferences() != null) {
-            this.preferences.getSelectedSedPreferences()
+        if (this.preferences.getSedPreferences(plotter.getSed()) != null) {
+            this.preferences.getSedPreferences(plotter.getSed())
                     .getPlotPreferences().setFixed(fixed);
             
             // needs to be set whenever viewport changes
-            this.preferences.getSelectedSedPreferences()
+            this.preferences.getSedPreferences(plotter.getSed())
                     .getOtherPlotPreferences()
                     .setAspect(this.plotter.getPlotDisplay().getAspect());
         } else {

@@ -313,7 +313,9 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         assertEquals(origXmax, newAspect.getXMax(), 0.000001);
         assertEquals(origYmax, newAspect.getYMax(), 0.000001);
         
-        // zoom back in
+        // zoom in to another range
+        ylimits = new double[] {1.2, 2.0};
+        xlimits = new double[] {1.2, 2.0};
         newAspect = new PlaneAspect(xlimits, ylimits);
         plotter.getPlotDisplay().setAspect(newAspect);
         xmin = newAspect.getXMin();
@@ -365,10 +367,10 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         // However, in building and testing Iris by hand, I get the expected
         // behavior.
         newAspect = plotter.getPlotDisplay().getAspect();
-        assertEquals(xmin, newAspect.getXMin(), 0.000001);
-        assertEquals(xmax, newAspect.getXMax(), 0.000001);
-        assertEquals(ymin, newAspect.getYMin(), 0.000001);
-        assertEquals(ymax, newAspect.getYMax(), 0.000001);
+        assertEquals(xlimits[0], newAspect.getXMin(), 0.000001);
+        assertEquals(xlimits[1], newAspect.getXMax(), 0.000001);
+        assertEquals(ylimits[0], newAspect.getYMin(), 0.000001);
+        assertEquals(ylimits[1], newAspect.getYMax(), 0.000001);
         
     }
 }

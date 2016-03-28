@@ -102,11 +102,11 @@ public class StilPlotter extends JPanel {
         // get the fixed parameter from the selected SED
         boolean fixed;
         if (this.getVisualizerPreferences()
-                .getSelectedSedPreferences() != null) {
+                .getSedPreferences(sed) != null) {
             
             fixed = this.getVisualizerPreferences()
-                    .getSelectedSedPreferences()
-                    .getPlotPreferences()
+                    .getSedPreferences(sed) 
+                    .getPlotPreferences() 
                     .getFixed();
         } else {
             // if there is no selected SED (if the user opens the Plotter
@@ -151,18 +151,19 @@ public class StilPlotter extends JPanel {
         if (display != null) {
             display.removeAll();
             remove(display);
-            try {
+            
+            if (this.preferences.getSedPreferences(currentSed) != null) {
                 this.preferences.getSedPreferences(currentSed).getOtherPlotPreferences().setAspect(display.getAspect());
-                existingAspect = this.preferences.getSelectedSedPreferences().getOtherPlotPreferences().getAspect();
+                existingAspect = this.preferences.getSedPreferences(currentSed).getOtherPlotPreferences().getAspect();
                 if (existingAspect == null)
                     existingAspect = display.getAspect();
-            } catch (NullPointerException ex) {
+            } else {
                 // if no aspect has been set yet, just use the current one
                 existingAspect = display.getAspect();
             }
 
         }
-        
+
         // Update the current SED
         if (sed == null) {
             sed = sedManager.getSelected();
@@ -173,9 +174,16 @@ public class StilPlotter extends JPanel {
         boolean cached = !dataMayChange;
         display = createPlotComponent(currentSed, cached);
         
-        // Set the bounds using the aspect if provided one and if the plot is fixed
+        // Set the bounds using the aspect if the plot is fixed
         if (fixed) {
-            display.setAspect(existingAspect);
+            // By now, the current SED has switched from the previous one to 
+            // the current one. Update the aspect to the currently-selected SED
+            if (this.preferences.getSedPreferences(currentSed) != null) {
+                existingAspect = this.preferences.getSedPreferences(currentSed).getOtherPlotPreferences().getAspect();
+                display.setAspect(existingAspect);
+            } else {
+                display.setAspect(existingAspect);
+            }
         }
         
         // Add the display to the plot view
@@ -193,6 +201,12 @@ public class StilPlotter extends JPanel {
     public void changePlotType(PlotPreferences.PlotType plotType) {
         
         try {
+//            preferences.getSedPreferences(currentSed).getPlotPreferences().setPlotType(plotType);
+//            env.setValue(PlotPreferences.X_LOG, 
+//                    preferences.getSedPreferences(currentSed).getPlotPreferences().getXlog());
+//            env.setValue(PlotPreferences.Y_LOG, 
+//                    preferences.getSedPreferences(currentSed).getPlotPreferences().getYlog());
+            
             preferences.getSelectedSedPreferences().getPlotPreferences().setPlotType(plotType);
             env.setValue(PlotPreferences.X_LOG, 
                     preferences.getSelectedSedPreferences().getPlotPreferences().getXlog());
@@ -423,7 +437,7 @@ public class StilPlotter extends JPanel {
     }
     
     private PlotPreferences getPlotPreferences() {
-        if (this.preferences.getSelectedSedPreferences() != null) {
+        if (this.preferences.getSedPreferences(currentSed) != null) {
             return preferences.getSedPreferences(currentSed).getPlotPreferences();
         } else {
             return preferences.getPlotPreferences();

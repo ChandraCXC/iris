@@ -190,12 +190,7 @@ public class VisualizerComponentPreferences {
             sedPreferences.put(sed, new SedPreferences(sed, adapter));
         }
         
-        // added to fix issue when plot view should be fixed
-//        if (this.getSelectedSedPreferences().getPlotPreferences().getFixed()) {
-//            fire(sed, VisualizerCommand.REDRAW);
-//        } else {
         fire(sed, VisualizerCommand.RESET);
-//        }
     }
     
     /**
@@ -215,12 +210,7 @@ public class VisualizerComponentPreferences {
             // SedPrefrences since it's assumed to be attached to the SED.
             sedPreferences.put(sed, new SedPreferences(sed, adapter));
         }
-        // added to fix issue when plot view should be fixed
-//        if (this.getSelectedSedPreferences().getPlotPreferences().getFixed()) {
-//            fire(sed, VisualizerCommand.REDRAW);
-//        } else {
-            fire(sed, VisualizerCommand.RESET);
-//        }
+        fire(sed, VisualizerCommand.RESET);
     }
     
     /**
@@ -371,7 +361,7 @@ public class VisualizerComponentPreferences {
             }
             // update plot preferences
             VisualizerComponentPreferences.this.plotPreferences = 
-                    VisualizerComponentPreferences.this.getSelectedSedPreferences().getPlotPreferences();
+                    VisualizerComponentPreferences.this.getSedPreferences(sed).getPlotPreferences();
         }
     }
 }
