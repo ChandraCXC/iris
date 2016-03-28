@@ -115,7 +115,7 @@
                 <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;Fix the plot ranges when the SED changes. Otherwise, &lt;br/&gt; &#xa;the plot ranges automatically update when a SED changes.&lt;/html&gt;"/>
               </Properties>
               <BindingProperties>
-                <BindingProperty name="selected" source="stilPlotter1" sourcePath="${visualizerPreferences.selectedSedPreferences.plotPreferences.fixed}" target="mntmAutoFixed" targetPath="selected" updateStrategy="0" immediately="false"/>
+                <BindingProperty name="selected" source="plotter" sourcePath="${visualizerPreferences.selectedSedPreferences.plotPreferences.fixed}" target="mntmAutoFixed" targetPath="selected" updateStrategy="0" immediately="false"/>
               </BindingProperties>
             </MenuItem>
             <MenuItem class="javax.swing.JCheckBoxMenuItem" name="mntmGridOnOff">
@@ -123,7 +123,7 @@
                 <Property name="text" type="java.lang.String" value="Grid on/off"/>
               </Properties>
               <BindingProperties>
-                <BindingProperty name="selected" source="stilPlotter1" sourcePath="${visualizerPreferences.selectedSedPreferences.plotPreferences.showGrid}" target="mntmGridOnOff" targetPath="selected" updateStrategy="0" immediately="false"/>
+                <BindingProperty name="selected" source="plotter" sourcePath="${visualizerPreferences.selectedSedPreferences.plotPreferences.showGrid}" target="mntmGridOnOff" targetPath="selected" updateStrategy="0" immediately="false"/>
               </BindingProperties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="mntmCoplot">
@@ -162,7 +162,7 @@
           </Group>
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="stilPlotter1" max="32767" attributes="0"/>
+              <Component id="plotter" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -172,7 +172,7 @@
           <Group type="102" alignment="0" attributes="0">
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="stilPlotter1" pref="484" max="32767" attributes="0"/>
+              <Component id="plotter" pref="484" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
           </Group>
@@ -386,7 +386,7 @@
         </Component>
       </SubComponents>
     </Container>
-    <Container class="cfa.vo.iris.visualizer.stil.StilPlotter" name="stilPlotter1">
+    <Container class="cfa.vo.iris.visualizer.stil.StilPlotter" name="plotter">
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
         <Property name="columns" type="int" value="0"/>
