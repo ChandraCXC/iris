@@ -34,7 +34,6 @@ import cfa.vo.iris.events.SegmentEvent;
 import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
 import cfa.vo.iris.events.SegmentListener;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.visualizer.plotter.OtherPlotPreferences;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
 import cfa.vo.iris.visualizer.stil.tables.ColumnInfoMatcher;
@@ -52,7 +51,6 @@ public class VisualizerComponentPreferences {
     private static final ExecutorService visualizerExecutor = Executors.newFixedThreadPool(5);
     
     PlotPreferences plotPreferences;
-    OtherPlotPreferences otherPlotPreferences;
     IrisStarTableAdapter adapter;
     ColumnInfoMatcher columnInfoMatcher;
     final IWorkspace ws;
@@ -76,10 +74,8 @@ public class VisualizerComponentPreferences {
         // Plotter global preferences
         if (this.sedPreferences.isEmpty()) {
             this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
-            this.otherPlotPreferences = OtherPlotPreferences.getDefaultPreferences();
         } else {
             this.plotPreferences = this.getSelectedSedPreferences().getPlotPreferences();
-            this.otherPlotPreferences = this.getSelectedSedPreferences().getOtherPlotPreferences();
         }
         
         // Add SED listener
@@ -102,17 +98,10 @@ public class VisualizerComponentPreferences {
     
     /**
      * @return
-<<<<<<< HEAD
      *  ColumnInfoMatcher used in stacking star tables.
      */
     public ColumnInfoMatcher getColumnInfoMatcher() {
         return columnInfoMatcher;
-=======
-     *  non-STILTS top level plot preferences for the  plotter.
-     */
-    public OtherPlotPreferences getOtherPlotPreferences() {
-        return otherPlotPreferences;
->>>>>>> Refactor StilPlotter and PlotterView classes. Fix PlotterView::setFixedViewPort.
     }
 
     /**

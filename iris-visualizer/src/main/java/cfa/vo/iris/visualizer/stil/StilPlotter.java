@@ -153,8 +153,8 @@ public class StilPlotter extends JPanel {
             remove(display);
             
             if (this.preferences.getSedPreferences(currentSed) != null) {
-                this.preferences.getSedPreferences(currentSed).getOtherPlotPreferences().setAspect(display.getAspect());
-                existingAspect = this.preferences.getSedPreferences(currentSed).getOtherPlotPreferences().getAspect();
+                this.preferences.getSedPreferences(currentSed).getPlotPreferences().setAspect(display.getAspect());
+                existingAspect = this.preferences.getSedPreferences(currentSed).getPlotPreferences().getAspect();
                 if (existingAspect == null)
                     existingAspect = display.getAspect();
             } else {
@@ -179,7 +179,7 @@ public class StilPlotter extends JPanel {
             // By now, the current SED has switched from the previous one to 
             // the current one. Update the aspect to the currently-selected SED
             if (this.preferences.getSedPreferences(currentSed) != null) {
-                existingAspect = this.preferences.getSedPreferences(currentSed).getOtherPlotPreferences().getAspect();
+                existingAspect = this.preferences.getSedPreferences(currentSed).getPlotPreferences().getAspect();
                 display.setAspect(existingAspect);
             } else {
                 display.setAspect(existingAspect);

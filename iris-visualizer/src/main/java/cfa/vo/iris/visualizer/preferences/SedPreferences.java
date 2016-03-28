@@ -29,7 +29,6 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.ColorPalette;
 import cfa.vo.iris.visualizer.plotter.HSVColorPalette;
 import cfa.vo.iris.units.UnitsException;
-import cfa.vo.iris.visualizer.plotter.OtherPlotPreferences;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
@@ -49,7 +48,6 @@ public class SedPreferences {
     final ExtSed sed;
     final ColorPalette colors;
     final PlotPreferences plotPreferences;
-    final OtherPlotPreferences otherPlotPreferences;
     
     private String xunits;
     private String yunits;
@@ -60,7 +58,6 @@ public class SedPreferences {
         this.adapter = adapter;
         this.colors = new HSVColorPalette();
         this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
-        this.otherPlotPreferences = OtherPlotPreferences.getDefaultPreferences();
         
         refresh();
     }
@@ -246,14 +243,6 @@ public class SedPreferences {
      */
     public PlotPreferences getPlotPreferences() {
         return plotPreferences;
-    }
-    
-    /**
-     * @return
-     *  Top level plot preferences relevant for Iris.
-     */
-    public OtherPlotPreferences getOtherPlotPreferences() {
-        return otherPlotPreferences;
     }
 
     /**
