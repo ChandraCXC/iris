@@ -45,7 +45,7 @@ public class VisualizerComponentPreferencesTest {
         assertEquals(0, prefs.getSelectedLayers().size());
         assertEquals(0, prefs.getSedPreferences().size());
         assertEquals(0, prefs.getSelectedLayers().size());
-        assertNull(prefs.getSelectedSedPreferences());
+        assertNull(prefs.getSedPreferences(sed));
         
         // Add SED
         prefs.update(sed);

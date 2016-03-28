@@ -149,7 +149,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
                 .getSubMenu("Grid on/off")
                 .click();
         
-        PlotPreferences prefs = plotter.getVisualizerPreferences().getSelectedSedPreferences().getPlotPreferences();
+        PlotPreferences prefs = plotter.getVisualizerPreferences().getSedPreferences(sed1).getPlotPreferences();
         JMenuBar menu = viewer.findSwingComponent(JMenuBar.class, "menuBar");
         JCheckBoxMenuItem gridMenuItem = (JCheckBoxMenuItem) menu.getMenu(2).getMenuComponent(3);
         
@@ -252,7 +252,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         });
         
         // get components: PlotPreferences and autoFixed menuCheckBox
-        PlotPreferences prefs = plotter.getVisualizerPreferences().getSelectedSedPreferences().getPlotPreferences();
+        PlotPreferences prefs = plotter.getVisualizerPreferences().getSedPreferences(sed1).getPlotPreferences();
         JMenuBar menu = viewer.findSwingComponent(JMenuBar.class, "menuBar");
         JCheckBoxMenuItem autoFixed = (JCheckBoxMenuItem) menu.getMenu(2).getMenuComponent(2);
         

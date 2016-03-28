@@ -201,17 +201,11 @@ public class StilPlotter extends JPanel {
     public void changePlotType(PlotPreferences.PlotType plotType) {
         
         try {
-//            preferences.getSedPreferences(currentSed).getPlotPreferences().setPlotType(plotType);
-//            env.setValue(PlotPreferences.X_LOG, 
-//                    preferences.getSedPreferences(currentSed).getPlotPreferences().getXlog());
-//            env.setValue(PlotPreferences.Y_LOG, 
-//                    preferences.getSedPreferences(currentSed).getPlotPreferences().getYlog());
-            
-            preferences.getSelectedSedPreferences().getPlotPreferences().setPlotType(plotType);
+            preferences.getSedPreferences(currentSed).getPlotPreferences().setPlotType(plotType);
             env.setValue(PlotPreferences.X_LOG, 
-                    preferences.getSelectedSedPreferences().getPlotPreferences().getXlog());
+                    preferences.getSedPreferences(currentSed).getPlotPreferences().getXlog());
             env.setValue(PlotPreferences.Y_LOG, 
-                    preferences.getSelectedSedPreferences().getPlotPreferences().getYlog());
+                    preferences.getSedPreferences(currentSed).getPlotPreferences().getYlog());
             
             setupForPlotDisplayChange();
             display = createPlotComponent(env, false);
@@ -225,12 +219,6 @@ public class StilPlotter extends JPanel {
         
         updatePlotDisplay();
         
-        // what I would like to do is get the SurfacePlot from the display
-        // so that we have a "live" plot with a state.
-        // PlaneSurface surface = (PlaneSurface) display.getSurface();
-//        SurfacePlot surface = (SurfacePlot) display.getSurface();
-//        surface.getSurface()..setLogFlags(new boolean[] {x, y});
-//        plott.setState(state);
     }
     
     public void setGridOn(boolean on) {
@@ -312,7 +300,7 @@ public class StilPlotter extends JPanel {
 
     public Map<Segment, SegmentLayer> getSegmentsMap() {
         return Collections.unmodifiableMap(preferences
-                .getSelectedSedPreferences().getAllSegmentPreferences());
+                .getSedPreferences(currentSed).getAllSegmentPreferences());
     }
 
     public PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> getPlotDisplay() {
