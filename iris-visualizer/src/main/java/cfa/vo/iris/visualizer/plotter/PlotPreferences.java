@@ -18,6 +18,7 @@ package cfa.vo.iris.visualizer.plotter;
 
 import java.util.HashMap;
 import java.util.Map;
+import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
 
 public class PlotPreferences {
     
@@ -44,6 +45,9 @@ public class PlotPreferences {
     public static final String LEGEND_OPAQUE = "legopaque";
     public static final String LEGEND_POSITION = "legpos";
     
+    private PlaneAspect aspect; // not STILTS. Do not add to the prefs map!
+                                // It'll cause an error in STILTS.
+    
     // Plot Types - Iris-specific, not STILTS.
     public enum PlotType {
         LOG("log", true, true),
@@ -67,6 +71,12 @@ public class PlotPreferences {
      * @return default plot preferences
      */
     public static PlotPreferences getDefaultPlotPreferences() {
+        
+        // for the aspect
+        double[] xlimits = new double[] {0, 10};
+        double[] ylimits = new double[] {0, 10};
+        PlaneAspect aspect = new PlaneAspect(xlimits, ylimits);
+        
         return new PlotPreferences()
                 .setXlog(true)
                 .setYlog(true)
@@ -77,7 +87,8 @@ public class PlotPreferences {
                 .setShowLegend(true)
                 .setLegendPosition(1.0, 1.0)
                 .setLegendOpaque(false)
-                .setLegendBorder(true);
+                .setLegendBorder(true)
+                .setAspect(aspect);
     }
     
     private Map<String, Object> preferences;
@@ -185,6 +196,16 @@ public class PlotPreferences {
         setXlog(arg1.xlog);
         setYlog(arg1.ylog);
         return this;
+    }
+    
+    public PlotPreferences setAspect(PlaneAspect arg1) {
+        // don't add it to the prefs map; it'll cause an error in STILTS
+        this.aspect = arg1;
+        return this;
+    }
+    
+    public PlaneAspect getAspect() {
+        return aspect;
     }
     
     public PlotType getPlotType() {
