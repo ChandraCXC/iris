@@ -98,12 +98,18 @@ public class StilPlotter extends JPanel {
      *            current display is active.
      */
     public void reset(ExtSed sed, boolean dataMayChange) {
+        
+        // get the fixed parameter from the selected SED
         boolean fixed;
-        try {
+        if (this.getVisualizerPreferences()
+                .getSelectedSedPreferences() != null) {
+            
             fixed = this.getVisualizerPreferences()
-                    .getSelectedSedPreferences().getPlotPreferences().getFixed();
-        } catch (NullPointerException ex) {
-            // caught if there is no selected SED (if the user opens the Plotter
+                    .getSelectedSedPreferences()
+                    .getPlotPreferences()
+                    .getFixed();
+        } else {
+            // if there is no selected SED (if the user opens the Plotter
             // and there's no SED)
             fixed = this.getVisualizerPreferences().getPlotPreferences().getFixed();
         }
@@ -417,9 +423,9 @@ public class StilPlotter extends JPanel {
     }
     
     private PlotPreferences getPlotPreferences() {
-        try {
+        if (this.preferences.getSelectedSedPreferences() != null) {
             return preferences.getSedPreferences(currentSed).getPlotPreferences();
-        } catch (NullPointerException ex) {
+        } else {
             return preferences.getPlotPreferences();
         }
     }
