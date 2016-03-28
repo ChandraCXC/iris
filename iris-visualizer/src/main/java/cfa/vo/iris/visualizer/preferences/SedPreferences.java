@@ -134,6 +134,9 @@ public class SedPreferences {
         String hexColor = ColorPalette.colorToHex(colors.getNextColor());
         layer.setMarkColor(hexColor);
         
+        // update legend settings
+        layer.setLabel(id);
+        
         setUnits(seg, layer);
         
         segmentPreferences.put(me, layer);
@@ -286,5 +289,20 @@ public class SedPreferences {
         public int hashCode() {
             return segment.hashCode();
         }
+    }
+    
+    /**
+     * Strip an ID of its _ERROR suffix.
+     * @param id the ID to strip "_ERROR" from
+     */
+    private String strip(String id) {
+        
+        int index = id.lastIndexOf("_");
+        
+        // if _ERROR not found, return the unmodified id.
+        if (index < 0) {
+            return id;
+        }
+        return id.substring(0, index);
     }
 }
