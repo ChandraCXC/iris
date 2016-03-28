@@ -29,6 +29,9 @@ import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
 public class SegmentLayer {
     
+    // see http://www.star.bris.ac.uk/~mbt/stilts/sun256/sun256.html#plot2plane
+    // for a list of all the configurable plot properties
+    
     private static final Logger logger = Logger.getLogger(SegmentLayer.class.getName());
     
     // Override-able Settings
@@ -48,6 +51,10 @@ public class SegmentLayer {
     
     private static final String ERROR_SUFFIX = "_ERROR";
     
+    // for the plot legend
+    public static final String LEGEND_LABEL = "leglabel";
+    public static final String LEGEND_SEQUENCE = "legseq";
+    
     private String suffix;
     
     private boolean showErrorBars;
@@ -63,6 +70,9 @@ public class SegmentLayer {
     private String errorColor;
     private Double markColorWeight;
     private Double errorColorWeight;
+    
+    private String leglabel;
+    private String[] legseq;
     
     public SegmentLayer(IrisStarTable table) {
         
@@ -158,6 +168,10 @@ public class SegmentLayer {
         prefs.put(IN + suffix, inSource);
         prefs.put(X_COL + suffix, Column.Spectral_Value.name());
         prefs.put(Y_COL + suffix, Column.Flux_Value.name());
+        
+        // for the legend. set the flux and error layer legened names
+        // to the same name
+        prefs.put(LEGEND_LABEL + suffix, getLabel());
         
         if (size != null)
             prefs.put(SIZE + suffix, size);
@@ -310,6 +324,25 @@ public class SegmentLayer {
     public SegmentLayer setErrorColorWeight(double errorColorWeight) {
         this.errorColorWeight = errorColorWeight;
         return this;
+    }
+    
+    public SegmentLayer setLayerSequence(String[] layerSequence) {
+        this.legseq = layerSequence;
+        return this;
+    }
+    
+    public String[] getLayerSequence() {
+        return this.legseq;
+    }
+    
+    // the suffix is the layer suffix name from the SedPreferences
+    public SegmentLayer setLabel(String label) {
+        this.leglabel = label;
+        return this;
+    }
+    
+    public String getLabel() {
+        return this.leglabel;
     }
 
     /*

@@ -38,6 +38,12 @@ public class PlotPreferences {
     public static final String PLOT_TYPE = "plot_type"; // not STILTS
     //public static final String SHOW_ERRORS = "show_errors"; // not STILTS
     
+    // for the plot legend
+    public static final String SHOW_LEGEND = "legend";
+    public static final String LEGEND_BORDER = "legborder";
+    public static final String LEGEND_OPAQUE = "legopaque";
+    public static final String LEGEND_POSITION = "legpos";
+    
     // Plot Types - Iris-specific, not STILTS.
     public enum PlotType {
         LOG("log", true, true),
@@ -67,7 +73,11 @@ public class PlotPreferences {
                 .setShowGrid(true)
                 .setFixed(false)
 //                .setShowErrors(true)
-                .setPlotType(PlotType.LOG);
+                .setPlotType(PlotType.LOG)
+                .setShowLegend(true)
+                .setLegendPosition(1.0, 1.0)
+                .setLegendOpaque(false)
+                .setLegendBorder(true);
     }
     
     private Map<String, Object> preferences;
@@ -185,5 +195,41 @@ public class PlotPreferences {
 //        this.preferences.put(SHOW_ERRORS, arg1);
 //        return this;
 //    }
+    
+    public PlotPreferences setShowLegend(boolean arg1) {
+        this.preferences.put(SHOW_LEGEND, arg1);
+        return this;
+    }
+    
+    public boolean getShowLegend() {
+        return (boolean) this.preferences.get(SHOW_LEGEND);
+    }
+    
+    public PlotPreferences setLegendOpaque(boolean arg1) {
+        this.preferences.put(LEGEND_OPAQUE, arg1);
+        return this;
+    }
+    
+    public boolean getLegendOpaque() {
+        return (boolean) this.preferences.get(LEGEND_OPAQUE);
+    }
+    
+    public PlotPreferences setLegendPosition(double xratio, double yratio) {
+        this.preferences.put(LEGEND_POSITION, new double[] {xratio, yratio});
+        return this;
+    }
+    
+    public double[] getLegendPostion() {
+        return (double[]) this.preferences.get(LEGEND_POSITION);
+    }
+    
+    public PlotPreferences setLegendBorder(boolean arg1) {
+        this.preferences.put(LEGEND_BORDER, arg1);
+        return this;
+    }
+    
+    public boolean getLegendBorder() {
+        return (boolean) this.preferences.get(LEGEND_BORDER);
+    }
 }
 
