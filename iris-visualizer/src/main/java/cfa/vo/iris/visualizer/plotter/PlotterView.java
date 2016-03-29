@@ -139,6 +139,10 @@ public class PlotterView extends JInternalFrame {
             }
         });
         
+        // TODO: remove this after plotPreference bindings are done properly!!
+        mntmGridOnOff.setSelected(PlotPreferences.getDefaultPlotPreferences()
+                .getShowGrid());
+        
         // Action to toggle grid on/off
         mntmGridOnOff.addActionListener(new ActionListener() {
             @Override
@@ -147,6 +151,10 @@ public class PlotterView extends JInternalFrame {
                 setGridOn(on);
             }
         });
+        
+        // TODO: remove this after plotPreference bindings are done properly!!
+        mntmGridOnOff.setSelected(PlotPreferences.getDefaultPlotPreferences()
+                .getShowGrid());
         
         // Action to fix or unfix the plot viewport
         mntmAutoFixed.addActionListener(new ActionListener() {
