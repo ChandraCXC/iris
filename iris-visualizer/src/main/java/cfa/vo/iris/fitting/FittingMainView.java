@@ -116,6 +116,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         setSed(sed);
         modelViewerPanel = new ModelViewerPanel(sed);
         modelViewerPanel.setVisible(true);
+        modelViewerPanel.setEditable(true);
         modelPanel.setLayout(new GridLayout(1, 1));
         modelPanel.add(modelViewerPanel);
         modelPanel.setPreferredSize(modelViewerPanel.getPreferredSize());

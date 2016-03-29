@@ -33,14 +33,14 @@ import cfa.vo.iris.events.SedListener;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sherpa.IFitConfiguration;
-import cfa.vo.sherpa.models.CompositeModel;
-import cfa.vo.sherpa.models.CompositeModelTreeModel;
-import cfa.vo.sherpa.models.Parameter;
-import cfa.vo.sherpa.models.UserModel;
+import cfa.vo.sherpa.models.*;
+
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.Method;
@@ -50,7 +50,10 @@ import java.util.logging.Logger;
 public final class ModelViewerPanel extends javax.swing.JPanel implements SedListener {
 
     private Logger logger = Logger.getLogger(ModelViewerPanel.class.getName());
-    
+    private boolean modelValid;
+    public final String PROP_MODELVALID = "modelValid";
+
+    private Verifier verifier;
     private final String[] values = new String[]{"Val", "Min", "Max", "Frozen"};
 
     /**
@@ -58,6 +61,9 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
      */
     public ModelViewerPanel(ExtSed sed) {
         initComponents();
+        verifier = new Verifier();
+        modelExpressionField.setInputVerifier(verifier);
+        modelExpressionField.addActionListener(verifier);
         setSed(sed);
         SedEvent.getInstance().add(this);
         modelsTree.setPreferredSize(null);
@@ -75,6 +81,21 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
 
             }
         });
+    }
+
+    public void setEditable(boolean isEditable) {
+        modelExpressionField.setEditable(isEditable);
+    }
+
+    public boolean isModelValid() {
+        return modelValid;
+    }
+
+    public void setModelValid(boolean modelValid) {
+        boolean oldModelValid = this.modelValid;
+        this.modelValid = modelValid;
+        firePropertyChange(PROP_MODELVALID, oldModelValid, modelValid);
+        setStatus(modelValid);
     }
 
     private java.util.List<UserModel> userModels;
@@ -101,6 +122,16 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         } else {
             setFitConfiguration(SAMPFactory.get(IFitConfiguration.class));
         }
+    }
+
+    private void setStatus(final boolean valid) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                String msg = valid ? "" : "Invalid Model Expression";
+                statusField.setText(msg);
+            }
+        });
     }
 
     private String getValue(Parameter par, String name) {
@@ -260,6 +291,7 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         String oldExpression = this.expression;
         this.expression = expression;
         firePropertyChange(PROP_EXPRESSION, oldExpression, expression);
+        verifier.verify(expression);
     }
 
     @Override
@@ -289,6 +321,8 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         modelsTree = new javax.swing.JTree();
+        statusPanel = new javax.swing.JPanel();
+        statusField = new javax.swing.JLabel();
 
         jLabel1.setText("Model Expression: ");
         jLabel1.setName("jLabel1"); // NOI18N
@@ -327,7 +361,7 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(0, 181, Short.MAX_VALUE)
+            .add(0, 167, Short.MAX_VALUE)
         );
 
         jSplitPane1.setRightComponent(jPanel2);
@@ -343,6 +377,22 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
 
         jSplitPane1.setLeftComponent(jScrollPane1);
 
+        statusPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        statusPanel.setName("statusPanel"); // NOI18N
+
+        statusField.setName("statusField"); // NOI18N
+
+        org.jdesktop.layout.GroupLayout statusPanelLayout = new org.jdesktop.layout.GroupLayout(statusPanel);
+        statusPanel.setLayout(statusPanelLayout);
+        statusPanelLayout.setHorizontalGroup(
+            statusPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(statusField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        statusPanelLayout.setVerticalGroup(
+            statusPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(statusField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
+        );
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -356,6 +406,7 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(modelExpressionField)))
                 .addContainerGap())
+            .add(statusPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -365,8 +416,9 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
                     .add(jLabel1)
                     .add(modelExpressionField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
-                .addContainerGap())
+                .add(jSplitPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 167, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(statusPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         bindingGroup.bind();
@@ -380,6 +432,39 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTextField modelExpressionField;
     private javax.swing.JTree modelsTree;
+    private javax.swing.JLabel statusField;
+    private javax.swing.JPanel statusPanel;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
+
+    class Verifier extends InputVerifier implements ActionListener {
+        cfa.vo.iris.gui.widgets.ModelExpressionVerifier v = new cfa.vo.iris.gui.widgets.ModelExpressionVerifier();
+
+        @Override
+        public boolean verify(JComponent jComponent) {
+            JTextField field = (JTextField) jComponent;
+            String expression = field.getText();
+            return verify(expression);
+        }
+
+        @Override
+        public boolean shouldYieldFocus(JComponent input) {
+            verify(input);
+            return super.shouldYieldFocus(input);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JTextField source = (JTextField)e.getSource();
+            shouldYieldFocus(source);
+        }
+
+        public boolean verify(String expression) {
+            boolean retVal = v.verify(expression, model.getParts());
+            setModelValid(retVal);
+            return retVal;
+        }
+
+    }
+
 }

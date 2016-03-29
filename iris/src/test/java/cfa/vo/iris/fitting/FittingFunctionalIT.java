@@ -150,8 +150,10 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         Tree availableTree = fittingView.getTree("availableTree");
         Tree modelsTree = fittingView.getTree("modelsTree");
         TextBox modelExpression = fittingView.getTextBox("modelExpressionField");
+        final TextBox status = fittingView.getTextBox("statusField");
 
         modelExpression.textEquals("No Model").check();
+        status.textEquals("Invalid Model Expression").check();
 
         availableTree.contains("User Model Components/tables/test_table").check();
         availableTree.contains("User Model Components/functions/test_function").check();
@@ -168,5 +170,9 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         modelsTree.contains("powerlaw.m4").check();
 
         modelExpression.textEquals("m1 + m2 + m3 + m4").check();
+        status.textIsEmpty().check();
+
+        modelExpression.setText("foo bar");
+        status.textEquals("Invalid Model Expression");
     }
 }
