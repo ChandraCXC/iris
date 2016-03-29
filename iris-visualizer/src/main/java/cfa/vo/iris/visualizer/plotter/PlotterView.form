@@ -115,7 +115,7 @@
                 <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;Fix the plot ranges when the SED changes. Otherwise, &lt;br/&gt; &#xa;the plot ranges automatically update when a SED changes.&lt;/html&gt;"/>
               </Properties>
               <BindingProperties>
-                <BindingProperty name="selected" source="plotter" sourcePath="${visualizerPreferences.selectedSedPreferences.plotPreferences.fixed}" target="mntmAutoFixed" targetPath="selected" updateStrategy="0" immediately="false"/>
+                <BindingProperty name="selected" source="plotter" sourcePath="${visualizerPreferences.plotPreferences.fixed}" target="mntmAutoFixed" targetPath="selected" updateStrategy="0" immediately="false"/>
               </BindingProperties>
             </MenuItem>
             <MenuItem class="javax.swing.JCheckBoxMenuItem" name="mntmGridOnOff">
@@ -123,7 +123,7 @@
                 <Property name="text" type="java.lang.String" value="Grid on/off"/>
               </Properties>
               <BindingProperties>
-                <BindingProperty name="selected" source="plotter" sourcePath="${visualizerPreferences.selectedSedPreferences.plotPreferences.showGrid}" target="mntmGridOnOff" targetPath="selected" updateStrategy="0" immediately="false"/>
+                <BindingProperty name="selected" source="plotter" sourcePath="${visualizerPreferences.plotPreferences.showGrid}" target="mntmGridOnOff" targetPath="selected" updateStrategy="0" immediately="false"/>
               </BindingProperties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="mntmCoplot">

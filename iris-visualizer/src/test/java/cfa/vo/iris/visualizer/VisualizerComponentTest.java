@@ -149,7 +149,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
                 .getSubMenu("Grid on/off")
                 .click();
         
-        PlotPreferences prefs = plotter.getVisualizerPreferences().getSedPreferences(sed1).getPlotPreferences();
+        PlotPreferences prefs = plotter.getPlotPreferences();
         JMenuBar menu = viewer.findSwingComponent(JMenuBar.class, "menuBar");
         JCheckBoxMenuItem gridMenuItem = (JCheckBoxMenuItem) menu.getMenu(2).getMenuComponent(3);
         
@@ -252,7 +252,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         });
         
         // get components: PlotPreferences and autoFixed menuCheckBox
-        PlotPreferences prefs = plotter.getVisualizerPreferences().getSedPreferences(sed1).getPlotPreferences();
+        PlotPreferences prefs = plotter.getPlotPreferences();
         JMenuBar menu = viewer.findSwingComponent(JMenuBar.class, "menuBar");
         JCheckBoxMenuItem autoFixed = (JCheckBoxMenuItem) menu.getMenu(2).getMenuComponent(2);
         
@@ -306,7 +306,6 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         // check that clicking "Reset" resets the plot to the full plot range
         viewer.getButton("Reset").click();
         
-        PlaneAspect test = plotter.getVisualizerPreferences().getSedPreferences(sed1).getPlotPreferences().getAspect();
         newAspect = plotter.getPlotDisplay().getAspect();
         assertEquals(origXmin, newAspect.getXMin(), 0.000001);
         assertEquals(origYmin, newAspect.getYMin(), 0.000001);

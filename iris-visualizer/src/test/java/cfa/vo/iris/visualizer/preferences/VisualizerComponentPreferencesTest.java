@@ -25,9 +25,6 @@ import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.test.unit.StubWorkspace;
 import cfa.vo.sedlib.Segment;
-import cfa.vo.sedlib.io.SedFormat;
-import cfa.vo.testdata.TestData;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
