@@ -31,7 +31,6 @@ import cfa.vo.sedlib.Segment;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -144,8 +143,7 @@ public class PlotterView extends JInternalFrame {
         mntmGridOnOff.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean on = !PlotterView.this.plotter.getVisualizerPreferences().getSedPreferences(plotter.getSed()).getPlotPreferences().getShowGrid();
-                mntmGridOnOff.setSelected(on);
+                boolean on = mntmGridOnOff.isSelected();
                 setGridOn(on);
             }
         });
@@ -154,7 +152,7 @@ public class PlotterView extends JInternalFrame {
         mntmAutoFixed.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                boolean fixed = !PlotterView.this.plotter.getVisualizerPreferences().getSedPreferences(plotter.getSed()).getPlotPreferences().getFixed();
+                boolean fixed = mntmAutoFixed.isSelected();
                 setFixedViewPort(fixed);
             }
         });
@@ -440,14 +438,14 @@ public class PlotterView extends JInternalFrame {
         mntmAutoFixed.setText("Fixed");
         mntmAutoFixed.setToolTipText("<html>Fix the plot ranges when the SED changes. Otherwise, <br/> \nthe plot ranges automatically update when a SED changes.</html>");
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, plotter, org.jdesktop.beansbinding.ELProperty.create("${visualizerPreferences.selectedSedPreferences.plotPreferences.fixed}"), mntmAutoFixed, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, plotter, org.jdesktop.beansbinding.ELProperty.create("${visualizerPreferences.plotPreferences.fixed}"), mntmAutoFixed, org.jdesktop.beansbinding.BeanProperty.create("selected"));
         bindingGroup.addBinding(binding);
 
         jMenu1.add(mntmAutoFixed);
 
         mntmGridOnOff.setText("Grid on/off");
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, plotter, org.jdesktop.beansbinding.ELProperty.create("${visualizerPreferences.selectedSedPreferences.plotPreferences.showGrid}"), mntmGridOnOff, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, plotter, org.jdesktop.beansbinding.ELProperty.create("${visualizerPreferences.plotPreferences.showGrid}"), mntmGridOnOff, org.jdesktop.beansbinding.BeanProperty.create("selected"));
         bindingGroup.addBinding(binding);
 
         jMenu1.add(mntmGridOnOff);
@@ -498,18 +496,19 @@ public class PlotterView extends JInternalFrame {
     }//GEN-LAST:event_zoomOutActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-        PlotPreferences plotPrefs = plotter
-                        .getVisualizerPreferences()
-                        .getSedPreferences(plotter.getSed())
-                        .getPlotPreferences();
+        PlotPreferences plotPrefs = plotter.getPlotPreferences();
+        
+        // if fixed, temporarily unfix the plot to reset the viewport to the
+        // full X, Y range
         boolean fixed = plotPrefs.getFixed();
-        if (fixed) {
+        if (fixed)
            plotPrefs.setFixed(false);
-        }
+        
         resetPlot(getSed());
-        if (fixed) {
+        
+        if (fixed)
            plotPrefs.setFixed(true);
-        }
+        
         metadataBrowser.resetData();
     }//GEN-LAST:event_btnResetActionPerformed
 
@@ -578,20 +577,11 @@ public class PlotterView extends JInternalFrame {
      */
     private void setFixedViewPort(boolean fixed) {
         
-        if (this.preferences.getSedPreferences(plotter.getSed()) != null) {
-            this.preferences.getSedPreferences(plotter.getSed())
-                    .getPlotPreferences().setFixed(fixed);
+        this.plotter.getPlotPreferences().setFixed(fixed);
             
-            // needs to be set whenever viewport changes
-            this.preferences.getSedPreferences(plotter.getSed())
-                    .getPlotPreferences()
-                    .setAspect(this.plotter.getPlotDisplay().getAspect());
-        } else {
-            // if there is no selected SED
-            this.preferences.getPlotPreferences().setFixed(fixed);
-            this.preferences.getPlotPreferences()
-                    .setAspect(this.plotter.getPlotDisplay().getAspect());
-        }
+        // needs to be set whenever viewport changes
+        this.plotter.getPlotPreferences()
+                .setAspect(this.plotter.getPlotDisplay().getAspect());
     }
     
     /**
@@ -600,22 +590,17 @@ public class PlotterView extends JInternalFrame {
      */
     public void updatePreferences() {
         // Plot Type
-        this.mntmLinear.setSelected(this.plotter.getVisualizerPreferences()
-                .getSedPreferences(plotter.getSed()).getPlotPreferences()
+        this.mntmLinear.setSelected(this.plotter.getPlotPreferences()
                 .getPlotType()==PlotType.LINEAR);
-        this.mntmLog.setSelected(this.plotter.getVisualizerPreferences()
-                .getSedPreferences(plotter.getSed()).getPlotPreferences()
+        this.mntmLog.setSelected(this.plotter.getPlotPreferences()
                 .getPlotType()==PlotType.LOG);
-        this.mntmXlog.setSelected(this.plotter.getVisualizerPreferences()
-                .getSedPreferences(plotter.getSed()).getPlotPreferences()
+        this.mntmXlog.setSelected(this.plotter.getPlotPreferences()
                 .getPlotType()==PlotType.X_LOG);
-        this.mntmYlog.setSelected(this.plotter.getVisualizerPreferences()
-                .getSedPreferences(plotter.getSed()).getPlotPreferences()
+        this.mntmYlog.setSelected(this.plotter.getPlotPreferences()
                 .getPlotType()==PlotType.Y_LOG);
         
         // Grid on/off
-        this.mntmGridOnOff.setSelected(this.plotter.getVisualizerPreferences()
-                .getSedPreferences(plotter.getSed()).getPlotPreferences().getShowGrid());
+        this.mntmGridOnOff.setSelected(this.plotter.getPlotPreferences().getShowGrid());
         
         // turn errorbars on/off
 //        this.mntmErrorBars.setSelected(this.stilPlotter1.getVisualizerPreferences()
@@ -623,8 +608,7 @@ public class PlotterView extends JInternalFrame {
 //                .getShowErrorBars());
         
         // set plot window fixed
-        this.mntmAutoFixed.setSelected(this.plotter.getVisualizerPreferences()
-                .getSedPreferences(plotter.getSed()).getPlotPreferences()
+        this.mntmAutoFixed.setSelected(this.plotter.getPlotPreferences()
                 .getFixed());
     }
     

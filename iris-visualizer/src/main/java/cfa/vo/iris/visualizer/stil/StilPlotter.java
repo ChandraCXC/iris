@@ -38,21 +38,11 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.Point;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import uk.ac.starlink.ttools.plot.PlotSurface;
-import uk.ac.starlink.ttools.plot.SurfacePlot;
-import uk.ac.starlink.ttools.plot2.Decoration;
-import uk.ac.starlink.ttools.plot2.NavAction;
-import uk.ac.starlink.ttools.plot2.PlotUtil;
-import uk.ac.starlink.ttools.plot2.Surface;
-import uk.ac.starlink.ttools.plot2.geom.NavDecorations;
-import uk.ac.starlink.ttools.plot2.geom.PlaneNavigator;
-import uk.ac.starlink.ttools.plot2.geom.PlaneSurface;
 
 public class StilPlotter extends JPanel {
 
@@ -60,6 +50,10 @@ public class StilPlotter extends JPanel {
             .getLogger(StilPlotter.class.getName());
 
     private static final long serialVersionUID = 1L;
+    
+    // default STILTS parameter for creating plot displays. If true, the
+    // plotter is optimized for data that may change on the fly.
+    private static final boolean DATA_MAY_CHANGE = true;
 
     private PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> display;
 
@@ -100,19 +94,8 @@ public class StilPlotter extends JPanel {
     public void reset(ExtSed sed, boolean dataMayChange) {
         
         // get the fixed parameter from the selected SED
-        boolean fixed;
-        if (this.getVisualizerPreferences()
-                .getSedPreferences(sed) != null) {
-            
-            fixed = this.getVisualizerPreferences()
-                    .getSedPreferences(sed) 
-                    .getPlotPreferences() 
-                    .getFixed();
-        } else {
-            // if there is no selected SED (if the user opens the Plotter
-            // and there's no SED)
-            fixed = this.getVisualizerPreferences().getPlotPreferences().getFixed();
-        }
+        boolean fixed = this.getPlotPreferences(sed).getFixed();
+        
         resetPlot(sed, fixed, dataMayChange);
     }
 
@@ -144,25 +127,9 @@ public class StilPlotter extends JPanel {
                            boolean fixed, 
                            boolean dataMayChange) 
     {
-        // Get initial bounds if available
-        PlaneAspect existingAspect = null;
-        
-        // Clear the display if it's available
-        if (display != null) {
-            display.removeAll();
-            remove(display);
-            
-            if (this.preferences.getSedPreferences(currentSed) != null) {
-                this.preferences.getSedPreferences(currentSed).getPlotPreferences().setAspect(display.getAspect());
-                existingAspect = this.preferences.getSedPreferences(currentSed).getPlotPreferences().getAspect();
-                if (existingAspect == null)
-                    existingAspect = display.getAspect();
-            } else {
-                // if no aspect has been set yet, just use the current one
-                existingAspect = display.getAspect();
-            }
 
-        }
+        // Clear the display if it's available
+        setupForPlotDisplayChange();
 
         // Update the current SED
         if (sed == null) {
@@ -174,22 +141,14 @@ public class StilPlotter extends JPanel {
         boolean cached = !dataMayChange;
         display = createPlotComponent(currentSed, cached);
         
-        // Set the bounds using the aspect if the plot is fixed
+        // Set the bounds using the current SED's aspect if the plot is fixed
         if (fixed) {
-            // By now, the current SED has switched from the previous one to 
-            // the current one. Update the aspect to the currently-selected SED
-            if (this.preferences.getSedPreferences(currentSed) != null) {
-                existingAspect = this.preferences.getSedPreferences(currentSed).getPlotPreferences().getAspect();
-                display.setAspect(existingAspect);
-            } else {
-                display.setAspect(existingAspect);
-            }
+            PlaneAspect existingAspect = this.getPlotPreferences().getAspect();
+            display.setAspect(existingAspect);
         }
         
         // Add the display to the plot view
-        add(display, BorderLayout.CENTER);
-        display.revalidate();
-        display.repaint();
+        updatePlotDisplay();
     }
     
     /**
@@ -199,42 +158,28 @@ public class StilPlotter extends JPanel {
      * PlotPreferences.PlotType enums. Choices are LOG, LINEAR, XLOG, and YLOG.
      */
     public void changePlotType(PlotPreferences.PlotType plotType) {
-        
+                
         try {
-            preferences.getSedPreferences(currentSed).getPlotPreferences().setPlotType(plotType);
-            env.setValue(PlotPreferences.X_LOG, 
-                    preferences.getSedPreferences(currentSed).getPlotPreferences().getXlog());
-            env.setValue(PlotPreferences.Y_LOG, 
-                    preferences.getSedPreferences(currentSed).getPlotPreferences().getYlog());
-            
-            setupForPlotDisplayChange();
-            display = createPlotComponent(env, false);
+            this.getPlotPreferences().setPlotType(plotType);
+            reset(currentSed, DATA_MAY_CHANGE);
         } catch (EnumConstantNotPresentException ex) {
             logger.log(Level.WARNING, ex.getMessage());
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
-        }
-        
-        updatePlotDisplay();
-        
+        }        
     }
     
     public void setGridOn(boolean on) {
-        setupForPlotDisplayChange();
-        
         try {
-            preferences.getSedPreferences(currentSed).getPlotPreferences().setShowGrid(on);
-            env.setValue(PlotPreferences.GRID, on);
-            display = createPlotComponent(env, false);
+            this.getPlotPreferences().setShowGrid(on);
+            reset(currentSed, DATA_MAY_CHANGE);
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        
-        updatePlotDisplay();
     }
     
     /**
@@ -331,7 +276,7 @@ public class StilPlotter extends JPanel {
         logger.info("Creating new plot from selected SED");
 
         try {
-            setupMapEnvironment(currentSed);
+            setupMapEnvironment(sed);
             return createPlotComponent(env, cached);
         } catch (RuntimeException e) {
             throw e;
@@ -370,7 +315,7 @@ public class StilPlotter extends JPanel {
         // on the plot.
 
         // Add high level plot preferences
-        PlotPreferences pp = getPlotPreferences();
+        PlotPreferences pp = getPlotPreferences(sed);
         for (String key : pp.getPreferences().keySet()) {
             env.setValue(key, pp.getPreferences().get(key));
         }
@@ -411,7 +356,8 @@ public class StilPlotter extends JPanel {
         if (display != null) {
             display.removeAll();
             remove(display);
-            display = null; // just to be safe
+            
+            this.getPlotPreferences().setAspect(display.getAspect());
         }
     }
     
@@ -424,9 +370,17 @@ public class StilPlotter extends JPanel {
         display.repaint();
     }
     
-    private PlotPreferences getPlotPreferences() {
+    public PlotPreferences getPlotPreferences() {
         if (this.preferences.getSedPreferences(currentSed) != null) {
             return preferences.getSedPreferences(currentSed).getPlotPreferences();
+        } else {
+            return preferences.getPlotPreferences();
+        }
+    }
+    
+    public PlotPreferences getPlotPreferences(ExtSed sed) {
+        if (this.preferences.getSedPreferences(sed) != null) {
+            return preferences.getSedPreferences(sed).getPlotPreferences();
         } else {
             return preferences.getPlotPreferences();
         }
