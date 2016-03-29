@@ -24,7 +24,7 @@ import org.junit.Test;
 
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
-import cfa.vo.iris.visualizer.stil.IrisStarTableAdapter;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.Target;
 import cfa.vo.sedlib.TextParam;
@@ -34,7 +34,7 @@ public class SedPreferencesTest {
     @Test
     public void testPreferences() throws Exception {
         ExtSed sed = new ExtSed("test");
-        IrisStarTableAdapter adapter = new IrisStarTableAdapter();
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
         
         SedPreferences prefs = new SedPreferences(sed, adapter);
         
@@ -92,7 +92,7 @@ public class SedPreferencesTest {
     @Test
     public void testSuffixesWithSameTargetNames() throws Exception {
         ExtSed sed = new ExtSed("test");
-        IrisStarTableAdapter adapter = new IrisStarTableAdapter();
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
         
         SedPreferences prefs = new SedPreferences(sed, adapter);
         

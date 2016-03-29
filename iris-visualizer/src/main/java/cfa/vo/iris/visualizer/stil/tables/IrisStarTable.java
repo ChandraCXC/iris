@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package cfa.vo.iris.visualizer.stil;
+package cfa.vo.iris.visualizer.stil.tables;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.units.UnitsException;
@@ -30,40 +31,66 @@ public class IrisStarTable extends WrapperStarTable {
 
     private static final StarTable EMPTY_STARTABLE = new EmptyStarTable();
     
-    private volatile StarTable dataTable;
+    private Future<StarTable> dataTableHolder;
+    private StarTable segmentDataTable;
     private SegmentStarTable plotterTable;
     
-    public IrisStarTable(SegmentStarTable plotterTable)
+    IrisStarTable(SegmentStarTable plotterTable, Future<StarTable> dataTableHolder) {
+        this(plotterTable, EMPTY_STARTABLE);
+        this.dataTableHolder = dataTableHolder;
+    }
+    
+    public IrisStarTable(SegmentStarTable plotterTable, StarTable dataTable)
     {
         super(plotterTable);
         
-        this.dataTable = EMPTY_STARTABLE;
+        this.segmentDataTable = dataTable;
         this.plotterTable = plotterTable;
         
         setName(plotterTable.getName());
     }
     
+    @SuppressWarnings("rawtypes")
     @Override 
     public List getParameters() {
-        return dataTable.getParameters();
+        return segmentDataTable.getParameters();
     }
     
     @Override
     public DescribedValue getParameterByName(String parameter) {
-        return dataTable.getParameterByName(parameter);
+        return segmentDataTable.getParameterByName(parameter);
     }
     
     @Override
     public void setParameter(DescribedValue value) {
-        dataTable.setParameter(value);
+        segmentDataTable.setParameter(value);
     }
     
-    public StarTable getDataTable() {
-        return dataTable;
+    @Override
+    public void setName(String name) {
+        super.setName(name);
+        plotterTable.setName(name);
+        segmentDataTable.setName(name);
     }
     
-    public void setDataTable(StarTable dataTable) {
-        this.dataTable = dataTable;
+    public StarTable getSegmentDataTable() {
+        if (EMPTY_STARTABLE == segmentDataTable) {
+            checkDataTable();
+        }
+        return segmentDataTable;
+    }
+    
+    private void checkDataTable() {
+        if (!dataTableHolder.isDone()) {
+            return;
+        }
+        
+        try {
+            segmentDataTable = dataTableHolder.get();
+        } catch (Exception e) {
+            // TODO: Maybe show a warning message to users?
+            throw new RuntimeException("Could not serialize segment", e);
+        }
     }
     
     public SegmentStarTable getPlotterTable() {

@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
+
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
@@ -32,11 +33,12 @@ import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
 import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerListener;
-import cfa.vo.iris.visualizer.stil.IrisStarTable;
-import java.util.ArrayList;
+import cfa.vo.iris.visualizer.stil.tables.ColumnInfoMatcher;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
+import cfa.vo.iris.visualizer.stil.tables.StackedStarTable;
+
 import java.util.LinkedList;
 import java.util.List;
-import uk.ac.starlink.table.EmptyStarTable;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.gui.StarJTable;
 
@@ -46,19 +48,17 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private static final Logger logger = Logger
             .getLogger(MetadataBrowserMainView.class.getName());
     
-    private static final StarTable EMPTY_STARTABLE = new EmptyStarTable();
-
     public static final String MB_WINDOW_NAME = "Metadata Browser (%s)";
-    
-    public static final String PROP_SELECTEDTABLE = "selectedStarTable";
-    public static final String PROP_SELECTEDTABLES = "selectedTables";
 
-    protected final VisualizerComponentPreferences preferences;
-    protected final IWorkspace ws;
+    final VisualizerComponentPreferences preferences;
+    final IWorkspace ws;
     
-    protected ExtSed selectedSed;
-    protected IrisStarTable selectedStarTable;
-    protected List<IrisStarTable> selectedTables = new ArrayList<>();
+    ExtSed selectedSed; // Selected ws sed
+    List<IrisStarTable> selectedTables; // list of star tables associated with selectedSed
+    List<IrisStarTable> selectedStarTables; // list of selected StarTables from selectedTables
+    StackedStarTable plotterDataTable; // Single star table container for all plotted data
+    StackedStarTable segmentDataTable; // Single star table container for all point metadata
+    ColumnInfoMatcher columnInfoMatcher; // Used for star table stacking
     
     /**
      * Creates new form MetadataBrowser
@@ -66,9 +66,10 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     public MetadataBrowserMainView(IWorkspace ws,
             VisualizerComponentPreferences preferences) 
     {
-        this.preferences = preferences;
         this.ws = ws;
-
+        this.preferences = preferences;
+        this.columnInfoMatcher = preferences.getColumnInfoMatcher();
+        
         initComponents();
         setChangeListener();
 
@@ -80,22 +81,31 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     }
 
     public void resetData() {
-        this.selectedSed = (ExtSed) ws.getSedManager().getSelected();
+        setSelectedSed((ExtSed) ws.getSedManager().getSelected());
         
-        setTitle();
-        setDataTables();
-        setSelectedStarTable(0);
+        updateTitle();
+        updateSelectedTables();
+        
+        // Select 0th indexed segment if available
+        starTableList.setSelectedIndex(0);
+        updateSelectedStarTables(new int[] {0});
+        updateDataTables();
     }
     
-    private void setTitle() {
+    public void redrawData() {
+        updateTitle();
+        updateSelectedTables();
+        updateDataTables();
+    }
+    
+    private void updateTitle() {
         title = String.format(MB_WINDOW_NAME, 
                 selectedSed == null ? "Select SED" : selectedSed.getId());
         setTitle(title);
     }
     
-    private void setDataTables() {
-        
-        List<IrisStarTable> newTables = new ArrayList<>();
+    private void updateSelectedTables() {
+        List<IrisStarTable> newTables = new LinkedList<>();
         
         // If no SED selected then just leave an empty list
         if (selectedSed != null) {
@@ -108,61 +118,110 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             }
         }
         
+        // Update segment metadata table
+        // TODO: Should this be synced with the selectedStarTable
         segmentJTable.setModel(new IrisMetadataTableModel((List<StarTable>)(List<?>) newTables));
         StarJTable.configureColumnWidths(segmentJTable, 200, 10);
         
         setSelectedTables(newTables);
     }
     
-    private void setSelectedStarTable(int index) {
-        
-        IrisStarTable newTable = null;
-        
-        // Only select a new table if the selection index is within the bounds 
-        // or the list of star tables.
-        if (index < selectedTables.size() && index >= 0) {
-            newTable = selectedTables.get(index);
+    private void updateSelectedStarTables(int[] indexes) {
+        List<IrisStarTable> newTables = new LinkedList<>();
+        for (int i : indexes) {
+            if (i < selectedTables.size() && i >= 0) {
+                newTables.add(selectedTables.get(i));
+            }
         }
-
-        if (newTable == null) {
-            plotterStarJTable.setStarTable(EMPTY_STARTABLE, false);
-            pointStarJTable.setStarTable(EMPTY_STARTABLE, false);
-        } else {
-            plotterStarJTable.setStarTable(newTable.getPlotterTable(), true);
-            pointStarJTable.setStarTable(newTable.getDataTable(), true);
-        }
-        
-        // Autoconfigures the column width for viewing the tables.
-        plotterStarJTable.configureColumnWidths(200, 20);
-        pointStarJTable.configureColumnWidths(200, 20);
-        
-        setSelectedStarTable(newTable);
+        setSelectedStarTables(newTables);
     }
     
+    
+    private void updateDataTables() {
+        List<StarTable> plotterDataTables = new LinkedList<>();
+        List<StarTable> segmentDataTables = new LinkedList<>();
+        
+        for (IrisStarTable table : selectedStarTables) {
+            plotterDataTables.add(table.getPlotterTable());
+            segmentDataTables.add(table.getSegmentDataTable());
+        }
+        
+        plotterDataTable = new StackedStarTable(plotterDataTables, columnInfoMatcher);
+        segmentDataTable = new StackedStarTable(segmentDataTables, columnInfoMatcher);
+        
+        setPlotterDataTable(plotterDataTable);
+        setSegmentDataTable(segmentDataTable);
+    }
+    
+    
     /*
-     * 
-     * Getters and Setters 
-     *  
+     * getters and setters
      */
+    
+    public ExtSed getSelectedSed() {
+        return selectedSed;
+    }
+    
+    public static final String PROP_SELECTED_SED = "selectedSed";
+    public void setSelectedSed(ExtSed sed) {
+        ExtSed oldSed = selectedSed;
+        this.selectedSed = sed;
+        firePropertyChange(PROP_SELECTED_SED, oldSed, selectedSed);
+    }
     
     public List<IrisStarTable> getSelectedTables() {
         return selectedTables;
     }
     
+    public static final String PROP_SELECTED_TABLES = "selectedTables";
     public void setSelectedTables(List<IrisStarTable> newTables) {
         List<IrisStarTable> oldTables = selectedTables;
-        selectedTables = newTables;
-        firePropertyChange(PROP_SELECTEDTABLES, oldTables, selectedTables);
+        this.selectedTables = newTables;
+        firePropertyChange(PROP_SELECTED_TABLES, oldTables, selectedTables);
     }
     
-    public IrisStarTable getSelectedStarTable() {
-        return selectedStarTable;
+    public List<IrisStarTable> getSelectedStarTables() {
+        return selectedStarTables;
+    }
+
+    public static final String PROP_SELECTED_STARTABLES = "selectedStarTables";
+    public void setSelectedStarTables(List<IrisStarTable> newStarTables) {
+        List<IrisStarTable> oldStarTables = selectedStarTables;
+        this.selectedStarTables = newStarTables;
+        firePropertyChange(PROP_SELECTED_STARTABLES, oldStarTables, newStarTables);
     }
     
-    public void setSelectedStarTable(IrisStarTable table) {
-        IrisStarTable oldTable = selectedStarTable;
-        selectedStarTable = table;
-        firePropertyChange(PROP_SELECTEDTABLE, oldTable, selectedStarTable);
+    public StackedStarTable getPlotterDataTable() {
+        return plotterDataTable;
+    }
+
+    public static final String PROP_PLOTTER_TABLE = "plotterDataTable";
+    public void setPlotterDataTable(StackedStarTable newTable) {
+        StackedStarTable oldTable = plotterDataTable;
+        this.plotterDataTable = newTable;
+        
+        // TODO: Bindings?
+        plotterStarJTable.setStarTable(plotterDataTable);
+        plotterStarJTable.configureColumnWidths(200, 20);
+        
+        firePropertyChange(PROP_PLOTTER_TABLE, oldTable, plotterDataTable);
+    }
+    
+    public StackedStarTable getSegmentDataTable() {
+        return segmentDataTable;
+    }
+
+    public static final String PROP_SEGMENT_TABLE = "segmentDataTable";
+    public void setSegmentDataTable(StackedStarTable newTable) {
+        StackedStarTable oldTable = segmentDataTable;
+        this.segmentDataTable = newTable;
+
+        // TODO: Bindings?
+        pointStarJTable.setUtypeAsNames(true);
+        pointStarJTable.setStarTable(segmentDataTable);
+        pointStarJTable.configureColumnWidths(200, 20);
+        
+        firePropertyChange(PROP_SEGMENT_TABLE, oldTable, plotterDataTable);
     }
     
     /**
@@ -174,10 +233,12 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         @Override
         public void process(ExtSed source, VisualizerCommand payload) {
             if (VisualizerCommand.RESET.equals(payload)
-                || VisualizerCommand.SELECTED.equals(payload)
-                || VisualizerCommand.REDRAW.equals(payload)) 
+                || VisualizerCommand.SELECTED.equals(payload))
             {
                 resetData();
+            }
+            else if (VisualizerCommand.REDRAW.equals(payload)) {
+                redrawData();
             }
         }
     }
@@ -292,9 +353,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         dataPane.setToolTipText("");
         dataPane.setName("dataPanel"); // NOI18N
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedSed.id}"), dataPane, org.jdesktop.beansbinding.BeanProperty.create("border"));
-        bindingGroup.addBinding(binding);
-
         dataTabsPane.setName("dataTabsPane"); // NOI18N
 
         plotterMetadataScrollPane.setToolTipText("");
@@ -310,12 +368,12 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         );
         plotterMetadataPanelLayout.setVerticalGroup(
             plotterMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(plotterMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
+            .addComponent(plotterMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE)
         );
 
         dataTabsPane.addTab("Data", plotterMetadataPanel);
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, plotterStarJTable, org.jdesktop.beansbinding.ELProperty.create("${selectionModel}"), pointStarJTable, org.jdesktop.beansbinding.BeanProperty.create("selectionModel"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, plotterStarJTable, org.jdesktop.beansbinding.ELProperty.create("${selectionModel}"), pointStarJTable, org.jdesktop.beansbinding.BeanProperty.create("selectionModel"));
         bindingGroup.addBinding(binding);
 
         pointMetadataScrollPane.setViewportView(pointStarJTable);
@@ -328,7 +386,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         );
         pointMetadataPanelLayout.setVerticalGroup(
             pointMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(pointMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
+            .addComponent(pointMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE)
         );
 
         dataTabsPane.addTab("Point Metadata", pointMetadataPanel);
@@ -345,16 +403,15 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         );
         segmentMetadataPanelLayout.setVerticalGroup(
             segmentMetadataPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(segmentMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 462, Short.MAX_VALUE)
+            .addComponent(segmentMetadataScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE)
         );
 
         dataTabsPane.addTab("Segment Metadata", segmentMetadataPanel);
 
-        starTableScrollPane.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Segments", 0, 1));
+        starTableScrollPane.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Segments", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.ABOVE_TOP));
         starTableScrollPane.setName("starTableScrollPane"); // NOI18N
         starTableScrollPane.setOpaque(false);
 
-        starTableList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         starTableList.setCellRenderer(new StarTableCellRenderer());
 
         org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${selectedTables}");
@@ -382,7 +439,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         dataPaneLayout.setVerticalGroup(
             dataPaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(dataTabsPane, javax.swing.GroupLayout.Alignment.TRAILING)
-            .addGroup(dataPaneLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, dataPaneLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(starTableScrollPane))
         );
@@ -488,7 +545,8 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void handleStarTableSelection(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_handleStarTableSelection
-        setSelectedStarTable(starTableList.getSelectedIndex());
+        updateSelectedStarTables(starTableList.getSelectedIndices());
+        updateDataTables();
     }//GEN-LAST:event_handleStarTableSelection
 
     private void invertSelectionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_invertSelectionButtonActionPerformed
