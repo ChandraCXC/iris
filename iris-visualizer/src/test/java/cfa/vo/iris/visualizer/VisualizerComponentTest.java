@@ -143,6 +143,11 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
             }
         });
         
+        // check the grid is on by default
+        JMenuBar menu = viewer.findSwingComponent(JMenuBar.class, "menuBar");
+        JCheckBoxMenuItem gridMenuItem = (JCheckBoxMenuItem) menu.getMenu(2).getMenuComponent(3);
+        assertTrue(gridMenuItem.isSelected());
+        
         // on by default. switch grids off
         viewer.getMenuBar()
                 .getMenu("View")
@@ -150,8 +155,6 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
                 .click();
         
         PlotPreferences prefs = plotter.getPlotPreferences();
-        JMenuBar menu = viewer.findSwingComponent(JMenuBar.class, "menuBar");
-        JCheckBoxMenuItem gridMenuItem = (JCheckBoxMenuItem) menu.getMenu(2).getMenuComponent(3);
         
         // check that box is unchecked
         assertTrue(!gridMenuItem.isSelected()); 
