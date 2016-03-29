@@ -1,9 +1,9 @@
 package cfa.vo.iris.sed.stil;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,6 +11,7 @@ import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 import cfa.vo.testdata.TestData;
+import uk.ac.starlink.table.DescribedValue;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
@@ -46,5 +47,11 @@ public class SerializingStarTableTest {
 
         assertTrue(id.getColumnIndex(utype + seg_flux_utype) >= 0);
         assertTrue(id.getColumnIndex(utype + seg_spec_utype) >= 0);
+        
+        // Verify no non-null parameters
+        for (Object o : table.getParameters()) {
+            DescribedValue v = (DescribedValue) o;
+            assertNotNull(v.getValue());
+        }
     }
 }

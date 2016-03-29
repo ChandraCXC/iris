@@ -17,10 +17,12 @@
 package cfa.vo.iris.sed.stil;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Iterator;
 
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.VOTableSerializer;
+import uk.ac.starlink.table.DescribedValue;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.StoragePolicy;
 import uk.ac.starlink.table.TableSequence;
@@ -32,15 +34,19 @@ public class SerializingStarTableAdapter implements StarTableAdapter<Segment> {
 
     @Override
     public StarTable convertStarTable(Segment data) {
+        Sed tmp = new Sed();
+        StarTable table;
+        
         try {
-            Sed tmp = new Sed();
             tmp.addSegment(data);
             ByteArrayOutputStream os = toVOTable(tmp);
-            StarTable table = convertOSStream(os);
-            return table;
+            table = convertOSStream(os);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        
+        cleanParameters(table);
+        return table;
     }
     
     private ByteArrayOutputStream toVOTable(Sed sed) throws Exception {
@@ -57,6 +63,16 @@ public class SerializingStarTableAdapter implements StarTableAdapter<Segment> {
         VOTableBuilder votBuilder = new VOTableBuilder();
         TableSequence seq = votBuilder.makeStarTables(ds, StoragePolicy.getDefaultPolicy());
         return seq.nextTable();
+    }
+    
+    private void cleanParameters(StarTable table) {
+        Iterator<?> it = table.getParameters().iterator();
+        while (it.hasNext()) {
+            DescribedValue v = (DescribedValue) it.next();
+            if (v.getValue() == null) {
+                it.remove();
+            }
+        }
     }
 }
 

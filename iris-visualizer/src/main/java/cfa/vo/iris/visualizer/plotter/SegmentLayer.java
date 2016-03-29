@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 
 import cfa.vo.iris.sed.stil.SegmentStarTable.Column;
 import cfa.vo.iris.units.UnitsException;
-import cfa.vo.iris.visualizer.stil.IrisStarTable;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
 public class SegmentLayer {
@@ -109,17 +109,22 @@ public class SegmentLayer {
         // If error columns are available in the underlying star table, the we
         // add them here.
         ColumnIdentifier id = new ColumnIdentifier(inSource);
-        if (shouldAddErrorColumn(Column.SPECTRAL_ERR_HI, id)) {
-            prefs.put(X_ERR_HI + suffix, Column.SPECTRAL_ERR_HI.name());
+        if (shouldAddErrorColumn(Column.Spectral_Error, id)) {
+            prefs.put(X_ERR_HI + suffix, Column.Spectral_Error.name());
         }
-        if (shouldAddErrorColumn(Column.SPECTRAL_ERR_LO, id)) {
-            prefs.put(X_ERR_LO + suffix, Column.SPECTRAL_ERR_LO.name());
+        if (shouldAddErrorColumn(Column.Flux_Error, id)) {
+            prefs.put(Y_ERR_HI + suffix, Column.Flux_Error.name());
         }
-        if (shouldAddErrorColumn(Column.FLUX_ERR_HI, id)) {
-            prefs.put(Y_ERR_HI + suffix, Column.FLUX_ERR_HI.name());
+        
+        // If lower and upper ranges are specified then we override existing
+        // single bounds.
+        if (shouldAddErrorColumn(Column.Spectral_Error_Low, id)) {
+            prefs.put(X_ERR_HI + suffix, Column.Spectral_Error_High.name());
+            prefs.put(X_ERR_LO + suffix, Column.Spectral_Error_Low.name());
         }
-        if (shouldAddErrorColumn(Column.FLUX_ERR_LO, id)) {
-            prefs.put(Y_ERR_LO + suffix, Column.FLUX_ERR_LO.name());
+        if (shouldAddErrorColumn(Column.FLux_Error_Low, id)) {
+            prefs.put(Y_ERR_HI + suffix, Column.Flux_Error_High.name());
+            prefs.put(Y_ERR_LO + suffix, Column.FLux_Error_Low.name());
         }
         
         prefs.put(TYPE + suffix, LayerType.xyerror.name());
@@ -151,8 +156,8 @@ public class SegmentLayer {
     
     private void addCommonFields(String suffix, Map<String, Object> prefs) {
         prefs.put(IN + suffix, inSource);
-        prefs.put(X_COL + suffix, Column.SPECTRAL_COL.name());
-        prefs.put(Y_COL + suffix, Column.FLUX_COL.name());
+        prefs.put(X_COL + suffix, Column.Spectral_Value.name());
+        prefs.put(Y_COL + suffix, Column.Flux_Value.name());
         
         if (size != null)
             prefs.put(SIZE + suffix, size);
