@@ -21,10 +21,21 @@
 
 package cfa.vo.iris.fitting.custom;
 
+import cfa.vo.interop.SAMPFactory;
+import cfa.vo.sherpa.models.Model;
+import cfa.vo.sherpa.models.Parameter;
+import cfa.vo.sherpa.models.UserModel;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.lang.reflect.Array;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class DefaultCustomModel implements CustomModel {
 
@@ -32,9 +43,20 @@ public class DefaultCustomModel implements CustomModel {
         
     }
 
-    public DefaultCustomModel(String name, String path) throws MalformedURLException {
+    public DefaultCustomModel(String name, String path, CustomModelType type) throws MalformedURLException {
         this.name = name;
         this.url = new URL("file:"+path);
+        this.type = type;
+    }
+
+    private CustomModelType type;
+
+    public CustomModelType getType() {
+        return type;
+    }
+
+    public void setType(CustomModelType type) {
+        this.type = type;
     }
 
     private URL url;
@@ -261,10 +283,63 @@ public class DefaultCustomModel implements CustomModel {
         propertyChangeSupport.removePropertyChangeListener(listener);
     }
 
+    public UserModel makeUserModel(String id) {
+        UserModel m = SAMPFactory.get(UserModel.class);
+        m.setName(type.name().toLowerCase() + "." + id);
+        m.setFile(this.getUrl().getPath());
+        m.setFunction(this.getFunctionName());
+        return m;
+    }
+
+    public Model makeModel(String id) {
+        Model m = SAMPFactory.get(Model.class);
+        m.setName(type.name().toLowerCase() + "." + id);
+        String[] parNames = makeArray(this.getParnames(), String.class);
+        Double[] parVals = makeArray(this.getParvals(), Double.class);
+        Double[] parMins = makeArray(this.getParmins(), Double.class);
+        Double[] parMaxs = makeArray(this.getParmaxs(), Double.class);
+        Boolean[] parFrozens = makeArray(this.getParfrozen(), Boolean.class);
+        for (int i=0; i<parNames.length; i++) {
+            try {
+                Parameter p = SAMPFactory.get(Parameter.class);
+                p.setName(parNames[i]);
+                p.setVal(parVals[i]);
+                p.setMin(parMins[i]);
+                p.setMax(parMaxs[i]);
+                p.setFrozen(parFrozens[i] ? 1 : 0);
+                m.addPar(p);
+            } catch(IndexOutOfBoundsException ex) {
+                throw new IllegalStateException("Array Shapes Mismatch", ex);
+            }
+        }
+        return m;
+    }
 
     @Override
     public String toString() {
         return name;
+    }
+
+    static <T>T[] makeArray(String expression, Class<T> tClass) {
+        Pattern p = Pattern.compile(",");
+        String[] tokens = expression.split(p.pattern());
+        int length = tokens.length;
+        T[] retVal = (T[]) Array.newInstance(tClass, length);
+        try {
+            Constructor<T> ctor = tClass.getConstructor(String.class);
+            for (int i=0; i<length; i++) {
+                String valS = tokens[i];
+                try {
+                    T val = ctor.newInstance(valS);
+                    retVal[i] = val;
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException ex) {
+                    throw new IllegalArgumentException(String.format("Error instantiating value %s as %s", valS, tClass), ex);
+                }
+            }
+        } catch(NoSuchMethodException ex) {
+            throw new IllegalArgumentException("Only classes with String constructor accepted", ex);
+        }
+        return retVal;
     }
 
     private String removeSpaces(String input) {

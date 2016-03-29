@@ -21,7 +21,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 public enum Stats implements Stat {
     Chi2("chi2"),
     Poisson("poisson"),
-    LeastSquares("leastsquares");
+    LeastSquares("leastsq");
     private String name;
 
     Stats(String name) {

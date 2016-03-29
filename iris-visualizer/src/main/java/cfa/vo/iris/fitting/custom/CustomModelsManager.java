@@ -128,9 +128,9 @@ public class CustomModelsManager {
     }
 
     public MutableTreeNode getCustomModels() throws IOException {
-        tablesTree = new CustomModelsTreeModel(tablesDir);
-        templatesTree = new CustomModelsTreeModel(templatesDir);
-        functionsTree = new CustomModelsTreeModel(functionsDir);
+        tablesTree = new CustomModelsTreeModel(tablesDir, CustomModelType.TABLEMODEL);
+        templatesTree = new CustomModelsTreeModel(templatesDir, CustomModelType.TEMPLATE);
+        functionsTree = new CustomModelsTreeModel(functionsDir, CustomModelType.USERMODEL);
 
         DefaultMutableTreeNode root = new DefaultMutableTreeNode("User Model Components");
         root.add((MutableTreeNode) tablesTree.getRoot());

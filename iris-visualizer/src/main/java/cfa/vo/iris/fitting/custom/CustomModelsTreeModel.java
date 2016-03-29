@@ -33,7 +33,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 public class CustomModelsTreeModel extends DefaultTreeModel {
-    public CustomModelsTreeModel(File dir) throws IOException {
+    public CustomModelsTreeModel(File dir, CustomModelType type) throws IOException {
         super(new DefaultMutableTreeNode(last(dir.getPath().split(File.separator))));
 
         for(File f : dir.listFiles()) {
@@ -41,7 +41,7 @@ public class CustomModelsTreeModel extends DefaultTreeModel {
                 String name = last(f.getPath().split(File.separator));
                 if(!name.endsWith(".specs")) {
                     String path = f.getAbsolutePath();
-                    DefaultCustomModel model = new DefaultCustomModel(name, path);
+                    DefaultCustomModel model = new DefaultCustomModel(name, path, type);
                     File specs = new File(path+".specs");
                     List<String> attrs = Files.readLines(specs, Charsets.UTF_8);
                     model.setFunctionName(attrs.get(0));

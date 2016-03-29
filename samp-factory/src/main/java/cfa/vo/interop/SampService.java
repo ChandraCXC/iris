@@ -25,6 +25,7 @@ public class SampService {
     private final int RETRY = 100;
     private final int RETRY_INTERVAL = 100;
     private Logger logger = Logger.getLogger(SampService.class.getName());
+    private final Level LEVEL = Level.FINEST;
 
     Hub hub;
     private ClientProfile sampClientProfile = StandardClientProfile.getInstance();
@@ -111,16 +112,16 @@ public class SampService {
     }
 
     private void monitorSampOnce() {
-        logger.log(Level.INFO, "Monitor State: ");
-        logger.log(Level.INFO, "sampClient.isConnected(): " + sampClient.isConnected());
-        logger.log(Level.INFO, "sampClientProfile.isHubRunning(): " + sampClientProfile.isHubRunning());
+        logger.log(LEVEL, "Monitor State: ");
+        logger.log(LEVEL, "sampClient.isConnected(): " + sampClient.isConnected());
+        logger.log(LEVEL, "sampClientProfile.isHubRunning(): " + sampClientProfile.isHubRunning());
         try {
-            logger.log(Level.INFO, "sampClient.getConnection(): " + sampClient.getConnection());
+            logger.log(LEVEL, "sampClient.getConnection(): " + sampClient.getConnection());
         } catch (IOException ex) {
             logger.log(Level.WARNING, "sampClient.getConnection(): exception", ex);
         }
-        logger.log(Level.INFO, "startingHub: " + startingHub);
-        logger.log(Level.INFO, "autoRunHub: " + autoRunHub);
+        logger.log(LEVEL, "startingHub: " + startingHub);
+        logger.log(LEVEL, "autoRunHub: " + autoRunHub);
         if (!sampClientProfile.isHubRunning() && !startingHub && autoRunHub) {
             logger.log(Level.INFO, "No Hub running, starting one ourselves");
             startingHub = true;
@@ -138,11 +139,11 @@ public class SampService {
         }
         boolean newState;
         newState = sampClient.isConnected() && sampClientProfile.isHubRunning();
-        logger.log(Level.INFO, "SAMP client connected: " + newState);
+        logger.log(LEVEL, "SAMP client connected: " + newState);
         if (newState != sampUp) {
             logger.log(Level.INFO, "Client connection status changed: "+sampUp+ " -> "+newState);
             sampUp = newState;
-            logger.log(Level.INFO, "Calling connection listeners callbacks");
+            logger.log(LEVEL, "Calling connection listeners callbacks");
             for(SAMPConnectionListener listener : sampListeners) {
                 listener.run(sampUp);
             }
@@ -153,7 +154,7 @@ public class SampService {
         boolean newState;
         try {
             newState = pingSherpa();
-            logger.log(Level.INFO, "Sherpa client connected: " + newState);
+            logger.log(LEVEL, "Sherpa client connected: " + newState);
             if (newState != sherpaUp) {
                 logger.log(Level.INFO, "Sherpa Client connection status changed: "+sherpaUp+ " -> "+newState);
                 sherpaUp = newState;
@@ -261,11 +262,11 @@ public class SampService {
     public boolean pingSherpa() {
         final int stepSeconds = 1;
         try {
-            logger.log(Level.INFO, "pinging Sherpa with a " + stepSeconds + " seconds timeout");
+            logger.log(LEVEL, "pinging Sherpa with a " + stepSeconds + " seconds timeout");
             String id = findSherpa(PING_MTYPE);
             if (!id.isEmpty()) {
                 getSampClient().callAndWait(id, new PingMessage().get(), stepSeconds);
-                logger.log(Level.INFO, "Sherpa replied");
+                logger.log(LEVEL, "Sherpa replied");
                 return true;
             }
         } catch (Exception ex) {
@@ -279,11 +280,11 @@ public class SampService {
             logger.log(Level.WARNING, "Not connected to the hub, giving up looking for Sherpa");
             return "";
         }
-        logger.log(Level.INFO, "looking for Sherpa");
+        logger.log(LEVEL, "looking for Sherpa");
         Map clients = getSampClient().getConnection().getSubscribedClients(mtype);
         if (!clients.isEmpty()) {
             String retval = (String) clients.keySet().iterator().next();
-            logger.log(Level.INFO, "found Sherpa with id: "+retval);
+            logger.log(LEVEL, "found Sherpa with id: "+retval);
             return retval;
         } else {
             logger.log(Level.WARNING, "Sherpa not found connected to the hub");

@@ -145,12 +145,14 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <workingDirectory>${project.build.directory}/tests</workingDirectory>
                     <!--<failIfNoTests>true</failIfNoTests>-->
                     <includes>
                         <include>**/*IT.*</include>
                     </includes>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                     <systemPropertyVariables>
+                        <java.io.tmpdir>${project.build.directory}/tests</java.io.tmpdir>
                         <java.util.logging.config.file>
                             ${project.parent.basedir}/iris/src/test/resources/log.properties
                         </java.util.logging.config.file>

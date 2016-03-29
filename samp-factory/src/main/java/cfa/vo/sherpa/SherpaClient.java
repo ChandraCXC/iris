@@ -95,20 +95,13 @@ public class SherpaClient {
     }
 
     public ModelImpl createModel(String name) {
-        String id = "m" + (++stringCounter).toString();
-        return createModel(name, id);
+        return createModel(name, createId());
     }
 
     public ModelImpl createModel(String name, String id) {
         ModelImpl m = modelFactory.getModel(name, id);
         modelMap.put(id, m);
         return m;
-    }
-
-    public Parameter createParameter(String name) {
-        Parameter p = (Parameter) SAMPFactory.get(Parameter.class);
-        p.setName(name);
-        return p;
     }
 
     public SampService getService() {
@@ -138,5 +131,13 @@ public class SherpaClient {
 
     public SherpaClient create(final SampService sampService) {
         return new SherpaClient(sampService);
+    }
+
+    public String createId() {
+        return createId("m");
+    }
+
+    public String createId(String prefix) {
+        return prefix + (++stringCounter).toString();
     }
 }

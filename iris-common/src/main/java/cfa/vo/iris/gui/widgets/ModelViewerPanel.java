@@ -49,7 +49,7 @@ import java.util.logging.Logger;
 
 public final class ModelViewerPanel extends javax.swing.JPanel implements SedListener {
 
-    private IFitConfiguration fit;
+    private Logger logger = Logger.getLogger(ModelViewerPanel.class.getName());
     
     private final String[] values = new String[]{"Val", "Min", "Max", "Frozen"};
 
@@ -79,19 +79,27 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
 
     private java.util.List<UserModel> userModels;
     
-    private void setFitConfiguration(IFitConfiguration fit) {
-        this.fit = fit;
+    public void setFitConfiguration(IFitConfiguration fit) {
+
         if (fit != null) {
             CompositeModel m = fit.getModel();
             userModels = fit.getUserModelList();
             if (m != null) {
+                logger.info("setting model to: "+m);
                 setModel(m);
-                setExpression(m.getName());
             } else {
+                logger.info("null model, instantiating new one");
                 setModel(SAMPFactory.get(CompositeModel.class));
+            }
+            String expression = getModel().getName();
+            if (expression != null && !expression.isEmpty()) {
+                setExpression(getModel().getName());
+            } else {
                 setExpression("No Model");
                 setSelectedParameter(null);
             }
+        } else {
+            setFitConfiguration(SAMPFactory.get(IFitConfiguration.class));
         }
     }
 
@@ -248,6 +256,7 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
      * @param expression new value of expression
      */
     public void setExpression(String expression) {
+        logger.info("setting expression to: "+expression);
         String oldExpression = this.expression;
         this.expression = expression;
         firePropertyChange(PROP_EXPRESSION, oldExpression, expression);
@@ -255,7 +264,8 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
 
     @Override
     public void process(ExtSed source, SedCommand payload) {
-        if (SedCommand.SELECTED.equals(payload) || SedCommand.CHANGED.equals(payload) && source.equals(sed)) {
+        if (SedCommand.SELECTED.equals(payload) ||
+                SedCommand.CHANGED.equals(payload) && source.equals(sed)) {
             setSed(source);
         }
     }

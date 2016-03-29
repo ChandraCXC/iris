@@ -61,13 +61,6 @@ public class SAMPTest {
     }
 
     @Test
-    public void testSAMPStartup() throws Exception {
-        logger.log(Level.INFO, "Testing that SAMP is up...");
-        assertTrue(sampResource.getService().isSampUp());
-        logger.log(Level.INFO, "...OK");
-    }
-
-    @Test
     public void testReloadIfFailure() throws Exception {
         logger.log(Level.INFO, "Testing we start with everything connected");
         assertTrue(sampResource.getService().isSampUp());
@@ -124,7 +117,7 @@ public class SAMPTest {
             service.start();
 
             logger.log(Level.INFO, "Verifying resource was correctly started");
-            for (int i=0; i<50; i++) {
+            for (int i=0; i<100; i++) {
                 try {
                     assertTrue(service.isSampUp());
                     return;

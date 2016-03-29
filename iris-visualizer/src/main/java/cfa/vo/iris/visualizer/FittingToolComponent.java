@@ -24,6 +24,7 @@ import cfa.vo.iris.fitting.FittingMainView;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 
+import cfa.vo.sherpa.SherpaClient;
 import org.astrogrid.samp.client.MessageHandler;
 
 import java.io.File;
@@ -41,6 +42,7 @@ public class FittingToolComponent implements IrisComponent {
     CustomModelsManager customManager;
     private CustomModelsManagerView customManagerView;
     private File customRootDir;
+    private SherpaClient sherpaClient;
     private final String CUSTOM_PATH = File.separator + "analysis" + File.separator + "custom_models";
     private static final Logger LOGGER = Logger.getLogger(FittingToolComponent.class.getName());
 
@@ -48,6 +50,7 @@ public class FittingToolComponent implements IrisComponent {
     public void init(IrisApplication irisApplication, IWorkspace iWorkspace) {
         this.app = irisApplication;
         this.ws = iWorkspace;
+        sherpaClient = new SherpaClient(irisApplication.getSampService());
         customRootDir = new File(app.getConfigurationDir() + CUSTOM_PATH);
         try {
             customManager = new CustomModelsManager(customRootDir);
@@ -139,7 +142,7 @@ public class FittingToolComponent implements IrisComponent {
                                 NarrowOptionPane.showMessageDialog(null, "No SEDs open. Please start building SEDs using the SED builder", "Error", NarrowOptionPane.ERROR_MESSAGE);
                                 return;
                             }
-                            view = new FittingMainView(sed, customManager);
+                            view = new FittingMainView(sed, customManager, sherpaClient);
                             ws.getDesktop().add(view);
                             GUIUtils.moveToFront(view);
                         } catch (Exception ex) {

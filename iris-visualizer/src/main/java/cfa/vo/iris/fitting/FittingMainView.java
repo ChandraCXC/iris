@@ -19,13 +19,16 @@ import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SedListener;
 import cfa.vo.iris.fitting.custom.CustomModelsManager;
+import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.fitting.custom.ModelsListener;
 import cfa.vo.iris.gui.widgets.ModelViewerPanel;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.utils.IPredicate;
 import cfa.vo.sherpa.IFitConfiguration;
+import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.models.Model;
 import cfa.vo.sherpa.models.ModelFactory;
+import cfa.vo.sherpa.models.ModelImpl;
 import cfa.vo.sherpa.models.Parameter;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Stats;
@@ -37,6 +40,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class FittingMainView extends javax.swing.JInternalFrame implements SedListener {
     private ModelViewerPanel modelViewerPanel;
@@ -44,19 +48,24 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
     private String sedId;
     private ModelsTreeModel model;
     private CustomModelsManager modelsManager;
+    private SherpaClient sherpaClient;
     private ModelFactory factory = new ModelFactory();
     private StringPredicate predicate = new StringPredicate("");
-    private IFitConfiguration fit = new FitConfigurationBean();
+    private FitConfigurationBean fit = new FitConfigurationBean();
+    private Logger logger = Logger.getLogger(FittingMainView.class.getName());
     public static final String PROP_FIT = "fit";
     public static final String PROP_SEDID = "sedId";
     public final String DEFAULT_DESCRIPTION = "Double click on a Component to add it to the list of selected Components.";
+    public final String CUSTOM_DESCRIPTION = "User Model";
     
     /**
      * Creates new form FittingMainView
      * @param sed
+     * @param sherpaClient
      */
-    public FittingMainView(ExtSed sed, CustomModelsManager modelsManager) {
+    public FittingMainView(ExtSed sed, CustomModelsManager modelsManager, SherpaClient sherpaClient) {
         this.modelsManager = modelsManager;
+        this.sherpaClient = sherpaClient;
         initComponents();
         setUpModelViewerPanel(sed);
         setUpAvailableModelsTree();
@@ -66,7 +75,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         pack();
     }
 
-    public IFitConfiguration getFit() {
+    public FitConfigurationBean getFit() {
         return fit;
     }
 
@@ -122,17 +131,30 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
                 if (selPath != null) {
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode) selPath.getLastPathComponent();
                     if (node.isLeaf()) {
-                        try {
-                            Model m = (Model) node.getUserObject();
+                        Object leaf = node.getUserObject();
+                        if (Model.class.isInstance(leaf)) {
+                            Model m = (Model) leaf;
                             descriptionArea.setText(m.getDescription());
-                        } catch (ClassCastException ex) {
-                            descriptionArea.setText(DEFAULT_DESCRIPTION);
+                            if (e.getClickCount() == 2) {
+                                logger.info("Added model " + m);
+                                String id = sherpaClient.createId();
+                                Model toAdd = new ModelImpl(m, id);
+                                getFit().addModel(toAdd, id);
+                                modelViewerPanel.setFitConfiguration(getFit());
+                            }
+                        } else {
+                            DefaultCustomModel m = (DefaultCustomModel) leaf;
+                            if (e.getClickCount() == 2) {
+                                logger.info("Added user model " + m);
+                                getFit().addUserModel(m, sherpaClient.createId());
+                                modelViewerPanel.setFitConfiguration(getFit());
+                            }
+                            descriptionArea.setText(CUSTOM_DESCRIPTION);
                         }
                     } else {
                         descriptionArea.setText(DEFAULT_DESCRIPTION);
                     }
                 }
-
             }
         });
         rootPane.setDefaultButton(searchButton);
