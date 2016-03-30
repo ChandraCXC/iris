@@ -25,9 +25,6 @@ import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.test.unit.StubWorkspace;
 import cfa.vo.sedlib.Segment;
-import cfa.vo.sedlib.io.SedFormat;
-import cfa.vo.testdata.TestData;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +42,7 @@ public class VisualizerComponentPreferencesTest {
         assertEquals(0, prefs.getSelectedLayers().size());
         assertEquals(0, prefs.getSedPreferences().size());
         assertEquals(0, prefs.getSelectedLayers().size());
-        assertNull(prefs.getSelectedSedPreferences());
+        assertNull(prefs.getSedPreferences(sed));
         
         // Add SED
         prefs.update(sed);

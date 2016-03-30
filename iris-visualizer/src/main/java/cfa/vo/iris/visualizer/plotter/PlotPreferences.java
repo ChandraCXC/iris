@@ -18,6 +18,7 @@ package cfa.vo.iris.visualizer.plotter;
 
 import java.util.HashMap;
 import java.util.Map;
+import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
 
 public class PlotPreferences {
     
@@ -30,16 +31,64 @@ public class PlotPreferences {
     public static final String Y_LABEL = "ylabel";
     public static final String X_LOG = "xlog";
     public static final String Y_LOG = "ylog";
+    public static final String AUTO_FIX = "auto_fix"; // not STILTS
+    public static final String X_MAX = "xmax";
+    public static final String X_MIN = "xmin";
+    public static final String Y_MAX = "ymax";
+    public static final String Y_MIN = "ymin";
+    public static final String PLOT_TYPE = "plot_type"; // not STILTS
+    //public static final String SHOW_ERRORS = "show_errors"; // not STILTS
+    
+    // for the plot legend
+    public static final String SHOW_LEGEND = "legend";
+    public static final String LEGEND_BORDER = "legborder";
+    public static final String LEGEND_OPAQUE = "legopaque";
+    public static final String LEGEND_POSITION = "legpos";
+    
+    private PlaneAspect aspect; // not STILTS. Do not add to the prefs map!
+                                // It'll cause an error in STILTS.
+    
+    // Plot Types - Iris-specific, not STILTS.
+    public enum PlotType {
+        LOG("log", true, true),
+        LINEAR("linear", false, false),
+        X_LOG("xlog", true, false),
+        Y_LOG("ylog", false, true);
+        
+        public String name;
+        public boolean xlog;
+        public boolean ylog;
+    
+        private PlotType(String name, boolean x, boolean y) {
+            this.name = name;
+            this.xlog = x;
+            this.ylog = y;
+        }
+    }
     
     /**
      * 
      * @return default plot preferences
      */
     public static PlotPreferences getDefaultPlotPreferences() {
+        
+        // for the aspect
+        double[] xlimits = new double[] {0, 10};
+        double[] ylimits = new double[] {0, 10};
+        PlaneAspect aspect = new PlaneAspect(xlimits, ylimits);
+        
         return new PlotPreferences()
                 .setXlog(true)
                 .setYlog(true)
-                .setShowGrid(true);
+                .setShowGrid(true)
+                .setFixed(false)
+//                .setShowErrors(true)
+                .setPlotType(PlotType.LOG)
+                .setShowLegend(true)
+                .setLegendPosition(1.0, 1.0)
+                .setLegendOpaque(false)
+                .setLegendBorder(true)
+                .setAspect(aspect);
     }
     
     private Map<String, Object> preferences;
@@ -95,6 +144,113 @@ public class PlotPreferences {
     
     public boolean getYlog() {
         return (boolean) this.preferences.get(Y_LOG);
+    }
+    
+    public PlotPreferences setFixed(boolean arg1) {
+        this.preferences.put(AUTO_FIX, arg1);
+        return this;
+    }
+    
+    public boolean getFixed() {
+        return (boolean) this.preferences.get(AUTO_FIX);
+    }
+    
+    public PlotPreferences setXmax(double arg1) {
+        this.preferences.put(X_MAX, arg1);
+        return this;
+    }
+    
+    public double getXmax() {
+        return (double) this.preferences.get(X_MAX);
+    }
+    
+    public PlotPreferences setXmin(double arg1) {
+        this.preferences.put(X_MIN, arg1);
+        return this;
+    }
+    
+    public double getXmin() {
+        return (double) this.preferences.get(X_MIN);
+    }
+    
+    public PlotPreferences setYmax(double arg1) {
+        this.preferences.put(Y_MAX, arg1);
+        return this;
+    }
+    
+    public double getYmax() {
+        return (double) this.preferences.get(Y_MAX);
+    }
+    
+    public PlotPreferences setYmin(double arg1) {
+        this.preferences.put(Y_MIN, arg1);
+        return this;
+    }
+    
+    public double getYmin() {
+        return (double) this.preferences.get(Y_MIN);
+    }
+    
+    public PlotPreferences setPlotType(PlotType arg1) {
+        this.preferences.put(PLOT_TYPE, arg1);
+        setXlog(arg1.xlog);
+        setYlog(arg1.ylog);
+        return this;
+    }
+    
+    public PlotPreferences setAspect(PlaneAspect arg1) {
+        // don't add it to the prefs map; it'll cause an error in STILTS
+        this.aspect = arg1;
+        return this;
+    }
+    
+    public PlaneAspect getAspect() {
+        return aspect;
+    }
+    
+    public PlotType getPlotType() {
+        return (PlotType) preferences.get(PLOT_TYPE);
+    }
+    
+//    public PlotPreferences setShowErrors(boolean arg1) {
+//        this.preferences.put(SHOW_ERRORS, arg1);
+//        return this;
+//    }
+    
+    public PlotPreferences setShowLegend(boolean arg1) {
+        this.preferences.put(SHOW_LEGEND, arg1);
+        return this;
+    }
+    
+    public boolean getShowLegend() {
+        return (boolean) this.preferences.get(SHOW_LEGEND);
+    }
+    
+    public PlotPreferences setLegendOpaque(boolean arg1) {
+        this.preferences.put(LEGEND_OPAQUE, arg1);
+        return this;
+    }
+    
+    public boolean getLegendOpaque() {
+        return (boolean) this.preferences.get(LEGEND_OPAQUE);
+    }
+    
+    public PlotPreferences setLegendPosition(double xratio, double yratio) {
+        this.preferences.put(LEGEND_POSITION, new double[] {xratio, yratio});
+        return this;
+    }
+    
+    public double[] getLegendPostion() {
+        return (double[]) this.preferences.get(LEGEND_POSITION);
+    }
+    
+    public PlotPreferences setLegendBorder(boolean arg1) {
+        this.preferences.put(LEGEND_BORDER, arg1);
+        return this;
+    }
+    
+    public boolean getLegendBorder() {
+        return (boolean) this.preferences.get(LEGEND_BORDER);
     }
 }
 
