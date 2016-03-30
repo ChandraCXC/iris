@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cfa.vo.iris.visualizer.filters;
+package cfa.vo.iris.visualizer.masks;
 
 import java.util.BitSet;
 
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 
-public class NullFilter implements Filter {
+public class NullMask implements Mask {
     
     @Override
-    public BitSet getFilteredRows(IrisStarTable table) {
+    public BitSet getMaskedRows(IrisStarTable table) {
         BitSet bitSet = new BitSet();
         return bitSet;
     }
