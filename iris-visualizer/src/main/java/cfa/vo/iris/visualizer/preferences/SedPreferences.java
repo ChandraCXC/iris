@@ -29,8 +29,10 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.ColorPalette;
 import cfa.vo.iris.visualizer.plotter.HSVColorPalette;
 import cfa.vo.iris.units.UnitsException;
+import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
-import cfa.vo.iris.visualizer.stil.IrisStarTableAdapter;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedNoDataException;
 
@@ -45,6 +47,7 @@ public class SedPreferences {
     final Map<MapKey, SegmentLayer> segmentPreferences;
     final ExtSed sed;
     final ColorPalette colors;
+    final PlotPreferences plotPreferences;
     
     private String xunits;
     private String yunits;
@@ -54,6 +57,7 @@ public class SedPreferences {
         this.segmentPreferences = Collections.synchronizedMap(new LinkedHashMap<MapKey, SegmentLayer>());
         this.adapter = adapter;
         this.colors = new HSVColorPalette();
+        this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
         
         refresh();
     }
@@ -101,16 +105,19 @@ public class SedPreferences {
      */
     void addSegment(Segment seg) {
         
+        // Do not keep track of empty segments
+        if (seg == null) return;
+        
         MapKey me = new MapKey(seg);
         
         // If the segment is already in the map remake the star table
         if (segmentPreferences.containsKey(me)) {
-            segmentPreferences.get(me).setInSource(adapter.convertStarTable(seg));
+            segmentPreferences.get(me).setInSource(convertSegment(seg));
             return;
         }
         
         // Ensure that the layer has a unique identifier in the list of segments
-        SegmentLayer layer = new SegmentLayer(adapter.convertStarTable(seg));
+        SegmentLayer layer = new SegmentLayer(convertSegment(seg));
         int count = 0;
         String id = layer.getSuffix();
         while (!isUniqueLayerSuffix(id)) {
@@ -124,17 +131,31 @@ public class SedPreferences {
         String hexColor = ColorPalette.colorToHex(colors.getNextColor());
         layer.setMarkColor(hexColor);
         
+        // update legend settings
+        layer.setLabel(id);
+        
         setUnits(seg, layer);
         
         segmentPreferences.put(me, layer);
+    }
+    
+    private IrisStarTable convertSegment(Segment seg) {
+        // Convert segments with more than 3000 points asynchronously.
+        if (seg.getLength() > 3000) {
+            return adapter.convertSegmentAsync(seg);
+        }
+        return adapter.convertSegment(seg);
     }
     
     /**
      * Removes a segment from the sed preferences map.
      * @param segment
      */
-    void removeSegment(Segment segment) {
-        MapKey me = new MapKey(segment);
+    void removeSegment(Segment seg) {
+        // Do not keep track of empty segments
+        if (seg == null) return;
+        
+        MapKey me = new MapKey(seg);
         segmentPreferences.remove(me);
     }
     
@@ -215,6 +236,14 @@ public class SedPreferences {
             layer.setYUnits(yunits);
         }
     }
+    
+    /**
+     * @return
+     *  Top level plot preferences for the stil plotter.
+     */
+    public PlotPreferences getPlotPreferences() {
+        return plotPreferences;
+    }
 
     /**
      * Segment equality is based on flux and spectral axis values, whereas we
@@ -249,5 +278,20 @@ public class SedPreferences {
         public int hashCode() {
             return segment.hashCode();
         }
+    }
+    
+    /**
+     * Strip an ID of its _ERROR suffix.
+     * @param id the ID to strip "_ERROR" from
+     */
+    private String strip(String id) {
+        
+        int index = id.lastIndexOf("_");
+        
+        // if _ERROR not found, return the unmodified id.
+        if (index < 0) {
+            return id;
+        }
+        return id.substring(0, index);
     }
 }

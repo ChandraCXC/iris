@@ -24,6 +24,7 @@ import javax.swing.table.AbstractTableModel;
 
 import org.apache.commons.lang.StringUtils;
 
+import cfa.vo.iris.utils.UTYPE;
 import uk.ac.starlink.table.DescribedValue;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.ValueInfo;
@@ -83,7 +84,7 @@ public class IrisMetadataTableModel extends AbstractTableModel {
         columnNames = new String[columnHeaders.length + 1];
         columnNames[0] = "name";
         for (int i=1; i<columnNames.length; i++) {
-            columnNames[i] = columnHeaders[i-1].name;
+            columnNames[i] = columnHeaders[i-1].columnName;
         }
     }
     
@@ -132,11 +133,22 @@ public class IrisMetadataTableModel extends AbstractTableModel {
     private static class ColumnHeader {
         
         public String name;
+        public String columnName;
         public ValueInfo inf;
         
         public ColumnHeader(DescribedValue val) {
             this.inf = val.getInfo();
             this.name = inf.getName();
+            
+            if (val.getInfo() != null && 
+                StringUtils.isNotBlank(val.getInfo().getUtype()))
+            {
+                String utype = UTYPE.trimPrefix(val.getInfo().getUtype());
+                this.columnName = utype;
+            }
+            else {
+                this.columnName = name;
+            }
         }
         
         @Override
@@ -146,20 +158,22 @@ public class IrisMetadataTableModel extends AbstractTableModel {
             
             ColumnHeader o = (ColumnHeader) other;
             
-            if (!StringUtils.equalsIgnoreCase(name, o.name)) {
+            // Different classes cannot be equal
+            if (!inf.getContentClass().equals(o.inf.getContentClass())) {
                 return false;
             }
-            // TODO: Should these be based on more than just name?
-//            if (!inf.getContentClass().equals(o.inf.getContentClass())) {
-//                return false;
-//            }
-//            if (StringUtils.equalsIgnoreCase(inf.getUCD(), o.inf.getUCD())) {
-//                return false;
-//            }
-//            if (StringUtils.equalsIgnoreCase(inf.getUtype(), o.inf.getUtype())) {
-//                return false;
-//            }
-            return true;
+            
+            // If utypes are equal they are equal
+            if (UTYPE.compareUtypes(inf.getUtype(), o.inf.getUtype())) {
+                return true;
+            }
+            
+            // If names are equal, they are equal
+            if (StringUtils.equalsIgnoreCase(name, o.name)) {
+                return true;
+            }
+            
+            return false;
         }
         
         @Override

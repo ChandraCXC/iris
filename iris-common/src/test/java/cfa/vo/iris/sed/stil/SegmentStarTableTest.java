@@ -32,34 +32,37 @@ public class SegmentStarTableTest {
         ColumnIdentifier id = new ColumnIdentifier(table);
         
         assertTrue(!StringUtils.isEmpty(table.getName()));
+        assertEquals("3C 273", table.getName());
         assertEquals(455, table.getRowCount());
         assertTrue(table.isRandom());
         
-        assertEquals(new Double("6.17E23"), (Double) table.getCell(0, 0), 100);
-        assertEquals(new Double("6.17E23"), (Double) table.getRow(0)[0], 100);
+        assertEquals(new Double("6.17E23"), (Double) table.getCell(0, 1), 100);
+        assertEquals(new Double("6.17E23"), (Double) table.getRow(0)[1], 100);
 
-        assertEquals(3, table.getColumnCount());
-        assertEquals(Column.SPECTRAL_COL.name(), table.getColumnInfo(0).getName());
-        assertEquals(Column.FLUX_COL.name(), table.getColumnInfo(1).getName());
-        assertEquals(Column.FLUX_ERR_HI.name(), table.getColumnInfo(2).getName());
+        assertEquals(5, table.getColumnCount());
+        assertEquals(Column.Segment_Id.name(), table.getColumnInfo(0).getName());
+        assertEquals(Column.Spectral_Value.name(), table.getColumnInfo(1).getName());
+        assertEquals(Column.Flux_Value.name(), table.getColumnInfo(2).getName());
+        assertEquals(Column.Original_Flux_Value.name(), table.getColumnInfo(3).getName());
+        assertEquals(Column.Flux_Error.name(), table.getColumnInfo(4).getName());
         assertEquals(new XUnits("Hz"), table.getSpecUnits());
         assertEquals(new YUnits("Jy"), table.getFluxUnits());
         
-        int col = id.getColumnIndex(Column.FLUX_ERR_HI.name());
+        int col = id.getColumnIndex(Column.Flux_Error.name());
         assertTrue(col >= 0);
         assertEquals(new Double("4.42E-12"), (Double) table.getCell(0, col));
         
         RowSequence seq = table.getRowSequence();
         assertTrue(seq.next());
-        assertEquals(new Double("6.17E23"), (Double) seq.getRow()[0]);
+        assertEquals(new Double("6.17E23"), (Double) seq.getRow()[1]);
         
         // Basic unit conversion test
         table.setSpecUnits(new XUnits('\u03BC' + "m")); // microns
         table.setFluxUnits(new YUnits("ergs/cm**2/s/a"));
         assertEquals(new Double("4.85E-10"), (Double) table.getSpecValues()[0], 1E-12);
-        assertEquals(new Double("4.85E-10"), (Double) table.getCell(0, 0), 1E-12);
+        assertEquals(new Double("4.85E-10"), (Double) table.getCell(0, 1), 1E-12);
         
-        col = id.getColumnIndex(Column.FLUX_ERR_HI.name());
+        col = id.getColumnIndex(Column.Flux_Error.name());
         assertTrue(col >= 0);
         assertEquals(new Double("5.61E-6"), (Double) table.getCell(0, col), 1E-8);
     }

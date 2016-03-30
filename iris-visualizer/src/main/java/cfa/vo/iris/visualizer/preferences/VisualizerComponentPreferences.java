@@ -21,6 +21,9 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.events.MultipleSegmentEvent;
 import cfa.vo.iris.events.MultipleSegmentListener;
@@ -33,7 +36,9 @@ import cfa.vo.iris.events.SegmentListener;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
-import cfa.vo.iris.visualizer.stil.IrisStarTableAdapter;
+import cfa.vo.iris.visualizer.stil.tables.ColumnInfoMatcher;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
+import cfa.vo.iris.visualizer.stil.tables.UtypeColumnInfoMatcher;
 import cfa.vo.sedlib.Segment;
 
 /**
@@ -43,8 +48,11 @@ import cfa.vo.sedlib.Segment;
  */
 public class VisualizerComponentPreferences {
     
+    private static final ExecutorService visualizerExecutor = Executors.newFixedThreadPool(5);
+    
     PlotPreferences plotPreferences;
     IrisStarTableAdapter adapter;
+    ColumnInfoMatcher columnInfoMatcher;
     final IWorkspace ws;
     final Map<ExtSed, SedPreferences> sedPreferences;
     
@@ -52,7 +60,7 @@ public class VisualizerComponentPreferences {
         this.ws = ws;
         
         // TODO: change serialization when we have something that works
-        this.adapter = new IrisStarTableAdapter();
+        this.adapter = new IrisStarTableAdapter(visualizerExecutor);
         
         // Create and add preferences for the SED
         this.sedPreferences = Collections.synchronizedMap(new IdentityHashMap<ExtSed, SedPreferences>());
@@ -60,8 +68,15 @@ public class VisualizerComponentPreferences {
             update(sed);
         }
         
+        // TODO: Should this be in preferences?
+        this.columnInfoMatcher = new UtypeColumnInfoMatcher();
+        
         // Plotter global preferences
-        this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
+        if (this.sedPreferences.isEmpty()) {
+            this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
+        } else {
+            this.plotPreferences = this.getSelectedSedPreferences().getPlotPreferences();
+        }
         
         // Add SED listener
         addSedListeners();
@@ -72,13 +87,21 @@ public class VisualizerComponentPreferences {
         SedEvent.getInstance().add(new VisualizerSedListener());
         MultipleSegmentEvent.getInstance().add(new VisualizerMultipleSegmentListener());
     }
-    
+
     /**
      * @return
      *  Top level plot preferences for the stil plotter.
      */
     public PlotPreferences getPlotPreferences() {
         return plotPreferences;
+    }
+    
+    /**
+     * @return
+     *  ColumnInfoMatcher used in stacking star tables.
+     */
+    public ColumnInfoMatcher getColumnInfoMatcher() {
+        return columnInfoMatcher;
     }
 
     /**
@@ -136,7 +159,7 @@ public class VisualizerComponentPreferences {
         } else {
             sedPreferences.put(sed, new SedPreferences(sed, adapter));
         }
-        fire(sed, VisualizerCommand.RESET);
+        //fire(sed, VisualizerCommand.RESET);
     }
     
     /**
@@ -145,6 +168,9 @@ public class VisualizerComponentPreferences {
      * @param segment
      */
     public void update(ExtSed sed, Segment segment) {
+        // Do nothing for null segments
+        if (segment == null) return;
+        
         if (sedPreferences.containsKey(sed)) {
             sedPreferences.get(sed).addSegment(segment);
         } else {
@@ -152,6 +178,7 @@ public class VisualizerComponentPreferences {
             // SedPrefrences since it's assumed to be attached to the SED.
             sedPreferences.put(sed, new SedPreferences(sed, adapter));
         }
+        
         fire(sed, VisualizerCommand.RESET);
     }
     
@@ -162,8 +189,11 @@ public class VisualizerComponentPreferences {
      */
     public void update(ExtSed sed, List<Segment> segments) {
         if (sedPreferences.containsKey(sed)) {
-            for (Segment segment : segments)
+            for (Segment segment : segments) {
+                // Do nothing for null segments
+                if (segment == null) continue;
                 sedPreferences.get(sed).addSegment(segment);
+            }
         } else {
             // The segment will automatically be serialized and attached the the 
             // SedPrefrences since it's assumed to be attached to the SED.
@@ -182,7 +212,7 @@ public class VisualizerComponentPreferences {
         }
         sedPreferences.get(sed).removeAll();
         sedPreferences.remove(sed);
-        fire(sed, VisualizerCommand.RESET);
+        //fire(sed, VisualizerCommand.RESET);
     }
     
     /**
@@ -191,6 +221,9 @@ public class VisualizerComponentPreferences {
      * @param segment
      */
     public void remove(ExtSed sed, Segment segment) {
+        // Do nothing for null segments
+        if (segment == null) return;
+        
         if (sedPreferences.containsKey(sed)) {
             sedPreferences.get(sed).removeSegment(segment);
         }
@@ -205,8 +238,11 @@ public class VisualizerComponentPreferences {
      */
     public void remove(ExtSed sed, List<Segment> segments) {
         if (sedPreferences.containsKey(sed)) {
-            for (Segment segment : segments)
+            for (Segment segment : segments) {
+                // Do nothing for null segments
+                if (segment == null) continue;
                 sedPreferences.get(sed).removeSegment(segment);
+            }
         }
         
         fire(sed, VisualizerCommand.RESET);
@@ -225,7 +261,15 @@ public class VisualizerComponentPreferences {
         
         @Override
         public void process(ExtSed sed, SedCommand payload) {
-            
+            try {
+                processNotification(sed, payload);
+            } catch (Exception e) {
+                // TODO: This happens asynchronously, what should we do with exceptions?
+                e.printStackTrace();
+            }
+        }
+        
+        private void processNotification(ExtSed sed, SedCommand payload) {
             // Only take actions if an SED was added, removed, or selected.
             // Rely on Segment events to pick up changes within an SED.
             if (SedCommand.ADDED.equals(payload))
@@ -234,13 +278,13 @@ public class VisualizerComponentPreferences {
             }
             else if (SedCommand.REMOVED.equals(payload)) {
                 remove(sed);
-            }
-            if (SedCommand.SELECTED.equals(payload)) {
+            } 
+            else if (SedCommand.SELECTED.equals(payload)) {
                 fire(sed, VisualizerCommand.SELECTED);
             }
             else {
                 // Doesn't merit a full reset, this is basically just here for SED name changes
-                fire(sed, VisualizerCommand.REDRAW);
+                fire(sed, VisualizerCommand.REDRAW); // should remove this
             }
         }
     }
@@ -249,6 +293,16 @@ public class VisualizerComponentPreferences {
 
         @Override
         public void process(Segment segment, SegmentPayload payload) {
+            try {
+                processNotification(segment, payload);
+            } catch (Exception e) {
+                // TODO: This happens asynchronously, what should we do with exceptions?
+                e.printStackTrace();
+            }
+        }
+        
+        private void processNotification(Segment segment, SegmentPayload payload) {
+            
             ExtSed sed = payload.getSed();
             SedCommand command = payload.getSedCommand();
             
@@ -267,9 +321,19 @@ public class VisualizerComponentPreferences {
     }
     
     private class VisualizerMultipleSegmentListener implements MultipleSegmentListener {
-
+        
         @Override
         public void process(java.util.List<Segment> segments, SegmentPayload payload) {
+            try {
+                processNotification(segments, payload);
+            } catch (Exception e) {
+                // TODO: This happens asynchronously, what should we do with
+                // exceptions?
+                e.printStackTrace();
+            }
+        }
+        
+        private void processNotification(java.util.List<Segment> segments, SegmentPayload payload) {
             ExtSed sed = payload.getSed();
             SedCommand command = payload.getSedCommand();
             
@@ -284,6 +348,9 @@ public class VisualizerComponentPreferences {
             else if (SedCommand.REMOVED.equals(command)) {
                 remove(sed, segments);
             }
+            // update plot preferences
+            VisualizerComponentPreferences.this.plotPreferences = 
+                    VisualizerComponentPreferences.this.getSedPreferences(sed).getPlotPreferences();
         }
     }
 }
