@@ -12,6 +12,7 @@ public class PlotPointSelectionListener extends StilPlotterMouseListener
 
     @Override
     public void pointSelected(PointSelectionEvent evt) {
+        // TODO: Something better than this
         System.out.println(ReflectionToStringBuilder.toString(evt));
     }
 

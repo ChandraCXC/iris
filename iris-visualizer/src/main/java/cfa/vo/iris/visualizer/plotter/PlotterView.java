@@ -35,7 +35,6 @@ import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
-import javax.swing.plaf.basic.BasicArrowButton;
 
 public class PlotterView extends JInternalFrame {
     
@@ -45,8 +44,6 @@ public class PlotterView extends JInternalFrame {
     
     private IWorkspace ws;
     private IrisApplication app;
-    private final VisualizerComponentPreferences preferences;
-
     // Plotting Components
     // StilPlotter plotter initialized in initComponents()
     private JInternalFrame residuals;
@@ -54,8 +51,8 @@ public class PlotterView extends JInternalFrame {
     private UnitsManagerFrame unitsManagerFrame;
     
     // Plot mouse coordinate locations
-    private String xcoord;
-    private String ycoord;
+    private String xcoord = "0E0";
+    private String ycoord = "0E0";
     
     private static double ZOOM_SCALE = 0.5;
     
@@ -85,9 +82,7 @@ public class PlotterView extends JInternalFrame {
         
         this.ws = ws;
         this.app = app;
-        this.preferences = preferences;
-        
-        this.metadataBrowser = new MetadataBrowserMainView(ws, preferences);       
+        this.metadataBrowser = new MetadataBrowserMainView(ws, preferences);
         this.residuals = new JInternalFrame();
         
         initComponents();
