@@ -518,8 +518,6 @@ public class PlotterView extends JInternalFrame {
         
         if (fixed)
            plotPrefs.setFixed(true);
-        
-        metadataBrowser.resetData();
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void mntmExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mntmExportActionPerformed
