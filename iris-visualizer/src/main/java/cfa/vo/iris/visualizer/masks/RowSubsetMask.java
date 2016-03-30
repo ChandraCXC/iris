@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cfa.vo.iris.visualizer.filters;
+package cfa.vo.iris.visualizer.masks;
 
 import java.util.BitSet;
 
@@ -25,13 +25,13 @@ import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
  * be filtered in the corresponding table.
  *
  */
-public class RowSubsetFilter implements Filter {
+public class RowSubsetMask implements Mask {
     
     private int size;
     private BitSet mask;
     private IrisStarTable table;
     
-    public RowSubsetFilter(int[] rows, IrisStarTable table) {
+    public RowSubsetMask(int[] rows, IrisStarTable table) {
         this(rows, 0, table);
     }
     
@@ -44,7 +44,7 @@ public class RowSubsetFilter implements Filter {
      * @param startIndex
      * @param table
      */
-    public RowSubsetFilter(int[] rows, int startIndex, IrisStarTable table) {
+    public RowSubsetMask(int[] rows, int startIndex, IrisStarTable table) {
         this.table = table;
         
         // The size of this filter is the size of the underlying plot table.
@@ -55,7 +55,7 @@ public class RowSubsetFilter implements Filter {
     }
     
     @Override
-    public BitSet getFilteredRows(IrisStarTable table) {
+    public BitSet getMaskedRows(IrisStarTable table) {
         // These filters only apply to a single star table.
         if (this.table == table) {
             return mask;

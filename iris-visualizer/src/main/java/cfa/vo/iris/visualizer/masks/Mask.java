@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cfa.vo.iris.visualizer.filters;
+package cfa.vo.iris.visualizer.masks;
 
 import java.util.BitSet;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 
-public interface Filter {
+public interface Mask {
     
-    public abstract BitSet getFilteredRows(IrisStarTable table);
+    public abstract BitSet getMaskedRows(IrisStarTable table);
     
     public abstract long cardinality();
     
