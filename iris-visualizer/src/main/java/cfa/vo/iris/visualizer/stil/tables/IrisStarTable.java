@@ -23,8 +23,8 @@ import java.util.concurrent.Future;
 
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.units.UnitsException;
-import cfa.vo.iris.visualizer.filters.Filter;
-import cfa.vo.iris.visualizer.filters.RowSubsetFilter;
+import cfa.vo.iris.visualizer.masks.Mask;
+import cfa.vo.iris.visualizer.masks.RowSubsetMask;
 import cfa.vo.utils.Default;
 import uk.ac.starlink.table.DescribedValue;
 import uk.ac.starlink.table.EmptyStarTable;
@@ -55,7 +55,7 @@ public class IrisStarTable extends WrapperStarTable {
     private StarTable segmentDataTable;
     private SegmentStarTable plotterTable;
     
-    private Filter filter;
+    private Mask mask;
     
     IrisStarTable(SegmentStarTable plotterTable, Future<StarTable> dataTableHolder) {
         this(plotterTable, EMPTY_STARTABLE);
@@ -68,7 +68,7 @@ public class IrisStarTable extends WrapperStarTable {
         
         this.segmentDataTable = dataTable;
         this.plotterTable = plotterTable;
-        this.filter = new RowSubsetFilter(new int[0], this);
+        this.mask = new RowSubsetMask(new int[0], this);
         
         setName(plotterTable.getName());
     }
@@ -159,8 +159,8 @@ public class IrisStarTable extends WrapperStarTable {
      * @param filter
      */
     public void applyMasks(int[] rows, int startIndex) {
-        filter.applyMasks(rows, startIndex);
-        plotterTable.setMasked(filter.getFilteredRows(this));
+        mask.applyMasks(rows, startIndex);
+        plotterTable.setMasked(mask.getMaskedRows(this));
     }
     
     /**
@@ -168,8 +168,8 @@ public class IrisStarTable extends WrapperStarTable {
      * @param filter
      */
     public void clearMasks(int[] rows, int startIndex) {
-        filter.clearMasks(rows, startIndex);
-        plotterTable.setMasked(filter.getFilteredRows(this));
+        mask.clearMasks(rows, startIndex);
+        plotterTable.setMasked(mask.getMaskedRows(this));
     }
     
     /**
@@ -177,12 +177,12 @@ public class IrisStarTable extends WrapperStarTable {
      * @param filter
      */
     public void clearMasks() {
-        filter = new RowSubsetFilter(new int[0], this);
-        plotterTable.setMasked(filter.getFilteredRows(this));
+        mask = new RowSubsetMask(new int[0], this);
+        plotterTable.setMasked(mask.getMaskedRows(this));
     }
     
     public BitSet getMasked() {
-        return filter.getFilteredRows(this);
+        return mask.getMaskedRows(this);
     }
     
     /**
@@ -208,7 +208,7 @@ public class IrisStarTable extends WrapperStarTable {
         int rows = (int) getRowCount();
         double[] values = new double[rows];
         
-        BitSet masked = filter.getFilteredRows(this);
+        BitSet masked = mask.getMaskedRows(this);
         int c = 0;
         for (int i=0; i<(int) plotterTable.getRowCount(); i++) {
             // Add only non-masked values.
@@ -225,12 +225,12 @@ public class IrisStarTable extends WrapperStarTable {
      */
     @Override
     public boolean isRandom() {
-        return filter.cardinality() == 0;
+        return mask.cardinality() == 0;
     }
     
     @Override
     public long getRowCount() {
-        return super.getRowCount() - filter.cardinality();
+        return super.getRowCount() - mask.cardinality();
     }
     
     /**
@@ -241,7 +241,7 @@ public class IrisStarTable extends WrapperStarTable {
     @Override
     public RowSequence getRowSequence() throws IOException {
         
-        final BitSet mask = filter.getFilteredRows(this);
+        final BitSet masked = mask.getMaskedRows(this);
         return new WrapperRowSequence( baseTable.getRowSequence() ) {
             int row = -1; // Current row in plotterTable
             int baseLength = (int) plotterTable.getRowCount();
@@ -256,7 +256,7 @@ public class IrisStarTable extends WrapperStarTable {
                 }
                 
                 // Skip over filtered points
-                while (mask.get(row)) {
+                while (masked.get(row)) {
                     // If we are past the last row in the actual table then there 
                     // are no more points
                     if (row + 1 >= baseLength) {
