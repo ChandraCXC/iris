@@ -8,6 +8,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.uispec4j.*;
+import org.uispec4j.interception.PopupMenuInterceptor;
+import org.uispec4j.interception.toolkit.ToolkitDelegate;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -174,5 +176,11 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
 
         modelExpression.setText("foo bar");
         status.textEquals("Invalid Model Expression");
+
+        PopupMenuInterceptor.run(
+                modelsTree.triggerRightClick("test_table.m1"))
+                .getSubMenu("Remove")
+                .click();
+
     }
 }

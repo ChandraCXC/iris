@@ -61,26 +61,10 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
      */
     public ModelViewerPanel(ExtSed sed) {
         initComponents();
-        verifier = new Verifier();
-        modelExpressionField.setInputVerifier(verifier);
-        modelExpressionField.addActionListener(verifier);
+        initVerifier();
         setSed(sed);
         SedEvent.getInstance().add(this);
-        modelsTree.setPreferredSize(null);
-        modelsTree.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                TreePath selPath = modelsTree.getPathForLocation(e.getX(), e.getY());
-                if (selPath != null) {
-                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) selPath.getLastPathComponent();
-                    if (node.isLeaf()) {
-                        Parameter par = (Parameter) node.getUserObject();
-                        setSelectedParameter(par);
-                    }
-                }
-
-            }
-        });
+        initModelsTree();
     }
 
     public void setEditable(boolean isEditable) {
@@ -132,6 +116,82 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
                 statusField.setText(msg);
             }
         });
+    }
+
+    private void initModelsTree() {
+        modelsTree.setPreferredSize(null);
+//        modelsTree.setComponentPopupMenu(makePopupMenu());
+        modelsTree.addMouseListener(makeSelectedParamMouseListener());
+//        modelsTree.addMouseListener(makeRightButtonMouseListener());
+    }
+
+    private MouseAdapter makeSelectedParamMouseListener() {
+        return new MouseAdapter() {
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                checkPopup(e);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                checkPopup(e);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                TreePath selPath = modelsTree.getPathForLocation(e.getX(), e.getY());
+                if (selPath != null) {
+                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) selPath.getLastPathComponent();
+                    if (node.isLeaf()) {
+                        Parameter par = (Parameter) node.getUserObject();
+                        setSelectedParameter(par);
+                    } else {
+                        checkPopup(e);
+                    }
+                }
+            }
+
+            private void checkPopup(MouseEvent e) {
+                TreePath selPath = modelsTree.getPathForLocation(e.getX(), e.getY());
+                if (selPath != null) {
+                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) selPath.getLastPathComponent();
+                    Object obj = node.getUserObject();
+                    if (!node.isLeaf() && obj instanceof Model && e.isPopupTrigger()) {
+                        makePopupMenu().show(modelsTree, e.getX(), e.getY());
+                    }
+                }
+            }
+        };
+    }
+
+    private JPopupMenu makePopupMenu() {
+        JPopupMenu menu = new JPopupMenu();
+        JMenuItem item = new JMenuItem("Remove");
+//        item.addActionListener(makeDeleteActionListener());
+        menu.add(item);
+        return menu;
+    }
+
+//    private ActionListener makeDeleteActionListener() {
+//        return new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent arg0) {
+//                if(selectedNode != null){
+//                    logger.info("Deleting " + selectedNode);
+//                    DefaultMutableTreeNode n = new DefaultMutableTreeNode("added");
+//                    selectedNode.add(n);
+//                    modelsTree.repaint();
+//                    modelsTree.updateUI();
+//                }
+//            }
+//        };
+//    }
+
+    private void initVerifier() {
+        verifier = new Verifier();
+        modelExpressionField.setInputVerifier(verifier);
+        modelExpressionField.addActionListener(verifier);
     }
 
     private String getValue(Parameter par, String name) {
