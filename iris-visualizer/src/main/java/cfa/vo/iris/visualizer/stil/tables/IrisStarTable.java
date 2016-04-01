@@ -16,6 +16,7 @@
 
 package cfa.vo.iris.visualizer.stil.tables;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -111,5 +112,22 @@ public class IrisStarTable extends WrapperStarTable {
     
     public String getYUnits() {
         return plotterTable.getFluxUnits().toString();
+    }
+    
+    /**
+     * Returns the row start index for the specified table in the list of StarTables.
+     */
+    public static int getTableStartIndex(List<IrisStarTable> tables, IrisStarTable table) {
+        // TODO: Handle masking when we merge this.
+        int index = 0;
+        
+        for (IrisStarTable t : tables) {
+            if (t.equals(table)) {
+                return index;
+            }
+            index = index + ((int) table.getRowCount());
+        }
+        
+        return -1;
     }
 }

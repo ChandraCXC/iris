@@ -21,6 +21,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
+import java.awt.Rectangle;
 
 import org.apache.commons.lang.StringUtils;
 import cfa.vo.iris.utils.UTYPE;
@@ -85,6 +86,12 @@ public class IrisStarJTable extends StarJTable {
                 c.setHeaderValue(utype);
             }
         }
+    }
+    
+    public void selectRowIndex(int irow) {
+        // TODO: Handle sorting when we add it.
+        this.selectionModel.addSelectionInterval(irow, irow);
+        this.scrollRectToVisible(new Rectangle(this.getCellRect(irow, 0, true)));
     }
     
     protected class StarJTableHeader extends JTableHeader {

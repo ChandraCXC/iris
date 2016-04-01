@@ -7,7 +7,7 @@ public abstract class StilPlotterMouseListener {
     PlotterView plotterView;
     boolean active = true;
     
-    public abstract void activate(PlotDisplay display);
+    public abstract void activate(PlotDisplay<?,?> display);
 
     public PlotterView getPlotterView() {
         return plotterView;

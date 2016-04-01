@@ -25,6 +25,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListCellRenderer;
 
+import org.apache.commons.lang.ArrayUtils;
+
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
@@ -157,6 +159,23 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     /*
      * getters and setters
      */
+    
+    public void addRowToSelection(int starTableIndex, int irow) {
+        
+        // If the star table isn't currently selected, add it to the selection
+        int[] selection = starTableList.getSelectedIndices();
+        if (ArrayUtils.indexOf(selection, starTableIndex) < 0) {
+            starTableList.setSelectedIndices(ArrayUtils.add(selection, starTableIndex));
+        }
+        
+        // TODO: This will be complicated by masking and sorting, those methods should be taken
+        // care of by Iris star tables, and the sorting model in our jtables.
+        
+        // Select the correct row
+        IrisStarTable selectedTable = selectedTables.get(starTableIndex);
+        int index = IrisStarTable.getTableStartIndex(selectedStarTables, selectedTable);
+        plotterStarJTable.selectRowIndex(index + irow);
+    }
     
     public ExtSed getSelectedSed() {
         return selectedSed;
