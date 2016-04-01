@@ -389,6 +389,13 @@
       </SubComponents>
     </Container>
     <Container class="cfa.vo.iris.visualizer.stil.StilPlotter" name="plotter">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="plotter" noResource="true"/>
+      </Properties>
+      <AccessibilityProperties>
+        <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="plotter"/>
+        <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value=""/>
+      </AccessibilityProperties>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
         <Property name="columns" type="int" value="0"/>

@@ -416,6 +416,8 @@ public class PlotterView extends JInternalFrame {
                 .addContainerGap())
         );
 
+        plotter.setName("plotter"); // NOI18N
+
         menuBar.setName("menuBar"); // NOI18N
 
         mnF.setText("File");
@@ -523,6 +525,9 @@ public class PlotterView extends JInternalFrame {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        plotter.getAccessibleContext().setAccessibleName("plotter");
+        plotter.getAccessibleContext().setAccessibleDescription("");
+
         bindingGroup.bind();
 
         pack();
@@ -595,7 +600,6 @@ public class PlotterView extends JInternalFrame {
     private javax.swing.JRadioButtonMenuItem mntmYlog;
     private javax.swing.ButtonGroup plotTypeButtonGroup;
     private cfa.vo.iris.visualizer.stil.StilPlotter plotter;
-    private cfa.vo.iris.gui.JButtonArrow right;
     private javax.swing.JSpinner secondaryPlotOptions;
     private javax.swing.JToggleButton tglbtnShowHideResiduals;
     private javax.swing.JTextField txtXposition;

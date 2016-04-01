@@ -125,7 +125,7 @@ public class IrisStarTable extends WrapperStarTable {
             if (t.equals(table)) {
                 return index;
             }
-            index = index + ((int) table.getRowCount());
+            index = index + ((int) t.getRowCount());
         }
         
         return -1;

@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.uispec4j.ListBox;
+import org.uispec4j.Mouse;
 import org.uispec4j.Panel;
 import org.uispec4j.Table;
 import org.uispec4j.Window;
@@ -29,6 +30,7 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.visualizer.VisualizerComponent;
+import cfa.vo.iris.visualizer.plotter.PlotterView;
 import cfa.vo.sedlib.Segment;
 import static org.junit.Assert.*;
 
@@ -38,10 +40,15 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
 
     private VisualizerComponent comp = new VisualizerComponent();
     private String plWindowName = comp.getName();
-    private MetadataBrowserMainView mbView;
     private SedlibSedManager sedManager;
-    private Window mbWindow;
 
+    private Window mbWindow; // metadata window
+    private Window plWindow; // plotter window
+    
+    private MetadataBrowserMainView mbView;
+    private PlotterView plView;
+
+    private Panel plotter;
     private Panel dataPanel;
     private ListBox starTableList;
     
@@ -58,12 +65,18 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
     public void setupMbTest() throws Exception {
         sedManager = (SedlibSedManager) app.getWorkspace().getSedManager();
         
+        // Get plot window
         window.getMenuBar().getMenu("Tools").getSubMenu(plWindowName).getSubMenu(plWindowName).click();
+        desktop.containsWindow(plWindowName).check();
+        plWindow = desktop.getWindow(plWindowName);
         
         org.uispec4j.Button mbButton = desktop.getWindow(plWindowName).getButton("Metadata");
         mbButton.click();
         
-        mbView = comp.getDefaultPlotterView().getMetadataBrowserView();
+        plotter = plWindow.getPanel("plotter");
+        
+        plView = comp.getDefaultPlotterView();
+        mbView = plView.getMetadataBrowserView();
         
         desktop.containsWindow(mbView.getTitle()).check();
         mbWindow = desktop.getWindow(mbView.getTitle());
@@ -283,5 +296,59 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         plotterTable.selectionIsEmpty().check();
         dataTable.selectionIsEmpty().check();
         
+    }
+    
+    @Test
+    public void testPlotterMetadataBrowserPointSelection() throws Exception {
+        assertEquals("0E0", plView.getXcoord());
+        assertEquals("0E0", plView.getYcoord());
+        
+        final ExtSed sed = sedManager.newSed("test1");
+        sedManager.select(sed);
+        
+        double[] x1 = new double[] {100};
+        double[] y1 = new double[] {1};
+        final Segment seg1 = createSampleSegment(x1, y1);
+        sed.addSegment(seg1);
+        
+        double[] x2 = new double[] {200};
+        double[] y2 = new double[] {2};
+        final Segment seg2 = createSampleSegment(x2, y2);
+        sed.addSegment(seg2);
+        
+        invokeWithRetry(20, 100, new Runnable() {
+            @Override
+            public void run() {
+                // two tables in selection, 1 selected, no rows selected
+                assertEquals(2, mbView.getSelectedTables().size());
+                assertEquals(1, mbView.getSelectedStarTables().size());
+                assertEquals(1, dataTable.getRowCount());
+                dataTable.selectionIsEmpty().check();
+            }
+        });
+        
+        // Selecting a point should add the first row to selection
+        mbView.addRowToSelection(0, 0);
+        
+        invokeWithRetry(20, 100, new Runnable() {
+            @Override
+            public void run() {
+                // first row should be selected, still just one star table
+                dataTable.rowIsSelected(0).check();
+                assertEquals(1, mbView.getSelectedStarTables().size());
+            }
+        });
+        
+        // Select the only point in the second star table
+        mbView.addRowToSelection(1, 0);
+        
+        invokeWithRetry(20, 100, new Runnable() {
+            @Override
+            public void run() {
+                // Both rows should be selected, ditto both star tables
+                dataTable.rowsAreSelected(0, 1);
+                assertEquals(2, mbView.getSelectedStarTables().size());
+            }
+        });
     }
 }
