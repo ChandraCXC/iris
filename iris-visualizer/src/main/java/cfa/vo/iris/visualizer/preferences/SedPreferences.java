@@ -29,6 +29,8 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.ColorPalette;
 import cfa.vo.iris.visualizer.plotter.HSVColorPalette;
 import cfa.vo.iris.units.UnitsException;
+import cfa.vo.iris.sed.quantities.XUnit;
+import cfa.vo.iris.sed.quantities.YUnit;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
@@ -134,6 +136,7 @@ public class SedPreferences {
         // update legend settings
         layer.setLabel(id);
         
+        // set the units
         setUnits(seg, layer);
         
         segmentPreferences.put(me, layer);
@@ -167,9 +170,11 @@ public class SedPreferences {
         try {
             if (StringUtils.isEmpty(xunits)) {
                 xunits = seg.getSpectralAxisUnits();
+                plotPreferences.setXlabel(xunits);
             }
             if (StringUtils.isEmpty(yunits)) {
                 yunits = seg.getFluxAxisUnits();
+                plotPreferences.setYlabel(yunits);
             }
         } catch (SedNoDataException e) {
             // ignore;
@@ -181,6 +186,19 @@ public class SedPreferences {
         } catch (UnitsException e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    /**
+     * Sets the x and y units of the SED
+     * 
+     * @param xunit    the X unit
+     * @param yunit    the Y unit
+     */
+    public void setUnits(String xunit, String yunit) {
+        xunits = xunit;
+        yunits = yunit;
+        plotPreferences.setXlabel(xunit);
+        plotPreferences.setYlabel(yunit);
     }
     
     // Removes any segments that are no longer in the SED

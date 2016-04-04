@@ -19,6 +19,7 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.IrisComponent;
+import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.sedlib.Segment;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +27,7 @@ import static org.junit.Assert.*;
 import static cfa.vo.iris.test.unit.TestUtils.*;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.stil.StilPlotter;
+import cfa.vo.sedlib.common.SedInconsistentException;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -374,5 +376,67 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         assertEquals(ylimits[0], newAspect.getYMin(), 0.000001);
         assertEquals(ylimits[1], newAspect.getYMax(), 0.000001);
         
+    }
+    
+    @Test
+    public void testPlotAxesLabels() throws Exception {
+        SedlibSedManager sedManager = (SedlibSedManager) app.getWorkspace().getSedManager();
+        
+        window.getMenuBar()
+                .getMenu("Tools")
+                .getSubMenu(windowName)
+                .getSubMenu(windowName)
+                .click();
+        
+        Window viewer = desktop.getWindow(windowName);
+        StilPlotter plotter = viewer.findSwingComponent(StilPlotter.class);
+        
+        // create 2 segments with different units
+        final Segment seg1 = createSampleSegment();
+        seg1.setSpectralAxisUnits("Hz");
+        seg1.setFluxAxisUnits("Jy");
+        
+        final Segment seg2 = createSampleSegment();
+        seg2.setSpectralAxisUnits("Angstrom");
+        seg2.setFluxAxisUnits("erg/s/cm^2/A");
+        
+        // add the segments to a SED
+        final ExtSed sed1 = sedManager.newSed("sampleSed1");
+        sed1.addSegment(seg1);
+        sed1.addSegment(seg2);
+        
+        // Make sure this is enqueued in the Swing EDT
+        invokeWithRetry(10, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertSame(sed1, comp.getDefaultPlotterView().getSed());
+                
+            }
+        });
+        
+        // check that the plot window has the right axes labels
+        // should be the same units as the first loaded SED
+        assertEquals("Frequency (Hz)", plotter.getPlotPreferences().getXlabel());
+        assertEquals("Flux density (Jy)", plotter.getPlotPreferences().getYlabel());
+        
+        // test velocity units
+        seg1.setSpectralAxisUnits(XUnit.KMPSCO.getString());
+        seg1.setFluxAxisUnits("Jy");
+        
+        final ExtSed sed2 = sedManager.newSed("sed2");
+        sed2.addSegment(seg1);
+        
+        // Make sure this is enqueued in the Swing EDT
+        invokeWithRetry(10, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertSame(sed2, comp.getDefaultPlotterView().getSed());
+                
+            }
+        });
+        
+        // check that the velocity unit label set properly
+        assertEquals("Velocity (km/s @ 12 CO (11.5GHz))", 
+                plotter.getPlotPreferences(sed2).getXlabel());
     }
 }
