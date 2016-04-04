@@ -18,21 +18,14 @@ package cfa.vo.iris.visualizer.plotter;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-import java.text.DecimalFormat;
 
-import cfa.vo.iris.visualizer.stil.StilPlotter;
 import uk.ac.starlink.ttools.plot2.Surface;
 import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 
 public class MouseCoordinateMotionListener extends StilPlotterMouseListener 
     implements MouseMotionListener {
     
-    private PlotDisplay display;
-    
-    private final static DecimalFormat df = new DecimalFormat("0.######E0");
-    static {
-        df.setMaximumFractionDigits(6);
-    }
+    private PlotDisplay<?,?> display;
 
     @Override
     public void setPlotterView(PlotterView plotterView) {
@@ -40,7 +33,7 @@ public class MouseCoordinateMotionListener extends StilPlotterMouseListener
     }
 
     @Override
-    public void activate(PlotDisplay display) {
+    public void activate(PlotDisplay<?,?> display) {
         this.display = display;
         display.addMouseMotionListener(this);
     }
@@ -65,9 +58,5 @@ public class MouseCoordinateMotionListener extends StilPlotterMouseListener
         double[] loc = surface.graphicsToData(p, null);
         plotterView.setXcoord(formatNumber(loc[0]));
         plotterView.setYcoord(formatNumber(loc[1]));
-    }
-
-    private static String formatNumber(double d) {
-        return df.format(d);
     }
 }
