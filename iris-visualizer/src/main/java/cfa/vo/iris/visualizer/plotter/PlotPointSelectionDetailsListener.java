@@ -15,6 +15,8 @@
  */
 package cfa.vo.iris.visualizer.plotter;
 
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.logging.Logger;
 
 import javax.swing.JMenuItem;
@@ -43,6 +45,7 @@ public class PlotPointSelectionDetailsListener extends StilPlotterMouseListener
     private static Logger logger = Logger.getLogger(PlotPointSelectionDetailsListener.class.getName());
     
     private PlotDisplay<?, ?> display;
+    PointDataPopup popup = new PointDataPopup();
 
     @Override
     public void pointSelected(PointSelectionEvent evt) {
@@ -73,8 +76,7 @@ public class PlotPointSelectionDetailsListener extends StilPlotterMouseListener
             String tt = String.format("%s (%s, %s)", table.getName(), formatNumber(x), formatNumber(y));
             
             // Display the row in a popup menu
-            JPopupMenu popup = new JPopupMenu();
-            popup.add(new JMenuItem(tt));
+            popup.setDataString(tt);
             popup.show(display, evt.getPoint().x, evt.getPoint().y);
             
             return;
@@ -85,5 +87,46 @@ public class PlotPointSelectionDetailsListener extends StilPlotterMouseListener
     public void activate(PlotDisplay<?, ?> display) {
         display.addPointSelectionListener(this);
         this.display = display;
+    }
+    
+    private static class PointDataPopup extends JPopupMenu {
+        
+        private JMenuItem item;
+        
+        public PointDataPopup() {
+            
+            item = new JMenuItem();
+            add(item);
+            
+            // Remove these to avoid highlighting the menu item
+            item.removeMouseListener(item.getMouseListeners()[0]);
+            item.removeMouseMotionListener(item.getMouseMotionListeners()[0]);
+            
+            // Get rid of the popup like a tooltip
+            addMouseListener(new MouseListener() {
+                @Override
+                public void mouseClicked(MouseEvent arg0) {
+                    setVisible(false);
+                }
+                @Override
+                public void mouseEntered(MouseEvent arg0) {
+                }
+                @Override
+                public void mouseExited(MouseEvent arg0) {
+                    setVisible(false);
+                }
+                @Override
+                public void mousePressed(MouseEvent arg0) {
+                    setVisible(false);
+                }
+                @Override
+                public void mouseReleased(MouseEvent arg0) {
+                }
+            });
+        }
+        
+        public void setDataString(String tt) {
+            item.setText(tt);
+        }
     }
 }

@@ -316,7 +316,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         final Segment seg2 = createSampleSegment(x2, y2);
         sed.addSegment(seg2);
         
-        invokeWithRetry(20, 100, new Runnable() {
+        invokeWithRetry(50, 100, new Runnable() {
             @Override
             public void run() {
                 // two tables in selection, 1 selected, no rows selected
@@ -330,7 +330,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         // Selecting a point should add the first row to selection
         mbView.addRowToSelection(0, 0);
         
-        invokeWithRetry(20, 100, new Runnable() {
+        invokeWithRetry(50, 100, new Runnable() {
             @Override
             public void run() {
                 // first row should be selected, still just one star table
@@ -342,7 +342,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         // Select the only point in the second star table
         mbView.addRowToSelection(1, 0);
         
-        invokeWithRetry(20, 100, new Runnable() {
+        invokeWithRetry(50, 100, new Runnable() {
             @Override
             public void run() {
                 // Both rows should be selected, ditto both star tables
