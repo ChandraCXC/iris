@@ -16,9 +16,15 @@
 
 package cfa.vo.iris.visualizer.stil;
 
-import org.apache.commons.lang.StringUtils;
+import java.awt.Point;
+import java.awt.event.MouseEvent;
 
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumnModel;
+
+import org.apache.commons.lang.StringUtils;
 import cfa.vo.iris.utils.UTYPE;
+import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.gui.StarJTable;
 import uk.ac.starlink.table.gui.StarTableColumn;
@@ -28,6 +34,8 @@ import uk.ac.starlink.table.gui.StarTableColumn;
  *
  */
 public class IrisStarJTable extends StarJTable {
+    
+    private static final long serialVersionUID = -6504087912203707631L;
     
     // Use ColumnNames or Utypes in the column header fields
     private boolean utypeAsNames = false;
@@ -50,13 +58,21 @@ public class IrisStarJTable extends StarJTable {
         this.utypeAsNames = utypeAsNames;
     }
     
+    @Override 
+    protected JTableHeader createDefaultTableHeader() {
+        return new StarJTableHeader(columnModel);
+    }
+    
     @Override
     public void setStarTable(StarTable table, boolean showIndex) {
         super.setStarTable(table, showIndex);
         
-        if (!utypeAsNames) {
-            return;
+        if (utypeAsNames) {
+            setUtypeColumnNames();
         }
+    }
+    
+    private void setUtypeColumnNames() {
         
         // If we're using utypes as column names, override existing settings here.
         for (int i=0;i < columnModel.getColumnCount(); i++) {
@@ -68,6 +84,42 @@ public class IrisStarJTable extends StarJTable {
                 String utype = UTYPE.trimPrefix(c.getColumnInfo().getUtype());
                 c.setHeaderValue(utype);
             }
+        }
+    }
+    
+    private class StarJTableHeader extends JTableHeader {
+        
+        private static final long serialVersionUID = -3882589620263074781L;
+        
+        public StarJTableHeader(TableColumnModel model) {
+            super(model);
+        }
+        
+        @Override
+        public String getToolTipText(MouseEvent evt) {
+            Point p = evt.getPoint();
+            int index = columnModel.getColumnIndexAtX(p.x);
+            String tt = printColumnInfo((StarTableColumn) columnModel.getColumn(index));
+            return tt;
+        }
+        
+        private String printColumnInfo(StarTableColumn column) {
+            ColumnInfo info = column.getColumnInfo();
+            
+            StringBuilder bb = new StringBuilder();
+            bb.append("<html>");
+            if (!StringUtils.isEmpty(info.getName())) {
+                bb.append(String.format("name: %s<br>", info.getName()));
+            }
+            if (!StringUtils.isEmpty(info.getUnitString())) {
+                bb.append(String.format("unit: %s<br>", info.getUnitString()));
+            }
+            if (!StringUtils.isEmpty(info.getUtype())) {
+                bb.append(String.format("utype: %s<br>", info.getUtype()));
+            }
+            bb.append("</html>");
+            
+            return bb.toString();
         }
     }
 }
