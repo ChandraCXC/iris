@@ -26,15 +26,16 @@
  */
 package cfa.vo.iris.gui.widgets;
 
-import cfa.vo.interop.SAMPFactory;
 import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SedListener;
+import cfa.vo.iris.fitting.FitConfigurationBean;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.sherpa.IFitConfiguration;
 import cfa.vo.sherpa.models.*;
+import org.jdesktop.beansbinding.Converter;
 
+import javax.annotation.Nonnull;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
@@ -43,153 +44,130 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public final class ModelViewerPanel extends javax.swing.JPanel implements SedListener {
+public final class ModelViewerPanel extends javax.swing.JPanel implements SedListener, PropertyChangeListener {
 
     private Logger logger = Logger.getLogger(ModelViewerPanel.class.getName());
-    private boolean modelValid;
-    public final String PROP_MODELVALID = "modelValid";
-
-    private Verifier verifier;
+    private boolean editable = false;
+    public final String PROP_EDITABLE = "editable";
+    public static final String PROP_FIT = "fit";
+    private ExtSed sed;
+    private FitConfigurationBean fit;
     private final String[] values = new String[]{"Val", "Min", "Max", "Frozen"};
 
     /**
      * Creates new form NewJInternalFrame
      */
     public ModelViewerPanel(ExtSed sed) {
+        setSed(sed); // also sets fit
         initComponents();
         initVerifier();
-        setSed(sed);
         SedEvent.getInstance().add(this);
         initModelsTree();
     }
 
-    public void setEditable(boolean isEditable) {
-        modelExpressionField.setEditable(isEditable);
+    public boolean isEditable() {
+        return editable;
     }
 
-    public boolean isModelValid() {
-        return modelValid;
+    public void setEditable(boolean editable) {
+        boolean old_editable = this.editable;
+        this.editable = editable;
+        firePropertyChange(PROP_EDITABLE, old_editable, editable);
     }
 
-    public void setModelValid(boolean modelValid) {
-        boolean oldModelValid = this.modelValid;
-        this.modelValid = modelValid;
-        firePropertyChange(PROP_MODELVALID, oldModelValid, modelValid);
-        setStatus(modelValid);
+    private void setFit(@Nonnull FitConfigurationBean fit) {
+        FitConfigurationBean oldFit = this.fit;
+        this.fit = fit;
+        firePropertyChange(PROP_FIT, null, fit);
+        fit.addPropertyChangeListener(this);
     }
 
-    private java.util.List<UserModel> userModels;
-    
-    public void setFitConfiguration(IFitConfiguration fit) {
-
-        if (fit != null) {
-            CompositeModel m = fit.getModel();
-            userModels = fit.getUserModelList();
-            if (m != null) {
-                logger.info("setting model to: "+m);
-                setModel(m);
-            } else {
-                logger.info("null model, instantiating new one");
-                setModel(SAMPFactory.get(CompositeModel.class));
-            }
-            String expression = getModel().getName();
-            if (expression != null && !expression.isEmpty()) {
-                setExpression(getModel().getName());
-            } else {
-                setExpression("No Model");
-                setSelectedParameter(null);
-            }
-        } else {
-            setFitConfiguration(SAMPFactory.get(IFitConfiguration.class));
-        }
-    }
-
-    private void setStatus(final boolean valid) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                String msg = valid ? "" : "Invalid Model Expression";
-                statusField.setText(msg);
-            }
-        });
+    public FitConfigurationBean getFit() {
+        return fit;
     }
 
     private void initModelsTree() {
         modelsTree.setPreferredSize(null);
-//        modelsTree.setComponentPopupMenu(makePopupMenu());
-        modelsTree.addMouseListener(makeSelectedParamMouseListener());
-//        modelsTree.addMouseListener(makeRightButtonMouseListener());
+        modelsTree.addMouseListener(makeMouseListener());
     }
 
-    private MouseAdapter makeSelectedParamMouseListener() {
+    private MouseAdapter makeMouseListener() {
         return new MouseAdapter() {
+            private DefaultMutableTreeNode selectedNode;
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                checkPopup(e);
+                process(e);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                checkPopup(e);
+                process(e);
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
+                process(e);
+            }
+
+            private void process(MouseEvent e) {
                 TreePath selPath = modelsTree.getPathForLocation(e.getX(), e.getY());
                 if (selPath != null) {
-                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) selPath.getLastPathComponent();
-                    if (node.isLeaf()) {
-                        Parameter par = (Parameter) node.getUserObject();
+                    selectedNode = (DefaultMutableTreeNode) selPath.getLastPathComponent();
+                    if (selectedNode.isLeaf()) {
+                        Parameter par = (Parameter) selectedNode.getUserObject();
                         setSelectedParameter(par);
-                    } else {
-                        checkPopup(e);
                     }
+                    checkPopup(e);
                 }
             }
 
             private void checkPopup(MouseEvent e) {
-                TreePath selPath = modelsTree.getPathForLocation(e.getX(), e.getY());
-                if (selPath != null) {
-                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) selPath.getLastPathComponent();
-                    Object obj = node.getUserObject();
-                    if (!node.isLeaf() && obj instanceof Model && e.isPopupTrigger()) {
-                        makePopupMenu().show(modelsTree, e.getX(), e.getY());
-                    }
+                Object obj = selectedNode.getUserObject();
+                if (!selectedNode.isLeaf() && obj instanceof Model && e.isPopupTrigger() && editable) {
+                    makePopupMenu().show(modelsTree, e.getX(), e.getY());
                 }
+            }
+
+            private JPopupMenu makePopupMenu() {
+                JPopupMenu menu = new JPopupMenu();
+                JMenuItem item = new JMenuItem("Remove");
+                item.addActionListener(makeDeleteActionListener());
+                menu.add(item);
+                return menu;
+            }
+
+            private ActionListener makeDeleteActionListener() {
+                return new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent arg0) {
+                        if(selectedNode != null){
+                            logger.info("Deleting " + selectedNode);
+                            removeModelComponent((Model)selectedNode.getUserObject());
+                            modelsTree.repaint();
+                            modelsTree.updateUI();
+                        }
+                    }
+                };
             }
         };
     }
 
-    private JPopupMenu makePopupMenu() {
-        JPopupMenu menu = new JPopupMenu();
-        JMenuItem item = new JMenuItem("Remove");
-//        item.addActionListener(makeDeleteActionListener());
-        menu.add(item);
-        return menu;
+    private void removeModelComponent(Model model) {
+//        if (model instanceof UserModel) {
+//            fit.getUserModelList().remove(model);
+//        }
+//        fit.getModel().
     }
 
-//    private ActionListener makeDeleteActionListener() {
-//        return new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent arg0) {
-//                if(selectedNode != null){
-//                    logger.info("Deleting " + selectedNode);
-//                    DefaultMutableTreeNode n = new DefaultMutableTreeNode("added");
-//                    selectedNode.add(n);
-//                    modelsTree.repaint();
-//                    modelsTree.updateUI();
-//                }
-//            }
-//        };
-//    }
-
     private void initVerifier() {
-        verifier = new Verifier();
+        Verifier verifier = new Verifier();
         modelExpressionField.setInputVerifier(verifier);
         modelExpressionField.addActionListener(verifier);
     }
@@ -201,7 +179,7 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
             Object value = m.invoke(par);
             if (name.equals("Frozen")) {
                 Integer v = (Integer) value;
-                value = v == 0 ? false : true;
+                value = v != 0;
             }
             return String.format(typeStr, value);
         } catch (Exception e) {
@@ -267,8 +245,6 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         });
     }
 
-    private ExtSed sed;
-
     /**
      * Set the value of sed
      *
@@ -276,82 +252,8 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
      */
     private void setSed(ExtSed sed) {
         this.sed = sed;
-        IFitConfiguration fitConf = (IFitConfiguration) sed.getAttachment("fit.model");
-        setFitConfiguration(fitConf);
-    }
-
-
-    private CompositeModel model;
-    public static final String PROP_MODEL = "model";
-
-    /**
-     * Get the value of model
-     *
-     * @return the value of model
-     */
-    public CompositeModel getModel() {
-        return model;
-    }
-
-    /**
-     * Set the value of model
-     *
-     * @param model new value of model
-     */
-    public void setModel(CompositeModel model) {
-        CompositeModel oldModel = this.model;
-        this.model = model;
-        firePropertyChange(PROP_MODEL, oldModel, model);
-        setTreeModel(new CompositeModelTreeModel(model, userModels));
-    }
-    
-    private CompositeModelTreeModel treeModel;
-    public static final String PROP_TREEMODEL = "treeModel";
-
-    /**
-     * Get the value of treeModel
-     *
-     * @return the value of treeModel
-     */
-    public CompositeModelTreeModel getTreeModel() {
-        return treeModel;
-    }
-
-    /**
-     * Set the value of treeModel
-     *
-     * @param treeModel new value of treeModel
-     */
-    public void setTreeModel(CompositeModelTreeModel treeModel) {
-        CompositeModelTreeModel oldTreeModel = this.treeModel;
-        this.treeModel = treeModel;
-        firePropertyChange(PROP_TREEMODEL, oldTreeModel, treeModel);
-    }
-
-
-    private String expression;
-    public static final String PROP_EXPRESSION = "expression";
-
-    /**
-     * Get the value of expression
-     *
-     * @return the value of expression
-     */
-    public String getExpression() {
-        return expression;
-    }
-
-    /**
-     * Set the value of expression
-     *
-     * @param expression new value of expression
-     */
-    public void setExpression(String expression) {
-        logger.info("setting expression to: "+expression);
-        String oldExpression = this.expression;
-        this.expression = expression;
-        firePropertyChange(PROP_EXPRESSION, oldExpression, expression);
-        verifier.verify(expression);
+        FitConfigurationBean fitConf = sed.getFit();
+        setFit(fitConf);
     }
 
     @Override
@@ -362,6 +264,10 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         }
     }
 
+    @Override
+    public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+        firePropertyChange(PROP_FIT, null, propertyChangeEvent.getSource());
+    }
 
     /**
      * This method is called from within the constructor to
@@ -387,10 +293,11 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         jLabel1.setText("Model Expression: ");
         jLabel1.setName("jLabel1"); // NOI18N
 
-        modelExpressionField.setEditable(false);
         modelExpressionField.setName("modelExpressionField"); // NOI18N
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${expression}"), modelExpressionField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${fit.expression}"), modelExpressionField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${editable}"), modelExpressionField, org.jdesktop.beansbinding.BeanProperty.create("editable"));
         bindingGroup.addBinding(binding);
 
         jSplitPane1.setDividerLocation(150);
@@ -430,7 +337,7 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
 
         modelsTree.setName("modelsTree"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${treeModel}"), modelsTree, org.jdesktop.beansbinding.BeanProperty.create("model"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${fit.treeModel}"), modelsTree, org.jdesktop.beansbinding.BeanProperty.create("model"));
         bindingGroup.addBinding(binding);
 
         jScrollPane1.setViewportView(modelsTree);
@@ -441,6 +348,10 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         statusPanel.setName("statusPanel"); // NOI18N
 
         statusField.setName("statusField"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, this, org.jdesktop.beansbinding.ELProperty.create("${fit.modelValid}"), statusField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding.setConverter(new StatusConverter());
+        bindingGroup.addBinding(binding);
 
         org.jdesktop.layout.GroupLayout statusPanelLayout = new org.jdesktop.layout.GroupLayout(statusPanel);
         statusPanel.setLayout(statusPanelLayout);
@@ -498,13 +409,11 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
     // End of variables declaration//GEN-END:variables
 
     class Verifier extends InputVerifier implements ActionListener {
-        cfa.vo.iris.gui.widgets.ModelExpressionVerifier v = new cfa.vo.iris.gui.widgets.ModelExpressionVerifier();
+        ModelExpressionVerifier v = new ModelExpressionVerifier();
 
         @Override
         public boolean verify(JComponent jComponent) {
-            JTextField field = (JTextField) jComponent;
-            String expression = field.getText();
-            return verify(expression);
+            return v.verify(fit);
         }
 
         @Override
@@ -518,13 +427,20 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
             JTextField source = (JTextField)e.getSource();
             shouldYieldFocus(source);
         }
-
-        public boolean verify(String expression) {
-            boolean retVal = v.verify(expression, model.getParts());
-            setModelValid(retVal);
-            return retVal;
-        }
-
     }
 
+    class StatusConverter extends Converter {
+
+        @Override
+        public Object convertForward(Object o) {
+            Boolean modelValid = (Boolean) o;
+            return modelValid ? "" : "Invalid Model Expression";
+        }
+
+        @Override
+        public Object convertReverse(Object o) {
+            // read only
+            throw new UnsupportedOperationException("");
+        }
+    }
 }

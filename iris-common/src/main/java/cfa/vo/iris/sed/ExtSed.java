@@ -26,6 +26,7 @@ import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SegmentEvent;
 import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
+import cfa.vo.iris.fitting.FitConfigurationBean;
 import cfa.vo.iris.interop.SedServerResource;
 import cfa.vo.iris.interop.VaoMessage;
 import cfa.vo.iris.logging.LogEntry;
@@ -46,6 +47,7 @@ import cfa.vo.sedlib.io.SedFormat;
 import org.apache.commons.lang.ArrayUtils;
 import org.astrogrid.samp.client.SampException;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,6 +61,18 @@ public class ExtSed extends Sed {
     private Map<String, Object> attachments = new TreeMap();
     private String id;
     private boolean managed = true;
+
+    @Nonnull
+    public FitConfigurationBean getFit() {
+        return fit;
+    }
+
+    public void setFit(FitConfigurationBean fit) {
+        this.fit = fit;
+        SedEvent.getInstance().fire(this, SedCommand.CHANGED);
+    }
+
+    private FitConfigurationBean fit = new FitConfigurationBean();
     private static UnitsManager uf = Default.getInstance().getUnitsManager();
 
     public ExtSed(String id) {

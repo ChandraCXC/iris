@@ -1,53 +1,56 @@
 package cfa.vo.iris.gui.widgets;
 
 import cfa.vo.interop.SAMPFactory;
+import cfa.vo.iris.fitting.FitConfigurationBean;
 import cfa.vo.sherpa.models.Model;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.*;
 
 public class ModelExpressionVerifierTest {
     private ModelExpressionVerifier verifier;
-    private List<Model> models;
+    private FitConfigurationBean fit;
 
     @Before
     public void setUp() {
         verifier = new ModelExpressionVerifier();
-        models = new ArrayList<>();
+        fit = new FitConfigurationBean();
         Model m = SAMPFactory.get(Model.class);
         m.setName("amodel.m1");
-        models.add(m);
+        fit.addModel(m);
         m = SAMPFactory.get(Model.class);
         m.setName("anothermodel.m2");
-        models.add(m);
+        fit.addModel(m);
     }
 
     @Test
     public void testVerifySingle() throws Exception {
-        assertTrue(verifier.verify("m1", models));
+        fit.setExpression("m1");
+        assertTrue(verifier.verify(fit));
     }
 
     @Test
     public void testVerifyNumber() throws Exception {
-        assertTrue(verifier.verify("3*m1+m2", models));
+        fit.setExpression("3*m1+m2");
+        assertTrue(verifier.verify(fit));
     }
 
     @Test
     public void testVerifyEmpty() throws Exception {
-        assertFalse(verifier.verify("", models));
+        fit.setExpression("");
+        assertFalse(verifier.verify(fit));
     }
 
     @Test
     public void testVerifyNull() throws Exception {
-        assertFalse(verifier.verify(null, models));
+        fit.setExpression(null);
+        assertFalse(verifier.verify(fit));
     }
 
     @Test
     public void testVerifyNoModel() throws Exception {
-        assertFalse(verifier.verify("m1+m3", models));
+        fit.setExpression("m1+m3");
+        assertFalse(verifier.verify(fit));
     }
 }

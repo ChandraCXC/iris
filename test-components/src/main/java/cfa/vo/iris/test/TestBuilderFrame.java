@@ -315,7 +315,7 @@ public final class TestBuilderFrame extends JInternalFrame {
                 }
             }
             manager.getSelected().addSegment(seg);
-            IFitConfiguration fit = new FitConfigurationBean();
+            FitConfigurationBean fit = new FitConfigurationBean();
 
             ModelFactory factory = new ModelFactory();
             ModelImpl m = factory.getModel("polynomial", "m");
@@ -333,7 +333,7 @@ public final class TestBuilderFrame extends JInternalFrame {
             fit.setMethod(OptimizationMethod.LevenbergMarquardt);
             fit.setStat(Stats.LeastSquares);
 
-            manager.getSelected().addAttachment("fit.model", fit);
+            manager.getSelected().setFit(fit);
         } catch (Exception ex) {
             Logger.getLogger(TestBuilderFrame.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -182,7 +182,7 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         TestUtils.invokeWithRetry(50, 100, new Runnable(){
             @Override
             public void run() {
-                IFitConfiguration fit = (IFitConfiguration) sed.getAttachment("fit.model");
+                IFitConfiguration fit = sed.getFit();
                 assertEquals(Stats.Poisson, fit.getStat());
                 assertEquals(OptimizationMethod.MonteCarlo, fit.getMethod());
             }
@@ -232,7 +232,7 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
     }
 
     private IFitConfiguration addFit(ExtSed sed) {
-        IFitConfiguration fit = new FitConfigurationBean();
+        FitConfigurationBean fit = new FitConfigurationBean();
 
         ModelFactory factory = new ModelFactory();
         ModelImpl m = factory.getModel("polynomial", "m");
@@ -250,8 +250,7 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         fit.setMethod(OptimizationMethod.LevenbergMarquardt);
         fit.setStat(Stats.LeastSquares);
 
-        sed.addAttachment("fit.model", fit);
-        SedEvent.getInstance().fire(sed, SedCommand.CHANGED);
+        sed.setFit(fit);
         return fit;
     }
 }

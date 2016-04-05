@@ -1,10 +1,12 @@
 package cfa.vo.iris.gui.widgets;
 
+import cfa.vo.iris.fitting.FitConfigurationBean;
 import cfa.vo.sherpa.models.Model;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class ModelExpressionVerifier {
@@ -16,14 +18,20 @@ public class ModelExpressionVerifier {
         scriptEngine = manager.getEngineByName("JavaScript");
     }
 
-    public boolean verify(String expression, java.util.List<Model> models) {
+    public boolean verify(FitConfigurationBean fit) {
         boolean retVal = false;
+        String expression = null;
+
+        if (fit != null) {
+            expression = fit.getModel().getName();
+        }
 
         if (expression == null || expression.isEmpty()) {
             return retVal;
         }
 
         StringBuilder builder = new StringBuilder();
+        List<Model> models = fit.getModel().getParts();
         if (models != null) {
             for (Model m : models) {
                 builder.append(String.format("var %s; ", m.getName().split("\\.")[1]));

@@ -56,13 +56,13 @@
     </Component>
     <Component class="javax.swing.JTextField" name="modelExpressionField">
       <Properties>
-        <Property name="editable" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="modelExpressionField" noResource="true"/>
       </Properties>
       <BindingProperties>
-        <BindingProperty name="text" source="Form" sourcePath="${expression}" target="modelExpressionField" targetPath="text" updateStrategy="0" immediately="false">
+        <BindingProperty name="text" source="Form" sourcePath="${fit.expression}" target="modelExpressionField" targetPath="text" updateStrategy="0" immediately="false">
           <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
         </BindingProperty>
+        <BindingProperty name="editable" source="Form" sourcePath="${editable}" target="modelExpressionField" targetPath="editable" updateStrategy="0" immediately="false"/>
       </BindingProperties>
     </Component>
     <Container class="javax.swing.JSplitPane" name="jSplitPane1">
@@ -139,7 +139,7 @@
                 <Property name="name" type="java.lang.String" value="modelsTree" noResource="true"/>
               </Properties>
               <BindingProperties>
-                <BindingProperty name="model" source="Form" sourcePath="${treeModel}" target="modelsTree" targetPath="model" updateStrategy="0" immediately="false"/>
+                <BindingProperty name="model" source="Form" sourcePath="${fit.treeModel}" target="modelsTree" targetPath="model" updateStrategy="0" immediately="false"/>
               </BindingProperties>
             </Component>
           </SubComponents>
@@ -173,6 +173,13 @@
           <Properties>
             <Property name="name" type="java.lang.String" value="statusField" noResource="true"/>
           </Properties>
+          <BindingProperties>
+            <BindingProperty name="text" source="Form" sourcePath="${fit.modelValid}" target="statusField" targetPath="text" updateStrategy="1" immediately="false">
+              <Property name="converter" type="org.jdesktop.beansbinding.Converter" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                <Connection code="new StatusConverter()" type="code"/>
+              </Property>
+            </BindingProperty>
+          </BindingProperties>
         </Component>
       </SubComponents>
     </Container>

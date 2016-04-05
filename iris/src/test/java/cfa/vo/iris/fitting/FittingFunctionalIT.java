@@ -9,13 +9,14 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.uispec4j.*;
 import org.uispec4j.interception.PopupMenuInterceptor;
-import org.uispec4j.interception.toolkit.ToolkitDelegate;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import static org.uispec4j.assertion.UISpecAssert.*;
 
 public class FittingFunctionalIT extends AbstractUISpecTest {
     @Rule
@@ -181,6 +182,8 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
                 modelsTree.triggerRightClick("test_table.m1"))
                 .getSubMenu("Remove")
                 .click();
+
+//        assertFalse(modelsTree.contains("test_table.m1"));
 
     }
 }

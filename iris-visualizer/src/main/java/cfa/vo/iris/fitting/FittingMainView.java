@@ -140,15 +140,13 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
                                 logger.info("Added model " + m);
                                 String id = sherpaClient.createId();
                                 Model toAdd = new ModelImpl(m, id);
-                                getFit().addModel(toAdd, id);
-                                modelViewerPanel.setFitConfiguration(getFit());
+                                getFit().addModel(toAdd);
                             }
                         } else {
                             DefaultCustomModel m = (DefaultCustomModel) leaf;
                             if (e.getClickCount() == 2) {
                                 logger.info("Added user model " + m);
                                 getFit().addUserModel(m, sherpaClient.createId());
-                                modelViewerPanel.setFitConfiguration(getFit());
                             }
                             descriptionArea.setText(CUSTOM_DESCRIPTION);
                         }
@@ -175,12 +173,8 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
     private void setSed(ExtSed sed) {
         this.sed = sed;
         setSedId(sed.getId());
-        FitConfigurationBean fitAttachment = (FitConfigurationBean) sed.getAttachment("fit.model");
-        if (fitAttachment == null) {
-            fitAttachment = new FitConfigurationBean();
-            sed.addAttachment("fit.model", fitAttachment);
-        }
-        setFit(fitAttachment);
+        FitConfigurationBean fit = sed.getFit();
+        setFit(fit);
     }
 
     private void updateModels() {

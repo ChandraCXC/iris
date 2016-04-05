@@ -31,6 +31,7 @@ import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedListener;
+import cfa.vo.iris.fitting.FitConfigurationBean;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.gui.widgets.SedList;
@@ -1285,8 +1286,7 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
 
         Response response = (Response) SAMPFactory.get(Response.class);
         if (integrateModel) {
-            IFitConfiguration fit = (IFitConfiguration) sed.getAttachment("fit.model");
-
+            FitConfigurationBean fit = sed.getFit();
             CompositeModel model = fit.getModel();
             model.setName(modelExpression);
 
@@ -1529,7 +1529,7 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
         } else {
             integrateModelButton.setText("Integrate Model (NO)");
         }
-        IFitConfiguration fit = (IFitConfiguration) sed.getAttachment("fit.model");
+        FitConfigurationBean fit = sed.getFit();
         if (fit != null) {
             setModelExpression(fit.getModel().getName());
         } else {
