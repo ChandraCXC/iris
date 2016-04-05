@@ -87,7 +87,7 @@ public class IrisStarJTable extends StarJTable {
         }
     }
     
-    private class StarJTableHeader extends JTableHeader {
+    protected class StarJTableHeader extends JTableHeader {
         
         private static final long serialVersionUID = -3882589620263074781L;
         
