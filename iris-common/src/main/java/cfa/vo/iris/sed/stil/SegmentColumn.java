@@ -114,7 +114,7 @@ public abstract class SegmentColumn extends ColumnData
     }
     
     /**
-     * Similar to a ConstantColumn, but with an adjustable name value.
+     * Column for storing whether or not a row should be masked.
      *
      */
     public static class FilterColumn extends SegmentColumn {
