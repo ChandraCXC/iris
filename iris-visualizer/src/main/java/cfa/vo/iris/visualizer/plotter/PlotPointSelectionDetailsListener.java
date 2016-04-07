@@ -36,7 +36,8 @@ import uk.ac.starlink.ttools.plot2.task.PointSelectionListener;
  *
  * TODO: This functionality should ideally be done by a mouse hover function - but
  *  the current implemenation of a PlotDisplay in Stil limits our access to point
- *  values to point selection events.
+ *  values to point selection events - so we simulate a tooltip using a custom JPopup
+ *  Object.
  */
 public class PlotPointSelectionDetailsListener extends StilPlotterMouseListener
         implements PointSelectionListener 
@@ -61,6 +62,8 @@ public class PlotPointSelectionDetailsListener extends StilPlotterMouseListener
         
         long[] rows = evt.getClosestRows();
         for (int i=0; i*2<rows.length; i++) {
+            // If the row value is < 0, there was no point near to the mouse click event
+            // See http://tinyurl.com/gq9o7te
             if (rows[2*i] < 0) {
                 continue;
             }

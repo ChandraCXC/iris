@@ -22,6 +22,11 @@ import java.awt.event.MouseMotionListener;
 import uk.ac.starlink.ttools.plot2.Surface;
 import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 
+/**
+ * MouseListener that displays the mouse's current coordinates (in the PlotDisplay's
+ * coordinate system) in the relevant PlotterView text objects.
+ *
+ */
 public class MouseCoordinateMotionListener extends StilPlotterMouseListener 
     implements MouseMotionListener {
     

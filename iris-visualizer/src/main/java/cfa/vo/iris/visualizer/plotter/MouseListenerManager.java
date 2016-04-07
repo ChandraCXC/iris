@@ -23,6 +23,12 @@ import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
 import uk.ac.starlink.ttools.plot2.geom.PlaneSurfaceFactory.Profile;
 import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 
+/**
+ * Manages all mouse listeners that are applied to the StilPlotter. 
+ * Listeners will always be added whenever a PlotDisplay object is created
+ * in the StilPlotter by way of the @activateListeners method.
+ *
+ */
 public class MouseListenerManager {
     
     private Set<StilPlotterMouseListener> listeners;

@@ -20,6 +20,11 @@ import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 import uk.ac.starlink.ttools.plot2.task.PointSelectionEvent;
 import uk.ac.starlink.ttools.plot2.task.PointSelectionListener;
 
+/**
+ * MouseListener which allows users to click on the PlotDisplay and add the selected
+ * point to the selection in the metadata browser.
+ *
+ */
 public class PlotPointSelectionListener extends StilPlotterMouseListener
     implements PointSelectionListener 
 {
@@ -30,6 +35,8 @@ public class PlotPointSelectionListener extends StilPlotterMouseListener
         
         long[] rows = evt.getClosestRows();
         for (int i=0; i*2<rows.length; i++) {
+            // It is possible that the Event will contain multiple selected points, but
+            // we will only use the first point selected. See http://tinyurl.com/gq9o7te
             if (rows[2*i] >= 0) {
                 mbView.addRowToSelection(i, (int) rows[2*i]);
                 return;

@@ -155,11 +155,13 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         setSegmentDataTable(segmentDataTable);
     }
     
-    
-    /*
-     * getters and setters
+    /**
+     * Specifies a star table (by index) and a row to be added to the selected plotter/
+     * data table tabs' row selections.
+     * 
+     * @param starTableIndex - index of the star table in the selectedTables list.
+     * @param irow - row to be selected in the star table.
      */
-    
     public void addRowToSelection(int starTableIndex, int irow) {
         
         // If the star table isn't currently selected, add it to the selection
@@ -176,6 +178,12 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         int index = IrisStarTable.getTableStartIndex(selectedStarTables, selectedTable);
         plotterStarJTable.selectRowIndex(index + irow);
     }
+    
+    
+    /*
+     * getters and setters
+     */
+    
     
     public ExtSed getSelectedSed() {
         return selectedSed;
