@@ -92,7 +92,8 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         
         final Window mainFit = openWindow();
 
-        assertTrue(mainFit.containsLabel("No Parameter Selected").isTrue());
+        TextBox parName = mainFit.getTextBox("Par Name");
+        parName.textEquals("No Parameter Selected").check();
         assertEquals("No Model", mainFit.getTextBox("modelExpressionField").getText());
     }
 

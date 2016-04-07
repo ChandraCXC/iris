@@ -30,24 +30,17 @@ import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SedListener;
 import cfa.vo.iris.fitting.FitConfigurationBean;
-import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sherpa.models.*;
 import org.jdesktop.beansbinding.Converter;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.lang.reflect.Method;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public final class ModelViewerPanel extends javax.swing.JPanel implements SedListener, PropertyChangeListener {
@@ -58,7 +51,7 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
     public static final String PROP_FIT = "fit";
     private ExtSed sed;
     private FitConfigurationBean fit;
-    private final String[] values = new String[]{"Val", "Min", "Max", "Frozen"};
+    private ModelParameterPanel paramPanel = new ModelParameterPanel();
 
     /**
      * Creates new form NewJInternalFrame
@@ -69,6 +62,7 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         initVerifier();
         SedEvent.getInstance().add(this);
         initModelsTree();
+        jSplitPane1.setBottomComponent(paramPanel);
     }
 
     public boolean isEditable() {
@@ -82,7 +76,6 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
     }
 
     private void setFit(@Nonnull FitConfigurationBean fit) {
-        FitConfigurationBean oldFit = this.fit;
         this.fit = fit;
         firePropertyChange(PROP_FIT, null, fit);
         fit.addPropertyChangeListener(this);
@@ -92,74 +85,24 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         return fit;
     }
 
+    public void setSelectedParameter(Parameter selectedParameter) {
+        paramPanel.setParameter(selectedParameter);
+    }
+
+    JTree getModelsTree() {
+        return modelsTree;
+    }
+
     private void initModelsTree() {
         modelsTree.setPreferredSize(null);
         modelsTree.addMouseListener(makeMouseListener());
     }
 
     private MouseAdapter makeMouseListener() {
-        return new MouseAdapter() {
-            private DefaultMutableTreeNode selectedNode;
-
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                process(e);
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                process(e);
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                process(e);
-            }
-
-            private void process(MouseEvent e) {
-                TreePath selPath = modelsTree.getPathForLocation(e.getX(), e.getY());
-                if (selPath != null) {
-                    selectedNode = (DefaultMutableTreeNode) selPath.getLastPathComponent();
-                    if (selectedNode.isLeaf()) {
-                        Parameter par = (Parameter) selectedNode.getUserObject();
-                        setSelectedParameter(par);
-                    }
-                    checkPopup(e);
-                }
-            }
-
-            private void checkPopup(MouseEvent e) {
-                Object obj = selectedNode.getUserObject();
-                if (!selectedNode.isLeaf() && obj instanceof Model && e.isPopupTrigger() && editable) {
-                    makePopupMenu().show(modelsTree, e.getX(), e.getY());
-                }
-            }
-
-            private JPopupMenu makePopupMenu() {
-                JPopupMenu menu = new JPopupMenu();
-                JMenuItem item = new JMenuItem("Remove");
-                item.addActionListener(makeDeleteActionListener());
-                menu.add(item);
-                return menu;
-            }
-
-            private ActionListener makeDeleteActionListener() {
-                return new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent arg0) {
-                        if(selectedNode != null){
-                            logger.info("Deleting " + selectedNode);
-                            removeModelComponent((Model)selectedNode.getUserObject());
-                            modelsTree.repaint();
-                            modelsTree.updateUI();
-                        }
-                    }
-                };
-            }
-        };
+        return new ModelViewerMouseAdapter(this);
     }
 
-    private void removeModelComponent(Model model) {
+    void removeModelComponent(Model model) {
 //        if (model instanceof UserModel) {
 //            fit.getUserModelList().remove(model);
 //        }
@@ -172,84 +115,6 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         modelExpressionField.addActionListener(verifier);
     }
 
-    private String getValue(Parameter par, String name) {
-        try {
-            Method m = Parameter.class.getMethod("get" + name);
-            String typeStr = "%s";
-            Object value = m.invoke(par);
-            if (name.equals("Frozen")) {
-                Integer v = (Integer) value;
-                value = v != 0;
-            }
-            return String.format(typeStr, value);
-        } catch (Exception e) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, e);
-            return "";
-        }
-    }
-    
-    private Parameter selectedParameter;
-    public static final String PROP_SELECTEDPARAMETER = "selectedParameter";
-
-    /**
-     * Get the value of selectedParameter
-     *
-     * @return the value of selectedParameter
-     */
-    public Parameter getSelectedParameter() {
-        return selectedParameter;
-    }
-
-    /**
-     * Set the value of selectedParameter
-     *
-     * @param selectedParameter new value of selectedParameter
-     */
-    public void setSelectedParameter(final Parameter selectedParameter) {
-        Parameter oldSelectedParameter = this.selectedParameter;
-        this.selectedParameter = selectedParameter;
-        firePropertyChange(PROP_SELECTEDPARAMETER, oldSelectedParameter, selectedParameter);
-        SwingUtilities.invokeLater(new Runnable() {
-
-            @Override
-            public void run() {
-                JPanel panel;
-
-                if (selectedParameter != null) {
-
-                    panel = new JPanel(new SpringLayout());
-
-
-                    for (String name : values) {
-                        JLabel l = new JLabel(name, JLabel.TRAILING);
-                        panel.add(l);
-                        JTextField textField = new JTextField();
-                        l.setLabelFor(textField);
-                        textField.setName(name);
-                        textField.setEditable(false);
-                        textField.setText(getValue(selectedParameter, name));
-                        panel.add(textField);
-                    }
-
-
-                    GUIUtils.makeCompactGrid(panel, values.length, 2, 6, 6, 6, 6);
-
-                } else {
-                    panel = new JPanel(new GridLayout());
-                    panel.add(new JLabel("No Parameter Selected."));
-                }
-
-                jSplitPane1.setBottomComponent(panel);
-            }
-
-        });
-    }
-
-    /**
-     * Set the value of sed
-     *
-     * @param sed new value of sed
-     */
     private void setSed(ExtSed sed) {
         this.sed = sed;
         FitConfigurationBean fitConf = sed.getFit();
@@ -443,4 +308,5 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
             throw new UnsupportedOperationException("");
         }
     }
+
 }

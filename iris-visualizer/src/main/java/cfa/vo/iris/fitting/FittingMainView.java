@@ -99,11 +99,6 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         this.sedId = sedId;
         firePropertyChange(PROP_SEDID, oldSedId, sedId);
     }
-
-
-    public ModelViewerPanel getModelViewerPanel() {
-        return modelViewerPanel;
-    }
     
     @Override
     public void process(ExtSed source, SedCommand payload) {
