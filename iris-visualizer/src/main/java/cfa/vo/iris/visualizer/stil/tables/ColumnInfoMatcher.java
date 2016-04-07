@@ -21,7 +21,9 @@ import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.ConstantColumn;
 
 /**
- * Interface for compatibility checks between columns of a StarTable.
+ * Abstract class for compatibility checks between columns of a StarTable when 
+ * stacking multiple tables. Implementations should override one or bothe of 
+ * these methods.
  *
  */
 public abstract class ColumnInfoMatcher {
