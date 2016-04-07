@@ -7,7 +7,8 @@ import uk.ac.starlink.table.ColumnInfo;
 
 /**
  * ColumnInfoMatcher specifically for SegmentStarTable columns
- * and information.
+ * and information. If one table has a masked column, then all tables
+ * should have a masked column.
  *
  */
 public class SegmentColumnInfoMatcher extends ColumnInfoMatcher {

@@ -68,6 +68,12 @@ public class RowSubsetMask implements Mask {
         return mask.cardinality();
     }
 
+    /**
+     * Removes the specified rows from the mask. @startIndex specfies at what
+     * index this StarTable sits if @rows contains selections from multiple
+     * stacked StarTables.
+     *
+     */
     @Override
     public void clearMasks(int[] rows, int startIndex) {
         for (int i : rows) {
@@ -77,7 +83,13 @@ public class RowSubsetMask implements Mask {
             }
         }
     }
-
+    
+    /**
+     * Adds the specified rows to the mask. @startIndex specfies at what
+     * index this StarTable sits if @rows contains selections from multiple
+     * stacked StarTables.
+     *
+     */
     @Override
     public void applyMasks(int[] rows, int startIndex) {
         for (int i : rows) {
