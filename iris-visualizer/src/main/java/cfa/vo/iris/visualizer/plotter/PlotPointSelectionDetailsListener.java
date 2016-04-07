@@ -17,6 +17,7 @@ package cfa.vo.iris.visualizer.plotter;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.util.logging.Logger;
 
 import javax.swing.JMenuItem;
@@ -28,7 +29,6 @@ import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 import uk.ac.starlink.ttools.plot2.task.PointSelectionEvent;
-import uk.ac.starlink.ttools.plot2.task.PointSelectionListener;
 
 /**
  * Shows a tooltip with point name and details when selecting a point
@@ -39,51 +39,36 @@ import uk.ac.starlink.ttools.plot2.task.PointSelectionListener;
  *  values to point selection events - so we simulate a tooltip using a custom JPopup
  *  Object.
  */
-public class PlotPointSelectionDetailsListener extends StilPlotterMouseListener
-        implements PointSelectionListener 
+public class PlotPointSelectionDetailsListener extends StilPlotterPointSelectionListener
 {
-    
-    private static Logger logger = Logger.getLogger(PlotPointSelectionDetailsListener.class.getName());
-    
     private PlotDisplay<?, ?> display;
     PointDataPopup popup = new PointDataPopup();
 
     @Override
-    public void pointSelected(PointSelectionEvent evt) {
-        try {
-            processEvent(evt);
-        } catch (Exception e) {
-            logger.warning(e.getMessage());
-        }
-    }
-    
-    private void processEvent(PointSelectionEvent evt) throws Exception {
+    public void handleSelection(int starTableIndex, int irow, PointSelectionEvent evt) {
         MetadataBrowserMainView mbView = this.getPlotterView().getMetadataBrowserView();
         
-        long[] rows = evt.getClosestRows();
-        for (int i=0; i*2<rows.length; i++) {
-            // If the row value is < 0, there was no point near to the mouse click event
-            // See http://tinyurl.com/gq9o7te
-            if (rows[2*i] < 0) {
-                continue;
-            }
-            
-            // Get selected star table based on PointSelectionEvent
-            IrisStarTable table = mbView.getSelectedTables().get(i);
-            ColumnIdentifier id = new ColumnIdentifier(table);
+        // Get selected star table based on PointSelectionEvent
+        IrisStarTable table = mbView.getSelectedTables().get(starTableIndex);
+        ColumnIdentifier id = new ColumnIdentifier(table);
+        
+        String tt;
+        try {
             
             // Grab the selected row, format the info String
-            Object[] row = table.getRow(rows[2*i]);
+            Object[] row = table.getRow(irow);
             double x = (double) row[id.getColumnIndex(Column.Spectral_Value.name())];
             double y = (double) row[id.getColumnIndex(Column.Flux_Value.name())];
-            String tt = String.format("%s (%s, %s)", table.getName(), formatNumber(x), formatNumber(y));
+            tt = String.format("%s (%s, %s)", table.getName(), formatNumber(x), formatNumber(y));
             
-            // Display the row in a popup menu
-            popup.setDataString(tt);
-            popup.show(display, evt.getPoint().x, evt.getPoint().y);
-            
-            return;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
+        // Display the row in a popup menu
+        popup.setDataString(tt);
+        popup.show(display, evt.getPoint().x, evt.getPoint().y);
+        
+        return;
     }
 
     @Override
