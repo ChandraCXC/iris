@@ -72,6 +72,7 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
     public void setEditable(boolean editable) {
         boolean old_editable = this.editable;
         this.editable = editable;
+        paramPanel.setEditable(editable);
         firePropertyChange(PROP_EDITABLE, old_editable, editable);
     }
 

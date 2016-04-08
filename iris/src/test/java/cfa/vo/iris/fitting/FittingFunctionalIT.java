@@ -8,6 +8,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.uispec4j.*;
+import org.uispec4j.assertion.Assertion;
+import org.uispec4j.assertion.UISpecAssert;
 import org.uispec4j.interception.PopupMenuInterceptor;
 
 import java.nio.charset.Charset;
@@ -183,7 +185,7 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
 
         removeModel(modelsTree, "test_table.m1");
 
-        assertFalse(modelsTree.contains("test_table.m1"));
+        UISpecAssert.not(modelsTree.contains("test_table.m1"));
 
         modelExpression.textEquals("m1 + m2 + m3 + m4").check();
         status.textEquals("Invalid Model Expression").check();
@@ -206,7 +208,21 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         modelsTree.expandAll();
         modelsTree.click("polynomial.m5/m5.c1");
         TextBox name = fittingView.getTextBox("Par Name");
+        TextBox val = fittingView.getTextBox("Par Val");
+        TextBox min = fittingView.getTextBox("Par Min");
+        TextBox max = fittingView.getTextBox("Par Max");
+        CheckBox frozen = fittingView.getCheckBox("Par Frozen");
         name.textEquals("m5.c1").check();
+        val.isEnabled().check();
+        min.isEnabled().check();
+        max.isEnabled().check();
+        frozen.isEnabled().check();
+
+        UISpecAssert.not(name.isEditable());
+        val.isEditable().check();
+        min.isEditable().check();
+        max.isEditable().check();
+        frozen.isEnabled().check();
     }
 
     private void removeModel(Tree mTree, String m) {

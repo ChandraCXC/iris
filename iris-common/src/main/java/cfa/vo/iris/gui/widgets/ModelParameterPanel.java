@@ -5,13 +5,16 @@ import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.sherpa.models.Parameter;
 
 import javax.swing.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ModelParameterPanel extends JPanel {
     private JTextField val;
     private JTextField min;
     private JTextField max;
-    private JTextField frozen;
+    private JCheckBox frozen;
     private JTextField name;
+    private Set<JTextField> editableSet;
 
     public ModelParameterPanel() {
         super(new SpringLayout());
@@ -20,11 +23,30 @@ public class ModelParameterPanel extends JPanel {
         name.setEditable(false);
         name.setName("Par Name");
         val = addTextField("Val");
+        val.setName("Par Val");
         min = addTextField("Min");
+        min.setName("Par Min");
         max = addTextField("Max");
-        frozen = addTextField("Frozen");
+        max.setName("Par Max");
+        add(new JLabel("Frozen"));
+        frozen = new JCheckBox();
+        frozen.setName("Par Frozen");
+        add(frozen);
+
+        editableSet = new HashSet<>();
+        editableSet.add(val);
+        editableSet.add(min);
+        editableSet.add(max);
+
         setParameter(null);
         GUIUtils.makeCompactGrid(this, 5, 2, 6, 6, 6, 6);
+    }
+
+    public void setEditable(boolean editable) {
+        for (JTextField comp : editableSet) {
+            comp.setEditable(editable);
+        }
+        frozen.setEnabled(editable);
     }
 
     public void setParameter(Parameter par) {
@@ -34,7 +56,7 @@ public class ModelParameterPanel extends JPanel {
         val.setText(getText(par.getVal()));
         min.setText(getText(par.getMin()));
         max.setText(getText(par.getMax()));
-        frozen.setText(getText(getBoolean(par.getFrozen())));
+        frozen.setSelected(getBoolean(par.getFrozen()));
         name.setText(par.getName() != null? par.getName() : "No Parameter Selected");
     }
 
