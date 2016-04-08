@@ -252,7 +252,6 @@ public class PlotterView extends JInternalFrame {
         jPanel1 = new javax.swing.JPanel();
         btnReset = new javax.swing.JButton();
         txtXposition = new javax.swing.JTextField();
-        right = new cfa.vo.iris.gui.JButtonArrow(BasicArrowButton.EAST);
         zoomIn = new javax.swing.JButton();
         btnUnits = new javax.swing.JButton();
         down = new cfa.vo.iris.gui.JButtonArrow(BasicArrowButton.SOUTH);
@@ -262,6 +261,7 @@ public class PlotterView extends JInternalFrame {
         metadataButton = new javax.swing.JButton();
         txtYposition = new javax.swing.JTextField();
         up = new cfa.vo.iris.gui.JButtonArrow(BasicArrowButton.NORTH);
+        left1 = new cfa.vo.iris.gui.JButtonArrow(BasicArrowButton.EAST);
         jPanel2 = new javax.swing.JPanel();
         secondaryPlotOptions = new javax.swing.JSpinner();
         tglbtnShowHideResiduals = new javax.swing.JToggleButton();
@@ -296,8 +296,6 @@ public class PlotterView extends JInternalFrame {
 
         org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${xcoord}"), txtXposition, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
-
-        right.setText("jButtonArrow2");
 
         zoomIn.setText("In");
         zoomIn.setEnabled(false);
@@ -338,6 +336,8 @@ public class PlotterView extends JInternalFrame {
 
         up.setText("jButtonArrow3");
 
+        left1.setText("jButtonArrow1");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -352,7 +352,7 @@ public class PlotterView extends JInternalFrame {
                 .addGap(18, 18, 18)
                 .addComponent(left, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(right, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(left1, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(up, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -378,14 +378,14 @@ public class PlotterView extends JInternalFrame {
                     .addComponent(zoomIn)
                     .addComponent(zoomOut)
                     .addComponent(left, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(right, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(up, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(down, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtXposition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtYposition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(metadataButton)
                     .addComponent(btnUnits)
-                    .addComponent(fluxOrDensity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(fluxOrDensity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(left1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -580,6 +580,7 @@ public class PlotterView extends JInternalFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private cfa.vo.iris.gui.JButtonArrow left;
+    private cfa.vo.iris.gui.JButtonArrow left1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JButton metadataButton;
     private javax.swing.JMenu mnEdit;
