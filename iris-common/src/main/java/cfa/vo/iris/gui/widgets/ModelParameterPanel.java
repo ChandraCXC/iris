@@ -1,6 +1,5 @@
 package cfa.vo.iris.gui.widgets;
 
-import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.sherpa.models.Parameter;
 import org.jdesktop.beansbinding.*;
 
@@ -8,24 +7,17 @@ import javax.swing.*;
 import java.util.HashSet;
 import java.util.Set;
 
-public class ModelParameterPanel extends JPanel {
+public class ModelParameterPanel extends AbstractGridPanel {
     private JTextField val;
     private JTextField min;
     private JTextField max;
     private JCheckBox frozen;
     private JTextField name;
     private Set<JTextField> editableSet;
-    private BindingGroup group;
 
     private Parameter parameter;
 
     public final static String PROP_PARAMETER = "parameter";
-
-    public ModelParameterPanel() {
-        super(new SpringLayout());
-        initComponents();
-        initBindings();
-    }
 
     public void setEditable(boolean editable) {
         for (JTextField comp : editableSet) {
@@ -44,8 +36,8 @@ public class ModelParameterPanel extends JPanel {
         return parameter;
     }
 
-    private void initBindings() {
-        group = new BindingGroup();
+    @Override
+    protected void initBindings() {
         createBinding("name", name, "text");
         createBinding("val", val, "text");
         createBinding("min", min, "text");
@@ -53,21 +45,25 @@ public class ModelParameterPanel extends JPanel {
         createBinding("frozen", frozen, "selected");
         Binding name = group.getBinding("name");
         name.setSourceUnreadableValue("No Parameter Selected");
-        group.bind();
     }
 
-    private void createBinding(String propertyName, JComponent comp, String compPropertyName) {
-        Binding binding = Bindings.createAutoBinding(
-                AutoBinding.UpdateStrategy.READ_WRITE,
-                this,
-                ELProperty.create(String.format("${parameter.%s}", propertyName)),
-                comp,
-                BeanProperty.create(compPropertyName), propertyName);
-
-        group.addBinding(binding);
+    @Override
+    protected int getRows() {
+        return 5;
     }
 
-    private void initComponents() {
+    @Override
+    protected int getCols() {
+        return 2;
+    }
+
+    @Override
+    protected String getBindingRoot() {
+        return "parameter";
+    }
+
+    @Override
+    protected void initComponents() {
         name = addTextField("Name");
         name.setEnabled(false);
         name.setEditable(false);
@@ -87,18 +83,6 @@ public class ModelParameterPanel extends JPanel {
         editableSet.add(val);
         editableSet.add(min);
         editableSet.add(max);
-
-        GUIUtils.makeCompactGrid(this, 5, 2, 6, 6, 6, 6);
     }
 
-    private JTextField addTextField(String name) {
-        JLabel l = new JLabel(name, JLabel.TRAILING);
-        add(l);
-        JTextField textField = new JTextField();
-        l.setLabelFor(textField);
-        textField.setName(name);
-        textField.setEditable(false);
-        add(textField);
-        return textField;
-    }
 }

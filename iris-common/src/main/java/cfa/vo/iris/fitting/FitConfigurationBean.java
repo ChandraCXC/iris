@@ -2,6 +2,7 @@ package cfa.vo.iris.fitting;
 
 import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.gui.widgets.ModelExpressionVerifier;
+import cfa.vo.sherpa.FitResults;
 import cfa.vo.sherpa.IFitConfiguration;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.iris.sed.ExtSed;
@@ -10,10 +11,7 @@ import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.common.SedException;
 import cfa.vo.sherpa.Data;
 import cfa.vo.sherpa.SherpaFitConfiguration;
-import cfa.vo.sherpa.models.CompositeModel;
-import cfa.vo.sherpa.models.CompositeModelTreeModel;
-import cfa.vo.sherpa.models.Model;
-import cfa.vo.sherpa.models.UserModel;
+import cfa.vo.sherpa.models.*;
 import cfa.vo.sherpa.optimization.Method;
 import cfa.vo.sherpa.stats.Stat;
 import org.jdesktop.observablecollections.ObservableCollections;
@@ -22,15 +20,20 @@ import javax.annotation.Nonnull;
 import javax.swing.tree.TreeModel;
 import java.beans.PropertyChangeSupport;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class FitConfigurationBean implements IFitConfiguration {
     private CompositeModel model;
     private Stat stat;
     private Method method;
+    private Double rStat;
+    private Integer nFev;
+    private Double qVal;
+    private Integer numPoints;
+    private Double statVal;
+    private Integer dof;
+
     private ObservableList<UserModel> userModelList = ObservableCollections.observableList(new ArrayList<UserModel>());
     private ModelExpressionVerifier verifier = new ModelExpressionVerifier();
     private Logger logger = Logger.getLogger(FitConfigurationBean.class.getName());
@@ -38,6 +41,12 @@ public class FitConfigurationBean implements IFitConfiguration {
     public static final String PROP_MODEL = "model";
     public static final String PROP_STAT = "stat";
     public static final String PROP_METHOD = "method";
+    public static final String PROP_RSTAT = "rStat";
+    public static final String PROP_NFEV = "nFev";
+    public static final String PROP_QVAL = "qVal";
+    public static final String PROP_NUMPOINTS = "numPoints";
+    public static final String PROP_STATVAL = "statVal";
+    public static final String PROP_DOF = "dof";
     public static final String PROP_USERMODELLIST = "userModelList";
     public static final String PROP_EXPRESSION = "expression";
     private transient final PropertyChangeSupport propertyChangeSupport = new java.beans.PropertyChangeSupport(this);
@@ -81,6 +90,66 @@ public class FitConfigurationBean implements IFitConfiguration {
         Method oldMethod = this.method;
         this.method = method;
         propertyChangeSupport.firePropertyChange(PROP_METHOD, oldMethod, method);
+    }
+
+    public Double getrStat() {
+        return rStat;
+    }
+
+    public void setrStat(Double rStat) {
+        Double oldrStat = this.rStat;
+        this.rStat = rStat;
+        propertyChangeSupport.firePropertyChange(PROP_RSTAT, oldrStat, rStat);
+    }
+
+    public Integer getnFev() {
+        return nFev;
+    }
+
+    public void setnFev(Integer nFev) {
+        Integer oldNFev = this.nFev;
+        this.nFev = nFev;
+        propertyChangeSupport.firePropertyChange(PROP_NFEV, oldNFev, nFev);
+    }
+
+    public Double getqVal() {
+        return qVal;
+    }
+
+    public void setqVal(Double qVal) {
+        Double oldQVal = this.qVal;
+        this.qVal = qVal;
+        propertyChangeSupport.firePropertyChange(PROP_QVAL, oldQVal, qVal);
+    }
+
+    public Integer getNumPoints() {
+        return numPoints;
+    }
+
+    public void setNumPoints(Integer numPoints) {
+        Integer old = this.numPoints;
+        this.numPoints = numPoints;
+        propertyChangeSupport.firePropertyChange(PROP_NUMPOINTS, old, numPoints);
+    }
+
+    public Double getStatVal() {
+        return statVal;
+    }
+
+    public void setStatVal(Double statVal) {
+        Double old = this.statVal;
+        this.statVal = statVal;
+        propertyChangeSupport.firePropertyChange(PROP_STATVAL, old, statVal);
+    }
+
+    public Integer getDof() {
+        return dof;
+    }
+
+    public void setDof(Integer dof) {
+        Integer old = this.dof;
+        this.dof = dof;
+        propertyChangeSupport.firePropertyChange(PROP_DOF, old, dof);
     }
 
     @Override
@@ -147,6 +216,30 @@ public class FitConfigurationBean implements IFitConfiguration {
         else {
             return "No Model";
         }
+    }
+
+    public void integrateResults(FitResults results) {
+        Map<String, Parameter> params = new HashMap<>();
+        for (Model m : model.getParts()) {
+            for (Parameter p : m.getPars()) {
+                params.put(p.getName(), p);
+            }
+        }
+
+        List<String> parNames = results.getParnames();
+        double[] parVals = results.getParvals();
+
+        for (int i=0; i<parVals.length; i++) {
+            String name = parNames.get(i);
+            params.get(name).setVal(parVals[i]);
+        }
+
+        setrStat(results.getRstat());
+        setnFev(results.getNfev());
+        setqVal(results.getQval());
+        setNumPoints(results.getNumpoints());
+        setStatVal(results.getStatval());
+        setDof(results.getDof().intValue());
     }
 
     public SherpaFitConfiguration make(ExtSed sed) throws SedException, UnitsException {

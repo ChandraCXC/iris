@@ -235,6 +235,10 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
 
         frozen.unselect();
 
+        fittingView.getComboBox("optimizationCombo").select("LevenbergMarquardt");
+        fittingView.getComboBox("statisticCombo").select("LeastSquares");
+
+        fittingView.getButton("Fit").click();
     }
 
     private void removeModel(Tree mTree, String m) {

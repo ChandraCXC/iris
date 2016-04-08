@@ -48,7 +48,6 @@ import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import org.astrogrid.samp.client.SampException;
 import org.jdesktop.application.Action;
-import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
 import org.jdesktop.swingx.JXBusyLabel;
 

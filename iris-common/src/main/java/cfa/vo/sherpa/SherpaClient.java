@@ -17,9 +17,13 @@
 package cfa.vo.sherpa;
 
 import cfa.vo.interop.*;
+import cfa.vo.iris.fitting.FitConfigurationBean;
+import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.units.UnitsException;
+import cfa.vo.iris.utils.UTYPE;
+import cfa.vo.sedlib.common.SedException;
 import cfa.vo.sherpa.models.*;
 import cfa.vo.sherpa.optimization.Method;
-import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Stat;
 import org.astrogrid.samp.Response;
 import java.util.HashMap;
@@ -46,37 +50,24 @@ public class SherpaClient {
         return par;
     }
 
+    public FitResults fit(SherpaFitConfiguration conf) throws Exception {
+        fixDatasets(conf);
+        SAMPMessage message = SAMPFactory.createMessage("spectrum.fit.fit", conf, SherpaFitConfiguration.class);
+        Response response = sendMessage(message);
+
+        return SAMPFactory.get(response.getResult(), FitResults.class);
+    }
+
     public FitResults fit(Data dataset, CompositeModel model, Stat stat, Method method) throws Exception {
 
         SherpaFitConfiguration fc = SAMPFactory.get(SherpaFitConfiguration.class);
-
-        if (dataset.getStaterror() == null) {
-            int len = dataset.getX().length;
-            double[] staterr = new double[len];
-            for (int i = 0; i < dataset.getX().length; i++) {
-                staterr[i] = Double.NaN;
-            }
-            dataset.setStaterror(staterr);
-        }
-
-        if (dataset.getSyserror() == null) {
-            int len = dataset.getX().length;
-            double[] syserr = new double[len];
-            for (int i = 0; i < dataset.getX().length; i++) {
-                syserr[i] = Double.NaN;
-            }
-            dataset.setSyserror(syserr);
-        }
 
         fc.addDataset(dataset);
         fc.addModel(model);
         fc.setStat(stat);
         fc.setMethod(method);
 
-        SAMPMessage message = SAMPFactory.createMessage("spectrum.fit.fit", fc, SherpaFitConfiguration.class);
-        Response response = sendMessage(message);
-
-        return (FitResults) SAMPFactory.get(response.getResult(), FitResults.class);
+        return fit(fc);
     }
 
     public Data createData(String name) {
@@ -139,5 +130,27 @@ public class SherpaClient {
 
     public String createId(String prefix) {
         return prefix + (++stringCounter).toString();
+    }
+
+    private void fixDatasets(SherpaFitConfiguration conf) {
+        for (Data dataset : conf.getDatasets()) {
+            if (dataset.getStaterror() == null) {
+                int len = dataset.getX().length;
+                double[] staterr = new double[len];
+                for (int i = 0; i < dataset.getX().length; i++) {
+                    staterr[i] = Double.NaN;
+                }
+                dataset.setStaterror(staterr);
+            }
+
+            if (dataset.getSyserror() == null) {
+                int len = dataset.getX().length;
+                double[] syserr = new double[len];
+                for (int i = 0; i < dataset.getX().length; i++) {
+                    syserr[i] = Double.NaN;
+                }
+                dataset.setSyserror(syserr);
+            }
+        }
     }
 }

@@ -90,7 +90,8 @@ public class SAMPFactory {
      * @return An instance of the specified interface
      * @throws Exception
      */
-    public static Object get(Map map, Class clazz) throws Exception {
-        return Proxy.newProxyInstance(SAMPFactory.class.getClassLoader(), new Class[]{clazz}, new SAMPProxy(map, clazz));
+    public static <T> T get(Map map, Class<T> clazz) throws Exception {
+        Object retVal = Proxy.newProxyInstance(SAMPFactory.class.getClassLoader(), new Class[]{clazz}, new SAMPProxy(map, clazz));
+        return clazz.cast(retVal);
     }
 }

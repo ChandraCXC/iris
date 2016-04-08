@@ -21,9 +21,11 @@ import cfa.vo.iris.events.SedListener;
 import cfa.vo.iris.fitting.custom.CustomModelsManager;
 import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.fitting.custom.ModelsListener;
+import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.gui.widgets.ModelViewerPanel;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.utils.IPredicate;
+import cfa.vo.sherpa.FitResults;
 import cfa.vo.sherpa.IFitConfiguration;
 import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.models.Model;
@@ -36,6 +38,7 @@ import cfa.vo.sherpa.stats.Stats;
 import javax.swing.*;
 import javax.swing.tree.*;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -57,7 +60,8 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
     public static final String PROP_SEDID = "sedId";
     public final String DEFAULT_DESCRIPTION = "Double click on a Component to add it to the list of selected Components.";
     public final String CUSTOM_DESCRIPTION = "User Model";
-    
+    private FitResultsPanel resultsPanel;
+
     /**
      * Creates new form FittingMainView
      * @param sed
@@ -68,6 +72,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         this.sherpaClient = sherpaClient;
         initComponents();
         setUpModelViewerPanel(sed);
+        setUpResultsPanel(sed);
         setUpAvailableModelsTree();
         SedEvent.getInstance().add(this);
         revalidate();
@@ -115,6 +120,14 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         modelPanel.setLayout(new GridLayout(1, 1));
         modelPanel.add(modelViewerPanel);
         modelPanel.setPreferredSize(modelViewerPanel.getPreferredSize());
+    }
+
+    private void setUpResultsPanel(ExtSed sed) {
+        resultsPanel = new FitResultsPanel();
+        resultsPanel.setVisible(true);
+        resultsContainer.setLayout(new GridLayout(1, 1));
+        resultsContainer.add(resultsPanel);
+        resultsContainer.setPreferredSize(resultsPanel.getPreferredSize());
     }
 
     private void setUpAvailableModelsTree() {
@@ -197,6 +210,8 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         optimizationCombo = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
         statisticCombo = new javax.swing.JComboBox();
+        fitButton = new javax.swing.JButton();
+        resultsContainer = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         availableComponents = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -232,7 +247,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         modelPanel.setLayout(modelPanelLayout);
         modelPanelLayout.setHorizontalGroup(
             modelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 701, Short.MAX_VALUE)
+            .addGap(0, 725, Short.MAX_VALUE)
         );
         modelPanelLayout.setVerticalGroup(
             modelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -257,6 +272,17 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${fit.stat}"), statisticCombo, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
         bindingGroup.addBinding(binding);
 
+        fitButton.setText("Fit");
+        fitButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                try {
+                    doFit(evt);
+                } catch (Exception e) {
+                    NarrowOptionPane.showMessageDialog(FittingMainView.this, e.getMessage(), e.getClass().getName(), NarrowOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -270,20 +296,40 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
                     .addComponent(statisticCombo, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(fitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(optimizationCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(statisticCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(optimizationCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(statisticCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(22, 22, 22)
+                        .addComponent(fitButton)))
+                .addContainerGap(14, Short.MAX_VALUE))
+        );
+
+        resultsContainer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        javax.swing.GroupLayout resultsContainerLayout = new javax.swing.GroupLayout(resultsContainer);
+        resultsContainer.setLayout(resultsContainerLayout);
+        resultsContainerLayout.setHorizontalGroup(
+            resultsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        resultsContainerLayout.setVerticalGroup(
+            resultsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 200, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -292,14 +338,16 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(modelPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(resultsContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(modelPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(81, 81, 81))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(resultsContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel2);
@@ -334,7 +382,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         availableComponentsLayout.setHorizontalGroup(
             availableComponentsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(availableComponentsLayout.createSequentialGroup()
-                .addComponent(searchField, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                .addComponent(searchField, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
@@ -343,14 +391,13 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         availableComponentsLayout.setVerticalGroup(
             availableComponentsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(availableComponentsLayout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(availableComponentsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchButton)
-                    .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(searchField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -363,9 +410,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(availableComponents, javax.swing.GroupLayout.PREFERRED_SIZE, 340, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(availableComponents, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jSplitPane1.setLeftComponent(jPanel4);
@@ -385,13 +430,11 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(currentSedLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(currentSedField))
-                    .addComponent(jSplitPane1))
+                .addComponent(currentSedLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(currentSedField)
                 .addContainerGap())
+            .addComponent(jSplitPane1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -401,8 +444,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
                     .addComponent(currentSedLabel)
                     .addComponent(currentSedField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(390, Short.MAX_VALUE))
+                .addComponent(jSplitPane1))
         );
 
         getContentPane().add(jPanel1);
@@ -424,12 +466,19 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         filterModels(searchField.getText());
     }//GEN-LAST:event_searchButtonActionPerformed
 
+    private void doFit(java.awt.event.ActionEvent evt) throws Exception {//GEN-FIRST:event_doFit
+        FitResults results = sherpaClient.fit(fit.make(sed));
+        fit.integrateResults(results);
+        resultsPanel.setFit(fit);
+    }//GEN-LAST:event_doFit
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel availableComponents;
     private javax.swing.JTree availableTree;
     private javax.swing.JTextField currentSedField;
     private javax.swing.JLabel currentSedLabel;
     private javax.swing.JTextArea descriptionArea;
+    private javax.swing.JButton fitButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
@@ -444,6 +493,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
     private javax.swing.JMenu menuBar;
     private javax.swing.JPanel modelPanel;
     private javax.swing.JComboBox optimizationCombo;
+    private javax.swing.JPanel resultsContainer;
     private javax.swing.JButton searchButton;
     private javax.swing.JTextField searchField;
     private javax.swing.JComboBox statisticCombo;
