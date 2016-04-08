@@ -132,7 +132,7 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         TestUtils.invokeWithRetry(50, 100, new Runnable(){
             @Override
             public void run() {
-                assertEquals("1.0", mainFit.getInputTextBox("Val").getText());
+                assertEquals("1.0", mainFit.getInputTextBox("Par Val").getText());
             }
         });
 

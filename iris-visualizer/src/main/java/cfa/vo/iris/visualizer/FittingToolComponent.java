@@ -143,8 +143,7 @@ public class FittingToolComponent implements IrisComponent {
                                 return;
                             }
                             view = new FittingMainView(sed, customManager, sherpaClient);
-                            ws.getDesktop().add(view);
-                            GUIUtils.moveToFront(view);
+                            ws.addFrame(view);
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);
                         }
