@@ -18,7 +18,6 @@ import cfa.vo.sherpa.optimization.Method;
 import cfa.vo.sherpa.stats.Stat;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
-
 import javax.annotation.Nonnull;
 import javax.swing.tree.TreeModel;
 import java.beans.PropertyChangeSupport;
@@ -111,6 +110,15 @@ public class FitConfigurationBean implements IFitConfiguration {
         addToExpression(m.getName().split("\\.")[1]);
     }
 
+    public boolean removeModel(Model m) {
+        boolean retVal = model.getParts().remove(m);
+        removeUserModel(m);
+        if (retVal) {
+            propertyChangeSupport.firePropertyChange(PROP_USERMODELLIST, null, model);
+        }
+        return retVal;
+    }
+
     @Override
     public void setUserModelList(List<UserModel> userModelList) {
         ObservableList oldList = this.userModelList;
@@ -184,6 +192,33 @@ public class FitConfigurationBean implements IFitConfiguration {
     public void removePropertyChangeListener(java.beans.PropertyChangeListener listener )
     {
         propertyChangeSupport.removePropertyChangeListener( listener );
+    }
+
+    private void removeUserModel(Model m) {
+        boolean retVal = false;
+        for (UserModel um : new ArrayList<>(userModelList)) {
+            String mId = getId(m);
+            String umId = getId(um);
+            if (mId.equals(umId)) {
+                retVal = userModelList.remove(um);
+                break;
+            }
+        }
+        if (retVal) {
+            propertyChangeSupport.firePropertyChange(PROP_EXPRESSION, null, getExpression());
+        }
+    }
+
+    private String getId(Model m) {
+        return stripId(m.getName());
+    }
+
+    private String getId(UserModel m) {
+        return stripId(m.getName());
+    }
+
+    private String stripId(String name) {
+        return name.split("\\.")[1];
     }
 
     private void addToExpression(String id) {

@@ -103,10 +103,7 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
     }
 
     void removeModelComponent(Model model) {
-//        if (model instanceof UserModel) {
-//            fit.getUserModelList().remove(model);
-//        }
-//        fit.getModel().
+        fit.removeModel(model);
     }
 
     private void initVerifier() {

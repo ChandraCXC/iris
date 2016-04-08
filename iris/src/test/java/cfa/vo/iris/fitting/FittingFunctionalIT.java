@@ -176,14 +176,43 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         status.textIsEmpty().check();
 
         modelExpression.setText("foo bar");
-        status.textEquals("Invalid Model Expression");
+        status.textEquals("Invalid Model Expression").check();
 
+        modelExpression.setText("m1 + m2 + m3 + m4");
+        status.textIsEmpty().check();
+
+        removeModel(modelsTree, "test_table.m1");
+
+        assertFalse(modelsTree.contains("test_table.m1"));
+
+        modelExpression.textEquals("m1 + m2 + m3 + m4").check();
+        status.textEquals("Invalid Model Expression").check();
+
+        modelExpression.setText("m2 + m3 + m4");
+        status.textIsEmpty().check();
+
+        removeModel(modelsTree, "test_template.m3");
+        removeModel(modelsTree, "mypowlaw.m2");
+        removeModel(modelsTree, "powerlaw.m4");
+        status.textEquals("Invalid Model Expression").check();
+
+        modelExpression.setText("");
+
+        availableTree.doubleClick("Preset Model Components/polynomial");
+        modelsTree.contains("polynomial.m5").check();
+        modelExpression.setText("m5");
+        status.textEquals("").check();
+
+        modelsTree.expandAll();
+        modelsTree.click("polynomial.m5/m5.c1");
+        TextBox name = fittingView.getTextBox("Par Name");
+        name.textEquals("m5.c1").check();
+    }
+
+    private void removeModel(Tree mTree, String m) {
         PopupMenuInterceptor.run(
-                modelsTree.triggerRightClick("test_table.m1"))
+                mTree.triggerRightClick(m))
                 .getSubMenu("Remove")
                 .click();
-
-//        assertFalse(modelsTree.contains("test_table.m1"));
-
     }
 }

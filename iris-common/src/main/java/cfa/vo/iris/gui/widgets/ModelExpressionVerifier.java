@@ -3,9 +3,7 @@ package cfa.vo.iris.gui.widgets;
 import cfa.vo.iris.fitting.FitConfigurationBean;
 import cfa.vo.sherpa.models.Model;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
+import javax.script.*;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -30,17 +28,17 @@ public class ModelExpressionVerifier {
             return retVal;
         }
 
-        StringBuilder builder = new StringBuilder();
+        Bindings b = new SimpleBindings();
         List<Model> models = fit.getModel().getParts();
         if (models != null) {
             for (Model m : models) {
-                builder.append(String.format("var %s; ", m.getName().split("\\.")[1]));
+                b.put(m.getName().split("\\.")[1], Double.NaN);
             }
         }
-        builder.append("1 + ");
-        builder.append(expression);
+
         try {
-            Object res = scriptEngine.eval(builder.toString());
+            scriptEngine.setBindings(b, ScriptContext.ENGINE_SCOPE);
+            Object res = scriptEngine.eval(expression);
             if (res != null) {
                 retVal = res.equals(Double.NaN);
             }
