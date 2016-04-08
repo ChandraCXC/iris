@@ -125,6 +125,7 @@
                         <include>**/*Test.*</include>
                     </includes>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <rerunFailingTestsCount>3</rerunFailingTestsCount>
                     <systemPropertyVariables>
                         <java.util.logging.config.file>
                             ${project.parent.basedir}/iris/src/test/resources/log.properties
@@ -150,6 +151,7 @@
                     <includes>
                         <include>**/*IT.*</include>
                     </includes>
+                    <rerunFailingTestsCount>3</rerunFailingTestsCount>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                     <systemPropertyVariables>
                         <java.io.tmpdir>${project.build.directory}/tests</java.io.tmpdir>
