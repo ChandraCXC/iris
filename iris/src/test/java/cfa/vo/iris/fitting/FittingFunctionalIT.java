@@ -8,7 +8,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.uispec4j.*;
-import org.uispec4j.assertion.Assertion;
 import org.uispec4j.assertion.UISpecAssert;
 import org.uispec4j.interception.PopupMenuInterceptor;
 
@@ -17,8 +16,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import static org.uispec4j.assertion.UISpecAssert.*;
 
 public class FittingFunctionalIT extends AbstractUISpecTest {
     @Rule
@@ -33,7 +30,6 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
     private String functionUrlString;
 
     private Window window;
-    private Window modelsManager;
     private Desktop desktop;
 
     @Before
@@ -70,7 +66,7 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
                 window.getMenuBar().getMenu("Tools").getSubMenu("Fitting Tool").getSubMenu("Custom Models Manager").click();
             }
         });
-        modelsManager = desktop.getWindow("Custom Fit Models Manager");
+        Window modelsManager = desktop.getWindow("Custom Fit Models Manager");
 
         modelsManager.getRadioButton("Template Library").click();
         TextBox nextField = modelsManager.getTextBox("jTextField1");
@@ -205,24 +201,40 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         modelExpression.setText("m5");
         status.textEquals("").check();
 
-        modelsTree.expandAll();
-        modelsTree.click("polynomial.m5/m5.c1");
         TextBox name = fittingView.getTextBox("Par Name");
         TextBox val = fittingView.getTextBox("Par Val");
         TextBox min = fittingView.getTextBox("Par Min");
         TextBox max = fittingView.getTextBox("Par Max");
         CheckBox frozen = fittingView.getCheckBox("Par Frozen");
-        name.textEquals("m5.c1").check();
-        val.isEnabled().check();
-        min.isEnabled().check();
-        max.isEnabled().check();
-        frozen.isEnabled().check();
 
         UISpecAssert.not(name.isEditable());
         val.isEditable().check();
         min.isEditable().check();
         max.isEditable().check();
         frozen.isEnabled().check();
+
+        modelsTree.expandAll();
+        modelsTree.click("polynomial.m5/m5.c0");
+        name.textEquals("m5.c0").check();
+        val.textEquals("1.0").check();
+        min.textEquals("-3.4028234663852886E38").check();
+        max.textEquals("3.4028234663852886E38").check();
+        UISpecAssert.not(frozen.isSelected());
+
+        modelsTree.click("polynomial.m5/m5.c1");
+        name.textEquals("m5.c1").check();
+        val.textEquals("0.0").check();
+        min.textEquals("-3.4028234663852886E38").check();
+        max.textEquals("3.4028234663852886E38").check();
+        frozen.isSelected().check();
+
+        val.isEnabled().check();
+        min.isEnabled().check();
+        max.isEnabled().check();
+        frozen.isEnabled().check();
+
+        frozen.unselect();
+
     }
 
     private void removeModel(Tree mTree, String m) {
