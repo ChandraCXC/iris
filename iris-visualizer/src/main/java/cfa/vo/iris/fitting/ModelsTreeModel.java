@@ -13,8 +13,12 @@ import java.util.logging.Logger;
 public class ModelsTreeModel extends DefaultTreeModel {
     private List<Model> presetList;
 
-    public ModelsTreeModel(List<Model> presetList, CustomModelsManager manager) {
+    public ModelsTreeModel() {
         super(new DefaultMutableTreeNode("Model Components"));
+    }
+
+    public ModelsTreeModel(List<Model> presetList, CustomModelsManager manager) {
+        this();
         Collections.sort(presetList, new Comparator<Model>() {
 
             @Override

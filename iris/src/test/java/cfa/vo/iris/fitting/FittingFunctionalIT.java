@@ -214,6 +214,8 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         frozen.isEnabled().check();
 
         modelsTree.expandAll();
+
+        // Try with click
         modelsTree.click("polynomial.m5/m5.c0");
         name.textEquals("m5.c0").check();
         val.textEquals("1.0").check();
@@ -221,7 +223,8 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         max.textEquals("3.4028234663852886E38").check();
         UISpecAssert.not(frozen.isSelected());
 
-        modelsTree.click("polynomial.m5/m5.c1");
+        // Try with select
+        modelsTree.select("polynomial.m5/m5.c1");
         name.textEquals("m5.c1").check();
         val.textEquals("0.0").check();
         min.textEquals("-3.4028234663852886E38").check();

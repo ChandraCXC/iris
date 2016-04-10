@@ -38,6 +38,7 @@ public class FitConfigurationBean implements IFitConfiguration {
     private ModelExpressionVerifier verifier = new ModelExpressionVerifier();
     private Logger logger = Logger.getLogger(FitConfigurationBean.class.getName());
 
+    public static final String DATA_NAME = "fitdata";
     public static final String PROP_MODEL = "model";
     public static final String PROP_STAT = "stat";
     public static final String PROP_METHOD = "method";
@@ -245,7 +246,7 @@ public class FitConfigurationBean implements IFitConfiguration {
     public SherpaFitConfiguration make(ExtSed sed) throws SedException, UnitsException {
         // FIXME this duplicates the code in SherpaClient. They should probably both use the same class.
         Data data = SAMPFactory.get(Data.class);
-        data.setName("fitdata");
+        data.setName(DATA_NAME);
         ExtSed flat = ExtSed.flatten(sed, "Angstrom", "photon/s/cm2/Angstrom");
         data.setX(flat.getSegment(0).getSpectralAxisValues());
         data.setY(flat.getSegment(0).getFluxAxisValues());
