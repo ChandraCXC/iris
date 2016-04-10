@@ -68,7 +68,7 @@ public class ModelParameterPanel extends AbstractGridPanel {
         name.setEnabled(false);
         name.setEditable(false);
         name.setName("Par Name");
-        val = addTextField("Val");
+        val = addTextField("Value");
         val.setName("Par Val");
         min = addTextField("Min");
         min.setName("Par Min");

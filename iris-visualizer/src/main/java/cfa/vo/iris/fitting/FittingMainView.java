@@ -211,7 +211,9 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         jLabel2 = new javax.swing.JLabel();
         statisticCombo = new javax.swing.JComboBox();
         fitButton = new javax.swing.JButton();
+        jSplitPane2 = new javax.swing.JSplitPane();
         resultsContainer = new javax.swing.JPanel();
+        confidenceContainer = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         availableComponents = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -239,7 +241,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         jPanel1.setPreferredSize(new java.awt.Dimension(850, 418));
 
         jSplitPane1.setBorder(javax.swing.BorderFactory.createTitledBorder("Fit Configuration"));
-        jSplitPane1.setDividerLocation(200);
+        jSplitPane1.setDividerLocation(250);
 
         modelPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -247,7 +249,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         modelPanel.setLayout(modelPanelLayout);
         modelPanelLayout.setHorizontalGroup(
             modelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 725, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         modelPanelLayout.setVerticalGroup(
             modelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -275,11 +277,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         fitButton.setText("Fit");
         fitButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                try {
-                    doFit(evt);
-                } catch (Exception e) {
-                    NarrowOptionPane.showMessageDialog(FittingMainView.this, e.getMessage(), e.getClass().getName(), NarrowOptionPane.ERROR_MESSAGE);
-                }
+                doFit(evt);
             }
         });
 
@@ -319,18 +317,36 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
                 .addContainerGap(14, Short.MAX_VALUE))
         );
 
-        resultsContainer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jSplitPane2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jSplitPane2.setDividerLocation(300);
+
+        resultsContainer.setBorder(null);
 
         javax.swing.GroupLayout resultsContainerLayout = new javax.swing.GroupLayout(resultsContainer);
         resultsContainer.setLayout(resultsContainerLayout);
         resultsContainerLayout.setHorizontalGroup(
             resultsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 298, Short.MAX_VALUE)
         );
         resultsContainerLayout.setVerticalGroup(
             resultsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 200, Short.MAX_VALUE)
         );
+
+        jSplitPane2.setLeftComponent(resultsContainer);
+
+        javax.swing.GroupLayout confidenceContainerLayout = new javax.swing.GroupLayout(confidenceContainer);
+        confidenceContainer.setLayout(confidenceContainerLayout);
+        confidenceContainerLayout.setHorizontalGroup(
+            confidenceContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 372, Short.MAX_VALUE)
+        );
+        confidenceContainerLayout.setVerticalGroup(
+            confidenceContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 200, Short.MAX_VALUE)
+        );
+
+        jSplitPane2.setRightComponent(confidenceContainer);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -338,7 +354,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(modelPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(resultsContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jSplitPane2)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -347,7 +363,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(resultsContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jSplitPane2))
         );
 
         jSplitPane1.setRightComponent(jPanel2);
@@ -382,7 +398,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         availableComponentsLayout.setHorizontalGroup(
             availableComponentsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(availableComponentsLayout.createSequentialGroup()
-                .addComponent(searchField, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
+                .addComponent(searchField, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
@@ -466,8 +482,16 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         filterModels(searchField.getText());
     }//GEN-LAST:event_searchButtonActionPerformed
 
-    private void doFit(java.awt.event.ActionEvent evt) throws Exception {//GEN-FIRST:event_doFit
-        FitResults results = sherpaClient.fit(fit.make(sed));
+    private void doFit(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doFit
+        FitResults results = null;
+        try {
+            results = sherpaClient.fit(fit.make(sed));
+        } catch (Exception e) {
+            NarrowOptionPane.showMessageDialog(this,
+                    e.getMessage(),
+                    e.getClass().getSimpleName(),
+                    NarrowOptionPane.ERROR_MESSAGE);
+        }
         fit.integrateResults(results);
         resultsPanel.setFit(fit);
     }//GEN-LAST:event_doFit
@@ -475,6 +499,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel availableComponents;
     private javax.swing.JTree availableTree;
+    private javax.swing.JPanel confidenceContainer;
     private javax.swing.JTextField currentSedField;
     private javax.swing.JLabel currentSedLabel;
     private javax.swing.JTextArea descriptionArea;
@@ -490,6 +515,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JMenu menuBar;
     private javax.swing.JPanel modelPanel;
     private javax.swing.JComboBox optimizationCombo;
