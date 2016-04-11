@@ -51,7 +51,7 @@ public class PlotterView extends JInternalFrame {
     // StilPlotter plotter initialized in initComponents()
     private JInternalFrame residuals;
     private MetadataBrowserMainView metadataBrowser;
-    private JInternalFrame unitsManagerFrame;
+    private UnitsManagerFrame unitsManagerFrame;
     
     private static double ZOOM_SCALE = 0.5;
     
@@ -535,9 +535,10 @@ public class PlotterView extends JInternalFrame {
     }//GEN-LAST:event_mntmExportActionPerformed
 
     private void btnUnitsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnitsActionPerformed
-        if (!unitsManagerFrame.isVisible()) {
-            ws.addFrame(unitsManagerFrame);
-        }
+        // create a new frame each time so previously selected sed 
+        // preferences don't get overridden
+        unitsManagerFrame = new UnitsManagerFrame(ws, preferences);
+        ws.addFrame(unitsManagerFrame);
         GUIUtils.moveToFront(unitsManagerFrame);
     }//GEN-LAST:event_btnUnitsActionPerformed
 
