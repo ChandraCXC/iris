@@ -80,7 +80,6 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
         jButton2 = new javax.swing.JButton();
 
         setClosable(true);
-        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setResizable(true);
         setPreferredSize(new java.awt.Dimension(450, 325));
 
