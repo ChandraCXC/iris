@@ -17,6 +17,7 @@
 package cfa.vo.iris.visualizer.plotter;
 
 import cfa.vo.iris.sed.SedException;
+import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.sed.quantities.YUnit;
 import cfa.vo.iris.units.spv.XUnits;
@@ -121,7 +122,7 @@ public class PlotPreferences {
         try {
             YUnits yconvert = new YUnits(arg1);
             ylabel = yconvert.getLabel() + 
-                    " (" + YUnit.getFromUnitString(arg1).getString() + ")";
+                    " (" + SPVYUnit.getFromUnitString(arg1).getString() + ")";
         } catch (SedException ex) {
             // if unit is not defined
             // TODO: set to default or unknown units?

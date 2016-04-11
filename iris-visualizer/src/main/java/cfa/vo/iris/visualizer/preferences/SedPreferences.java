@@ -114,7 +114,17 @@ public class SedPreferences {
         
         // If the segment is already in the map remake the star table
         if (segmentPreferences.containsKey(me)) {
+            
+            // TODO: this block might be slow. Is the table being updated twice?
             segmentPreferences.get(me).setInSource(convertSegment(seg));
+            
+            // reset the units
+            try {
+                segmentPreferences.get(me).setXUnits(xunits);
+                segmentPreferences.get(me).setYUnits(yunits);
+            } catch (UnitsException ex) {
+                throw new RuntimeException(ex);
+            }
             return;
         }
         
@@ -163,7 +173,9 @@ public class SedPreferences {
     }
     
     /**
-     * Sets x and y units to the given SED if units are not already set.
+     * Sets x and y units of the given segment to the preferred units.
+     * If preferred units have not been set, the given segment's units
+     * are used and set as the SED's preferred units.
      * 
      */
     void setUnits(Segment seg, SegmentLayer layer) {
@@ -199,6 +211,9 @@ public class SedPreferences {
         yunits = yunit;
         plotPreferences.setXlabel(xunit);
         plotPreferences.setYlabel(yunit);
+        
+        // update the segment layers with the new units
+        refresh();
     }
     
     // Removes any segments that are no longer in the SED
