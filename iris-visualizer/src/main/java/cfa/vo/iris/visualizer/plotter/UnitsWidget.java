@@ -19,9 +19,9 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.units.UnitsManager;
-import cfa.vo.iris.visualizer.preferences.SedPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
 import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
+import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.utils.Default;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +35,7 @@ import javax.swing.AbstractListModel;
 public class UnitsWidget extends javax.swing.JPanel {
 
     private ExtSed currentSed;
-    private SedPreferences prefs;
+    private VisualizerComponentPreferences prefs;
     private UnitsManager unitsManager;
     
     /**
@@ -44,7 +44,7 @@ public class UnitsWidget extends javax.swing.JPanel {
      * @param prefs
      * @param unitsManager
      */
-    public UnitsWidget(ExtSed sed, SedPreferences prefs) {
+    public UnitsWidget(ExtSed sed, VisualizerComponentPreferences prefs) {
         this.currentSed = sed;
         this.prefs = prefs;
         this.unitsManager = Default.getInstance().getUnitsManager();
@@ -52,8 +52,8 @@ public class UnitsWidget extends javax.swing.JPanel {
         
         // if current sed is null, set X and Y to Iris default units
         if (currentSed != null) {
-            setXunit(prefs.getXunits());
-            setYunit(prefs.getYunits());
+            setXunit(prefs.getSedPreferences(sed).getXunits());
+            setYunit(prefs.getSedPreferences(sed).getYunits());
         } else {
             // TODO: use default Iris units here; should be a static
             setXunit(unitsManager.newXUnits("Hz").toString());
@@ -139,7 +139,7 @@ public class UnitsWidget extends javax.swing.JPanel {
 
     public void updateUnits() {
         // fire Visualizer event to update plot and MB
-        this.prefs.setUnits(xunit, yunit);
+        this.prefs.getSedPreferences(currentSed).setUnits(xunit, yunit);
         fire(currentSed, VisualizerCommand.RESET);
     }
     
@@ -194,7 +194,13 @@ public class UnitsWidget extends javax.swing.JPanel {
         //firePropertyChange(PROP_YUNIT, oldYunit, yunit);
     }
 
+    public ExtSed getSed() {
+        return this.currentSed;
+    }
     
+    public void setSed(ExtSed sed) {
+        this.currentSed = sed;
+    }
     
     /*
      * end of getters and setters
