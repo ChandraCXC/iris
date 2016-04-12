@@ -15,7 +15,6 @@
  */
 package cfa.vo.iris.visualizer.plotter;
 
-import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
@@ -23,6 +22,7 @@ import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.visualizer.preferences.SedPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
 import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
+import cfa.vo.utils.Default;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.AbstractListModel;
@@ -40,13 +40,14 @@ public class UnitsWidget extends javax.swing.JPanel {
     
     /**
      * Creates new form UnitsWidget
-     * @param ws - workspace
-     * @param prefs - visualizer preferences
+     * @param sed
+     * @param prefs
+     * @param unitsManager
      */
-    public UnitsWidget(IWorkspace ws, SedPreferences prefs) {
-        this.currentSed = (ExtSed) ws.getSedManager().getSelected();
+    public UnitsWidget(ExtSed sed, SedPreferences prefs) {
+        this.currentSed = sed;
         this.prefs = prefs;
-        this.unitsManager = ws.getUnitsManager();
+        this.unitsManager = Default.getInstance().getUnitsManager();
         initComponents();
         
         // if current sed is null, set X and Y to Iris default units
@@ -82,6 +83,8 @@ public class UnitsWidget extends javax.swing.JPanel {
         jSplitPane1.setResizeWeight(0.5);
         jSplitPane1.setPreferredSize(new java.awt.Dimension(550, 200));
 
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder("X Units"));
+
         xunits.setModel(new XUnitsListModel());
         xunits.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
 
@@ -91,6 +94,8 @@ public class UnitsWidget extends javax.swing.JPanel {
         jScrollPane1.setViewportView(xunits);
 
         jSplitPane1.setLeftComponent(jScrollPane1);
+
+        jScrollPane2.setBorder(javax.swing.BorderFactory.createTitledBorder("Y Units"));
 
         yunits.setModel(new YUnitsListModel());
         yunits.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -116,7 +121,7 @@ public class UnitsWidget extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         bindingGroup.bind();
@@ -163,9 +168,9 @@ public class UnitsWidget extends javax.swing.JPanel {
     public void setXunit(String xunit) {
         String oldXunit = this.xunit;
         this.xunit = xunit;
-        //firePropertyChange(PROP_XUNIT, oldXunit, xunit);
+       //firePropertyChange(PROP_XUNIT, oldXunit, xunit);
     }
-    
+
     private String yunit;
     public static final String PROP_YUNIT = "yunit";
 

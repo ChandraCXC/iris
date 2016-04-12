@@ -29,14 +29,14 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.ColorPalette;
 import cfa.vo.iris.visualizer.plotter.HSVColorPalette;
 import cfa.vo.iris.units.UnitsException;
-import cfa.vo.iris.sed.quantities.XUnit;
-import cfa.vo.iris.sed.quantities.YUnit;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedNoDataException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Maintains visualizer preferences for an SED currently in the 
@@ -114,17 +114,7 @@ public class SedPreferences {
         
         // If the segment is already in the map remake the star table
         if (segmentPreferences.containsKey(me)) {
-            
-            // TODO: this block might be slow. Is the table being updated twice?
             segmentPreferences.get(me).setInSource(convertSegment(seg));
-            
-            // reset the units
-            try {
-                segmentPreferences.get(me).setXUnits(xunits);
-                segmentPreferences.get(me).setYUnits(yunits);
-            } catch (UnitsException ex) {
-                throw new RuntimeException(ex);
-            }
             return;
         }
         
@@ -178,26 +168,39 @@ public class SedPreferences {
      * are used and set as the SED's preferred units.
      * 
      */
-    void setUnits(Segment seg, SegmentLayer layer) {
-        try {
-            if (StringUtils.isEmpty(xunits)) {
-                xunits = seg.getSpectralAxisUnits();
-                plotPreferences.setXlabel(xunits);
-            }
-            if (StringUtils.isEmpty(yunits)) {
-                yunits = seg.getFluxAxisUnits();
-                plotPreferences.setYlabel(yunits);
-            }
-        } catch (SedNoDataException e) {
-            // ignore;
-        }
+    private void setUnits(Segment seg, SegmentLayer layer) {
+        // if this is the first segment to be added to the SED preferences,
+        // set the preferred X and Y units to the segment's
+        if (StringUtils.isEmpty(xunits) || StringUtils.isEmpty(xunits))
+            setInitialUnits(seg);
         
+        // set the layer units for this segment
         try {
             layer.setXUnits(xunits);
             layer.setYUnits(yunits);
         } catch (UnitsException e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    /**
+     * Set the SED units for the first time. Only should be called when the
+     * first segment is added to an empty SED. This function sets the X and Y
+     * units to that of the segment's.
+     */
+    private void setInitialUnits(Segment seg) {
+        try {
+            if (StringUtils.isEmpty(xunits))
+                xunits = seg.getSpectralAxisUnits();
+            if (StringUtils.isEmpty(yunits))
+                yunits = seg.getFluxAxisUnits();
+        } catch (SedNoDataException ex) {
+            throw new RuntimeException(ex);
+        }
+        
+        // set the plot axes labels
+        plotPreferences.setXlabel(xunits);
+        plotPreferences.setYlabel(yunits);
     }
     
     /**
@@ -213,7 +216,14 @@ public class SedPreferences {
         plotPreferences.setYlabel(yunit);
         
         // update the segment layers with the new units
-        refresh();
+        for (SegmentLayer seg : segmentPreferences.values()) {
+            try {
+                seg.setXUnits(xunits);
+                seg.setYUnits(yunits);
+            } catch (UnitsException ex) {
+                Logger.getLogger(SedPreferences.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
     
     // Removes any segments that are no longer in the SED

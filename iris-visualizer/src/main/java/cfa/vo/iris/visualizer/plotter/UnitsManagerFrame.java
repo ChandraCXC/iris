@@ -20,8 +20,6 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.preferences.SedPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import javax.swing.JButton;
 
 /**
  *
@@ -34,35 +32,24 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
     private VisualizerComponentPreferences prefs;
     private SedPreferences sedPrefs;
     private ExtSed currentSed;
-    
-    // GUI components
-    private JButton updateButton;
-    private JButton cancelButton;
-    
-    
+        
     /**
      * Creates new form UnitsManagerFrame
-     * @param ws      workspace
+     * @param sed     SED to apply unit changes to
      * @param prefs   SED preferences
+     * @param unitsManager the units manager
      */
-    public UnitsManagerFrame(IWorkspace ws, VisualizerComponentPreferences prefs) {
-        this.ws = ws;
+    public UnitsManagerFrame(ExtSed sed, VisualizerComponentPreferences prefs) {
         this.prefs = prefs;
         initComponents();
-        this.currentSed = (ExtSed) ws.getSedManager().getSelected();
-        this.unitsWidget = new UnitsWidget(ws, prefs.getSedPreferences(currentSed));
+        this.currentSed = sed;
+        this.unitsWidget = new UnitsWidget(currentSed, prefs.getSedPreferences(currentSed));
         
         this.setTitle("Select Units");
         
         initComponents();
 
         this.unitsManagerPanel.add(this.unitsWidget, BorderLayout.NORTH);
-        
-//        updateButton = new JButton("Update");
-//        updateButton.setName("updateButton");
-//        cancelButton = new JButton("Cancel");
-//        cancelButton.setName("cancelButton");
-        
     }
 
     /**
