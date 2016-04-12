@@ -84,7 +84,6 @@ public class PlotterView extends JInternalFrame {
         
         this.metadataBrowser = new MetadataBrowserMainView(ws, preferences);       
         this.residuals = new JInternalFrame();
-        this.unitsManagerFrame = new UnitsManagerFrame(ws, preferences);
         
         initComponents();
         
@@ -93,6 +92,9 @@ public class PlotterView extends JInternalFrame {
         plotter.setSedManager((SedlibSedManager) ws.getSedManager());
         plotter.setVisualizerPreferences(preferences);
         plotter.reset(null, true);
+        
+        // units chooser frame
+        this.unitsManagerFrame = new UnitsManagerFrame(plotter.getSed(), this.preferences);
         
         // Action for opening metadata browser
         metadataButton.addActionListener(new ActionListener() {
@@ -528,10 +530,13 @@ public class PlotterView extends JInternalFrame {
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void btnUnitsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnitsActionPerformed
-        // create a new frame each time so previously selected sed 
-        // preferences don't get overridden
-        unitsManagerFrame = new UnitsManagerFrame(ws, preferences);
-        ws.addFrame(unitsManagerFrame);
+        
+        if (!unitsManagerFrame.isVisible()) {
+            unitsManagerFrame = new UnitsManagerFrame(
+                plotter.getSed(), 
+                preferences);
+            ws.addFrame(unitsManagerFrame);
+        }
         GUIUtils.moveToFront(unitsManagerFrame);
     }//GEN-LAST:event_btnUnitsActionPerformed
 
