@@ -15,10 +15,8 @@
  */
 package cfa.vo.iris.visualizer.plotter;
 
-/**
- *
- * @author eholum
- */
+import javax.imageio.ImageIO;
+
 public class ImageTypeComboMenu extends javax.swing.JPanel {
 
     /**
@@ -47,7 +45,7 @@ public class ImageTypeComboMenu extends javax.swing.JPanel {
 
         setLayout(new java.awt.GridBagLayout());
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "jpg", "jpeg", "tiff", "png", "pdf" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "jpg", "bmp", "jpeg", "png", "gif" }));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;

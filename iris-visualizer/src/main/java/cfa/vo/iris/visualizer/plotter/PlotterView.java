@@ -527,9 +527,8 @@ public class PlotterView extends JInternalFrame {
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void mntmExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mntmExportActionPerformed
-        logger.info("Exporting plot display to a file");
-        PlotImageWriter writer = new PlotImageWriter(plotter.getPlotDisplay(), this);
-        writer.openSavePlotDialogue();
+        PlotImageWriter writer = new PlotImageWriter(plotter, this);
+        writer.openSavePlotDialog();
     }//GEN-LAST:event_mntmExportActionPerformed
 
 

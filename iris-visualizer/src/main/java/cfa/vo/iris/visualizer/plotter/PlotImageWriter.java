@@ -15,11 +15,18 @@
  */
 package cfa.vo.iris.visualizer.plotter;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.Logger;
+
+import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 
-import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
+import org.apache.commons.lang.StringUtils;
+
+import cfa.vo.iris.visualizer.stil.StilPlotter;
 
 
 public class PlotImageWriter {
@@ -28,14 +35,15 @@ public class PlotImageWriter {
     
     private static final ImageTypeComboMenu fileTypes = new ImageTypeComboMenu();
     private final PlotterView view;
-    private final PlotDisplay display;
-    private final JFileChooser fileChooser;
+    private final StilPlotter display;
     
-    /**
-     * Creates new form PlotImageWriter
-     */
-    public PlotImageWriter(PlotDisplay display, PlotterView view) {
-
+    JFileChooser fileChooser;
+    
+    public PlotImageWriter(StilPlotter display, PlotterView view) {
+        if (display == null) {
+            throw new IllegalArgumentException("Cannot print an empty display!");
+        }
+        
         this.view = view;
         this.display = display;
         this.fileChooser = new JFileChooser();
@@ -43,15 +51,47 @@ public class PlotImageWriter {
         fileChooser.setAccessory(fileTypes);
     }
     
-    public void openSavePlotDialogue() {
-        int ret = fileChooser.showSaveDialog(view);
-        
+    public void openSavePlotDialog() {
+        int ret = showSaveDialog();
         if (ret == JFileChooser.APPROVE_OPTION) {
-            saveImage(fileChooser.getSelectedFile(), fileTypes.getSelectedItem());
+            saveImage();
         }
     }
     
-    private void saveImage(File f, String fileType) {
+    private void saveImage() {
+        
+        String fileType = fileTypes.getSelectedItem();
+        File outFile = fileChooser.getSelectedFile();
+        
+        // Append the file type to the file name
+        if (!StringUtils.endsWith(outFile.getName(), "." + fileType)) {
+            outFile = new File(outFile.getAbsolutePath() + "." + fileType);
+        }
+        
+        BufferedImage image = new BufferedImage(display.getWidth(), display.getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = image.createGraphics();
+        display.print(g);
+        g.dispose();
+        
+        logger.info(String.format("Saving plotter to file %s as %s.", outFile, fileType));
+        
+        try {
+            write(image, fileType, outFile);
+        } catch (IOException | IllegalArgumentException exp) {
+            throw new RuntimeException(exp);
+        }
+    }
+    
+    int showSaveDialog() {
+        return fileChooser.showSaveDialog(view);
+    }
+    
+    void write(BufferedImage image, String fileType, File outFile) throws IOException {
+        boolean success = ImageIO.write(image, fileType, outFile);
+        if (!success) {
+            String msg = String.format("invalid file (%s) or file type (%s)", outFile, fileType);
+            throw new IllegalArgumentException(msg);
+        }
         
     }
 }
