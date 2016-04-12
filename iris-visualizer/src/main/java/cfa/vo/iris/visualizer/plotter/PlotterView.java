@@ -32,6 +32,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.plaf.basic.BasicArrowButton;
@@ -388,6 +389,11 @@ public class PlotterView extends JInternalFrame {
         mnF.setText("File");
 
         mntmExport.setText("Export");
+        mntmExport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mntmExportActionPerformed(evt);
+            }
+        });
         mnF.add(mntmExport);
 
         mntmProperties.setText("Properties");
@@ -519,6 +525,12 @@ public class PlotterView extends JInternalFrame {
         
         metadataBrowser.resetData();
     }//GEN-LAST:event_btnResetActionPerformed
+
+    private void mntmExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mntmExportActionPerformed
+        logger.info("Exporting plot display to a file");
+        PlotImageWriter writer = new PlotImageWriter(plotter.getPlotDisplay(), this);
+        writer.openSavePlotDialogue();
+    }//GEN-LAST:event_mntmExportActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
