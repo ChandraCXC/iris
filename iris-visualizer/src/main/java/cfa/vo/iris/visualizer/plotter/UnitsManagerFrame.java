@@ -16,9 +16,15 @@
 package cfa.vo.iris.visualizer.plotter;
 
 import cfa.vo.iris.IWorkspace;
+import cfa.vo.iris.events.SedCommand;
+import cfa.vo.iris.events.SedEvent;
+import cfa.vo.iris.events.SedListener;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.preferences.SedPreferences;
+import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
+import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
+import cfa.vo.iris.visualizer.preferences.VisualizerListener;
 import java.awt.BorderLayout;
 
 /**
@@ -43,13 +49,19 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
         this.prefs = prefs;
         initComponents();
         this.currentSed = sed;
-        this.unitsWidget = new UnitsWidget(currentSed, prefs.getSedPreferences(currentSed));
+        this.unitsWidget = new UnitsWidget(currentSed, prefs);
         
         this.setTitle("Select Units");
         
         initComponents();
 
         this.unitsManagerPanel.add(this.unitsWidget, BorderLayout.NORTH);
+        
+        addSelectedSedChangeListeners();
+    }
+    
+    protected void addSelectedSedChangeListeners() {
+        VisualizerChangeEvent.getInstance().add(new SelectedSedChangeListener());
     }
 
     /**
@@ -140,4 +152,18 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel unitsManagerPanel;
     // End of variables declaration//GEN-END:variables
+
+    /**
+     * listener for finding SED changes
+     */
+    private class SelectedSedChangeListener implements VisualizerListener {
+
+        @Override
+        public void process(ExtSed source, VisualizerCommand payload) {
+            if (VisualizerCommand.SELECTED.equals(payload)) 
+            {
+                unitsWidget.setSed(source);
+            }
+        }
+    }
 }
