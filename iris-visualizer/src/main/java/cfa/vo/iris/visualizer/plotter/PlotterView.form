@@ -16,7 +16,7 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="mntmExport">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Export"/>
+                <Property name="text" type="java.lang.String" value="Export Plot to File"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mntmExportActionPerformed"/>
@@ -35,11 +35,6 @@
             <MenuItem class="javax.swing.JMenuItem" name="mntmSave">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Save"/>
-              </Properties>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="mntmPrint">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Print"/>
               </Properties>
             </MenuItem>
           </SubComponents>
