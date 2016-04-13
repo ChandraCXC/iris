@@ -37,10 +37,6 @@ public class ImageTypeComboMenu extends javax.swing.JPanel {
     public List<String> getFileTypes() {
         return fileTypes;
     }
-    
-    public boolean shouldAddExtension() {
-        return extensionCheckBox.isSelected();
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -55,7 +51,6 @@ public class ImageTypeComboMenu extends javax.swing.JPanel {
 
         jComboBox1 = new javax.swing.JComboBox<String>();
         jLabel1 = new javax.swing.JLabel();
-        extensionCheckBox = new javax.swing.JCheckBox();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -84,24 +79,11 @@ public class ImageTypeComboMenu extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
         add(jLabel1, gridBagConstraints);
 
-        extensionCheckBox.setSelected(true);
-        extensionCheckBox.setText("<html>Add/Overwrite<br>Extension</html>");
-        extensionCheckBox.setToolTipText("Add or replace the filetype extension to the output file");
-        extensionCheckBox.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
-        gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
-        add(extensionCheckBox, gridBagConstraints);
-
         bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox extensionCheckBox;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;

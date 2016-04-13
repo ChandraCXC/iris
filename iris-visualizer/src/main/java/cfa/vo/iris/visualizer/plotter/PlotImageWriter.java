@@ -134,13 +134,10 @@ public class PlotImageWriter {
             String path = getSelectedFile().getAbsolutePath();
             fileType = fileOutSelector.getSelectedItem();
             
-            // If we should add the extension
-            if (fileOutSelector.shouldAddExtension()) {
-                // Append the file type to the file name
-                if (!StringUtils.endsWith(path, "." + fileType)) {
-                    outFile = new File(path + "." + fileType);
-                    this.setSelectedFile(outFile);
-                }
+            // Append the file type to the file name
+            if (!StringUtils.endsWith(path, "." + fileType)) {
+                outFile = new File(path + "." + fileType);
+                this.setSelectedFile(outFile);
             }
         }
     }
