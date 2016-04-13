@@ -15,9 +15,13 @@
  */
 package cfa.vo.iris.visualizer.plotter;
 
-import javax.imageio.ImageIO;
+import java.util.Arrays;
+import java.util.List;
 
 public class ImageTypeComboMenu extends javax.swing.JPanel {
+    
+    private static final List<String> fileTypes = Arrays.asList(
+            new String[] { "jpg", "bmp", "png", "gif" });
 
     /**
      * Creates new form ImageTypeComboMenu
@@ -29,6 +33,14 @@ public class ImageTypeComboMenu extends javax.swing.JPanel {
     public String getSelectedItem() {
         return (String) jComboBox1.getSelectedItem();
     }
+    
+    public List<String> getFileTypes() {
+        return fileTypes;
+    }
+    
+    public boolean shouldAddExtension() {
+        return extensionCheckBox.isSelected();
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -39,19 +51,27 @@ public class ImageTypeComboMenu extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         jComboBox1 = new javax.swing.JComboBox<String>();
         jLabel1 = new javax.swing.JLabel();
+        extensionCheckBox = new javax.swing.JCheckBox();
 
         setLayout(new java.awt.GridBagLayout());
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "jpg", "bmp", "jpeg", "png", "gif" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "jpg", "bmp", "png", "gif" }));
+
+        org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${fileTypes}");
+        org.jdesktop.swingbinding.JComboBoxBinding jComboBoxBinding = org.jdesktop.swingbinding.SwingBindings.createJComboBoxBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, jComboBox1);
+        bindingGroup.addBinding(jComboBoxBinding);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 4);
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
         add(jComboBox1, gridBagConstraints);
 
         jLabel1.setText("Select File Type");
@@ -59,14 +79,31 @@ public class ImageTypeComboMenu extends javax.swing.JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.ipadx = 8;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
         gridBagConstraints.weightx = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
         add(jLabel1, gridBagConstraints);
+
+        extensionCheckBox.setSelected(true);
+        extensionCheckBox.setText("<html>Add/Overwrite<br>Extension</html>");
+        extensionCheckBox.setToolTipText("Add or replace the filetype extension to the output file");
+        extensionCheckBox.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 0);
+        add(extensionCheckBox, gridBagConstraints);
+
+        bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox extensionCheckBox;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }

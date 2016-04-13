@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -32,12 +33,14 @@ import cfa.vo.iris.visualizer.stil.StilPlotter;
 public class PlotImageWriter {
     
     private static final Logger logger = Logger.getLogger(PlotImageWriter.class.getName());
-    
-    private static final ImageTypeComboMenu fileTypes = new ImageTypeComboMenu();
+
+    private final ImageTypeComboMenu fileOutSelector;
     private final PlotterView view;
     private final StilPlotter display;
     
-    JFileChooser fileChooser;
+    OverwriteCheckingFileChooser fileChooser;
+    File outFile;
+    String fileType;
     
     public PlotImageWriter(StilPlotter display, PlotterView view) {
         if (display == null) {
@@ -46,11 +49,14 @@ public class PlotImageWriter {
         
         this.view = view;
         this.display = display;
-        this.fileChooser = new JFileChooser();
         
-        fileChooser.setAccessory(fileTypes);
+        this.fileOutSelector = new ImageTypeComboMenu();
+        this.fileChooser = new OverwriteCheckingFileChooser();
     }
     
+    /**
+     * Opens the JFileChooser window.
+     */
     public void openSavePlotDialog() {
         int ret = showSaveDialog();
         if (ret == JFileChooser.APPROVE_OPTION) {
@@ -58,15 +64,11 @@ public class PlotImageWriter {
         }
     }
     
+    int showSaveDialog() {
+        return fileChooser.showSaveDialog(view);
+    }
+    
     private void saveImage() {
-        
-        String fileType = fileTypes.getSelectedItem();
-        File outFile = fileChooser.getSelectedFile();
-        
-        // Append the file type to the file name
-        if (!StringUtils.endsWith(outFile.getName(), "." + fileType)) {
-            outFile = new File(outFile.getAbsolutePath() + "." + fileType);
-        }
         
         BufferedImage image = new BufferedImage(display.getWidth(), display.getHeight(), BufferedImage.TYPE_INT_RGB);
         Graphics2D g = image.createGraphics();
@@ -82,10 +84,6 @@ public class PlotImageWriter {
         }
     }
     
-    int showSaveDialog() {
-        return fileChooser.showSaveDialog(view);
-    }
-    
     void write(BufferedImage image, String fileType, File outFile) throws IOException {
         boolean success = ImageIO.write(image, fileType, outFile);
         if (!success) {
@@ -93,5 +91,57 @@ public class PlotImageWriter {
             throw new IllegalArgumentException(msg);
         }
         
+        JOptionPane.showMessageDialog(view, String.format("Successfully saved image to %s", outFile));
+    }
+    
+    private class OverwriteCheckingFileChooser extends JFileChooser {
+        
+        OverwriteCheckingFileChooser() {
+            super();
+            this.setAccessory(fileOutSelector);
+        }
+        
+        @Override
+        public void approveSelection() {
+            
+            // Clean up and check file extensions
+            checkFileExtensions();
+            
+            // Set the outfile
+            outFile = getSelectedFile();
+            
+            // Verify that the user wants to replace the file if it exists
+            if(outFile != null && outFile.exists() && getDialogType() == SAVE_DIALOG){
+                int result = JOptionPane.showConfirmDialog(view, 
+                        String.format("%s exists, do you want to overwrite?", outFile));
+                switch(result){
+                    case JOptionPane.YES_OPTION:
+                        super.approveSelection();
+                        return;
+                    case JOptionPane.NO_OPTION:
+                        return;
+                    case JOptionPane.CLOSED_OPTION:
+                        return;
+                    case JOptionPane.CANCEL_OPTION:
+                        cancelSelection();
+                        return;
+                }
+            }
+            super.approveSelection();
+        }
+        
+        private void checkFileExtensions() {
+            String path = getSelectedFile().getAbsolutePath();
+            fileType = fileOutSelector.getSelectedItem();
+            
+            // If we should add the extension
+            if (fileOutSelector.shouldAddExtension()) {
+                // Append the file type to the file name
+                if (!StringUtils.endsWith(path, "." + fileType)) {
+                    outFile = new File(path + "." + fileType);
+                    this.setSelectedFile(outFile);
+                }
+            }
+        }
     }
 }
