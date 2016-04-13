@@ -3,6 +3,7 @@ package cfa.vo.iris.fitting;
 import cfa.vo.iris.test.IrisAppResource;
 import cfa.vo.iris.test.unit.AbstractUISpecTest;
 import cfa.vo.iris.test.unit.TestUtils;
+import org.GNOME.Accessibility.Text;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -10,6 +11,8 @@ import org.junit.rules.TemporaryFolder;
 import org.uispec4j.*;
 import org.uispec4j.assertion.UISpecAssert;
 import org.uispec4j.interception.PopupMenuInterceptor;
+import org.uispec4j.interception.WindowHandler;
+import org.uispec4j.interception.WindowInterceptor;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -242,6 +245,43 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         fittingView.getComboBox("statisticCombo").select("LeastSquares");
 
         fittingView.getButton("Fit").click();
+
+        UISpecAssert.waitUntil(UISpecAssert.not(val.textEquals("0.0")), 1000);
+
+        val.textContains("-4.1603").check();
+        modelsTree.select("polynomial.m5/m5.c0");
+        val.textContains("0.0045").check();
+
+        TextBox np = fittingView.getInputTextBox("Number of Points");
+        np.textEquals("474").check();
+        TextBox dof = fittingView.getInputTextBox("Degrees of Freedom");
+        dof.textEquals("472").check();
+
+        WindowInterceptor
+                .init(fittingView.getButton("Compute").triggerClick())
+                .process(new WindowHandler() {
+                    @Override
+                    public Trigger process(Window window) throws Exception {
+                        window.titleEquals("SEDException").check();
+                        window.getTextBox("OptionPane.label").textEquals("cannot estimate confidence limits with LeastSq").check();
+                        return window.getButton().triggerClick();
+                    }
+                })
+                .run();
+
+        fittingView.getComboBox("statisticCombo").select("Chi2");
+        fittingView.getButton("Fit").click();
+
+        UISpecAssert.waitUntil(np.textEquals("363"), 1000);
+
+        fittingView.getButton("Compute").click();
+
+        Table confTable = fittingView.getTable();
+        String[] columns = {"Parameter", "Lower Limit", "Upper Limit"};
+        String[][] values = {{"m5.c0", "NaN", "NaN"},{"m5.c1", "NaN", "NaN"}};
+        UISpecAssert.waitUntil(UISpecAssert.not(confTable.isEmpty()), 1000);
+
+        UISpecAssert.waitUntil(confTable.contentEquals(columns, values), 1000);
     }
 
     private void removeModel(Tree mTree, String m) {

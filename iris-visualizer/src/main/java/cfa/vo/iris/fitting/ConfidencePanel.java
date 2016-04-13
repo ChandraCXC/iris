@@ -31,14 +31,16 @@ import org.jdesktop.swingbinding.JTableBinding;
 import javax.naming.OperationNotSupportedException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class ConfidencePanel extends javax.swing.JPanel {
     private ConfidenceResults confidenceResults;
-    private Confidence confidence;
-    private SherpaClient client;
+    private FittingMainView view;
+    private Logger logger = Logger.getLogger(ConfidencePanel.class.getName());
 
-    public static final String PROP_CONFIDENCE = "confidence";
+    public static final String PROP_VIEW = "view";
     public static final String PROP_CONFIDENCERESULTS = "confidenceResults";
 
     /**
@@ -46,25 +48,17 @@ public class ConfidencePanel extends javax.swing.JPanel {
      */
     public ConfidencePanel() {
         initComponents();
-        initConfidence();
         initBindings();
     }
 
-    public void setClient(SherpaClient client) {
-        this.client = client;
+    public FittingMainView getView() {
+        return view;
     }
 
-    SherpaClient getClient() {
-        return client;
-    }
-
-    /**
-     * Get the value of confidence
-     *
-     * @return the value of confidence
-     */
-    public Confidence getConfidence() {
-        return confidence;
+    public void setView(FittingMainView view) {
+        FittingMainView old = this.view;
+        this.view = view;
+        firePropertyChange(PROP_VIEW, old, view);
     }
 
     /**
@@ -85,12 +79,6 @@ public class ConfidencePanel extends javax.swing.JPanel {
         ConfidenceResults oldConfidenceResults = this.confidenceResults;
         this.confidenceResults = confidenceResults;
         firePropertyChange(PROP_CONFIDENCERESULTS, oldConfidenceResults, confidenceResults);
-    }
-
-    private void initConfidence() {
-        confidence = SAMPFactory.get(Confidence.class);
-        confidence.setSigma(1.6);
-        confidence.setName(FitConfigurationBean.DATA_NAME);
     }
 
     @SuppressWarnings("unchecked")
@@ -126,7 +114,7 @@ public class ConfidencePanel extends javax.swing.JPanel {
 
         jLabel1.setText("Confidence Interval: ");
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${confidence.sigma}"), jTextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${view.fit.confidence.sigma}"), jTextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         jLabel2.setText("sigma - 89.04%");
@@ -182,10 +170,16 @@ public class ConfidencePanel extends javax.swing.JPanel {
 
     private void doConfidence(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doConfidence
         try {
-            ConfidenceResults results = client.computeConfidence(confidence);
+            ConfidenceResults results = view.computeConfidence();
             setConfidenceResults(results);
         } catch (Exception e) {
-            throw new RuntimeException(); // FIXME
+            NarrowOptionPane.showMessageDialog(
+                    view,
+                    e.getMessage(),
+                    e.getClass().getSimpleName(),
+                    NarrowOptionPane.ERROR_MESSAGE
+            );
+            logger.log(Level.SEVERE, "Error computing confidence", e);
         }
     }//GEN-LAST:event_doConfidence
 
@@ -206,8 +200,8 @@ public class ConfidencePanel extends javax.swing.JPanel {
         public List<ParameterLimits> convertForward(ConfidenceResults res) {
             List<ParameterLimits> retVal = new ArrayList<>();
             List<String> names = res.getParnames();
-            Double[] mins = res.getParmins();
-            Double[] maxes = res.getParmaxes();
+            double[] mins = res.getParmins();
+            double[] maxes = res.getParmaxes();
             int l = maxes.length;
             for (int i=0; i<l; i++) {
                 retVal.add(new ParameterLimits(names.get(i), mins[i], maxes[i]));

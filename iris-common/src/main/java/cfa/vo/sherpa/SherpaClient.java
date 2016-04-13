@@ -17,6 +17,7 @@
 package cfa.vo.sherpa;
 
 import cfa.vo.interop.*;
+import cfa.vo.iris.fitting.FitConfigurationBean;
 import cfa.vo.sherpa.models.*;
 import cfa.vo.sherpa.optimization.Method;
 import cfa.vo.sherpa.stats.Stat;
@@ -71,8 +72,9 @@ public class SherpaClient {
         return data;
     }
 
-    public ConfidenceResults computeConfidence(Confidence confidence) throws Exception {
-        SAMPMessage message = SAMPFactory.createMessage("spectrum.fit.confidence", confidence, Confidence.class);
+    public ConfidenceResults computeConfidence(SherpaFitConfiguration conf) throws Exception {
+        fixDatasets(conf);
+        SAMPMessage message = SAMPFactory.createMessage("spectrum.fit.confidence", conf, SherpaFitConfiguration.class);
         Response response = sendMessage(message);
         return SAMPFactory.get(response.getResult(), ConfidenceResults.class);
     }

@@ -43,4 +43,8 @@ public interface SherpaFitConfiguration {
     Method getMethod();
 
     void setMethod(Method method);
+
+    Confidence getConfidence();
+
+    void setConfidence(Confidence confidence);
 }

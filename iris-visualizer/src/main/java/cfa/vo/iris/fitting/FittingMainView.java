@@ -23,7 +23,10 @@ import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.fitting.custom.ModelsListener;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.utils.IPredicate;
+import cfa.vo.sedlib.common.SedException;
+import cfa.vo.sherpa.ConfidenceResults;
 import cfa.vo.sherpa.FitResults;
 import cfa.vo.sherpa.IFitConfiguration;
 import cfa.vo.sherpa.SherpaClient;
@@ -75,7 +78,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         modelViewerPanel.setSed(sed);
         modelViewerPanel.setEditable(true);
         setSed(sed);
-        confidencePanel.setClient(sherpaClient);
+        confidencePanel.setView(this);
     }
 
     public FitConfigurationBean getFit() {
@@ -86,6 +89,10 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         IFitConfiguration oldFit = this.fit;
         this.fit = fit;
         firePropertyChange(PROP_FIT, oldFit, fit);
+    }
+
+    public ExtSed getSed() {
+        return sed;
     }
 
     public String getSedId() {
@@ -101,6 +108,10 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         String oldSedId = this.sedId;
         this.sedId = sedId;
         firePropertyChange(PROP_SEDID, oldSedId, sedId);
+    }
+
+    public ConfidenceResults computeConfidence() throws Exception {
+        return sherpaClient.computeConfidence(fit.make(sed));
     }
     
     @Override
@@ -487,6 +498,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         }
         fit.integrateResults(results);
         resultsPanel.setFit(fit);
+        modelViewerPanel.updateUI();
     }//GEN-LAST:event_doFit
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

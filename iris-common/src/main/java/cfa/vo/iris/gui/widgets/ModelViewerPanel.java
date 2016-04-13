@@ -118,6 +118,14 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
     }
 
     @Override
+    public void updateUI() {
+        if (paramPanel != null) {
+            paramPanel.updateUI();
+        }
+        super.updateUI();
+    }
+
+    @Override
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
         firePropertyChange(PROP_FIT, null, propertyChangeEvent.getSource());
     }

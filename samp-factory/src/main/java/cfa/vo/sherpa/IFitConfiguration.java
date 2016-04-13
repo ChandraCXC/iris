@@ -44,5 +44,9 @@ public interface IFitConfiguration {
     void setStat(Stat stat);
 
     void setUserModelList(List<UserModel> userModelList);
+
+    Confidence getConfidence();
+
+    void setConfidence(Confidence conf);
     
 }

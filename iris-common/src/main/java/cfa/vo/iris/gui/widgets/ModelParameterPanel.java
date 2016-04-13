@@ -37,6 +37,12 @@ public class ModelParameterPanel extends AbstractGridPanel {
     }
 
     @Override
+    public void updateUI() {
+        firePropertyChange(PROP_PARAMETER, null, parameter);
+        super.updateUI();
+    }
+
+    @Override
     protected void initBindings() {
         createBinding("name", name, "text");
         createBinding("val", val, "text");

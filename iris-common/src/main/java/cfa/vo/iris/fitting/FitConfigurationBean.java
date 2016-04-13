@@ -2,15 +2,12 @@ package cfa.vo.iris.fitting;
 
 import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.gui.widgets.ModelExpressionVerifier;
-import cfa.vo.sherpa.FitResults;
-import cfa.vo.sherpa.IFitConfiguration;
+import cfa.vo.sherpa.*;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.common.SedException;
-import cfa.vo.sherpa.Data;
-import cfa.vo.sherpa.SherpaFitConfiguration;
 import cfa.vo.sherpa.models.*;
 import cfa.vo.sherpa.optimization.Method;
 import cfa.vo.sherpa.stats.Stat;
@@ -27,6 +24,7 @@ public class FitConfigurationBean implements IFitConfiguration {
     private CompositeModel model;
     private Stat stat;
     private Method method;
+    private Confidence confidence;
     private Double rStat;
     private Integer nFev;
     private Double qVal;
@@ -50,10 +48,14 @@ public class FitConfigurationBean implements IFitConfiguration {
     public static final String PROP_DOF = "dof";
     public static final String PROP_USERMODELLIST = "userModelList";
     public static final String PROP_EXPRESSION = "expression";
+    public static final String PROP_CONFIDENCE = "confidence";
     private transient final PropertyChangeSupport propertyChangeSupport = new java.beans.PropertyChangeSupport(this);
 
     public FitConfigurationBean() {
-        this.model = SAMPFactory.get(CompositeModel.class);
+        model = SAMPFactory.get(CompositeModel.class);
+        confidence = SAMPFactory.get(Confidence.class);
+        confidence.setSigma(1.6);
+        confidence.setName("conf");
     }
 
     @Override
@@ -91,6 +93,18 @@ public class FitConfigurationBean implements IFitConfiguration {
         Method oldMethod = this.method;
         this.method = method;
         propertyChangeSupport.firePropertyChange(PROP_METHOD, oldMethod, method);
+    }
+
+    @Override
+    public Confidence getConfidence() {
+        return confidence;
+    }
+
+    @Override
+    public void setConfidence(Confidence confidence) {
+        Confidence old = this.confidence;
+        this.confidence = confidence;
+        propertyChangeSupport.firePropertyChange(PROP_CONFIDENCE, old, confidence);
     }
 
     public Double getrStat() {
@@ -250,7 +264,7 @@ public class FitConfigurationBean implements IFitConfiguration {
         ExtSed flat = ExtSed.flatten(sed, "Angstrom", "photon/s/cm2/Angstrom");
         data.setX(flat.getSegment(0).getSpectralAxisValues());
         data.setY(flat.getSegment(0).getFluxAxisValues());
-        data.setStaterror((double[]) flat.getSegment(0).getCustomDataValues(UTYPE.FLUX_STAT_ERROR));
+        data.setStaterror((double[]) flat.getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR));
 
         SherpaFitConfiguration conf = SAMPFactory.get(SherpaFitConfiguration.class);
         conf.addDataset(data);
@@ -264,6 +278,8 @@ public class FitConfigurationBean implements IFitConfiguration {
         conf.setStat(stat);
 
         conf.setMethod(method);
+
+        conf.setConfidence(confidence);
 
         return conf;
     }

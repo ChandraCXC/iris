@@ -4,6 +4,7 @@ import cfa.vo.interop.SAMPFactory;
 import cfa.vo.sherpa.Confidence;
 import cfa.vo.sherpa.ConfidenceResults;
 import cfa.vo.sherpa.SherpaClient;
+import cfa.vo.sherpa.SherpaFitConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -30,20 +31,20 @@ public class ConfidencePanelTest {
         confidenceResults.setParnames(Arrays.asList("parA", "parB"));
         confidenceResults.setSigma(2.0);
         confidenceResults.setPercent(95.0);
-        confidenceResults.setParvals(new Double[]{1.0, 2.0});
-        confidenceResults.setParmins(new Double[]{-10.0, -20.0});
-        confidenceResults.setParmaxes(new Double[]{10.0, 20.0});
+        confidenceResults.setParvals(new double[]{1.0, 2.0});
+        confidenceResults.setParmins(new double[]{-10.0, -20.0});
+        confidenceResults.setParmaxes(new double[]{10.0, 20.0});
 
         columnNames = new String[]{"Parameter", "Lower Limit", "Upper Limit"};
         expected = new String[][]{{"parA", "-10.0", "10.0"},
                 {"parB", "-20.0", "20.0"}
         };
 
-        SherpaClient c = Mockito.mock(SherpaClient.class);
-        panel.setClient(c);
-        Mockito
-                .when(c.computeConfidence(Mockito.any(Confidence.class)))
-                .thenReturn(confidenceResults);
+        FittingMainView view = Mockito.mock(FittingMainView.class);
+        FitConfigurationBean fit = new FitConfigurationBean();
+        Mockito.when(view.getFit()).thenReturn(fit);
+        Mockito.when(view.computeConfidence()).thenReturn(confidenceResults);
+        panel.setView(view);
     }
 
     @Test
@@ -52,7 +53,7 @@ public class ConfidencePanelTest {
         sigma.textEquals("1.6").check();
 
         sigma.setText("1.0");
-        assertEquals(1.0, panel.getConfidence().getSigma(), Double.MIN_VALUE);
+        assertEquals(1.0, panel.getView().getFit().getConfidence().getSigma(), Double.MIN_VALUE);
     }
 
     @Test

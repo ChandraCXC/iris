@@ -32,15 +32,17 @@ public interface ConfidenceResults {
 
     void setParnames(List<String> parnames);
 
-    Double[] getParvals();
+    void addParname(String parname);
 
-    void setParvals(Double[] parvals);
+    double[] getParvals();
 
-    Double[] getParmins();
+    void setParvals(double[] parvals);
 
-    void setParmins(Double[] parmins);
+    double[] getParmins();
 
-    Double[] getParmaxes();
+    void setParmins(double[] parmins);
 
-    void setParmaxes(Double[] parmaxes);
+    double[] getParmaxes();
+
+    void setParmaxes(double[] parmaxes);
 }
