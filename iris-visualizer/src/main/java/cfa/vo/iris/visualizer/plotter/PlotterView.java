@@ -32,6 +32,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.plaf.basic.BasicArrowButton;
@@ -243,7 +244,6 @@ public class PlotterView extends JInternalFrame {
         mntmProperties = new javax.swing.JMenuItem();
         mntmOpen = new javax.swing.JMenuItem();
         mntmSave = new javax.swing.JMenuItem();
-        mntmPrint = new javax.swing.JMenuItem();
         mnEdit = new javax.swing.JMenu();
         mntmSomething = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
@@ -387,7 +387,12 @@ public class PlotterView extends JInternalFrame {
 
         mnF.setText("File");
 
-        mntmExport.setText("Export");
+        mntmExport.setText("Export Plot to File");
+        mntmExport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mntmExportActionPerformed(evt);
+            }
+        });
         mnF.add(mntmExport);
 
         mntmProperties.setText("Properties");
@@ -398,9 +403,6 @@ public class PlotterView extends JInternalFrame {
 
         mntmSave.setText("Save");
         mnF.add(mntmSave);
-
-        mntmPrint.setText("Print");
-        mnF.add(mntmPrint);
 
         menuBar.add(mnF);
 
@@ -516,9 +518,12 @@ public class PlotterView extends JInternalFrame {
         
         if (fixed)
            plotPrefs.setFixed(true);
-        
-        metadataBrowser.resetData();
     }//GEN-LAST:event_btnResetActionPerformed
+
+    private void mntmExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mntmExportActionPerformed
+        PlotImageWriter writer = new PlotImageWriter(plotter, this);
+        writer.openSavePlotDialog();
+    }//GEN-LAST:event_mntmExportActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -544,7 +549,6 @@ public class PlotterView extends JInternalFrame {
     private javax.swing.JRadioButtonMenuItem mntmLinear;
     private javax.swing.JRadioButtonMenuItem mntmLog;
     private javax.swing.JMenuItem mntmOpen;
-    private javax.swing.JMenuItem mntmPrint;
     private javax.swing.JMenuItem mntmProperties;
     private javax.swing.JMenuItem mntmSave;
     private javax.swing.JMenuItem mntmSomething;
