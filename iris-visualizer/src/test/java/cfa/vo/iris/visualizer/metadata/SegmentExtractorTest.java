@@ -5,8 +5,10 @@ import static org.junit.Assert.*;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
 import org.junit.Test;
 
+import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
@@ -30,11 +32,11 @@ public class SegmentExtractorTest {
         
         SegmentExtractor extractor = new SegmentExtractor(tables, selection);
         
-        List<Segment> newSegment = extractor.getSegments();
+        ExtSed sed = extractor.constructSed();
         
         // One segment that is identical to the original should be extracted
-        assertEquals(1, newSegment.size());
-        Segment newSeg = newSegment.get(0);
+        assertEquals(1, sed.getNumberOfSegments());
+        Segment newSeg = sed.getSegment(0);
         assertEquals(newSeg, seg1);
         
     }
@@ -50,13 +52,13 @@ public class SegmentExtractorTest {
         
         SegmentExtractor extractor = new SegmentExtractor(tables, selection);
         
-        List<Segment> newSegment = extractor.getSegments();
+        ExtSed sed = extractor.constructSed();
         
         // One segment should be extracted
-        assertEquals(1, newSegment.size());
+        assertEquals(1, sed.getNumberOfSegments());
         
         // Segment should have one point that is equal to 1st point in original segment
-        Segment newSeg = newSegment.get(0);
+        Segment newSeg = sed.getSegment(0);
         assertEquals(1, newSeg.getData().getLength());
         assertEquals(seg1.getData().getPoint().get(1), newSeg.getData().getPoint().get(0));
     }
@@ -74,12 +76,12 @@ public class SegmentExtractorTest {
         tables.add(adapter.convertSegment(seg2));
         
         SegmentExtractor extractor = new SegmentExtractor(tables, selection);
-        List<Segment> newSegments = extractor.getSegments();
+        ExtSed sed = extractor.constructSed();
         
         // Verify 2 segments are equal
-        assertEquals(2, newSegments.size());
-        assertEquals(newSegments.get(0), seg1);
-        assertEquals(newSegments.get(1), seg2);
+        assertEquals(2, sed.getNumberOfSegments());
+        assertEquals(sed.getSegment(0), seg1);
+        assertEquals(sed.getSegment(1), seg2);
     }
     
     @Test
@@ -95,12 +97,11 @@ public class SegmentExtractorTest {
         tables.add(adapter.convertSegment(seg2));
         
         SegmentExtractor extractor = new SegmentExtractor(tables, selection);
-        List<Segment> newSegments = extractor.getSegments();
+        ExtSed sed = extractor.constructSed();
         
         // Verify 2 segments are equal
-        assertEquals(2, newSegments.size());
-        assertEquals(0, newSegments.get(0).getData().getLength());
-        assertEquals(2, newSegments.get(1).getData().getLength());
+        assertEquals(1, sed.getNumberOfSegments());
+        assertEquals(2, sed.getSegment(0).getData().getLength());
     }
     
     @Test
@@ -116,10 +117,9 @@ public class SegmentExtractorTest {
         tables.add(adapter.convertSegment(seg1));
         
         SegmentExtractor extractor = new SegmentExtractor(tables, new int[] {0});
-        Segment clone = extractor.getSegments().get(0);
+        Segment clone = extractor.constructSed().getSegment(0);
         
         assertEquals(clone.getCuration().getDate(), seg1.getCuration().getDate());
         assertEquals(clone.getTarget().getName(), seg1.getTarget().getName());
     }
-
 }
