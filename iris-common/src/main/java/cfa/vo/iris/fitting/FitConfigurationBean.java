@@ -261,7 +261,7 @@ public class FitConfigurationBean implements IFitConfiguration {
         // FIXME this duplicates the code in SherpaClient. They should probably both use the same class.
         Data data = SAMPFactory.get(Data.class);
         data.setName(DATA_NAME);
-        ExtSed flat = ExtSed.flatten(sed, "Angstrom", "photon/s/cm2/Angstrom");
+        ExtSed flat = ExtSed.flatten(sed, "Angstrom", "erg/s/cm2/Angstrom");
         data.setX(flat.getSegment(0).getSpectralAxisValues());
         data.setY(flat.getSegment(0).getFluxAxisValues());
         data.setStaterror((double[]) flat.getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR));

@@ -32,7 +32,7 @@ public class FitConfigurationBeanTest {
         segment.setSpectralAxisValues(x);
         segment.setFluxAxisValues(y);
         segment.setSpectralAxisUnits("Angstrom");
-        segment.setFluxAxisUnits("photon/s/cm2/Angstrom");
+        segment.setFluxAxisUnits("erg/s/cm2/Angstrom");
         sed.addSegment(segment);
 
         ModelFactory factory = new ModelFactory();

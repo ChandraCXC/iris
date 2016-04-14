@@ -20,7 +20,13 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public enum Stats implements Stat {
     Chi2("chi2"),
-    Poisson("poisson"),
+    Chi2DataVar("chi2datavar"),
+    Chi2Gehrels("chi2gehrels"),
+    Chi2ModelVariance("chi2modvar"),
+    Chi2ConstantVariance("chi2constvar"),
+    Chi2XspecVariance("chi2xspecvar"),
+    CStat("cstat"),
+    Cash("cash"),
     LeastSquares("leastsq");
     private String name;
 

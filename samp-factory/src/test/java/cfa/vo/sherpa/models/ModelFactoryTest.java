@@ -16,7 +16,7 @@ public class ModelFactoryTest {
 
     @Test
     public void testSize() throws Exception {
-        assertEquals(48, factory.getSize());
+        assertEquals(49, factory.getSize());
     }
 
     @Test

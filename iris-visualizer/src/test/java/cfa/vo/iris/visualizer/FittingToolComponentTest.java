@@ -178,13 +178,13 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         final Window mainFit = openWindow();
         final ComboBox statisticCombo = mainFit.getComboBox("statisticCombo");
         final ComboBox optimizationCombo = mainFit.getComboBox("optimizationCombo");
-        statisticCombo.select("Poisson");
+        statisticCombo.select("Cash");
         optimizationCombo.select("MonteCarlo");
         TestUtils.invokeWithRetry(50, 100, new Runnable(){
             @Override
             public void run() {
                 IFitConfiguration fit = sed.getFit();
-                assertEquals(Stats.Poisson, fit.getStat());
+                assertEquals(Stats.Cash, fit.getStat());
                 assertEquals(OptimizationMethod.MonteCarlo, fit.getMethod());
             }
         });
@@ -217,7 +217,7 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         mainFit.getButton("searchButton").click();
 
         Tree availableTree = mainFit.getTree("availableTree");
-        assertEquals(3, availableTree.getChildCount("Preset Model Components"));
+        assertEquals(4, availableTree.getChildCount("Preset Model Components"));
         assertTrue(availableTree.contains("Preset Model Components/beta1d").isTrue());
         assertTrue(availableTree.contains("Preset Model Components/powerlaw").isTrue());
         assertTrue(availableTree.contains("Preset Model Components/brokenpowerlaw").isTrue());

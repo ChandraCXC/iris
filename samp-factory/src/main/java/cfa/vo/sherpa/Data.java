@@ -37,9 +37,9 @@ public interface Data {
 
     void setStaterror(double[] statError);
 
-    double[] getSyserror();
-
-    void setSyserror(double[] sysError);
+//    double[] getSyserror();
+//
+//    void setSyserror(double[] sysError);
 
     
 }

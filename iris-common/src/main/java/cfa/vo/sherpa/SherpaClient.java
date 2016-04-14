@@ -145,15 +145,6 @@ public class SherpaClient {
                 }
                 dataset.setStaterror(staterr);
             }
-
-            if (dataset.getSyserror() == null) {
-                int len = dataset.getX().length;
-                double[] syserr = new double[len];
-                for (int i = 0; i < dataset.getX().length; i++) {
-                    syserr[i] = Double.NaN;
-                }
-                dataset.setSyserror(syserr);
-            }
         }
     }
 }

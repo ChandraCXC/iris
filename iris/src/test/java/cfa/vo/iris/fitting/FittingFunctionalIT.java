@@ -4,6 +4,7 @@ import cfa.vo.iris.test.IrisAppResource;
 import cfa.vo.iris.test.unit.AbstractUISpecTest;
 import cfa.vo.iris.test.unit.TestUtils;
 import org.GNOME.Accessibility.Text;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -199,8 +200,8 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
 
         modelExpression.setText("");
 
-        availableTree.doubleClick("Preset Model Components/polynomial");
-        modelsTree.contains("polynomial.m5").check();
+        availableTree.doubleClick("Preset Model Components/powerlaw");
+        modelsTree.contains("powerlaw.m5").check();
         modelExpression.setText("m5");
         status.textEquals("").check();
 
@@ -219,38 +220,43 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         modelsTree.expandAll();
 
         // Try with click
-        modelsTree.click("polynomial.m5/m5.c0");
-        name.textEquals("m5.c0").check();
+        modelsTree.click("powerlaw.m5/m5.refer");
+        name.textEquals("m5.refer").check();
+        val.textEquals("5000.0").check();
+        min.textEquals("1.1754943508222875E-38").check();
+        max.textEquals("3.4028234663852886E38").check();
+        frozen.isSelected().check();
+
+        // Try with select, simulating a selection that does not involve clicks
+        modelsTree.select("powerlaw.m5/m5.ampl");
+        name.textEquals("m5.ampl").check();
         val.textEquals("1.0").check();
-        min.textEquals("-3.4028234663852886E38").check();
+        min.textEquals("1.1754943508222875E-38").check();
         max.textEquals("3.4028234663852886E38").check();
         UISpecAssert.not(frozen.isSelected());
 
-        // Try with select
-        modelsTree.select("polynomial.m5/m5.c1");
-        name.textEquals("m5.c1").check();
-        val.textEquals("0.0").check();
-        min.textEquals("-3.4028234663852886E38").check();
-        max.textEquals("3.4028234663852886E38").check();
-        frozen.isSelected().check();
+        modelsTree.select("powerlaw.m5/m5.index");
+        name.textEquals("m5.index").check();
+        val.textEquals("-0.5").check();
+        min.textEquals("-10.0").check();
+        max.textEquals("10.0").check();
+        UISpecAssert.not(frozen.isSelected());
 
         val.isEnabled().check();
         min.isEnabled().check();
         max.isEnabled().check();
         frozen.isEnabled().check();
 
-        frozen.unselect();
-
         fittingView.getComboBox("optimizationCombo").select("LevenbergMarquardt");
         fittingView.getComboBox("statisticCombo").select("LeastSquares");
 
         fittingView.getButton("Fit").click();
 
-        UISpecAssert.waitUntil(UISpecAssert.not(val.textEquals("0.0")), 1000);
+        UISpecAssert.waitUntil(UISpecAssert.not(val.textEquals("0.5")), 1000);
 
-        val.textContains("-4.1603").check();
-        modelsTree.select("polynomial.m5/m5.c0");
-        val.textContains("0.0045").check();
+        val.textContains("-0.467").check();
+        modelsTree.select("powerlaw.m5/m5.ampl");
+        val.textContains("1.852").check();
 
         TextBox np = fittingView.getInputTextBox("Number of Points");
         np.textEquals("474").check();
@@ -278,10 +284,12 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
 
         Table confTable = fittingView.getTable();
         String[] columns = {"Parameter", "Lower Limit", "Upper Limit"};
-        String[][] values = {{"m5.c0", "NaN", "NaN"},{"m5.c1", "NaN", "NaN"}};
         UISpecAssert.waitUntil(UISpecAssert.not(confTable.isEmpty()), 1000);
 
-        UISpecAssert.waitUntil(confTable.contentEquals(columns, values), 1000);
+        confTable.getContentAt(0, 0).equals("m5.ampl");
+        confTable.getContentAt(1, 0).equals("m5.index");
+        confTable.columnCountEquals(3);
+        Assert.assertArrayEquals(columns, confTable.getHeader().getColumnNames());
     }
 
     private void removeModel(Tree mTree, String m) {
