@@ -1,9 +1,9 @@
 package cfa.vo.iris.fitting;
 
+import cfa.vo.iris.gui.widgets.ModelViewerPanel;
 import cfa.vo.iris.test.IrisAppResource;
 import cfa.vo.iris.test.unit.AbstractUISpecTest;
 import cfa.vo.iris.test.unit.TestUtils;
-import org.GNOME.Accessibility.Text;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
@@ -35,6 +35,14 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
 
     private Window window;
     private Desktop desktop;
+    private Window fittingView;
+    private Tree modelsTree;
+    private Tree availableTree;
+    private TextBox modelExpression;
+
+    private final String TABLE="tablemodel";
+    private final String FUNCTION="usermodel";
+    private final String TEMPLATE="template";
 
     @Before
     public void setUp() throws Exception {
@@ -60,6 +68,8 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         installModels();
         loadSed();
         setupModelExpression();
+        fit();
+        fitCustomModel();
     }
 
     private void installModels() throws Exception {
@@ -76,7 +86,7 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         TextBox nextField = modelsManager.getTextBox("jTextField1");
         nextField.setText(templateLibUrlString);
         nextField = modelsManager.getTextBox("jTextField2");
-        nextField.setText("index,refer");
+        nextField.setText("idx,refer");
         nextField = modelsManager.getTextBox("jTextField3");
         nextField.setText("0.0,5000");
         nextField = modelsManager.getTextBox("jTextField4");
@@ -151,10 +161,10 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
 
     private void setupModelExpression() throws Exception {
         window.getMenuBar().getMenu("Tools").getSubMenu("Fitting Tool").getSubMenu("Fitting Tool").click();
-        Window fittingView = desktop.getWindow("Fitting Tool");
-        Tree availableTree = fittingView.getTree("availableTree");
-        Tree modelsTree = fittingView.getTree("modelsTree");
-        TextBox modelExpression = fittingView.getTextBox("modelExpressionField");
+        fittingView = desktop.getWindow("Fitting Tool");
+        availableTree = fittingView.getTree("availableTree");
+        modelsTree = fittingView.getTree("modelsTree");
+        modelExpression = fittingView.getTextBox("modelExpressionField");
         final TextBox status = fittingView.getTextBox("statusField");
 
         modelExpression.textEquals("No Model").check();
@@ -166,11 +176,11 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         availableTree.contains("Preset Model Components/powerlaw").check();
 
         availableTree.doubleClick("User Model Components/tables/test_table");
-        modelsTree.contains("test_table.m1").check();
+        modelsTree.contains(TABLE+".m1").check();
         availableTree.doubleClick("User Model Components/functions/test_function");
-        modelsTree.contains("mypowlaw.m2").check();
+        modelsTree.contains(FUNCTION+".m2").check();
         availableTree.doubleClick("User Model Components/templates/test_template");
-        modelsTree.contains("test_template.m3").check();
+        modelsTree.contains(TEMPLATE+".m3").check();
         availableTree.doubleClick("Preset Model Components/powerlaw");
         modelsTree.contains("powerlaw.m4").check();
 
@@ -183,7 +193,7 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         modelExpression.setText("m1 + m2 + m3 + m4");
         status.textIsEmpty().check();
 
-        removeModel(modelsTree, "test_table.m1");
+        removeModel(TABLE+".m1");
 
         UISpecAssert.not(modelsTree.contains("test_table.m1"));
 
@@ -193,9 +203,9 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         modelExpression.setText("m2 + m3 + m4");
         status.textIsEmpty().check();
 
-        removeModel(modelsTree, "test_template.m3");
-        removeModel(modelsTree, "mypowlaw.m2");
-        removeModel(modelsTree, "powerlaw.m4");
+        removeModel(TEMPLATE+".m3");
+        removeModel(FUNCTION+".m2");
+        removeModel("powerlaw.m4");
         status.textEquals("Invalid Model Expression").check();
 
         modelExpression.setText("");
@@ -204,7 +214,9 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         modelsTree.contains("powerlaw.m5").check();
         modelExpression.setText("m5");
         status.textEquals("").check();
+    }
 
+    private void fit() {
         TextBox name = fittingView.getTextBox("Par Name");
         TextBox val = fittingView.getTextBox("Par Val");
         TextBox min = fittingView.getTextBox("Par Min");
@@ -252,7 +264,7 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
 
         fittingView.getButton("Fit").click();
 
-        UISpecAssert.waitUntil(UISpecAssert.not(val.textEquals("0.5")), 1000);
+        UISpecAssert.waitUntil(UISpecAssert.not(val.textEquals("-0.5")), 1000);
 
         val.textContains("-0.467").check();
         modelsTree.select("powerlaw.m5/m5.ampl");
@@ -286,15 +298,33 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         String[] columns = {"Parameter", "Lower Limit", "Upper Limit"};
         UISpecAssert.waitUntil(UISpecAssert.not(confTable.isEmpty()), 1000);
 
-        confTable.getContentAt(0, 0).equals("m5.ampl");
-        confTable.getContentAt(1, 0).equals("m5.index");
+        Assert.assertEquals(confTable.getContentAt(0, 0), "m5.ampl");
+        Assert.assertEquals(confTable.getContentAt(1, 0), "m5.index");
         confTable.columnCountEquals(3);
         Assert.assertArrayEquals(columns, confTable.getHeader().getColumnNames());
     }
 
-    private void removeModel(Tree mTree, String m) {
+    private void fitCustomModel() {
+        modelsTree = fittingView.getTree("modelsTree");
+        removeModel("powerlaw.m5");
+        availableTree.doubleClick("User Model Components/tables/test_table");
+        availableTree.doubleClick("User Model Components/functions/test_function");
+        availableTree.doubleClick("User Model Components/templates/test_template");
+
+        modelExpression.setText("m6 + m7 + m8");
+        fittingView.getButton("Fit").click();
+
+        assertFitSucceeded();
+    }
+
+    private void assertFitSucceeded() {
+        UISpecAssert.waitUntil(fittingView.getTextBox("status").textEquals(ModelViewerPanel.FIT_SUCCEEDED), 1000);
+
+    }
+
+    private void removeModel(String m) {
         PopupMenuInterceptor.run(
-                mTree.triggerRightClick(m))
+                modelsTree.triggerRightClick(m))
                 .getSubMenu("Remove")
                 .click();
     }

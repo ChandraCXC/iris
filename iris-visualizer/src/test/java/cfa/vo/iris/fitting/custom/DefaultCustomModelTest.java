@@ -52,21 +52,21 @@ public class DefaultCustomModelTest {
         Model model = m.makeModel("my");
 
         Parameter p = model.getPars().get(0);
-        assertEquals("parA", p.getName());
+        assertEquals("my.parA", p.getName());
         assertEquals(new Double(1.0), p.getVal());
         assertEquals(new Double(0.0), p.getMin());
         assertEquals(new Double(10.0), p.getMax());
         assertEquals(new Integer(0), p.getFrozen());
 
         p = model.getPars().get(1);
-        assertEquals("parB", p.getName());
+        assertEquals("my.parB", p.getName());
         assertEquals(new Double(2.0), p.getVal());
         assertEquals(new Double(0.1), p.getMin());
         assertEquals(new Double(10.1), p.getMax());
         assertEquals(new Integer(0), p.getFrozen());
 
         p = model.getPars().get(2);
-        assertEquals("parC", p.getName());
+        assertEquals("my.parC", p.getName());
         assertEquals(new Double(3.0), p.getVal());
         assertEquals(new Double(0.2), p.getMin());
         assertEquals(new Double(10.2), p.getMax());

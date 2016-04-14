@@ -302,7 +302,7 @@ public class DefaultCustomModel implements CustomModel {
         for (int i=0; i<parNames.length; i++) {
             try {
                 Parameter p = SAMPFactory.get(Parameter.class);
-                p.setName(parNames[i]);
+                p.setName(id+"."+parNames[i]);
                 p.setVal(parVals[i]);
                 p.setMin(parMins[i]);
                 p.setMax(parMaxs[i]);

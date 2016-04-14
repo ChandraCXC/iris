@@ -41,11 +41,11 @@ public class CompositeModelTreeModel extends DefaultTreeModel {
                 DefaultMutableTreeNode r = (DefaultMutableTreeNode) this.getRoot();
                 DefaultMutableTreeNode parentNode = new DefaultMutableTreeNode(m);
 
-                if (m.getName().startsWith("usermodel")) {
-                    m.setName(getUserModelName(m, userModels));
-                } else if (m.getName().startsWith("tablemodel") || (m.getName().startsWith("template"))) {
-                    m.setName(getTableModelName(m, userModels));
-                }
+//                if (m.getName().startsWith("usermodel")) {
+//                    m.setName(getUserModelName(m, userModels));
+//                } else if (m.getName().startsWith("tablemodel") || (m.getName().startsWith("template"))) {
+//                    m.setName(getTableModelName(m, userModels));
+//                }
 
                 r.add(parentNode);
 
@@ -58,25 +58,25 @@ public class CompositeModelTreeModel extends DefaultTreeModel {
         
     }
 
-    private String getUserModelName(Model m, List<UserModel> userModels) {
-        String ret = m.getName();
-        for (UserModel um : userModels) {
-            if (ret.equals(um.getName())) {
-                return um.getFunction()+"."+ret.split("\\.")[1];
-            }
-        }
-        return ret;
-    }
-
-    private String getTableModelName(Model m, List<UserModel> userModels) {
-        String ret = m.getName();
-        for (UserModel um : userModels) {
-            if (ret.equals(um.getName())) {
-                String[] bits = um.getFile().split("/");
-                return bits[bits.length-1]+"."+ret.split("\\.")[1];
-            }
-        }
-        return ret;
-    }
+//    private String getUserModelName(Model m, List<UserModel> userModels) {
+//        String ret = m.getName();
+//        for (UserModel um : userModels) {
+//            if (ret.equals(um.getName())) {
+//                return um.getFunction()+"."+ret.split("\\.")[1];
+//            }
+//        }
+//        return ret;
+//    }
+//
+//    private String getTableModelName(Model m, List<UserModel> userModels) {
+//        String ret = m.getName();
+//        for (UserModel um : userModels) {
+//            if (ret.equals(um.getName())) {
+//                String[] bits = um.getFile().split("/");
+//                return bits[bits.length-1]+"."+ret.split("\\.")[1];
+//            }
+//        }
+//        return ret;
+//    }
     
 }

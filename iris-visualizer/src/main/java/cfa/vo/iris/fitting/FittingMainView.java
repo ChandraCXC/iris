@@ -495,9 +495,12 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
                     e.getMessage(),
                     e.getClass().getSimpleName(),
                     NarrowOptionPane.ERROR_MESSAGE);
+            modelViewerPanel.fitResult(false);
+            return; // TODO maybe should do something more/different.
         }
         fit.integrateResults(results);
         resultsPanel.setFit(fit);
+        modelViewerPanel.fitResult(true);
         modelViewerPanel.updateUI();
     }//GEN-LAST:event_doFit
 

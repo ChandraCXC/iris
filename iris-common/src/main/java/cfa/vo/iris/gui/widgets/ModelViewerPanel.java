@@ -49,7 +49,9 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
 
     private Logger logger = Logger.getLogger(ModelViewerPanel.class.getName());
     private boolean editable = false;
-    public final String PROP_EDITABLE = "editable";
+    public static final String FIT_SUCCEEDED = "Fit Succeeded";
+    public static final String FIT_FAILED = "Fit Failed";
+    public static final String PROP_EDITABLE = "editable";
     public static final String PROP_FIT = "fit";
     private ExtSed sed;
     private FitConfigurationBean fit;
@@ -107,6 +109,11 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         this.sed = sed;
         FitConfigurationBean fitConf = sed.getFit();
         setFit(fitConf);
+    }
+
+    public void fitResult(boolean result) {
+        String msg = result ? FIT_SUCCEEDED : FIT_FAILED;
+        statusField.setText(msg);
     }
 
     @Override
@@ -218,7 +225,6 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         statusPanel.setName("statusPanel"); // NOI18N
         statusPanel.setPreferredSize(new java.awt.Dimension(4, 14));
 
-        statusField.setText("Status");
         statusField.setMaximumSize(new java.awt.Dimension(0, 14));
         statusField.setMinimumSize(new java.awt.Dimension(0, 8));
         statusField.setName("statusField"); // NOI18N
