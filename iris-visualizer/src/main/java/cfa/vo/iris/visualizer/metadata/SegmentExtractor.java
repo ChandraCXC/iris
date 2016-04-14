@@ -69,7 +69,9 @@ public class SegmentExtractor {
     private Segment processTable(int tableStart, IrisStarTable table) {
         
         // Mark the index of the end of this table in the selection
-        long end = table.getRowCount() + tableStart;
+        // Recall that masks shorten the rowCount of IrisStarTables, so to be
+        // consistent with masking we rely on the SegmentStarTable for indicies.
+        long end = table.getPlotterTable().getRowCount() + tableStart;
         
         Segment oldSegment = table.getPlotterTable().getSegment();
         List<Point> oldPoints = oldSegment.getData().getPoint();
@@ -81,6 +83,7 @@ public class SegmentExtractor {
             index++;
         }
         
+        // If no rows were selected from this table then we don't add it to the Sed
         if (newPoints.size() == 0) {
             return null;
         }
