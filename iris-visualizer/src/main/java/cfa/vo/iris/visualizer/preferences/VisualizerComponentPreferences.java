@@ -21,9 +21,9 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.events.MultipleSegmentEvent;
 import cfa.vo.iris.events.MultipleSegmentListener;
@@ -35,8 +35,10 @@ import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
 import cfa.vo.iris.events.SegmentListener;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.MouseListenerManager;
+import cfa.vo.iris.visualizer.metadata.SegmentExtractor;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.plotter.SegmentModel;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
 
@@ -168,6 +170,31 @@ public class VisualizerComponentPreferences {
      */
     public SedModel getSedPreferences(ExtSed sed) {
         return sedPreferences.get(sed);
+    }
+    
+    /**
+     * Used by the metadata browser to extract a selection of rows from the browser
+     * into a new ExtSed. We use the SegmentExtractor class to construct a new Sed
+     * from the selected set of StarTables, then asynchronously pass it back to the 
+     * SedManager and let the SedListener do the work of notifying/processing the 
+     * new ExtSed back into the VisualizerComponent.
+     * @param tables
+     * @param selection
+     * @return
+     */
+    public void createNewWorkspaceSed(List<IrisStarTable> tables, int[] selection) {
+        
+        // Extract selected rows to new Segments
+        final SegmentExtractor extractor = new SegmentExtractor(tables, selection);
+        
+        visualizerExecutor.submit(new Callable<ExtSed>() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public ExtSed call() throws Exception {
+                ws.getSedManager().add(extractor.constructSed());
+                return null;
+            }
+        });
     }
 
     /**

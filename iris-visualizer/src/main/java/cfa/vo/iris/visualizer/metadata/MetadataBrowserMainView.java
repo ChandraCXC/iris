@@ -16,7 +16,6 @@
 package cfa.vo.iris.visualizer.metadata;
 
 import java.awt.Component;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JLabel;
@@ -41,9 +40,6 @@ import cfa.vo.iris.visualizer.stil.IrisStarJTable.RowSelection;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.SegmentColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.UtypeColumnInfoMatcher;
-import cfa.vo.sedlib.common.SedInconsistentException;
-import cfa.vo.sedlib.common.SedNoDataException;
-
 import java.util.LinkedList;
 import java.util.List;
 import uk.ac.starlink.table.StarTable;
@@ -188,22 +184,9 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             return;
         }
         
-        // Extract selected rows to new Segments
-        SegmentExtractor extractor = new SegmentExtractor(selectedStarTables, selectedRows);
-        ExtSed newSed = new ExtSed(selectedSed.getId());
-        
-        // Build a new SED
-        try {
-            newSed.addSegment(extractor.getSegments());
-        } catch (SedInconsistentException | SedNoDataException e) {
-            logger.log(Level.SEVERE, "Could not extract segments from SED", e);
-            JOptionPane.showMessageDialog(this, "ERROR:" + e.getMessage(), 
-                    null, JOptionPane.ERROR_MESSAGE);
-            throw new RuntimeException(e);
-        }
-        
-//        ws.getSedManager().add(newSed);
-        JOptionPane.showMessageDialog(this, "Added new SED to workspace. ID: " + newSed.getId());
+        logger.info(String.format("Extracting %s points from Sed.", selectedRows.length));
+        preferences.createNewWorkspaceSed(selectedStarTables, selectedRows);
+        JOptionPane.showMessageDialog(this, "Added new Filter SED to workspace.");
     }
     
     /*
