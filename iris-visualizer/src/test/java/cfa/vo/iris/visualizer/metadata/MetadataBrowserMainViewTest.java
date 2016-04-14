@@ -448,6 +448,13 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             }
         }).run();
         
+        invokeWithRetry(50, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertNotEquals(sed, mbView.selectedSed);
+            }
+        });
+        
         // 3 Seds in workspace
         assertEquals(3, sedManager.getSeds().size());
         
