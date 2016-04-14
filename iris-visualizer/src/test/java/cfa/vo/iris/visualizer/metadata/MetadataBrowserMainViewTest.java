@@ -20,10 +20,12 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.uispec4j.ListBox;
-import org.uispec4j.Mouse;
 import org.uispec4j.Panel;
 import org.uispec4j.Table;
+import org.uispec4j.Trigger;
 import org.uispec4j.Window;
+import org.uispec4j.interception.WindowHandler;
+import org.uispec4j.interception.WindowInterceptor;
 
 import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.sed.ExtSed;
@@ -31,7 +33,10 @@ import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.visualizer.VisualizerComponent;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
+import cfa.vo.iris.visualizer.plotter.SegmentLayer;
 import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.TextParam;
+
 import static org.junit.Assert.*;
 
 import static cfa.vo.iris.test.unit.TestUtils.*;
@@ -295,7 +300,145 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         // Verify other tables still empty
         plotterTable.selectionIsEmpty().check();
         dataTable.selectionIsEmpty().check();
+    }
+    
+    @Test
+    public void testExtractPoints() throws Exception {
         
+        // Should throw a warning message for no SED
+        makeExtractWindowInterceptor().process(new WindowHandler() {
+            @Override
+            public Trigger process(Window warning) throws Exception {
+                // Check warning message
+                assertEquals(warning.getTextBox("OptionPane.label").getText(), 
+                             "No SED in browser. Please load an SED.");
+                return Trigger.DO_NOTHING;
+            }
+        }).run();
+        
+        final ExtSed sed = new ExtSed("sed");
+        sed.addSegment(createSampleSegment());
+        sed.addSegment(createSampleSegment(new double[] {1}, new double[] {2}));
+        
+        // Set target names
+        sed.getSegment(0).createTarget();
+        sed.getSegment(0).getTarget().setName(new TextParam("target1"));
+        sed.getSegment(1).createTarget();
+        sed.getSegment(1).getTarget().setName(new TextParam("target1"));
+        
+        sedManager.add(sed);
+        
+        // verify selected sed
+        invokeWithRetry(50, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertEquals(mbView.getTitle(), mbWindow.getTitle());
+                assertEquals(sed, mbView.selectedSed);
+                assertEquals(2, mbView.selectedTables.size());
+                assertEquals(2, starTableList.getSize());
+                assertEquals(3, plotterTable.getRowCount());
+                assertEquals(3, dataTable.getRowCount());
+                assertEquals(2, segmentTable.getRowCount());
+            }
+        });
+        
+        // Should throw a warning message for no rows selected
+        makeExtractWindowInterceptor().process(new WindowHandler() {
+            @Override
+            public Trigger process(Window warning) throws Exception {
+                // Check warning message
+                assertEquals(warning.getTextBox("OptionPane.label").getText(), 
+                             "No rows selected to extract. Please select rows.");
+                return Trigger.DO_NOTHING;
+            }
+        }).run();
+        
+        // Select two rows from first segment
+        plotterTable.selectRows(0,1);
+        
+        // Should throw a success message
+        makeExtractWindowInterceptor().process(new WindowHandler() {
+            @Override
+            public Trigger process(Window warning) throws Exception {
+                // Check warning message
+                assertTrue(StringUtils.contains(warning.getTextBox("OptionPane.label").getText(), 
+                             "Added new SED"));
+                return Trigger.DO_NOTHING;
+            }
+        }).run();
+        
+        // Should now be two SEDs in the workspace
+        assertEquals(2, sedManager.getSeds().size());
+        
+        // Get the new SED
+        ExtSed newSed = sedManager.getSelected();
+        assertEquals(1, newSed.getNumberOfSegments());
+        assertEquals(2, newSed.getSegment(0).getLength());
+        
+        // Select the first SED with two segments
+        sedManager.select(sed);
+        invokeWithRetry(50, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertEquals(mbView.getTitle(), mbWindow.getTitle());
+                assertEquals(sed, mbView.selectedSed);
+            }
+        });
+        
+        // Select all segments
+        starTableList.selectIndices(0,1);
+        
+        // Select first rows from both segments
+        plotterTable.selectRows(0,3);
+        
+        // Should throw a success message
+        makeExtractWindowInterceptor().process(new WindowHandler() {
+            @Override
+            public Trigger process(Window warning) throws Exception {
+                // Check warning message
+                assertTrue(StringUtils.contains(warning.getTextBox("OptionPane.label").getText(), 
+                             "Added new SED"));
+                return Trigger.DO_NOTHING;
+            }
+        }).run();
+        
+        // 3 Seds in workspace
+        assertEquals(3, sedManager.getSeds().size());
+        
+        // Get the new SED
+        newSed = sedManager.getSelected();
+        assertEquals(2, newSed.getNumberOfSegments());
+        assertEquals(1, newSed.getSegment(0).getLength());
+        assertEquals(1, newSed.getSegment(1).getLength());
+        
+        // Verify IrisStarTables are all the same
+        SegmentLayer oldLayer = mbView.preferences.getSedPreferences(sed)
+                .getSegmentPreferences(sed.getSegment(0));
+        SegmentLayer newLayer = mbView.preferences.getSedPreferences(newSed)
+                .getSegmentPreferences(newSed.getSegment(0));
+        assertEquals(oldLayer.getSuffix(), newLayer.getSuffix());
+        assertEquals(oldLayer.getInSource().getName(), newLayer.getInSource().getName());
+        assertEquals(oldLayer.getInSource().getParameters().size(), newLayer.getInSource().getParameters().size());
+        starTableList.contains(newLayer.getSuffix()).check();
+        
+        oldLayer = mbView.preferences.getSedPreferences(sed)
+                .getSegmentPreferences(sed.getSegment(1));
+        newLayer = mbView.preferences.getSedPreferences(newSed)
+                .getSegmentPreferences(newSed.getSegment(1));
+        assertEquals(oldLayer.getSuffix(), newLayer.getSuffix());
+        assertEquals(oldLayer.getInSource().getName(), newLayer.getInSource().getName());
+        assertEquals(oldLayer.getInSource().getParameters().size(), newLayer.getInSource().getParameters().size());
+        starTableList.contains(newLayer.getSuffix()).check();
+    }
+    
+    
+    private WindowInterceptor makeExtractWindowInterceptor() {
+        return WindowInterceptor.init(new Trigger() {
+            @Override
+            public void run() throws Exception {
+                mbWindow.getMenuBar().getMenu("File").getSubMenu("Extract to New SED").click();
+            }
+        });
     }
     
     @Test

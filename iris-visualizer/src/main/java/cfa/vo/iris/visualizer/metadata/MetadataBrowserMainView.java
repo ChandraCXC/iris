@@ -217,8 +217,8 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             throw new RuntimeException(e);
         }
         
-        JOptionPane.showMessageDialog(this, "Adding new SED to workspace.");
         ws.getSedManager().add(newSed);
+        JOptionPane.showMessageDialog(this, "Added new SED to workspace. ID: " + newSed.getId());
     }
     
     
