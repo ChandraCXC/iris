@@ -18,10 +18,6 @@ package cfa.vo.sherpa.models;
 
 import java.util.List;
 
-/**
- *
- * @author olaurino
- */
 public interface Model {
     String getName();
 
@@ -34,4 +30,6 @@ public interface Model {
     List<Parameter> getPars();
 
     void addPar(Parameter par);
+
+    Parameter findParameter(String paramName);
 }

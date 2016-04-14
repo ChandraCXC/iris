@@ -26,7 +26,7 @@ import cfa.vo.interop.SampService;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.interop.AbstractSedMessageHandler;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.sherpa.models.ModelImpl;
+import cfa.vo.sherpa.models.Model;
 import cfa.vo.sherpa.models.CompositeModel;
 import cfa.vo.sherpa.models.Parameter;
 import cfa.vo.sherpa.optimization.Method;
@@ -131,11 +131,11 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
             data.setY(y);
             data.setStaterror(err);
 
-            ModelImpl m1 = c.createModel("powerlaw");
+            Model m1 = c.createModel("powerlaw");
 
-            c.getParameter(m1, "refer").setVal(5000.);
-            c.getParameter(m1, "ampl").setVal(1.0);
-            c.getParameter(m1, "index").setVal(-0.5);
+            m1.findParameter("refer").setVal(5000.);
+            m1.findParameter("ampl").setVal(1.0);
+            m1.findParameter("index").setVal(-0.5);
 
             CompositeModel cm = c.createCompositeModel("m1", m1);
 
@@ -168,29 +168,29 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
             pbs.add(b2);
             pbs.add(b1);
 
-            ModelImpl p1 = c.createModel("powerlaw", "p1");
-            Parameter gamma = c.getParameter(p1, "index");
+            Model p1 = c.createModel("powerlaw", "p1");
+            Parameter gamma = p1.findParameter("index");
             gamma.setFrozen(0);
             gamma.setVal(0.0);
 
-            Parameter ref = c.getParameter(p1, "refer");
+            Parameter ref = p1.findParameter("refer");
 //            ref.setFrozen(0);
             ref.setVal(1.0);
 
-            Parameter ampl = c.getParameter(p1, "ampl");
+            Parameter ampl = p1.findParameter("ampl");
             ampl.setFrozen(0);
             ampl.setVal(1.0);
 
-            ModelImpl p2 = c.createModel("powerlaw", "p2");
-            gamma = c.getParameter(p2, "index");
+            Model p2 = c.createModel("powerlaw", "p2");
+            gamma = p2.findParameter("index");
             gamma.setFrozen(0);
             gamma.setVal(0.0);
 
-            ref = c.getParameter(p2, "refer");
+            ref = p2.findParameter("refer");
 //            ref.setFrozen(0);
             ref.setVal(1.0);
 
-            ampl = c.getParameter(p2, "ampl");
+            ampl = p2.findParameter("ampl");
             ampl.setFrozen(0);
             ampl.setVal(5.0);
 

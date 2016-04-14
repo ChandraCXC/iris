@@ -54,7 +54,7 @@ public class ModelFactory {
             NodeList models = root.getElementsByTagName("model");
             for (int i=0; i<models.getLength(); i++) {
                 Element modelElem = (Element) models.item(i);
-                ModelImpl model = new ModelImpl(modelElem);
+                Model model = new ModelImpl(modelElem);
                 modelsMap.put(model.getName(), model);
             }
         } catch (ParserConfigurationException | SAXException | IOException e) {
@@ -66,7 +66,7 @@ public class ModelFactory {
         return modelsMap.size();
     }
 
-    public ModelImpl getModel(String name, String id) throws NoSuchElementException {
+    public Model getModel(String name, String id) throws NoSuchElementException {
         if (!modelsMap.containsKey(name)) {
             throw new NoSuchElementException("No such model: "+ name);
         }

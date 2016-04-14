@@ -3,7 +3,7 @@ package cfa.vo.sherpa;
 import cfa.vo.interop.SAMPMessage;
 import cfa.vo.interop.SampService;
 import cfa.vo.sherpa.models.CompositeModel;
-import cfa.vo.sherpa.models.ModelImpl;
+import cfa.vo.sherpa.models.Model;
 import cfa.vo.sherpa.models.Parameter;
 import cfa.vo.sherpa.optimization.Method;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
@@ -48,11 +48,11 @@ public class SherpaClientTest {
         data.setX(x);
         data.setY(y);
 
-        ModelImpl m = client.createModel("polynomial");
-        Parameter c0 = client.getParameter(m, "c0");
+        Model m = client.createModel("polynomial");
+        Parameter c0 = m.findParameter("c0");
         c0.setFrozen(0);
 
-        Parameter c1 = client.getParameter(m, "c1");
+        Parameter c1 = m.findParameter("c1");
         c1.setFrozen(0);
 
         CompositeModel cm = client.createCompositeModel("m", m);

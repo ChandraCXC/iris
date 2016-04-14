@@ -22,21 +22,15 @@ import java.util.*;
 
 public class ModelImpl implements Model {
 
-    private List<Parameter> pars = new ArrayList();
+    private List<Parameter> pars = new ArrayList<>();
 
-    private Map<String, Parameter> parMap = new HashMap();
+    private Map<String, Parameter> parMap = new HashMap<>();
 
     private String name;
 
     private String description;
 
     private String id;
-
-    public ModelImpl(String name, String id) {
-        this.name = name;
-        this.id = id;
-        this.description = "";
-    }
 
     public ModelImpl(Model model, String id) {
         this.name = model.getName();
@@ -105,7 +99,8 @@ public class ModelImpl implements Model {
         return id;
     }
 
-    public Parameter getParameter(String name) throws NoSuchElementException {
+    public Parameter findParameter(String name) throws NoSuchElementException {
+        name = buildParamName(name);
         if (!parMap.containsKey(name)) {
             throw new NoSuchElementException("No such parameter "+ name);
         }
@@ -115,6 +110,10 @@ public class ModelImpl implements Model {
     @Override
     public String toString() {
         return getName();
+    }
+
+    private String buildParamName(String paramName) {
+        return getId() + "." + paramName;
     }
 
 }

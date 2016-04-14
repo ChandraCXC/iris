@@ -47,10 +47,8 @@ import javax.swing.JInternalFrame;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import cfa.vo.sherpa.models.CompositeModel;
-import cfa.vo.sherpa.models.ModelFactory;
-import cfa.vo.sherpa.models.ModelImpl;
-import cfa.vo.sherpa.models.Parameter;
+
+import cfa.vo.sherpa.models.*;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Stats;
 import org.astrogrid.samp.Message;
@@ -316,11 +314,11 @@ public final class TestBuilderFrame extends JInternalFrame {
             FitConfiguration fit = new FitConfiguration();
 
             ModelFactory factory = new ModelFactory();
-            ModelImpl m = factory.getModel("polynomial", "m");
-            Parameter c0 = m.getParameter("m.c0");
+            Model m = factory.getModel("polynomial", "m");
+            Parameter c0 = m.findParameter("c0");
             c0.setFrozen(0);
 
-            Parameter c1 = m.getParameter("m.c1");
+            Parameter c1 = m.findParameter("c1");
             c1.setFrozen(0);
 
             CompositeModel cm = SAMPFactory.get(CompositeModel.class);

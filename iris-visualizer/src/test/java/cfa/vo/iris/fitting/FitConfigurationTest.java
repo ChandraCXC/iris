@@ -5,10 +5,7 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sherpa.Data;
 import cfa.vo.sherpa.SherpaFitConfiguration;
-import cfa.vo.sherpa.models.CompositeModel;
-import cfa.vo.sherpa.models.ModelFactory;
-import cfa.vo.sherpa.models.ModelImpl;
-import cfa.vo.sherpa.models.Parameter;
+import cfa.vo.sherpa.models.*;
 import cfa.vo.sherpa.optimization.Method;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Stat;
@@ -36,11 +33,11 @@ public class FitConfigurationTest {
         sed.addSegment(segment);
 
         ModelFactory factory = new ModelFactory();
-        ModelImpl m = factory.getModel("polynomial", "m");
-        Parameter c0 = m.getParameter("m.c0");
+        Model m = factory.getModel("polynomial", "m");
+        Parameter c0 = m.findParameter("c0");
         c0.setFrozen(0);
 
-        Parameter c1 = m.getParameter("m.c1");
+        Parameter c1 = m.findParameter("c1");
         c1.setFrozen(0);
 
         cm = SAMPFactory.get(CompositeModel.class);

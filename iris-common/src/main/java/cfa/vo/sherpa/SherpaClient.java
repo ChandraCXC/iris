@@ -21,33 +21,25 @@ import cfa.vo.sherpa.models.*;
 import cfa.vo.sherpa.optimization.Method;
 import cfa.vo.sherpa.stats.Stat;
 import org.astrogrid.samp.Response;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 public class SherpaClient {
 
     private ModelFactory modelFactory = new ModelFactory();
     private SampService sampService;
-    private Map<String, ModelImpl> modelMap = new HashMap<>();
-    private Integer stringCounter = 0;
+    private AtomicInteger stringCounter = new AtomicInteger();
+    private static final String FIT_MTYPE = "spectrum.fit.fit";
+    private static final String CONFIDENCE_MTYPE = "spectrum.fit.confidence";
     private Logger logger = Logger.getLogger(SherpaClient.class.getName());
 
     public SherpaClient(SampService sampService) {
         this.sampService = sampService;
     }
 
-    public Parameter getParameter(ModelImpl model, String name) throws Exception {
-        Parameter par = model.getParameter(model.getId() + "." + name);
-        if (par == null) {
-            throw new Exception("Parameter "+ name+ " not found in model " + model.getName());
-        }
-        return par;
-    }
-
     public FitResults fit(SherpaFitConfiguration conf) throws Exception {
         fixDatasets(conf);
-        SAMPMessage message = SAMPFactory.createMessage("spectrum.fit.fit", conf, SherpaFitConfiguration.class);
+        SAMPMessage message = SAMPFactory.createMessage(FIT_MTYPE, conf, SherpaFitConfiguration.class);
         Response response = sendMessage(message);
 
         return SAMPFactory.get(response.getResult(), FitResults.class);
@@ -73,7 +65,7 @@ public class SherpaClient {
 
     public ConfidenceResults computeConfidence(SherpaFitConfiguration conf) throws Exception {
         fixDatasets(conf);
-        SAMPMessage message = SAMPFactory.createMessage("spectrum.fit.confidence", conf, SherpaFitConfiguration.class);
+        SAMPMessage message = SAMPFactory.createMessage(CONFIDENCE_MTYPE, conf, SherpaFitConfiguration.class);
         Response response = sendMessage(message);
         return SAMPFactory.get(response.getResult(), ConfidenceResults.class);
     }
@@ -87,13 +79,12 @@ public class SherpaClient {
         return cm;
     }
 
-    public ModelImpl createModel(String name) {
+    public Model createModel(String name) {
         return createModel(name, createId());
     }
 
-    public ModelImpl createModel(String name, String id) {
-        ModelImpl m = modelFactory.getModel(name, id);
-        modelMap.put(id, m);
+    public Model createModel(String name, String id) {
+        Model m = modelFactory.getModel(name, id);
         return m;
     }
 
@@ -122,16 +113,12 @@ public class SherpaClient {
         return false;
     }
 
-    public SherpaClient create(final SampService sampService) {
-        return new SherpaClient(sampService);
-    }
-
     public String createId() {
         return createId("m");
     }
 
     public String createId(String prefix) {
-        return prefix + (++stringCounter).toString();
+        return prefix + stringCounter.incrementAndGet();
     }
 
     private void fixDatasets(SherpaFitConfiguration conf) {

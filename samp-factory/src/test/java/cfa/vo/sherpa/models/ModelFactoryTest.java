@@ -21,12 +21,12 @@ public class ModelFactoryTest {
 
     @Test
     public void testPowerlaw() throws Exception {
-        ModelImpl m = factory.getModel("powerlaw", "p1d");
+        Model m = factory.getModel("powerlaw", "p1d");
         assertEquals("powerlaw.p1d", m.getName());
         assertEquals("Power law function", m.getDescription());
 
         // refer
-        Parameter par = m.getParameter("p1d.refer");
+        Parameter par = m.findParameter("refer");
         assertEquals((Double) 5000d, par.getVal());
         assertEquals((Integer) 0, par.getAlwaysfrozen());
         assertEquals((Integer) 1, par.getFrozen());
@@ -37,7 +37,7 @@ public class ModelFactoryTest {
 //        assertEquals("INDEF", par.getLink());
 
         // ampl
-        par = m.getParameter("p1d.ampl");
+        par = m.findParameter("ampl");
         assertEquals((Double) 1.0, par.getVal());
         assertEquals((Integer) 0, par.getAlwaysfrozen());
         assertEquals((Integer) 0, par.getFrozen());
@@ -48,7 +48,7 @@ public class ModelFactoryTest {
 //        assertEquals("INDEF", par.getLink());
 
         // index
-        par = m.getParameter("p1d.index");
+        par = m.findParameter("index");
         assertEquals((Double) (-0.5), par.getVal());
         assertEquals((Integer) 0, par.getAlwaysfrozen());
         assertEquals((Integer) 0, par.getFrozen());
@@ -61,9 +61,9 @@ public class ModelFactoryTest {
 
     @Test
     public void testParameterException() throws Exception {
-        ModelImpl m = factory.getModel("powerlaw", "p1d");
+        Model m = factory.getModel("powerlaw", "p1d");
         try {
-            m.getParameter("foo");
+            m.findParameter("foo");
         } catch (NoSuchElementException ex) {
             return;
         }

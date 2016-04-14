@@ -22,11 +22,9 @@ import cfa.vo.iris.fitting.FitConfiguration;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.TestUtils;
-import cfa.vo.sherpa.models.CompositeModel;
-import cfa.vo.sherpa.models.ModelFactory;
-import cfa.vo.sherpa.models.ModelImpl;
-import cfa.vo.sherpa.models.Parameter;
-import java.util.Iterator;
+import cfa.vo.sherpa.models.*;
+
+import java.util.ArrayList;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Stats;
 import org.junit.After;
@@ -57,8 +55,7 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
     @After
     public void tearDown() throws Exception {
         if (sedManager.getSeds() != null) {
-            for (Iterator<ExtSed> it = sedManager.getSeds().iterator(); it.hasNext();) {
-                ExtSed sed = it.next();
+            for (ExtSed sed : new ArrayList<>(sedManager.getSeds())) {
                 sedManager.remove(sed.getId());
             }
         }
@@ -232,11 +229,11 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         FitConfiguration fit = new FitConfiguration();
 
         ModelFactory factory = new ModelFactory();
-        ModelImpl m = factory.getModel("polynomial", "m");
-        Parameter c0 = m.getParameter("m.c0");
+        Model m = factory.getModel("polynomial", "m");
+        Parameter c0 = m.findParameter("c0");
         c0.setFrozen(0);
 
-        Parameter c1 = m.getParameter("m.c1");
+        Parameter c1 = m.findParameter("c1");
         c1.setFrozen(0);
 
         CompositeModel cm = SAMPFactory.get(CompositeModel.class);
