@@ -29,18 +29,13 @@ package cfa.vo.iris.gui.widgets;
 import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SedListener;
-import cfa.vo.iris.fitting.FitConfigurationBean;
+import cfa.vo.iris.fitting.FitConfiguration;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sherpa.models.*;
 import org.jdesktop.beansbinding.Converter;
 
 import javax.annotation.Nonnull;
 import javax.swing.*;
-import javax.swing.tree.TreeSelectionModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.logging.Logger;
@@ -54,7 +49,7 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
     public static final String PROP_EDITABLE = "editable";
     public static final String PROP_FIT = "fit";
     private ExtSed sed;
-    private FitConfigurationBean fit;
+    private FitConfiguration fit;
 
     public ModelViewerPanel() {
         initComponents();
@@ -72,13 +67,13 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         firePropertyChange(PROP_EDITABLE, old_editable, editable);
     }
 
-    private void setFit(@Nonnull FitConfigurationBean fit) {
+    private void setFit(@Nonnull FitConfiguration fit) {
         this.fit = fit;
         firePropertyChange(PROP_FIT, null, fit);
         fit.addPropertyChangeListener(this);
     }
 
-    public FitConfigurationBean getFit() {
+    public FitConfiguration getFit() {
         return fit;
     }
 
@@ -107,7 +102,7 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
 
     public void setSed(ExtSed sed) {
         this.sed = sed;
-        FitConfigurationBean fitConf = sed.getFit();
+        FitConfiguration fitConf = sed.getFit();
         setFit(fitConf);
     }
 

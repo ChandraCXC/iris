@@ -20,7 +20,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.*;
 import java.util.logging.Logger;
 
-public class FitConfigurationBean implements IFitConfiguration {
+public class FitConfiguration {
     private CompositeModel model;
     private Stat stat;
     private Method method;
@@ -34,7 +34,7 @@ public class FitConfigurationBean implements IFitConfiguration {
 
     private ObservableList<UserModel> userModelList = ObservableCollections.observableList(new ArrayList<UserModel>());
     private ModelExpressionVerifier verifier = new ModelExpressionVerifier();
-    private Logger logger = Logger.getLogger(FitConfigurationBean.class.getName());
+    private Logger logger = Logger.getLogger(FitConfiguration.class.getName());
 
     public static final String DATA_NAME = "fitdata";
     public static final String PROP_MODEL = "model";
@@ -51,56 +51,48 @@ public class FitConfigurationBean implements IFitConfiguration {
     public static final String PROP_CONFIDENCE = "confidence";
     private transient final PropertyChangeSupport propertyChangeSupport = new java.beans.PropertyChangeSupport(this);
 
-    public FitConfigurationBean() {
+    public FitConfiguration() {
         model = SAMPFactory.get(CompositeModel.class);
         confidence = SAMPFactory.get(Confidence.class);
         confidence.setSigma(1.6);
         confidence.setName("conf");
     }
 
-    @Override
     @Nonnull
     public CompositeModel getModel() {
         return model;
     }
 
-    @Override
     public void setModel(CompositeModel model) {
         CompositeModel oldModel = this.model;
         this.model = model;
         propertyChangeSupport.firePropertyChange(PROP_MODEL, oldModel, model);
     }
 
-    @Override
     public Stat getStat() {
         return stat;
     }
 
-    @Override
     public void setStat(Stat stat) {
         Stat oldStat = this.stat;
         this.stat = stat;
         propertyChangeSupport.firePropertyChange(PROP_STAT, oldStat, stat);
     }
 
-    @Override
     public Method getMethod() {
         return method;
     }
 
-    @Override
     public void setMethod(Method method) {
         Method oldMethod = this.method;
         this.method = method;
         propertyChangeSupport.firePropertyChange(PROP_METHOD, oldMethod, method);
     }
 
-    @Override
     public Confidence getConfidence() {
         return confidence;
     }
 
-    @Override
     public void setConfidence(Confidence confidence) {
         Confidence old = this.confidence;
         this.confidence = confidence;
@@ -167,12 +159,10 @@ public class FitConfigurationBean implements IFitConfiguration {
         propertyChangeSupport.firePropertyChange(PROP_DOF, old, dof);
     }
 
-    @Override
     public List<UserModel> getUserModelList() {
         return Collections.unmodifiableList(userModelList);
     }
 
-    @Override
     public boolean addUserModel(UserModel model) {
         boolean retVal = this.userModelList.add(model);
         if (retVal) {
@@ -203,7 +193,6 @@ public class FitConfigurationBean implements IFitConfiguration {
         return retVal;
     }
 
-    @Override
     public void setUserModelList(List<UserModel> userModelList) {
         ObservableList oldList = this.userModelList;
         this.userModelList = ObservableCollections.observableList(userModelList);
@@ -284,21 +273,11 @@ public class FitConfigurationBean implements IFitConfiguration {
         return conf;
     }
 
-    /**
-     * Add PropertyChangeListener.
-     *
-     * @param listener
-     */
     public void addPropertyChangeListener(java.beans.PropertyChangeListener listener )
     {
         propertyChangeSupport.addPropertyChangeListener( listener );
     }
 
-    /**
-     * Remove PropertyChangeListener.
-     *
-     * @param listener
-     */
     public void removePropertyChangeListener(java.beans.PropertyChangeListener listener )
     {
         propertyChangeSupport.removePropertyChangeListener( listener );

@@ -17,7 +17,6 @@
 package cfa.vo.sherpa;
 
 import cfa.vo.interop.*;
-import cfa.vo.iris.fitting.FitConfigurationBean;
 import cfa.vo.sherpa.models.*;
 import cfa.vo.sherpa.optimization.Method;
 import cfa.vo.sherpa.stats.Stat;

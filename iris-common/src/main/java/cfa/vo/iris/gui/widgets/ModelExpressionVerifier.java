@@ -1,6 +1,6 @@
 package cfa.vo.iris.gui.widgets;
 
-import cfa.vo.iris.fitting.FitConfigurationBean;
+import cfa.vo.iris.fitting.FitConfiguration;
 import cfa.vo.sherpa.models.Model;
 
 import javax.script.*;
@@ -16,7 +16,7 @@ public class ModelExpressionVerifier {
         scriptEngine = manager.getEngineByName("JavaScript");
     }
 
-    public boolean verify(FitConfigurationBean fit) {
+    public boolean verify(FitConfiguration fit) {
         boolean retVal = false;
         String expression = null;
 

@@ -26,7 +26,7 @@ import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SegmentEvent;
 import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
-import cfa.vo.iris.fitting.FitConfigurationBean;
+import cfa.vo.iris.fitting.FitConfiguration;
 import cfa.vo.iris.interop.SedServerResource;
 import cfa.vo.iris.interop.VaoMessage;
 import cfa.vo.iris.logging.LogEntry;
@@ -63,16 +63,16 @@ public class ExtSed extends Sed {
     private boolean managed = true;
 
     @Nonnull
-    public FitConfigurationBean getFit() {
+    public FitConfiguration getFit() {
         return fit;
     }
 
-    public void setFit(FitConfigurationBean fit) {
+    public void setFit(FitConfiguration fit) {
         this.fit = fit;
         SedEvent.getInstance().fire(this, SedCommand.CHANGED);
     }
 
-    private FitConfigurationBean fit = new FitConfigurationBean();
+    private FitConfiguration fit = new FitConfiguration();
     private static UnitsManager uf = Default.getInstance().getUnitsManager();
 
     public ExtSed(String id) {

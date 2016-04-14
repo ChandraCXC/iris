@@ -21,7 +21,7 @@
 
 package cfa.vo.sherpa.models;
 
-import cfa.vo.iris.fitting.FitConfigurationBean;
+import cfa.vo.iris.fitting.FitConfiguration;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -29,7 +29,7 @@ import java.util.List;
 
 public class CompositeModelTreeModel extends DefaultTreeModel {
 
-    public CompositeModelTreeModel(FitConfigurationBean fit) {
+    public CompositeModelTreeModel(FitConfiguration fit) {
         super(new DefaultMutableTreeNode("Model Components"));
 
         CompositeModel model = fit.getModel();

@@ -59,10 +59,15 @@ public class ModelFactoryTest {
 //        assertEquals("INDEF", par.getLink());
     }
 
-    @Test(expected=NoSuchElementException.class)
+    @Test
     public void testParameterException() throws Exception {
-        ModelImpl m = factory.getModel("powerlaw1d", "p1d");
-        m.getParameter("foo");
+        ModelImpl m = factory.getModel("powerlaw", "p1d");
+        try {
+            m.getParameter("foo");
+        } catch (NoSuchElementException ex) {
+            return;
+        }
+        fail("Should have thrown exception");
     }
 
     @Test(expected=NoSuchElementException.class)

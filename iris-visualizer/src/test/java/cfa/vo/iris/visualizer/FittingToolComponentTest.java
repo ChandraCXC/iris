@@ -18,13 +18,10 @@ package cfa.vo.iris.visualizer;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.IrisComponent;
-import cfa.vo.iris.events.SedCommand;
-import cfa.vo.iris.events.SedEvent;
-import cfa.vo.iris.fitting.FitConfigurationBean;
+import cfa.vo.iris.fitting.FitConfiguration;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.TestUtils;
-import cfa.vo.sherpa.IFitConfiguration;
 import cfa.vo.sherpa.models.CompositeModel;
 import cfa.vo.sherpa.models.ModelFactory;
 import cfa.vo.sherpa.models.ModelImpl;
@@ -34,7 +31,6 @@ import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Stats;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -183,7 +179,7 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         TestUtils.invokeWithRetry(50, 100, new Runnable(){
             @Override
             public void run() {
-                IFitConfiguration fit = sed.getFit();
+                FitConfiguration fit = sed.getFit();
                 assertEquals(Stats.Cash, fit.getStat());
                 assertEquals(OptimizationMethod.MonteCarlo, fit.getMethod());
             }
@@ -232,8 +228,8 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         return desktop.getWindow(windowName);
     }
 
-    private IFitConfiguration addFit(ExtSed sed) {
-        FitConfigurationBean fit = new FitConfigurationBean();
+    private FitConfiguration addFit(ExtSed sed) {
+        FitConfiguration fit = new FitConfiguration();
 
         ModelFactory factory = new ModelFactory();
         ModelImpl m = factory.getModel("polynomial", "m");

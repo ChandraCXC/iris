@@ -28,7 +28,7 @@ package cfa.vo.iris.test;
 
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.interop.SimpleSAMPMessage;
-import cfa.vo.iris.fitting.FitConfigurationBean;
+import cfa.vo.iris.fitting.FitConfiguration;
 import cfa.vo.iris.gui.widgets.SedList;
 import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
@@ -47,8 +47,6 @@ import javax.swing.JInternalFrame;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
-import cfa.vo.sherpa.IFitConfiguration;
 import cfa.vo.sherpa.models.CompositeModel;
 import cfa.vo.sherpa.models.ModelFactory;
 import cfa.vo.sherpa.models.ModelImpl;
@@ -315,7 +313,7 @@ public final class TestBuilderFrame extends JInternalFrame {
                 }
             }
             manager.getSelected().addSegment(seg);
-            FitConfigurationBean fit = new FitConfigurationBean();
+            FitConfiguration fit = new FitConfiguration();
 
             ModelFactory factory = new ModelFactory();
             ModelImpl m = factory.getModel("polynomial", "m");

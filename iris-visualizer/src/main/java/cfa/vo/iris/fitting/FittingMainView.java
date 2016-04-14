@@ -23,12 +23,9 @@ import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.fitting.custom.ModelsListener;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.utils.IPredicate;
-import cfa.vo.sedlib.common.SedException;
 import cfa.vo.sherpa.ConfidenceResults;
 import cfa.vo.sherpa.FitResults;
-import cfa.vo.sherpa.IFitConfiguration;
 import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.models.Model;
 import cfa.vo.sherpa.models.ModelFactory;
@@ -53,7 +50,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
     private SherpaClient sherpaClient;
     private ModelFactory factory = new ModelFactory();
     private StringPredicate predicate = new StringPredicate("");
-    private FitConfigurationBean fit = new FitConfigurationBean();
+    private FitConfiguration fit = new FitConfiguration();
     private Logger logger = Logger.getLogger(FittingMainView.class.getName());
     public static final String PROP_FIT = "fit";
     public static final String PROP_SEDID = "sedId";
@@ -81,12 +78,12 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         confidencePanel.setView(this);
     }
 
-    public FitConfigurationBean getFit() {
+    public FitConfiguration getFit() {
         return fit;
     }
 
-    public void setFit(FitConfigurationBean fit) {
-        IFitConfiguration oldFit = this.fit;
+    public void setFit(FitConfiguration fit) {
+        FitConfiguration oldFit = this.fit;
         this.fit = fit;
         firePropertyChange(PROP_FIT, oldFit, fit);
     }
@@ -172,7 +169,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
     private void setSed(ExtSed sed) {
         this.sed = sed;
         setSedId(sed.getId());
-        FitConfigurationBean fit = sed.getFit();
+        FitConfiguration fit = sed.getFit();
         setFit(fit);
     }
 

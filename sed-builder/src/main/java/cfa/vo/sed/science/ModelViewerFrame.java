@@ -2,7 +2,6 @@ package cfa.vo.sed.science;
 
 import cfa.vo.iris.gui.widgets.ModelViewerPanel;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.sherpa.IFitConfiguration;
 import cfa.vo.sherpa.models.Model;
 
 import javax.swing.*;

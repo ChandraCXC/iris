@@ -1,7 +1,7 @@
 package cfa.vo.iris.gui.widgets;
 
 import cfa.vo.interop.SAMPFactory;
-import cfa.vo.iris.fitting.FitConfigurationBean;
+import cfa.vo.iris.fitting.FitConfiguration;
 import cfa.vo.sherpa.models.Model;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,12 +10,12 @@ import static org.junit.Assert.*;
 
 public class ModelExpressionVerifierTest {
     private ModelExpressionVerifier verifier;
-    private FitConfigurationBean fit;
+    private FitConfiguration fit;
 
     @Before
     public void setUp() {
         verifier = new ModelExpressionVerifier();
-        fit = new FitConfigurationBean();
+        fit = new FitConfiguration();
         Model m = SAMPFactory.get(Model.class);
         m.setName("amodel.m1");
         fit.addModel(m);

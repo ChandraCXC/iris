@@ -1,10 +1,7 @@
 package cfa.vo.iris.fitting;
 
 import cfa.vo.interop.SAMPFactory;
-import cfa.vo.sherpa.Confidence;
 import cfa.vo.sherpa.ConfidenceResults;
-import cfa.vo.sherpa.SherpaClient;
-import cfa.vo.sherpa.SherpaFitConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -41,7 +38,7 @@ public class ConfidencePanelTest {
         };
 
         FittingMainView view = Mockito.mock(FittingMainView.class);
-        FitConfigurationBean fit = new FitConfigurationBean();
+        FitConfiguration fit = new FitConfiguration();
         Mockito.when(view.getFit()).thenReturn(fit);
         Mockito.when(view.computeConfidence()).thenReturn(confidenceResults);
         panel.setView(view);

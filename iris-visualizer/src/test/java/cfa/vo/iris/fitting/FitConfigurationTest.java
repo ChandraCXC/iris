@@ -18,9 +18,9 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class FitConfigurationBeanTest {
+public class FitConfigurationTest {
     ExtSed sed;
-    private FitConfigurationBean conf;
+    private FitConfiguration conf;
     private CompositeModel cm;
     double[] x = {1.0, 2.0, 3.0};
     double[] y = {1.0, 4.0, 9.0};
@@ -51,7 +51,7 @@ public class FitConfigurationBeanTest {
 
         Method method = OptimizationMethod.LevenbergMarquardt;
 
-        conf = new FitConfigurationBean();
+        conf = new FitConfiguration();
         conf.setMethod(method);
         conf.setModel(cm);
         conf.setStat(s);

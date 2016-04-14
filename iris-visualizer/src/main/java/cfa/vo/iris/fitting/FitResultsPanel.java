@@ -12,15 +12,15 @@ public class FitResultsPanel extends AbstractGridPanel {
     private JTextField statVal;
     private JTextField dof;
 
-    private FitConfigurationBean fit;
+    private FitConfiguration fit;
 
     public final static String PROP_FIT = "fit";
 
-    public FitConfigurationBean getFit() {
+    public FitConfiguration getFit() {
         return fit;
     }
 
-    public void setFit(FitConfigurationBean fit) {
+    public void setFit(FitConfiguration fit) {
         this.fit = fit;
         firePropertyChange(PROP_FIT, null, fit);
     }
@@ -38,12 +38,12 @@ public class FitResultsPanel extends AbstractGridPanel {
 
     @Override
     protected void initBindings() {
-        createBinding(FitConfigurationBean.PROP_STATVAL, statVal, "text");
-        createBinding(FitConfigurationBean.PROP_QVAL, qval, "text");
-        createBinding(FitConfigurationBean.PROP_NUMPOINTS, numPoints, "text");
-        createBinding(FitConfigurationBean.PROP_DOF, dof, "text");
-        createBinding(FitConfigurationBean.PROP_NFEV, nFev, "text");
-        createBinding(FitConfigurationBean.PROP_RSTAT, rStat, "text");
+        createBinding(FitConfiguration.PROP_STATVAL, statVal, "text");
+        createBinding(FitConfiguration.PROP_QVAL, qval, "text");
+        createBinding(FitConfiguration.PROP_NUMPOINTS, numPoints, "text");
+        createBinding(FitConfiguration.PROP_DOF, dof, "text");
+        createBinding(FitConfiguration.PROP_NFEV, nFev, "text");
+        createBinding(FitConfiguration.PROP_RSTAT, rStat, "text");
     }
 
     @Override

@@ -31,7 +31,7 @@ import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedListener;
-import cfa.vo.iris.fitting.FitConfigurationBean;
+import cfa.vo.iris.fitting.FitConfiguration;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.gui.widgets.SedList;
@@ -53,7 +53,6 @@ import cfa.vo.sed.science.interpolation.ZConfig;
 import cfa.vo.sedlib.Param;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedException;
-import cfa.vo.sherpa.IFitConfiguration;
 import cfa.vo.sherpa.models.CompositeModel;
 import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.models.UserModel;
@@ -1286,7 +1285,7 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
 
         Response response = (Response) SAMPFactory.get(Response.class);
         if (integrateModel) {
-            FitConfigurationBean fit = sed.getFit();
+            FitConfiguration fit = sed.getFit();
             CompositeModel model = fit.getModel();
             model.setName(modelExpression);
 
@@ -1529,7 +1528,7 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
         } else {
             integrateModelButton.setText("Integrate Model (NO)");
         }
-        FitConfigurationBean fit = sed.getFit();
+        FitConfiguration fit = sed.getFit();
         if (fit != null) {
             setModelExpression(fit.getModel().getName());
         } else {
