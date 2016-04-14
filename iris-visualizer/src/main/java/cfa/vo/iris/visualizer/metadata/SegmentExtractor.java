@@ -63,6 +63,10 @@ public class SegmentExtractor {
             tableStart = tableStart + (int) table.getRowCount();
         }
         
+        // TODO: Investigate which fields need to be checked and adjusted in the new sed.
+        // Then either uncomment this or set them elsewhere.
+        //sed.checkChar();
+        
         return sed;
     }
     
