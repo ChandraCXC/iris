@@ -74,7 +74,7 @@ public class ConsistencyChecker implements IrisComponent {
 
         if (npoints == 1) {
             NarrowOptionPane.showMessageDialog(workspace.getRootFrame(),
-                    "The SED: " + sed.getId() + " has only one point in it. Some functions (e.g. Visualization and Fitting) will be disabled for this SED until new points are added.",
+                    "The SED: " + sed.getId() + " has only one point in it. Some functions (e.g. Fitting) will be disabled for this SED until new points are added.",
                     "WARNING",
                     NarrowOptionPane.WARNING_MESSAGE);
         }
