@@ -74,7 +74,7 @@ public class SegmentExtractor {
         // Mark the index of the end of this table in the selection
         long end = table.getRowCount() + tableStart;
         
-        Segment oldSegment = table.getPlotterTable().getSegment();
+        Segment oldSegment = table.getPlotterDataTable().getSegment();
         List<Point> oldPoints = oldSegment.getData().getPoint();
         List<Point> newPoints = new ArrayList<>();
         

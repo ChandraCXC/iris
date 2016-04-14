@@ -16,10 +16,12 @@
 package cfa.vo.iris.visualizer.metadata;
 
 import java.awt.Component;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -39,6 +41,8 @@ import cfa.vo.iris.visualizer.stil.IrisStarJTable.RowSelection;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.SegmentColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.UtypeColumnInfoMatcher;
+import cfa.vo.sedlib.common.SedInconsistentException;
+import cfa.vo.sedlib.common.SedNoDataException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -163,7 +167,43 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         }
         setSelectedStarTables(newTables);
     }
-    
+
+    /**
+     * Extracts the selected rows in the Metadata browser to a new SED, then adds the SED to the
+     * SedManager through the Iris Workspace.
+     * 
+     */
+    private void extractSelectionToSed() {
+        
+        // Do nothing if no SED is selected
+        if (selectedSed == null) {
+            JOptionPane.showMessageDialog(this, "No SED in browser. Please load an SED.");
+            return;
+        }
+        
+        // Do nothing if there are no rows selected
+        int[] selectedRows = plotterStarJTable.getSelectedRows();
+        if (selectedRows == null || selectedRows.length == 0) {
+            JOptionPane.showMessageDialog(this, "No rows selected to extract. Please select rows.");
+            return;
+        }
+        
+        // Extract selected rows to new Segments
+        SegmentExtractor extractor = new SegmentExtractor(selectedStarTables, selectedRows);
+        ExtSed newSed = new ExtSed(selectedSed.getId());
+        
+        // Build a new SED
+        try {
+            newSed.addSegment(extractor.getSegments());
+        } catch (SedInconsistentException | SedNoDataException e) {
+            logger.log(Level.SEVERE, "Could not extract segments from SED", e);
+            JOptionPane.showMessageDialog(this, "ERROR:" + e.getMessage(), 
+                    null, JOptionPane.ERROR_MESSAGE);
+            throw new RuntimeException(e);
+        }
+        
+        JOptionPane.showMessageDialog(this, "Adding new SED to workspace.");
+    }
     
     /*
      * getters and setters
@@ -549,6 +589,11 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         fileMenu.setName("Extract"); // NOI18N
 
         extractToSedMenuItem.setText("Extract to New SED");
+        extractToSedMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                extractToSedMenuItemActionPerformed(evt);
+            }
+        });
         fileMenu.add(extractToSedMenuItem);
 
         broadcastToSampMenuItem.setText("Broadcast to SAMP");
@@ -693,6 +738,10 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         IrisStarTable.clearAllMasks(sedStarTables);
         VisualizerChangeEvent.getInstance().fire(selectedSed, VisualizerCommand.REDRAW);
     }//GEN-LAST:event_clearAllButtonActionPerformed
+
+    private void extractToSedMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_extractToSedMenuItemActionPerformed
+        extractSelectionToSed();
+    }//GEN-LAST:event_extractToSedMenuItemActionPerformed
 
     private void selectAllButtonActionPerformed(
             java.awt.event.ActionEvent evt) {// GEN-FIRST:event_selectAllButtonActionPerformed
