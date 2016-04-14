@@ -371,7 +371,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         sed.getSegment(0).createTarget();
         sed.getSegment(0).getTarget().setName(new TextParam("target1"));
         sed.getSegment(1).createTarget();
-        sed.getSegment(1).getTarget().setName(new TextParam("target1"));
+        sed.getSegment(1).getTarget().setName(new TextParam("target2"));
         
         sedManager.add(sed);
         
@@ -409,7 +409,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             public Trigger process(Window warning) throws Exception {
                 // Check warning message
                 assertTrue(StringUtils.contains(warning.getTextBox("OptionPane.label").getText(), 
-                             "Added new SED"));
+                             "Added new Filter SED"));
                 return Trigger.DO_NOTHING;
             }
         }).run();
@@ -433,10 +433,10 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         });
         
         // Select all segments
-        starTableList.selectIndices(0,1);
+        starTableList.selectIndices(1,0);
         
         // Select first rows from both segments
-        plotterTable.selectRows(0,3);
+        plotterTable.selectRows(3,0);
         
         // Should throw a success message
         makeExtractWindowInterceptor().process(new WindowHandler() {
@@ -444,7 +444,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             public Trigger process(Window warning) throws Exception {
                 // Check warning message
                 assertTrue(StringUtils.contains(warning.getTextBox("OptionPane.label").getText(), 
-                             "Added new SED"));
+                             "Added new Filter SED"));
                 return Trigger.DO_NOTHING;
             }
         }).run();
