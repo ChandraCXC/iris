@@ -282,6 +282,7 @@ public class PlotterView extends JInternalFrame {
         });
 
         btnUnits.setText("Units");
+        btnUnits.setName("unitsButton"); // NOI18N
         btnUnits.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnUnitsActionPerformed(evt);
@@ -532,9 +533,6 @@ public class PlotterView extends JInternalFrame {
     private void btnUnitsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnitsActionPerformed
         
         if (!unitsManagerFrame.isVisible()) {
-            unitsManagerFrame = new UnitsManagerFrame(
-                plotter.getSed(), 
-                preferences);
             ws.addFrame(unitsManagerFrame);
         }
         GUIUtils.moveToFront(unitsManagerFrame);
