@@ -24,6 +24,8 @@ import cfa.vo.iris.units.spv.XUnits;
 import cfa.vo.iris.units.spv.YUnits;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
 
 public class PlotPreferences {
@@ -126,7 +128,10 @@ public class PlotPreferences {
         } catch (SedException ex) {
             // if unit is not defined
             // TODO: set to default or unknown units?
-            ylabel = "Flux density (" + YUnit.PHOTONFLUXDENSITY0.getString() + ")";
+            ylabel = "Flux density (" +
+                    YUnit.PHOTONFLUXDENSITY0.getString() + ")";
+            Logger.getLogger(PlotPreferences.class.getName())
+                    .log(Level.SEVERE, null, ex);
         }
         
         this.preferences.put(Y_LABEL, ylabel);
@@ -142,12 +147,14 @@ public class PlotPreferences {
         
         try {
             XUnits xconvert = new XUnits(arg1);
-            xlabel = xconvert.getLabel() + 
+            xlabel = xconvert.getLabel() +
                     " (" + XUnit.getFromUnitString(arg1).getString() + ")";
         } catch (SedException ex) {
             // if unit is not defined
             // TODO: set to default or unknown units?
             xlabel = "Wavelength (" + XUnit.ANGSTROM.getString() + ")";
+            Logger.getLogger(PlotPreferences.class.getName())
+                    .log(Level.SEVERE, null, ex);
         }
         
         this.preferences.put(X_LABEL, xlabel);
