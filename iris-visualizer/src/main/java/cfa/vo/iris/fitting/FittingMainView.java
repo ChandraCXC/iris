@@ -39,9 +39,6 @@ import java.util.List;
 public class FittingMainView extends JInternalFrame implements SedListener {
     private ExtSed sed;
     private FitController controller;
-    private ModelsTreeModel model;
-    private ModelFactory factory = new ModelFactory();
-    private StringPredicate predicate = new StringPredicate("");
     public final String DEFAULT_DESCRIPTION = "Double click on a Component to add it to the list of selected Components.";
     public final String CUSTOM_DESCRIPTION = "User Model";
     public static final String PROP_SED = "sed";
@@ -84,23 +81,11 @@ public class FittingMainView extends JInternalFrame implements SedListener {
     }
 
     private void setUpAvailableModelsTree() {
-        updateModels();
         ((CustomJTree) availableTree).register();
         availableTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         availableTree.addMouseListener(new AvailableModelsMouseAdapter());
         rootPane.setDefaultButton(searchButton);
-    }
-
-    private void filterModels(String searchString) {
-        predicate.setString(searchString);
-        List<Model> sub = predicate.apply(model.getList());
-        availableTree.setModel(new ModelsTreeModel(sub, controller.getModelsManager()));
-    }
-
-    private void updateModels() {
-        List<Model> models = new ArrayList<>(factory.getModels());
-        model = new ModelsTreeModel(models, controller.getModelsManager());
-        availableTree.setModel(model);
+        availableTree.setModel(controller.getModelsTreeModel());
     }
     
     /**
@@ -404,7 +389,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
     }// </editor-fold>//GEN-END:initComponents
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-        filterModels(searchField.getText());
+        controller.filterModels(searchField.getText());
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void doFit(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doFit
@@ -472,54 +457,6 @@ public class FittingMainView extends JInternalFrame implements SedListener {
             for (int i = 0; i < this.getRowCount(); i++) {
                 this.expandRow(i);
             }
-        }
-
-        @Override
-        public void update(MutableTreeNode newTree) {
-            updateModels();
-        }
-    }
-
-    private class StringPredicate implements IPredicate<Model> {
-
-        private String string;
-
-        public StringPredicate(String string) {
-            this.string = string.toLowerCase();
-        }
-
-        public void setString(String string) {
-            this.string = string.toLowerCase();
-        }
-
-        @Override
-        public boolean apply(Model object) {
-            boolean resp = false;
-            if (object.getName() != null) {
-                resp = object.getName().toLowerCase().contains(string);
-            }
-            if (object.getDescription() != null) {
-                resp |= object.getDescription().toLowerCase().contains(string);
-            }
-            if (object.getPars() != null) {
-                for (Parameter p : object.getPars()) {
-                    resp |= p.getName().toLowerCase().contains(string);
-                }
-            }
-
-            return resp;
-        }
-
-        public List<Model> apply(List<Model> all) {
-            List<Model> sub = new ArrayList<>();
-
-            for (Model m : all) {
-                if (predicate.apply(m)) {
-                    sub.add(m);
-                }
-            }
-
-            return sub;
         }
     }
 

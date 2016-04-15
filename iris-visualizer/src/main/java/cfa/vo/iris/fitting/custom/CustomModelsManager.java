@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observer;
 import javax.swing.tree.*;
 
 public class CustomModelsManager {
@@ -40,7 +39,7 @@ public class CustomModelsManager {
     private CustomModelsTreeModel templatesTree;
     private CustomModelsTreeModel functionsTree;
 
-    private List<ModelsListener> listeners = new ArrayList<>();
+    private List<CustomModelsListener> listeners = new ArrayList<>();
 
 
     public CustomModelsManager(File rootDir) throws IOException {
@@ -140,14 +139,18 @@ public class CustomModelsManager {
         return root;
     }
 
-    public void addListener(ModelsListener listener) {
+    public void addListener(CustomModelsListener listener) {
         listeners.add(listener);
     }
 
     private void updateListeners() throws IOException {
         MutableTreeNode tree = getCustomModels();
-        for (ModelsListener l : listeners) {
+        for (CustomModelsListener l : listeners) {
             l.update(tree);
         }
+    }
+
+    public interface CustomModelsListener {
+        void update(MutableTreeNode newTree);
     }
 }

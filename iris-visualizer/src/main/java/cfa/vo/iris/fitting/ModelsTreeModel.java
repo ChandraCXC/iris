@@ -1,14 +1,11 @@
 package cfa.vo.iris.fitting;
 
-import cfa.vo.iris.fitting.custom.CustomModelsManager;
 import cfa.vo.sherpa.models.Model;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import java.io.IOException;
+import javax.swing.tree.MutableTreeNode;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ModelsTreeModel extends DefaultTreeModel {
     private List<Model> presetList;
@@ -17,13 +14,13 @@ public class ModelsTreeModel extends DefaultTreeModel {
         super(new DefaultMutableTreeNode("Model Components"));
     }
 
-    public ModelsTreeModel(List<Model> presetList, CustomModelsManager manager) {
+    public ModelsTreeModel(List<Model> presetList, MutableTreeNode customTree) {
         this();
         Collections.sort(presetList, new Comparator<Model>() {
 
             @Override
             public int compare(Model m1, Model m2) {
-                return m1.getName().compareTo(m1.getName());
+                return m1.getName().compareTo(m2.getName());
             }
         });
         this.presetList = presetList;
@@ -36,12 +33,7 @@ public class ModelsTreeModel extends DefaultTreeModel {
             parentNode.add(new DefaultMutableTreeNode(m));
         }
 
-        try {
-            r.add(manager.getCustomModels());
-        } catch (IOException e) {
-            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Error while reading custom models", e);
-        }
-
+        r.add(customTree);
     }
 
     public List<Model> getList() {

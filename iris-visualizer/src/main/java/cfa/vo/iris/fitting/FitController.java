@@ -9,24 +9,26 @@ import cfa.vo.sherpa.FitResults;
 import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.models.Model;
 import cfa.vo.sherpa.models.ModelImpl;
+
+import javax.swing.tree.TreeModel;
 import java.util.logging.Logger;
 
 public class FitController {
 
     private ExtSed sed;
-    private CustomModelsManager modelsManager;
     private SherpaClient client;
+    private ModelsController modelsController;
 
     private final Logger logger = Logger.getLogger(FitController.class.getName());
 
     public FitController(ExtSed sed, CustomModelsManager manager, SherpaClient client) {
         this.sed = sed;
-        this.modelsManager = manager;
         this.client = client;
+        modelsController = new ModelsController(manager);
     }
 
     public void addListener(ModelsListener listener) {
-        modelsManager.addListener(listener);
+        modelsController.addListener(listener);
     }
 
     public void addModel(Model m) {
@@ -41,6 +43,10 @@ public class FitController {
         getFit().addUserModel(m, client.createId());
     }
 
+    public void filterModels(String searchString) {
+        modelsController.filterModels(searchString);
+    }
+
     public FitResults fit() throws Exception {
         FitResults retVal = client.fit(getFit().make(sed));
         getFit().integrateResults(retVal);
@@ -51,8 +57,8 @@ public class FitController {
         return client.computeConfidence(getFit().make(sed));
     }
 
-    public CustomModelsManager getModelsManager() {
-        return modelsManager;
+    public TreeModel getModelsTreeModel() {
+        return modelsController.getModelsTreeModel();
     }
 
     public ExtSed getSed() {
