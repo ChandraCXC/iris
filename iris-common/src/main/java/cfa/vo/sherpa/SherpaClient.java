@@ -17,14 +17,18 @@
 package cfa.vo.sherpa;
 
 import cfa.vo.interop.*;
+import cfa.vo.iris.fitting.FitConfiguration;
+import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sherpa.models.*;
-import cfa.vo.sherpa.optimization.Method;
-import cfa.vo.sherpa.stats.Stat;
 import org.astrogrid.samp.Response;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 public class SherpaClient {
+    public static final String DATA_NAME = "fitdata";
+    public static final String X_UNIT = "Angstrom";
+    public static final String Y_UNIT = "erg/s/cm2/Angstrom";
 
     private ModelFactory modelFactory = new ModelFactory();
     private SampService sampService;
@@ -37,7 +41,7 @@ public class SherpaClient {
         this.sampService = sampService;
     }
 
-    public FitResults fit(SherpaFitConfiguration conf) throws Exception {
+    FitResults fit(SherpaFitConfiguration conf) throws Exception {
         fixDatasets(conf);
         SAMPMessage message = SAMPFactory.createMessage(FIT_MTYPE, conf, SherpaFitConfiguration.class);
         Response response = sendMessage(message);
@@ -45,16 +49,14 @@ public class SherpaClient {
         return SAMPFactory.get(response.getResult(), FitResults.class);
     }
 
-    public FitResults fit(Data dataset, CompositeModel model, Stat stat, Method method) throws Exception {
+    public FitResults fit(ExtSed sed) throws Exception {
+        SherpaFitConfiguration conf = make(sed);
+        return fit(conf);
+    }
 
-        SherpaFitConfiguration fc = SAMPFactory.get(SherpaFitConfiguration.class);
-
-        fc.addDataset(dataset);
-        fc.addModel(model);
-        fc.setStat(stat);
-        fc.setMethod(method);
-
-        return fit(fc);
+    public FitResults fit(Data data, FitConfiguration fit) throws Exception {
+        SherpaFitConfiguration conf = make(data, fit);
+        return fit(conf);
     }
 
     public Data createData(String name) {
@@ -63,7 +65,8 @@ public class SherpaClient {
         return data;
     }
 
-    public ConfidenceResults computeConfidence(SherpaFitConfiguration conf) throws Exception {
+    public ConfidenceResults computeConfidence(ExtSed sed) throws Exception {
+        SherpaFitConfiguration conf = make(sed);
         fixDatasets(conf);
         SAMPMessage message = SAMPFactory.createMessage(CONFIDENCE_MTYPE, conf, SherpaFitConfiguration.class);
         Response response = sendMessage(message);
@@ -119,6 +122,33 @@ public class SherpaClient {
 
     public String createId(String prefix) {
         return prefix + stringCounter.incrementAndGet();
+    }
+
+    private SherpaFitConfiguration make(Data data, FitConfiguration fit) {
+        SherpaFitConfiguration fc = SAMPFactory.get(SherpaFitConfiguration.class);
+
+        fc.addDataset(data);
+        fc.addModel(fit.getModel());
+        fc.setStat(fit.getStat());
+        fc.setMethod(fit.getMethod());
+        fc.setConfidence(fit.getConfidence());
+        for (UserModel m : fit.getUserModelList()) {
+            fc.addUsermodel(m);
+        }
+
+        return fc;
+    }
+
+    SherpaFitConfiguration make(ExtSed sed) throws Exception {
+        FitConfiguration fit = sed.getFit();
+        Data data = SAMPFactory.get(Data.class);
+        data.setName(DATA_NAME);
+        ExtSed flat = ExtSed.flatten(sed, X_UNIT, Y_UNIT);
+        data.setX(flat.getSegment(0).getSpectralAxisValues());
+        data.setY(flat.getSegment(0).getFluxAxisValues());
+        data.setStaterror((double[]) flat.getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR));
+
+        return make(data, fit);
     }
 
     private void fixDatasets(SherpaFitConfiguration conf) {

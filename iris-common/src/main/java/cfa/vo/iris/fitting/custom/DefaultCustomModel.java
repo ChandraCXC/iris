@@ -25,6 +25,7 @@ import cfa.vo.interop.SAMPFactory;
 import cfa.vo.sherpa.models.Model;
 import cfa.vo.sherpa.models.Parameter;
 import cfa.vo.sherpa.models.UserModel;
+import org.apache.commons.lang.StringUtils;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -33,11 +34,29 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Pattern;
 
 public class DefaultCustomModel implements CustomModel {
+    public static final String PROP_URL = "url";
+    public static final String PROP_NAME = "name";
+    public static final String PROP_PARNAMES = "parnames";
+    public static final String PROP_PARVALS = "parvals";
+    public static final String PROP_PARMINS = "parmins";
+    public static final String PROP_PARMAXS = "parmaxs";
+    public static final String PROP_PARFROZEN = "parfrozen";
+    public static final String PROP_FUNCTIONNAME = "functionName";
+
+    private CustomModelType type;
+    private URL url;
+    private String name;
+    private String parnames;
+    private String parvals;
+    private String parmins;
+    private String parmaxs;
+    private String parfrozen;
+    private String functionName;
+
+    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
 
     public DefaultCustomModel() {
         
@@ -49,8 +68,6 @@ public class DefaultCustomModel implements CustomModel {
         this.type = type;
     }
 
-    private CustomModelType type;
-
     public CustomModelType getType() {
         return type;
     }
@@ -58,9 +75,6 @@ public class DefaultCustomModel implements CustomModel {
     public void setType(CustomModelType type) {
         this.type = type;
     }
-
-    private URL url;
-    public static final String PROP_URL = "url";
 
     /**
      * Get the value of url
@@ -84,9 +98,6 @@ public class DefaultCustomModel implements CustomModel {
         propertyChangeSupport.firePropertyChange(PROP_URL, oldUrl, url);
     }
 
-    private String name;
-    public static final String PROP_NAME = "name";
-
     /**
      * Get the value of name
      *
@@ -108,9 +119,6 @@ public class DefaultCustomModel implements CustomModel {
         this.name = name;
         propertyChangeSupport.firePropertyChange(PROP_NAME, oldName, name);
     }
-
-    private String parnames;
-    public static final String PROP_PARNAMES = "parnames";
 
     /**
      * Get the value of parnames
@@ -134,9 +142,6 @@ public class DefaultCustomModel implements CustomModel {
         propertyChangeSupport.firePropertyChange(PROP_PARNAMES, oldParnames, parnames);
     }
 
-    private String parvals;
-    public static final String PROP_PARVALS = "parvals";
-
     /**
      * Get the value of parvals
      *
@@ -158,9 +163,6 @@ public class DefaultCustomModel implements CustomModel {
         this.parvals = removeSpaces(parvals);
         propertyChangeSupport.firePropertyChange(PROP_PARVALS, oldParvals, parvals);
     }
-
-    private String parmins;
-    public static final String PROP_PARMINS = "parmins";
 
     /**
      * Get the value of parmins
@@ -184,9 +186,6 @@ public class DefaultCustomModel implements CustomModel {
         propertyChangeSupport.firePropertyChange(PROP_PARMINS, oldParmins, parmins);
     }
 
-    private String parmaxs;
-    public static final String PROP_PARMAXS = "parmaxs";
-
     /**
      * Get the value of parmaxs
      *
@@ -208,9 +207,6 @@ public class DefaultCustomModel implements CustomModel {
         this.parmaxs = removeSpaces(parmaxs);
         propertyChangeSupport.firePropertyChange(PROP_PARMAXS, oldParmaxs, parmaxs);
     }
-
-    private String parfrozen;
-    public static final String PROP_PARFROZEN = "parfrozen";
 
     /**
      * Get the value of parfrozen
@@ -234,9 +230,6 @@ public class DefaultCustomModel implements CustomModel {
         propertyChangeSupport.firePropertyChange(PROP_PARFROZEN, oldParfrozen, parfrozen);
     }
 
-    private String functionName;
-    public static final String PROP_FUNCTIONNAME = "functionName";
-
     /**
      * Get the value of functionName
      *
@@ -259,10 +252,6 @@ public class DefaultCustomModel implements CustomModel {
         propertyChangeSupport.firePropertyChange(PROP_FUNCTIONNAME, oldFunctionName, functionName);
     }
 
-
-
-    private PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
-
     /**
      * Add PropertyChangeListener.
      *
@@ -284,8 +273,8 @@ public class DefaultCustomModel implements CustomModel {
     }
 
     public UserModel makeUserModel(String id) {
-        UserModel m = SAMPFactory.get(UserModel.class);
-        m.setName(type.name().toLowerCase() + "." + id);
+        UserModel m = SAMPFactory.get(UserModel.class);;
+        m.setName(composeType(type,id));
         m.setFile(this.getUrl().getPath());
         m.setFunction(this.getFunctionName());
         return m;
@@ -293,7 +282,7 @@ public class DefaultCustomModel implements CustomModel {
 
     public Model makeModel(String id) {
         Model m = SAMPFactory.get(Model.class);
-        m.setName(type.name().toLowerCase() + "." + id);
+        m.setName(composeType(type, id));
         String[] parNames = makeArray(this.getParnames(), String.class);
         Double[] parVals = makeArray(this.getParvals(), Double.class);
         Double[] parMins = makeArray(this.getParmins(), Double.class);
@@ -302,7 +291,7 @@ public class DefaultCustomModel implements CustomModel {
         for (int i=0; i<parNames.length; i++) {
             try {
                 Parameter p = SAMPFactory.get(Parameter.class);
-                p.setName(id+"."+parNames[i]);
+                p.setName(compose(id,parNames[i]));
                 p.setVal(parVals[i]);
                 p.setMin(parMins[i]);
                 p.setMax(parMaxs[i]);
@@ -320,6 +309,7 @@ public class DefaultCustomModel implements CustomModel {
         return name;
     }
 
+    @SuppressWarnings("unchecked")
     static <T>T[] makeArray(String expression, Class<T> tClass) {
         Pattern p = Pattern.compile(",");
         String[] tokens = expression.split(p.pattern());
@@ -342,8 +332,16 @@ public class DefaultCustomModel implements CustomModel {
         return retVal;
     }
 
+    private String compose(String... comps) {
+        return StringUtils.join(comps, ".");
+    }
+
+    private String composeType(CustomModelType type, String id) {
+        return compose(type.name().toLowerCase(),id);
+    }
+
     private String removeSpaces(String input) {
-        return input.replaceAll("\\s+", "");
+        return StringUtils.deleteWhitespace(input);
     }
 
 }

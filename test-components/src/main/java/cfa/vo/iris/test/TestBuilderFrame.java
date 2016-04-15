@@ -50,7 +50,7 @@ import javax.swing.event.ListSelectionListener;
 
 import cfa.vo.sherpa.models.*;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
-import cfa.vo.sherpa.stats.Stats;
+import cfa.vo.sherpa.stats.Statistic;
 import org.astrogrid.samp.Message;
 import org.astrogrid.samp.client.SampException;
 
@@ -327,7 +327,7 @@ public final class TestBuilderFrame extends JInternalFrame {
             fit.setModel(cm);
 
             fit.setMethod(OptimizationMethod.LevenbergMarquardt);
-            fit.setStat(Stats.LeastSquares);
+            fit.setStat(Statistic.LeastSquares);
 
             manager.getSelected().setFit(fit);
         } catch (Exception ex) {

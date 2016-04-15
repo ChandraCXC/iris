@@ -8,7 +8,7 @@ import cfa.vo.sherpa.ConfidenceResults;
 import cfa.vo.sherpa.FitResults;
 import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.models.Model;
-import cfa.vo.sherpa.models.ModelImpl;
+import cfa.vo.sherpa.models.DefaultModel;
 
 import javax.swing.tree.TreeModel;
 import java.util.logging.Logger;
@@ -34,13 +34,13 @@ public class FitController {
     public void addModel(Model m) {
         logger.info("Added model " + m);
         String id = client.createId();
-        Model toAdd = new ModelImpl(m, id);
-        getFit().addModel(toAdd);
+        Model toAdd = new DefaultModel(m, id);
+        sed.getFit().addModel(toAdd);
     }
 
     public void addModel(DefaultCustomModel m) {
         logger.info("Added user model " + m);
-        getFit().addUserModel(m, client.createId());
+        sed.getFit().addUserModel(m, client.createId());
     }
 
     public void filterModels(String searchString) {
@@ -48,13 +48,13 @@ public class FitController {
     }
 
     public FitResults fit() throws Exception {
-        FitResults retVal = client.fit(getFit().make(sed));
-        getFit().integrateResults(retVal);
+        FitResults retVal = client.fit(sed);
+        sed.getFit().integrateResults(retVal);
         return retVal;
     }
 
     public ConfidenceResults computeConfidence() throws Exception {
-        return client.computeConfidence(getFit().make(sed));
+        return client.computeConfidence(sed);
     }
 
     public TreeModel getModelsTreeModel() {

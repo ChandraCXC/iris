@@ -22,19 +22,14 @@ import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.fitting.custom.ModelsListener;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.utils.IPredicate;
 import cfa.vo.sherpa.models.Model;
-import cfa.vo.sherpa.models.ModelFactory;
-import cfa.vo.sherpa.models.Parameter;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
-import cfa.vo.sherpa.stats.Stats;
+import cfa.vo.sherpa.stats.Statistic;
 
 import javax.swing.*;
 import javax.swing.tree.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
 
 public class FittingMainView extends JInternalFrame implements SedListener {
     private ExtSed sed;
@@ -54,8 +49,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         setSed(controller.getSed());
         initController();
         setUpAvailableModelsTree();
-        modelViewerPanel.setSed(sed);
-        modelViewerPanel.setEditable(true);
+        setUpModelViewerPanel();
         confidencePanel.setController(controller);
     }
 
@@ -80,12 +74,17 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         controller.addListener((ModelsListener) availableTree);
     }
 
+    private void setUpModelViewerPanel() {
+        modelViewerPanel.setSed(sed);
+        modelViewerPanel.setEditable(true);
+    }
+
     private void setUpAvailableModelsTree() {
         ((CustomJTree) availableTree).register();
         availableTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
         availableTree.addMouseListener(new AvailableModelsMouseAdapter());
-        rootPane.setDefaultButton(searchButton);
         availableTree.setModel(controller.getModelsTreeModel());
+        rootPane.setDefaultButton(searchButton);
     }
     
     /**
@@ -160,7 +159,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
 
         jLabel2.setText("Statistic:");
 
-        statisticCombo.setModel(new DefaultComboBoxModel<>(Stats.values()));
+        statisticCombo.setModel(new DefaultComboBoxModel<>(Statistic.values()));
         statisticCombo.setName("statisticCombo"); // NOI18N
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sed.fit.stat}"), statisticCombo, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));

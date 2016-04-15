@@ -5,7 +5,7 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
-import cfa.vo.sherpa.stats.Stats;
+import cfa.vo.sherpa.stats.Statistic;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -58,7 +58,7 @@ public class FittingMainViewTest {
     public void testMethodAndStatRead() throws Exception {
         ExtSed sed = manager.getSelected();
         sed.getFit().setMethod(OptimizationMethod.MonteCarlo);
-        sed.getFit().setStat(Stats.LeastSquares);
+        sed.getFit().setStat(Statistic.LeastSquares);
         optimizationCombo.selectionEquals("MonteCarlo").check();
         statCombo.selectionEquals("LeastSquares").check();
     }
@@ -69,7 +69,7 @@ public class FittingMainViewTest {
         statCombo.select("Cash");
         ExtSed sed = manager.getSelected();
         Assert.assertEquals(sed.getFit().getMethod(), OptimizationMethod.NelderMeadSimplex);
-        Assert.assertEquals(sed.getFit().getStat(), Stats.Cash);
+        Assert.assertEquals(sed.getFit().getStat(), Statistic.Cash);
     }
 
 }

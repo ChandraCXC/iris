@@ -24,15 +24,14 @@ package cfa.vo.iris.smoketest;
 import cfa.vo.interop.SAMPServiceBuilder;
 import cfa.vo.interop.SampService;
 import cfa.vo.iris.IrisApplication;
+import cfa.vo.iris.fitting.FitConfiguration;
 import cfa.vo.iris.interop.AbstractSedMessageHandler;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sherpa.models.Model;
 import cfa.vo.sherpa.models.CompositeModel;
 import cfa.vo.sherpa.models.Parameter;
-import cfa.vo.sherpa.optimization.Method;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
-import cfa.vo.sherpa.stats.Stat;
-import cfa.vo.sherpa.stats.Stats;
+import cfa.vo.sherpa.stats.Statistic;
 import cfa.vo.utils.Default;
 import cfa.vo.sed.builder.SegmentImporter;
 import cfa.vo.sed.builder.photfilters.EnergyBin;
@@ -131,20 +130,19 @@ public class SherpaSmokeTest extends AbstractSmokeTest {
             data.setY(y);
             data.setStaterror(err);
 
-            Model m1 = c.createModel("powerlaw");
+            FitConfiguration fit = new FitConfiguration();
 
+            Model m1 = c.createModel("powerlaw");
             m1.findParameter("refer").setVal(5000.);
             m1.findParameter("ampl").setVal(1.0);
             m1.findParameter("index").setVal(-0.5);
-
             CompositeModel cm = c.createCompositeModel("m1", m1);
-
-            Stat s = Stats.LeastSquares;
-
-            Method method = OptimizationMethod.NelderMeadSimplex;
+            fit.setModel(cm);
+            fit.setStat(Statistic.LeastSquares);
+            fit.setMethod(OptimizationMethod.NelderMeadSimplex);
 
             log("Calling Sherpa and waiting for results...");
-            FitResults fr = c.fit(data, cm, s, method);
+            FitResults fr = c.fit(data, fit);
 
             log("Verifying Sherpa response...");
             Assert.assertEquals(Boolean.TRUE, fr.getSucceeded());

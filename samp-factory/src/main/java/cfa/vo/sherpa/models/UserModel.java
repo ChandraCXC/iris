@@ -16,19 +16,16 @@
 
 package cfa.vo.sherpa.models;
 
-/**
- * Created by olaurino on 11/14/14.
- */
 public interface UserModel {
-    public String getName();
+    String getName();
 
-    public void setName(String name);
+    void setName(String name);
 
-    public String getFile();
+    String getFile();
 
-    public void setFile(String path);
+    void setFile(String path);
 
-    public String getFunction();
+    String getFunction();
 
-    public void setFunction(String function);
+    void setFunction(String function);
 }

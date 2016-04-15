@@ -16,11 +16,12 @@
 
 package cfa.vo.sherpa.models;
 
+import org.apache.commons.lang.StringUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import java.util.*;
 
-public class ModelImpl implements Model {
+public class DefaultModel implements Model {
 
     private List<Parameter> pars = new ArrayList<>();
 
@@ -32,7 +33,7 @@ public class ModelImpl implements Model {
 
     private String id;
 
-    public ModelImpl(Model model, String id) {
+    public DefaultModel(Model model, String id) {
         this.name = model.getName();
         this.description = model.getDescription();
         this.id = id;
@@ -44,14 +45,14 @@ public class ModelImpl implements Model {
                     if (parname.contains(".")) {
                         parname = parname.split(".")[1];
                     }
-                    par.setName(this.id + "." + parname);
+                    par.setName(buildParamName(parname));
                 }
                 addPar(par);
             }
         }
     }
 
-    public ModelImpl(Element modelElement) {
+    public DefaultModel(Element modelElement) {
         String name = modelElement.getAttribute("name");
         String description = modelElement.getAttribute("description");
         this.name = name;
@@ -114,6 +115,22 @@ public class ModelImpl implements Model {
 
     private String buildParamName(String paramName) {
         return getId() + "." + paramName;
+    }
+
+    public static String findId(Model m) {
+        return findId(m.getName());
+    }
+
+    public static String findId(UserModel m) {
+        return findId(m.getName());
+    }
+
+    private static String findId(String name) {
+        String [] tokens = StringUtils.split(name, ".");
+        if (tokens.length > 1) {
+            return tokens[1];
+        }
+        return "";
     }
 
 }

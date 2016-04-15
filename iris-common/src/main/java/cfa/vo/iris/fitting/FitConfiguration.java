@@ -4,15 +4,11 @@ import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.gui.widgets.ModelExpressionVerifier;
 import cfa.vo.sherpa.*;
 import cfa.vo.interop.SAMPFactory;
-import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.units.UnitsException;
-import cfa.vo.iris.utils.UTYPE;
-import cfa.vo.sedlib.common.SedException;
 import cfa.vo.sherpa.models.*;
 import cfa.vo.sherpa.optimization.Method;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Stat;
-import cfa.vo.sherpa.stats.Stats;
+import cfa.vo.sherpa.stats.Statistic;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
 import javax.annotation.Nonnull;
@@ -23,6 +19,19 @@ import java.util.*;
 import java.util.logging.Logger;
 
 public class FitConfiguration {
+    public static final String PROP_MODEL = "model";
+    public static final String PROP_STAT = "stat";
+    public static final String PROP_METHOD = "method";
+    public static final String PROP_RSTAT = "rStat";
+    public static final String PROP_NFEV = "nFev";
+    public static final String PROP_QVAL = "qVal";
+    public static final String PROP_NUMPOINTS = "numPoints";
+    public static final String PROP_STATVAL = "statVal";
+    public static final String PROP_DOF = "dof";
+    public static final String PROP_USERMODELLIST = "userModelList";
+    public static final String PROP_EXPRESSION = "expression";
+    public static final String PROP_CONFIDENCE = "confidence";
+
     private CompositeModel model;
     private Stat stat;
     private Method method;
@@ -38,19 +47,6 @@ public class FitConfiguration {
     private ModelExpressionVerifier verifier = new ModelExpressionVerifier();
     private Logger logger = Logger.getLogger(FitConfiguration.class.getName());
 
-    public static final String DATA_NAME = "fitdata";
-    public static final String PROP_MODEL = "model";
-    public static final String PROP_STAT = "stat";
-    public static final String PROP_METHOD = "method";
-    public static final String PROP_RSTAT = "rStat";
-    public static final String PROP_NFEV = "nFev";
-    public static final String PROP_QVAL = "qVal";
-    public static final String PROP_NUMPOINTS = "numPoints";
-    public static final String PROP_STATVAL = "statVal";
-    public static final String PROP_DOF = "dof";
-    public static final String PROP_USERMODELLIST = "userModelList";
-    public static final String PROP_EXPRESSION = "expression";
-    public static final String PROP_CONFIDENCE = "confidence";
     private transient final PropertyChangeSupport propertyChangeSupport = new java.beans.PropertyChangeSupport(this);
 
     public FitConfiguration() {
@@ -58,7 +54,7 @@ public class FitConfiguration {
         confidence = SAMPFactory.get(Confidence.class);
         confidence.setSigma(1.6);
         confidence.setName("conf");
-        stat = Stats.Chi2;
+        stat = Statistic.Chi2;
         method = OptimizationMethod.LevenbergMarquardt;
     }
 
@@ -250,33 +246,6 @@ public class FitConfiguration {
         setDof(results.getDof().intValue());
     }
 
-    public SherpaFitConfiguration make(ExtSed sed) throws SedException, UnitsException {
-        // FIXME this duplicates the code in SherpaClient. They should probably both use the same class.
-        Data data = SAMPFactory.get(Data.class);
-        data.setName(DATA_NAME);
-        ExtSed flat = ExtSed.flatten(sed, "Angstrom", "erg/s/cm2/Angstrom");
-        data.setX(flat.getSegment(0).getSpectralAxisValues());
-        data.setY(flat.getSegment(0).getFluxAxisValues());
-        data.setStaterror((double[]) flat.getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR));
-
-        SherpaFitConfiguration conf = SAMPFactory.get(SherpaFitConfiguration.class);
-        conf.addDataset(data);
-
-        conf.addModel(model);
-
-        for (UserModel m : userModelList) {
-            conf.addUsermodel(m);
-        }
-
-        conf.setStat(stat);
-
-        conf.setMethod(method);
-
-        conf.setConfidence(confidence);
-
-        return conf;
-    }
-
     public void addPropertyChangeListener(java.beans.PropertyChangeListener listener )
     {
         propertyChangeSupport.addPropertyChangeListener( listener );
@@ -290,8 +259,8 @@ public class FitConfiguration {
     private void removeUserModel(Model m) {
         boolean retVal = false;
         for (UserModel um : new ArrayList<>(userModelList)) {
-            String mId = getId(m);
-            String umId = getId(um);
+            String mId = DefaultModel.findId(m);
+            String umId = DefaultModel.findId(um);
             if (mId.equals(umId)) {
                 retVal = userModelList.remove(um);
                 break;
@@ -300,18 +269,6 @@ public class FitConfiguration {
         if (retVal) {
             propertyChangeSupport.firePropertyChange(PROP_EXPRESSION, null, getExpression());
         }
-    }
-
-    private String getId(Model m) {
-        return stripId(m.getName());
-    }
-
-    private String getId(UserModel m) {
-        return stripId(m.getName());
-    }
-
-    private String stripId(String name) {
-        return name.split("\\.")[1];
     }
 
     private void addToExpression(String id) {

@@ -26,7 +26,7 @@ import cfa.vo.sherpa.models.*;
 
 import java.util.ArrayList;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
-import cfa.vo.sherpa.stats.Stats;
+import cfa.vo.sherpa.stats.Statistic;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -200,7 +200,7 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         fit.setModel(cm);
 
         fit.setMethod(OptimizationMethod.LevenbergMarquardt);
-        fit.setStat(Stats.LeastSquares);
+        fit.setStat(Statistic.LeastSquares);
 
         sed.setFit(fit);
         return fit;

@@ -16,8 +16,6 @@
 
 package cfa.vo.sherpa.optimization;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 public enum OptimizationMethod implements Method {
     MonteCarlo("moncar"),
     LevenbergMarquardt("levmar"),
@@ -34,7 +32,7 @@ public enum OptimizationMethod implements Method {
     }
 
     public void setName(String name) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     public String toString() {

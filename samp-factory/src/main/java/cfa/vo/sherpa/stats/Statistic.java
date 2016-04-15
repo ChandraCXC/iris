@@ -16,9 +16,7 @@
 
 package cfa.vo.sherpa.stats;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-public enum Stats implements Stat {
+public enum Statistic implements Stat {
     Chi2("chi2"),
     Chi2DataVar("chi2datavar"),
     Chi2Gehrels("chi2gehrels"),
@@ -30,7 +28,7 @@ public enum Stats implements Stat {
     LeastSquares("leastsq");
     private String name;
 
-    Stats(String name) {
+    Statistic(String name) {
         this.name = name;
     }
 
@@ -39,7 +37,7 @@ public enum Stats implements Stat {
     }
 
     public void setName(String name) {
-        throw new NotImplementedException();
+        throw new UnsupportedOperationException();
     }
 
     @Override
