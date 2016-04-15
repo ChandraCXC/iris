@@ -75,6 +75,7 @@
                   <Connection code="new XUnitsListModel()" type="code"/>
                 </Property>
                 <Property name="selectionMode" type="int" value="0"/>
+                <Property name="name" type="java.lang.String" value="xunitsList" noResource="true"/>
               </Properties>
               <BindingProperties>
                 <BindingProperty name="selectedElement" source="Form" sourcePath="${xunit}" target="xunits" targetPath="selectedElement" updateStrategy="0" immediately="false">
@@ -109,6 +110,7 @@
                   <Connection code="new YUnitsListModel()" type="code"/>
                 </Property>
                 <Property name="selectionMode" type="int" value="0"/>
+                <Property name="name" type="java.lang.String" value="yunitsList" noResource="true"/>
               </Properties>
               <BindingProperties>
                 <BindingProperty name="selectedElement" source="Form" sourcePath="${yunit}" target="yunits" targetPath="selectedElement" updateStrategy="0" immediately="false">

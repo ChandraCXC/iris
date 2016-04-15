@@ -95,7 +95,8 @@ public class PlotterView extends JInternalFrame {
         plotter.reset(null, true);
         
         // units chooser frame
-        this.unitsManagerFrame = new UnitsManagerFrame(plotter.getSed(), this.preferences);
+        //this.unitsManagerFrame = new UnitsManagerFrame(plotter.getSed(), this.preferences);
+        this.unitsManagerFrame = new UnitsManagerFrame(plotter);
         
         // Action for opening metadata browser
         metadataButton.addActionListener(new ActionListener() {
