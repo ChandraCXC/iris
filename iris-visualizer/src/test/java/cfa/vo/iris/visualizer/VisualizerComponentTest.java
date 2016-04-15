@@ -19,6 +19,7 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.IrisComponent;
+import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.sedlib.Segment;
 import org.junit.Before;
@@ -27,11 +28,14 @@ import static org.junit.Assert.*;
 import static cfa.vo.iris.test.unit.TestUtils.*;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.stil.StilPlotter;
-import cfa.vo.sedlib.common.SedInconsistentException;
+import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
+import org.uispec4j.Button;
+import org.uispec4j.Panel;
 import org.uispec4j.Window;
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
 
@@ -419,6 +423,20 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         assertEquals("Frequency (Hz)", plotter.getPlotPreferences().getXlabel());
         assertEquals("Flux density (Jy)", plotter.getPlotPreferences().getYlabel());
         
+        // change the units of the SEDs with the UnitsManagerFrame
+        viewer.getButton("unitsButton").click();
+        assertTrue(desktop.containsWindow("Select Units").isTrue());
+        Window unitsChooser = desktop.getWindow("Select Units");
+        unitsChooser.getListBox("xunitsList").select(XUnit.ANGSTROM.getString());
+        unitsChooser.getListBox("yunitsList").select(SPVYUnit.ABMAG.getString());
+        unitsChooser.getButton("Update").click();
+        
+        // check that the X and Y units on the plot window updated
+        assertEquals("Wavelength (Angstrom)", plotter.getPlotPreferences(sed1).getXlabel());
+        assertEquals("Magnitude (ABMAG)", plotter.getPlotPreferences(sed1).getYlabel());
+        
+        // check that the MB data updated
+        
         // test velocity units
         seg1.setSpectralAxisUnits(XUnit.KMPSCO.getString());
         seg1.setFluxAxisUnits("Jy");
@@ -438,5 +456,27 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         // check that the velocity unit label set properly
         assertEquals("Velocity (km/s @ 12 CO (11.5GHz))", 
                 plotter.getPlotPreferences(sed2).getXlabel());
+    }
+    
+    @Test
+    public void testUnitsManagerFrame() throws Exception {
+        SedlibSedManager sedManager = (SedlibSedManager) app.getWorkspace().getSedManager();
+        
+        window.getMenuBar()
+                .getMenu("Tools")
+                .getSubMenu(windowName)
+                .getSubMenu(windowName)
+                .click();
+        
+        Window viewer = desktop.getWindow(windowName);
+        StilPlotter plotter = viewer.findSwingComponent(StilPlotter.class);
+        
+        // change the units of the SEDs with the UnitsManagerFrame
+        viewer.getButton("unitsButton").click();
+        assertTrue(desktop.containsWindow("Select Units").isTrue());
+        Window unitsChooser = desktop.getWindow("Select Units");
+        unitsChooser.getListBox("xunitsList").select(XUnit.ANGSTROM.getString());
+        unitsChooser.getListBox("yunitsList").select(SPVYUnit.ABMAG.getString());
+        unitsChooser.getButton("Update").click();
     }
 }

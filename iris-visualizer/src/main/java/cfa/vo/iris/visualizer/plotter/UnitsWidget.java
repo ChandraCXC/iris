@@ -60,6 +60,9 @@ public class UnitsWidget extends javax.swing.JPanel {
             setXunit(unitsManager.newXUnits("Hz").toString());
             setYunit(unitsManager.newYUnits("Jy").toString());
         }
+        
+        xunits.setSelectedValue(getXunit(), false);
+        yunits.setSelectedValue(getYunit(), false);
     }
 
     /**
@@ -77,8 +80,6 @@ public class UnitsWidget extends javax.swing.JPanel {
         xunits = new javax.swing.JList();
         jScrollPane2 = new javax.swing.JScrollPane();
         yunits = new javax.swing.JList();
-
-        setPreferredSize(new java.awt.Dimension(400, 400));
 
         jSplitPane1.setDividerLocation(200);
         jSplitPane1.setResizeWeight(0.5);
@@ -123,7 +124,7 @@ public class UnitsWidget extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
