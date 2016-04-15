@@ -44,6 +44,8 @@ public class PlotPreferences {
     public static final String X_MIN = "xmin";
     public static final String Y_MAX = "ymax";
     public static final String Y_MIN = "ymin";
+    public static final String Y_FLIP = "yflip";
+    public static final String X_FLIP = "xflip";
     public static final String PLOT_TYPE = "plot_type"; // not STILTS
     //public static final String SHOW_ERRORS = "show_errors"; // not STILTS
     
@@ -90,6 +92,8 @@ public class PlotPreferences {
                 .setYlog(true)
                 .setShowGrid(true)
                 .setFixed(false)
+                .setYflip(false)
+                .setXflip(false)
 //                .setShowErrors(true)
                 .setPlotType(PlotType.LOG)
                 .setShowLegend(true)
@@ -158,6 +162,24 @@ public class PlotPreferences {
         }
         
         this.preferences.put(X_LABEL, xlabel);
+        return this;
+    }
+    
+    public boolean getYflip() {
+        return (boolean) this.preferences.get(Y_FLIP);
+    }
+    
+    public PlotPreferences setYflip(boolean arg1) {
+        this.preferences.put(Y_FLIP, arg1);
+        return this;
+    }
+    
+    public boolean getXflip() {
+        return (boolean) this.preferences.get(X_FLIP);
+    }
+    
+    public PlotPreferences setXflip(boolean arg1) {
+        this.preferences.put(X_FLIP, arg1);
         return this;
     }
     
@@ -288,21 +310,6 @@ public class PlotPreferences {
     
     public boolean getLegendBorder() {
         return (boolean) this.preferences.get(LEGEND_BORDER);
-    }
-    
-    private String determineSpectralPhysicalUnit(String arg1) {
-        String xlabel;
-        
-        try {
-            XUnits xconvert = new XUnits(arg1);
-            xlabel = xconvert.getLabel() + 
-                    "(" + XUnit.getFromUnitString(arg1).getString() + ")";
-        } catch (SedException ex) {
-            // if unit is not defined
-            // TODO: set to default or unknown units?
-            xlabel = "Wavelength (" + XUnit.ANGSTROM.getString() + ")";
-        }
-        return xlabel;
     }
 }
 
