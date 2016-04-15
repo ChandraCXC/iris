@@ -19,8 +19,7 @@ before_install:
   - command -v conda >/dev/null || { wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh;
      bash miniconda.sh -b -f -p $MINICONDA; }
   - conda update --yes conda
-  - conda install --yes python=$TRAVIS_PYTHON_VERSION astropy=0.4.4 libgfortran=1.0 scipy
-  - conda install --yes -c https://conda.anaconda.org/sherpa sherpa
+  - conda install --yes -c https://conda.anaconda.org/sherpa sherpa python=$TRAVIS_PYTHON_VERSION astropy=0.4.4 scipy
   - pip install sampy
   - pip install astlib
   - cd sherpa-samp; python setup.py develop; cd ..
