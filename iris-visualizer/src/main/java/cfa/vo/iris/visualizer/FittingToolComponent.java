@@ -17,6 +17,7 @@
 package cfa.vo.iris.visualizer;
 
 import cfa.vo.iris.*;
+import cfa.vo.iris.fitting.FitController;
 import cfa.vo.iris.fitting.custom.CustomModelsManager;
 import cfa.vo.iris.fitting.custom.CustomModelsManagerView;
 import cfa.vo.iris.gui.GUIUtils;
@@ -142,7 +143,8 @@ public class FittingToolComponent implements IrisComponent {
                                 NarrowOptionPane.showMessageDialog(null, "No SEDs open. Please start building SEDs using the SED builder", "Error", NarrowOptionPane.ERROR_MESSAGE);
                                 return;
                             }
-                            view = new FittingMainView(sed, customManager, sherpaClient);
+                            FitController controller = new FitController(sed, customManager, sherpaClient);
+                            view = new FittingMainView(controller);
                             ws.addFrame(view);
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);

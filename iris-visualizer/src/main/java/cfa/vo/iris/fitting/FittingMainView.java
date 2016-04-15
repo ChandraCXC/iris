@@ -18,18 +18,13 @@ package cfa.vo.iris.fitting;
 import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SedListener;
-import cfa.vo.iris.fitting.custom.CustomModelsManager;
 import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.fitting.custom.ModelsListener;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.utils.IPredicate;
-import cfa.vo.sherpa.ConfidenceResults;
-import cfa.vo.sherpa.FitResults;
-import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.models.Model;
 import cfa.vo.sherpa.models.ModelFactory;
-import cfa.vo.sherpa.models.ModelImpl;
 import cfa.vo.sherpa.models.Parameter;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Stats;
@@ -40,77 +35,43 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
-public class FittingMainView extends javax.swing.JInternalFrame implements SedListener {
+public class FittingMainView extends JInternalFrame implements SedListener {
     private ExtSed sed;
-    private String sedId;
+    private FitController controller;
     private ModelsTreeModel model;
-    private CustomModelsManager modelsManager;
-    private SherpaClient sherpaClient;
     private ModelFactory factory = new ModelFactory();
     private StringPredicate predicate = new StringPredicate("");
-    private FitConfiguration fit = new FitConfiguration();
-    private Logger logger = Logger.getLogger(FittingMainView.class.getName());
-    public static final String PROP_FIT = "fit";
-    public static final String PROP_SEDID = "sedId";
     public final String DEFAULT_DESCRIPTION = "Double click on a Component to add it to the list of selected Components.";
     public final String CUSTOM_DESCRIPTION = "User Model";
+    public static final String PROP_SED = "sed";
 
     public FittingMainView() {
         initComponents();
         SedEvent.getInstance().add(this);
     }
-    /**
-     * Creates new form FittingMainView
-     * @param sed
-     * @param sherpaClient
-     */
-    public FittingMainView(ExtSed sed, CustomModelsManager modelsManager, SherpaClient sherpaClient) {
+
+    public FittingMainView(FitController controller) {
         this();
-        this.modelsManager = modelsManager;
-        modelsManager.addListener((ModelsListener) availableTree);
+        this.controller = controller;
+        setSed(controller.getSed());
+        initController();
         setUpAvailableModelsTree();
-        this.sherpaClient = sherpaClient;
         modelViewerPanel.setSed(sed);
         modelViewerPanel.setEditable(true);
-        setSed(sed);
-        confidencePanel.setView(this);
-    }
-
-    public FitConfiguration getFit() {
-        return fit;
-    }
-
-    public void setFit(FitConfiguration fit) {
-        FitConfiguration oldFit = this.fit;
-        this.fit = fit;
-        firePropertyChange(PROP_FIT, oldFit, fit);
+        confidencePanel.setController(controller);
     }
 
     public ExtSed getSed() {
         return sed;
     }
 
-    public String getSedId() {
-        return sedId;
+    public void setSed(ExtSed sed) {
+        this.sed = sed;
+        firePropertyChange(PROP_SED, null, sed);
+        controller.setSed(sed);
     }
 
-    /**
-     * Set the value of sedId
-     *
-     * @param sedId new value of sedId
-     */
-    private void setSedId(String sedId) {
-        String oldSedId = this.sedId;
-        this.sedId = sedId;
-        firePropertyChange(PROP_SEDID, oldSedId, sedId);
-    }
-
-    public ConfidenceResults computeConfidence() throws Exception {
-        return sherpaClient.computeConfidence(fit.make(sed));
-    }
-    
     @Override
     public void process(ExtSed source, SedCommand payload) {
         if (SedCommand.SELECTED.equals(payload) || SedCommand.CHANGED.equals(payload) && source.equals(sed)) {
@@ -118,64 +79,27 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         }
     }
 
+    private void initController() {
+        controller.addListener((ModelsListener) availableTree);
+    }
+
     private void setUpAvailableModelsTree() {
         updateModels();
+        ((CustomJTree) availableTree).register();
         availableTree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        availableTree.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent e) {
-                TreePath selPath = availableTree.getPathForLocation(e.getX(), e.getY());
-                if (selPath != null) {
-                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) selPath.getLastPathComponent();
-                    if (node.isLeaf()) {
-                        Object leaf = node.getUserObject();
-                        if (Model.class.isInstance(leaf)) {
-                            Model m = (Model) leaf;
-                            descriptionArea.setText(m.getDescription());
-                            if (e.getClickCount() == 2) {
-                                logger.info("Added model " + m);
-                                String id = sherpaClient.createId();
-                                Model toAdd = new ModelImpl(m, id);
-                                getFit().addModel(toAdd);
-                            }
-                        } else {
-                            DefaultCustomModel m = (DefaultCustomModel) leaf;
-                            if (e.getClickCount() == 2) {
-                                logger.info("Added user model " + m);
-                                getFit().addUserModel(m, sherpaClient.createId());
-                            }
-                            descriptionArea.setText(CUSTOM_DESCRIPTION);
-                        }
-                    } else {
-                        descriptionArea.setText(DEFAULT_DESCRIPTION);
-                    }
-                }
-            }
-        });
+        availableTree.addMouseListener(new AvailableModelsMouseAdapter());
         rootPane.setDefaultButton(searchButton);
     }
 
     private void filterModels(String searchString) {
         predicate.setString(searchString);
         List<Model> sub = predicate.apply(model.getList());
-        availableTree.setModel(new ModelsTreeModel(sub, modelsManager));
-    }
-
-    /**
-     * Set the value of sed
-     *
-     * @param sed new value of sed
-     */
-    private void setSed(ExtSed sed) {
-        this.sed = sed;
-        setSedId(sed.getId());
-        FitConfiguration fit = sed.getFit();
-        setFit(fit);
+        availableTree.setModel(new ModelsTreeModel(sub, controller.getModelsManager()));
     }
 
     private void updateModels() {
         List<Model> models = new ArrayList<>(factory.getModels());
-        model = new ModelsTreeModel(models, modelsManager);
+        model = new ModelsTreeModel(models, controller.getModelsManager());
         availableTree.setModel(model);
     }
     
@@ -246,7 +170,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         optimizationCombo.setModel(new DefaultComboBoxModel<>(OptimizationMethod.values()));
         optimizationCombo.setName("optimizationCombo"); // NOI18N
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${fit.method}"), optimizationCombo, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sed.fit.method}"), optimizationCombo, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
         bindingGroup.addBinding(binding);
 
         jLabel2.setText("Statistic:");
@@ -254,7 +178,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         statisticCombo.setModel(new DefaultComboBoxModel<>(Stats.values()));
         statisticCombo.setName("statisticCombo"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${fit.stat}"), statisticCombo, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sed.fit.stat}"), statisticCombo, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
         bindingGroup.addBinding(binding);
 
         fitButton.setText("Fit");
@@ -277,7 +201,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
                             .addComponent(jLabel1)
                             .addComponent(jLabel2)
                             .addComponent(fitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 54, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(statisticCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -438,7 +362,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         currentSedField.setEnabled(false);
         currentSedField.setName("currentSedField"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sedId}"), currentSedField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sed.id}"), currentSedField, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -484,9 +408,8 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void doFit(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doFit
-        FitResults results = null;
         try {
-            results = sherpaClient.fit(fit.make(sed));
+            controller.fit();
         } catch (Exception e) {
             NarrowOptionPane.showMessageDialog(this,
                     e.getMessage(),
@@ -495,8 +418,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
             modelViewerPanel.fitResult(false);
             return; // TODO maybe should do something more/different.
         }
-        fit.integrateResults(results);
-        resultsPanel.setFit(fit);
+        resultsPanel.setFit(sed.getFit());
         modelViewerPanel.fitResult(true);
         modelViewerPanel.updateUI();
     }//GEN-LAST:event_doFit
@@ -541,7 +463,7 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         }
 
         public void register() {
-            modelsManager.addListener(this);
+            controller.addListener(this);
         }
 
         @Override
@@ -574,21 +496,20 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
         public boolean apply(Model object) {
             boolean resp = false;
             if (object.getName() != null) {
-                resp = resp || object.getName().toLowerCase().contains(string);
+                resp = object.getName().toLowerCase().contains(string);
             }
             if (object.getDescription() != null) {
-                resp = resp || object.getDescription().toLowerCase().contains(string);
+                resp |= object.getDescription().toLowerCase().contains(string);
             }
             if (object.getPars() != null) {
                 for (Parameter p : object.getPars()) {
-                    resp = resp || p.getName().toLowerCase().contains(string);
+                    resp |= p.getName().toLowerCase().contains(string);
                 }
             }
 
             return resp;
         }
 
-        // TODO Refactoring: This can be added as a concrete method in an abstract class
         public List<Model> apply(List<Model> all) {
             List<Model> sub = new ArrayList<>();
 
@@ -599,6 +520,34 @@ public class FittingMainView extends javax.swing.JInternalFrame implements SedLi
             }
 
             return sub;
+        }
+    }
+
+    private class AvailableModelsMouseAdapter extends MouseAdapter {
+        @Override
+        public void mousePressed(MouseEvent e) {
+            TreePath selPath = availableTree.getPathForLocation(e.getX(), e.getY());
+            if (selPath != null) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) selPath.getLastPathComponent();
+                if (node.isLeaf()) {
+                    Object leaf = node.getUserObject();
+                    if (Model.class.isInstance(leaf)) {
+                        Model m = (Model) leaf;
+                        descriptionArea.setText(m.getDescription());
+                        if (e.getClickCount() == 2) {
+                            controller.addModel(m);
+                        }
+                    } else {
+                        DefaultCustomModel m = (DefaultCustomModel) leaf;
+                        descriptionArea.setText(CUSTOM_DESCRIPTION);
+                        if (e.getClickCount() == 2) {
+                            controller.addModel(m);
+                        }
+                    }
+                } else {
+                    descriptionArea.setText(DEFAULT_DESCRIPTION);
+                }
+            }
         }
     }
 }

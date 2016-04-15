@@ -142,48 +142,6 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
     }
 
     @Test
-    public void testSwitchSed() throws Exception {
-        ExtSed sed = sedManager.newSed("TestSed");
-        final Window mainFit = openWindow();
-        addFit(sed);
-        final ComboBox statisticCombo = mainFit.getComboBox("statisticCombo");
-        final ComboBox optimizationCombo = mainFit.getComboBox("optimizationCombo");
-        TestUtils.invokeWithRetry(50, 100, new Runnable(){
-            @Override
-            public void run() {
-                assertTrue(statisticCombo.selectionEquals("LeastSquares").isTrue());
-                assertTrue(optimizationCombo.selectionEquals("LevenbergMarquardt").isTrue());
-            }
-        });
-        sedManager.newSed("empty");
-        TestUtils.invokeWithRetry(50, 100, new Runnable(){
-            @Override
-            public void run() {
-                assertTrue(statisticCombo.selectionEquals("").isTrue());
-                assertTrue(optimizationCombo.selectionEquals("").isTrue());
-            }
-        });
-    }
-
-    @Test
-    public void testSelection() throws Exception {
-        final ExtSed sed = sedManager.newSed("TestSed");
-        final Window mainFit = openWindow();
-        final ComboBox statisticCombo = mainFit.getComboBox("statisticCombo");
-        final ComboBox optimizationCombo = mainFit.getComboBox("optimizationCombo");
-        statisticCombo.select("Cash");
-        optimizationCombo.select("MonteCarlo");
-        TestUtils.invokeWithRetry(50, 100, new Runnable(){
-            @Override
-            public void run() {
-                FitConfiguration fit = sed.getFit();
-                assertEquals(Stats.Cash, fit.getStat());
-                assertEquals(OptimizationMethod.MonteCarlo, fit.getMethod());
-            }
-        });
-    }
-
-    @Test
     public void testModelSelection() throws Exception {
         sedManager.newSed("TestSed");
         Window mainFit = openWindow();

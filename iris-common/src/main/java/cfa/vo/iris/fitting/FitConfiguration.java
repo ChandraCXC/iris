@@ -10,7 +10,9 @@ import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.common.SedException;
 import cfa.vo.sherpa.models.*;
 import cfa.vo.sherpa.optimization.Method;
+import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Stat;
+import cfa.vo.sherpa.stats.Stats;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
 import javax.annotation.Nonnull;
@@ -56,6 +58,8 @@ public class FitConfiguration {
         confidence = SAMPFactory.get(Confidence.class);
         confidence.setSigma(1.6);
         confidence.setName("conf");
+        stat = Stats.Chi2;
+        method = OptimizationMethod.LevenbergMarquardt;
     }
 
     @Nonnull

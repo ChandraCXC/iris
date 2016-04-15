@@ -37,11 +37,11 @@ public class ConfidencePanelTest {
                 {"parB", "-20.0", "20.0"}
         };
 
-        FittingMainView view = Mockito.mock(FittingMainView.class);
+        FitController controller = Mockito.mock(FitController.class);
         FitConfiguration fit = new FitConfiguration();
-        Mockito.when(view.getFit()).thenReturn(fit);
-        Mockito.when(view.computeConfidence()).thenReturn(confidenceResults);
-        panel.setView(view);
+        Mockito.when(controller.getFit()).thenReturn(fit);
+        Mockito.when(controller.computeConfidence()).thenReturn(confidenceResults);
+        panel.setController(controller);
     }
 
     @Test
@@ -50,7 +50,7 @@ public class ConfidencePanelTest {
         sigma.textEquals("1.6").check();
 
         sigma.setText("1.0");
-        assertEquals(1.0, panel.getView().getFit().getConfidence().getSigma(), Double.MIN_VALUE);
+        assertEquals(1.0, panel.getController().getFit().getConfidence().getSigma(), Double.MIN_VALUE);
     }
 
     @Test

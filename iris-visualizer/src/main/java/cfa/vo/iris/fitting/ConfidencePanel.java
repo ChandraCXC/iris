@@ -15,20 +15,13 @@
  */
 package cfa.vo.iris.fitting;
 
-import cfa.vo.interop.SAMPFactory;
 import cfa.vo.iris.gui.NarrowOptionPane;
-import cfa.vo.sherpa.Confidence;
 import cfa.vo.sherpa.ConfidenceResults;
-import cfa.vo.sherpa.SherpaClient;
-import cfa.vo.sherpa.models.Parameter;
 import org.apache.commons.lang.NotImplementedException;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Converter;
-import org.jdesktop.beansbinding.ELProperty;
 import org.jdesktop.beansbinding.Property;
 import org.jdesktop.swingbinding.JTableBinding;
-
-import javax.naming.OperationNotSupportedException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -37,10 +30,10 @@ import java.util.logging.Logger;
 
 public class ConfidencePanel extends javax.swing.JPanel {
     private ConfidenceResults confidenceResults;
-    private FittingMainView view;
+    private FitController controller;
     private Logger logger = Logger.getLogger(ConfidencePanel.class.getName());
 
-    public static final String PROP_VIEW = "view";
+    public static final String PROP_CONTROLLER = "controller";
     public static final String PROP_CONFIDENCERESULTS = "confidenceResults";
 
     /**
@@ -51,14 +44,14 @@ public class ConfidencePanel extends javax.swing.JPanel {
         initBindings();
     }
 
-    public FittingMainView getView() {
-        return view;
+    public FitController getController() {
+        return controller;
     }
 
-    public void setView(FittingMainView view) {
-        FittingMainView old = this.view;
-        this.view = view;
-        firePropertyChange(PROP_VIEW, old, view);
+    public void setController(FitController controller) {
+        FitController old = this.controller;
+        this.controller = controller;
+        firePropertyChange(PROP_CONTROLLER, old, controller);
     }
 
     /**
@@ -114,7 +107,7 @@ public class ConfidencePanel extends javax.swing.JPanel {
 
         jLabel1.setText("Confidence Interval: ");
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${view.fit.confidence.sigma}"), jTextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${controller.fit.confidence.sigma}"), jTextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         jLabel2.setText("sigma - 89.04%");
@@ -170,11 +163,11 @@ public class ConfidencePanel extends javax.swing.JPanel {
 
     private void doConfidence(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doConfidence
         try {
-            ConfidenceResults results = view.computeConfidence();
+            ConfidenceResults results = controller.computeConfidence();
             setConfidenceResults(results);
         } catch (Exception e) {
             NarrowOptionPane.showMessageDialog(
-                    view,
+                    this,
                     e.getMessage(),
                     e.getClass().getSimpleName(),
                     NarrowOptionPane.ERROR_MESSAGE

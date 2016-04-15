@@ -177,7 +177,7 @@
                                                       <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                                                       <Component id="fitButton" alignment="0" min="-2" pref="89" max="-2" attributes="0"/>
                                                   </Group>
-                                                  <EmptySpace min="0" pref="54" max="32767" attributes="0"/>
+                                                  <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                                               </Group>
                                               <Component id="statisticCombo" alignment="0" max="32767" attributes="0"/>
                                           </Group>
@@ -217,7 +217,7 @@
                                     <Property name="name" type="java.lang.String" value="optimizationCombo" noResource="true"/>
                                   </Properties>
                                   <BindingProperties>
-                                    <BindingProperty name="selectedItem" source="Form" sourcePath="${fit.method}" target="optimizationCombo" targetPath="selectedItem" updateStrategy="0" immediately="false"/>
+                                    <BindingProperty name="selectedItem" source="Form" sourcePath="${sed.fit.method}" target="optimizationCombo" targetPath="selectedItem" updateStrategy="0" immediately="false"/>
                                   </BindingProperties>
                                 </Component>
                                 <Component class="javax.swing.JLabel" name="jLabel2">
@@ -233,7 +233,7 @@
                                     <Property name="name" type="java.lang.String" value="statisticCombo" noResource="true"/>
                                   </Properties>
                                   <BindingProperties>
-                                    <BindingProperty name="selectedItem" source="Form" sourcePath="${fit.stat}" target="statisticCombo" targetPath="selectedItem" updateStrategy="0" immediately="false"/>
+                                    <BindingProperty name="selectedItem" source="Form" sourcePath="${sed.fit.stat}" target="statisticCombo" targetPath="selectedItem" updateStrategy="0" immediately="false"/>
                                   </BindingProperties>
                                 </Component>
                                 <Component class="javax.swing.JButton" name="fitButton">
@@ -468,7 +468,7 @@
             <Property name="name" type="java.lang.String" value="currentSedField" noResource="true"/>
           </Properties>
           <BindingProperties>
-            <BindingProperty name="text" source="Form" sourcePath="${sedId}" target="currentSedField" targetPath="text" updateStrategy="0" immediately="false">
+            <BindingProperty name="text" source="Form" sourcePath="${sed.id}" target="currentSedField" targetPath="text" updateStrategy="0" immediately="false">
               <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
             </BindingProperty>
           </BindingProperties>
