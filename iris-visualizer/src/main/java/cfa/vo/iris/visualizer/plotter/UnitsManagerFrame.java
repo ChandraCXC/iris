@@ -15,16 +15,7 @@
  */
 package cfa.vo.iris.visualizer.plotter;
 
-import cfa.vo.iris.IWorkspace;
-import cfa.vo.iris.events.SedCommand;
-import cfa.vo.iris.events.SedEvent;
-import cfa.vo.iris.events.SedListener;
-import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.visualizer.preferences.SedPreferences;
-import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
-import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
-import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
-import cfa.vo.iris.visualizer.preferences.VisualizerListener;
+import cfa.vo.iris.visualizer.stil.StilPlotter;
 import java.awt.BorderLayout;
 
 /**
@@ -33,23 +24,17 @@ import java.awt.BorderLayout;
  */
 public class UnitsManagerFrame extends javax.swing.JInternalFrame {
 
-    private UnitsWidget unitsWidget;
-    private IWorkspace ws;
-    private VisualizerComponentPreferences prefs;
-    private SedPreferences sedPrefs;
-    private ExtSed currentSed;
+    private final UnitsWidget unitsWidget;
+    private final StilPlotter plotter;
         
     /**
      * Creates new form UnitsManagerFrame
-     * @param sed     SED to apply unit changes to
-     * @param prefs   SED preferences
-     * @param unitsManager the units manager
+     * @param plotter StilPlotter 
      */
-    public UnitsManagerFrame(ExtSed sed, VisualizerComponentPreferences prefs) {
-        this.prefs = prefs;
+    public UnitsManagerFrame(StilPlotter plotter) {
+        this.plotter = plotter;
         initComponents();
-        this.currentSed = sed;
-        this.unitsWidget = new UnitsWidget(currentSed, prefs);
+        this.unitsWidget = new UnitsWidget(this.plotter);
         
         this.setTitle("Select Units");
         
@@ -57,11 +42,6 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
 
         this.unitsManagerPanel.add(this.unitsWidget, BorderLayout.NORTH);
         
-        addSelectedSedChangeListeners();
-    }
-    
-    protected void addSelectedSedChangeListeners() {
-        VisualizerChangeEvent.getInstance().add(new SelectedSedChangeListener());
     }
 
     /**
@@ -109,7 +89,7 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2)
-                .addContainerGap(265, Short.MAX_VALUE))
+                .addContainerGap(315, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -120,17 +100,21 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        unitsManagerPanel.add(jPanel1, java.awt.BorderLayout.PAGE_END);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(unitsManagerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 446, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(unitsManagerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(unitsManagerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -152,18 +136,4 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel unitsManagerPanel;
     // End of variables declaration//GEN-END:variables
-
-    /**
-     * listener for finding SED changes
-     */
-    private class SelectedSedChangeListener implements VisualizerListener {
-
-        @Override
-        public void process(ExtSed source, VisualizerCommand payload) {
-            if (VisualizerCommand.SELECTED.equals(payload)) 
-            {
-                unitsWidget.setSed(source);
-            }
-        }
-    }
 }

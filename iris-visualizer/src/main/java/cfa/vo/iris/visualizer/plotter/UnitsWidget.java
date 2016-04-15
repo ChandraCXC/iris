@@ -22,6 +22,7 @@ import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
 import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
+import cfa.vo.iris.visualizer.stil.StilPlotter;
 import cfa.vo.utils.Default;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,23 +38,23 @@ public class UnitsWidget extends javax.swing.JPanel {
     private ExtSed currentSed;
     private VisualizerComponentPreferences prefs;
     private UnitsManager unitsManager;
+    private StilPlotter plotter;
     
     /**
      * Creates new form UnitsWidget
-     * @param sed
-     * @param prefs
-     * @param unitsManager
+     * @param plotter 
      */
-    public UnitsWidget(ExtSed sed, VisualizerComponentPreferences prefs) {
-        this.currentSed = sed;
-        this.prefs = prefs;
+    public UnitsWidget(StilPlotter plotter) {
+        this.currentSed = plotter.getSed();
+        this.plotter = plotter;
+        this.prefs = plotter.getVisualizerPreferences();
         this.unitsManager = Default.getInstance().getUnitsManager();
         initComponents();
         
         // if current sed is null, set X and Y to Iris default units
         if (currentSed != null) {
-            setXunit(prefs.getSedPreferences(sed).getXunits());
-            setYunit(prefs.getSedPreferences(sed).getYunits());
+            setXunit(prefs.getSedPreferences(currentSed).getXunits());
+            setYunit(prefs.getSedPreferences(currentSed).getYunits());
         } else {
             // TODO: use default Iris units here; should be a static
             setXunit(unitsManager.newXUnits("Hz").toString());
@@ -87,6 +88,7 @@ public class UnitsWidget extends javax.swing.JPanel {
 
         xunits.setModel(new XUnitsListModel());
         xunits.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        xunits.setName("xunitsList"); // NOI18N
 
         org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${xunit}"), xunits, org.jdesktop.beansbinding.BeanProperty.create("selectedElement"));
         bindingGroup.addBinding(binding);
@@ -99,6 +101,7 @@ public class UnitsWidget extends javax.swing.JPanel {
 
         yunits.setModel(new YUnitsListModel());
         yunits.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        yunits.setName("yunitsList"); // NOI18N
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${yunit}"), yunits, org.jdesktop.beansbinding.BeanProperty.create("selectedElement"));
         bindingGroup.addBinding(binding);
@@ -137,10 +140,23 @@ public class UnitsWidget extends javax.swing.JPanel {
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     * Update the units of the currently selected SED.
+     */
     public void updateUnits() {
         // fire Visualizer event to update plot and MB
-        this.prefs.getSedPreferences(currentSed).setUnits(xunit, yunit);
-        fire(currentSed, VisualizerCommand.RESET);
+        plotter.getVisualizerPreferences().getSedPreferences(plotter.getSed()).setUnits(xunit, yunit);
+        fire(plotter.getSed(), VisualizerCommand.RESET);
+    }
+    
+    /**
+     * Update the units of the given SED
+     * @param sed 
+     */
+    public void updateUnits(ExtSed sed) {
+        // fire Visualizer event to update plot and MB
+        plotter.getVisualizerPreferences().getSedPreferences(sed).setUnits(xunit, yunit);
+        fire(sed, VisualizerCommand.RESET);
     }
     
     /*
