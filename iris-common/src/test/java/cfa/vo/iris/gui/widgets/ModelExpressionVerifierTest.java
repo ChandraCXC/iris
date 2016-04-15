@@ -49,6 +49,11 @@ public class ModelExpressionVerifierTest {
     }
 
     @Test
+    public void testVerifyNullFit() throws Exception {
+        assertFalse(verifier.verify(null));
+    }
+
+    @Test
     public void testVerifyNoModel() throws Exception {
         fit.setExpression("m1+m3");
         assertFalse(verifier.verify(fit));

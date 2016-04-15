@@ -1,7 +1,9 @@
 package cfa.vo.iris.gui.widgets;
 
 import cfa.vo.iris.fitting.FitConfiguration;
+import cfa.vo.sherpa.models.DefaultModel;
 import cfa.vo.sherpa.models.Model;
+import org.apache.commons.lang.StringUtils;
 
 import javax.script.*;
 import java.util.List;
@@ -18,21 +20,23 @@ public class ModelExpressionVerifier {
 
     public boolean verify(FitConfiguration fit) {
         boolean retVal = false;
-        String expression = null;
+        String expression;
 
         if (fit != null) {
             expression = fit.getModel().getName();
+        } else {
+            return retVal;
         }
 
-        if (expression == null || expression.isEmpty()) {
-            return retVal;
+        if (StringUtils.isBlank(expression)) {
+            return false;
         }
 
         Bindings b = new SimpleBindings();
         List<Model> models = fit.getModel().getParts();
         if (models != null) {
             for (Model m : models) {
-                b.put(m.getName().split("\\.")[1], Double.NaN);
+                b.put(DefaultModel.findId(m), Double.NaN);
             }
         }
 
