@@ -428,18 +428,15 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         assertTrue(desktop.containsWindow("Select Units").isTrue());
         Window unitsChooser = desktop.getWindow("Select Units");
         unitsChooser.getListBox("xunitsList").select(XUnit.ANGSTROM.getString());
-        unitsChooser.getListBox("yunitsList").select(SPVYUnit.ABMAG.getString());
+        unitsChooser.getListBox("yunitsList").select(SPVYUnit.FLUX0.getString());
         unitsChooser.getButton("Update").click();
         
         // check that the X and Y units on the plot window updated
         assertEquals("Wavelength (Angstrom)", plotter.getPlotPreferences(sed1).getXlabel());
-        assertEquals("Magnitude (ABMAG)", plotter.getPlotPreferences(sed1).getYlabel());
+        assertEquals('\u03BD' + "F(" + '\u03BD' + ")"+" (Jy-Hz)", 
+                plotter.getPlotPreferences(sed1).getYlabel());
         
         // check that the MB data updated
-        
-        // test velocity units
-        seg1.setSpectralAxisUnits(XUnit.KMPSCO.getString());
-        seg1.setFluxAxisUnits("Jy");
         
         final ExtSed sed2 = sedManager.newSed("sed2");
         sed2.addSegment(seg1);
@@ -453,30 +450,58 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
             }
         });
         
+        // test velocity units
+        viewer.getButton("unitsButton").click();
+        assertTrue(desktop.containsWindow("Select Units").isTrue());
+        unitsChooser = desktop.getWindow("Select Units");
+        unitsChooser.getListBox("xunitsList").select(XUnit.KMPSCO.getString());
+        unitsChooser.getListBox("yunitsList").select(SPVYUnit.FLUXDENSITYFREQ3.getString());
+        unitsChooser.getButton("Update").click();
+        
         // check that the velocity unit label set properly
         assertEquals("Velocity (km/s @ 12 CO (11.5GHz))", 
                 plotter.getPlotPreferences(sed2).getXlabel());
-    }
-    
-    @Test
-    public void testUnitsManagerFrame() throws Exception {
-        SedlibSedManager sedManager = (SedlibSedManager) app.getWorkspace().getSedManager();
         
-        window.getMenuBar()
-                .getMenu("Tools")
-                .getSubMenu(windowName)
-                .getSubMenu(windowName)
-                .click();
+        // open units window, switch SEDs, choose new units, apply them, and
+        // assert that the selected SED units are changed, and not the SED
+        // on which the units window was opened. The units "Update" button
+        // should always affect the currently selected SED.
+        unitsChooser.getListBox("xunitsList").select(XUnit.EV.getString());
+        unitsChooser.getListBox("yunitsList").select(SPVYUnit.FLUXDENSITYFREQ1.getString());
         
-        Window viewer = desktop.getWindow(windowName);
-        StilPlotter plotter = viewer.findSwingComponent(StilPlotter.class);
+        sedManager.select(sed1);
         
-        // change the units of the SEDs with the UnitsManagerFrame
-        viewer.getButton("unitsButton").click();
-        assertTrue(desktop.containsWindow("Select Units").isTrue());
-        Window unitsChooser = desktop.getWindow("Select Units");
-        unitsChooser.getListBox("xunitsList").select(XUnit.ANGSTROM.getString());
-        unitsChooser.getListBox("yunitsList").select(SPVYUnit.ABMAG.getString());
+        // Make sure this is enqueued in the Swing EDT
+        invokeWithRetry(10, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertSame(sed1, comp.getDefaultPlotterView().getSed());
+                
+            }
+        });
+        
+        // sed1 units should still be the same as they were before changing sed2
+        // units
+        assertEquals("Wavelength (Angstrom)", plotter.getPlotPreferences(sed1).getXlabel());
+        assertEquals('\u03BD' + "F(" + '\u03BD' + ")"+" (Jy-Hz)", 
+                plotter.getPlotPreferences(sed1).getYlabel());
+        
+        // update the units for sed1
         unitsChooser.getButton("Update").click();
+        
+        // sed1 units should update
+        assertEquals("Energy (eV)", plotter.getPlotPreferences(sed1).getXlabel());
+        assertEquals("Flux density (Jy)", 
+                plotter.getPlotPreferences(sed1).getYlabel());
+        
+        // check that sed2 units remain the same
+        assertEquals("Velocity (km/s @ 12 CO (11.5GHz))", 
+                plotter.getPlotPreferences(sed2).getXlabel());
+        assertEquals("Flux density (mJy)", 
+                plotter.getPlotPreferences(sed2).getYlabel());
+        
+        // TODO: how to test for magnitudes? The Y-axis should be flipped so 
+        // that larger values are on the bottom and lower values on the top
+        
     }
 }
