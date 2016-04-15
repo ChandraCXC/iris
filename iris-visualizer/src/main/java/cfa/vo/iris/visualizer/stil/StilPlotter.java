@@ -19,6 +19,9 @@ import javax.swing.JPanel;
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.iris.sed.quantities.SPVMagnitude;
+import cfa.vo.iris.sed.quantities.SPVYQuantity;
+import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
 import cfa.vo.iris.visualizer.preferences.SedPreferences;
@@ -317,6 +320,13 @@ public class StilPlotter extends JPanel {
         // Add high level plot preferences
         PlotPreferences pp = getPlotPreferences(sed);
         for (String key : pp.getPreferences().keySet()) {
+            
+            // if in magnitudes, flip the direction of the Y-axis
+            // (lower magnitude = brighter source -> higher on Y-axis)
+            if (SPVYQuantity.MAGNITUDE.getPossibleUnits().contains(pp.getPreferences().get(key))) {
+                env.setValue("yflip", true);
+            }
+            
             env.setValue(key, pp.getPreferences().get(key));
         }
 
