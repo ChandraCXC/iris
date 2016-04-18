@@ -26,6 +26,9 @@ import java.util.Map.Entry;
 import org.apache.commons.lang.StringUtils;
 
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.SedException;
+import cfa.vo.iris.sed.quantities.SPVYQuantity;
+import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.visualizer.plotter.ColorPalette;
 import cfa.vo.iris.visualizer.plotter.HSVColorPalette;
 import cfa.vo.iris.units.UnitsException;
@@ -35,6 +38,8 @@ import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedNoDataException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Maintains visualizer preferences for an SED currently in the 
@@ -134,6 +139,7 @@ public class SedPreferences {
         // update legend settings
         layer.setLabel(id);
         
+        // set the units
         setUnits(seg, layer);
         
         segmentPreferences.put(me, layer);
@@ -160,26 +166,91 @@ public class SedPreferences {
     }
     
     /**
-     * Sets x and y units to the given SED if units are not already set.
+     * Sets x and y units of the given segment to the preferred units.
+     * If preferred units have not been set, the given segment's units
+     * are used and set as the SED's preferred units.
      * 
      */
-    void setUnits(Segment seg, SegmentLayer layer) {
-        try {
-            if (StringUtils.isEmpty(xunits)) {
-                xunits = seg.getSpectralAxisUnits();
-            }
-            if (StringUtils.isEmpty(yunits)) {
-                yunits = seg.getFluxAxisUnits();
-            }
-        } catch (SedNoDataException e) {
-            // ignore;
-        }
+    private void setUnits(Segment seg, SegmentLayer layer) {
+        // if this is the first segment to be added to the SED preferences,
+        // set the preferred X and Y units to the segment's
+        if (StringUtils.isEmpty(xunits) || StringUtils.isEmpty(xunits))
+            setInitialUnits(seg);
         
+        // set the layer units for this segment
         try {
             layer.setXUnits(xunits);
             layer.setYUnits(yunits);
         } catch (UnitsException e) {
             throw new RuntimeException(e);
+        }
+    }
+    
+    /**
+     * Set the SED units for the first time. Only should be called when the
+     * first segment is added to an empty SED. This function sets the X and Y
+     * units to that of the segment's.
+     */
+    private void setInitialUnits(Segment seg) {
+        try {
+            if (StringUtils.isEmpty(xunits))
+                xunits = seg.getSpectralAxisUnits();
+            if (StringUtils.isEmpty(yunits))
+                yunits = seg.getFluxAxisUnits();
+        } catch (SedNoDataException ex) {
+            throw new RuntimeException(ex);
+        }
+        
+        // set the plot axes labels
+        plotPreferences.setXlabel(xunits);
+        plotPreferences.setYlabel(yunits);
+        
+        // if in magnitudes, flip the direction of the Y-axis
+        flipYifMag(yunits);
+    }
+    
+    /**
+     * Sets the x and y units of the SED
+     * 
+     * @param xunit    the X unit
+     * @param yunit    the Y unit
+     */
+    public void setUnits(String xunit, String yunit) {
+        xunits = xunit;
+        yunits = yunit;
+        plotPreferences.setXlabel(xunit);
+        plotPreferences.setYlabel(yunit);
+        
+        // update the segment layers with the new units
+        for (SegmentLayer seg : segmentPreferences.values()) {
+            try {
+                seg.setXUnits(xunits);
+                seg.setYUnits(yunits);
+            } catch (UnitsException ex) {
+                Logger.getLogger(SedPreferences.class.getName())
+                        .log(Level.SEVERE, null, ex);
+            }
+        }
+        // if in magnitudes, flip the direction of the Y-axis
+        flipYifMag(yunit);
+    }
+    
+    /**
+     * Flips the Y-axis if yunit is a magnitude. A lower magnitude = brighter 
+     * source  higher on Y-axis)
+     * @param yunit 
+     */
+    private void flipYifMag(String yunit) {
+        try {
+            if (SPVYQuantity.MAGNITUDE.getPossibleUnits()
+                    .contains(SPVYUnit.getFromUnitString(yunit))) {
+                plotPreferences.setYflip(true);
+            } else {
+                plotPreferences.setYflip(false);
+            }
+        } catch (SedException ex) {
+            Logger.getLogger(SedPreferences.class.getName())
+                    .log(Level.SEVERE, null, ex);
         }
     }
     
