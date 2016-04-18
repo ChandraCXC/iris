@@ -34,6 +34,7 @@ import cfa.vo.iris.events.SegmentEvent;
 import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
 import cfa.vo.iris.events.SegmentListener;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.visualizer.plotter.MouseListenerManager;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
 import cfa.vo.iris.visualizer.stil.tables.ColumnInfoMatcher;
@@ -51,6 +52,7 @@ public class VisualizerComponentPreferences {
     private static final ExecutorService visualizerExecutor = Executors.newFixedThreadPool(5);
     
     PlotPreferences plotPreferences;
+    MouseListenerManager mouseListenerManager;
     IrisStarTableAdapter adapter;
     ColumnInfoMatcher columnInfoMatcher;
     final IWorkspace ws;
@@ -59,8 +61,11 @@ public class VisualizerComponentPreferences {
     public VisualizerComponentPreferences(IWorkspace ws) {
         this.ws = ws;
         
-        // TODO: change serialization when we have something that works
+        // For converting segments to IrisStarTables
         this.adapter = new IrisStarTableAdapter(visualizerExecutor);
+        
+        // Manages all mouse listeners over the plotter
+        this.mouseListenerManager = new MouseListenerManager();
         
         // Create and add preferences for the SED
         this.sedPreferences = Collections.synchronizedMap(new IdentityHashMap<ExtSed, SedPreferences>());
@@ -118,6 +123,14 @@ public class VisualizerComponentPreferences {
      */
     public IrisStarTableAdapter getAdapter() {
         return adapter;
+    }
+    
+    /**
+     * @return
+     *  MouseListeners for the stil plotter.
+     */
+    public MouseListenerManager getMouseListenerManager() {
+        return mouseListenerManager;
     }
     
     /**

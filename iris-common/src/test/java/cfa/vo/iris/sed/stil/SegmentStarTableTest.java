@@ -45,8 +45,13 @@ public class SegmentStarTableTest {
         assertEquals(Column.Flux_Value.name(), table.getColumnInfo(2).getName());
         assertEquals(Column.Original_Flux_Value.name(), table.getColumnInfo(3).getName());
         assertEquals(Column.Flux_Error.name(), table.getColumnInfo(4).getName());
+        
         assertEquals(new XUnits("Hz"), table.getSpecUnits());
         assertEquals(new YUnits("Jy"), table.getFluxUnits());
+        assertEquals("Hz", table.getColumnInfo(id.getColumnIndex(Column.Spectral_Value.name())).getUnitString());
+        assertEquals("Jy", table.getColumnInfo(id.getColumnIndex(Column.Flux_Value.name())).getUnitString());
+        assertEquals("Jy", table.getColumnInfo(id.getColumnIndex(Column.Original_Flux_Value.name())).getUnitString());
+        assertEquals("Jy", table.getColumnInfo(id.getColumnIndex(Column.Flux_Error.name())).getUnitString());
         
         int col = id.getColumnIndex(Column.Flux_Error.name());
         assertTrue(col >= 0);
@@ -65,5 +70,10 @@ public class SegmentStarTableTest {
         col = id.getColumnIndex(Column.Flux_Error.name());
         assertTrue(col >= 0);
         assertEquals(new Double("5.61E-6"), (Double) table.getCell(0, col), 1E-8);
+        
+        assertEquals('\u03BC' + "m", table.getColumnInfo(id.getColumnIndex(Column.Spectral_Value.name())).getUnitString());
+        assertEquals("erg/s/cm2/Angstrom", table.getColumnInfo(id.getColumnIndex(Column.Flux_Value.name())).getUnitString());
+        assertEquals("erg/s/cm2/Angstrom", table.getColumnInfo(id.getColumnIndex(Column.Original_Flux_Value.name())).getUnitString());
+        assertEquals("erg/s/cm2/Angstrom", table.getColumnInfo(id.getColumnIndex(Column.Flux_Error.name())).getUnitString());
     }
 }

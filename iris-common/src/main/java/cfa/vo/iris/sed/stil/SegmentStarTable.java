@@ -115,6 +115,10 @@ public class SegmentStarTable extends RandomStarTable {
         setSpecErrValues((double[]) getDataFromSegment(Utypes.SEG_DATA_SPECTRALAXIS_ACC_STATERR));
         setSpecErrValuesHi((double[]) getDataFromSegment(Utypes.SEG_DATA_SPECTRALAXIS_ACC_STATERRHIGH));
         setSpecErrValuesLo((double[]) getDataFromSegment(Utypes.SEG_DATA_SPECTRALAXIS_ACC_STATERRLOW));
+        
+        // Update column unit values
+        updateSpecColumnUnitStrings();
+        updateFluxColumnUnitStrings();
     }
 
     @Override
@@ -163,26 +167,28 @@ public class SegmentStarTable extends RandomStarTable {
      * @throws UnitsException
      */
     public void setSpecUnits(XUnit newUnit) throws UnitsException {
-        if (newUnit.equals(this.specUnits)) return;
-        
         setSpecValues(units.convertX(specValues, specUnits, newUnit));
         setSpecErrValues(units.convertX(specErrValues, specUnits, newUnit));
         setSpecErrValuesLo(units.convertX(specErrValuesLo, specUnits, newUnit));
         setSpecErrValuesHi(units.convertX(specErrValuesHi, specUnits, newUnit));
         specUnits = newUnit;
         
+        // Update column unit values
+        updateSpecColumnUnitStrings();
+        
         // This may change Y values, so update them accordingly.
         setFluxUnits(fluxUnits);
-        
-        // Update column unit values
+    }
+    
+    private void updateSpecColumnUnitStrings() {
         for (int i=0; i<this.getColumnCount(); i++) {
             if (StringUtils.contains(getColumnInfo(i).getUtype(), "spec"))
-                getColumnInfo(i).setUnitString(newUnit.toString());
+                getColumnInfo(i).setUnitString(specUnits.toString());
         }
     }
     
     /**
-     * Sets the flux axis units for this star table, which updates all relevat flux
+     * Sets the flux axis units for this star table, which updates all relevant flux
      * valued columns in the table.
      * 
      * @param newUnit
@@ -198,11 +204,16 @@ public class SegmentStarTable extends RandomStarTable {
         setFluxErrValuesLo(units.convertY(fluxErrValuesLo, specValues, fluxUnits, specUnits, newUnit));
         setFluxErrValuesHi(units.convertY(fluxErrValuesLo, specValues, fluxUnits, specUnits, newUnit));
         
-        // Update values
         fluxUnits = newUnit;
+        
+        // Update column units
+        updateFluxColumnUnitStrings();
+    }
+    
+    private void updateFluxColumnUnitStrings() {
         for (int i=0; i<this.getColumnCount(); i++) {
             if (StringUtils.contains(getColumnInfo(i).getUtype(), "flux"))
-                getColumnInfo(i).setUnitString(newUnit.toString());
+                getColumnInfo(i).setUnitString(fluxUnits.toString());
         }
     }
 
