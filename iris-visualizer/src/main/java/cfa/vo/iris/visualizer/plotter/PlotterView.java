@@ -51,6 +51,7 @@ public class PlotterView extends JInternalFrame {
     // StilPlotter plotter initialized in initComponents()
     private JInternalFrame residuals;
     private MetadataBrowserMainView metadataBrowser;
+    private UnitsManagerFrame unitsManagerFrame;
     
     private static double ZOOM_SCALE = 0.5;
     
@@ -92,6 +93,10 @@ public class PlotterView extends JInternalFrame {
         plotter.setSedManager((SedlibSedManager) ws.getSedManager());
         plotter.setVisualizerPreferences(preferences);
         plotter.reset(null, true);
+        
+        // units chooser frame
+        //this.unitsManagerFrame = new UnitsManagerFrame(plotter.getSed(), this.preferences);
+        this.unitsManagerFrame = new UnitsManagerFrame(plotter);
         
         // Action for opening metadata browser
         metadataButton.addActionListener(new ActionListener() {
@@ -278,6 +283,12 @@ public class PlotterView extends JInternalFrame {
         });
 
         btnUnits.setText("Units");
+        btnUnits.setName("unitsButton"); // NOI18N
+        btnUnits.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnUnitsActionPerformed(evt);
+            }
+        });
 
         down.setText("jButtonArrow4");
 
@@ -527,6 +538,13 @@ public class PlotterView extends JInternalFrame {
         writer.openSavePlotDialog();
     }//GEN-LAST:event_mntmExportActionPerformed
 
+    private void btnUnitsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnitsActionPerformed
+        
+        if (!unitsManagerFrame.isVisible()) {
+            ws.addFrame(unitsManagerFrame);
+        }
+        GUIUtils.moveToFront(unitsManagerFrame);
+    }//GEN-LAST:event_btnUnitsActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnReset;

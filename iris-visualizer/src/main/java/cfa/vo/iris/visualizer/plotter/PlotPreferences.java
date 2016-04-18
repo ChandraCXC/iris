@@ -16,8 +16,16 @@
 
 package cfa.vo.iris.visualizer.plotter;
 
+import cfa.vo.iris.sed.SedException;
+import cfa.vo.iris.sed.quantities.SPVYUnit;
+import cfa.vo.iris.sed.quantities.XUnit;
+import cfa.vo.iris.sed.quantities.YUnit;
+import cfa.vo.iris.units.spv.XUnits;
+import cfa.vo.iris.units.spv.YUnits;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
 
 public class PlotPreferences {
@@ -36,6 +44,8 @@ public class PlotPreferences {
     public static final String X_MIN = "xmin";
     public static final String Y_MAX = "ymax";
     public static final String Y_MIN = "ymin";
+    public static final String Y_FLIP = "yflip";
+    public static final String X_FLIP = "xflip";
     public static final String PLOT_TYPE = "plot_type"; // not STILTS
     //public static final String SHOW_ERRORS = "show_errors"; // not STILTS
     
@@ -82,6 +92,8 @@ public class PlotPreferences {
                 .setYlog(true)
                 .setShowGrid(true)
                 .setFixed(false)
+                .setYflip(false)
+                .setXflip(false)
 //                .setShowErrors(true)
                 .setPlotType(PlotType.LOG)
                 .setShowLegend(true)
@@ -111,7 +123,22 @@ public class PlotPreferences {
     }
     
     public PlotPreferences setYlabel(String arg1) {
-        this.preferences.put(Y_LABEL, arg1);
+        String ylabel;
+        
+        try {
+            YUnits yconvert = new YUnits(arg1);
+            ylabel = yconvert.getLabel() + 
+                    " (" + SPVYUnit.getFromUnitString(arg1).getString() + ")";
+        } catch (SedException ex) {
+            // if unit is not defined
+            // TODO: set to default or unknown units?
+            ylabel = "Flux density (" +
+                    YUnit.PHOTONFLUXDENSITY0.getString() + ")";
+            Logger.getLogger(PlotPreferences.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+        
+        this.preferences.put(Y_LABEL, ylabel);
         return this;
     }
     
@@ -120,7 +147,39 @@ public class PlotPreferences {
     }
     
     public PlotPreferences setXlabel(String arg1) {
-        this.preferences.put(X_LABEL, arg1);
+        String xlabel;
+        
+        try {
+            XUnits xconvert = new XUnits(arg1);
+            xlabel = xconvert.getLabel() +
+                    " (" + XUnit.getFromUnitString(arg1).getString() + ")";
+        } catch (SedException ex) {
+            // if unit is not defined
+            // TODO: set to default or unknown units?
+            xlabel = "Wavelength (" + XUnit.ANGSTROM.getString() + ")";
+            Logger.getLogger(PlotPreferences.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+        
+        this.preferences.put(X_LABEL, xlabel);
+        return this;
+    }
+    
+    public boolean getYflip() {
+        return (boolean) this.preferences.get(Y_FLIP);
+    }
+    
+    public PlotPreferences setYflip(boolean arg1) {
+        this.preferences.put(Y_FLIP, arg1);
+        return this;
+    }
+    
+    public boolean getXflip() {
+        return (boolean) this.preferences.get(X_FLIP);
+    }
+    
+    public PlotPreferences setXflip(boolean arg1) {
+        this.preferences.put(X_FLIP, arg1);
         return this;
     }
     
