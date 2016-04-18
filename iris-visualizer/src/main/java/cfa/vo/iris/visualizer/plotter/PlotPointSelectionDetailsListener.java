@@ -66,7 +66,10 @@ public class PlotPointSelectionDetailsListener extends StilPlotterPointSelection
         }
         // Display the row in a popup menu
         popup.setDataString(tt);
-        popup.show(display, evt.getPoint().x, evt.getPoint().y);
+        
+        // The popup shows up so that the mouse cursor is over the JPopup, so that when the mouse
+        // moves off of the window it will disappear in a predictable manner.
+        popup.show(display, evt.getPoint().x - 3, evt.getPoint().y - 3);
         
         return;
     }
