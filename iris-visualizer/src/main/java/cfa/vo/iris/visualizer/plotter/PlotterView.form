@@ -193,18 +193,16 @@
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="left" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="right" min="-2" max="-2" attributes="0"/>
+                  <Component id="left1" min="-2" pref="16" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="up" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="down" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="64" max="-2" attributes="0"/>
-                  <Component id="chckbxAbsolute" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="txtXposition" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="135" max="-2" attributes="0"/>
+                  <Component id="txtXposition" min="-2" pref="100" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="txtYposition" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="57" max="32767" attributes="0"/>
+                  <Component id="txtYposition" min="-2" pref="100" max="-2" attributes="0"/>
+                  <EmptySpace pref="30" max="32767" attributes="0"/>
                   <Component id="metadataButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="fluxOrDensity" min="-2" max="-2" attributes="0"/>
@@ -216,22 +214,21 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="btnReset" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="zoomIn" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="zoomOut" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="left" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="right" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="up" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="down" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="chckbxAbsolute" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="txtXposition" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="txtYposition" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="metadataButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnUnits" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="fluxOrDensity" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="left1" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -250,16 +247,12 @@
         <Component class="javax.swing.JTextField" name="txtXposition">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
-            <Property name="text" type="java.lang.String" value="x-position"/>
           </Properties>
-        </Component>
-        <Component class="cfa.vo.iris.gui.JButtonArrow" name="right">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="jButtonArrow2"/>
-          </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new cfa.vo.iris.gui.JButtonArrow(BasicArrowButton.EAST)"/>
-          </AuxValues>
+          <BindingProperties>
+            <BindingProperty name="text" source="Form" sourcePath="${xcoord}" target="txtXposition" targetPath="text" updateStrategy="0" immediately="false">
+              <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+            </BindingProperty>
+          </BindingProperties>
         </Component>
         <Component class="javax.swing.JButton" name="zoomIn">
           <Properties>
@@ -297,11 +290,6 @@
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JCheckBox" name="chckbxAbsolute">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Absolute"/>
-          </Properties>
-        </Component>
         <Component class="cfa.vo.iris.gui.JButtonArrow" name="left">
           <Properties>
             <Property name="text" type="java.lang.String" value="jButtonArrow1"/>
@@ -327,8 +315,12 @@
         <Component class="javax.swing.JTextField" name="txtYposition">
           <Properties>
             <Property name="editable" type="boolean" value="false"/>
-            <Property name="text" type="java.lang.String" value="y-position"/>
           </Properties>
+          <BindingProperties>
+            <BindingProperty name="text" source="Form" sourcePath="${ycoord}" target="txtYposition" targetPath="text" updateStrategy="0" immediately="false">
+              <BindingParameter name="javax.swing.binding.ParameterKeys.TEXT_CHANGE_STRATEGY" value="javax.swing.binding.TextChangeStrategy.ON_TYPE"/>
+            </BindingProperty>
+          </BindingProperties>
         </Component>
         <Component class="cfa.vo.iris.gui.JButtonArrow" name="up">
           <Properties>
@@ -336,6 +328,14 @@
           </Properties>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new cfa.vo.iris.gui.JButtonArrow(BasicArrowButton.NORTH)"/>
+          </AuxValues>
+        </Component>
+        <Component class="cfa.vo.iris.gui.JButtonArrow" name="left1">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="jButtonArrow1"/>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new cfa.vo.iris.gui.JButtonArrow(BasicArrowButton.EAST)"/>
           </AuxValues>
         </Component>
       </SubComponents>
@@ -389,6 +389,13 @@
       </SubComponents>
     </Container>
     <Container class="cfa.vo.iris.visualizer.stil.StilPlotter" name="plotter">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="plotter" noResource="true"/>
+      </Properties>
+      <AccessibilityProperties>
+        <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="plotter"/>
+        <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value=""/>
+      </AccessibilityProperties>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
         <Property name="columns" type="int" value="0"/>

@@ -45,13 +45,15 @@ public class PlotterView extends JInternalFrame {
     
     private IWorkspace ws;
     private IrisApplication app;
-    private final VisualizerComponentPreferences preferences;
-
     // Plotting Components
     // StilPlotter plotter initialized in initComponents()
     private JInternalFrame residuals;
     private MetadataBrowserMainView metadataBrowser;
     private UnitsManagerFrame unitsManagerFrame;
+    
+    // Plot mouse coordinate locations
+    private String xcoord = "0E0";
+    private String ycoord = "0E0";
     
     private static double ZOOM_SCALE = 0.5;
     
@@ -81,9 +83,7 @@ public class PlotterView extends JInternalFrame {
         
         this.ws = ws;
         this.app = app;
-        this.preferences = preferences;
-        
-        this.metadataBrowser = new MetadataBrowserMainView(ws, preferences);       
+        this.metadataBrowser = new MetadataBrowserMainView(ws, preferences);
         this.residuals = new JInternalFrame();
         
         initComponents();
@@ -172,6 +172,9 @@ public class PlotterView extends JInternalFrame {
         });
         
         addPlotChangeListener();
+        
+        // Set listeners to point to this view
+        preferences.getMouseListenerManager().setPlotterView(this);
     }
     
     protected void addPlotChangeListener() {
@@ -213,7 +216,28 @@ public class PlotterView extends JInternalFrame {
         this.plotter.reset(source, true);
     }
     
-
+    public String getXcoord() {
+        return xcoord;
+    }
+    
+    private static final String XCOORD_PROPERTY = "xcoord";
+    public void setXcoord(String x) {
+        String old = this.xcoord;
+        this.xcoord = x;
+        firePropertyChange(XCOORD_PROPERTY, old, xcoord);
+    }
+    
+    public String getYcoord() {
+        return ycoord;
+    }
+    
+    private static final String YCOORD_PROPERTY = "ycoord";
+    public void setYcoord(String y) {
+        String old = this.ycoord;
+        this.ycoord = y;
+        firePropertyChange(YCOORD_PROPERTY, old, ycoord);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -228,17 +252,16 @@ public class PlotterView extends JInternalFrame {
         jPanel1 = new javax.swing.JPanel();
         btnReset = new javax.swing.JButton();
         txtXposition = new javax.swing.JTextField();
-        right = new cfa.vo.iris.gui.JButtonArrow(BasicArrowButton.EAST);
         zoomIn = new javax.swing.JButton();
         btnUnits = new javax.swing.JButton();
         down = new cfa.vo.iris.gui.JButtonArrow(BasicArrowButton.SOUTH);
         fluxOrDensity = new javax.swing.JSpinner();
-        chckbxAbsolute = new javax.swing.JCheckBox();
         left = new cfa.vo.iris.gui.JButtonArrow(BasicArrowButton.WEST);
         zoomOut = new javax.swing.JButton();
         metadataButton = new javax.swing.JButton();
         txtYposition = new javax.swing.JTextField();
         up = new cfa.vo.iris.gui.JButtonArrow(BasicArrowButton.NORTH);
+        left1 = new cfa.vo.iris.gui.JButtonArrow(BasicArrowButton.EAST);
         jPanel2 = new javax.swing.JPanel();
         secondaryPlotOptions = new javax.swing.JSpinner();
         tglbtnShowHideResiduals = new javax.swing.JToggleButton();
@@ -270,9 +293,9 @@ public class PlotterView extends JInternalFrame {
         });
 
         txtXposition.setEditable(false);
-        txtXposition.setText("x-position");
 
-        right.setText("jButtonArrow2");
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${xcoord}"), txtXposition, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
 
         zoomIn.setText("In");
         zoomIn.setEnabled(false);
@@ -294,8 +317,6 @@ public class PlotterView extends JInternalFrame {
 
         fluxOrDensity.setModel(new javax.swing.SpinnerListModel(new String[] {"Flux", "Flux Density"}));
 
-        chckbxAbsolute.setText("Absolute");
-
         left.setText("jButtonArrow1");
 
         zoomOut.setText("Out");
@@ -309,9 +330,13 @@ public class PlotterView extends JInternalFrame {
         metadataButton.setText("Metadata");
 
         txtYposition.setEditable(false);
-        txtYposition.setText("y-position");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${ycoord}"), txtYposition, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
 
         up.setText("jButtonArrow3");
+
+        left1.setText("jButtonArrow1");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -327,18 +352,16 @@ public class PlotterView extends JInternalFrame {
                 .addGap(18, 18, 18)
                 .addComponent(left, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(right, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(left1, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(up, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(down, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(64, 64, 64)
-                .addComponent(chckbxAbsolute)
-                .addGap(18, 18, 18)
-                .addComponent(txtXposition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(135, 135, 135)
+                .addComponent(txtXposition, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtYposition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
+                .addComponent(txtYposition, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                 .addComponent(metadataButton)
                 .addGap(18, 18, 18)
                 .addComponent(fluxOrDensity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -355,15 +378,14 @@ public class PlotterView extends JInternalFrame {
                     .addComponent(zoomIn)
                     .addComponent(zoomOut)
                     .addComponent(left, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(right, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(up, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(down, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(chckbxAbsolute)
                     .addComponent(txtXposition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtYposition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(metadataButton)
                     .addComponent(btnUnits)
-                    .addComponent(fluxOrDensity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(fluxOrDensity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(left1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -393,6 +415,8 @@ public class PlotterView extends JInternalFrame {
                     .addComponent(secondaryPlotOptions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
+
+        plotter.setName("plotter"); // NOI18N
 
         menuBar.setName("menuBar"); // NOI18N
 
@@ -459,7 +483,7 @@ public class PlotterView extends JInternalFrame {
         mntmAutoFixed.setText("Fixed");
         mntmAutoFixed.setToolTipText("<html>Fix the plot ranges when the SED changes. Otherwise, <br/> \nthe plot ranges automatically update when a SED changes.</html>");
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, plotter, org.jdesktop.beansbinding.ELProperty.create("${visualizerPreferences.plotPreferences.fixed}"), mntmAutoFixed, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, plotter, org.jdesktop.beansbinding.ELProperty.create("${visualizerPreferences.plotPreferences.fixed}"), mntmAutoFixed, org.jdesktop.beansbinding.BeanProperty.create("selected"));
         bindingGroup.addBinding(binding);
 
         jMenu1.add(mntmAutoFixed);
@@ -501,6 +525,9 @@ public class PlotterView extends JInternalFrame {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        plotter.getAccessibleContext().setAccessibleName("plotter");
+        plotter.getAccessibleContext().setAccessibleDescription("");
+
         bindingGroup.bind();
 
         pack();
@@ -529,8 +556,6 @@ public class PlotterView extends JInternalFrame {
         
         if (fixed)
            plotPrefs.setFixed(true);
-        
-        metadataBrowser.resetData();
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void mntmExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mntmExportActionPerformed
@@ -549,13 +574,13 @@ public class PlotterView extends JInternalFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnUnits;
-    private javax.swing.JCheckBox chckbxAbsolute;
     private cfa.vo.iris.gui.JButtonArrow down;
     private javax.swing.JSpinner fluxOrDensity;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private cfa.vo.iris.gui.JButtonArrow left;
+    private cfa.vo.iris.gui.JButtonArrow left1;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JButton metadataButton;
     private javax.swing.JMenu mnEdit;
@@ -576,7 +601,6 @@ public class PlotterView extends JInternalFrame {
     private javax.swing.JRadioButtonMenuItem mntmYlog;
     private javax.swing.ButtonGroup plotTypeButtonGroup;
     private cfa.vo.iris.visualizer.stil.StilPlotter plotter;
-    private cfa.vo.iris.gui.JButtonArrow right;
     private javax.swing.JSpinner secondaryPlotOptions;
     private javax.swing.JToggleButton tglbtnShowHideResiduals;
     private javax.swing.JTextField txtXposition;

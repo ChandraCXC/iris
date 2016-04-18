@@ -304,7 +304,14 @@ public class StilPlotter extends JPanel {
         logger.log(Level.FINE, "plot environment:");
         logger.log(Level.FINE, ReflectionToStringBuilder.toString(env));
         
-        return new PlanePlot2Task().createPlotComponent(env, cached);
+        
+        PlotDisplay<PlaneSurfaceFactory.Profile,PlaneAspect> display =
+                new PlanePlot2Task().createPlotComponent(env, cached);
+        
+        // Always update mouse listeners with the new display
+        preferences.getMouseListenerManager().activateListeners(display);
+        
+        return display;
     }
 
     protected void setupMapEnvironment(ExtSed sed) throws IOException {
