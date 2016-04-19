@@ -51,6 +51,8 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         setUpAvailableModelsTree();
         setUpModelViewerPanel();
         confidencePanel.setController(controller);
+        revalidate();
+        pack();
     }
 
     public ExtSed getSed() {
@@ -137,7 +139,6 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         setTitle("Fitting Tool");
         setAutoscrolls(true);
         setMinimumSize(new java.awt.Dimension(700, 500));
-        setPreferredSize(new java.awt.Dimension(890, 500));
         getContentPane().setLayout(new java.awt.GridLayout(1, 1));
 
         jSplitPane1.setBorder(javax.swing.BorderFactory.createTitledBorder("Fit Configuration"));
