@@ -130,6 +130,7 @@
                             ${project.parent.basedir}/iris/src/test/resources/log.properties
                         </java.util.logging.config.file>
                     </systemPropertyVariables>
+                    <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
                 </configuration>
             </plugin>
             <plugin>

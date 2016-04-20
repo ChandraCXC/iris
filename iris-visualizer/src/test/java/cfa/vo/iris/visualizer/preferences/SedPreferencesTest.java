@@ -121,4 +121,24 @@ public class SedPreferencesTest {
         prefs.refresh();
         assertEquals("my segment 2", prefs.getSegmentPreferences(seg3).getSuffix());
     }
+    
+    @Test
+    public void testAddMultipleSegments() throws Exception {
+        
+        final ExtSed sed = new ExtSed("sed");
+        sed.addSegment(createSampleSegment());
+        sed.addSegment(createSampleSegment(new double[] {1}, new double[] {2}));
+        
+        // Set target names to same name
+        sed.getSegment(0).createTarget();
+        sed.getSegment(0).getTarget().setName(new TextParam("target1"));
+        sed.getSegment(1).createTarget();
+        sed.getSegment(1).getTarget().setName(new TextParam("target1"));
+        
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
+        SedPreferences prefs = new SedPreferences(sed, adapter);
+        
+        assertEquals("target1", prefs.getSegmentPreferences(sed.getSegment(0)).getSuffix());
+        assertEquals("target1 1", prefs.getSegmentPreferences(sed.getSegment(1)).getSuffix());
+    }
 }

@@ -158,6 +158,10 @@ public class SegmentStarTable extends RandomStarTable {
         nameColumn.setName(name);
     }
     
+    public Segment getSegment() {
+        return segment;
+    }
+    
     /**
      * Sets the spectral axis units for this star table, which updates all spectral
      * valued columns in the table. As this may also alter the flux axis units,

@@ -20,6 +20,7 @@ import java.util.logging.Logger;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -38,7 +39,6 @@ import cfa.vo.iris.visualizer.preferences.VisualizerListener;
 import cfa.vo.iris.visualizer.stil.tables.ColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.StackedStarTable;
-
 import java.util.LinkedList;
 import java.util.List;
 import uk.ac.starlink.table.StarTable;
@@ -177,6 +177,31 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         IrisStarTable selectedTable = selectedTables.get(starTableIndex);
         int index = IrisStarTable.getTableStartIndex(selectedStarTables, selectedTable);
         plotterStarJTable.selectRowIndex(index + irow);
+    }
+
+    /**
+     * Extracts the selected rows in the Metadata browser to a new SED, then adds the SED to the
+     * SedManager through the Iris Workspace.
+     * 
+     */
+    private void extractSelectionToSed() {
+        
+        // Do nothing if no SED is selected
+        if (selectedSed == null) {
+            JOptionPane.showMessageDialog(this, "No SED in browser. Please load an SED.");
+            return;
+        }
+        
+        // Do nothing if there are no rows selected
+        int[] selectedRows = plotterStarJTable.getSelectedRows();
+        if (selectedRows == null || selectedRows.length == 0) {
+            JOptionPane.showMessageDialog(this, "No rows selected to extract. Please select rows.");
+            return;
+        }
+        
+        logger.info(String.format("Extracting %s points from Sed.", selectedRows.length));
+        preferences.createNewWorkspaceSed(selectedStarTables, selectedRows);
+        JOptionPane.showMessageDialog(this, "Added new Filter SED to workspace.");
     }
     
     
@@ -477,6 +502,11 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         fileMenu.setName("Extract"); // NOI18N
 
         extractToSedMenuItem.setText("Extract to New SED");
+        extractToSedMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                extractToSedMenuItemActionPerformed(evt);
+            }
+        });
         fileMenu.add(extractToSedMenuItem);
 
         broadcastToSampMenuItem.setText("Broadcast to SAMP");
@@ -600,6 +630,10 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         }
         table.clearSelection();
     }//GEN-LAST:event_clearSelectionButtonActionPerformed
+
+    private void extractToSedMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_extractToSedMenuItemActionPerformed
+        extractSelectionToSed();
+    }//GEN-LAST:event_extractToSedMenuItemActionPerformed
 
     private void selectAllButtonActionPerformed(
             java.awt.event.ActionEvent evt) {// GEN-FIRST:event_selectAllButtonActionPerformed
