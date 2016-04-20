@@ -131,10 +131,22 @@ public class IrisStarJTable extends StarJTable {
         }
     }
     
-    public void selectRowIndex(int irow) {
+    public void selectRowIndex(int starTableIndex, int irow) {
         // TODO: Handle sorting when we add it.
-        this.selectionModel.addSelectionInterval(irow, irow);
-        this.scrollRectToVisible(new Rectangle(this.getCellRect(irow, 0, true)));
+        
+        // irow corresponds to the row in the (possibly masked) IrisStarTable, we need to 
+        // map it back to the correct row in the dataTable.
+        IrisStarTable selectedTable = this.selectedStarTables.get(starTableIndex);
+        int trueRow = selectedTable.getBaseTableRow(irow);
+        
+        // Actual row is the trueRow plus the length of all the other tables (based on the
+        // base table! Not the masked table!)
+        for (int i=0; i<starTableIndex; i++) {
+            trueRow += this.selectedStarTables.get(i).getBaseTable().getRowCount();
+        }
+        
+        this.selectionModel.addSelectionInterval(trueRow, trueRow);
+        this.scrollRectToVisible(new Rectangle(this.getCellRect(trueRow, 0, true)));
     }
     
     private void setUtypeColumnNames() {

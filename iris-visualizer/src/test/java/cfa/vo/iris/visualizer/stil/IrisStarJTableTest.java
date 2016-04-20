@@ -25,8 +25,9 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.junit.Test;
+import org.uispec4j.utils.ArrayUtils;
+
 import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.visualizer.stil.IrisStarJTable.StarJTableHeader;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
@@ -83,10 +84,11 @@ public class IrisStarJTableTest {
     public void testMaskingColumnBehavior() throws Exception {
         IrisStarJTable table = new IrisStarJTable();
         IrisStarTable segTable1 = adapter.convertSegment(TestUtils.createSampleSegment());
-        IrisStarTable segTable2 = adapter.convertSegment(
-                TestUtils.createSampleSegment(new double[] {100}, new double[] {200}));
+        IrisStarTable segTable2 = adapter.convertSegment(TestUtils.createSampleSegment());
         
         List<IrisStarTable> tables = Arrays.asList(segTable1, segTable2);
+        
+        // Mask first row of second table
         segTable2.applyMasks(new int[] {3}, 3);
         
         table.setSelectedStarTables(tables);
@@ -96,8 +98,27 @@ public class IrisStarJTableTest {
         TableColumn col = columnModel.getColumn(0);
         assertEquals(col.getHeaderValue(), "Index");
         
-        // 2nd index should be the masked column
+        // 2nd index should be the masked column (after index)
         col = columnModel.getColumn(1);
         assertEquals(col.getHeaderValue(), "Masked");
+        
+        // Verify first index behavior
+        table.selectRowIndex(0,0);
+        ArrayUtils.assertEquals(new int[] {0}, table.getSelectedRows());
+        
+        // Select 0th index in second star table
+        table.clearSelection();
+        table.selectRowIndex(1, 0);
+        ArrayUtils.assertEquals(new int[] {4}, table.getSelectedRows());
+        
+        // Mask all but first rows in both tables
+        table.clearSelection();
+        IrisStarTable.clearAllFilters(tables);
+        IrisStarTable.applyFilters(tables, new int[] {1,2,4,5});
+        
+        // Only one row in the two tables, try selected both of them
+        table.selectRowIndex(0, 0);
+        table.selectRowIndex(1, 0);
+        ArrayUtils.assertEquals(new int[] {0,3}, table.getSelectedRows());
     }
 }

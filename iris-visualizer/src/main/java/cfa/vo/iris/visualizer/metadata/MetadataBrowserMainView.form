@@ -429,6 +429,7 @@
                           <Connection code="new UtypeColumnInfoMatcher()" type="code"/>
                         </Property>
                         <Property name="usePlotterDataTables" type="boolean" value="false"/>
+                        <Property name="utypeAsNames" type="boolean" value="true"/>
                       </Properties>
                       <BindingProperties>
                         <BindingProperty name="selectedStarTables" source="Form" sourcePath="${selectedStarTables}" target="pointStarJTable" targetPath="selectedStarTables" updateStrategy="0" immediately="false"/>

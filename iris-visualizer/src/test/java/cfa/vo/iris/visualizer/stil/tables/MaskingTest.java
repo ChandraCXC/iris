@@ -29,12 +29,12 @@ import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.sedlib.Segment;
 import uk.ac.starlink.table.RowSequence;
 
-public class FilterTest {
+public class MaskingTest {
     
     IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
     
     @Test
-    public void testFilters() throws Exception {
+    public void testMasks() throws Exception {
         RowSequence seq;
         
         double[] x = new double[] {1,2,3,4,5};
@@ -99,7 +99,7 @@ public class FilterTest {
     
     
     @Test
-    public void testFilteredRowSequence() throws Exception {
+    public void testMaskedRowSequence() throws Exception {
         RowSequence seq;
         
         double[] x = new double[] {100,200,300};
@@ -175,8 +175,8 @@ public class FilterTest {
         tables.add(table1);
         tables.add(table2);
        
-        // Mask first row in each table, also anything >= 6 should be superfluous, as there
-        // are only 6 rows
+        // Mask first row in first table, first and last in second table. 
+        // Also anything >= 6 should be superfluous, as there are only 6 rows
         IrisStarTable.applyFilters(tables, new int[] {0, 3, 5, 7});
         
         assertEquals(2, table1.getRowCount());
@@ -202,6 +202,40 @@ public class FilterTest {
         
         checkEquals(new double[] {1,2,3}, table1.getFluxDataValues());
         checkEquals(new double[] {1,2,3}, table2.getFluxDataValues());
+    }
+    
+    @Test
+    public void testRowMappingWithMasks() throws Exception {
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
+        
+        IrisStarTable table1 = adapter.convertSegment(TestUtils.createSampleSegment());
+        IrisStarTable table2 = adapter.convertSegment(TestUtils.createSampleSegment());
+
+        List<IrisStarTable> tables = new ArrayList<>();
+        tables.add(table1);
+        tables.add(table2);
+        
+        // Check masked indexes line up
+        assertEquals(2, table1.getBaseTableRow(2));
+        assertEquals(0, table2.getBaseTableRow(0));
+        assertEquals(-1, table2.getBaseTableRow(6));
+       
+        // Mask first row in first table, first in second table. 
+        // Also anything >= 6 should be superfluous, as there are only 6 rows
+        IrisStarTable.applyFilters(tables, new int[] {0, 3});
+        
+        // 2nd row in the first table should now point to 3rd row of base table
+        assertEquals(2, table1.getBaseTableRow(1));
+        
+        // 1st row of second table should now point to 2nd row of base table
+        assertEquals(1, table2.getBaseTableRow(0));
+        
+        // Apply filters to 1st row and 4th and 5th rows.
+        IrisStarTable.clearAllFilters(tables);
+        IrisStarTable.applyFilters(tables, new int[] {0,3,4});
+        
+        assertEquals(1, table1.getBaseTableRow(0));
+        assertEquals(2, table2.getBaseTableRow(0));
     }
     
     public static void checkEquals(double[] expected, double[] values) {

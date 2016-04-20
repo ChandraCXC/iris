@@ -250,6 +250,41 @@ public class IrisStarTable extends WrapperStarTable {
     public long getRowCount() {
         return super.getRowCount() - mask.cardinality();
     }
+
+    /**
+     * Returns the corresponding row in the basetable taking into account the masks
+     * that may be applied to this table. The return amount is essentially
+     * 
+     * irow + (#rows filtered less than irow)
+     * 
+     * Will return -1 if irow > this.getRowCount()
+     * 
+     */
+    public int getBaseTableRow(int irow) {
+        // Cannot be past the last index
+        if (irow >= this.getRowCount()) {
+            return -1;
+        }
+        
+        // If there is no mask the mapping is simple
+        if (isRandom()) {
+            return irow;
+        }
+        
+        // Otherwise we have to count to the current row
+        final BitSet masked = mask.getMaskedRows(this);
+        int index = 0;
+        int trueIndex = 0;
+        
+        while (trueIndex <= irow) {
+            if (!masked.get(index)) {
+                trueIndex++;
+            }
+            index++;
+        }
+        
+        return index - 1;
+    }
     
     /**
      * Returns a RowSequence relevant to the StarTable and the filters that have
