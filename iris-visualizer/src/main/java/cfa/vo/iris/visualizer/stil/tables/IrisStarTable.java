@@ -273,17 +273,14 @@ public class IrisStarTable extends WrapperStarTable {
         
         // Otherwise we have to count to the current row
         final BitSet masked = mask.getMaskedRows(this);
-        int index = 0;
-        int trueIndex = 0;
         
-        while (trueIndex <= irow) {
-            if (!masked.get(index)) {
-                trueIndex++;
-            }
-            index++;
+        // 0th row is first clear bit
+        int trueIndex = masked.nextClearBit(0);
+        for (int i=0; i<irow; i++) {
+            trueIndex = masked.nextClearBit(trueIndex+1);
         }
         
-        return index - 1;
+        return trueIndex;
     }
     
     /**
