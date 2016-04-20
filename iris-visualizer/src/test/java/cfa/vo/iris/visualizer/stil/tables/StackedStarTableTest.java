@@ -144,14 +144,15 @@ public class StackedStarTableTest extends VisualizerStarTableTest {
         assertEquals(1, test.getColumnCount());
     }
     
+    @Test
     public void testStackedSegmentMatcher() throws Exception {
         IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
         
         IrisStarTable table1 = adapter.convertSegment(TestUtils.createSampleSegment());
         IrisStarTable table2 = adapter.convertSegment(TestUtils.createSampleSegment());
         
-        // Mask first row
-        table1.applyMasks(new int[] {0}, 0);
+        // Mask first row of second table
+        table2.applyMasks(new int[] {4}, 3);
 
         List<StarTable> tables = new ArrayList<>();
         tables.add(table1);
@@ -163,6 +164,9 @@ public class StackedStarTableTest extends VisualizerStarTableTest {
         
         assertEquals(5, test.getColumnCount());
         int filt = new ColumnIdentifier(test).getColumnIndex(Column.Masked.name());
+        
+        // Should always be the first column
+        assertEquals(0, filt);
         
         // Filter values should be non-null
         RowSequence seq = test.getRowSequence();
