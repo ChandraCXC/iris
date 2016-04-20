@@ -23,7 +23,8 @@ import java.util.logging.Logger;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import cfa.vo.iris.sed.stil.SegmentStarTable.Column;
+import cfa.vo.iris.sed.stil.SegmentColumn;
+import cfa.vo.iris.sed.stil.SegmentColumn.Column;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import uk.ac.starlink.ttools.jel.ColumnIdentifier;

@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.uispec4j.utils.ArrayUtils;
 
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.stil.SegmentColumn.Column;
 import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
@@ -33,28 +34,20 @@ import cfa.vo.testdata.TestData;
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.ColumnStarTable;
 import uk.ac.starlink.table.PrimitiveArrayColumn;
+import uk.ac.starlink.table.RowSequence;
 import uk.ac.starlink.table.StarTable;
+import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
 public class StackedStarTableTest extends VisualizerStarTableTest {
     
     @Test
     public void testStackedStarTable() throws Exception {
         
-        ColumnStarTable data1 = new ColumnStarTable() {
-            @Override
-            public long getRowCount() {
-                return 1;
-            }
-        };
+        ColumnStarTable data1 = ColumnStarTable.makeTableWithRows(1);
         data1.addColumn(PrimitiveArrayColumn.makePrimitiveColumn(c1, new double[] {1.0}));
         data1.addColumn(PrimitiveArrayColumn.makePrimitiveColumn(c3, new double[] {3.0}));
         
-        ColumnStarTable data2 = new ColumnStarTable() {
-            @Override
-            public long getRowCount() {
-                return 1;
-            }
-        };
+        ColumnStarTable data2 = ColumnStarTable.makeTableWithRows(1);
         data2.addColumn(PrimitiveArrayColumn.makePrimitiveColumn(c2, new double[] {2.0}));
         data2.addColumn(PrimitiveArrayColumn.makePrimitiveColumn(c3, new double[] {3.0}));
         data2.addColumn(PrimitiveArrayColumn.makePrimitiveColumn(c4, new double[] {4.0}));
@@ -137,20 +130,10 @@ public class StackedStarTableTest extends VisualizerStarTableTest {
         c1.setUtype(utype1);
         c2.setUtype(utype2);
         
-        ColumnStarTable data1 = new ColumnStarTable() {
-            @Override
-            public long getRowCount() {
-                return 1;
-            }
-        };
+        ColumnStarTable data1 = ColumnStarTable.makeTableWithRows(1);
         data1.addColumn(PrimitiveArrayColumn.makePrimitiveColumn(c1, new double[] {1.0}));
         
-        ColumnStarTable data2 = new ColumnStarTable() {
-            @Override
-            public long getRowCount() {
-                return 1;
-            }
-        };
+        ColumnStarTable data2 = ColumnStarTable.makeTableWithRows(1);
         data2.addColumn(PrimitiveArrayColumn.makePrimitiveColumn(c2, new double[] {2.0}));
         
         List<StarTable> tables = new ArrayList<>(2);
@@ -160,5 +143,35 @@ public class StackedStarTableTest extends VisualizerStarTableTest {
         StackedStarTable test = new StackedStarTable(tables, matcher);
         assertEquals(1, test.getColumnCount());
     }
+    
+    @Test
+    public void testStackedSegmentMatcher() throws Exception {
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
+        
+        IrisStarTable table1 = adapter.convertSegment(TestUtils.createSampleSegment());
+        IrisStarTable table2 = adapter.convertSegment(TestUtils.createSampleSegment());
+        
+        // Mask first row of second table
+        table2.applyMasks(new int[] {4}, 3);
 
+        List<StarTable> tables = new ArrayList<>();
+        tables.add(table1);
+        tables.add(table2);
+        
+        // For non-null values in the filter column
+        ColumnInfoMatcher segMatcher = new SegmentColumnInfoMatcher();
+        StackedStarTable test = new StackedStarTable(tables, segMatcher);
+        
+        assertEquals(5, test.getColumnCount());
+        int filt = new ColumnIdentifier(test).getColumnIndex(Column.Masked.name());
+        
+        // Should always be the first column
+        assertEquals(0, filt);
+        
+        // Filter values should be non-null
+        RowSequence seq = test.getRowSequence();
+        while (seq.next()) {
+            assertNotNull(seq.getRow()[filt]);
+        }
+    }
 }
