@@ -31,6 +31,11 @@ public class SegmentColumnInfoMatcher extends ColumnInfoMatcher {
         return super.getDefaultValueColumn(c);
     }
     
+    @Override
+    public int compare(ColumnInfo c1, ColumnInfo c2) {
+        return getColumnForInfo(c1).compareTo(getColumnForInfo(c2));
+    }
+    
     private Column getColumnForInfo(ColumnInfo c) {
         try {
             return Column.getColumn(c.getName());

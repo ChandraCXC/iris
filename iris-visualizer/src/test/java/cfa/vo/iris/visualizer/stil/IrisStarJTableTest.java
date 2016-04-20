@@ -25,6 +25,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.junit.Test;
 import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.visualizer.stil.IrisStarJTable.StarJTableHeader;
@@ -76,5 +77,27 @@ public class IrisStarJTableTest {
         text = header.getToolTipText(evt);
         assertTrue(StringUtils.contains(text, "name: Flux_Value"));
         assertTrue(StringUtils.contains(text, "unit: Jy"));
+    }
+    
+    @Test
+    public void testMaskingColumnBehavior() throws Exception {
+        IrisStarJTable table = new IrisStarJTable();
+        IrisStarTable segTable1 = adapter.convertSegment(TestUtils.createSampleSegment());
+        IrisStarTable segTable2 = adapter.convertSegment(
+                TestUtils.createSampleSegment(new double[] {100}, new double[] {200}));
+        
+        List<IrisStarTable> tables = Arrays.asList(segTable1, segTable2);
+        segTable2.applyMasks(new int[] {3}, 3);
+        
+        table.setSelectedStarTables(tables);
+        TableColumnModel columnModel = table.getColumnModel();
+
+        // Index
+        TableColumn col = columnModel.getColumn(0);
+        assertEquals(col.getHeaderValue(), "Index");
+        
+        // 2nd index should be the masked column
+        col = columnModel.getColumn(1);
+        assertEquals(col.getHeaderValue(), "Masked");
     }
 }

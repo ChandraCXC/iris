@@ -126,10 +126,15 @@ public class IrisStarJTable extends StarJTable {
     @Override
     public void setStarTable(StarTable table, boolean showIndex) {
         super.setStarTable(table, showIndex);
-        
         if (utypeAsNames) {
             setUtypeColumnNames();
         }
+    }
+    
+    public void selectRowIndex(int irow) {
+        // TODO: Handle sorting when we add it.
+        this.selectionModel.addSelectionInterval(irow, irow);
+        this.scrollRectToVisible(new Rectangle(this.getCellRect(irow, 0, true)));
     }
     
     private void setUtypeColumnNames() {
@@ -145,12 +150,6 @@ public class IrisStarJTable extends StarJTable {
                 c.setHeaderValue(utype);
             }
         }
-    }
-    
-    public void selectRowIndex(int irow) {
-        // TODO: Handle sorting when we add it.
-        this.selectionModel.addSelectionInterval(irow, irow);
-        this.scrollRectToVisible(new Rectangle(this.getCellRect(irow, 0, true)));
     }
     
     protected class StarJTableHeader extends JTableHeader {
