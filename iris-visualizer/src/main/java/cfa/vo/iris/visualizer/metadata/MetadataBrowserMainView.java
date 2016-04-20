@@ -155,13 +155,8 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             starTableList.setSelectedIndices(ArrayUtils.add(selection, starTableIndex));
         }
         
-        // TODO: This will be complicated by masking and sorting, those methods should be taken
-        // care of by Iris star tables, and the sorting model in our jtables.
-        
         // Select the correct row
-        IrisStarTable selectedTable = sedStarTables.get(starTableIndex);
-        int index = IrisStarTable.getTableStartIndex(selectedStarTables, selectedTable);
-        plotterStarJTable.selectRowIndex(index + irow);
+        plotterStarJTable.selectRowIndex(starTableIndex, irow);
     }
     
     
@@ -489,6 +484,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
         pointStarJTable.setColumnInfoMatcher(new UtypeColumnInfoMatcher());
         pointStarJTable.setUsePlotterDataTables(false);
+        pointStarJTable.setUtypeAsNames(true);
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedStarTables}"), pointStarJTable, org.jdesktop.beansbinding.BeanProperty.create("selectedStarTables"));
         bindingGroup.addBinding(binding);
