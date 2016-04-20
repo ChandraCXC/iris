@@ -18,6 +18,8 @@ package cfa.vo.iris.visualizer.stil;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
@@ -25,6 +27,10 @@ import java.awt.Rectangle;
 
 import org.apache.commons.lang.StringUtils;
 import cfa.vo.iris.utils.UTYPE;
+import cfa.vo.iris.visualizer.stil.tables.ColumnInfoMatcher;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
+import cfa.vo.iris.visualizer.stil.tables.SegmentColumnInfoMatcher;
+import cfa.vo.iris.visualizer.stil.tables.StackedStarTable;
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.gui.StarJTable;
@@ -41,14 +47,51 @@ public class IrisStarJTable extends StarJTable {
     // Use ColumnNames or Utypes in the column header fields
     private boolean utypeAsNames = false;
     
+    // Use the plotter data (segment) star tables or the metadata star tables
+    private boolean usePlotterDataTables;
+
+    private ColumnInfoMatcher columnInfoMatcher;
+    private List<IrisStarTable> selectedStarTables;
+
     public IrisStarJTable() {
         super(false);
+        
+        // By default we use use the plotter data, as it is generally available first
+        columnInfoMatcher = new SegmentColumnInfoMatcher();
+        usePlotterDataTables = true;
+    }
+    
+    public List<IrisStarTable> getSelectedStarTables() {
+        return selectedStarTables;
     }
 
-    public void setStarTable(StarTable table) {
+    /**
+     * Updates the selected list of star tables and creates a new stacked star table to represent
+     * the concatenated tables in a single JTable.
+     * 
+     * @param selectedStarTables
+     */
+    public void setSelectedStarTables(List<IrisStarTable> selectedStarTables) {
+        if (selectedStarTables == null) {
+            return;
+        }
+        
         // Include the index column for non-null/non-empty star tables.
-        boolean showIndex = (table != null && table.getRowCount() > 0);
-        setStarTable(table, showIndex);
+        boolean showIndex = (selectedStarTables.size() > 0);
+        
+        this.selectedStarTables = selectedStarTables;
+        List<StarTable> dataTables = new LinkedList<>();
+        
+        for (IrisStarTable table : selectedStarTables) {
+            if (usePlotterDataTables) {
+                dataTables.add(table.getPlotterTable());
+            } else {
+                dataTables.add(table.getSegmentDataTable());
+            }
+        }
+        
+        this.setStarTable(new StackedStarTable(dataTables, columnInfoMatcher), showIndex);
+        IrisStarJTable.configureColumnWidths(this, 200, 20);
     }
     
     public boolean isUtypeAsNames() {
@@ -57,6 +100,22 @@ public class IrisStarJTable extends StarJTable {
 
     public void setUtypeAsNames(boolean utypeAsNames) {
         this.utypeAsNames = utypeAsNames;
+    }
+    
+    public boolean isUsePlotterDataTables() {
+        return usePlotterDataTables;
+    }
+
+    public void setUsePlotterDataTables(boolean usePlotterDataTables) {
+        this.usePlotterDataTables = usePlotterDataTables;
+    }
+
+    public ColumnInfoMatcher getColumnInfoMatcher() {
+        return columnInfoMatcher;
+    }
+
+    public void setColumnInfoMatcher(ColumnInfoMatcher columnInfoMatcher) {
+        this.columnInfoMatcher = columnInfoMatcher;
     }
     
     @Override 

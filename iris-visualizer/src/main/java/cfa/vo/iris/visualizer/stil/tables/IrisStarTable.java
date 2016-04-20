@@ -17,7 +17,6 @@
 package cfa.vo.iris.visualizer.stil.tables;
 
 
-import java.util.Iterator;
 import java.io.IOException;
 import java.util.BitSet;
 import java.util.List;

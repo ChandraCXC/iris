@@ -18,24 +18,31 @@ package cfa.vo.iris.visualizer.stil;
 import static org.junit.Assert.*;
 
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
-import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.visualizer.stil.IrisStarJTable.StarJTableHeader;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 
 public class IrisStarJTableTest {
+    
+    private IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
     
     @Test
     public void testColumnHeaderTooltips() throws Exception {
         IrisStarJTable table = new IrisStarJTable();
-        SegmentStarTable segTable = new SegmentStarTable(TestUtils.createSampleSegment());
+        IrisStarTable segTable = adapter.convertSegment(TestUtils.createSampleSegment());
         
-        table.setStarTable(segTable);
+        List<IrisStarTable> tables = Arrays.asList(segTable);
+        table.setSelectedStarTables(tables);
+        
         StarJTableHeader header = (StarJTableHeader) table.getTableHeader();
         TableColumnModel columnModel = table.getColumnModel();
         
