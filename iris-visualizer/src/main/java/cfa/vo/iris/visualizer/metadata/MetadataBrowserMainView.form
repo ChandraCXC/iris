@@ -381,6 +381,14 @@
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
                     <Component class="cfa.vo.iris.visualizer.stil.IrisStarJTable" name="plotterStarJTable">
+                      <Properties>
+                        <Property name="columnInfoMatcher" type="cfa.vo.iris.visualizer.stil.tables.ColumnInfoMatcher" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                          <Connection code="new SegmentColumnInfoMatcher()" type="code"/>
+                        </Property>
+                      </Properties>
+                      <BindingProperties>
+                        <BindingProperty name="selectedStarTables" source="Form" sourcePath="${selectedStarTables}" target="plotterStarJTable" targetPath="selectedStarTables" updateStrategy="0" immediately="false"/>
+                      </BindingProperties>
                     </Component>
                   </SubComponents>
                 </Container>
@@ -416,7 +424,14 @@
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
                     <Component class="cfa.vo.iris.visualizer.stil.IrisStarJTable" name="pointStarJTable">
+                      <Properties>
+                        <Property name="columnInfoMatcher" type="cfa.vo.iris.visualizer.stil.tables.ColumnInfoMatcher" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                          <Connection code="new UtypeColumnInfoMatcher()" type="code"/>
+                        </Property>
+                        <Property name="usePlotterDataTables" type="boolean" value="false"/>
+                      </Properties>
                       <BindingProperties>
+                        <BindingProperty name="selectedStarTables" source="Form" sourcePath="${selectedStarTables}" target="pointStarJTable" targetPath="selectedStarTables" updateStrategy="0" immediately="false"/>
                         <BindingProperty name="selectionModel" source="plotterStarJTable" sourcePath="${selectionModel}" target="pointStarJTable" targetPath="selectionModel" updateStrategy="0" immediately="false"/>
                       </BindingProperties>
                     </Component>
