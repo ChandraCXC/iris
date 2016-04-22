@@ -538,7 +538,7 @@ public class PlotterView extends JInternalFrame {
 
     private void zoomOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomOutActionPerformed
         // zoom out by a factor
-        this.plotter.zoom(1 - ZOOM_SCALE);
+        this.plotter.zoom(1 - ZOOM_SCALE*2/3);
     }//GEN-LAST:event_zoomOutActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed

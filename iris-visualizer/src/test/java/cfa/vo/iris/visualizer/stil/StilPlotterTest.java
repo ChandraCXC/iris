@@ -176,4 +176,53 @@ public class StilPlotterTest {
         assertEquals(1, aspect3.getXMin(), .0001);
         assertEquals(1, aspect3.getYMin(), .0001);
     }
+    
+    // TODO: uncomment when we figure out why assertEquals() isn't working
+    //@Test
+    public void testZoom() throws Exception {
+        
+        sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
+        StilPlotter plot = new StilPlotter(ws, preferences);
+        preferences.update(sed);
+        
+        // Get initial bounds
+        plot.reset(sed, false);
+        PlotDisplay<Profile, PlaneAspect> display = plot.getPlotDisplay();
+        PlaneAspect aspect1 = display.getAspect();
+        
+        // zoom in
+        plot.zoom(1.5);
+        
+        PlaneAspect aspect = (PlaneAspect) plot.getPlotDisplay().getAspect();
+        double xmax = aspect.getXMax();
+        double xmin = aspect.getXMin();
+        double ymax = aspect.getYMax();
+        double ymin = aspect.getYMin();
+        
+        // expected ranges (log space)
+        double expectedXmax = 1.7779708E21;
+        double expectedXmin = 5.7953144E9;
+        double expectedYmax = 7.3199692;
+        double expectedYmin = 3.1956419E-9;
+        
+        assertEquals(expectedXmax, xmax, 0.01);
+        assertEquals(expectedXmin, xmin, 0.01);
+        assertEquals(expectedYmax, ymax, 0.01);
+        assertEquals(expectedYmin, ymin, 0.01);
+        
+        // zoom out. Plot should be back at the ranges it was at before.
+        plot.zoom(0.5);
+        
+        aspect = (PlaneAspect) plot.getPlotDisplay().getAspect();
+        xmax = aspect.getXMax();
+        xmin = aspect.getXMin();
+        ymax = aspect.getYMax();
+        ymin = aspect.getYMin();
+        
+        assertEquals(xmax, aspect1.getXMax(), 0.000001);
+        assertEquals(xmin, aspect1.getXMin(), 0.000001);
+        assertEquals(ymax, aspect1.getYMax(), 0.000001);
+        assertEquals(ymin, aspect1.getYMin(), 0.000001);
+        
+    }
 }
