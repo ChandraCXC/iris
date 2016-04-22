@@ -47,6 +47,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import uk.ac.starlink.ttools.plot2.Axis;
 import uk.ac.starlink.ttools.plot2.geom.PlaneSurface;
 
 public class StilPlotter extends JPanel {
@@ -208,7 +209,7 @@ public class StilPlotter extends JPanel {
         this.getPlotDisplay().setAspect(zoomedAspect);
     }
     
-        /**
+    /**
      * Calculate new zoomed axis range.
      * @param zoomFactor - scale factor to zoom in/out by
      * @param min - min axis value
@@ -218,61 +219,29 @@ public class StilPlotter extends JPanel {
      */
     private double[] zoomAxis(double zoomFactor, double min, double max, boolean isLog) {
         
-        // zooming is dependent on the axis spacing.
         if (isLog) {
-            return zoomLogAxis(zoomFactor, min, max);
+            
+            // calculate central axis value
+            double centerFactor = (Math.log10(max) - Math.log10(min))/2;
+            double center = centerFactor + Math.log10(min);
+            center = Math.pow(10, center);
+            
+            // calculate zoomed min and max values
+            return Axis.zoom(min, max, center, zoomFactor, isLog);
+            
         } else {
-            return zoomLinearAxis(zoomFactor, min, max);
+            
+            // calculate the central axis value
+            double center = (Math.abs(max) - Math.abs(min))/2;
+            if (min < 0 && max > 0) {
+                // pass. leave xcenter as it is
+            } else {
+                center = min + Math.abs(center);
+            }
+            
+            // calculate zoomed min and max values
+            return Axis.zoom(min, max, center, zoomFactor, isLog);
         }
-    }
-    
-    /**
-     * Calculate new zoomed range for a logarithmically-spaced axis.
-     * @param zoomFactor
-     * @param min
-     * @param max
-     * @return a double array of the zoomed min and max range: [min, max]
-     */
-    private double[] zoomLogAxis(double zoomFactor, double min, double max) {
-        
-        // calculate central value
-        double centerFactor = (Math.log10(max) - Math.log10(min))/2;
-        double center = centerFactor + Math.log10(min);
-        center = Math.pow(10, center);
-
-        // calculate zoomed range
-        double f1 = 1. / zoomFactor;
-        double zlo = center * Math.pow( min / center, f1 );
-        double zhi = center * Math.pow( max / center, f1 );
-        return zlo > Double.MIN_VALUE && zhi < Double.MAX_VALUE
-                ? new double[] { zlo, zhi }
-                : new double[] { min, max };
-    }
-    
-    /**
-     * Calculate new zoomed range for a linearly-spaced axis.
-     * @param zoomFactor
-     * @param min
-     * @param max
-     * @return a double array of the zoomed min and max range: [min, max]
-     */
-    private double[] zoomLinearAxis(double zoomFactor, double min, double max) {
-        
-        // calculate the central axis value
-        double center = (Math.abs(max) - Math.abs(min))/2;
-        if (min < 0 && max > 0) {
-            // pass. leave xcenter as it is
-        } else {
-            center = min + Math.abs(center);
-        }
-
-        // calculate zoomed axis range
-        double f1 = 1. / zoomFactor;
-        double zlo = center + ( min - center ) * f1;
-        double zhi = center + ( max - center ) * f1;
-        return zlo > -Double.MAX_VALUE && zhi < +Double.MAX_VALUE
-                ? new double[] { zlo, zhi }
-                : new double[] { min, max };
     }
     
     /**
