@@ -298,7 +298,6 @@ public class PlotterView extends JInternalFrame {
         bindingGroup.addBinding(binding);
 
         zoomIn.setText("In");
-        zoomIn.setEnabled(false);
         zoomIn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 zoomInActionPerformed(evt);
@@ -320,7 +319,6 @@ public class PlotterView extends JInternalFrame {
         left.setText("jButtonArrow1");
 
         zoomOut.setText("Out");
-        zoomOut.setEnabled(false);
         zoomOut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 zoomOutActionPerformed(evt);
