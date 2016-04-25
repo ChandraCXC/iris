@@ -18,16 +18,25 @@ package cfa.vo.iris.visualizer.stil;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableRowSorter;
+
 import java.awt.Rectangle;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+
+import cfa.vo.iris.sed.stil.SegmentColumn.Column;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.iris.visualizer.stil.tables.ColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
@@ -37,6 +46,7 @@ import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.gui.StarJTable;
 import uk.ac.starlink.table.gui.StarTableColumn;
+import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
 /**
  * Simple bean wrapper for the StarJTable class.
@@ -45,6 +55,7 @@ import uk.ac.starlink.table.gui.StarTableColumn;
 public class IrisStarJTable extends StarJTable {
     
     private static final long serialVersionUID = -6504087912203707631L;
+    private static final Logger logger = Logger.getLogger(IrisStarJTable.class.getName());
     
     // Use ColumnNames or Utypes in the column header fields
     private boolean utypeAsNames = false;
@@ -61,6 +72,7 @@ public class IrisStarJTable extends StarJTable {
         // By default we use use the plotter data, as it is generally available first
         columnInfoMatcher = new SegmentColumnInfoMatcher();
         usePlotterDataTables = true;
+        setAutoCreateRowSorter(true);
     }
     
     public List<IrisStarTable> getSelectedStarTables() {
@@ -94,6 +106,28 @@ public class IrisStarJTable extends StarJTable {
         
         this.setStarTable(new StackedStarTable(dataTables, columnInfoMatcher), showIndex);
         IrisStarJTable.configureColumnWidths(this, 200, 20);
+        
+        // If usePlotterDataTables we resort by spectral value
+        if (usePlotterDataTables) {
+            sortBySpectralValue();
+        }
+    }
+    
+    private void sortBySpectralValue() {
+        try {
+            ColumnIdentifier id = new ColumnIdentifier(getStarTable());
+            int col = id.getColumnIndex(Column.Spectral_Value.name()) + 1;
+            
+            if (col == -1) {
+                return;
+            }
+            
+            TableRowSorter<?> sorter = (TableRowSorter<?>) getRowSorter();
+            sorter.setSortKeys(Arrays.asList(new RowSorter.SortKey(col, SortOrder.ASCENDING)));
+            sorter.sort();
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, "Could not read spectral value column", ex);;
+        }
     }
     
     public boolean isUtypeAsNames() {
