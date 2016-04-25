@@ -59,7 +59,7 @@ public class StilPlotter extends JPanel {
 
     private PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> display;
 
-    private IWorkspace ws;
+    //private IWorkspace ws;
     private SedlibSedManager sedManager;
     private ExtSed currentSed;
     private VisualizerComponentPreferences preferences;
@@ -74,7 +74,6 @@ public class StilPlotter extends JPanel {
     
     public StilPlotter(IWorkspace ws, 
             VisualizerComponentPreferences preferences) {
-        this.ws = ws;
         this.sedManager = (SedlibSedManager) ws.getSedManager();
         this.preferences = preferences;
         
@@ -247,15 +246,6 @@ public class StilPlotter extends JPanel {
         
     }
     
-    public StilPlotter setWorkSpace(IWorkspace ws) {
-        this.ws = ws;
-        return this;
-    }
-    
-    public IWorkspace getWorkSpace() {
-        return this.ws;
-    }
-    
     public StilPlotter setVisualizerPreferences(VisualizerComponentPreferences prefs) {
         this.preferences = prefs;
         return this;
@@ -337,6 +327,7 @@ public class StilPlotter extends JPanel {
         logger.log(Level.FINE, ReflectionToStringBuilder.toString(env));
         
         
+        @SuppressWarnings("unchecked")
         PlotDisplay<PlaneSurfaceFactory.Profile,PlaneAspect> display =
                 new PlanePlot2Task().createPlotComponent(env, cached);
         

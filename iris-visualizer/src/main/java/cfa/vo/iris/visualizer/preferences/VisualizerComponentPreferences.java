@@ -37,9 +37,7 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.MouseListenerManager;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.plotter.SegmentModel;
-import cfa.vo.iris.visualizer.stil.tables.ColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
-import cfa.vo.iris.visualizer.stil.tables.UtypeColumnInfoMatcher;
 import cfa.vo.sedlib.Segment;
 
 /**
@@ -51,12 +49,25 @@ public class VisualizerComponentPreferences {
     
     private static final ExecutorService visualizerExecutor = Executors.newFixedThreadPool(5);
     
+    // Top level preferences for the plotter
     PlotPreferences plotPreferences;
+    
+    // For accessing plot mouse listeners
     MouseListenerManager mouseListenerManager;
+    
+    // Converts a segment into an Iris StarTable
     IrisStarTableAdapter adapter;
+    
+    // Pointer to the Iris workspace
     final IWorkspace ws;
+    
+    // All preferences for each ExtSed in the workspace
     final Map<ExtSed, SedModel> sedPreferences;
     
+    // Sed to display in the Plotter (TODO: support multiple SEDs.)
+    ExtSed selectedSed;
+
+    @SuppressWarnings("unchecked")
     public VisualizerComponentPreferences(IWorkspace ws) {
         this.ws = ws;
         
@@ -71,12 +82,13 @@ public class VisualizerComponentPreferences {
         for (ExtSed sed : (List<ExtSed>) ws.getSedManager().getSeds()) {
             update(sed);
         }
+        this.selectedSed = (ExtSed) ws.getSedManager().getSelected();
         
         // Plotter global preferences
         if (this.sedPreferences.isEmpty()) {
             this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
         } else {
-            this.plotPreferences = this.getSelectedSedPreferences().getPlotPreferences();
+            this.plotPreferences = this.getSedPreferences(getSelectedSed()).getPlotPreferences();
         }
         
         // Add SED listener
@@ -99,10 +111,18 @@ public class VisualizerComponentPreferences {
 
     /**
      * @return
-     *  Preferences for the currently selected SED in the workspace.
+     *  Currently selected SED in the workspace
      */
-    public SedModel getSelectedSedPreferences() {
-        return sedPreferences.get((ExtSed) ws.getSedManager().getSelected());
+    public ExtSed getSelectedSed() {
+        return selectedSed;
+    }
+
+    /**
+     * Sets selected SED
+     * @param selectedSed
+     */
+    public void setSelectedSed(ExtSed selectedSed) {
+        this.selectedSed = selectedSed;
     }
 
     /**
@@ -126,7 +146,7 @@ public class VisualizerComponentPreferences {
      *  Collection of all the segment layers attached to the currently selected SED.
      */
     public Collection<SegmentModel> getSelectedLayers() {
-        SedModel p = getSelectedSedPreferences();
+        SedModel p = getSedPreferences(getSelectedSed());
         if (p == null) {
             return Collections.emptyList();
         }
@@ -281,6 +301,7 @@ public class VisualizerComponentPreferences {
                 remove(sed);
             } 
             else if (SedCommand.SELECTED.equals(payload)) {
+                setSelectedSed(sed);
                 fire(sed, VisualizerCommand.SELECTED);
             }
             else {
