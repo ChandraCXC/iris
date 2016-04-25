@@ -27,7 +27,6 @@ import javax.swing.ListCellRenderer;
 
 import org.apache.commons.lang.ArrayUtils;
 
-import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.SegmentModel;
 import cfa.vo.iris.visualizer.preferences.SedModel;
@@ -53,7 +52,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     public static final String MB_WINDOW_NAME = "Metadata Browser (%s)";
 
     final VisualizerComponentPreferences preferences;
-    final IWorkspace ws;
+    //final IWorkspace ws;
     
     ExtSed selectedSed; // Selected ws sed
     List<IrisStarTable> sedStarTables; // list of star tables associated with selectedSed
@@ -62,10 +61,8 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     /**
      * Creates new form MetadataBrowser
      */
-    public MetadataBrowserMainView(IWorkspace ws,
-            VisualizerComponentPreferences preferences) 
+    public MetadataBrowserMainView(VisualizerComponentPreferences preferences) 
     {
-        this.ws = ws;
         this.preferences = preferences;
         
         initComponents();
@@ -79,7 +76,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     }
 
     public void resetData() {
-        setSelectedSed((ExtSed) ws.getSedManager().getSelected());
+        setSelectedSed(preferences.getSelectedSed());
         logger.info("Resetting metadata browser");
         
         updateTitle();
@@ -115,7 +112,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         // If no SED selected then just leave an empty list
         if (selectedSed != null) {
             // Read all startables to list
-            SedModel prefs = preferences.getSelectedSedPreferences();
+            SedModel prefs = preferences.getSedPreferences(selectedSed);
             
             for (int i=0; i<selectedSed.getNumberOfSegments(); i++) {
                 SegmentModel layer = prefs.getSegmentPreferences(selectedSed.getSegment(i));
