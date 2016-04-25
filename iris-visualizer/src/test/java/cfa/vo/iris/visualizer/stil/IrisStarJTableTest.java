@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.uispec4j.utils.ArrayUtils;
 
 import cfa.vo.iris.test.unit.TestUtils;
+import cfa.vo.iris.visualizer.stil.IrisStarJTable.RowSelection;
 import cfa.vo.iris.visualizer.stil.IrisStarJTable.StarJTableHeader;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
@@ -120,5 +121,42 @@ public class IrisStarJTableTest {
         table.selectRowIndex(0, 0);
         table.selectRowIndex(1, 0);
         ArrayUtils.assertEquals(new int[] {0,3}, table.getSelectedRows());
+    }
+    
+    @Test
+    public void testRowSelection() throws Exception {
+        IrisStarJTable table = new IrisStarJTable();
+        IrisStarTable segTable1 = adapter.convertSegment(TestUtils.createSampleSegment());
+        IrisStarTable segTable2 = adapter.convertSegment(TestUtils.createSampleSegment());
+        
+        List<IrisStarTable> tables = Arrays.asList(segTable1, segTable2);
+        
+        table.setSelectedStarTables(tables);
+        
+        // Should be two empty lists
+        RowSelection sel = table.getRowSelection();
+        assertEquals(2, sel.selectedRows.length);
+        assertEquals(0, sel.selectedRows[0].length);
+        assertEquals(0, sel.selectedRows[1].length);
+        
+        // Select all rows
+        table.addRowSelectionInterval(0, 5);
+        
+        // Should be two empty lists
+        sel = table.getRowSelection();
+        assertEquals(2, sel.selectedRows.length);
+        ArrayUtils.assertEquals(new int[] {0,1,2}, sel.selectedRows[0]);
+        ArrayUtils.assertEquals(new int[] {0,1,2}, sel.selectedRows[1]);
+        
+        table.clearSelection();
+        
+        // Select only last row
+        table.addRowSelectionInterval(5, 5);
+        
+        // One empty one not empty list
+        sel = table.getRowSelection();
+        assertEquals(2, sel.selectedRows.length);
+        ArrayUtils.assertEquals(new int[] {}, sel.selectedRows[0]);
+        ArrayUtils.assertEquals(new int[] {2}, sel.selectedRows[1]);
     }
 }

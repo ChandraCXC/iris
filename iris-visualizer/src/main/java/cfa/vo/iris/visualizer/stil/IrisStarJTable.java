@@ -18,6 +18,7 @@ package cfa.vo.iris.visualizer.stil;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 import java.awt.Rectangle;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.iris.visualizer.stil.tables.ColumnInfoMatcher;
@@ -149,6 +151,10 @@ public class IrisStarJTable extends StarJTable {
         this.scrollRectToVisible(new Rectangle(this.getCellRect(trueRow, 0, true)));
     }
     
+    public RowSelection getRowSelection() {
+        return new RowSelection(this.selectedStarTables, this.getSelectedRows());
+    }
+    
     private void setUtypeColumnNames() {
         
         // If we're using utypes as column names, override existing settings here.
@@ -197,6 +203,46 @@ public class IrisStarJTable extends StarJTable {
             bb.append("</html>");
             
             return bb.toString();
+        }
+    }
+    
+    public static class RowSelection {
+        
+        public final IrisStarTable[] selectedTables;
+        public final int[][] selectedRows;
+        
+        private RowSelection(List<IrisStarTable> tables, int[] rows) {
+            
+            // Always sort the selection
+            Arrays.sort(rows);
+            
+            this.selectedRows = new int[tables.size()][];
+            Arrays.fill(selectedRows, new int[0]);
+            
+            this.selectedTables = tables.toArray(new IrisStarTable[tables.size()]);
+            
+            int startIndex = 0; // start index of current star table
+            int t = 0; // current table
+            int i = 0; // current selected row
+            
+            // Iterate through row selection and map rows to the appropriate star table
+            // row indexes
+            while (t < selectedTables.length) {
+                int end = (int) (startIndex + selectedTables[t].getRowCount());
+                
+                // Get subarray the applies to this star table
+                int start = i;
+                while (i < rows.length && rows[i] < end) ++i;
+                selectedRows[t] = ArrayUtils.subarray(rows, start, i);
+                
+                // Adjust indexes to match star table start index
+                for (int j=0; j<selectedRows[t].length; j++) {
+                    selectedRows[t][j] -= startIndex;
+                }
+                
+                startIndex += selectedTables[t].getRowCount();
+                t++;
+            }
         }
     }
 }
