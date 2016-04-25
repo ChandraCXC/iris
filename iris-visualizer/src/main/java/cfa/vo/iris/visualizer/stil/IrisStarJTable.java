@@ -164,7 +164,7 @@ public class IrisStarJTable extends StarJTable {
             setUtypeColumnNames();
         }
     }
-    
+
     public List<IrisStarTable> getSelectedStarTables() {
         return selectedStarTables;
     }
@@ -265,6 +265,7 @@ public class IrisStarJTable extends StarJTable {
     }
     
     private void sortBySpectralValue(boolean showIndex) {
+        
         // Do nothing is we have no data
         if (getStarTable().getRowCount() <= 0) return;
         
@@ -282,9 +283,10 @@ public class IrisStarJTable extends StarJTable {
             TableRowSorter<?> sorter = (TableRowSorter<?>) getRowSorter();
             sorter.setSortKeys(Arrays.asList(new SortKey(col, SortOrder.ASCENDING)));
             sorter.sort();
+            
         } catch (IOException ex) {
             // Ignore these
-            logger.log(Level.WARNING, "Could not read spectral value column", ex);;
+            logger.log(Level.WARNING, "Could not read spectral value column", ex);
         }
     }
     
@@ -354,6 +356,7 @@ public class IrisStarJTable extends StarJTable {
         public final int[] originalRows;
         
         private RowSelection(List<IrisStarTable> tables, int[] rows) {
+            
             this.selectedRows = new int[tables.size()][];
             Arrays.fill(selectedRows, new int[0]);
             
