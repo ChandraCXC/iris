@@ -245,7 +245,6 @@ public class StilPlotter extends JPanel {
     public void hideErrorBars() {
         
     }
-    
     public StilPlotter setVisualizerPreferences(VisualizerComponentPreferences prefs) {
         this.preferences = prefs;
         return this;
