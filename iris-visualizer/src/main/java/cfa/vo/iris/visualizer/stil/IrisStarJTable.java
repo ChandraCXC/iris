@@ -62,6 +62,9 @@ public class IrisStarJTable extends StarJTable {
     
     // Use the plotter data star tables or the metadata star tables
     private boolean usePlotterDataTables;
+    
+    // Default sorting behavior. If true columns will sort by spectral data value by default.
+    private boolean sortBySpecValues;
 
     private ColumnInfoMatcher columnInfoMatcher;
     private List<IrisStarTable> selectedStarTables;
@@ -74,6 +77,12 @@ public class IrisStarJTable extends StarJTable {
         usePlotterDataTables = true;
         setAutoCreateRowSorter(true);
     }
+    
+    /**
+     * 
+     * GETTERS AND SETTERS
+     * 
+     */
     
     public List<IrisStarTable> getSelectedStarTables() {
         return selectedStarTables;
@@ -108,25 +117,8 @@ public class IrisStarJTable extends StarJTable {
         IrisStarJTable.configureColumnWidths(this, 200, 20);
         
         // If usePlotterDataTables we resort by spectral value
-        if (usePlotterDataTables) {
-            sortBySpectralValue();
-        }
-    }
-    
-    private void sortBySpectralValue() {
-        try {
-            ColumnIdentifier id = new ColumnIdentifier(getStarTable());
-            int col = id.getColumnIndex(Column.Spectral_Value.name()) + 1;
-            
-            if (col == -1) {
-                return;
-            }
-            
-            TableRowSorter<?> sorter = (TableRowSorter<?>) getRowSorter();
-            sorter.setSortKeys(Arrays.asList(new RowSorter.SortKey(col, SortOrder.ASCENDING)));
-            sorter.sort();
-        } catch (IOException ex) {
-            logger.log(Level.SEVERE, "Could not read spectral value column", ex);;
+        if (sortBySpecValues) {
+            sortBySpectralValue(showIndex);
         }
     }
     
@@ -153,7 +145,18 @@ public class IrisStarJTable extends StarJTable {
     public void setColumnInfoMatcher(ColumnInfoMatcher columnInfoMatcher) {
         this.columnInfoMatcher = columnInfoMatcher;
     }
+
+    public boolean isSortBySpecValues() {
+        return sortBySpecValues;
+    }
+
+    public void setSortBySpecValues(boolean sortBySpectralDataValues) {
+        this.sortBySpecValues = sortBySpectralDataValues;
+    }
     
+    /**
+     * Overridden to customize header tooltips and appearances
+     */
     @Override 
     protected JTableHeader createDefaultTableHeader() {
         return new StarJTableHeader(columnModel);
@@ -167,9 +170,14 @@ public class IrisStarJTable extends StarJTable {
         }
     }
     
+    /**
+     * Selects the specified row from the specified star table. If the table isn't currently 
+     * selected, we add it - which resets the view.
+     * 
+     * @param starTableIndex
+     * @param irow
+     */
     public void selectRowIndex(int starTableIndex, int irow) {
-        // TODO: Handle sorting when we add it.
-        
         // irow corresponds to the row in the (possibly masked) IrisStarTable, we need to 
         // map it back to the correct row in the dataTable.
         IrisStarTable selectedTable = this.selectedStarTables.get(starTableIndex);
@@ -181,12 +189,32 @@ public class IrisStarJTable extends StarJTable {
             trueRow += this.selectedStarTables.get(i).getBaseTable().getRowCount();
         }
         
+        // Map true index to sorted view index
+        trueRow = convertRowIndexToView(trueRow);
+        
         this.selectionModel.addSelectionInterval(trueRow, trueRow);
         this.scrollRectToVisible(new Rectangle(this.getCellRect(trueRow, 0, true)));
     }
     
+    /**
+     * Returns selected rows according either to the model index, or to the view's index - as
+     * specified by modelView.
+     */
+    public int[] getSelectedRows(boolean modelView) {
+        int[] rows = super.getSelectedRows();
+        if (!modelView) {
+            return rows;
+        }
+        
+        for (int i = 0; i < rows.length; i++) {
+            rows[i] = convertRowIndexToModel(rows[i]);
+        }
+        Arrays.sort(rows);
+        return rows;
+    }
+    
     public RowSelection getRowSelection() {
-        return new RowSelection(this.selectedStarTables, this.getSelectedRows());
+        return new RowSelection(this.selectedStarTables, this.getSelectedRows(true));
     }
     
     private void setUtypeColumnNames() {
@@ -201,6 +229,26 @@ public class IrisStarJTable extends StarJTable {
                 String utype = UTYPE.trimPrefix(c.getColumnInfo().getUtype());
                 c.setHeaderValue(utype);
             }
+        }
+    }
+    
+    private void sortBySpectralValue(boolean showIndex) {
+        try {
+            ColumnIdentifier id = new ColumnIdentifier(getStarTable());
+            int col = id.getColumnIndex(Column.Spectral_Value.name());
+            
+            // Nothing to be done if there is no spectral value
+            if (col == -1) return;
+            
+            // Add one if there's an index column
+            if (showIndex) col++;
+            
+            // Sort based on spectral value column
+            TableRowSorter<?> sorter = (TableRowSorter<?>) getRowSorter();
+            sorter.setSortKeys(Arrays.asList(new RowSorter.SortKey(col, SortOrder.ASCENDING)));
+            sorter.sort();
+        } catch (IOException ex) {
+            logger.log(Level.SEVERE, "Could not read spectral value column", ex);;
         }
     }
     
@@ -270,9 +318,6 @@ public class IrisStarJTable extends StarJTable {
         public final int[] originalRows;
         
         private RowSelection(List<IrisStarTable> tables, int[] rows) {
-            
-            // Always sort the selection
-            Arrays.sort(rows);
             
             this.selectedRows = new int[tables.size()][];
             Arrays.fill(selectedRows, new int[0]);

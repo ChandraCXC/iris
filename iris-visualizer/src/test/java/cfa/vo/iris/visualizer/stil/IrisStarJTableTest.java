@@ -160,4 +160,31 @@ public class IrisStarJTableTest {
         ArrayUtils.assertEquals(new int[] {}, sel.selectedRows[0]);
         ArrayUtils.assertEquals(new int[] {2}, sel.selectedRows[1]);
     }
+    
+    @Test
+    public void testSorting() throws Exception {
+        IrisStarJTable table = new IrisStarJTable();
+        table.setSortBySpecValues(true);
+        
+        IrisStarTable segTable = adapter.convertSegment(TestUtils.createSampleSegment(
+                        new double[] {5,4,3,2,1}, 
+                        new double[] {6,7,8,9,10}));
+        
+        table.setSelectedStarTables(Arrays.asList(segTable));
+        
+        // Rows selection should map correctly back to model, so selecting last three in the
+        // table should be first three in model
+        table.addRowSelectionInterval(2, 4);
+        ArrayUtils.assertEquals(new int[] {0,1,2}, table.getSelectedRows(true));
+        
+        table.clearSelection();
+        
+        // Values should be in ascending order
+        assertEquals(1.0, table.getValueAt(0, 2));
+        assertEquals(5.0, table.getValueAt(4, 2));
+        
+        // Try adding the 0th (model) index to the selection, should select the last row.
+        table.selectRowIndex(0,0);
+        ArrayUtils.assertEquals(new int[] {4}, table.getSelectedRows(false));
+    }
 }
