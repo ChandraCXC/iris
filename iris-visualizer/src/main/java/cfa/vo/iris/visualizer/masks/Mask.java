@@ -24,7 +24,7 @@ public interface Mask {
     
     public abstract long cardinality();
     
-    public abstract void applyMasks(int[] rows, int startIndex);
+    public abstract void applyMasks(int[] rows);
     
-    public abstract void clearMasks(int[] rows, int startIndex);
+    public abstract void clearMasks(int[] rows);
 }

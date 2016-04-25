@@ -34,6 +34,7 @@ import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
 import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerListener;
+import cfa.vo.iris.visualizer.stil.IrisStarJTable.RowSelection;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.SegmentColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.UtypeColumnInfoMatcher;
@@ -656,23 +657,32 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private void applyMaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyMaskButtonActionPerformed
         // Applying a mask always acts on the selections from the plotter and 
         // segment data tables.
-        int[] selected = this.plotterStarJTable.getSelectedRows();
+        RowSelection selection = this.plotterStarJTable.getRowSelection();
         
-        logger.info(String.format("Applying mask of %s points to %s tables", selected.length, selectedStarTables.size()));
-        IrisStarTable.applyFilters(selectedStarTables, selected);
+        logger.info(String.format("Applying mask of %s points to %s tables", selection.originalRows.length, selectedStarTables.size()));
+        
+        for (int i=0; i<selection.selectedTables.length; i++) {
+            selection.selectedTables[i].applyMasks(selection.selectedRows[i]);
+        }
+        
         VisualizerChangeEvent.getInstance().fire(selectedSed, VisualizerCommand.REDRAW);
     }//GEN-LAST:event_applyMaskButtonActionPerformed
 
     private void clearMaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearMaskButtonActionPerformed
-        int[] selected = this.plotterStarJTable.getSelectedRows();
+
+        RowSelection selection = this.plotterStarJTable.getRowSelection();
         
-        logger.info(String.format("Removing masks of %s points from %s tables", selected.length, selectedStarTables.size()));
-        IrisStarTable.clearFilters(selectedStarTables, selected);
+        logger.info(String.format("Removing masks of %s points from %s tables", selection.originalRows.length, selectedStarTables.size()));
+        
+        for (int i=0; i<selection.selectedTables.length; i++) {
+            selection.selectedTables[i].clearMasks(selection.selectedRows[i]);
+        }
+        
         VisualizerChangeEvent.getInstance().fire(selectedSed, VisualizerCommand.REDRAW);
     }//GEN-LAST:event_clearMaskButtonActionPerformed
 
     private void clearAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearAllButtonActionPerformed
-        IrisStarTable.clearAllFilters(sedStarTables);
+        IrisStarTable.clearAllMasks(sedStarTables);
         VisualizerChangeEvent.getInstance().fire(selectedSed, VisualizerCommand.REDRAW);
     }//GEN-LAST:event_clearAllButtonActionPerformed
 

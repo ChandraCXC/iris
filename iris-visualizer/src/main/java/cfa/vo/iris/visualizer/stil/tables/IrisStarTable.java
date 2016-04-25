@@ -176,8 +176,8 @@ public class IrisStarTable extends WrapperStarTable {
      * Mask rows from this StarTable.
      * @param filter
      */
-    public void applyMasks(int[] rows, int startIndex) {
-        mask.applyMasks(rows, startIndex);
+    public void applyMasks(int[] rows) {
+        mask.applyMasks(rows);
         plotterTable.setMasked(mask.getMaskedRows(this));
     }
     
@@ -185,8 +185,8 @@ public class IrisStarTable extends WrapperStarTable {
      * Remove the mask from rows on this StarTable.
      * @param filter
      */
-    public void clearMasks(int[] rows, int startIndex) {
-        mask.clearMasks(rows, startIndex);
+    public void clearMasks(int[] rows) {
+        mask.clearMasks(rows);
         plotterTable.setMasked(mask.getMaskedRows(this));
     }
     
@@ -322,45 +322,10 @@ public class IrisStarTable extends WrapperStarTable {
     }
     
     /**
-     * Applies a set of RowSubsetFilters to a list of startables, in order. In particular, for
-     * two startables <t1, t2> with 3 rows each, providing the array int[] {0,3} would filter
-     * the first row in each t1 and t2.
-     * 
-     * @param tables
-     * @param selectedRows
-     */
-    public static void applyFilters(List<IrisStarTable> tables, int[] selectedRows) {
-        // Apply each filter to the selected star tables in order.
-        int index = 0;
-        
-        for (IrisStarTable table : tables) {
-            int length = (int) table.getPlotterTable().getRowCount();
-            table.applyMasks(selectedRows, index);
-            index = index + length;
-        }
-    }
-    
-    /**
-     * Clears the masks from the selected rows.
-     * 
-     * @param tables
-     * @param selectedRows
-     */
-    public static void clearFilters(List<IrisStarTable> tables, int[] selectedRows) {
-        int index = 0;
-        
-        for (IrisStarTable table : tables) {
-            int length = (int) table.getPlotterTable().getRowCount();
-            table.clearMasks(selectedRows, index);
-            index = index + length;
-        }
-    }
-    
-    /**
      * Removes all filters from the specified star tables.
      * @param tables
      */
-    public static void clearAllFilters(List<IrisStarTable> tables) {
+    public static void clearAllMasks(List<IrisStarTable> tables) {
         for (IrisStarTable table : tables) {
             table.clearMasks();
         }

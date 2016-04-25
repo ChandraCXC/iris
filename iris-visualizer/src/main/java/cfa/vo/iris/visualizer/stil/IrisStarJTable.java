@@ -206,10 +206,16 @@ public class IrisStarJTable extends StarJTable {
         }
     }
     
+    /**
+     * Represents a selection of rows in each star table by mapping the current row selection
+     * into a list of rows for each StarTable currently in the segment plotter.
+     *
+     */
     public static class RowSelection {
         
         public final IrisStarTable[] selectedTables;
         public final int[][] selectedRows;
+        public final int[] originalRows;
         
         private RowSelection(List<IrisStarTable> tables, int[] rows) {
             
@@ -221,6 +227,8 @@ public class IrisStarJTable extends StarJTable {
             
             this.selectedTables = tables.toArray(new IrisStarTable[tables.size()]);
             
+            this.originalRows = rows;
+            
             int startIndex = 0; // start index of current star table
             int t = 0; // current table
             int i = 0; // current selected row
@@ -228,7 +236,7 @@ public class IrisStarJTable extends StarJTable {
             // Iterate through row selection and map rows to the appropriate star table
             // row indexes
             while (t < selectedTables.length) {
-                int end = (int) (startIndex + selectedTables[t].getRowCount());
+                int end = (int) (startIndex + selectedTables[t].getBaseTable().getRowCount());
                 
                 // Get subarray the applies to this star table
                 int start = i;
