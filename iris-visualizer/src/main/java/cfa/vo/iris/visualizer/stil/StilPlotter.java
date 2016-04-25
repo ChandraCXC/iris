@@ -19,13 +19,10 @@ import javax.swing.JPanel;
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.iris.sed.quantities.SPVMagnitude;
 import cfa.vo.iris.sed.quantities.SPVYQuantity;
-import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
-import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
-import cfa.vo.iris.visualizer.plotter.SegmentLayer;
-import cfa.vo.iris.visualizer.preferences.SedPreferences;
+import cfa.vo.iris.visualizer.plotter.SegmentModel;
+import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.sedlib.Segment;
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
@@ -48,7 +45,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import uk.ac.starlink.ttools.plot2.Axis;
-import uk.ac.starlink.ttools.plot2.geom.PlaneSurface;
 
 public class StilPlotter extends JPanel {
 
@@ -282,7 +278,7 @@ public class StilPlotter extends JPanel {
         return currentSed;
     }
 
-    public Map<Segment, SegmentLayer> getSegmentsMap() {
+    public Map<Segment, SegmentModel> getSegmentsMap() {
         return Collections.unmodifiableMap(preferences
                 .getSedPreferences(currentSed).getAllSegmentPreferences());
     }
@@ -392,9 +388,9 @@ public class StilPlotter extends JPanel {
         logger.info(String.format("Plotting SED with %s segments...",
                 sed.getNamespace()));
 
-        SedPreferences prefs = preferences.getSedPreferences(sed);
+        SedModel prefs = preferences.getSedPreferences(sed);
         for (int i = 0; i < sed.getNumberOfSegments(); i++) {
-            SegmentLayer layer = prefs.getSegmentPreferences(sed.getSegment(i));
+            SegmentModel layer = prefs.getSegmentPreferences(sed.getSegment(i));
             for (String key : layer.getPreferences().keySet()) {
                 env.setValue(key, layer.getPreferences().get(key));
             }

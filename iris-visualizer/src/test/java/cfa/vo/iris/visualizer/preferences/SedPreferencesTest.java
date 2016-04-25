@@ -23,7 +23,7 @@ import static cfa.vo.iris.test.unit.TestUtils.*;
 import org.junit.Test;
 
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.visualizer.plotter.SegmentLayer;
+import cfa.vo.iris.visualizer.plotter.SegmentModel;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.Target;
@@ -36,7 +36,7 @@ public class SedPreferencesTest {
         ExtSed sed = new ExtSed("test");
         IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
         
-        SedPreferences prefs = new SedPreferences(sed, adapter);
+        SedModel prefs = new SedModel(sed, adapter);
         
         assertEquals(0, prefs.getAllSegmentPreferences().size());
         
@@ -58,8 +58,8 @@ public class SedPreferencesTest {
         assertEquals(2, prefs.getAllSegmentPreferences().size());
 
         // Same segments should still have different suffixes
-        SegmentLayer layer1 = prefs.getSegmentPreferences(seg1);
-        SegmentLayer layer2 = prefs.getSegmentPreferences(seg2);
+        SegmentModel layer1 = prefs.getSegmentPreferences(seg1);
+        SegmentModel layer2 = prefs.getSegmentPreferences(seg2);
         assertFalse(layer1.getSuffix().equals(layer2.getSuffix()));
         
         // Check that the colors for each segment are different
@@ -94,7 +94,7 @@ public class SedPreferencesTest {
         ExtSed sed = new ExtSed("test");
         IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
         
-        SedPreferences prefs = new SedPreferences(sed, adapter);
+        SedModel prefs = new SedModel(sed, adapter);
         
         // create two segments with the same Target name
         Target targ = new Target();

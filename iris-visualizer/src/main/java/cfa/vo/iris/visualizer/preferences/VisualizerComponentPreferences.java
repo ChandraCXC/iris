@@ -36,7 +36,7 @@ import cfa.vo.iris.events.SegmentListener;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.MouseListenerManager;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
-import cfa.vo.iris.visualizer.plotter.SegmentLayer;
+import cfa.vo.iris.visualizer.plotter.SegmentModel;
 import cfa.vo.iris.visualizer.stil.tables.ColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.iris.visualizer.stil.tables.UtypeColumnInfoMatcher;
@@ -55,7 +55,7 @@ public class VisualizerComponentPreferences {
     MouseListenerManager mouseListenerManager;
     IrisStarTableAdapter adapter;
     final IWorkspace ws;
-    final Map<ExtSed, SedPreferences> sedPreferences;
+    final Map<ExtSed, SedModel> sedPreferences;
     
     public VisualizerComponentPreferences(IWorkspace ws) {
         this.ws = ws;
@@ -67,7 +67,7 @@ public class VisualizerComponentPreferences {
         this.mouseListenerManager = new MouseListenerManager();
         
         // Create and add preferences for the SED
-        this.sedPreferences = Collections.synchronizedMap(new IdentityHashMap<ExtSed, SedPreferences>());
+        this.sedPreferences = Collections.synchronizedMap(new IdentityHashMap<ExtSed, SedModel>());
         for (ExtSed sed : (List<ExtSed>) ws.getSedManager().getSeds()) {
             update(sed);
         }
@@ -101,7 +101,7 @@ public class VisualizerComponentPreferences {
      * @return
      *  Preferences for the currently selected SED in the workspace.
      */
-    public SedPreferences getSelectedSedPreferences() {
+    public SedModel getSelectedSedPreferences() {
         return sedPreferences.get((ExtSed) ws.getSedManager().getSelected());
     }
 
@@ -125,8 +125,8 @@ public class VisualizerComponentPreferences {
      * @return
      *  Collection of all the segment layers attached to the currently selected SED.
      */
-    public Collection<SegmentLayer> getSelectedLayers() {
-        SedPreferences p = getSelectedSedPreferences();
+    public Collection<SegmentModel> getSelectedLayers() {
+        SedModel p = getSelectedSedPreferences();
         if (p == null) {
             return Collections.emptyList();
         }
@@ -138,7 +138,7 @@ public class VisualizerComponentPreferences {
      * @return
      *  Preferences map for each SED.
      */
-    public Map<ExtSed, SedPreferences> getSedPreferences() {
+    public Map<ExtSed, SedModel> getSedPreferences() {
         return sedPreferences;
     }
     
@@ -146,7 +146,7 @@ public class VisualizerComponentPreferences {
      * @return
      *  Preferences for the given SED
      */
-    public SedPreferences getSedPreferences(ExtSed sed) {
+    public SedModel getSedPreferences(ExtSed sed) {
         return sedPreferences.get(sed);
     }
 
@@ -158,7 +158,7 @@ public class VisualizerComponentPreferences {
         if (sedPreferences.containsKey(sed)) {
             sedPreferences.get(sed).refresh();
         } else {
-            sedPreferences.put(sed, new SedPreferences(sed, adapter));
+            sedPreferences.put(sed, new SedModel(sed, adapter));
         }
         //fire(sed, VisualizerCommand.RESET);
     }
@@ -177,7 +177,7 @@ public class VisualizerComponentPreferences {
         } else {
             // The segment will automatically be serialized and attached the the 
             // SedPrefrences since it's assumed to be attached to the SED.
-            sedPreferences.put(sed, new SedPreferences(sed, adapter));
+            sedPreferences.put(sed, new SedModel(sed, adapter));
         }
         
         fire(sed, VisualizerCommand.RESET);
@@ -198,7 +198,7 @@ public class VisualizerComponentPreferences {
         } else {
             // The segment will automatically be serialized and attached the the 
             // SedPrefrences since it's assumed to be attached to the SED.
-            sedPreferences.put(sed, new SedPreferences(sed, adapter));
+            sedPreferences.put(sed, new SedModel(sed, adapter));
         }
         fire(sed, VisualizerCommand.RESET);
     }

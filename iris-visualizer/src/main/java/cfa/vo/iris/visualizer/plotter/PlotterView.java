@@ -190,7 +190,7 @@ public class PlotterView extends JInternalFrame {
         return plotter.getSed();
     }
 
-    public Map<Segment, SegmentLayer> getSegmentsMap() {
+    public Map<Segment, SegmentModel> getSegmentsMap() {
         return plotter.getSegmentsMap();
     }
     
