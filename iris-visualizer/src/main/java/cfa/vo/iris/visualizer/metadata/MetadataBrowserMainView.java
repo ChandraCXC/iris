@@ -29,8 +29,8 @@ import org.apache.commons.lang.ArrayUtils;
 
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.visualizer.plotter.SegmentLayer;
-import cfa.vo.iris.visualizer.preferences.SedPreferences;
+import cfa.vo.iris.visualizer.plotter.SegmentModel;
+import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
 import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
@@ -115,10 +115,10 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         // If no SED selected then just leave an empty list
         if (selectedSed != null) {
             // Read all startables to list
-            SedPreferences prefs = preferences.getSelectedSedPreferences();
+            SedModel prefs = preferences.getSelectedSedPreferences();
             
             for (int i=0; i<selectedSed.getNumberOfSegments(); i++) {
-                SegmentLayer layer = prefs.getSegmentPreferences(selectedSed.getSegment(i));
+                SegmentModel layer = prefs.getSegmentPreferences(selectedSed.getSegment(i));
                 newTables.add(layer.getInSource());
             }
         }
