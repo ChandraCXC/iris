@@ -152,7 +152,7 @@ public class StackedStarTableTest extends VisualizerStarTableTest {
         IrisStarTable table2 = adapter.convertSegment(TestUtils.createSampleSegment());
         
         // Mask first row of second table
-        table2.applyMasks(new int[] {4}, 3);
+        table2.applyMasks(new int[] {0});
 
         List<StarTable> tables = new ArrayList<>();
         tables.add(table1);

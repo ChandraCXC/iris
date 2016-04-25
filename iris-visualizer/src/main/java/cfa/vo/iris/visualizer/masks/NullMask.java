@@ -33,11 +33,11 @@ public class NullMask implements Mask {
     }
 
     @Override
-    public void clearMasks(int[] rows, int startIndex) {
+    public void clearMasks(int[] rows) {
     }
 
     @Override
-    public void applyMasks(int[] rows, int startIndex) {
+    public void applyMasks(int[] rows) {
         
     }
 }

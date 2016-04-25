@@ -15,6 +15,7 @@
  */
 package cfa.vo.iris.visualizer.masks;
 
+import java.util.Arrays;
 import java.util.BitSet;
 
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
@@ -27,31 +28,21 @@ import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
  */
 public class RowSubsetMask implements Mask {
     
-    private int size;
     private BitSet mask;
     private IrisStarTable table;
     
-    public RowSubsetMask(int[] rows, IrisStarTable table) {
-        this(rows, 0, table);
-    }
-    
     /**
-     * Create a filter which filters out the given rows in the star table, presuming
-     * that the first row of the star table is indexed by startIndex. Rows that do not 
+     * Create a filter which filters out the given rows in the star table. Rows that do not 
      * apply to this star table are ignored.
      * 
      * @param rows
-     * @param startIndex
      * @param table
      */
-    public RowSubsetMask(int[] rows, int startIndex, IrisStarTable table) {
+    public RowSubsetMask(int[] rows, IrisStarTable table) {
         this.table = table;
-        
-        // The size of this filter is the size of the underlying plot table.
-        this.size = (int) table.getPlotterTable().getRowCount();
         this.mask = new BitSet();
         
-        applyMasks(rows, startIndex);
+        applyMasks(rows);
     }
     
     @Override
@@ -69,35 +60,26 @@ public class RowSubsetMask implements Mask {
     }
 
     /**
-     * Removes the specified rows from the mask. @startIndex specfies at what
-     * index this StarTable sits if @rows contains selections from multiple
-     * stacked StarTables.
+     * Removes the specified rows from the mask.
      *
      */
     @Override
-    public void clearMasks(int[] rows, int startIndex) {
+    public void clearMasks(int[] rows) {
         for (int i : rows) {
-            int index = i - startIndex;
-            if (index >= 0 && index < size) {
-                mask.clear(index);
-            }
+            if (i > table.getSegmentDataTable().getRowCount()) continue;
+            mask.clear(i);
         }
     }
     
     /**
-     * Adds the specified rows to the mask. @startIndex specfies at what
-     * index this StarTable sits if @rows contains selections from multiple
-     * stacked StarTables.
+     * Adds the specified rows to the mask. 
      *
      */
     @Override
-    public void applyMasks(int[] rows, int startIndex) {
+    public void applyMasks(int[] rows) {
         for (int i : rows) {
-            int index = i - startIndex;
-            if (index >= 0 && index < size) {
-                mask.set(index);
-            }
-            
+            if (i > table.getSegmentDataTable().getRowCount()) continue;
+            mask.set(i);
         }
     }
 }

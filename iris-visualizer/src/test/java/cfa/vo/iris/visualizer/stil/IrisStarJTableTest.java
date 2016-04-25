@@ -90,7 +90,7 @@ public class IrisStarJTableTest {
         List<IrisStarTable> tables = Arrays.asList(segTable1, segTable2);
         
         // Mask first row of second table
-        segTable2.applyMasks(new int[] {3}, 3);
+        segTable2.applyMasks(new int[] {0});
         
         table.setSelectedStarTables(tables);
         TableColumnModel columnModel = table.getColumnModel();
@@ -114,8 +114,9 @@ public class IrisStarJTableTest {
         
         // Mask all but first rows in both tables
         table.clearSelection();
-        IrisStarTable.clearAllFilters(tables);
-        IrisStarTable.applyFilters(tables, new int[] {1,2,4,5});
+        IrisStarTable.clearAllMasks(tables);
+        segTable1.applyMasks(new int[] {1,2});
+        segTable2.applyMasks(new int[] {1,2});
         
         // Only one row in the two tables, try selected both of them
         table.selectRowIndex(0, 0);

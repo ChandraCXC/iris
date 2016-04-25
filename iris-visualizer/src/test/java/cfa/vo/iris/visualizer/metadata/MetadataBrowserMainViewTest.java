@@ -29,6 +29,7 @@ import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
+import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.visualizer.VisualizerComponent;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
@@ -306,7 +307,8 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
     
     @Test
     public void testMetadataBrowserMasking() throws Exception {
-        final ExtSed sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
+        final ExtSed sed = new ExtSed("");//ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
+        sed.addSegment(TestUtils.createSampleSegment());
         sedManager.add(sed);
         
         invokeWithRetry(20, 100, new Runnable() {
@@ -316,17 +318,17 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
                 assertEquals(sed, mbView.selectedSed);
                 assertEquals(1, mbView.sedStarTables.size());
                 assertEquals(1, starTableList.getSize());
-                assertEquals(455, plotterTable.getRowCount());
+                assertEquals(3, plotterTable.getRowCount());
             }
         });
         
         // Apply a mask on the first and last rows
         final BitSet masked = new BitSet();
         masked.set(0);
-        masked.set(454);
+        masked.set(2);
         
         dataPanel.getTabGroup().selectTab("Data");
-        plotterTable.selectRows(0, 454);
+        plotterTable.selectRows(0, 2);
         mbWindow.getButton("Apply Mask").click();
         
         invokeWithRetry(20, 100, new Runnable() {

@@ -65,7 +65,7 @@ public class MaskingTest {
         ArrayUtils.assertEquals(new Object[] {test.getName(), 5.0, 10.0, 10.0}, seq.getRow());
         
         // Apply a filter to rows 0 and 4
-        test.applyMasks(new int[] {0, 4}, 0);;
+        test.applyMasks(new int[] {0, 4});;
         assertEquals(3, test.getRowCount());
         
         seq = test.getRowSequence();
@@ -81,7 +81,7 @@ public class MaskingTest {
         checkEquals(new double[] {2,3,4}, test.getSpectralDataValues());
         
         // Apply a filter to row 2
-        test.applyMasks(new int[] {2}, 0);
+        test.applyMasks(new int[] {2});
         assertEquals(2, test.getRowCount());
         
         // verify values
@@ -89,7 +89,7 @@ public class MaskingTest {
         checkEquals(new double[] {2,4}, test.getSpectralDataValues());
         
         // Remove the first filter
-        test.clearMasks(new int[] {0, 4}, 0);
+        test.clearMasks(new int[] {0, 4});
         assertEquals(4, test.getRowCount());
         
         // verify values
@@ -116,7 +116,7 @@ public class MaskingTest {
         assertFalse(seq.next());
         
         // Filter first point
-        test.applyMasks(new int[] {0}, 0);
+        test.applyMasks(new int[] {0});
         seq = test.getRowSequence();
         
         // Should not have the first point
@@ -137,7 +137,7 @@ public class MaskingTest {
         assertFalse(seq.next());
         
         // Filter first and last rows
-        test.applyMasks(new int[] {0, 2}, 0);
+        test.applyMasks(new int[] {0, 2});
         seq = test.getRowSequence();
         
         check = new double[] {200};
@@ -149,7 +149,7 @@ public class MaskingTest {
         
         // Filter all points
         test.clearMasks();
-        test.applyMasks(new int[] {0, 1, 2}, 0);
+        test.applyMasks(new int[] {0, 1, 2});
         seq = test.getRowSequence();
         assertFalse(test.getRowSequence().next());
         
@@ -177,7 +177,8 @@ public class MaskingTest {
        
         // Mask first row in first table, first and last in second table. 
         // Also anything >= 6 should be superfluous, as there are only 6 rows
-        IrisStarTable.applyFilters(tables, new int[] {0, 3, 5, 7});
+        table1.applyMasks(new int[] {0});
+        table2.applyMasks(new int[] {0,2});
         
         assertEquals(2, table1.getRowCount());
         assertEquals(1, table2.getRowCount());
@@ -186,7 +187,7 @@ public class MaskingTest {
         checkEquals(new double[] {2}, table2.getFluxDataValues());
         
         // Clear filter from second star table. Non-masked values should have no effect.
-        IrisStarTable.clearFilters(tables, new int[] {3,4});
+        table2.clearMasks(new int[] {0,4});
         
         assertEquals(2, table1.getRowCount());
         assertEquals(2, table2.getRowCount());
@@ -195,7 +196,7 @@ public class MaskingTest {
         checkEquals(new double[] {1,2}, table2.getFluxDataValues());
         
         // Remove all filters
-        IrisStarTable.clearAllFilters(tables);
+        IrisStarTable.clearAllMasks(tables);
         
         assertEquals(3, table1.getRowCount());
         assertEquals(3, table2.getRowCount());
@@ -222,7 +223,8 @@ public class MaskingTest {
        
         // Mask first row in first table, first in second table. 
         // Also anything >= 6 should be superfluous, as there are only 6 rows
-        IrisStarTable.applyFilters(tables, new int[] {0, 3});
+        table1.applyMasks(new int[] {0});
+        table2.applyMasks(new int[] {0});
         
         // 2nd row in the first table should now point to 3rd row of base table
         assertEquals(2, table1.getBaseTableRow(1));
@@ -231,8 +233,9 @@ public class MaskingTest {
         assertEquals(1, table2.getBaseTableRow(0));
         
         // Apply filters to 1st row and 4th and 5th rows.
-        IrisStarTable.clearAllFilters(tables);
-        IrisStarTable.applyFilters(tables, new int[] {0,3,4});
+        IrisStarTable.clearAllMasks(tables);
+        table1.applyMasks(new int[] {0});
+        table2.applyMasks(new int[] {0,1});
         
         assertEquals(1, table1.getBaseTableRow(0));
         assertEquals(2, table2.getBaseTableRow(0));
