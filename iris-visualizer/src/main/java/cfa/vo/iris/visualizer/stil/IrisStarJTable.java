@@ -356,7 +356,6 @@ public class IrisStarJTable extends StarJTable {
         public final int[] originalRows;
         
         private RowSelection(List<IrisStarTable> tables, int[] rows) {
-            
             this.selectedRows = new int[tables.size()][];
             Arrays.fill(selectedRows, new int[0]);
             
