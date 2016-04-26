@@ -325,7 +325,8 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         masked.set(454);
         
         dataPanel.getTabGroup().selectTab("Data");
-        plotterTable.selectRows(0, 2);
+        mbView.addRowToSelection(0, 0);
+        mbView.addRowToSelection(0, 454);
         mbWindow.getButton("Mask Points").click();
         
         invokeWithRetry(20, 100, new Runnable() {
@@ -518,7 +519,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         });
         
         plotterTable.selectAllRows();
-        mbWindow.getButton("Apply Mask").click();
+        mbWindow.getButton("Mask Points").click();
         
         // Both tables should have all rows masked
         masked.set(0, 3);
@@ -532,7 +533,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         
         // Remove masks from first rows in each table (recall the table is sorted)
         plotterTable.selectRows(0,1);
-        mbWindow.getButton("Remove Masks").click();
+        mbWindow.getButton("Unmask Points").click();
         
         // Masks should be cleared from first rows
         masked.clear(0);
