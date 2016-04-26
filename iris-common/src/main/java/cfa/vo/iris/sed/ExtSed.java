@@ -58,12 +58,15 @@ import java.util.logging.Logger;
 
 public class ExtSed extends Sed {
 
-    private Map<String, Object> attachments = new TreeMap();
+    private Map<String, Object> attachments = new TreeMap<>();
     private String id;
     private boolean managed = true;
 
     @Nonnull
     public FitConfiguration getFit() {
+        if (fit == null) {
+            fit = new FitConfiguration();
+        }
         return fit;
     }
 
@@ -171,7 +174,7 @@ public class ExtSed extends Sed {
     @Override
     public ExtSed clone() {
         ExtSed s = (ExtSed) super.clone();
-        s.attachments = new TreeMap();
+        s.attachments = new TreeMap<>();
         return s;
     }
 
