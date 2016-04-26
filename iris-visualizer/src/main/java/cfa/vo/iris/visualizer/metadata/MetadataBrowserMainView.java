@@ -34,6 +34,7 @@ import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
 import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerListener;
+import cfa.vo.iris.visualizer.stil.IrisStarJTable;
 import cfa.vo.iris.visualizer.stil.IrisStarJTable.RowSelection;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.SegmentColumnInfoMatcher;
@@ -107,6 +108,28 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         setTitle(title);
     }
     
+    /**
+     * Specifies a star table (by index) and a row to be added to the selected plotter/
+     * data table tabs' row selections.
+     * 
+     * @param starTableIndex - index of the star table in the selectedTables list.
+     * @param irow - row to be selected in the star table.
+     */
+    public void addRowToSelection(int starTableIndex, int irow) {
+        
+        // If the star table isn't currently selected, add it to the selection
+        int[] selection = starTableList.getSelectedIndices();
+        if (ArrayUtils.indexOf(selection, starTableIndex) < 0) {
+            starTableList.setSelectedIndices(ArrayUtils.add(selection, starTableIndex));
+        }
+        
+        // Select the correct row
+        IrisStarJTable table = getSelectedIrisJTable();
+        if (table == null) return;
+        
+        table.selectRowIndex(starTableIndex, irow);
+    }
+    
     private void updateSelectedTables() {
         List<IrisStarTable> newTables = new LinkedList<>();
         
@@ -136,25 +159,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             }
         }
         setSelectedStarTables(newTables);
-    }
-    
-    /**
-     * Specifies a star table (by index) and a row to be added to the selected plotter/
-     * data table tabs' row selections.
-     * 
-     * @param starTableIndex - index of the star table in the selectedTables list.
-     * @param irow - row to be selected in the star table.
-     */
-    public void addRowToSelection(int starTableIndex, int irow) {
-        
-        // If the star table isn't currently selected, add it to the selection
-        int[] selection = starTableList.getSelectedIndices();
-        if (ArrayUtils.indexOf(selection, starTableIndex) < 0) {
-            starTableList.setSelectedIndices(ArrayUtils.add(selection, starTableIndex));
-        }
-        
-        // Select the correct row
-        plotterStarJTable.selectRowIndex(starTableIndex, irow);
     }
     
     
@@ -459,6 +463,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         plotterMetadataScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         plotterStarJTable.setColumnInfoMatcher(new SegmentColumnInfoMatcher());
+        plotterStarJTable.setSortBySpecValues(true);
 
         org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedStarTables}"), plotterStarJTable, org.jdesktop.beansbinding.BeanProperty.create("selectedStarTables"));
         bindingGroup.addBinding(binding);
@@ -481,12 +486,11 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         pointMetadataScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         pointStarJTable.setColumnInfoMatcher(new UtypeColumnInfoMatcher());
+        pointStarJTable.setSortBySpecValues(false);
         pointStarJTable.setUsePlotterDataTables(false);
         pointStarJTable.setUtypeAsNames(true);
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedStarTables}"), pointStarJTable, org.jdesktop.beansbinding.BeanProperty.create("selectedStarTables"));
-        bindingGroup.addBinding(binding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, plotterStarJTable, org.jdesktop.beansbinding.ELProperty.create("${selectionModel}"), pointStarJTable, org.jdesktop.beansbinding.BeanProperty.create("selectionModel"));
         bindingGroup.addBinding(binding);
 
         pointMetadataScrollPane.setViewportView(pointStarJTable);
@@ -655,10 +659,10 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_clearSelectionButtonActionPerformed
 
     private void applyMaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyMaskButtonActionPerformed
-        // Applying a mask always acts on the selections from the plotter and 
-        // segment data tables.
-        RowSelection selection = this.plotterStarJTable.getRowSelection();
+        IrisStarJTable selectedTable = getSelectedIrisJTable();
+        if (selectedTable == null) return;
         
+        RowSelection selection = selectedTable.getRowSelection();
         logger.info(String.format("Applying mask of %s points to %s tables", selection.originalRows.length, selectedStarTables.size()));
         
         for (int i=0; i<selection.selectedTables.length; i++) {
@@ -669,9 +673,10 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_applyMaskButtonActionPerformed
 
     private void clearMaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearMaskButtonActionPerformed
-
-        RowSelection selection = this.plotterStarJTable.getRowSelection();
+        IrisStarJTable selectedTable = getSelectedIrisJTable();
+        if (selectedTable == null) return;
         
+        RowSelection selection = selectedTable.getRowSelection();
         logger.info(String.format("Removing masks of %s points from %s tables", selection.originalRows.length, selectedStarTables.size()));
         
         for (int i=0; i<selection.selectedTables.length; i++) {
@@ -700,8 +705,18 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         if (panel == null) {
             return null;
         }
-        
         return (JTable) ((JScrollPane) panel.getComponent(0)).getViewport().getComponent(0);
+    }
+    
+    private IrisStarJTable getSelectedIrisJTable() {
+        int idx = this.dataTabsPane.getSelectedIndex();
+        if (idx == 0) {
+            return this.plotterStarJTable;
+        } else if (idx == 1) {
+            return this.pointStarJTable;
+        } else {
+            return null;
+        }
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
