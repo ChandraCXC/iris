@@ -17,7 +17,6 @@
 package cfa.vo.iris.visualizer.metadata;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.uispec4j.ListBox;
@@ -34,9 +33,6 @@ import cfa.vo.iris.visualizer.VisualizerComponent;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.sedlib.Segment;
-import cfa.vo.sedlib.io.SedFormat;
-import cfa.vo.testdata.TestData;
-
 import static org.junit.Assert.*;
 
 import java.util.BitSet;
@@ -253,22 +249,21 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         plotterTable.addRowToSelection(0);
         plotterTable.addRowToSelection(1);
         
-        // dataTable should have the same selected rows
-        dataTable.rowsAreSelected(0,1).check();
+        // dataTable row selection is independent
+        dataTable.rowsAreSelected().check();
         
         // Select some rows the the dataTable
         dataTable.selectRow(2);
         dataTable.addRowToSelection(0);
         
-        // Plotter data table should have same rows selected
-        plotterTable.rowsAreSelected(2,0).check();
+        // Plotter data table should still have same rows selected
+        plotterTable.rowsAreSelected(0,1).check();
         
         // Click select all button
         mbWindow.getButton("Select All").click();
         
         // Everything should be selected, nothing in the segment tab
         plotterTable.rowsAreSelected(0,1,2).check();
-        dataTable.rowsAreSelected(0,1,2).check();
         segmentTable.rowsAreSelected(0).check();
         
         // Clear selections
@@ -276,7 +271,6 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         
         // Verify selections are empty
         plotterTable.selectionIsEmpty().check();
-        dataTable.selectionIsEmpty().check();
         
         // select 0th index in tables
         plotterTable.selectRow(0);
@@ -286,10 +280,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         
         // verify inversion
         plotterTable.rowsAreSelected(1,2).check();
-        dataTable.rowsAreSelected(1,2).check();
-        
         assertFalse(plotterTable.rowIsSelected(0).isTrue());
-        assertFalse(dataTable.rowIsSelected(0).isTrue());
         
         // Set to segment tab
         mbWindow.getButton("Clear Selection").click();
@@ -358,18 +349,13 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         assertEquals("0E0", plView.getXcoord());
         assertEquals("0E0", plView.getYcoord());
         
-        final ExtSed sed = sedManager.newSed("test1");
-        sedManager.select(sed);
-        
-        double[] x1 = new double[] {100};
-        double[] y1 = new double[] {1};
-        final Segment seg1 = createSampleSegment(x1, y1);
+        final ExtSed sed = new ExtSed("test1");
+        final Segment seg1 = createSampleSegment(new double[] {100}, new double[] {1});
         sed.addSegment(seg1);
-        
-        double[] x2 = new double[] {200};
-        double[] y2 = new double[] {2};
-        final Segment seg2 = createSampleSegment(x2, y2);
+        final Segment seg2 = createSampleSegment(new double[] {200}, new double[] {2});
         sed.addSegment(seg2);
+        
+        sedManager.add(sed);
         
         invokeWithRetry(50, 100, new Runnable() {
             @Override
@@ -389,7 +375,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 // first row should be selected, still just one star table
-                dataTable.rowIsSelected(0).check();
+                plotterTable.rowsAreSelected(0).check();
                 assertEquals(1, mbView.getSelectedStarTables().size());
             }
         });
@@ -400,8 +386,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         invokeWithRetry(50, 100, new Runnable() {
             @Override
             public void run() {
-                // Both rows should be selected, ditto both star tables
-                dataTable.rowsAreSelected(0, 1);
+                plotterTable.rowsAreSelected(1).check();
                 assertEquals(2, mbView.getSelectedStarTables().size());
             }
         });

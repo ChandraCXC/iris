@@ -75,6 +75,8 @@ public class IrisStarJTable extends StarJTable {
         // By default we use use the plotter data, as it is generally available first
         columnInfoMatcher = new SegmentColumnInfoMatcher();
         usePlotterDataTables = true;
+        
+        // Tables support sorting
         setAutoCreateRowSorter(true);
     }
     
@@ -95,9 +97,7 @@ public class IrisStarJTable extends StarJTable {
      * @param selectedStarTables
      */
     public void setSelectedStarTables(List<IrisStarTable> selectedStarTables) {
-        if (selectedStarTables == null) {
-            return;
-        }
+        if (selectedStarTables == null) return;
         
         // Include the index column for non-null/non-empty star tables.
         boolean showIndex = (selectedStarTables.size() > 0);
@@ -116,7 +116,7 @@ public class IrisStarJTable extends StarJTable {
         this.setStarTable(new StackedStarTable(dataTables, columnInfoMatcher), showIndex);
         IrisStarJTable.configureColumnWidths(this, 200, 20);
         
-        // If usePlotterDataTables we resort by spectral value
+        // If specified we re-sort by spectral values
         if (sortBySpecValues) {
             sortBySpectralValue(showIndex);
         }
@@ -233,6 +233,9 @@ public class IrisStarJTable extends StarJTable {
     }
     
     private void sortBySpectralValue(boolean showIndex) {
+        // Do nothing is we have no data
+        if (getStarTable().getRowCount() <= 0) return;
+        
         try {
             ColumnIdentifier id = new ColumnIdentifier(getStarTable());
             int col = id.getColumnIndex(Column.Spectral_Value.name());
@@ -248,7 +251,9 @@ public class IrisStarJTable extends StarJTable {
             sorter.setSortKeys(Arrays.asList(new RowSorter.SortKey(col, SortOrder.ASCENDING)));
             sorter.sort();
         } catch (IOException ex) {
-            logger.log(Level.SEVERE, "Could not read spectral value column", ex);;
+            // Ignore these
+            ex.printStackTrace();
+            logger.log(Level.WARNING, "Could not read spectral value column", ex);;
         }
     }
     
