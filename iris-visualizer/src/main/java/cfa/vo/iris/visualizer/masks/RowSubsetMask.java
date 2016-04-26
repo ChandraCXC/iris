@@ -15,7 +15,6 @@
  */
 package cfa.vo.iris.visualizer.masks;
 
-import java.util.Arrays;
 import java.util.BitSet;
 
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
@@ -66,7 +65,7 @@ public class RowSubsetMask implements Mask {
     @Override
     public void clearMasks(int[] rows) {
         for (int i : rows) {
-            if (i > table.getSegmentMetadataTable().getRowCount()) continue;
+            if (i > table.getBaseTable().getRowCount()) continue;
             mask.clear(i);
         }
     }
@@ -78,7 +77,7 @@ public class RowSubsetMask implements Mask {
     @Override
     public void applyMasks(int[] rows) {
         for (int i : rows) {
-            if (i > table.getSegmentMetadataTable().getRowCount()) continue;
+            if (i > table.getBaseTable().getRowCount()) continue;
             mask.set(i);
         }
     }

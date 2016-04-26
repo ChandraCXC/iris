@@ -49,7 +49,19 @@ import uk.ac.starlink.table.gui.StarTableColumn;
 import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
 /**
- * Simple bean wrapper for the StarJTable class.
+ * StarJTables wrapper for Iris that handles 'stacking' a list of IrisStarTables into a 
+ * single, cohesive view for manipulation by the user.
+ * 
+ * Supports viewing either the SegmentDataTable or the PlotterDataTable from the 
+ * IrisStarTable - for viewing either segment metadata, or plot data (spectral 
+ * and flux values).
+ * 
+ * Also supports sorting of table values by column values - and handles converting
+ * the view model indexes back to the underlying data model index. Users can get a list
+ * of selected rows within each StarTable from the getRowSelection method, which 
+ * returns sorted arrays of row indexes, along with the IrisStarTables to which they
+ * apply.
+ * 
  *
  */
 public class IrisStarJTable extends StarJTable {
@@ -174,26 +186,22 @@ public class IrisStarJTable extends StarJTable {
      * Selects the specified row from the specified star table. If the table isn't currently 
      * selected, we add it - which resets the view.
      * 
-     * @param starTableIndex
-     * @param irow
+     * @param starTableIndex - Selected index of the star table in the SED
+     * @param irow - row in the un-masked star table
      */
     public void selectRowIndex(int starTableIndex, int irow) {
-        // irow corresponds to the row in the (possibly masked) IrisStarTable, we need to 
-        // map it back to the correct row in the dataTable.
-        IrisStarTable selectedTable = this.selectedStarTables.get(starTableIndex);
-        int trueRow = selectedTable.getBaseTableRow(irow);
         
         // Actual row is the trueRow plus the length of all the other tables (based on the
         // base table! Not the masked table!)
         for (int i=0; i<starTableIndex; i++) {
-            trueRow += this.selectedStarTables.get(i).getBaseTable().getRowCount();
+            irow += this.selectedStarTables.get(i).getBaseTable().getRowCount();
         }
         
         // Map true index to sorted view index
-        trueRow = convertRowIndexToView(trueRow);
+        irow = convertRowIndexToView(irow);
         
-        this.selectionModel.addSelectionInterval(trueRow, trueRow);
-        this.scrollRectToVisible(new Rectangle(this.getCellRect(trueRow, 0, true)));
+        this.selectionModel.addSelectionInterval(irow, irow);
+        this.scrollRectToVisible(new Rectangle(this.getCellRect(irow, 0, true)));
     }
     
     /**
@@ -323,14 +331,13 @@ public class IrisStarJTable extends StarJTable {
         public final int[] originalRows;
         
         private RowSelection(List<IrisStarTable> tables, int[] rows) {
-            
             this.selectedRows = new int[tables.size()][];
             Arrays.fill(selectedRows, new int[0]);
             
             this.selectedTables = tables.toArray(new IrisStarTable[tables.size()]);
             
             this.originalRows = rows;
-            
+
             int startIndex = 0; // start index of current star table
             int t = 0; // current table
             int i = 0; // current selected row
@@ -351,7 +358,7 @@ public class IrisStarJTable extends StarJTable {
                     selectedRows[t][j] -= startIndex;
                 }
                 
-                startIndex += selectedTables[t].getRowCount();
+                startIndex += selectedTables[t].getBaseTable().getRowCount();
                 t++;
             }
         }
