@@ -385,6 +385,9 @@
                         <Property name="columnInfoMatcher" type="cfa.vo.iris.visualizer.stil.tables.ColumnInfoMatcher" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                           <Connection code="new SegmentColumnInfoMatcher()" type="code"/>
                         </Property>
+                        <Property name="sortBySpecValues" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                          <Connection code="true" type="code"/>
+                        </Property>
                       </Properties>
                       <BindingProperties>
                         <BindingProperty name="selectedStarTables" source="Form" sourcePath="${selectedStarTables}" target="plotterStarJTable" targetPath="selectedStarTables" updateStrategy="0" immediately="false"/>
@@ -428,12 +431,14 @@
                         <Property name="columnInfoMatcher" type="cfa.vo.iris.visualizer.stil.tables.ColumnInfoMatcher" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                           <Connection code="new UtypeColumnInfoMatcher()" type="code"/>
                         </Property>
+                        <Property name="sortBySpecValues" type="boolean" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                          <Connection code="false" type="code"/>
+                        </Property>
                         <Property name="usePlotterDataTables" type="boolean" value="false"/>
                         <Property name="utypeAsNames" type="boolean" value="true"/>
                       </Properties>
                       <BindingProperties>
                         <BindingProperty name="selectedStarTables" source="Form" sourcePath="${selectedStarTables}" target="pointStarJTable" targetPath="selectedStarTables" updateStrategy="0" immediately="false"/>
-                        <BindingProperty name="selectionModel" source="plotterStarJTable" sourcePath="${selectionModel}" target="pointStarJTable" targetPath="selectionModel" updateStrategy="0" immediately="false"/>
                       </BindingProperties>
                     </Component>
                   </SubComponents>
