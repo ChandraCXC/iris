@@ -46,8 +46,8 @@ public class SAMPFactory {
      * @param clazz The interface of the resulting object.
      * @return An instance of a SAMP serializable object.
      */
-    public static Object get(Class clazz) {
-        return Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, new SAMPProxy(clazz));
+    public static <T> T get(Class<T> clazz) {
+        return clazz.cast(Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, new SAMPProxy(clazz)));
     }
     
     /**
@@ -90,7 +90,8 @@ public class SAMPFactory {
      * @return An instance of the specified interface
      * @throws Exception
      */
-    public static Object get(Map map, Class clazz) throws Exception {
-        return Proxy.newProxyInstance(SAMPFactory.class.getClassLoader(), new Class[]{clazz}, new SAMPProxy(map, clazz));
+    public static <T> T get(Map map, Class<T> clazz) throws Exception {
+        Object retVal = Proxy.newProxyInstance(SAMPFactory.class.getClassLoader(), new Class[]{clazz}, new SAMPProxy(map, clazz));
+        return clazz.cast(retVal);
     }
 }

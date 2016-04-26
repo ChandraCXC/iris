@@ -50,6 +50,11 @@
             <artifactId>sed-builder</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>cfa.vo</groupId>
+            <artifactId>iris-visualizer</artifactId>
+            <version>3.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     

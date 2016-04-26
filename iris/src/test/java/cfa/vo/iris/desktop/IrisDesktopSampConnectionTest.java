@@ -29,7 +29,6 @@ public class IrisDesktopSampConnectionTest extends AbstractUISpecTest {
         appStub.setWorkspace(ws);
         stubAdapter = new StubAdapter(appStub);
         window = stubAdapter.getMainWindow();
-        this.RETRY = 60;
     }
 
     @Test

@@ -16,10 +16,7 @@
 
 package cfa.vo.sherpa;
 
-/**
- *
- * @author olaurino
- */
+
 public interface Confidence {
     String getName();
 
