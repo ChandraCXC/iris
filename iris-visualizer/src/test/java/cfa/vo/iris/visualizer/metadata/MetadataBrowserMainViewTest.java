@@ -33,6 +33,9 @@ import cfa.vo.iris.visualizer.VisualizerComponent;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.io.SedFormat;
+import cfa.vo.testdata.TestData;
+
 import static org.junit.Assert.*;
 
 import java.util.BitSet;
@@ -298,8 +301,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
     
     @Test
     public void testMetadataBrowserMasking() throws Exception {
-        final ExtSed sed = new ExtSed("");//ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
-        sed.addSegment(TestUtils.createSampleSegment());
+        final ExtSed sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
         sedManager.add(sed);
         
         invokeWithRetry(20, 100, new Runnable() {
@@ -309,17 +311,18 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
                 assertEquals(sed, mbView.selectedSed);
                 assertEquals(1, mbView.sedStarTables.size());
                 assertEquals(1, starTableList.getSize());
-                assertEquals(3, plotterTable.getRowCount());
+                assertEquals(455, plotterTable.getRowCount());
             }
         });
         
         // Apply a mask on the first and last rows
         final BitSet masked = new BitSet();
         masked.set(0);
-        masked.set(2);
+        masked.set(454);
         
         dataPanel.getTabGroup().selectTab("Data");
-        plotterTable.selectRows(0, 2);
+        mbView.addRowToSelection(0, 0);
+        mbView.addRowToSelection(0, 454);
         mbWindow.getButton("Apply Mask").click();
         
         invokeWithRetry(20, 100, new Runnable() {
@@ -340,6 +343,56 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             public void run() {
                 IrisStarTable table = mbView.selectedStarTables.get(0);
                 assertEquals(masked, table.getMasked());
+            }
+        });
+    }
+    
+    @Test
+    public void testMetadataBrowserMultipleSegmentMasking() throws Exception {
+        final ExtSed sed = new ExtSed("test");
+        final BitSet masked = new BitSet();
+        
+        // Spectral Values should be {1, 1, 2, 2, 3, 3} due to spectral sorting.
+        sed.addSegment(createSampleSegment());
+        sed.addSegment(createSampleSegment());
+        sedManager.add(sed);
+        
+        invokeWithRetry(50, 100, new Runnable() {
+            @Override
+            public void run() {
+                starTableList.selectIndices(0,1);
+                assertEquals(mbView.getTitle(), mbWindow.getTitle());
+                assertEquals(sed, mbView.selectedSed);
+                assertEquals(2, mbView.sedStarTables.size());
+                assertEquals(2, starTableList.getSize());
+                assertEquals(6, plotterTable.getRowCount());
+            }
+        });
+        
+        plotterTable.selectAllRows();
+        mbWindow.getButton("Apply Mask").click();
+        
+        // Both tables should have all rows masked
+        masked.set(0, 3);
+        invokeWithRetry(20, 100, new Runnable() {
+            @Override
+            public void run() {
+                for (IrisStarTable table : mbView.selectedStarTables)
+                    assertEquals(masked, table.getMasked());
+            }
+        });
+        
+        // Remove masks from first rows in each table (recall the table is sorted)
+        plotterTable.selectRows(0,1);
+        mbWindow.getButton("Remove Masks").click();
+        
+        // Masks should be cleared from first rows
+        masked.clear(0);
+        invokeWithRetry(20, 100, new Runnable() {
+            @Override
+            public void run() {
+                for (IrisStarTable table : mbView.selectedStarTables)
+                    assertEquals(masked, table.getMasked());
             }
         });
     }

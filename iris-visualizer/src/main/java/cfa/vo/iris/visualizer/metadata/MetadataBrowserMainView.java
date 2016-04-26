@@ -110,7 +110,10 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     
     /**
      * Specifies a star table (by index) and a row to be added to the selected plotter/
-     * data table tabs' row selections.
+     * data table tabs' row selections. Note that irow is the row in the Base Table of the
+     * IrisStarTable - not of the masked star table! Any callers specifying rows based
+     * on the IrisStarTable must use .getBaseTableRow in IrisStarTable to map the masked
+     * row index back to the base table row index before calling this method.
      * 
      * @param starTableIndex - index of the star table in the selectedTables list.
      * @param irow - row to be selected in the star table.
