@@ -55,7 +55,7 @@ public class PlotterView extends JInternalFrame {
     private String xcoord = "0E0";
     private String ycoord = "0E0";
     
-    private static double ZOOM_SCALE = 0.5;
+    public static double ZOOM_SCALE = 0.5;
     
     /**
      * Create the frame.
