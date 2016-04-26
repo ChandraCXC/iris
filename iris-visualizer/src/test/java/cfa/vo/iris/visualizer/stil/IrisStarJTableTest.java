@@ -110,7 +110,7 @@ public class IrisStarJTableTest {
         // Select 0th index in second star table
         table.clearSelection();
         table.selectRowIndex(1, 0);
-        ArrayUtils.assertEquals(new int[] {4}, table.getSelectedRows());
+        ArrayUtils.assertEquals(new int[] {3}, table.getSelectedRows());
         
         // Mask all but first rows in both tables
         table.clearSelection();
@@ -165,9 +165,10 @@ public class IrisStarJTableTest {
     public void testSorting() throws Exception {
         IrisStarJTable table = new IrisStarJTable();
         table.setSortBySpecValues(true);
+        table.setUsePlotterDataTables(true);
         
         IrisStarTable segTable = adapter.convertSegment(TestUtils.createSampleSegment(
-                        new double[] {5,4,3,2,1}, 
+                        new double[] {5,4,3,2,1},
                         new double[] {6,7,8,9,10}));
         
         table.setSelectedStarTables(Arrays.asList(segTable));
@@ -186,5 +187,63 @@ public class IrisStarJTableTest {
         // Try adding the 0th (model) index to the selection, should select the last row.
         table.selectRowIndex(0,0);
         ArrayUtils.assertEquals(new int[] {4}, table.getSelectedRows(false));
+        
+        // mask value 5, row 0
+        segTable.applyMasks(new int[] {0});
+        
+        // Add new StarTable, small valued
+        IrisStarTable segTable1 = adapter.convertSegment(TestUtils.createSampleSegment(
+                new double[] {.1,.2},
+                new double[] {1000,2000}));
+        
+        // Reset the table
+        table.setSelectedStarTables(Arrays.asList(segTable, segTable1));
+        
+        // Values should still be in ascending order (also now a masked column)
+        assertEquals(.1, table.getValueAt(0, 3));
+        assertEquals(5.0, table.getValueAt(6, 3));
+        assertEquals(true, table.getValueAt(6, 1));
+        
+        // Select 2nd row from 2nd star table
+        table.selectRowIndex(1,1);
+        
+        // Should be row 1, or row 6 in the model
+        ArrayUtils.assertEquals(new int[] {1}, table.getSelectedRows(false));
+        ArrayUtils.assertEquals(new int[] {6}, table.getSelectedRows(true));
+        
+        // Add first row from the 1st star table (has value 4 since the 1st row is masked)
+        table.selectRowIndex(0,0);
+        
+        // Should be row 1, or row 6 in the model
+        ArrayUtils.assertEquals(new int[] {1,6}, table.getSelectedRows(false));
+        ArrayUtils.assertEquals(new int[] {0,6}, table.getSelectedRows(true));
+    }
+    
+    @Test
+    public void testSortingWithMasks() throws Exception {
+        IrisStarJTable table = new IrisStarJTable();
+        table.setSortBySpecValues(true);
+        table.setUsePlotterDataTables(true);
+        
+        IrisStarTable segTable1 = adapter.convertSegment(TestUtils.createSampleSegment());
+        IrisStarTable segTable2 = adapter.convertSegment(TestUtils.createSampleSegment());
+        
+        // All rows are masked
+        segTable1.applyMasks(new int[] {0,1,2});
+        segTable2.applyMasks(new int[] {0,1,2});
+        
+        // Select first rows from each table
+        table.setSelectedStarTables(Arrays.asList(segTable1, segTable2));
+        table.selectRowIndex(0, 0);
+        table.selectRowIndex(1, 0);
+        
+        // Check selection values
+        ArrayUtils.assertEquals(new int[] {0, 1}, table.getSelectedRows(false));
+        ArrayUtils.assertEquals(new int[] {0, 3}, table.getSelectedRows(true));
+        
+        // Verify RowSelection matches expected values
+        RowSelection selection = table.getRowSelection();
+        ArrayUtils.assertEquals(new int[] {0}, selection.selectedRows[0]);
+        ArrayUtils.assertEquals(new int[] {0}, selection.selectedRows[1]);
     }
 }
