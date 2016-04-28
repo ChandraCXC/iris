@@ -15,7 +15,6 @@
  */
 package cfa.vo.iris.fitting;
 
-import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SedListener;
@@ -23,11 +22,9 @@ import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.fitting.custom.ModelsListener;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.visualizer.FittingToolComponent;
 import cfa.vo.sherpa.models.Model;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Statistic;
-import org.jdesktop.application.Application;
 
 import javax.swing.*;
 import javax.swing.tree.*;
@@ -40,6 +37,7 @@ import java.io.FileOutputStream;
 public class FittingMainView extends JInternalFrame implements SedListener {
     private ExtSed sed;
     private FitController controller;
+    private JFileChooser chooser;
     public final String DEFAULT_DESCRIPTION = "Double click on a Component to add it to the list of selected Components.";
     public final String CUSTOM_DESCRIPTION = "User Model";
     public static final String PROP_SED = "sed";
@@ -49,9 +47,10 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         SedEvent.getInstance().add(this);
     }
 
-    public FittingMainView(FitController controller) {
+    public FittingMainView(JFileChooser chooser, FitController controller) {
         this();
         this.controller = controller;
+        this.chooser = chooser;
         setSed(controller.getSed());
         initController();
         setUpAvailableModelsTree();
@@ -513,12 +512,10 @@ public class FittingMainView extends JInternalFrame implements SedListener {
     private class SaveTextAction extends AbstractAction {
         public SaveTextAction() {
             super("Save Text...");
-
         }
 
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            JFileChooser chooser = new JFileChooser();
             int result = chooser.showOpenDialog(FittingMainView.this);
             if (result == JFileChooser.APPROVE_OPTION) {
                 try {
