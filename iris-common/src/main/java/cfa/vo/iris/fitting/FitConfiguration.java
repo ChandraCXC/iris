@@ -246,6 +246,16 @@ public class FitConfiguration {
         setDof(results.getDof().intValue());
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(DefaultModel.toString(model));
+        resultsToString(builder);
+
+        return builder.toString();
+    }
+
     public void addPropertyChangeListener(java.beans.PropertyChangeListener listener )
     {
         propertyChangeSupport.addPropertyChangeListener( listener );
@@ -280,5 +290,32 @@ public class FitConfiguration {
             logger.info("adding model component " + id + " to expression");
             setExpression(model.getName() + " + " + id);
         }
+    }
+
+    private String resultsToString(StringBuilder builder) {
+        builder.append("\nFit Results:\n")
+                .append(formatDouble("Final Fit Statistic", getStatVal()))
+                .append(formatDouble("Reduced Statistic", getrStat()))
+                .append(formatDouble("Probability (Q-value)", getqVal()))
+                .append(formatInt("Degrees of Freedom", getDof()))
+                .append(formatInt("Data Points", getNumPoints()))
+                .append(formatInt("Function Evaluations", getnFev()))
+                .append("\n")
+                .append(formatString("Optimizer", getMethod().toString()))
+                .append(formatString("Statistic (Cost function)", getStat().toString()))
+        ;
+        return builder.toString();
+    }
+
+    private String formatDouble(String name, Double value) {
+        return String.format("\t\t%26s = %f\n", name, value);
+    }
+
+    private String formatInt(String name, Integer value) {
+        return String.format("\t\t%26s = %d\n", name, value);
+    }
+
+    private String formatString(String name, String value) {
+        return String.format("\t\t%26s = %s\n", name, value);
     }
 }

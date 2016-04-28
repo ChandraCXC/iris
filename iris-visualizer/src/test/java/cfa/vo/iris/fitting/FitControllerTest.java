@@ -26,7 +26,7 @@ public class FitControllerTest {
         ExtSed sed = Mockito.mock(ExtSed.class);
         FitConfiguration configuration = createFit();
         Mockito.when(sed.getFit()).thenReturn(configuration);
-        Mockito.when(sed.getId()).thenReturn("MySed");
+        Mockito.when(sed.toString()).thenReturn("MySed (Segments: 3)");
         CustomModelsManager modelsManager = Mockito.mock(CustomModelsManager.class);
         SherpaClient client = Mockito.mock(SherpaClient.class);
 
