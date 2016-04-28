@@ -1,0 +1,28 @@
+Iris Fitting Tool - Fit Summary
+SED ID: MySed
+
+Model Expression: m1+m2
+Components:
+	polynomial.m1
+		                     m1.c0 = 0.100000
+		                     m1.c1 = 0.200000
+		                     m1.c2 = 0.000000
+		                     m1.c3 = 0.000000
+		                     m1.c4 = 0.000000
+		                     m1.c5 = 0.000000
+		                 m1.offset = 0.000000
+	powlaw1d.m2
+		                    m2.ref = 5000.000000
+		                   m2.ampl = 0.020000
+		                  m2.gamma = 0.010000
+
+Fit Results:
+		       Final Fit Statistic = 0.123400
+		         Reduced Statistic = 0.432100
+		     Probability (Q-value) = 0.135700
+		        Degrees of Freedom = 30
+		               Data Points = 430
+		      Function Evaluations = 731
+
+		                 Optimizer = LevenbergMarquardt
+		 Statistic (Cost function) = LeastSquares
