@@ -36,6 +36,7 @@ public class FitConfiguration {
     private Stat stat;
     private Method method;
     private Confidence confidence;
+    private ConfidenceResults confResults;
     private Double rStat;
     private Integer nFev;
     private Double qVal;
@@ -87,6 +88,16 @@ public class FitConfiguration {
         Method oldMethod = this.method;
         this.method = method;
         propertyChangeSupport.firePropertyChange(PROP_METHOD, oldMethod, method);
+    }
+
+    public ConfidenceResults getConfidenceResults() {
+        return confResults;
+    }
+
+    public void setConfidenceResults(ConfidenceResults confResults) {
+        ConfidenceResults old = this.confResults;
+        this.confResults = confResults;
+        propertyChangeSupport.firePropertyChange(PROP_CONFIDENCE, old, confResults);
     }
 
     public Confidence getConfidence() {
@@ -252,6 +263,7 @@ public class FitConfiguration {
 
         builder.append(DefaultModel.toString(model));
         resultsToString(builder);
+        confToString(builder);
 
         return builder.toString();
     }
@@ -292,7 +304,18 @@ public class FitConfiguration {
         }
     }
 
-    private String resultsToString(StringBuilder builder) {
+    private void confToString(StringBuilder builder) {
+        if (confResults != null) {
+            List<ConfResultsConverter.ParameterLimits> parameterLimitsList =
+                    new ConfResultsConverter().convertForward(confResults);
+            builder.append(String.format("\nConfidence Limits at %4.2f sigma (%4.2f%%):\n", confResults.getSigma(), confResults.getPercent()));
+            for(ConfResultsConverter.ParameterLimits limits : parameterLimitsList) {
+                builder.append(String.format("%24s: (%12.5E, %12.5E)\n", limits.getName(), limits.getLowerLimit(), limits.getUpperLimit()));
+            }
+        }
+    }
+
+    private void resultsToString(StringBuilder builder) {
         builder.append("\nFit Results:\n")
                 .append(formatDouble("Final Fit Statistic", getStatVal()))
                 .append(formatDouble("Reduced Statistic", getrStat()))
@@ -304,7 +327,6 @@ public class FitConfiguration {
                 .append(formatString("Optimizer", getMethod().toString()))
                 .append(formatString("Statistic (Cost function)", getStat().toString()))
         ;
-        return builder.toString();
     }
 
     private String formatDouble(String name, Double value) {

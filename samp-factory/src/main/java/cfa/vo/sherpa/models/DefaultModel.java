@@ -132,8 +132,10 @@ public class DefaultModel implements Model {
                 .append("Components:\n");
 
 
-        for (Model m : model.getParts()) {
-            builder.append(toString(m));
+        if (model.getParts() != null) {
+            for (Model m : model.getParts()) {
+                builder.append(toString(m));
+            }
         }
 
         return builder.toString();
