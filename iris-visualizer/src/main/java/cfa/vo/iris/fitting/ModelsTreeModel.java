@@ -33,7 +33,9 @@ public class ModelsTreeModel extends DefaultTreeModel {
             parentNode.add(new DefaultMutableTreeNode(m));
         }
 
-        r.add(customTree);
+        if (customTree != null) {
+            r.add(customTree);
+        }
     }
 
     public List<Model> getList() {
