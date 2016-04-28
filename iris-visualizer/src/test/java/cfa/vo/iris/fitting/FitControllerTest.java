@@ -5,6 +5,7 @@ import cfa.vo.iris.fitting.custom.CustomModelType;
 import cfa.vo.iris.fitting.custom.CustomModelsManager;
 import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.sherpa.ConfidenceResults;
 import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.models.*;
@@ -38,7 +39,7 @@ public class FitControllerTest {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         controller.save(os);
 
-        assertEquals(getOutputString(), os.toString("UTF-8"));
+        assertEquals(TestUtils.readFile(getClass(), "fit.output"), os.toString("UTF-8"));
     }
 
     private FitConfiguration createFit() throws Exception {
@@ -92,11 +93,6 @@ public class FitControllerTest {
         fit.setConfidenceResults(confidenceResults);
 
         return fit;
-    }
-
-    private String getOutputString() throws Exception {
-        String path = getClass().getResource("fit.output").getFile();
-        return FileUtils.readFileToString(new File(path));
     }
 
 

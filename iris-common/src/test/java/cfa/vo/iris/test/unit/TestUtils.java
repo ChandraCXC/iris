@@ -4,6 +4,9 @@ import javax.swing.SwingUtilities;
 
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedNoDataException;
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
 
 /**
  * Class for helpful utility functions to be used in unit testing.
@@ -46,5 +49,18 @@ public class TestUtils {
             }
         }
         throw last;
+    }
+
+    /**
+     * Convenience method for reading baseline test files from resource paths
+     *
+     * @param requestingClass The class requesting the resource. Resource can be found with paths relative to the argument
+     * @param path String path of the resource. May be relative or absolute
+     * @return String representing the file contents
+     * @throws Exception
+     */
+    public static String readFile(Class requestingClass, String path) throws Exception {
+        String p = requestingClass.getResource(path).getFile();
+        return FileUtils.readFileToString(new File(p));
     }
 }

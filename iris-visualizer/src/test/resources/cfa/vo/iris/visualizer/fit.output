@@ -1,0 +1,26 @@
+Iris Fitting Tool - Fit Summary
+SED ID: TestSed (Segments: 0)
+
+Model Expression: m
+Components:
+	polynomial.m
+		                      m.c0 =  1.00000E+00
+		                      m.c1 =  0.00000E+00
+		                      m.c2 =  0.00000E+00 Frozen
+		                      m.c3 =  0.00000E+00 Frozen
+		                      m.c4 =  0.00000E+00 Frozen
+		                      m.c5 =  0.00000E+00 Frozen
+		                  m.offset =  0.00000E+00 Frozen
+
+Fit Results:
+		       Final Fit Statistic =         NULL
+		         Reduced Statistic =         NULL
+		     Probability (Q-value) =         NULL
+		        Degrees of Freedom = null
+		               Data Points = null
+		      Function Evaluations = null
+
+		                 Optimizer = LevenbergMarquardt
+		 Statistic (Cost function) = LeastSquares
+
+User Models:

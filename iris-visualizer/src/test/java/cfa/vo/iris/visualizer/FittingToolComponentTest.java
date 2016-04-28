@@ -24,20 +24,27 @@ import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.sherpa.models.*;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Statistic;
+import com.google.common.io.Files;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import org.junit.rules.TemporaryFolder;
 import org.uispec4j.ComboBox;
 import org.uispec4j.TextBox;
 import org.uispec4j.Tree;
 import org.uispec4j.Window;
 import org.uispec4j.interception.BasicHandler;
+import org.uispec4j.interception.FileChooserHandler;
 import org.uispec4j.interception.WindowInterceptor;
 
 public class FittingToolComponentTest extends AbstractComponentGUITest {
@@ -45,6 +52,9 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
     private FittingToolComponent comp = new FittingToolComponent();
     private String windowName;
     private SedlibSedManager sedManager;
+
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
 
     @Before
     public void setUp() throws Exception {
@@ -172,6 +182,24 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         assertTrue(availableTree.contains("Preset Model Components/beta1d").isTrue());
         assertTrue(availableTree.contains("Preset Model Components/powerlaw").isTrue());
         assertTrue(availableTree.contains("Preset Model Components/brokenpowerlaw").isTrue());
+    }
+
+    @Test
+    public void testSaveText() throws Exception {
+        ExtSed sed = sedManager.newSed("TestSed");
+        addFit(sed);
+        Window mainFit = openWindow();
+
+        File outputFile = tempFolder.newFile("output.fit");
+
+        WindowInterceptor
+                .init(mainFit.getMenuBar().getMenu("File").getSubMenu("Save Text...").triggerClick())
+                .process(FileChooserHandler.init().select(outputFile.getAbsolutePath()))
+                .run()
+        ;
+
+        String expected = TestUtils.readFile(getClass(), "fit.output");
+        assertEquals(expected, Files.toString(outputFile, Charset.defaultCharset()));
     }
 
     private Window openWindow() {
