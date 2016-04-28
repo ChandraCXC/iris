@@ -82,49 +82,9 @@ public class FitController {
 
     public void save(OutputStream os) {
         PrintWriter writer = new PrintWriter(os);
-        StringBuilder builder = new StringBuilder();
-
-        builder
-                .append("Iris Fitting Tool - Fit Summary\n")
-                .append("SED ID: ").append(sed.getId()).append("\n\n")
-                .append("Model Expression: ").append(sed.getFit().getModel().getName()).append("\n")
-                .append("Components:\n");
-
-
-        for (Model m : sed.getFit().getModel().getParts()) {
-            builder.append("\t").append(m.getName()).append("\n");
-            for (Parameter p : m.getPars()) {
-                builder.append(formatDouble(p.getName(), p.getVal()));
-            }
-        }
-
-        builder
-                .append("\nFit Results:\n")
-                .append(formatDouble("Final Fit Statistic", sed.getFit().getStatVal()))
-                .append(formatDouble("Reduced Statistic", sed.getFit().getrStat()))
-                .append(formatDouble("Probability (Q-value)", sed.getFit().getqVal()))
-                .append(formatInt("Degrees of Freedom", sed.getFit().getDof()))
-                .append(formatInt("Data Points", sed.getFit().getNumPoints()))
-                .append(formatInt("Function Evaluations", sed.getFit().getnFev()))
-                .append("\n")
-                .append(formatString("Optimizer", sed.getFit().getMethod().toString()))
-                .append(formatString("Statistic (Cost function)", sed.getFit().getStat().toString()))
-                ;
-
-
-        writer.write(builder.toString());
+        writer.write("Iris Fitting Tool - Fit Summary\n");
+        writer.write(String.format("SED ID: %s\n\n", sed.toString()));
+        writer.write(sed.getFit().toString());
         writer.flush();
-    }
-
-    private String formatDouble(String name, Double value) {
-        return String.format("\t\t%26s = %f\n", name, value);
-    }
-
-    private String formatInt(String name, Integer value) {
-        return String.format("\t\t%26s = %d\n", name, value);
-    }
-
-    private String formatString(String name, String value) {
-        return String.format("\t\t%26s = %s\n", name, value);
     }
 }
