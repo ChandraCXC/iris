@@ -15,6 +15,7 @@ import org.uispec4j.TextBox;
 import org.uispec4j.Window;
 import org.uispec4j.assertion.UISpecAssert;
 
+import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 public class FittingMainViewTest {
@@ -31,8 +32,9 @@ public class FittingMainViewTest {
         CustomModelsManager modelsManager = Mockito.mock(CustomModelsManager.class);
         Mockito.when(modelsManager.getCustomModels()).thenReturn(new DefaultMutableTreeNode("Custom Models"));
         SherpaClient client = Mockito.mock(SherpaClient.class);
+        JFileChooser chooser = Mockito.mock(JFileChooser.class);
         FitController controller = new FitController(sed, modelsManager, client);
-        FittingMainView view = new FittingMainView(controller);
+        FittingMainView view = new FittingMainView(chooser, controller);
 
         fittingView = new Window(view);
         sedId = fittingView.getInputTextBox("currentSedField");

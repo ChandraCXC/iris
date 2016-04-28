@@ -39,12 +39,10 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.junit.rules.TemporaryFolder;
-import org.uispec4j.ComboBox;
-import org.uispec4j.TextBox;
-import org.uispec4j.Tree;
-import org.uispec4j.Window;
+import org.uispec4j.*;
 import org.uispec4j.interception.BasicHandler;
 import org.uispec4j.interception.FileChooserHandler;
+import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
 
 public class FittingToolComponentTest extends AbstractComponentGUITest {
@@ -200,6 +198,34 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
 
         String expected = TestUtils.readFile(getClass(), "fit.output");
         assertEquals(expected, Files.toString(outputFile, Charset.defaultCharset()));
+    }
+
+    @Test
+    public void testSaveTextNonExistentFile() throws Exception {
+        ExtSed sed = sedManager.newSed("TestSed");
+        addFit(sed);
+        Window mainFit = openWindow();
+
+        final WindowInterceptor wi = WindowInterceptor
+                .init(mainFit.getMenuBar().getMenu("File").getSubMenu("Save Text...").triggerClick())
+                .process(FileChooserHandler.init().select("/foo/bar/baz"));
+
+        WindowInterceptor
+                .init(new Trigger() {
+                    @Override
+                    public void run() throws Exception {
+                        wi.run();
+                    }
+                })
+                .process(new WindowHandler() {
+                    @Override
+                    public Trigger process(Window window) throws Exception {
+                        window.titleEquals("Error").check();
+                        window.getTextBox("Optionpane.label").textContains("No such file or directory").check();
+                        return window.getButton().triggerClick();
+                    }
+                })
+                .run();
     }
 
     private Window openWindow() {
