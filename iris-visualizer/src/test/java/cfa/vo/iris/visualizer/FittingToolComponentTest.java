@@ -228,6 +228,17 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
                 .run();
     }
 
+    @Test
+    public void spike() {
+        String expected = "$HOME/.vao/pippo";
+        String original = "/home/olaurino/.vao/pippo";
+        String actual = original.replaceAll("(/home/.*?/|/Users/.*?/)", "\\$HOME/");
+        assertEquals(expected, actual);
+        original = "/Users/olaurino/.vao/pippo";
+        actual = original.replaceAll("(/home/.*?/|/Users/.*?/)", "\\$HOME/");
+        assertEquals(expected, actual);
+    }
+
     private Window openWindow() {
         window.getMenuBar()
                 .getMenu("Tools")

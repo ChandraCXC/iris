@@ -29,6 +29,6 @@ Confidence Limits at 1.64 sigma (90.00%):
                 m5.index: (-7.27584E-06,          NAN)
 
 User Models:
-		tablemodel.m6: (file: /home/olaurino/.vao/iris/analysis/custom_models/tables/test_table, function: None)
-		usermodel.m7: (file: /home/olaurino/.vao/iris/analysis/custom_models/functions/test_function, function: mypowlaw)
-		template.m8: (file: /home/olaurino/.vao/iris/analysis/custom_models/templates/test_template, function: None)
+		tablemodel.m6: (file: $HOME/.vao/iris/analysis/custom_models/tables/test_table, function: None)
+		usermodel.m7: (file: $HOME/.vao/iris/analysis/custom_models/functions/test_function, function: mypowlaw)
+		template.m8: (file: $HOME/.vao/iris/analysis/custom_models/templates/test_template, function: None)

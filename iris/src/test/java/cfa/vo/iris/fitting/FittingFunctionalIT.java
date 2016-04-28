@@ -87,7 +87,10 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         ;
 
         String expected = TestUtils.readFile(getClass(), "fit.output");
-        assertEquals(expected, com.google.common.io.Files.toString(outputFile, Charset.defaultCharset()));
+        String actual = com.google.common.io.Files.toString(outputFile, Charset.defaultCharset());
+        actual = actual.replaceAll("(/home/.*?/|/Users/.*?/)", "\\$HOME/");
+
+        assertEquals(expected, actual);
     }
 
     private void installModels() throws Exception {
