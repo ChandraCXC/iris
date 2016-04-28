@@ -264,6 +264,7 @@ public class FitConfiguration {
         builder.append(DefaultModel.toString(model));
         resultsToString(builder);
         confToString(builder);
+        userModelsToString(builder);
 
         return builder.toString();
     }
@@ -327,6 +328,14 @@ public class FitConfiguration {
                 .append(formatString("Optimizer", getMethod().toString()))
                 .append(formatString("Statistic (Cost function)", getStat().toString()))
         ;
+    }
+
+    private void userModelsToString(StringBuilder builder) {
+        builder.append("\nUser Models:\n");
+
+        for (UserModel m : userModelList) {
+            builder.append(String.format("\t\t%s: (file: %s, function: %s)\n", m.getName(), m.getFile(), m.getFunction()));
+        }
     }
 
     private String formatDouble(String name, Double value) {

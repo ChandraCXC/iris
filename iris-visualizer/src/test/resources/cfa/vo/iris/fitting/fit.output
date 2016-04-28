@@ -1,8 +1,12 @@
 Iris Fitting Tool - Fit Summary
 SED ID: MySed (Segments: 3)
 
-Model Expression: m1+m2
+Model Expression: m1+m2+m3
 Components:
+	tablemodel.m3
+		                     m3.p1 =  1.00000E-01 Frozen
+		                     m3.p2 =  2.00000E-01
+		                     m3.p3 =  3.00000E-01
 	polynomial.m1
 		                     m1.c0 =  1.00000E-01
 		                     m1.c1 =  2.00000E-01
@@ -31,3 +35,6 @@ Confidence Limits at 1.60 sigma (96.30%):
                    m1.c0: (-1.00000E-01,  1.00000E-01)
                    m1.c1: (-2.00000E-01,  2.00000E-01)
                    m2.c2: (-3.00000E-01,  3.00000E-01)
+
+User Models:
+		function.m3: (file: file://somewhere/on/disk, function: somefunc)
