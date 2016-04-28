@@ -3,6 +3,7 @@ package cfa.vo.iris.fitting;
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.iris.fitting.custom.CustomModelsManager;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.sherpa.ConfidenceResults;
 import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.models.CompositeModel;
 import cfa.vo.sherpa.models.Model;
@@ -16,6 +17,8 @@ import org.mockito.Mockito;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
@@ -71,6 +74,14 @@ public class FitControllerTest {
         fit.setDof(30);
         fit.setNumPoints(430);
         fit.setnFev(731);
+
+        ConfidenceResults confidenceResults = SAMPFactory.get(ConfidenceResults.class);
+        confidenceResults.setParnames(Arrays.asList("m1.c0", "m1.c1", "m2.c2"));
+        confidenceResults.setParmins(new double[]{-0.1, -0.2, -0.3});
+        confidenceResults.setParmaxes(new double[]{0.1, 0.2, 0.3});
+        confidenceResults.setSigma(1.6);
+        confidenceResults.setPercent(96.3);
+        fit.setConfidenceResults(confidenceResults);
 
         return fit;
     }

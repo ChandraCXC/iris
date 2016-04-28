@@ -115,7 +115,9 @@ public class FitController {
      * @throws Exception an exception may be thrown by the sherpa-samp service if the operation failed
      */
     public ConfidenceResults computeConfidence() throws Exception {
-        return client.computeConfidence(sed);
+        ConfidenceResults retVal = client.computeConfidence(sed);
+        getFit().setConfidenceResults(retVal);
+        return retVal;
     }
 
     /**
