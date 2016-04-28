@@ -144,14 +144,21 @@ public class DefaultModel implements Model {
 
         builder.append("\t").append(model.getName()).append("\n");
         for (Parameter p : model.getPars()) {
-            builder.append(formatDouble(p.getName(), p.getVal()));
+            appendParamToString(p, builder);
         }
 
         return builder.toString();
     }
 
-    private static String formatDouble(String name, Double value) {
-        return String.format("\t\t%26s = %f\n", name, value);
+    private static void appendParamToString(Parameter p, StringBuilder builder) {
+        String name = p.getName();
+        Double value = p.getVal();
+        String frozen = p.getFrozen() == 1 ? " Frozen" : "";
+
+        builder
+                .append(String.format("\t\t%26s = %12.5E%s",name, value, frozen))
+                .append("\n");
+        ;
     }
 
     private static String findId(String name) {

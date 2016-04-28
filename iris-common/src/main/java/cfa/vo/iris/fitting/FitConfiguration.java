@@ -308,7 +308,7 @@ public class FitConfiguration {
     }
 
     private String formatDouble(String name, Double value) {
-        return String.format("\t\t%26s = %f\n", name, value);
+        return String.format("\t\t%26s = %12.5E\n", name, value);
     }
 
     private String formatInt(String name, Integer value) {
