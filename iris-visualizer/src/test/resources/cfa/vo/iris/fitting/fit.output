@@ -4,22 +4,22 @@ SED ID: MySed (Segments: 3)
 Model Expression: m1+m2
 Components:
 	polynomial.m1
-		                     m1.c0 = 0.100000
-		                     m1.c1 = 0.200000
-		                     m1.c2 = 0.000000
-		                     m1.c3 = 0.000000
-		                     m1.c4 = 0.000000
-		                     m1.c5 = 0.000000
-		                 m1.offset = 0.000000
+		                     m1.c0 =  1.00000E-01
+		                     m1.c1 =  2.00000E-01
+		                     m1.c2 =  0.00000E+00 Frozen
+		                     m1.c3 =  0.00000E+00 Frozen
+		                     m1.c4 =  0.00000E+00 Frozen
+		                     m1.c5 =  0.00000E+00 Frozen
+		                 m1.offset =  0.00000E+00 Frozen
 	powlaw1d.m2
-		                    m2.ref = 5000.000000
-		                   m2.ampl = 0.020000
-		                  m2.gamma = 0.010000
+		                    m2.ref =  5.00000E+03 Frozen
+		                   m2.ampl =  2.00000E-02
+		                  m2.gamma =  1.00000E-02
 
 Fit Results:
-		       Final Fit Statistic = 0.123400
-		         Reduced Statistic = 0.432100
-		     Probability (Q-value) = 0.135700
+		       Final Fit Statistic =  1.23400E-01
+		         Reduced Statistic =  4.32100E-01
+		     Probability (Q-value) =  1.35700E-01
 		        Degrees of Freedom = 30
 		               Data Points = 430
 		      Function Evaluations = 731
