@@ -11,15 +11,19 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.uispec4j.*;
 import org.uispec4j.assertion.UISpecAssert;
+import org.uispec4j.interception.FileChooserHandler;
 import org.uispec4j.interception.PopupMenuInterceptor;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
 
+import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import static org.junit.Assert.assertEquals;
 
 public class FittingFunctionalIT extends AbstractUISpecTest {
     @Rule
@@ -70,6 +74,20 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         setupModelExpression();
         fit();
         fitCustomModel();
+        saveText();
+    }
+
+    private void saveText() throws Exception {
+        File outputFile = tempFolder.newFile("output.fit");
+
+        WindowInterceptor
+                .init(fittingView.getMenuBar().getMenu("File").getSubMenu("Save Text...").triggerClick())
+                .process(FileChooserHandler.init().select(outputFile.getAbsolutePath()))
+                .run()
+        ;
+
+        String expected = TestUtils.readFile(getClass(), "fit.output");
+        assertEquals(expected, com.google.common.io.Files.toString(outputFile, Charset.defaultCharset()));
     }
 
     private void installModels() throws Exception {
