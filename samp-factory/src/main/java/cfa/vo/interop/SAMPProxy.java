@@ -142,7 +142,7 @@ public class SAMPProxy implements InvocationHandler {
             return toString(o);
         
         if(method.getName().equals("equals"))
-            return Boolean.FALSE;
+            return equals(o, os[0]);
         
         if(method.getName().equals("hashCode"))
             return random.nextInt();
@@ -310,6 +310,10 @@ public class SAMPProxy implements InvocationHandler {
         name = name.substring(0, 1).toUpperCase()+name.substring(1);
         name = "add"+name;
         return name;
+    }
+
+    private boolean equals(Object o, Object other) {
+        return System.identityHashCode(o) == System.identityHashCode(other);
     }
 
     private String toString(Object obj) {

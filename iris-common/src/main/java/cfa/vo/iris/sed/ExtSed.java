@@ -26,6 +26,7 @@ import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SegmentEvent;
 import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
+import cfa.vo.iris.fitting.FitConfiguration;
 import cfa.vo.iris.interop.SedServerResource;
 import cfa.vo.iris.interop.VaoMessage;
 import cfa.vo.iris.logging.LogEntry;
@@ -46,6 +47,7 @@ import cfa.vo.sedlib.io.SedFormat;
 import org.apache.commons.lang.ArrayUtils;
 import org.astrogrid.samp.client.SampException;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,9 +58,24 @@ import java.util.logging.Logger;
 
 public class ExtSed extends Sed {
 
-    private Map<String, Object> attachments = new TreeMap();
+    private Map<String, Object> attachments = new TreeMap<>();
     private String id;
     private boolean managed = true;
+
+    @Nonnull
+    public FitConfiguration getFit() {
+        if (fit == null) {
+            fit = new FitConfiguration();
+        }
+        return fit;
+    }
+
+    public void setFit(FitConfiguration fit) {
+        this.fit = fit;
+        SedEvent.getInstance().fire(this, SedCommand.CHANGED);
+    }
+
+    private FitConfiguration fit = new FitConfiguration();
     private static UnitsManager uf = Default.getInstance().getUnitsManager();
 
     public ExtSed(String id) {
@@ -157,7 +174,7 @@ public class ExtSed extends Sed {
     @Override
     public ExtSed clone() {
         ExtSed s = (ExtSed) super.clone();
-        s.attachments = new TreeMap();
+        s.attachments = new TreeMap<>();
         return s;
     }
 

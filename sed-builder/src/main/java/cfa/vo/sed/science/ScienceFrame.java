@@ -31,6 +31,7 @@ import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.events.SedCommand;
 import cfa.vo.iris.events.SedListener;
+import cfa.vo.iris.fitting.FitConfiguration;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.gui.widgets.SedList;
@@ -38,7 +39,6 @@ import cfa.vo.iris.logging.LogEntry;
 import cfa.vo.iris.logging.LogEvent;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.iris.sed.fit.IFit;
 import cfa.vo.sed.builder.SedBuilder;
 import cfa.vo.sed.builder.photfilters.*;
 import cfa.vo.sed.gui.PhotometryPointFrame.PhotometryFilterSelector;
@@ -53,9 +53,9 @@ import cfa.vo.sed.science.interpolation.ZConfig;
 import cfa.vo.sedlib.Param;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedException;
-import cfa.vo.sherpa.CompositeModel;
+import cfa.vo.sherpa.models.CompositeModel;
 import cfa.vo.sherpa.SherpaClient;
-import cfa.vo.sherpa.UserModel;
+import cfa.vo.sherpa.models.UserModel;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Task;
 
@@ -1285,12 +1285,11 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
 
         Response response = (Response) SAMPFactory.get(Response.class);
         if (integrateModel) {
-            IFit fit = (IFit) sed.getAttachment("fit.model");
-
+            FitConfiguration fit = sed.getFit();
             CompositeModel model = fit.getModel();
             model.setName(modelExpression);
 
-            List<UserModel> userModels = fit.getUserModels();
+            List<UserModel> userModels = fit.getUserModelList();
 
             for (PassBand pb : pbs) {
                 List pbl = new ArrayList();
@@ -1529,9 +1528,9 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
         } else {
             integrateModelButton.setText("Integrate Model (NO)");
         }
-        IFit fit = (IFit) sed.getAttachment("fit.model");
+        FitConfiguration fit = sed.getFit();
         if (fit != null) {
-            setModelExpression(fit.getExpression());
+            setModelExpression(fit.getModel().getName());
         } else {
             setModelExpression("No Model");
         }

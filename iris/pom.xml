@@ -139,6 +139,25 @@
                             </resources>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>copy-examples</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <nonFilteredFileExtensions>
+                                <nonFilteredFileExtension>jar</nonFilteredFileExtension>
+                            </nonFilteredFileExtensions>
+                            <outputDirectory>${project.build.directory}/tests/examples</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}/distro/examples</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>

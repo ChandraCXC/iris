@@ -20,8 +20,8 @@ public final class IrisUISpecAdapter implements UISpecAdapter {
 
     public IrisUISpecAdapter(boolean withSampHub) {
         Trigger trigger = new MainClassTrigger(Iris.class, "--debug");
-        logger.log(Level.INFO, "setting timeout to 120000 millis");
-        UISpec4J.setWindowInterceptionTimeLimit(120000);
+        logger.log(Level.INFO, "setting timeout to 30000 millis");
+        UISpec4J.setWindowInterceptionTimeLimit(30000);
         logger.log(Level.INFO, "intercepting main application window");
         mainWindow = WindowInterceptor.run(trigger);
         if (withSampHub) {
