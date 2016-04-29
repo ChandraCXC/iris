@@ -21,6 +21,8 @@ import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
@@ -245,5 +247,35 @@ public class IrisStarJTableTest {
         RowSelection selection = table.getRowSelection();
         ArrayUtils.assertEquals(new int[] {0}, selection.selectedRows[0]);
         ArrayUtils.assertEquals(new int[] {0}, selection.selectedRows[1]);
+    }
+    
+    @Test
+    public void testSortingPreservationOnReset() throws Exception {
+        IrisStarJTable table = new IrisStarJTable();
+        table.setSortBySpecValues(true);
+        table.setUsePlotterDataTables(true);
+        
+        IrisStarTable segTable1 = adapter.convertSegment(TestUtils.createSampleSegment(
+                new double[] {1,2,3}, new double[] {4,5,6}));
+        IrisStarTable segTable2 = adapter.convertSegment(TestUtils.createSampleSegment(
+                new double[] {100,200,300}, new double[] {10,11,12}));
+        
+        table.setSelectedStarTables(Arrays.asList(segTable1));
+        
+        // Min spec value first by default
+        assertEquals(1.0, table.getValueAt(0, 2));
+        
+        // Sort by Ascending flux values
+        table.getRowSorter().setSortKeys(Arrays.asList(new RowSorter.SortKey(3, SortOrder.DESCENDING)));
+        assertEquals(3.0, table.getValueAt(0, 2));
+        
+        // Adding the new table should preserve sort order
+        table.setSelectedStarTables(Arrays.asList(segTable1, segTable2));
+        assertEquals(300.0, table.getValueAt(0, 2));
+        
+        // Applying a mask and adding a column should preserve sort order
+        segTable2.applyMasks(new int[] {0});
+        table.setSelectedStarTables(Arrays.asList(segTable1, segTable2));
+        assertEquals(300.0, table.getValueAt(0, 3));
     }
 }

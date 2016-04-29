@@ -19,6 +19,7 @@ package cfa.vo.iris.visualizer.stil;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,9 +27,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.RowSorter;
+import javax.swing.RowSorter.SortKey;
 import javax.swing.SortOrder;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import java.awt.Rectangle;
@@ -93,10 +96,74 @@ public class IrisStarJTable extends StarJTable {
     }
     
     /**
+     * Selects the specified row from the specified star table. If the table isn't currently 
+     * selected, we add it - which resets the view.
+     * 
+     * @param starTableIndex - Selected index of the star table in the SED
+     * @param irow - row in the un-masked star table
+     */
+    public void selectRowIndex(int starTableIndex, int irow) {
+        
+        // Actual row is the trueRow plus the length of all the other tables (based on the
+        // base table! Not the masked table!)
+        for (int i=0; i<starTableIndex; i++) {
+            irow += this.selectedStarTables.get(i).getBaseTable().getRowCount();
+        }
+        
+        // Map true index to sorted view index
+        irow = convertRowIndexToView(irow);
+        
+        this.selectionModel.addSelectionInterval(irow, irow);
+        this.scrollRectToVisible(new Rectangle(this.getCellRect(irow, 0, true)));
+    }
+    
+    /**
+     * Returns selected rows according either to the model index, or to the view's index - as
+     * specified by modelView.
+     */
+    public int[] getSelectedRows(boolean modelView) {
+        int[] rows = super.getSelectedRows();
+        if (!modelView) {
+            return rows;
+        }
+        
+        for (int i = 0; i < rows.length; i++) {
+            rows[i] = convertRowIndexToModel(rows[i]);
+        }
+        Arrays.sort(rows);
+        return rows;
+    }
+    
+    public RowSelection getRowSelection() {
+        return new RowSelection(this.selectedStarTables, this.getSelectedRows(true));
+    }
+    
+    /**
+     * Always try to preserve sort order on resets
+     */
+    @Override
+    public void setRowSorter(RowSorter<? extends TableModel> sorter) {
+        if (getRowSorter() != null) {
+            List<SortKey> keys = updateSortKeys(
+                    getRowSorter().getSortKeys(), getStarTable(), true);
+            sorter.setSortKeys(keys);
+        }
+        super.setRowSorter(sorter);
+    }
+    
+    /**
      * 
      * GETTERS AND SETTERS
      * 
      */
+    
+    @Override
+    public void setStarTable(StarTable table, boolean showIndex) {
+        super.setStarTable(table, showIndex);
+        if (utypeAsNames) {
+            setUtypeColumnNames();
+        }
+    }
     
     public List<IrisStarTable> getSelectedStarTables() {
         return selectedStarTables;
@@ -110,6 +177,10 @@ public class IrisStarJTable extends StarJTable {
      */
     public void setSelectedStarTables(List<IrisStarTable> selectedStarTables) {
         if (selectedStarTables == null) return;
+        
+        // For preserving sorting of column
+        StarTable oldStarTable = getStarTable();
+        List<? extends SortKey> sortKeys = getRowSorter().getSortKeys();
         
         // Include the index column for non-null/non-empty star tables.
         boolean showIndex = (selectedStarTables.size() > 0);
@@ -128,8 +199,12 @@ public class IrisStarJTable extends StarJTable {
         this.setStarTable(new StackedStarTable(dataTables, columnInfoMatcher), showIndex);
         IrisStarJTable.configureColumnWidths(this, 200, 20);
         
-        // If specified we re-sort by spectral values
-        if (sortBySpecValues) {
+        // If the previous table was sorted try to apply the map to this table
+        if (sortKeys.size() > 0) {
+            getRowSorter().setSortKeys(updateSortKeys(sortKeys, oldStarTable, showIndex));
+        }
+        // Otherwise if specified we re-sort by spectral values
+        else if (sortBySpecValues) {
             sortBySpectralValue(showIndex);
         }
     }
@@ -174,57 +249,6 @@ public class IrisStarJTable extends StarJTable {
         return new StarJTableHeader(columnModel);
     }
     
-    @Override
-    public void setStarTable(StarTable table, boolean showIndex) {
-        super.setStarTable(table, showIndex);
-        if (utypeAsNames) {
-            setUtypeColumnNames();
-        }
-    }
-    
-    /**
-     * Selects the specified row from the specified star table. If the table isn't currently 
-     * selected, we add it - which resets the view.
-     * 
-     * @param starTableIndex - Selected index of the star table in the SED
-     * @param irow - row in the un-masked star table
-     */
-    public void selectRowIndex(int starTableIndex, int irow) {
-        
-        // Actual row is the trueRow plus the length of all the other tables (based on the
-        // base table! Not the masked table!)
-        for (int i=0; i<starTableIndex; i++) {
-            irow += this.selectedStarTables.get(i).getBaseTable().getRowCount();
-        }
-        
-        // Map true index to sorted view index
-        irow = convertRowIndexToView(irow);
-        
-        this.selectionModel.addSelectionInterval(irow, irow);
-        this.scrollRectToVisible(new Rectangle(this.getCellRect(irow, 0, true)));
-    }
-    
-    /**
-     * Returns selected rows according either to the model index, or to the view's index - as
-     * specified by modelView.
-     */
-    public int[] getSelectedRows(boolean modelView) {
-        int[] rows = super.getSelectedRows();
-        if (!modelView) {
-            return rows;
-        }
-        
-        for (int i = 0; i < rows.length; i++) {
-            rows[i] = convertRowIndexToModel(rows[i]);
-        }
-        Arrays.sort(rows);
-        return rows;
-    }
-    
-    public RowSelection getRowSelection() {
-        return new RowSelection(this.selectedStarTables, this.getSelectedRows(true));
-    }
-    
     private void setUtypeColumnNames() {
         
         // If we're using utypes as column names, override existing settings here.
@@ -256,11 +280,10 @@ public class IrisStarJTable extends StarJTable {
             
             // Sort based on spectral value column
             TableRowSorter<?> sorter = (TableRowSorter<?>) getRowSorter();
-            sorter.setSortKeys(Arrays.asList(new RowSorter.SortKey(col, SortOrder.ASCENDING)));
+            sorter.setSortKeys(Arrays.asList(new SortKey(col, SortOrder.ASCENDING)));
             sorter.sort();
         } catch (IOException ex) {
             // Ignore these
-            ex.printStackTrace();
             logger.log(Level.WARNING, "Could not read spectral value column", ex);;
         }
     }
@@ -362,5 +385,39 @@ public class IrisStarJTable extends StarJTable {
                 t++;
             }
         }
+    }
+    
+    /**
+     * Determine if the old primary sort key can be applied to the new table.
+     * Returns the list of sort keys for use with a new table.
+     */
+    private List<SortKey> updateSortKeys(List<? extends SortKey> keys,
+            StarTable oldTable,
+            boolean showIndex)
+    {
+        List<SortKey> newKeys = new ArrayList<>(1);
+        
+        if (keys.size() == 0) {
+            return newKeys;
+        }
+        
+        ColumnIdentifier id = new ColumnIdentifier(getStarTable());
+        int adjust = showIndex ? 1 : 0;
+
+        // Primary key
+        SortKey key = keys.get(0);
+        ColumnInfo info = oldTable.getColumnInfo(key.getColumn() - adjust);
+        
+        // Is the new key in the current star table?
+        int newCol = adjust;
+        try {
+            newCol += id.getColumnIndex(info.getName());
+        } catch (IOException ex) {
+            return newKeys;
+        }
+        
+        newKeys.add(new SortKey(newCol, key.getSortOrder()));
+        
+        return newKeys;
     }
 }
