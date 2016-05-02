@@ -19,7 +19,6 @@ package cfa.vo.iris.visualizer.preferences;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -49,7 +48,7 @@ import java.util.logging.Logger;
 public class SedModel {
     
     IrisStarTableAdapter adapter;
-    final Map<MapKey, SegmentModel> segmentPreferences;
+    final Map<Segment, SegmentModel> segmentPreferences;
     final ExtSed sed;
     final ColorPalette colors;
     final PlotPreferences plotPreferences;
@@ -59,7 +58,7 @@ public class SedModel {
     
     public SedModel(ExtSed sed, IrisStarTableAdapter adapter) {
         this.sed = sed;
-        this.segmentPreferences = Collections.synchronizedMap(new LinkedHashMap<MapKey, SegmentModel>());
+        this.segmentPreferences = Collections.synchronizedMap(new IdentityHashMap<Segment, SegmentModel>());
         this.adapter = adapter;
         this.colors = new HSVColorPalette();
         this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
@@ -78,15 +77,15 @@ public class SedModel {
     public Map<Segment, SegmentModel> getAllSegmentPreferences() {
         Map<Segment, SegmentModel> ret = new IdentityHashMap<>();
         
-        for (MapKey me : segmentPreferences.keySet()) {
-            ret.put(me.segment, segmentPreferences.get(me));
+        for (Segment me : segmentPreferences.keySet()) {
+            ret.put(me, segmentPreferences.get(me));
         }
         
         return Collections.unmodifiableMap(ret);
     }
     
     public SegmentModel getSegmentPreferences(Segment seg) {
-        return segmentPreferences.get(new MapKey(seg));
+        return segmentPreferences.get(seg);
     }
     
     /**
@@ -113,11 +112,9 @@ public class SedModel {
         // Do not keep track of empty segments
         if (seg == null) return;
         
-        MapKey me = new MapKey(seg);
-        
         // If the segment is already in the map remake the star table
-        if (segmentPreferences.containsKey(me)) {
-            segmentPreferences.get(me).setInSource(convertSegment(seg));
+        if (segmentPreferences.containsKey(seg)) {
+            segmentPreferences.get(seg).setInSource(convertSegment(seg));
             return;
         }
         
@@ -142,7 +139,7 @@ public class SedModel {
         // set the units
         setUnits(seg, layer);
         
-        segmentPreferences.put(me, layer);
+        segmentPreferences.put(seg, layer);
     }
     
     private IrisStarTable convertSegment(Segment seg) {
@@ -161,8 +158,7 @@ public class SedModel {
         // Do not keep track of empty segments
         if (seg == null) return;
         
-        MapKey me = new MapKey(seg);
-        segmentPreferences.remove(me);
+        segmentPreferences.remove(seg);
     }
     
     /**
@@ -258,15 +254,15 @@ public class SedModel {
     private void clean() {
         
         // Use iterator for concurrent modification
-        Iterator<Entry<MapKey, SegmentModel>> it = segmentPreferences.entrySet().iterator();
+        Iterator<Entry<Segment, SegmentModel>> it = segmentPreferences.entrySet().iterator();
         
         boolean shouldRemove = true;
         while (it.hasNext()) {
-            MapKey me = it.next().getKey();
+            Segment seg = it.next().getKey();
             
             // Need to manual check for location equality test
             for (int i=0; i<sed.getNumberOfSegments(); i++) {
-                if (me.segment == sed.getSegment(i)) {
+                if (seg == sed.getSegment(i)) {
                     shouldRemove = false;
                     break;
                 }
@@ -314,55 +310,5 @@ public class SedModel {
      */
     public PlotPreferences getPlotPreferences() {
         return plotPreferences;
-    }
-
-    /**
-     * Segment equality is based on flux and spectral axis values, whereas we
-     * require the memory location. This is a simple wrapper class for our segment
-     * preferences map to override the usual map expectation of .equals with a
-     * memory location check.
-     *
-     */
-    static class MapKey {
-        
-        public Segment segment;
-        
-        public MapKey(Segment segment) {
-            this.segment = segment;
-        }
-        
-        @Override
-        public boolean equals(Object o) {
-            if (o == null) {
-                return false;
-            }
-            
-            if (!(o instanceof MapKey)) {
-                return false;
-            }
-            
-            MapKey other = (MapKey) o;
-            return this.segment == other.segment;
-        }
-        
-        @Override
-        public int hashCode() {
-            return segment.hashCode();
-        }
-    }
-    
-    /**
-     * Strip an ID of its _ERROR suffix.
-     * @param id the ID to strip "_ERROR" from
-     */
-    private String strip(String id) {
-        
-        int index = id.lastIndexOf("_");
-        
-        // if _ERROR not found, return the unmodified id.
-        if (index < 0) {
-            return id;
-        }
-        return id.substring(0, index);
     }
 }
