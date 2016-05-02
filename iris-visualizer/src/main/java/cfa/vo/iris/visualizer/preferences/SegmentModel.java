@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cfa.vo.iris.visualizer.plotter;
+package cfa.vo.iris.visualizer.preferences;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
@@ -24,6 +24,10 @@ import java.util.logging.Logger;
 
 import cfa.vo.iris.sed.stil.SegmentColumn.Column;
 import cfa.vo.iris.units.UnitsException;
+import cfa.vo.iris.visualizer.plotter.ErrorBarType;
+import cfa.vo.iris.visualizer.plotter.LayerType;
+import cfa.vo.iris.visualizer.plotter.ShadingType;
+import cfa.vo.iris.visualizer.plotter.ShapeType;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
