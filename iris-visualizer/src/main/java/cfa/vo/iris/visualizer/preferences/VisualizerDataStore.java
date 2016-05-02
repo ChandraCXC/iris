@@ -5,7 +5,6 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
@@ -17,15 +16,13 @@ import cfa.vo.sedlib.Segment;
  */
 public class VisualizerDataStore {
     
-    private static final ExecutorService visualizerExecutor = Executors.newFixedThreadPool(5);
-    
     // Converts a segment into an Iris StarTable
     IrisStarTableAdapter adapter;
 
     // All preferences for each ExtSed in the workspace
     final Map<ExtSed, SedModel> sedPreferences;
     
-    public VisualizerDataStore() {
+    public VisualizerDataStore(ExecutorService visualizerExecutor) {
         this.adapter = new IrisStarTableAdapter(visualizerExecutor);
         this.sedPreferences = Collections.synchronizedMap(new IdentityHashMap<ExtSed, SedModel>());
     }

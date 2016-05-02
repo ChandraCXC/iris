@@ -16,9 +16,7 @@
 
 package cfa.vo.iris.visualizer.preferences;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.IdentityHashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -38,7 +36,6 @@ import cfa.vo.iris.visualizer.plotter.MouseListenerManager;
 import cfa.vo.iris.visualizer.metadata.SegmentExtractor;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.stil.IrisStarJTable.RowSelection;
-import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
 
 /**
@@ -56,43 +53,23 @@ public class VisualizerComponentPreferences {
     // For accessing plot mouse listeners
     MouseListenerManager mouseListenerManager;
     
-    // Converts a segment into an Iris StarTable
-    IrisStarTableAdapter adapter;
-    
     // Pointer to the Iris workspace
     final IWorkspace ws;
     
-    // All preferences for each ExtSed in the workspace
-    final Map<ExtSed, SedModel> sedPreferences;
+    // Persistence for Iris Visualizer data
+    final VisualizerDataStore dataStore;
     
-    // Sed to display in the Plotter (TODO: support multiple SEDs.)
-    ExtSed selectedSed;
+    // State model for the Iris Visualizer
+    final VisualizerDataModel dataModel;
 
-    @SuppressWarnings("unchecked")
     public VisualizerComponentPreferences(IWorkspace ws) {
         this.ws = ws;
         
-        // For converting segments to IrisStarTables
-        this.adapter = new IrisStarTableAdapter(visualizerExecutor);
-        
-        // Manages all mouse listeners over the plotter
+        this.dataStore = new VisualizerDataStore(visualizerExecutor);
+        this.dataModel = new VisualizerDataModel(dataStore);
         this.mouseListenerManager = new MouseListenerManager();
         
-        // Create and add preferences for the SED
-        this.sedPreferences = Collections.synchronizedMap(new IdentityHashMap<ExtSed, SedModel>());
-        for (ExtSed sed : (List<ExtSed>) ws.getSedManager().getSeds()) {
-            update(sed);
-        }
-        this.selectedSed = (ExtSed) ws.getSedManager().getSelected();
-        
-        // Plotter global preferences
-        if (this.sedPreferences.isEmpty()) {
-            this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
-        } else {
-            this.plotPreferences = this.getSedPreferences(getSelectedSed()).getPlotPreferences();
-        }
-        
-        // Add SED listener
+        this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
         addSedListeners();
     }
     
@@ -103,11 +80,24 @@ public class VisualizerComponentPreferences {
     }
 
     /**
-     * @return
-     *  Top level plot preferences for the stil plotter.
+     * @return Top level plot preferences for the stil plotter.
      */
     public PlotPreferences getPlotPreferences() {
         return plotPreferences;
+    }
+    
+    /**
+     * @return Visualizer persintence layer
+     */
+    public VisualizerDataStore getDataStore() {
+        return dataStore;
+    }
+    
+    /**
+     * @return the Visualizer data model
+     */
+    public VisualizerDataModel getDataModel() {
+        return dataModel;
     }
 
     /**
@@ -115,7 +105,8 @@ public class VisualizerComponentPreferences {
      *  Currently selected SED in the workspace
      */
     public ExtSed getSelectedSed() {
-        return selectedSed;
+        return dataModel.getSelectedSeds().size() == 0 ? null :
+            dataModel.getSelectedSeds().get(0);
     }
 
     /**
@@ -123,15 +114,7 @@ public class VisualizerComponentPreferences {
      * @param selectedSed
      */
     public void setSelectedSed(ExtSed selectedSed) {
-        this.selectedSed = selectedSed;
-    }
-
-    /**
-     * @return
-     *  The Segment -> StarTable adapter currently in use in the workspace.
-     */
-    public IrisStarTableAdapter getAdapter() {
-        return adapter;
+        dataModel.setSelectedSeds(Arrays.asList(selectedSed));
     }
     
     /**
@@ -141,26 +124,13 @@ public class VisualizerComponentPreferences {
     public MouseListenerManager getMouseListenerManager() {
         return mouseListenerManager;
     }
-    
-    /**
-     * @return
-     *  Collection of all the segment layers attached to the currently selected SED.
-     */
-    public Collection<SegmentModel> getSelectedLayers() {
-        SedModel p = getSedPreferences(getSelectedSed());
-        if (p == null) {
-            return Collections.emptyList();
-        }
-        
-        return p.getAllSegmentPreferences().values();
-    }
 
     /**
      * @return
      *  Preferences map for each SED.
      */
     public Map<ExtSed, SedModel> getSedPreferences() {
-        return sedPreferences;
+        return dataStore.getSedPreferences();
     }
     
     /**
@@ -168,7 +138,7 @@ public class VisualizerComponentPreferences {
      *  Preferences for the given SED
      */
     public SedModel getSedPreferences(ExtSed sed) {
-        return sedPreferences.get(sed);
+        return dataStore.getSedPreferences(sed);
     }
     
     /**
@@ -202,11 +172,7 @@ public class VisualizerComponentPreferences {
      * @param sed
      */
     public void update(ExtSed sed) {
-        if (sedPreferences.containsKey(sed)) {
-            sedPreferences.get(sed).refresh();
-        } else {
-            sedPreferences.put(sed, new SedModel(sed, adapter));
-        }
+        dataStore.update(sed);
         //fire(sed, VisualizerCommand.RESET);
     }
     
@@ -216,17 +182,7 @@ public class VisualizerComponentPreferences {
      * @param segment
      */
     public void update(ExtSed sed, Segment segment) {
-        // Do nothing for null segments
-        if (segment == null) return;
-        
-        if (sedPreferences.containsKey(sed)) {
-            sedPreferences.get(sed).addSegment(segment);
-        } else {
-            // The segment will automatically be serialized and attached the the 
-            // SedPrefrences since it's assumed to be attached to the SED.
-            sedPreferences.put(sed, new SedModel(sed, adapter));
-        }
-        
+        dataStore.update(sed, segment);
         fire(sed, VisualizerCommand.RESET);
     }
     
@@ -236,17 +192,7 @@ public class VisualizerComponentPreferences {
      * @param segments - the list of segments to add
      */
     public void update(ExtSed sed, List<Segment> segments) {
-        if (sedPreferences.containsKey(sed)) {
-            for (Segment segment : segments) {
-                // Do nothing for null segments
-                if (segment == null) continue;
-                sedPreferences.get(sed).addSegment(segment);
-            }
-        } else {
-            // The segment will automatically be serialized and attached the the 
-            // SedPrefrences since it's assumed to be attached to the SED.
-            sedPreferences.put(sed, new SedModel(sed, adapter));
-        }
+        dataStore.update(sed, segments);
         fire(sed, VisualizerCommand.RESET);
     }
     
@@ -255,11 +201,7 @@ public class VisualizerComponentPreferences {
      * @param sed
      */
     public void remove(ExtSed sed) {
-        if (!sedPreferences.containsKey(sed)) {
-            return;
-        }
-        sedPreferences.get(sed).removeAll();
-        sedPreferences.remove(sed);
+        dataStore.remove(sed);
         //fire(sed, VisualizerCommand.RESET);
     }
     
@@ -269,13 +211,7 @@ public class VisualizerComponentPreferences {
      * @param segment
      */
     public void remove(ExtSed sed, Segment segment) {
-        // Do nothing for null segments
-        if (segment == null) return;
-        
-        if (sedPreferences.containsKey(sed)) {
-            sedPreferences.get(sed).removeSegment(segment);
-        }
-        
+        dataStore.remove(sed, segment);
         fire(sed, VisualizerCommand.RESET);
     }
     
@@ -285,14 +221,7 @@ public class VisualizerComponentPreferences {
      * @param segments
      */
     public void remove(ExtSed sed, List<Segment> segments) {
-        if (sedPreferences.containsKey(sed)) {
-            for (Segment segment : segments) {
-                // Do nothing for null segments
-                if (segment == null) continue;
-                sedPreferences.get(sed).removeSegment(segment);
-            }
-        }
-        
+        dataStore.remove(sed, segments);
         fire(sed, VisualizerCommand.RESET);
     }
     
