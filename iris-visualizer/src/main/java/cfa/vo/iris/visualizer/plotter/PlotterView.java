@@ -28,6 +28,8 @@ import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerListener;
 import cfa.vo.iris.visualizer.stil.StilPlotter;
 import cfa.vo.sedlib.Segment;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
@@ -50,6 +52,7 @@ public class PlotterView extends JInternalFrame {
     private JInternalFrame residuals;
     private MetadataBrowserMainView metadataBrowser;
     private UnitsManagerFrame unitsManagerFrame;
+    private JInternalFrame plotterNavHelpFrame;
     
     // Plot mouse coordinate locations
     private String xcoord = "0E0";
@@ -96,6 +99,9 @@ public class PlotterView extends JInternalFrame {
         
         // units chooser frame
         this.unitsManagerFrame = new UnitsManagerFrame(plotter);
+        
+        // plotter navigation help frame
+        this.plotterNavHelpFrame = new PlotterNavHelpFrame("Plotter Navigation Help");
                 
         // Action for opening metadata browser
         metadataButton.addActionListener(new ActionListener() {
@@ -265,9 +271,6 @@ public class PlotterView extends JInternalFrame {
         jPanel3 = new javax.swing.JPanel();
         tglbtnShowHideResiduals = new javax.swing.JToggleButton();
         secondaryPlotOptions = new javax.swing.JSpinner();
-        plotterNavigationPanel = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
         plotter = new cfa.vo.iris.visualizer.stil.StilPlotter();
         menuBar = new javax.swing.JMenuBar();
         mnF = new javax.swing.JMenu();
@@ -288,7 +291,7 @@ public class PlotterView extends JInternalFrame {
         mntmGridOnOff = new javax.swing.JCheckBoxMenuItem();
         mntmCoplot = new javax.swing.JMenuItem();
         mnHelp = new javax.swing.JMenu();
-        mntmShowNavHelp = new javax.swing.JCheckBoxMenuItem();
+        mntmPlotterNavigationHelp = new javax.swing.JMenuItem();
 
         btnReset.setText("Reset");
         btnReset.addActionListener(new java.awt.event.ActionListener() {
@@ -394,8 +397,6 @@ public class PlotterView extends JInternalFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel2.setLayout(new java.awt.GridLayout());
-
         tglbtnShowHideResiduals.setText("Show Residuals");
 
         //JFormattedTextField txtBoxShowHideResiduals = ((JSpinner.ListEditor) secondaryPlotOptions.getEditor()).getTextField();
@@ -423,43 +424,16 @@ public class PlotterView extends JInternalFrame {
                 .addContainerGap())
         );
 
-        jPanel2.add(jPanel3);
-
-        plotterNavigationPanel.setVisible(false);
-        this.validate();
-        this.repaint();
-        plotterNavigationPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Plotter Navigation"));
-
-        String navigationHelp1 = "<html>"+
-        "Scroll: zoom in and out<br/>"+
-        "Click and drag: pan the viewport</html>";
-        jLabel1.setFont(new java.awt.Font("DejaVu Sans", 0, 10)); // NOI18N
-        jLabel1.setText(navigationHelp1);
-
-        String navigationHelp2 = "<html>"+
-        "Shift + click + drag: zoom box<br/>"+
-        "Scroll on X or Y axis: expand/shrink along axis<br/>"+
-        "</html>";
-        jLabel2.setFont(new java.awt.Font("DejaVu Sans", 0, 10)); // NOI18N
-        jLabel2.setText(navigationHelp2);
-
-        javax.swing.GroupLayout plotterNavigationPanelLayout = new javax.swing.GroupLayout(plotterNavigationPanel);
-        plotterNavigationPanel.setLayout(plotterNavigationPanelLayout);
-        plotterNavigationPanelLayout.setHorizontalGroup(
-            plotterNavigationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(plotterNavigationPanelLayout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(44, 44, 44)
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
-        plotterNavigationPanelLayout.setVerticalGroup(
-            plotterNavigationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(plotterNavigationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
-
-        jPanel2.add(plotterNavigationPanel);
 
         plotter.setName("plotter"); // NOI18N
 
@@ -547,13 +521,13 @@ public class PlotterView extends JInternalFrame {
 
         mnHelp.setText("Help");
 
-        mntmShowNavHelp.setText("Show plotter navigation help");
-        mntmShowNavHelp.addActionListener(new java.awt.event.ActionListener() {
+        mntmPlotterNavigationHelp.setText("Open Plotter Navigation Help...");
+        mntmPlotterNavigationHelp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mntmShowNavHelpActionPerformed(evt);
+                mntmPlotterNavigationHelpActionPerformed(evt);
             }
         });
-        mnHelp.add(mntmShowNavHelp);
+        mnHelp.add(mntmPlotterNavigationHelp);
 
         menuBar.add(mnHelp);
 
@@ -576,7 +550,7 @@ public class PlotterView extends JInternalFrame {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(plotter, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
+                .addComponent(plotter, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(5, 5, 5))
@@ -628,25 +602,15 @@ public class PlotterView extends JInternalFrame {
         GUIUtils.moveToFront(unitsManagerFrame);
     }//GEN-LAST:event_btnUnitsActionPerformed
 
-    private void mntmShowNavHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mntmShowNavHelpActionPerformed
-        if (mntmShowNavHelp.isSelected()) {
-            plotterNavigationPanel.setVisible(true);
-            this.validate();
-            this.repaint();
-        } else {
-            plotterNavigationPanel.setVisible(false);
-            this.validate();
-            this.repaint();
-        }
-    }//GEN-LAST:event_mntmShowNavHelpActionPerformed
+    private void mntmPlotterNavigationHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mntmPlotterNavigationHelpActionPerformed
+        GUIUtils.moveToFront(plotterNavHelpFrame);
+    }//GEN-LAST:event_mntmPlotterNavigationHelpActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnUnits;
     private cfa.vo.iris.gui.JButtonArrow down;
     private javax.swing.JSpinner fluxOrDensity;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -667,15 +631,14 @@ public class PlotterView extends JInternalFrame {
     private javax.swing.JRadioButtonMenuItem mntmLinear;
     private javax.swing.JRadioButtonMenuItem mntmLog;
     private javax.swing.JMenuItem mntmOpen;
+    private javax.swing.JMenuItem mntmPlotterNavigationHelp;
     private javax.swing.JMenuItem mntmProperties;
     private javax.swing.JMenuItem mntmSave;
-    private javax.swing.JCheckBoxMenuItem mntmShowNavHelp;
     private javax.swing.JMenuItem mntmSomething;
     private javax.swing.JRadioButtonMenuItem mntmXlog;
     private javax.swing.JRadioButtonMenuItem mntmYlog;
     private javax.swing.ButtonGroup plotTypeButtonGroup;
     private cfa.vo.iris.visualizer.stil.StilPlotter plotter;
-    private javax.swing.JPanel plotterNavigationPanel;
     private javax.swing.JSpinner secondaryPlotOptions;
     private javax.swing.JToggleButton tglbtnShowHideResiduals;
     private javax.swing.JTextField txtXposition;
@@ -759,6 +722,25 @@ public class PlotterView extends JInternalFrame {
                 updatePlot(source);
                 updatePreferences();
             }
+        }
+    }
+    
+    // plotter navigation help window. Is closable, maximizable, and 
+    // iconifiable.
+    public class PlotterNavHelpFrame extends JInternalFrame {
+        
+        public PlotterNavHelpFrame (String title) {
+            super(title, true, true, true, true);
+            ws.addFrame(this);
+            this.getContentPane().add(new NavigationHelpPanel());
+            this.setPreferredSize(new Dimension(400, 500));
+
+            this.validate();
+            this.pack();
+            
+            this.setLocation(0, 0);
+            
+            this.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
         }
     }
 }
