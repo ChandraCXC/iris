@@ -125,8 +125,8 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
-                assertEquals(sed, mbView.selectedSed);
-                assertEquals(0, mbView.sedStarTables.size());
+                assertEquals(sed, mbView.getDataModel().getSelectedSed());
+                assertEquals(0, mbView.getDataModel().getSedStarTables().size());
                 assertEquals(0, starTableList.getSize());
             }
         });
@@ -139,7 +139,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertEquals(1, mbView.sedStarTables.size());
+                assertEquals(1, mbView.getDataModel().getSedStarTables().size());
                 assertEquals(1, starTableList.getSize());
                 assertEquals(1, segmentTable.getRowCount());
 
@@ -157,7 +157,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertEquals(2, mbView.sedStarTables.size());
+                assertEquals(2, mbView.getDataModel().getSedStarTables().size());
                 assertEquals(2, starTableList.getSize());
                 assertEquals(2, segmentTable.getRowCount());
 
@@ -219,7 +219,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 assertTrue(StringUtils.contains(mbWindow.getTitle(), sed.getId()));
-                assertEquals(2, mbView.sedStarTables.size());
+                assertEquals(2, mbView.getDataModel().getSedStarTables().size());
                 assertEquals(2, starTableList.getSize());
                 assertEquals(2, segmentTable.getRowCount());
 
@@ -243,8 +243,8 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
-                assertEquals(sed, mbView.selectedSed);
-                assertEquals(2, mbView.sedStarTables.size());
+                assertEquals(sed, mbView.getDataModel().getSelectedSed());
+                assertEquals(2, mbView.getDataModel().getSedStarTables().size());
                 assertEquals(2, starTableList.getSize());
                 assertEquals(3, plotterTable.getRowCount());
                 assertEquals(3, dataTable.getRowCount());
@@ -312,8 +312,8 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
-                assertEquals(sed, mbView.selectedSed);
-                assertEquals(1, mbView.sedStarTables.size());
+                assertEquals(sed, mbView.getDataModel().getSelectedSed());
+                assertEquals(1, mbView.getDataModel().getSedStarTables().size());
                 assertEquals(1, starTableList.getSize());
                 assertEquals(455, plotterTable.getRowCount());
             }
@@ -332,7 +332,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                IrisStarTable table = mbView.selectedStarTables.get(0);
+                IrisStarTable table = mbView.getDataModel().getSelectedStarTables().get(0);
                 assertEquals(masked, table.getMasked());
             }
         });
@@ -345,7 +345,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                IrisStarTable table = mbView.selectedStarTables.get(0);
+                IrisStarTable table = mbView.getDataModel().getSelectedStarTables().get(0);
                 assertEquals(masked, table.getMasked());
             }
         });
@@ -381,8 +381,8 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
-                assertEquals(sed, mbView.selectedSed);
-                assertEquals(2, mbView.sedStarTables.size());
+                assertEquals(sed, mbView.getDataModel().getSelectedSed());
+                assertEquals(2, mbView.getDataModel().getSedStarTables().size());
                 assertEquals(2, starTableList.getSize());
                 assertEquals(3, plotterTable.getRowCount());
                 assertEquals(3, dataTable.getRowCount());
@@ -429,7 +429,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
-                assertEquals(sed, mbView.selectedSed);
+                assertEquals(sed, mbView.getDataModel().getSelectedSed());
             }
         });
         
@@ -453,7 +453,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         invokeWithRetry(50, 100, new Runnable() {
             @Override
             public void run() {
-                assertNotEquals(sed, mbView.selectedSed);
+                assertNotEquals(sed, mbView.getDataModel().getSelectedSed());
             }
         });
         
@@ -511,8 +511,8 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             public void run() {
                 starTableList.selectIndices(0,1);
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
-                assertEquals(sed, mbView.selectedSed);
-                assertEquals(2, mbView.sedStarTables.size());
+                assertEquals(sed, mbView.getDataModel().getSelectedSed());
+                assertEquals(2, mbView.getDataModel().getSedStarTables().size());
                 assertEquals(2, starTableList.getSize());
                 assertEquals(6, plotterTable.getRowCount());
             }
@@ -526,7 +526,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                for (IrisStarTable table : mbView.selectedStarTables)
+                for (IrisStarTable table : mbView.getDataModel().getSelectedStarTables())
                     assertEquals(masked, table.getMasked());
             }
         });
@@ -540,7 +540,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                for (IrisStarTable table : mbView.selectedStarTables)
+                for (IrisStarTable table : mbView.getDataModel().getSelectedStarTables())
                     assertEquals(masked, table.getMasked());
             }
         });
@@ -563,8 +563,8 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 // two tables in selection, 1 selected, no rows selected
-                assertEquals(2, mbView.getSelectedTables().size());
-                assertEquals(1, mbView.getSelectedStarTables().size());
+                assertEquals(2, mbView.getDataModel().getSedStarTables().size());
+                assertEquals(1, mbView.getDataModel().getSelectedStarTables().size());
                 assertEquals(1, dataTable.getRowCount());
                 dataTable.selectionIsEmpty().check();
             }
@@ -578,7 +578,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             public void run() {
                 // first row should be selected, still just one star table
                 plotterTable.rowsAreSelected(0).check();
-                assertEquals(1, mbView.getSelectedStarTables().size());
+                assertEquals(1, mbView.getDataModel().getSelectedStarTables().size());
             }
         });
         
@@ -589,7 +589,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 plotterTable.rowsAreSelected(1).check();
-                assertEquals(2, mbView.getSelectedStarTables().size());
+                assertEquals(2, mbView.getDataModel().getSelectedStarTables().size());
             }
         });
     }
