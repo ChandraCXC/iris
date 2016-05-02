@@ -39,9 +39,7 @@ public class VisualizerComponentPreferencesTest {
             @Override
             protected void addSedListeners() {}
         };
-        assertEquals(0, prefs.getSelectedLayers().size());
         assertEquals(0, prefs.getSedPreferences().size());
-        assertEquals(0, prefs.getSelectedLayers().size());
         assertNull(prefs.getSedPreferences(sed));
         
         // Add SED
@@ -85,8 +83,6 @@ public class VisualizerComponentPreferencesTest {
         
         // Remove the SED
         prefs.remove(sed);
-        assertEquals(0, prefs.getSelectedLayers().size());
         assertEquals(0, prefs.getSedPreferences().size());
-        assertEquals(0, prefs.getSelectedLayers().size());
     }
 }
