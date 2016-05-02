@@ -138,7 +138,7 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="mntmPlotterNavigationHelp">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Open Plotter Navigation Help..."/>
+                <Property name="text" type="java.lang.String" value="Open Visualizer Navigation Help..."/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mntmPlotterNavigationHelpActionPerformed"/>

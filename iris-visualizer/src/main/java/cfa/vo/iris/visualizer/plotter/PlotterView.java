@@ -521,7 +521,7 @@ public class PlotterView extends JInternalFrame {
 
         mnHelp.setText("Help");
 
-        mntmPlotterNavigationHelp.setText("Open Plotter Navigation Help...");
+        mntmPlotterNavigationHelp.setText("Open Visualizer Navigation Help...");
         mntmPlotterNavigationHelp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mntmPlotterNavigationHelpActionPerformed(evt);
