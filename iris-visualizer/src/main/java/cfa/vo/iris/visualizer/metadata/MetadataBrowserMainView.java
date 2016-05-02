@@ -30,8 +30,8 @@ import javax.swing.ListCellRenderer;
 import org.apache.commons.lang.ArrayUtils;
 
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.visualizer.plotter.SegmentModel;
 import cfa.vo.iris.visualizer.preferences.SedModel;
+import cfa.vo.iris.visualizer.preferences.SegmentModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
 import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;

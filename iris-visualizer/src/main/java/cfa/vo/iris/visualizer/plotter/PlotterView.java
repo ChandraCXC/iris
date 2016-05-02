@@ -22,6 +22,7 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
+import cfa.vo.iris.visualizer.preferences.SegmentModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
 import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;

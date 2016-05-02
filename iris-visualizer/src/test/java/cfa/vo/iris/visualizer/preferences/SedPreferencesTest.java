@@ -23,7 +23,6 @@ import static cfa.vo.iris.test.unit.TestUtils.*;
 import org.junit.Test;
 
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.visualizer.plotter.SegmentModel;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.Target;
