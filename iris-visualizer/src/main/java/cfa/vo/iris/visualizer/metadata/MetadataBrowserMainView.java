@@ -30,11 +30,10 @@ import javax.swing.ListCellRenderer;
 import org.apache.commons.lang.ArrayUtils;
 
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.visualizer.preferences.SedModel;
-import cfa.vo.iris.visualizer.preferences.SegmentModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
 import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
+import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerListener;
 import cfa.vo.iris.visualizer.stil.IrisStarJTable;
 import cfa.vo.iris.visualizer.stil.IrisStarJTable.RowSelection;
@@ -57,11 +56,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     public static final String MB_WINDOW_NAME = "Metadata Browser (%s)";
 
     final VisualizerComponentPreferences preferences;
-    //final IWorkspace ws;
-    
-    ExtSed selectedSed; // Selected ws sed
-    List<IrisStarTable> sedStarTables = new ArrayList<>(); // list of star tables associated with selectedSed
-    List<IrisStarTable> selectedStarTables = new ArrayList<>(); // list of selected StarTables from selectedTables
+    final VisualizerDataModel dataModel;
     
     /**
      * Creates new form MetadataBrowser
@@ -69,6 +64,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     public MetadataBrowserMainView(VisualizerComponentPreferences preferences) 
     {
         this.preferences = preferences;
+        this.dataModel = preferences.getDataModel();
         
         initComponents();
         setChangeListener();
@@ -81,11 +77,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     }
 
     public void resetData() {
-        setSelectedSed(preferences.getSelectedSed());
         logger.info("Resetting metadata browser");
-        
-        updateTitle();
-        updateSelectedTables();
         
         // Select 0th indexed segment if available
         starTableList.setSelectedIndex(0);
@@ -97,18 +89,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         
         // Attempt to maintain segment selection
         int[] selection = starTableList.getSelectedIndices();
-        
-        updateTitle();
-        updateSelectedTables();
-
-        starTableList.setSelectedIndices(selection);
         updateSelectedStarTables(selection);
-    }
-    
-    private void updateTitle() {
-        title = String.format(MB_WINDOW_NAME, 
-                selectedSed == null ? "Select SED" : selectedSed.getId());
-        setTitle(title);
     }
     
     /**
@@ -136,29 +117,11 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         table.selectRowIndex(starTableIndex, irow);
     }
     
-    private void updateSelectedTables() {
-        List<IrisStarTable> newTables = new LinkedList<>();
-        
-        // If no SED selected then just leave an empty list
-        if (selectedSed != null) {
-            // Read all startables to list
-            SedModel prefs = preferences.getSedPreferences(selectedSed);
-            
-            for (int i=0; i<selectedSed.getNumberOfSegments(); i++) {
-                SegmentModel layer = prefs.getSegmentPreferences(selectedSed.getSegment(i));
-                newTables.add(layer.getInSource());
-            }
-        }
-        
-        // Update segment metadata table
-        setSelectedTables(newTables);
-    }
-    
     private void updateSelectedStarTables(int[] indexes) {
         List<IrisStarTable> newTables = new LinkedList<>();
         for (int i : indexes) {
-            if (i < sedStarTables.size() && i >= 0) {
-                newTables.add(sedStarTables.get(i));
+            if (i < dataModel.getSedStarTables().size() && i >= 0) {
+                newTables.add(dataModel.getSedStarTables().get(i));
             }
         }
         setSelectedStarTables(newTables);
@@ -172,7 +135,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private void extractSelectionToSed() {
         
         // Do nothing if no SED is selected
-        if (selectedSed == null) {
+        if (dataModel.getSelectedSed() == null) {
             JOptionPane.showMessageDialog(this, "No SED in browser. Please load an SED.",
                     null, JOptionPane.WARNING_MESSAGE);
             return;
@@ -211,38 +174,24 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
      * getters and setters
      */
     
-    
-    public ExtSed getSelectedSed() {
-        return selectedSed;
-    }
-    
-    public static final String PROP_SELECTED_SED = "selectedSed";
-    public void setSelectedSed(ExtSed sed) {
-        ExtSed oldSed = selectedSed;
-        this.selectedSed = sed;
-        firePropertyChange(PROP_SELECTED_SED, oldSed, selectedSed);
+    public VisualizerDataModel getDataModel() {
+        return dataModel;
     }
     
     public List<IrisStarTable> getSelectedTables() {
-        return sedStarTables;
+        return dataModel.getSedStarTables();
     }
     
-    public static final String PROP_SELECTED_TABLES = "selectedTables";
-    public void setSelectedTables(List<IrisStarTable> newTables) {
-        List<IrisStarTable> oldTables = sedStarTables;
-        this.sedStarTables = newTables;
-        firePropertyChange(PROP_SELECTED_TABLES, oldTables, sedStarTables);
+    public void setSedStarTables(List<IrisStarTable> newTables) {
+        dataModel.setSelectedStarTables(newTables);
     }
     
     public List<IrisStarTable> getSelectedStarTables() {
-        return selectedStarTables;
+        return dataModel.getSelectedStarTables();
     }
 
-    public static final String PROP_SELECTED_STARTABLES = "selectedStarTables";
     public void setSelectedStarTables(List<IrisStarTable> newStarTables) {
-        List<IrisStarTable> oldStarTables = selectedStarTables;
-        this.selectedStarTables = newStarTables;
-        firePropertyChange(PROP_SELECTED_STARTABLES, oldStarTables, newStarTables);
+        dataModel.setSelectedStarTables(newStarTables);
     }
     
     /**
@@ -345,9 +294,14 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
-        setTitle("Metadata Browser");
         setName(""); // NOI18N
         setPreferredSize(new java.awt.Dimension(800, 454));
+
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.selectedSed.id}"), this, org.jdesktop.beansbinding.BeanProperty.create("title"));
+        binding.setSourceNullValue("Select SED");
+        binding.setSourceUnreadableValue("Select SED");
+        bindingGroup.addBinding(binding);
+
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         filterExpressionField.setColumns(2);
@@ -503,8 +457,8 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
         starTableList.setCellRenderer(new StarTableCellRenderer());
 
-        org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${selectedTables}");
-        org.jdesktop.swingbinding.JListBinding jListBinding = org.jdesktop.swingbinding.SwingBindings.createJListBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, starTableList);
+        org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${dataModel.sedStarTables}");
+        org.jdesktop.swingbinding.JListBinding jListBinding = org.jdesktop.swingbinding.SwingBindings.createJListBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, this, eLProperty, starTableList);
         bindingGroup.addBinding(jListBinding);
 
         starTableList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
@@ -524,7 +478,8 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         plotterStarJTable.setColumnInfoMatcher(new SegmentColumnInfoMatcher());
         plotterStarJTable.setSortBySpecValues(true);
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedStarTables}"), plotterStarJTable, org.jdesktop.beansbinding.BeanProperty.create("selectedStarTables"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.selectedStarTables}"), plotterStarJTable, org.jdesktop.beansbinding.BeanProperty.create("selectedStarTables"));
+        binding.setSourceNullValue(null);
         bindingGroup.addBinding(binding);
 
         plotterMetadataScrollPane.setViewportView(plotterStarJTable);
@@ -549,7 +504,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         pointStarJTable.setUsePlotterDataTables(false);
         pointStarJTable.setUtypeAsNames(true);
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedStarTables}"), pointStarJTable, org.jdesktop.beansbinding.BeanProperty.create("selectedStarTables"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.selectedStarTables}"), pointStarJTable, org.jdesktop.beansbinding.BeanProperty.create("selectedStarTables"));
         bindingGroup.addBinding(binding);
 
         pointMetadataScrollPane.setViewportView(pointStarJTable);
@@ -569,7 +524,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
         segmentMetadataScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedTables}"), metadataJTable1, org.jdesktop.beansbinding.BeanProperty.create("selectedStarTables"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.sedStarTables}"), metadataJTable1, org.jdesktop.beansbinding.BeanProperty.create("selectedStarTables"));
         bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, starTableList, org.jdesktop.beansbinding.ELProperty.create("${selectionModel}"), metadataJTable1, org.jdesktop.beansbinding.BeanProperty.create("selectionModel"));
         bindingGroup.addBinding(binding);
@@ -727,13 +682,13 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         if (selectedTable == null) return;
         
         RowSelection selection = selectedTable.getRowSelection();
-        logger.info(String.format("Applying mask of %s points to %s tables", selection.originalRows.length, selectedStarTables.size()));
+        logger.info(String.format("Applying mask of %s points to %s tables", selection.originalRows.length, dataModel.getSelectedStarTables().size()));
         
         for (int i=0; i<selection.selectedTables.length; i++) {
             selection.selectedTables[i].applyMasks(selection.selectedRows[i]);
         }
         
-        VisualizerChangeEvent.getInstance().fire(selectedSed, VisualizerCommand.REDRAW);
+        VisualizerChangeEvent.getInstance().fire(dataModel.getSelectedSed(), VisualizerCommand.REDRAW);
     }//GEN-LAST:event_applyMaskButtonActionPerformed
 
     private void clearMaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearMaskButtonActionPerformed
@@ -741,18 +696,18 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         if (selectedTable == null) return;
         
         RowSelection selection = selectedTable.getRowSelection();
-        logger.info(String.format("Removing masks of %s points from %s tables", selection.originalRows.length, selectedStarTables.size()));
+        logger.info(String.format("Removing masks of %s points from %s tables", selection.originalRows.length, dataModel.getSelectedStarTables().size()));
         
         for (int i=0; i<selection.selectedTables.length; i++) {
             selection.selectedTables[i].clearMasks(selection.selectedRows[i]);
         }
         
-        VisualizerChangeEvent.getInstance().fire(selectedSed, VisualizerCommand.REDRAW);
+        VisualizerChangeEvent.getInstance().fire(dataModel.getSelectedSed(), VisualizerCommand.REDRAW);
     }//GEN-LAST:event_clearMaskButtonActionPerformed
 
     private void clearAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearAllButtonActionPerformed
-        IrisStarTable.clearAllMasks(sedStarTables);
-        VisualizerChangeEvent.getInstance().fire(selectedSed, VisualizerCommand.REDRAW);
+        IrisStarTable.clearAllMasks(dataModel.getSedStarTables());
+        VisualizerChangeEvent.getInstance().fire(dataModel.getSelectedSed(), VisualizerCommand.REDRAW);
     }//GEN-LAST:event_clearAllButtonActionPerformed
 
     private void extractToSedMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_extractToSedMenuItemActionPerformed

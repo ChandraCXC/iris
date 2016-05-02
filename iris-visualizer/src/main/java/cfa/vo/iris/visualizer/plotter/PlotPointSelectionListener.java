@@ -32,7 +32,7 @@ public class PlotPointSelectionListener extends StilPlotterPointSelectionListene
         
         // The plotter irow does not take into account masks, so we map it to the row in the
         // base table before passing it to the metadata browser.
-        irow = mbView.getSelectedTables().get(starTableIndex).getBaseTableRow(irow);
+        irow = mbView.getDataModel().getSedStarTables().get(starTableIndex).getBaseTableRow(irow);
         mbView.addRowToSelection(starTableIndex, irow);
     }
     

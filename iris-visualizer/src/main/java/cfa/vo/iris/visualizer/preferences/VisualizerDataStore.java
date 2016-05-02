@@ -22,9 +22,16 @@ public class VisualizerDataStore {
     // All preferences for each ExtSed in the workspace
     final Map<ExtSed, SedModel> sedPreferences;
     
+    VisualizerDataModel dataModel;
+    
     public VisualizerDataStore(ExecutorService visualizerExecutor) {
         this.adapter = new IrisStarTableAdapter(visualizerExecutor);
         this.sedPreferences = Collections.synchronizedMap(new IdentityHashMap<ExtSed, SedModel>());
+        this.dataModel = new VisualizerDataModel(this);
+    }
+    
+    public VisualizerDataModel getDataModel() {
+        return dataModel;
     }
 
     /**

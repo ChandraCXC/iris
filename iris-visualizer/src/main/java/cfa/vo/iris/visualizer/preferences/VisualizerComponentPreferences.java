@@ -16,7 +16,6 @@
 
 package cfa.vo.iris.visualizer.preferences;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -61,15 +60,11 @@ public class VisualizerComponentPreferences {
     
     // Persistence for Iris Visualizer data
     final VisualizerDataStore dataStore;
-    
-    // State model for the Iris Visualizer
-    final VisualizerDataModel dataModel;
 
     public VisualizerComponentPreferences(IWorkspace ws) {
         this.ws = ws;
         
         this.dataStore = new VisualizerDataStore(visualizerExecutor);
-        this.dataModel = new VisualizerDataModel(dataStore);
         this.mouseListenerManager = new MouseListenerManager();
         
         this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
@@ -90,7 +85,7 @@ public class VisualizerComponentPreferences {
     }
     
     /**
-     * @return Visualizer persintence layer
+     * @return Visualizer persistence layer
      */
     public VisualizerDataStore getDataStore() {
         return dataStore;
@@ -100,7 +95,7 @@ public class VisualizerComponentPreferences {
      * @return the Visualizer data model
      */
     public VisualizerDataModel getDataModel() {
-        return dataModel;
+        return dataStore.getDataModel();
     }
 
     /**
@@ -108,8 +103,7 @@ public class VisualizerComponentPreferences {
      *  Currently selected SED in the workspace
      */
     public ExtSed getSelectedSed() {
-        return dataModel.getSelectedSeds().size() == 0 ? null :
-            dataModel.getSelectedSeds().get(0);
+        return getDataModel().getSelectedSed();
     }
 
     /**
@@ -117,7 +111,7 @@ public class VisualizerComponentPreferences {
      * @param selectedSed
      */
     public void setSelectedSed(ExtSed selectedSed) {
-        dataModel.setSelectedSeds(Arrays.asList(selectedSed));
+        getDataModel().setSelectedSed(selectedSed);
     }
     
     /**
