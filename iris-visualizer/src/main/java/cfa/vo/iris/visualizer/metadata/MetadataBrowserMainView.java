@@ -40,10 +40,10 @@ import cfa.vo.iris.visualizer.stil.IrisStarJTable.RowSelection;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.SegmentColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.UtypeColumnInfoMatcher;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import uk.ac.starlink.table.StarTable;
-import uk.ac.starlink.table.gui.StarJTable;
 
 public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
@@ -57,8 +57,8 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     //final IWorkspace ws;
     
     ExtSed selectedSed; // Selected ws sed
-    List<IrisStarTable> sedStarTables; // list of star tables associated with selectedSed
-    List<IrisStarTable> selectedStarTables; // list of selected StarTables from selectedTables
+    List<IrisStarTable> sedStarTables = new ArrayList<>(); // list of star tables associated with selectedSed
+    List<IrisStarTable> selectedStarTables = new ArrayList<>(); // list of selected StarTables from selectedTables
     
     /**
      * Creates new form MetadataBrowser
@@ -148,9 +148,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         }
         
         // Update segment metadata table
-        segmentJTable.setModel(new IrisMetadataTableModel((List<StarTable>)(List<?>) newTables));
-        StarJTable.configureColumnWidths(segmentJTable, 200, 10);
-        
         setSelectedTables(newTables);
     }
     
@@ -311,7 +308,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         pointStarJTable = new cfa.vo.iris.visualizer.stil.IrisStarJTable();
         segmentMetadataPanel = new javax.swing.JPanel();
         segmentMetadataScrollPane = new javax.swing.JScrollPane();
-        segmentJTable = new javax.swing.JTable();
+        metadataJTable1 = new cfa.vo.iris.visualizer.stil.MetadataJTable();
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         extractToSedMenuItem = new javax.swing.JMenuItem();
@@ -544,12 +541,12 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
         segmentMetadataScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-        segmentJTable.setModel(new IrisMetadataTableModel());
-
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, starTableList, org.jdesktop.beansbinding.ELProperty.create("${selectionModel}"), segmentJTable, org.jdesktop.beansbinding.BeanProperty.create("selectionModel"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedTables}"), metadataJTable1, org.jdesktop.beansbinding.BeanProperty.create("selectedStarTables"));
+        bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, starTableList, org.jdesktop.beansbinding.ELProperty.create("${selectionModel}"), metadataJTable1, org.jdesktop.beansbinding.BeanProperty.create("selectionModel"));
         bindingGroup.addBinding(binding);
 
-        segmentMetadataScrollPane.setViewportView(segmentJTable);
+        segmentMetadataScrollPane.setViewportView(metadataJTable1);
 
         javax.swing.GroupLayout segmentMetadataPanelLayout = new javax.swing.GroupLayout(segmentMetadataPanel);
         segmentMetadataPanel.setLayout(segmentMetadataPanelLayout);
@@ -782,6 +779,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private javax.swing.JButton invertSelectionButton;
     private javax.swing.JMenuItem invertSelectionMenuItem;
     private javax.swing.JMenuBar jMenuBar1;
+    private cfa.vo.iris.visualizer.stil.MetadataJTable metadataJTable1;
     private javax.swing.JPanel plotterMetadataPanel;
     private javax.swing.JScrollPane plotterMetadataScrollPane;
     private cfa.vo.iris.visualizer.stil.IrisStarJTable plotterStarJTable;
@@ -790,7 +788,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private cfa.vo.iris.visualizer.stil.IrisStarJTable pointStarJTable;
     private javax.swing.JMenuItem removeMasksMenuItem;
     private javax.swing.JMenuItem restoreSetMenuItem;
-    private javax.swing.JTable segmentJTable;
     private javax.swing.JPanel segmentMetadataPanel;
     private javax.swing.JScrollPane segmentMetadataScrollPane;
     private javax.swing.JButton selectAllButton;
