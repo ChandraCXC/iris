@@ -47,7 +47,7 @@ import java.util.logging.Logger;
 public class SedModel {
     
     IrisStarTableAdapter adapter;
-    final Map<Segment, SegmentModel> segmentPreferences;
+    final Map<Segment, SegmentModel> segmentModels;
     final ExtSed sed;
     final ColorPalette colors;
     final PlotPreferences plotPreferences;
@@ -57,7 +57,7 @@ public class SedModel {
     
     public SedModel(ExtSed sed, IrisStarTableAdapter adapter) {
         this.sed = sed;
-        this.segmentPreferences = Collections.synchronizedMap(new IdentityHashMap<Segment, SegmentModel>());
+        this.segmentModels = Collections.synchronizedMap(new IdentityHashMap<Segment, SegmentModel>());
         this.adapter = adapter;
         this.colors = new HSVColorPalette();
         this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
@@ -73,18 +73,18 @@ public class SedModel {
      * @return
      *  A map of all segments and layer preferences currently in use by this SED.
      */
-    public Map<Segment, SegmentModel> getAllSegmentPreferences() {
+    public Map<Segment, SegmentModel> getAllSegmentModels() {
         Map<Segment, SegmentModel> ret = new IdentityHashMap<>();
         
-        for (Segment me : segmentPreferences.keySet()) {
-            ret.put(me, segmentPreferences.get(me));
+        for (Segment me : segmentModels.keySet()) {
+            ret.put(me, segmentModels.get(me));
         }
         
         return Collections.unmodifiableMap(ret);
     }
     
-    public SegmentModel getSegmentPreferences(Segment seg) {
-        return segmentPreferences.get(seg);
+    public SegmentModel getSegmentModel(Segment seg) {
+        return segmentModels.get(seg);
     }
     
     /**
@@ -99,22 +99,23 @@ public class SedModel {
     }
 
     void removeAll() {
-        segmentPreferences.clear();
+        segmentModels.clear();
     }
     
     /**
-     * Add a segment to the sed preferences map.
+     * Add a segment to the sed model map.
      * @param seg
+     * @return true if the sed was added to the model.
      */
-    void addSegment(Segment seg) {
+    boolean addSegment(Segment seg) {
         
         // Do not keep track of empty segments
-        if (seg == null) return;
+        if (seg == null) return false;
         
         // If the segment is already in the map remake the star table
-        if (segmentPreferences.containsKey(seg)) {
-            segmentPreferences.get(seg).setInSource(convertSegment(seg));
-            return;
+        if (segmentModels.containsKey(seg)) {
+            segmentModels.get(seg).setInSource(convertSegment(seg));
+            return false;
         }
         
         // Ensure that the layer has a unique identifier in the list of segments
@@ -138,7 +139,8 @@ public class SedModel {
         // set the units
         setUnits(seg, layer);
         
-        segmentPreferences.put(seg, layer);
+        segmentModels.put(seg, layer);
+        return true;
     }
     
     private IrisStarTable convertSegment(Segment seg) {
@@ -152,12 +154,14 @@ public class SedModel {
     /**
      * Removes a segment from the sed preferences map.
      * @param segment
+     * @return true if the segment was removed from the models map
      */
-    void removeSegment(Segment seg) {
+    boolean removeSegment(Segment seg) {
         // Do not keep track of empty segments
-        if (seg == null) return;
+        if (seg == null) return false;
         
-        segmentPreferences.remove(seg);
+        SegmentModel m = segmentModels.remove(seg);
+        return m != null;
     }
     
     /**
@@ -217,7 +221,7 @@ public class SedModel {
         plotPreferences.setYlabel(yunit);
         
         // update the segment layers with the new units
-        for (SegmentModel seg : segmentPreferences.values()) {
+        for (SegmentModel seg : segmentModels.values()) {
             try {
                 seg.setXUnits(xunits);
                 seg.setYUnits(yunits);
@@ -253,7 +257,7 @@ public class SedModel {
     private void clean() {
         
         // Use iterator for concurrent modification
-        Iterator<Entry<Segment, SegmentModel>> it = segmentPreferences.entrySet().iterator();
+        Iterator<Entry<Segment, SegmentModel>> it = segmentModels.entrySet().iterator();
         
         boolean shouldRemove = true;
         while (it.hasNext()) {
@@ -273,7 +277,7 @@ public class SedModel {
     }
     
     boolean isUniqueLayerSuffix(String suffix) {
-        for (SegmentModel layer : segmentPreferences.values()) {
+        for (SegmentModel layer : segmentModels.values()) {
             if (StringUtils.equals(layer.getSuffix(), suffix)) {
                 return false;
             }
@@ -287,7 +291,7 @@ public class SedModel {
 
     public void setXunits(String xunits) throws UnitsException {
         this.xunits = xunits;
-        for (SegmentModel layer : segmentPreferences.values()) {
+        for (SegmentModel layer : segmentModels.values()) {
             layer.setXUnits(xunits);
         }
     }
@@ -298,7 +302,7 @@ public class SedModel {
 
     public void setYunits(String yunits) throws UnitsException {
         this.yunits = yunits;
-        for (SegmentModel layer : segmentPreferences.values()) {
+        for (SegmentModel layer : segmentModels.values()) {
             layer.setYUnits(yunits);
         }
     }

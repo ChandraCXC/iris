@@ -468,18 +468,18 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         
         // Verify IrisStarTables are all the same
         SegmentModel oldLayer = mbView.preferences.getSedPreferences(sed)
-                .getSegmentPreferences(sed.getSegment(0));
+                .getSegmentModel(sed.getSegment(0));
         SegmentModel newLayer = mbView.preferences.getSedPreferences(newSed)
-                .getSegmentPreferences(newSed.getSegment(0));
+                .getSegmentModel(newSed.getSegment(0));
         assertEquals(oldLayer.getSuffix(), newLayer.getSuffix());
         assertEquals(oldLayer.getInSource().getName(), newLayer.getInSource().getName());
         assertEquals(oldLayer.getInSource().getParameters().size(), newLayer.getInSource().getParameters().size());
         starTableList.contains(newLayer.getSuffix()).check();
         
         oldLayer = mbView.preferences.getSedPreferences(sed)
-                .getSegmentPreferences(sed.getSegment(1));
+                .getSegmentModel(sed.getSegment(1));
         newLayer = mbView.preferences.getSedPreferences(newSed)
-                .getSegmentPreferences(newSed.getSegment(1));
+                .getSegmentModel(newSed.getSegment(1));
         assertEquals(oldLayer.getSuffix(), newLayer.getSuffix());
         assertEquals(oldLayer.getInSource().getName(), newLayer.getInSource().getName());
         assertEquals(oldLayer.getInSource().getParameters().size(), newLayer.getInSource().getParameters().size());

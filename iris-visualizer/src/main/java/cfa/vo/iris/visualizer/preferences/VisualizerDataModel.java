@@ -93,21 +93,21 @@ public class VisualizerDataModel {
         ExtSed oldSed = this.selectedSed;
         this.selectedSed = selectedSed;
         
-        List<SegmentModel> newModels = new LinkedList<>();
-        List<IrisStarTable> newTables = new LinkedList<>();
+        List<SegmentModel> newSedModels = new LinkedList<>();
+        List<IrisStarTable> newSedTables = new LinkedList<>();
 
         // Update models
         SedModel sedModel = store.getSedPreferences(selectedSed);
         for (int i = 0; i < selectedSed.getNumberOfSegments(); i++) {
-            SegmentModel segModel = sedModel.getSegmentPreferences(selectedSed.getSegment(i));
-            newModels.add(segModel);
-            newTables.add(segModel.getInSource());
+            SegmentModel segModel = sedModel.getSegmentModel(selectedSed.getSegment(i));
+            newSedModels.add(segModel);
+            newSedTables.add(segModel.getInSource());
         }
         
         pcs.firePropertyChange(PROP_SELECTED_SED, oldSed, selectedSed);
         
-        this.setSedSegmentModels(newModels);
-        this.setSedStarTables(newTables);
+        this.setSedSegmentModels(newSedModels);
+        this.setSedStarTables(newSedTables);
     }
     
     public List<SegmentModel> getSedSegmentModels() {

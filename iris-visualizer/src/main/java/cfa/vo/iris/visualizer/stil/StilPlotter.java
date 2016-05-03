@@ -270,7 +270,7 @@ public class StilPlotter extends JPanel {
 
     public Map<Segment, SegmentModel> getSegmentsMap() {
         return Collections.unmodifiableMap(preferences
-                .getSedPreferences(currentSed).getAllSegmentPreferences());
+                .getSedPreferences(currentSed).getAllSegmentModels());
     }
 
     public PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> getPlotDisplay() {
@@ -381,7 +381,7 @@ public class StilPlotter extends JPanel {
 
         SedModel prefs = preferences.getSedPreferences(sed);
         for (int i = 0; i < sed.getNumberOfSegments(); i++) {
-            SegmentModel layer = prefs.getSegmentPreferences(sed.getSegment(i));
+            SegmentModel layer = prefs.getSegmentModel(sed.getSegment(i));
             for (String key : layer.getPreferences().keySet()) {
                 env.setValue(key, layer.getPreferences().get(key));
             }
