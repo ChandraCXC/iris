@@ -20,13 +20,13 @@ public class VisualizerDataStore {
     IrisStarTableAdapter adapter;
 
     // All preferences for each ExtSed in the workspace
-    final Map<ExtSed, SedModel> sedPreferences;
+    final Map<ExtSed, SedModel> sedModels;
     
     VisualizerDataModel dataModel;
     
     public VisualizerDataStore(ExecutorService visualizerExecutor) {
         this.adapter = new IrisStarTableAdapter(visualizerExecutor);
-        this.sedPreferences = Collections.synchronizedMap(new IdentityHashMap<ExtSed, SedModel>());
+        this.sedModels = Collections.synchronizedMap(new IdentityHashMap<ExtSed, SedModel>());
         this.dataModel = new VisualizerDataModel(this);
     }
     
@@ -37,15 +37,16 @@ public class VisualizerDataStore {
     /**
      * @return Preferences map for each SED.
      */
-    public Map<ExtSed, SedModel> getSedPreferences() {
-        return sedPreferences;
+    public Map<ExtSed, SedModel> getSedModels() {
+        return sedModels;
     }
     
     /**
      * @return Preferences for the given SED
+     * @param sed
      */
     public SedModel getSedPreferences(ExtSed sed) {
-        return sedPreferences.get(sed);
+        return sedModels.get(sed);
     }
 
     /**
@@ -53,10 +54,10 @@ public class VisualizerDataStore {
      * @param sed
      */
     public void update(ExtSed sed) {
-        if (sedPreferences.containsKey(sed)) {
-            sedPreferences.get(sed).refresh();
+        if (sedModels.containsKey(sed)) {
+            sedModels.get(sed).refresh();
         } else {
-            sedPreferences.put(sed, new SedModel(sed, adapter));
+            sedModels.put(sed, new SedModel(sed, adapter));
         }
     }
     
@@ -69,12 +70,12 @@ public class VisualizerDataStore {
         // Do nothing for null segments
         if (segment == null) return;
         
-        if (sedPreferences.containsKey(sed)) {
-            sedPreferences.get(sed).addSegment(segment);
+        if (sedModels.containsKey(sed)) {
+            sedModels.get(sed).addSegment(segment);
         } else {
             // The segment will automatically be serialized and attached the the 
             // SedPrefrences since it's assumed to be attached to the SED.
-            sedPreferences.put(sed, new SedModel(sed, adapter));
+            sedModels.put(sed, new SedModel(sed, adapter));
         }
     }
     
@@ -84,16 +85,16 @@ public class VisualizerDataStore {
      * @param segments - the list of segments to add
      */
     public void update(ExtSed sed, List<Segment> segments) {
-        if (sedPreferences.containsKey(sed)) {
+        if (sedModels.containsKey(sed)) {
             for (Segment segment : segments) {
                 // Do nothing for null segments
                 if (segment == null) continue;
-                sedPreferences.get(sed).addSegment(segment);
+                sedModels.get(sed).addSegment(segment);
             }
         } else {
             // The segment will automatically be serialized and attached the the 
             // SedPrefrences since it's assumed to be attached to the SED.
-            sedPreferences.put(sed, new SedModel(sed, adapter));
+            sedModels.put(sed, new SedModel(sed, adapter));
         }
     }
     
@@ -102,12 +103,11 @@ public class VisualizerDataStore {
      * @param sed
      */
     public void remove(ExtSed sed) {
-        if (!sedPreferences.containsKey(sed)) {
+        if (!sedModels.containsKey(sed)) {
             return;
         }
-        sedPreferences.get(sed).removeAll();
-        sedPreferences.remove(sed);
-        //fire(sed, VisualizerCommand.RESET);
+        sedModels.get(sed).removeAll();
+        sedModels.remove(sed);
     }
     
     /**
@@ -119,8 +119,8 @@ public class VisualizerDataStore {
         // Do nothing for null segments
         if (segment == null) return;
         
-        if (sedPreferences.containsKey(sed)) {
-            sedPreferences.get(sed).removeSegment(segment);
+        if (sedModels.containsKey(sed)) {
+            sedModels.get(sed).removeSegment(segment);
         }
     }
     
@@ -130,11 +130,11 @@ public class VisualizerDataStore {
      * @param segments
      */
     public void remove(ExtSed sed, List<Segment> segments) {
-        if (sedPreferences.containsKey(sed)) {
+        if (sedModels.containsKey(sed)) {
             for (Segment segment : segments) {
                 // Do nothing for null segments
                 if (segment == null) continue;
-                sedPreferences.get(sed).removeSegment(segment);
+                sedModels.get(sed).removeSegment(segment);
             }
         }
     }

@@ -121,9 +121,8 @@
     </Property>
   </Properties>
   <BindingProperties>
-    <BindingProperty name="title" source="Form" sourcePath="${dataModel.selectedSed.id}" target="Form" targetPath="title" updateStrategy="1" immediately="false">
+    <BindingProperty name="title" source="Form" sourcePath="Metadata Browser (${dataModel.selectedSed.id})" target="Form" targetPath="title" updateStrategy="0" immediately="false">
       <Property name="nullValue" type="java.lang.String" value="Select SED"/>
-      <Property name="incompletePathValue" type="java.lang.String" value="Select SED"/>
     </BindingProperty>
   </BindingProperties>
   <SyntheticProperties>
@@ -343,7 +342,7 @@
                 </Property>
               </Properties>
               <BindingProperties>
-                <BindingProperty name="elements" source="Form" sourcePath="${dataModel.sedStarTables}" target="starTableList" targetPath="elements" updateStrategy="1" immediately="false"/>
+                <BindingProperty name="elements" source="Form" sourcePath="${dataModel.sedStarTables}" target="starTableList" targetPath="elements" updateStrategy="0" immediately="false"/>
               </BindingProperties>
               <Events>
                 <EventHandler event="valueChanged" listener="javax.swing.event.ListSelectionListener" parameters="javax.swing.event.ListSelectionEvent" handler="handleStarTableSelection"/>
