@@ -2,10 +2,6 @@ package cfa.vo.iris.visualizer.metadata;
 
 import static org.junit.Assert.*;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.apache.commons.lang.builder.EqualsBuilder;
 import org.junit.Test;
 
 import cfa.vo.iris.sed.ExtSed;
@@ -25,10 +21,10 @@ public class SegmentExtractorTest {
         
         // Simple segment, three rows selected
         Segment seg1 = TestUtils.createSampleSegment();
-        int[] selection = new int[] {0,1,2};
+        int[][] selection = new int[][] {{0,1,2}};
         
-        List<IrisStarTable> tables = new LinkedList<>();
-        tables.add(adapter.convertSegment(seg1));
+        IrisStarTable[] tables = new IrisStarTable[1];
+        tables[0] = adapter.convertSegment(seg1);
         
         SegmentExtractor extractor = new SegmentExtractor(tables, selection);
         
@@ -45,10 +41,10 @@ public class SegmentExtractorTest {
     public void testSingleSegmentExtractionSomeRows() throws Exception {
         
         Segment seg1 = TestUtils.createSampleSegment();
-        int[] selection = new int[] {1};
-        
-        List<IrisStarTable> tables = new LinkedList<>();
-        tables.add(adapter.convertSegment(seg1));
+        int[][] selection = new int[][] {{1}};
+
+        IrisStarTable[] tables = new IrisStarTable[1];
+        tables[0] = adapter.convertSegment(seg1);
         
         SegmentExtractor extractor = new SegmentExtractor(tables, selection);
         
@@ -69,11 +65,11 @@ public class SegmentExtractorTest {
         // Two segments, all rows selected
         Segment seg1 = TestUtils.createSampleSegment();
         Segment seg2 = TestUtils.createSampleSegment(new double[] {100,200,300}, new double[] {100,200,300});
-        int[] selection = new int[] {0,1,2,3,4,5};
+        int[][] selection = new int[][] {{0,1,2},{0,1,2}};
         
-        List<IrisStarTable> tables = new LinkedList<>();
-        tables.add(adapter.convertSegment(seg1));
-        tables.add(adapter.convertSegment(seg2));
+        IrisStarTable[] tables = new IrisStarTable[2];
+        tables[0] = adapter.convertSegment(seg1);
+        tables[1] = adapter.convertSegment(seg2);
         
         SegmentExtractor extractor = new SegmentExtractor(tables, selection);
         ExtSed sed = extractor.constructSed();
@@ -90,11 +86,11 @@ public class SegmentExtractorTest {
         // Two segments, no rows selected from first, last 2 from second
         Segment seg1 = TestUtils.createSampleSegment();
         Segment seg2 = TestUtils.createSampleSegment(new double[] {100,200,300}, new double[] {100,200,300});
-        int[] selection = new int[] {4,5};
+        int[][] selection = new int[][] {{},{1,2}};
         
-        List<IrisStarTable> tables = new LinkedList<>();
-        tables.add(adapter.convertSegment(seg1));
-        tables.add(adapter.convertSegment(seg2));
+        IrisStarTable[] tables = new IrisStarTable[2];
+        tables[0] = adapter.convertSegment(seg1);
+        tables[1] = adapter.convertSegment(seg2);
         
         SegmentExtractor extractor = new SegmentExtractor(tables, selection);
         ExtSed sed = extractor.constructSed();
@@ -112,11 +108,11 @@ public class SegmentExtractorTest {
         
         seg1.createTarget();
         seg1.getTarget().setName(new TextParam("Some Star"));
+
+        IrisStarTable[] tables = new IrisStarTable[1];
+        tables[0] = adapter.convertSegment(seg1);
         
-        List<IrisStarTable> tables = new LinkedList<>();
-        tables.add(adapter.convertSegment(seg1));
-        
-        SegmentExtractor extractor = new SegmentExtractor(tables, new int[] {0});
+        SegmentExtractor extractor = new SegmentExtractor(tables, new int[][] {{0}});
         Segment clone = extractor.constructSed().getSegment(0);
         
         assertEquals(clone.getCuration().getDate(), seg1.getCuration().getDate());
