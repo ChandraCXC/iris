@@ -106,6 +106,7 @@ public class VisualizerDataModel {
         
         this.setSelectedSegmentModels(newModels);
         this.setSedStarTables(newTables);
+        
         pcs.firePropertyChange(PROP_SELECTED_SED, oldSed, selectedSed);
     }
     
