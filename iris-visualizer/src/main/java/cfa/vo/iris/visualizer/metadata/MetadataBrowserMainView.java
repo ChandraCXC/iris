@@ -177,15 +177,22 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             return;
         }
         
+        // Cannot extract from segment tab
+        IrisStarJTable jtable = getSelectedIrisJTable();
+        if (jtable == null) {
+            JOptionPane.showMessageDialog(this, "Select either Data or Point Metadata tab.");
+            return;
+        }
+        
         // Do nothing if there are no rows selected
-        int[] selectedRows = plotterStarJTable.getSelectedRows();
-        if (selectedRows == null || selectedRows.length == 0) {
+        RowSelection selectedRows = jtable.getRowSelection();
+        if (selectedRows == null || selectedRows.originalRows.length == 0) {
             JOptionPane.showMessageDialog(this, "No rows selected to extract. Please select rows.");
             return;
         }
         
-        logger.info(String.format("Extracting %s points from Sed.", selectedRows.length));
-        preferences.createNewWorkspaceSed(selectedStarTables, selectedRows);
+        logger.info(String.format("Extracting %s points from Sed.", selectedRows.originalRows.length));
+        preferences.createNewWorkspaceSed(selectedRows);
         JOptionPane.showMessageDialog(this, "Added new Filter SED to workspace.");
     }
     

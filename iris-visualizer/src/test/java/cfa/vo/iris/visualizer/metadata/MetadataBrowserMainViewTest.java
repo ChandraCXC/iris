@@ -31,13 +31,14 @@ import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
-import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.visualizer.VisualizerComponent;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.iris.visualizer.plotter.SegmentModel;
 import cfa.vo.sedlib.TextParam;
+import cfa.vo.sedlib.io.SedFormat;
+import cfa.vo.testdata.TestData;
 
 import static org.junit.Assert.*;
 
