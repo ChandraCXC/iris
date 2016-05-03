@@ -41,8 +41,6 @@ import cfa.vo.iris.visualizer.stil.tables.SegmentColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.UtypeColumnInfoMatcher;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
-import java.util.List;
-
 public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
     private static final long serialVersionUID = 1L;
@@ -147,22 +145,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     
     public VisualizerDataModel getDataModel() {
         return dataModel;
-    }
-    
-    public List<IrisStarTable> getSelectedTables() {
-        return dataModel.getSedStarTables();
-    }
-    
-    public void setSedStarTables(List<IrisStarTable> newTables) {
-        dataModel.setSelectedStarTables(newTables);
-    }
-    
-    public List<IrisStarTable> getSelectedStarTables() {
-        return dataModel.getSelectedStarTables();
-    }
-
-    public void setSelectedStarTables(List<IrisStarTable> newStarTables) {
-        dataModel.setSelectedStarTables(newStarTables);
     }
     
     static class StarTableCellRenderer extends JLabel implements ListCellRenderer<IrisStarTable> {
