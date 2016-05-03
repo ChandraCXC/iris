@@ -37,7 +37,6 @@ import cfa.vo.iris.visualizer.stil.IrisStarJTable.RowSelection;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.SegmentColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.UtypeColumnInfoMatcher;
-import java.util.List;
 
 public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
@@ -132,22 +131,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     
     public VisualizerDataModel getDataModel() {
         return dataModel;
-    }
-    
-    public List<IrisStarTable> getSelectedTables() {
-        return dataModel.getSedStarTables();
-    }
-    
-    public void setSedStarTables(List<IrisStarTable> newTables) {
-        dataModel.setSelectedStarTables(newTables);
-    }
-    
-    public List<IrisStarTable> getSelectedStarTables() {
-        return dataModel.getSelectedStarTables();
-    }
-
-    public void setSelectedStarTables(List<IrisStarTable> newStarTables) {
-        dataModel.setSelectedStarTables(newStarTables);
     }
     
     static class StarTableCellRenderer extends JLabel implements ListCellRenderer<IrisStarTable> {
