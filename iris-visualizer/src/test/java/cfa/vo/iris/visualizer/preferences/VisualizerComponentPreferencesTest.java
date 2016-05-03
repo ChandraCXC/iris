@@ -45,27 +45,27 @@ public class VisualizerComponentPreferencesTest {
         // Add SED
         prefs.update(sed);
         assertEquals(1, prefs.getSedPreferences().size());
-        assertEquals(0, prefs.getSedPreferences(sed).getAllSegmentPreferences().size());
+        assertEquals(0, prefs.getSedPreferences(sed).getAllSegmentModels().size());
         
         // Add segment to SED
         Segment seg1 = createSampleSegment();
         sed.addSegment(seg1);
         prefs.update(sed, seg1);
         assertEquals(1, prefs.getSedPreferences().size());
-        assertEquals(1, prefs.getSedPreferences(sed).getAllSegmentPreferences().size());
+        assertEquals(1, prefs.getSedPreferences(sed).getAllSegmentModels().size());
         
         // Add another segment
         Segment seg2 = createSampleSegment(new double[] {1}, new double[] {2});
         sed.addSegment(seg2);
         prefs.update(sed, seg2);
         assertEquals(1, prefs.getSedPreferences().size());
-        assertEquals(2, prefs.getSedPreferences(sed).getAllSegmentPreferences().size());
+        assertEquals(2, prefs.getSedPreferences(sed).getAllSegmentModels().size());
         
         // Remove the first segment
         sed.remove(seg1);
         prefs.remove(sed, seg1);
         assertEquals(1, prefs.getSedPreferences().size());
-        assertEquals(1, prefs.getSedPreferences(sed).getAllSegmentPreferences().size());
+        assertEquals(1, prefs.getSedPreferences(sed).getAllSegmentModels().size());
         
         // Add a list of segments at once (test MultipleSegmentEvent listener)
         Segment seg3 = createSampleSegment();
@@ -74,11 +74,11 @@ public class VisualizerComponentPreferencesTest {
         sed.addSegment(segments);
         prefs.update(sed, segments);
         assertEquals(1, prefs.getSedPreferences().size());
-        assertEquals(3, prefs.getSedPreferences(sed).getAllSegmentPreferences().size());
+        assertEquals(3, prefs.getSedPreferences(sed).getAllSegmentModels().size());
         
         sed.remove(segments);
         prefs.remove(sed, segments);
-        assertEquals(1, prefs.getSedPreferences(sed).getAllSegmentPreferences().size());        
+        assertEquals(1, prefs.getSedPreferences(sed).getAllSegmentModels().size());        
         
         
         // Remove the SED
