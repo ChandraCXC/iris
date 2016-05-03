@@ -40,8 +40,8 @@ public class IrisStarTableAdapterTest {
         
         IrisStarTable table = adapter.convertSegment(seg);
         
-        SegmentStarTable plotterTable = table.getPlotterTable();
-        StarTable dataTable = table.getSegmentDataTable();
+        SegmentStarTable plotterTable = table.getPlotterDataTable();
+        StarTable dataTable = table.getSegmentMetadataTable();
         assertEquals(table.getName(), plotterTable.getName());
         
         // Name, spec values, flux values, original flux values
@@ -59,7 +59,7 @@ public class IrisStarTableAdapterTest {
         final IrisStarTable table = adapter.convertSegment(seg);
 
         assertEquals(356, table.getRowCount());
-        assertEquals(356, table.getSegmentDataTable().getRowCount());
+        assertEquals(356, table.getSegmentMetadataTable().getRowCount());
         
         // Incl. flux error
         assertEquals(5, table.getColumnCount());
@@ -79,7 +79,7 @@ public class IrisStarTableAdapterTest {
         TestUtils.invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertEquals(2, table.getSegmentDataTable().getColumnCount());
+                assertEquals(2, table.getSegmentMetadataTable().getColumnCount());
             }
         });
     }

@@ -49,7 +49,7 @@ public class IrisStarJTable extends StarJTable {
     // Use ColumnNames or Utypes in the column header fields
     private boolean utypeAsNames = false;
     
-    // Use the plotter data (segment) star tables or the metadata star tables
+    // Use the plotter data star tables or the metadata star tables
     private boolean usePlotterDataTables;
 
     private ColumnInfoMatcher columnInfoMatcher;
@@ -86,9 +86,9 @@ public class IrisStarJTable extends StarJTable {
         
         for (IrisStarTable table : selectedStarTables) {
             if (usePlotterDataTables) {
-                dataTables.add(table.getPlotterTable());
+                dataTables.add(table.getPlotterDataTable());
             } else {
-                dataTables.add(table.getSegmentDataTable());
+                dataTables.add(table.getSegmentMetadataTable());
             }
         }
         
@@ -209,6 +209,24 @@ public class IrisStarJTable extends StarJTable {
     /**
      * Represents a selection of rows in each star table by mapping the current row selection
      * into a list of rows for each StarTable currently in the segment plotter.
+     * 
+     * e.g.
+     * 
+     * Given a list of two star tables with 3 rows each
+     * [[r11, r12, r13], [r21, r22, r23]]
+     * 
+     * and a list of selected rows
+     * S = [0,1,4,5]
+     * 
+     * We can map the single array S into a list of arrays corresponding to rows in the
+     * list of star tables since 0,1 applies to the first star table. Any row index beyond 2 
+     * will apply to the second star table (as the first table has 3 rows).
+     * 
+     * The resulting row selection would be:
+     * [[0,1],[1,2]]
+     * 
+     * Corresponding to elements:
+     * [[r11, r12], [r22, r23]]
      *
      */
     public static class RowSelection {
@@ -233,12 +251,13 @@ public class IrisStarJTable extends StarJTable {
             int t = 0; // current table
             int i = 0; // current selected row
             
-            // Iterate through row selection and map rows to the appropriate star table
-            // row indexes
+            // In the ordered list of selected rows, each star table will have start index equal
+            // to the sum of the lengths of all previous star tables, and end index equal to the 
+            // start index plus the length of the table.
             while (t < selectedTables.length) {
                 int end = (int) (startIndex + selectedTables[t].getBaseTable().getRowCount());
                 
-                // Get subarray the applies to this star table
+                // Get subarray that applies to this star table
                 int start = i;
                 while (i < rows.length && rows[i] < end) ++i;
                 selectedRows[t] = ArrayUtils.subarray(rows, start, i);

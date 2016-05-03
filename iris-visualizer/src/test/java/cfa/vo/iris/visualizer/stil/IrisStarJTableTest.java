@@ -143,7 +143,7 @@ public class IrisStarJTableTest {
         // Select all rows
         table.addRowSelectionInterval(0, 5);
         
-        // Should be two empty lists
+        // Should be two 3 element lists
         sel = table.getRowSelection();
         assertEquals(2, sel.selectedRows.length);
         ArrayUtils.assertEquals(new int[] {0,1,2}, sel.selectedRows[0]);
