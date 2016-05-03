@@ -29,7 +29,7 @@ public class VisualizerDataModel {
     private ExtSed selectedSed;
 
     // list of star tables associated with selectedSed, these tables will all be plotted
-    List<SegmentModel> selectedSegmentModels = new LinkedList<>();
+    List<SegmentModel> sedSegmentModels = new LinkedList<>();
     
     // list of star tables associated with selectedSed, these tables will all be plotted
     List<IrisStarTable> sedStarTables = new LinkedList<>();
@@ -93,10 +93,10 @@ public class VisualizerDataModel {
         ExtSed oldSed = this.selectedSed;
         this.selectedSed = selectedSed;
         
-        // Update models
         List<SegmentModel> newModels = new LinkedList<>();
         List<IrisStarTable> newTables = new LinkedList<>();
 
+        // Update models
         SedModel sedModel = store.getSedPreferences(selectedSed);
         for (int i = 0; i < selectedSed.getNumberOfSegments(); i++) {
             SegmentModel segModel = sedModel.getSegmentPreferences(selectedSed.getSegment(i));
@@ -104,21 +104,21 @@ public class VisualizerDataModel {
             newTables.add(segModel.getInSource());
         }
         
-        this.setSelectedSegmentModels(newModels);
-        this.setSedStarTables(newTables);
-        
         pcs.firePropertyChange(PROP_SELECTED_SED, oldSed, selectedSed);
+        
+        this.setSedSegmentModels(newModels);
+        this.setSedStarTables(newTables);
     }
     
-    public List<SegmentModel> getSelectedSegmentModels() {
-        return selectedSegmentModels;
+    public List<SegmentModel> getSedSegmentModels() {
+        return sedSegmentModels;
     }
     
     // Locked down since these are tied to the selected seds
-    void setSelectedSegmentModels(List<SegmentModel> newModels) {
-        List<SegmentModel> oldModels = this.selectedSegmentModels;
-        this.selectedSegmentModels = newModels;
-        pcs.firePropertyChange(PROP_SELECTED_SEGMENT_MODELS, oldModels, newModels);
+    void setSedSegmentModels(List<SegmentModel> newModels) {
+        List<SegmentModel> oldModels = this.sedSegmentModels;
+        this.sedSegmentModels = newModels;
+        pcs.firePropertyChange(PROP_SELECTED_SEGMENT_MODELS, oldModels, sedSegmentModels);
     }
     
     public List<IrisStarTable> getSedStarTables() {
@@ -139,6 +139,6 @@ public class VisualizerDataModel {
     public void setSelectedStarTables(List<IrisStarTable> newStarTables) {
         List<IrisStarTable> oldStarTables = selectedStarTables;
         this.selectedStarTables = newStarTables;
-        pcs.firePropertyChange(PROP_SELECTED_STARTABLES, oldStarTables, newStarTables);
+        pcs.firePropertyChange(PROP_SELECTED_STARTABLES, oldStarTables, selectedStarTables);
     }
 }

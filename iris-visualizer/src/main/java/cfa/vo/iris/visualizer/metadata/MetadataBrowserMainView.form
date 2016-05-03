@@ -330,10 +330,10 @@
               </Properties>
               <BindingProperties>
                 <BindingProperty name="elements" source="Form" sourcePath="${dataModel.sedStarTables}" target="starTableList" targetPath="elements" updateStrategy="0" immediately="false"/>
+                <BindingProperty name="selectedElements" source="Form" sourcePath="${dataModel.selectedStarTables}" target="starTableList" targetPath="selectedElements" updateStrategy="0" immediately="false">
+                  <BindingParameter name="IGNORE_ADJUSTING" value="N"/>
+                </BindingProperty>
               </BindingProperties>
-              <Events>
-                <EventHandler event="valueChanged" listener="javax.swing.event.ListSelectionListener" parameters="javax.swing.event.ListSelectionEvent" handler="handleStarTableSelection"/>
-              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;IrisStarTable&gt;"/>
               </AuxValues>
@@ -398,11 +398,7 @@
                         </Property>
                       </Properties>
                       <BindingProperties>
-                        <BindingProperty name="selectedStarTables" source="Form" sourcePath="${dataModel.selectedStarTables}" target="plotterStarJTable" targetPath="selectedStarTables" updateStrategy="1" immediately="false">
-                          <Property name="nullValue" type="java.util.List" editor="org.netbeans.modules.form.ComponentChooserEditor">
-                            <ComponentRef name="null"/>
-                          </Property>
-                        </BindingProperty>
+                        <BindingProperty name="selectedStarTables" source="starTableList" sourcePath="${selectedElements}" target="plotterStarJTable" targetPath="selectedStarTables" updateStrategy="0" immediately="false"/>
                       </BindingProperties>
                     </Component>
                   </SubComponents>
@@ -450,7 +446,7 @@
                         <Property name="utypeAsNames" type="boolean" value="true"/>
                       </Properties>
                       <BindingProperties>
-                        <BindingProperty name="selectedStarTables" source="Form" sourcePath="${dataModel.selectedStarTables}" target="pointStarJTable" targetPath="selectedStarTables" updateStrategy="1" immediately="false"/>
+                        <BindingProperty name="selectedStarTables" source="starTableList" sourcePath="${selectedElements}" target="pointStarJTable" targetPath="selectedStarTables" updateStrategy="1" immediately="false"/>
                       </BindingProperties>
                     </Component>
                   </SubComponents>
