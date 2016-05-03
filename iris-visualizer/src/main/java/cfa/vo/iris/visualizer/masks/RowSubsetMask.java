@@ -66,7 +66,7 @@ public class RowSubsetMask implements Mask {
     @Override
     public void clearMasks(int[] rows) {
         for (int i : rows) {
-            if (i > table.getSegmentDataTable().getRowCount()) continue;
+            if (i > table.getSegmentMetadataTable().getRowCount()) continue;
             mask.clear(i);
         }
     }
@@ -78,7 +78,7 @@ public class RowSubsetMask implements Mask {
     @Override
     public void applyMasks(int[] rows) {
         for (int i : rows) {
-            if (i > table.getSegmentDataTable().getRowCount()) continue;
+            if (i > table.getSegmentMetadataTable().getRowCount()) continue;
             mask.set(i);
         }
     }

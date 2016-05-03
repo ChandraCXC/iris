@@ -39,7 +39,7 @@ import uk.ac.starlink.table.WrapperStarTable;
  * provides all necessary applications for viewing and manipulating data associated
  * with a Segment. In particular,
  * 
- * 1) Is a container for the plotterStarTable - which maintains information associated
+ * 1) Is a container for the plotterDataTable - which maintains information associated
  *  with the plotter (e.g. spectral and flux axis values).
  * 2) Maintains a pointer to a the segment's metadata star table - which maintains all
  *  metadata associated with the segment and each point in the segment.
@@ -53,8 +53,8 @@ public class IrisStarTable extends WrapperStarTable {
     private static final StarTable EMPTY_STARTABLE = new EmptyStarTable();
     
     private Future<StarTable> dataTableHolder;
-    private StarTable segmentDataTable;
-    private SegmentStarTable plotterTable;
+    private StarTable segmentMetadataTable;
+    private SegmentStarTable plotterDataTable;
     
     private Mask mask;
     
@@ -67,8 +67,8 @@ public class IrisStarTable extends WrapperStarTable {
     {
         super(plotterTable);
         
-        this.segmentDataTable = dataTable;
-        this.plotterTable = plotterTable;
+        this.segmentMetadataTable = dataTable;
+        this.plotterDataTable = plotterTable;
         this.mask = new RowSubsetMask(new int[0], this);
         
         setName(plotterTable.getName());
@@ -77,48 +77,48 @@ public class IrisStarTable extends WrapperStarTable {
     @SuppressWarnings("rawtypes")
     @Override 
     public List getParameters() {
-        return segmentDataTable.getParameters();
+        return segmentMetadataTable.getParameters();
     }
     
     @Override
     public DescribedValue getParameterByName(String parameter) {
-        return segmentDataTable.getParameterByName(parameter);
+        return segmentMetadataTable.getParameterByName(parameter);
     }
     
     @Override
     public void setParameter(DescribedValue value) {
-        segmentDataTable.setParameter(value);
+        segmentMetadataTable.setParameter(value);
     }
     
     @Override
     public void setName(String name) {
         super.setName(name);
-        plotterTable.setName(name);
-        segmentDataTable.setName(name);
+        plotterDataTable.setName(name);
+        segmentMetadataTable.setName(name);
     }
     
-    public StarTable getSegmentDataTable() {
-        if (EMPTY_STARTABLE == segmentDataTable) {
-            checkDataTable();
+    public StarTable getSegmentMetadataTable() {
+        if (EMPTY_STARTABLE == segmentMetadataTable) {
+            checkMetadataTable();
         }
-        return segmentDataTable;
+        return segmentMetadataTable;
     }
     
-    private void checkDataTable() {
+    private void checkMetadataTable() {
         if (dataTableHolder == null || !dataTableHolder.isDone()) {
             return;
         }
         
         try {
-            segmentDataTable = dataTableHolder.get();
+            segmentMetadataTable = dataTableHolder.get();
         } catch (Exception e) {
             // TODO: Maybe show a warning message to users?
             throw new RuntimeException("Could not serialize segment", e);
         }
     }
     
-    public SegmentStarTable getPlotterTable() {
-        return plotterTable;
+    public SegmentStarTable getPlotterDataTable() {
+        return plotterDataTable;
     }
     
     /**
@@ -127,7 +127,7 @@ public class IrisStarTable extends WrapperStarTable {
      * @throws UnitsException
      */
     public void setXUnits(String xunit) throws UnitsException {
-        plotterTable.setSpecUnits(Default.getInstance().getUnitsManager().newXUnits(xunit));
+        plotterDataTable.setSpecUnits(Default.getInstance().getUnitsManager().newXUnits(xunit));
     }
     
     /**
@@ -136,7 +136,7 @@ public class IrisStarTable extends WrapperStarTable {
      * @throws UnitsException
      */
     public void setYUnits(String yunit) throws UnitsException {
-        plotterTable.setFluxUnits(Default.getInstance().getUnitsManager().newYUnits(yunit));
+        plotterDataTable.setFluxUnits(Default.getInstance().getUnitsManager().newYUnits(yunit));
     }
     
     /**
@@ -144,7 +144,7 @@ public class IrisStarTable extends WrapperStarTable {
      * @return the spectral axis units for this startable.
      */
     public String getXUnits() {
-        return plotterTable.getSpecUnits().toString();
+        return plotterDataTable.getSpecUnits().toString();
     }
     
     /**
@@ -152,7 +152,7 @@ public class IrisStarTable extends WrapperStarTable {
      * @return the flux axis units for this startable.
      */
     public String getYUnits() {
-        return plotterTable.getFluxUnits().toString();
+        return plotterDataTable.getFluxUnits().toString();
     }
     
     /**
@@ -178,7 +178,7 @@ public class IrisStarTable extends WrapperStarTable {
      */
     public void applyMasks(int[] rows) {
         mask.applyMasks(rows);
-        plotterTable.setMasked(mask.getMaskedRows(this));
+        plotterDataTable.setMasked(mask.getMaskedRows(this));
     }
     
     /**
@@ -187,7 +187,7 @@ public class IrisStarTable extends WrapperStarTable {
      */
     public void clearMasks(int[] rows) {
         mask.clearMasks(rows);
-        plotterTable.setMasked(mask.getMaskedRows(this));
+        plotterDataTable.setMasked(mask.getMaskedRows(this));
     }
     
     /**
@@ -196,9 +196,12 @@ public class IrisStarTable extends WrapperStarTable {
      */
     public void clearMasks() {
         mask = new RowSubsetMask(new int[0], this);
-        plotterTable.setMasked(mask.getMaskedRows(this));
+        plotterDataTable.setMasked(mask.getMaskedRows(this));
     }
     
+    /**
+     * @return BitSet of masked rows in the table.
+     */
     public BitSet getMasked() {
         return mask.getMaskedRows(this);
     }
@@ -207,18 +210,18 @@ public class IrisStarTable extends WrapperStarTable {
      * @return the filtered set of spectral axis data values.
      */
     public double[] getSpectralDataValues() {
-        return getFilteredValues(plotterTable.getSpecValues());
+        return getFilteredValues(plotterDataTable.getSpecValues());
     }
     
     /**
      * @return the filtered set of flux axis data values.
      */
     public double[] getFluxDataValues() {
-        return getFilteredValues(plotterTable.getFluxValues());
+        return getFilteredValues(plotterDataTable.getFluxValues());
     }
     
     /*
-     * Uses the BitSet masked to return a subset of data from the 
+     * Uses the BitSet mask to return a subset of data from the 
      * provided double[].
      */
     private double[] getFilteredValues(double[] data) {
@@ -228,7 +231,7 @@ public class IrisStarTable extends WrapperStarTable {
         
         BitSet masked = mask.getMaskedRows(this);
         int c = 0;
-        for (int i=0; i<(int) plotterTable.getRowCount(); i++) {
+        for (int i=0; i<(int) plotterDataTable.getRowCount(); i++) {
             // Add only non-masked values.
             if (!masked.get(i)) {
                 values[c++] = data[i];
@@ -238,7 +241,7 @@ public class IrisStarTable extends WrapperStarTable {
     }
     
     /**
-     * We provide random access iff there are no filters applied to this
+     * We provide random access if and only if there are no filters applied to this
      * star table.
      */
     @Override
@@ -294,7 +297,7 @@ public class IrisStarTable extends WrapperStarTable {
         final BitSet masked = mask.getMaskedRows(this);
         return new WrapperRowSequence( baseTable.getRowSequence() ) {
             int row = -1; // Current row in plotterTable
-            int baseLength = (int) plotterTable.getRowCount();
+            int baseLength = (int) plotterDataTable.getRowCount();
             
             // The iterator skips over masked values
             public boolean next() throws IOException {

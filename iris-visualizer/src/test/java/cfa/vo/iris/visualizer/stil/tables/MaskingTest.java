@@ -53,7 +53,6 @@ public class MaskingTest {
         seq.next(); seq.next(); seq.next(); seq.next();
         ArrayUtils.assertEquals(new Object[] {test.getName(), 5.0, 10.0, 10.0}, test.getRow(4));
         
-        // Add a null filter
         assertEquals(5, test.getRowCount());
         
         seq = test.getRowSequence();

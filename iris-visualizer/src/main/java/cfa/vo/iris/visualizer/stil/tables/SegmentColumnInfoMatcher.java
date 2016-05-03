@@ -37,10 +37,6 @@ public class SegmentColumnInfoMatcher extends ColumnInfoMatcher {
     }
     
     private Column getColumnForInfo(ColumnInfo c) {
-        try {
-            return Column.getColumn(c.getName());
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Cannot compare non-Column enum ColumnInfo objects", e);
-        }
+        return Column.getColumn(c.getName());
     }
 }
