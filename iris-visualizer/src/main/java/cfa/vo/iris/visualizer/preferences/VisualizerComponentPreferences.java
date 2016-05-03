@@ -124,7 +124,7 @@ public class VisualizerComponentPreferences {
      *  Preferences map for each SED.
      */
     public Map<ExtSed, SedModel> getSedPreferences() {
-        return dataStore.getSedPreferences();
+        return dataStore.getSedModels();
     }
     
     /**

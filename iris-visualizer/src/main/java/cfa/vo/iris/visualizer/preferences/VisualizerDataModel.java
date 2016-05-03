@@ -103,6 +103,9 @@ public class VisualizerDataModel {
             newModels.add(segModel);
             newTables.add(segModel.getInSource());
         }
+        
+        this.setSelectedSegmentModels(newModels);
+        this.setSedStarTables(newTables);
         pcs.firePropertyChange(PROP_SELECTED_SED, oldSed, selectedSed);
     }
     
@@ -122,7 +125,7 @@ public class VisualizerDataModel {
     }
     
     // Locked down since these are tied to the selected seds
-    void setSedStarTables(List<IrisStarTable> newTables) {
+    public void setSedStarTables(List<IrisStarTable> newTables) {
         List<IrisStarTable> oldTables = sedStarTables;
         this.sedStarTables = newTables;
         pcs.firePropertyChange(PROP_SED_STARTABLES, oldTables, sedStarTables);
