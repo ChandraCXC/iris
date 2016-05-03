@@ -38,7 +38,7 @@ import cfa.vo.iris.visualizer.plotter.MouseListenerManager;
 import cfa.vo.iris.visualizer.metadata.SegmentExtractor;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.plotter.SegmentModel;
-import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
+import cfa.vo.iris.visualizer.stil.IrisStarJTable.RowSelection;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
 
@@ -178,14 +178,15 @@ public class VisualizerComponentPreferences {
      * from the selected set of StarTables, then asynchronously pass it back to the 
      * SedManager and let the SedListener do the work of notifying/processing the 
      * new ExtSed back into the VisualizerComponent.
-     * @param tables
+     * 
      * @param selection
      * @return
      */
-    public void createNewWorkspaceSed(List<IrisStarTable> tables, int[] selection) {
+    public void createNewWorkspaceSed(RowSelection selection) {
         
         // Extract selected rows to new Segments
-        final SegmentExtractor extractor = new SegmentExtractor(tables, selection);
+        final SegmentExtractor extractor = 
+                new SegmentExtractor(selection.selectedTables, selection.selectedRows);
         
         visualizerExecutor.submit(new Callable<ExtSed>() {
             @SuppressWarnings("unchecked")
