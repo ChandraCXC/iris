@@ -59,6 +59,8 @@ public class VisualizerDataStore {
         } else {
             sedModels.put(sed, new SedModel(sed, adapter));
         }
+        
+        fireChanges(sed);
     }
     
     /**
@@ -77,6 +79,8 @@ public class VisualizerDataStore {
             // SedPrefrences since it's assumed to be attached to the SED.
             sedModels.put(sed, new SedModel(sed, adapter));
         }
+        
+        fireChanges(sed);
     }
     
     /**
@@ -96,6 +100,8 @@ public class VisualizerDataStore {
             // SedPrefrences since it's assumed to be attached to the SED.
             sedModels.put(sed, new SedModel(sed, adapter));
         }
+        
+        fireChanges(sed);
     }
     
     /**
@@ -108,6 +114,8 @@ public class VisualizerDataStore {
         }
         sedModels.get(sed).removeAll();
         sedModels.remove(sed);
+        
+        fireChanges(sed);
     }
     
     /**
@@ -122,6 +130,8 @@ public class VisualizerDataStore {
         if (sedModels.containsKey(sed)) {
             sedModels.get(sed).removeSegment(segment);
         }
+        
+        fireChanges(sed);
     }
     
     /**
@@ -136,6 +146,19 @@ public class VisualizerDataStore {
                 if (segment == null) continue;
                 sedModels.get(sed).removeSegment(segment);
             }
+        }
+        
+        fireChanges(sed);
+    }
+    
+    /**
+     * Will notify the datamodel to refresh the view of the SED if the specified
+     * sed is currently the selectedSed.
+     * @param sed 
+     */
+    private void fireChanges(ExtSed sed) {
+        if (dataModel.getSelectedSed() != null && dataModel.getSelectedSed() == sed) {
+            dataModel.setSelectedSed(sed);
         }
     }
 }

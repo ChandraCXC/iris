@@ -296,8 +296,9 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         setName(""); // NOI18N
         setPreferredSize(new java.awt.Dimension(800, 454));
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("Metadata Browser (${dataModel.selectedSed.id})"), this, org.jdesktop.beansbinding.BeanProperty.create("title"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, this, org.jdesktop.beansbinding.ELProperty.create("Metadata Browser (${dataModel.selectedSed.id})"), this, org.jdesktop.beansbinding.BeanProperty.create("title"));
         binding.setSourceNullValue("Select SED");
+        binding.setSourceUnreadableValue("Select SED");
         bindingGroup.addBinding(binding);
 
         getContentPane().setLayout(new java.awt.GridBagLayout());
