@@ -10,7 +10,6 @@ import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.models.*;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Statistic;
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -42,7 +41,6 @@ public class FitControllerTest {
     @Test
     public void testSave() throws Exception {
         controller.save(os);
-
         assertEquals(TestUtils.readFile(getClass(), "fit.output"), os.toString("UTF-8"));
     }
 
@@ -133,7 +131,7 @@ public class FitControllerTest {
 
         @Override
         public String getId() {
-            return null;
+            return "m3";
         }
 
         @Override
@@ -174,6 +172,11 @@ public class FitControllerTest {
         @Override
         public Parameter findParameter(String paramName) {
             return null;
+        }
+
+        @Override
+        public String toString() {
+            return getName();
         }
     }
 

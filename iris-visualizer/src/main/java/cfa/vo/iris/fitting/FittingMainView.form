@@ -4,24 +4,24 @@
   <NonVisualComponents>
     <Menu class="javax.swing.JMenuBar" name="menuBar">
       <SubComponents>
-        <Menu class="javax.swing.JMenu" name="jMenu1">
+        <Menu class="javax.swing.JMenu" name="fileMenu">
           <Properties>
             <Property name="text" type="java.lang.String" value="File"/>
           </Properties>
           <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="loadJsonMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="loadJson"/>
+              </Properties>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="saveTextMenuItem">
               <Properties>
-                <Property name="text" type="java.lang.String" value="load"/>
-              </Properties>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="loadMenuItem">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="saveXML"/>
-              </Properties>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="saveXmlMenuItem">
-              <Properties>
                 <Property name="text" type="java.lang.String" value="saveText"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="saveJsonMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="saveJson"/>
               </Properties>
             </MenuItem>
           </SubComponents>
@@ -120,7 +120,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jSplitPane4" alignment="0" max="32767" attributes="0"/>
+                      <Component id="jSplitPane4" alignment="0" pref="391" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -303,7 +303,7 @@
                             </DimensionLayout>
                             <DimensionLayout dim="1">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="resultsPanel" alignment="0" pref="187" max="32767" attributes="0"/>
+                                  <Component id="resultsPanel" alignment="0" pref="185" max="32767" attributes="0"/>
                               </Group>
                             </DimensionLayout>
                           </Layout>
@@ -389,7 +389,7 @@
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="jScrollPane3" pref="246" max="32767" attributes="0"/>
+                              <Component id="jScrollPane3" pref="242" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jScrollPane2" min="-2" pref="92" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
