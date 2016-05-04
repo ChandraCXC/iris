@@ -15,14 +15,26 @@
  */
 package cfa.vo.iris.visualizer.metadata;
 
+import cfa.vo.iris.visualizer.stil.IrisStarJTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
+import cfa.vo.iris.visualizer.stil.tables.StackedStarTable;
+import com.fathzer.soft.javaluator.AbstractEvaluator;
 import com.fathzer.soft.javaluator.DoubleEvaluator;
+import com.fathzer.soft.javaluator.Operator;
+import com.fathzer.soft.javaluator.Parameters;
 import com.fathzer.soft.javaluator.StaticVariableSet;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.swing.table.TableColumn;
+import javax.swing.tree.TreeNode;
+import sun.reflect.generics.tree.Tree;
 import uk.ac.starlink.table.ColumnData;
 
 /**
@@ -31,29 +43,56 @@ import uk.ac.starlink.table.ColumnData;
  */
 public class FilterExpressionValidator {
     
-    List<IrisStarTable> starTables; // list of starTables to filter
+    IrisStarJTable starJTable; // the stacked startable to filter
     
-    public FilterExpressionValidator(List<IrisStarTable> tables) {
-        this.starTables = tables;
+    public FilterExpressionValidator(IrisStarJTable table) {
+        this.starJTable = table;
     }
     
     public int[] process(String expression) {
         
         List<String> colSpecifiers = findColumnSpecifiers(expression);
         
-        DoubleEvaluator evaluator = new DoubleEvaluator();
+        ComparisonDoubleEvaluator evaluator = new ComparisonDoubleEvaluator();
         StaticVariableSet<Double> variables = new StaticVariableSet<>();
         
-        Iterator itr = colSpecifiers.iterator();
-        while (itr.hasNext()) {
-//            variables.set(itr.next(), );
+        List<Double> evaluatedExpression = new ArrayList<>();
+        
+        for (int i=0; i<this.starJTable.getStarTable().getRowCount(); i++) {
+//        Iterator itr = colSpecifiers.iterator();    
+//        while (itr.hasNext()) {
+//            int colNumber = (int) itr.next();
+            for (String colName : colSpecifiers) {
+                int colNumber = Integer.parseInt(colName);
+                try {
+                    // assuming the column is a Double
+                    Object val = this.starJTable.getStarTable().getCell(i, colNumber);
+                    variables.set("$"+String.valueOf(colNumber), (Double) this.starJTable.getStarTable().getCell(i, colNumber));
+                } catch (IOException ex) {
+                    Logger.getLogger(FilterExpressionValidator.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            evaluatedExpression.add(evaluator.evaluate(expression, variables));
         }
         
-        for (IrisStarTable table : this.starTables) {
-//            ColumnData column = table.getPlotterTable().getColumnData();
+        // TODO: come up with more efficient way of getting non-null indices.
+        // This applies to the rest of the code in this method.
+        
+        // get non-null indices from evaluatedExpression list
+        List<Integer> tmp = new ArrayList<>();
+        for (int i=0; i<evaluatedExpression.size(); i++) {
+            Double val = evaluatedExpression.get(i);
+            if (!val.equals(Double.NaN))
+                tmp.add(i);
         }
         
-        return null;
+        // convert from List<Integer> to int[]
+        int[] indices = new int[tmp.size()];
+        for (int i=0; i<tmp.size(); i++)
+            indices[i] = tmp.get(i);
+        
+        // return array of indices to select
+        return indices;
     }
     
     /**
@@ -93,7 +132,300 @@ public class FilterExpressionValidator {
         return colSpecifiers;
     }
     
-    public enum OperatorType {
+//    private void inOrder2PostOrder(String expression) {
+//        
+//    }
+    
+//    public TreeNode createTreeNode() {
+//        Iterator<Character>itr = postOrder.iterator();
+//        Tree tree = new Tree();
+//        NodeStack nodeStack = new NodeStack();
+//        Tree.TreeNode node;
+//        while (itr.hasNext()) {
+//            Character c = itr.next();
+//            if(!isDigit(c)){
+//                node = tree.createNode(c);
+//                node.right = nodeStack.pop();
+//                node.left = nodeStack.pop();
+//                nodeStack.push(node);
+//            }else{
+//                node = tree.createNode(c);
+//                nodeStack.push(node);
+//            }
+//        }
+//        node = nodeStack.pop();
+//        return node;
+//    }
+    
+    /**
+     * Process a simple expression and return a list of values
+     * @return evaluated expression
+     * If no values in <tt>col</tt> match the condition, the function returns 
+     * null.
+     */
+    public List<Double> processSingleExpression(String expression, double[] col) {
+        
+        DoubleEvaluator evaluator = new DoubleEvaluator();
+        StaticVariableSet<Double> variables = new StaticVariableSet<>();
+        
+        // to hold evaluated expression
+        List<Double> evaluatedExpression = new ArrayList<>();
+        
+        // find the column name
+        String colName = findColumnSpecifiers(expression).get(0);
+        
+        // evaluate for every element in col
+        for (double value : col) {
+            variables.set(colName, value); // set variable name from colName
+            evaluatedExpression.add(evaluator.evaluate(expression, variables));
+        }
+        
+        return evaluatedExpression;
+    }
+    
+    /**
+     * Compare two evaluated expressions with a given comparison operator: 
+     * 
+     * <tt>arg1 operator arg2</tt>
+     * 
+     * If no values match the condition, the function returns 
+     * null. 
+     *
+     * @param arg1
+     * @param arg2
+     * @param operator
+     * @return 
+     */
+    public List<Double> compareValues(List<Double> arg1, List<Double> arg2, ComparisonType operator) {
+        
+        List<Double> result;
+        
+        switch (operator) {
+            case EQ:
+                result = compareEquals(arg1, arg2);
+                break;
+            case GE:
+                result = compareGreaterOrEqual(arg1, arg2);
+                break;
+            case GT:
+                result = compareGreater(arg1, arg2);
+                break;
+            case LE:
+                result = compareLessOrEqual(arg1, arg2);
+                break;
+            case LT:
+                result = compareLess(arg1, arg2);
+                break;
+            case NE:
+                result = compareNotEquals(arg1, arg2);
+                break;
+            default:
+                return null;
+        }
+        return result;
+    }
+    
+        /**
+     * Compare two evaluated expressions with a given comparison operator: 
+     * 
+     * <tt>arg1 operator arg2</tt>
+     * 
+     * If no values match the condition, the function returns 
+     * null. 
+     *
+     * @param arg1
+     * @param arg2
+     * @param operator
+     * @return 
+     */
+    public List<Double> compareValues(List<Double> arg1, Double arg2, ComparisonType operator) {
+        
+        List<Double> result;
+        
+        switch (operator) {
+            case EQ:
+                result = compareEquals(arg1, arg2);
+                break;
+            case GE:
+                result = compareGreaterOrEqual(arg1, arg2);
+                break;
+            case GT:
+                result = compareGreater(arg1, arg2);
+                break;
+            case LE:
+                result = compareLessOrEqual(arg1, arg2);
+                break;
+            case LT:
+                result = compareLess(arg1, arg2);
+                break;
+            case NE:
+                result = compareNotEquals(arg1, arg2);
+                break;
+            default:
+                return null;
+        }
+        return result;
+    }
+    
+    public static Double compareEquals(Double arg1, Double arg2) {
+        
+        Double result;
+        if (arg1.equals(arg2))
+                result = arg1;
+        return null;
+    }
+    
+    public static List<Double> compareEquals(List<Double> arg1, List<Double> arg2) {
+        
+        // arg1 and arg2 must be of equal size
+        if (arg1.size() != arg2.size()) {
+            throw new IllegalArgumentException("Size of arg2 must be equal to arg1.");
+        }
+        
+        List<Double> results = new ArrayList<>();
+        for (int i=0; i<arg1.size(); i++) {
+            if (arg1.get(i).equals(arg2.get(i)))
+                results.add(arg1.get(i));
+        }
+        return results;
+    }
+    
+    public static List<Double> compareEquals(List<Double> arg1, Double arg2) {
+        
+        List<Double> results = new ArrayList<>();
+        for (int i=0; i<arg1.size(); i++) {
+            if (arg1.get(i).equals(arg2))
+                results.add(arg1.get(i));
+        }
+        return null;
+    }
+    
+    List<Double> compareNotEquals(List<Double> arg1, List<Double> arg2) {
+        
+        // arg1 and arg2 must be of equal size
+        if (arg1.size() != arg2.size()) {
+            throw new IllegalArgumentException("Size of arg2 must be equal to arg1.");
+        }
+        
+        List<Double> results = new ArrayList<>();
+        for (int i=0; i<arg1.size(); i++) {
+            if (!arg1.get(i).equals(arg2.get(i)))
+                results.add(arg1.get(i));
+        }
+        return results;
+    }
+    
+    List<Double> compareNotEquals(List<Double> arg1, Double arg2) {
+        
+        List<Double> results = new ArrayList<>();
+        for (int i=0; i<arg1.size(); i++) {
+            if (!arg1.get(i).equals(arg2))
+                results.add(arg1.get(i));
+        }
+        return null;
+    }
+    
+    List<Double> compareGreater(List<Double> arg1, List<Double> arg2) {
+        
+        // arg1 and arg2 must be of equal size
+        if (arg1.size() != arg2.size()) {
+            throw new IllegalArgumentException("Size of arg2 must be equal to arg1.");
+        }
+        
+        List<Double> results = new ArrayList<>();
+        for (int i=0; i<arg1.size(); i++) {
+            if (arg1.get(i) > arg2.get(i))
+                results.add(arg1.get(i));
+        }
+        return results;
+    }
+    
+    List<Double> compareGreater(List<Double> arg1, Double arg2) {
+        
+        List<Double> results = new ArrayList<>();
+        for (int i=0; i<arg1.size(); i++) {
+            if (arg1.get(i) > arg2)
+                results.add(arg1.get(i));
+        }
+        return null;
+    }
+    
+    List<Double> compareGreaterOrEqual(List<Double> arg1, List<Double> arg2) {
+        
+        // arg1 and arg2 must be of equal size
+        if (arg1.size() != arg2.size()) {
+            throw new IllegalArgumentException("Size of arg2 must be equal to arg1.");
+        }
+        
+        List<Double> results = new ArrayList<>();
+        for (int i=0; i<arg1.size(); i++) {
+            if (arg1.get(i) >= arg2.get(i))
+                results.add(arg1.get(i));
+        }
+        return results;
+    }
+    
+    List<Double> compareGreaterOrEqual(List<Double> arg1, Double arg2) {
+        
+        List<Double> results = new ArrayList<>();
+        for (int i=0; i<arg1.size(); i++) {
+            if (arg1.get(i) >= arg2)
+                results.add(arg1.get(i));
+        }
+        return null;
+    }
+    
+    List<Double> compareLessOrEqual(List<Double> arg1, List<Double> arg2) {
+        
+        // arg1 and arg2 must be of equal size
+        if (arg1.size() != arg2.size()) {
+            throw new IllegalArgumentException("Size of arg2 must be equal to arg1.");
+        }
+        
+        List<Double> results = new ArrayList<>();
+        for (int i=0; i<arg1.size(); i++) {
+            if (arg1.get(i) <= arg2.get(i))
+                results.add(arg1.get(i));
+        }
+        return results;
+    }
+    
+    List<Double> compareLessOrEqual(List<Double> arg1, Double arg2) {
+        
+        List<Double> results = new ArrayList<>();
+        for (int i=0; i<arg1.size(); i++) {
+            if (arg1.get(i) <= arg2)
+                results.add(arg1.get(i));
+        }
+        return null;
+    }
+    
+    List<Double> compareLess(List<Double> arg1, List<Double> arg2) {
+        
+        // arg1 and arg2 must be of equal size
+        if (arg1.size() != arg2.size()) {
+            throw new IllegalArgumentException("Size of arg2 must be equal to arg1.");
+        }
+        
+        List<Double> results = new ArrayList<>();
+        for (int i=0; i<arg1.size(); i++) {
+            if (arg1.get(i) < arg2.get(i))
+                results.add(arg1.get(i));
+        }
+        return results;
+    }
+    
+    List<Double> compareLess(List<Double> arg1, Double arg2) {
+        
+        List<Double> results = new ArrayList<>();
+        for (int i=0; i<arg1.size(); i++) {
+            if (arg1.get(i) < arg2)
+                results.add(arg1.get(i));
+        }
+        return null;
+    }
+    
+    public enum ComparisonType {
         EQ("=="),
         GE(">="),
         GT(">"),
@@ -103,7 +435,7 @@ public class FilterExpressionValidator {
         
         public String symbol;
     
-        private OperatorType(String symbol) {
+        private ComparisonType(String symbol) {
             this.symbol = symbol;
         }
     }
