@@ -258,12 +258,35 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
 
     @Test
     public void testSaveTextNonExistentFile() throws Exception {
+        nonExistentFile("Save Text...");
+    }
+
+    @Test
+    public void testSaveJsonNonExistentFile() throws Exception {
+        nonExistentFile("Save Json...");
+    }
+
+    @Test
+    public void testLoadJsonNonExistentFile() throws Exception {
+        nonExistentFile("Load Json...");
+    }
+
+    private Window openWindow() {
+        window.getMenuBar()
+                .getMenu("Tools")
+                .getSubMenu(comp.getName())
+                .getSubMenu(comp.getName())
+                .click();
+        return desktop.getWindow(windowName);
+    }
+
+    private void nonExistentFile(String menu) {
         ExtSed sed = sedManager.newSed("TestSed");
         addFit(sed);
         Window mainFit = openWindow();
 
         final WindowInterceptor wi = WindowInterceptor
-                .init(mainFit.getMenuBar().getMenu("File").getSubMenu("Save Text...").triggerClick())
+                .init(mainFit.getMenuBar().getMenu("File").getSubMenu(menu).triggerClick())
                 .process(FileChooserHandler.init().select("/foo/bar/baz"));
 
         WindowInterceptor
@@ -282,15 +305,6 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
                     }
                 })
                 .run();
-    }
-
-    private Window openWindow() {
-        window.getMenuBar()
-                .getMenu("Tools")
-                .getSubMenu(comp.getName())
-                .getSubMenu(comp.getName())
-                .click();
-        return desktop.getWindow(windowName);
     }
 
     private FitConfiguration addFit(ExtSed sed) {
