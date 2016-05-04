@@ -114,8 +114,6 @@ public class VisualizerDataStore {
         }
         sedModels.get(sed).removeAll();
         sedModels.remove(sed);
-        
-        fireChanges(sed);
     }
     
     /**
