@@ -36,6 +36,7 @@ public class FitConfiguration {
     private Stat stat;
     private Method method;
     private Confidence confidence;
+    private ConfidenceResults confResults;
     private Double rStat;
     private Integer nFev;
     private Double qVal;
@@ -87,6 +88,16 @@ public class FitConfiguration {
         Method oldMethod = this.method;
         this.method = method;
         propertyChangeSupport.firePropertyChange(PROP_METHOD, oldMethod, method);
+    }
+
+    public ConfidenceResults getConfidenceResults() {
+        return confResults;
+    }
+
+    public void setConfidenceResults(ConfidenceResults confResults) {
+        ConfidenceResults old = this.confResults;
+        this.confResults = confResults;
+        propertyChangeSupport.firePropertyChange(PROP_CONFIDENCE, old, confResults);
     }
 
     public Confidence getConfidence() {
@@ -246,6 +257,18 @@ public class FitConfiguration {
         setDof(results.getDof().intValue());
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(DefaultModel.toString(model));
+        resultsToString(builder);
+        confToString(builder);
+        userModelsToString(builder);
+
+        return builder.toString();
+    }
+
     public void addPropertyChangeListener(java.beans.PropertyChangeListener listener )
     {
         propertyChangeSupport.addPropertyChangeListener( listener );
@@ -280,5 +303,50 @@ public class FitConfiguration {
             logger.info("adding model component " + id + " to expression");
             setExpression(model.getName() + " + " + id);
         }
+    }
+
+    private void confToString(StringBuilder builder) {
+        if (confResults != null) {
+            List<ConfResultsConverter.ParameterLimits> parameterLimitsList =
+                    new ConfResultsConverter().convertForward(confResults);
+            builder.append(String.format("\nConfidence Limits at %4.2f sigma (%4.2f%%):\n", confResults.getSigma(), confResults.getPercent()));
+            for(ConfResultsConverter.ParameterLimits limits : parameterLimitsList) {
+                builder.append(String.format("%24s: (%12.5E, %12.5E)\n", limits.getName(), limits.getLowerLimit(), limits.getUpperLimit()));
+            }
+        }
+    }
+
+    private void resultsToString(StringBuilder builder) {
+        builder.append("\nFit Results:\n")
+                .append(formatDouble("Final Fit Statistic", getStatVal()))
+                .append(formatDouble("Reduced Statistic", getrStat()))
+                .append(formatDouble("Probability (Q-value)", getqVal()))
+                .append(formatInt("Degrees of Freedom", getDof()))
+                .append(formatInt("Data Points", getNumPoints()))
+                .append(formatInt("Function Evaluations", getnFev()))
+                .append("\n")
+                .append(formatString("Optimizer", getMethod().toString()))
+                .append(formatString("Statistic (Cost function)", getStat().toString()))
+        ;
+    }
+
+    private void userModelsToString(StringBuilder builder) {
+        builder.append("\nUser Models:\n");
+
+        for (UserModel m : userModelList) {
+            builder.append(String.format("\t\t%s: (file: %s, function: %s)\n", m.getName(), m.getFile(), m.getFunction()));
+        }
+    }
+
+    private String formatDouble(String name, Double value) {
+        return String.format("\t\t%26s = %12.5E\n", name, value);
+    }
+
+    private String formatInt(String name, Integer value) {
+        return String.format("\t\t%26s = %d\n", name, value);
+    }
+
+    private String formatString(String name, String value) {
+        return String.format("\t\t%26s = %s\n", name, value);
     }
 }

@@ -1,0 +1,34 @@
+Iris Fitting Tool - Fit Summary
+SED ID: Sed (Segments: 1)
+
+Model Expression: m6 + m7 + m8
+Components:
+	tablemodel.m6
+		                   m6.ampl =  1.00000E-38
+	usermodel.m7
+		                    m7.ref =  5.00000E+03 Frozen
+		                   m7.ampl =  1.00000E-38
+		                  m7.index = -4.08735E-01
+	template.m8
+		                    m8.idx = -3.75000E-01
+		                  m8.refer =  5.00000E+03
+
+Fit Results:
+		       Final Fit Statistic =  2.01188E+20
+		         Reduced Statistic =  5.61977E+17
+		     Probability (Q-value) =  0.00000E+00
+		        Degrees of Freedom = 358
+		               Data Points = 363
+		      Function Evaluations = 48
+
+		                 Optimizer = LevenbergMarquardt
+		 Statistic (Cost function) = Chi2
+
+Confidence Limits at 1.64 sigma (90.00%):
+                 m5.ampl: (-8.48169E-18,  6.44529E-18)
+                m5.index: (-7.27584E-06,          NAN)
+
+User Models:
+		tablemodel.m6: (file: $HOME/.vao/iris/analysis/custom_models/tables/test_table, function: None)
+		usermodel.m7: (file: $HOME/.vao/iris/analysis/custom_models/functions/test_function, function: mypowlaw)
+		template.m8: (file: $HOME/.vao/iris/analysis/custom_models/templates/test_template, function: None)

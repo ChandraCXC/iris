@@ -125,6 +125,44 @@ public class DefaultModel implements Model {
         return findId(m.getName());
     }
 
+    public static String toString(CompositeModel model) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("Model Expression: ").append(model.getName()).append("\n")
+                .append("Components:\n");
+
+
+        if (model.getParts() != null) {
+            for (Model m : model.getParts()) {
+                builder.append(toString(m));
+            }
+        }
+
+        return builder.toString();
+    }
+
+    private static String toString(Model model) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("\t").append(model.getName()).append("\n");
+        for (Parameter p : model.getPars()) {
+            appendParamToString(p, builder);
+        }
+
+        return builder.toString();
+    }
+
+    private static void appendParamToString(Parameter p, StringBuilder builder) {
+        String name = p.getName();
+        Double value = p.getVal();
+        String frozen = p.getFrozen() == 1 ? " Frozen" : "";
+
+        builder
+                .append(String.format("\t\t%26s = %12.5E%s",name, value, frozen))
+                .append("\n");
+        ;
+    }
+
     private static String findId(String name) {
         String [] tokens = StringUtils.split(name, ".");
         if (tokens.length > 1) {
