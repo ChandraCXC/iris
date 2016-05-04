@@ -17,6 +17,7 @@
 package cfa.vo.sherpa.models;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import java.util.*;
@@ -100,6 +101,11 @@ public class DefaultModel implements Model {
         return id;
     }
 
+    @Override
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public Parameter findParameter(String name) throws NoSuchElementException {
         name = buildParamName(name);
         if (!parMap.containsKey(name)) {
@@ -111,6 +117,19 @@ public class DefaultModel implements Model {
     @Override
     public String toString() {
         return getName();
+    }
+
+    @Override
+    public int hashCode() {
+        HashCodeBuilder builder = new HashCodeBuilder(11, 15);
+        if(StringUtils.isNotBlank(name))
+                builder.append(name);
+        if(StringUtils.isNotBlank(description))
+                builder.append(description);
+        if(!pars.isEmpty())
+                builder.append(pars);
+
+        return builder.toHashCode();
     }
 
     private String buildParamName(String paramName) {
