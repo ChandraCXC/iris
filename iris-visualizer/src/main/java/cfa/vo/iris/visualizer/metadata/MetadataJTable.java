@@ -1,4 +1,4 @@
-package cfa.vo.iris.visualizer.stil;
+package cfa.vo.iris.visualizer.metadata;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package cfa.vo.iris.visualizer.stil;
+package cfa.vo.iris.visualizer.metadata;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
