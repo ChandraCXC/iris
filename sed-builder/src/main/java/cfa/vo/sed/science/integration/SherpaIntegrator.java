@@ -29,15 +29,14 @@ import cfa.vo.sed.builder.photfilters.EnergyBin;
 import cfa.vo.sed.builder.photfilters.PassBand;
 import cfa.vo.sed.builder.photfilters.PhotometryFilter;
 import cfa.vo.sherpa.*;
+import cfa.vo.sherpa.models.CompositeModel;
+import cfa.vo.sherpa.models.UserModel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- *
- * @author olaurino
- */
+
 public class SherpaIntegrator {
 
     private SherpaClient client;
@@ -89,7 +88,7 @@ public class SherpaIntegrator {
 
     public synchronized Response integrateComponents(List<PassBand> bands, CompositeModel model, List<UserModel> userModels, Integer nBins) throws Exception {
         
-        FitConfiguration conf = (FitConfiguration) SAMPFactory.get(FitConfiguration.class);
+        SherpaFitConfiguration conf = (SherpaFitConfiguration) SAMPFactory.get(SherpaFitConfiguration.class);
         conf.addModel(model);
 
         if (userModels != null) {
@@ -136,13 +135,13 @@ public class SherpaIntegrator {
 
         dataset.setX(x);
 
-        SAMPMessage modelMessage = SAMPFactory.createMessage("spectrum.fit.calc.model.values", conf, FitConfiguration.class);
+        SAMPMessage modelMessage = SAMPFactory.createMessage("spectrum.fit.calc.model.values", conf, SherpaFitConfiguration.class);
         org.astrogrid.samp.Response response = client.sendMessage(modelMessage);
 
-        Map result = response.getResult();
+        Data result = SAMPFactory.get(response.getResult(), Data.class);
 
-        double[] xx = cfa.vo.interop.EncodeDoubleArray.decodeBase64(((List<String>)result.get("results")).get(0), false);
-        double[] yy = cfa.vo.interop.EncodeDoubleArray.decodeBase64(((List<String>) result.get("results")).get(1), false);
+        double[] xx = result.getX();
+        double[] yy = result.getY();
 
         yy = um.convertY(yy, xx, "photon/s/cm2/Angstrom", "Angstrom", "erg/s/cm2/Angstrom");
 

@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="utf-8"?>
+<models>
+    <model name="absorptionedge" description="Optical model of interstellar absorption">
+        <parameter name="edgew" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="0" alwaysfrozen="0" units="angstroms" link="INDEF">
+        </parameter>
+        <parameter name="tau" val="0.5" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="index" val="3.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="1" alwaysfrozen="1" units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="absorptiongaussian" description="Gaussian model of an absorption feature">
+        <parameter name="fwhm" val="100.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="km/s" link="INDEF">
+        </parameter>
+        <parameter name="pos" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="0" alwaysfrozen="0" units="angstroms" link="INDEF">
+        </parameter>
+        <parameter name="ewidth" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="limit" val="4.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="1" alwaysfrozen="1" units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="absorptionlorentz" description="Lorentz model of an absorption feature">
+        <parameter name="fwhm" val="100.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="km/s" link="INDEF">
+        </parameter>
+        <parameter name="pos" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="0" alwaysfrozen="0" units="angstroms" link="INDEF">
+        </parameter>
+        <parameter name="ewidth" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="absorptionvoigt" description="Voigt model of an absorption feature">
+        <parameter name="center" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="0" alwaysfrozen="0" units="angstroms" link="INDEF">
+        </parameter>
+        <parameter name="ew" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="angstroms" link="INDEF">
+        </parameter>
+        <parameter name="fwhm" val="100.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="km/s" link="INDEF">
+        </parameter>
+        <parameter name="lg" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="accretiondisk" description="Emission due to an accretion disk">
+        <parameter name="ref" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="0" alwaysfrozen="0" units="angstroms" link="INDEF">
+        </parameter>
+        <parameter name="beta" val="0.5" min="-10.0" max="10.0" frozen="0" hidden="0" alwaysfrozen="0" units=""
+                   link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="norm" val="20000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="1" alwaysfrozen="1" units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="atten" description="Attenuation by ISM (Rumph, Bowyer, and Vennes 1994, AJ 107, 2108)">
+        <parameter name="hcol" val="1e+20" min="1e+17" max="1e+24" frozen="0" hidden="0" alwaysfrozen="0" units=""
+                   link="INDEF">
+        </parameter>
+        <parameter name="heiRatio" val="0.1" min="0.0" max="1.0" frozen="0" hidden="0" alwaysfrozen="0" units=""
+                   link="INDEF">
+        </parameter>
+        <parameter name="heiiRatio" val="0.01" min="0.0" max="1.0" frozen="0" hidden="0" alwaysfrozen="0" units=""
+                   link="INDEF">
+        </parameter>
+    </model>
+    <model name="beta1d" description="1-D Beta model (Lorentz model with a varying power law)">
+        <parameter name="r0" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="beta" val="1.0" min="1e-05" max="10.0" frozen="0" hidden="0" alwaysfrozen="0" units=""
+                   link="INDEF">
+        </parameter>
+        <parameter name="xpos" val="5000.0" min="0.0" max="3.4028234663852886e+38" frozen="1" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="0.0" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="blackbody" description="Emission from a blackbody">
+        <parameter name="refer" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="0" alwaysfrozen="0" units="angstroms" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="temperature" val="3000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="Kelvin" link="INDEF">
+        </parameter>
+    </model>
+    <model name="box1d" description="1-D box where f(x) = A if x_low &lt;= x &lt;= x_hi; f(x) = 0 otherwise">
+        <parameter name="xlow" val="0.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="xhi" val="0.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="-1.0" max="1.0" frozen="0" hidden="0" alwaysfrozen="0" units=""
+                   link="INDEF">
+        </parameter>
+    </model>
+    <model name="bremsstrahlung" description="Bremsstrahlung function">
+        <parameter name="refer" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="0" alwaysfrozen="0" units="angstroms" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="temperature" val="3000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="Kelvin" link="INDEF">
+        </parameter>
+    </model>
+    <model name="brokenpowerlaw" description="Broken power law; index changes after the break">
+        <parameter name="refer" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="0" alwaysfrozen="0" units="angstroms" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="index1" val="0.1" min="-10.0" max="10.0" frozen="0" hidden="0" alwaysfrozen="0" units=""
+                   link="INDEF">
+        </parameter>
+        <parameter name="index2" val="-0.1" min="-10.0" max="10.0" frozen="0" hidden="0" alwaysfrozen="0" units=""
+                   link="INDEF">
+        </parameter>
+    </model>
+    <model name="ccm" description="Interstellar extinction function (Cardelli, Clayton, and Mathis extinction curve (ApJ, 1989, 345, 245))">
+        <parameter name="ebv" val="0.5" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="r" val="3.2" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="const1d" description="1-D constant amplitude model">
+        <parameter name="c0" val="1.0" min="0.0" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="cos" description="The cosine function">
+        <parameter name="period" val="1.0" min="1e-10" max="10.0" frozen="0" hidden="0" alwaysfrozen="0" units=""
+                   link="INDEF">
+        </parameter>
+        <parameter name="offset" val="0.0" min="0.0" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="1e-05" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="dered" description="Dereddening function using Cardelli, Clayton, and Mathis extinction curve (ApJ, 1989, 345, 245)">
+        <parameter name="rv" val="10.0" min="1e-10" max="1000.0" frozen="0" hidden="0" alwaysfrozen="0" units=""
+                   link="INDEF">
+        </parameter>
+        <parameter name="nhgal" val="1e-07" min="1e-07" max="100000.0" frozen="0" hidden="0" alwaysfrozen="0" units=""
+                   link="INDEF">
+        </parameter>
+    </model>
+    <model name="edge" description="Photoabsorption edge model">
+        <parameter name="space" val="1.0" min="0.0" max="1.0" frozen="1" hidden="0" alwaysfrozen="1"
+                   units="0 - energy | 1 - wave" link="INDEF">
+        </parameter>
+        <parameter name="thresh" val="1.0" min="0.0" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+        <parameter name="abs" val="1.0" min="0.0" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="emissiongaussian" description="Gaussian model of an emission feature">
+        <parameter name="fwhm" val="1.e6" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="km/s" link="INDEF">
+        </parameter>
+        <parameter name="pos" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="0" alwaysfrozen="0" units="angstroms" link="INDEF">
+        </parameter>
+        <parameter name="flux" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="skew" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="limit" val="4.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="1" alwaysfrozen="1" units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="emissionlorentz" description="Lorentz model of an emission feature">
+        <parameter name="fwhm" val="1.e6" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="km/s" link="INDEF">
+        </parameter>
+        <parameter name="pos" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="0" alwaysfrozen="0" units="angstroms" link="INDEF">
+        </parameter>
+        <parameter name="flux" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="kurt" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="emissionvoigt" description="Voigt model of an emission feature">
+        <parameter name="center" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="0" alwaysfrozen="0" units="angstroms" link="INDEF">
+        </parameter>
+        <parameter name="flux" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="fwhm" val="100.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="km/s" link="INDEF">
+        </parameter>
+        <parameter name="lg" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="erf" description="The error function">
+        <parameter name="ampl" val="1.0" min="0.0" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+        <parameter name="offset" val="0.0" min="0.0" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+        <parameter name="sigma" val="1.0" min="1e-10" max="10.0" frozen="0" hidden="0" alwaysfrozen="0" units=""
+                   link="INDEF">
+        </parameter>
+    </model>
+    <model name="erfc" description="The complement of the error function">
+        <parameter name="ampl" val="1.0" min="0.0" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+        <parameter name="offset" val="0.0" min="0.0" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+        <parameter name="sigma" val="1.0" min="1e-10" max="10.0" frozen="0" hidden="0" alwaysfrozen="0" units=""
+                   link="INDEF">
+        </parameter>
+    </model>
+    <model name="exp" description="The exponential function f(x) = A exp[C(x-x_off)]">
+        <parameter name="offset" val="0.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="coeff" val="-1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="0.0" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="exp10" description="The exponential function f(x) = A 10^[C(x-x_off)]">
+        <parameter name="offset" val="0.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="coeff" val="-1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="0.0" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="gauss1d" description="1-D Gaussian model">
+        <parameter name="fwhm" val="10.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="pos" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="log" description="The natural logarithm f(x) = A log[C(x-x_off)]">
+        <parameter name="offset" val="0.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="coeff" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="0.0" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="log10" description="The common logarithm f(x) = A log_10[C(x-x_off)]">
+        <parameter name="offset" val="0.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="coeff" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="0.0" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="logabsorption" description="Logarithmic absorption model">
+        <parameter name="fwhm" val="100.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="km/s" link="INDEF">
+        </parameter>
+        <parameter name="pos" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="0" alwaysfrozen="0" units="angstroms" link="INDEF">
+        </parameter>
+        <parameter name="tau" val="0.5" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="logemission" description="Logarithmic emission model">
+        <parameter name="fwhm" val="100.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="km/s" link="INDEF">
+        </parameter>
+        <parameter name="pos" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="0" alwaysfrozen="0" units="angstroms" link="INDEF">
+        </parameter>
+        <parameter name="flux" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="skew" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="limit" val="4.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="1" alwaysfrozen="1" units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="logparabola" description="Log-parabolic function for blazar emission">
+        <parameter name="ref" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="0" alwaysfrozen="1" units="" link="INDEF">
+        </parameter>
+        <parameter name="c1" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="c2" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="0.0" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="lorentz1d" description="1-D normalized Lorentzian function">
+        <parameter name="fwhm" val="10.0" min="0.0" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+        <parameter name="pos" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="normbeta1d" description="1-D normalized Beta model">
+        <parameter name="pos" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="width" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="index" val="2.5" min="0.5" max="1000.0" frozen="0" hidden="0" alwaysfrozen="0" units=""
+                   link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="0.0" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="normgauss1d" description="1-D normalized Gaussian model">
+        <parameter name="fwhm" val="10.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="pos" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="opticalgaussian" description="Gaussian model of an absorption feature with optical depth as a parameter">
+        <parameter name="fwhm" val="100.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="km/s" link="INDEF">
+        </parameter>
+        <parameter name="pos" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="0" alwaysfrozen="0" units="angstroms" link="INDEF">
+        </parameter>
+        <parameter name="tau" val="0.5" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="limit" val="4.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="1" alwaysfrozen="1" units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="poisson" description="The Poisson function-">
+        <parameter name="mean" val="1.0" min="1e-05" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="polynomial" description="1-D polynomial function of order &lt;= 5">
+        <parameter name="c0" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="c1" val="0.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="c2" val="0.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="c3" val="0.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="c4" val="0.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="c5" val="0.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="offset" val="0.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="powerlaw" description="Power law function">
+        <parameter name="refer" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="0" alwaysfrozen="0" units="angstroms" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="index" val="-0.5" min="-10.0" max="10.0" frozen="0" hidden="0" alwaysfrozen="0" units=""
+                   link="INDEF">
+        </parameter>
+    </model>
+    <model name="powlaw1d" description="1-D power-law model">
+        <parameter name="ref" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="0" alwaysfrozen="1" units="" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="0" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="gamma" val="1" min="-10.0" max="10.0" frozen="0" hidden="0" alwaysfrozen="0" units=""
+                   link="INDEF">
+        </parameter>
+    </model>
+    <model name="recombination" description="Continuum emission due to recombination">
+        <parameter name="refer" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+                   hidden="0" alwaysfrozen="0" units="angstroms" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="temperature" val="3000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="Kelvin" link="INDEF">
+        </parameter>
+        <parameter name="fwhm" val="100.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="km/s" link="INDEF">
+        </parameter>
+    </model>
+    <model name="sin" description="The sine function">
+        <parameter name="period" val="1.0" min="1e-10" max="10.0" frozen="0" hidden="0" alwaysfrozen="0" units=""
+                   link="INDEF">
+        </parameter>
+        <parameter name="offset" val="0.0" min="0.0" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="1e-05" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="sqrt" description="The square-root function">
+        <parameter name="offset" val="0.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="0.0" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="stephi1d" description="1-D step where f(x) = A if x &gt; x_cut; f(x) = 0 otherwise">
+        <parameter name="xcut" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="0.0" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="steplo1d" description="1-D step where f(x) = A if x &lt; x_cut; f(x) = 0 otherwise">
+        <parameter name="xcut" val="5000.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="0.0" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="tan" description="The tangent function">
+        <parameter name="period" val="1.0" min="1e-10" max="10.0" frozen="0" hidden="0" alwaysfrozen="0" units=""
+                   link="INDEF">
+        </parameter>
+        <parameter name="offset" val="0.0" min="0.0" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+        <parameter name="ampl" val="1.0" min="1e-05" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+                   units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="xgal" description="Extragalactic extinction function (Calzetti, Kinney and Storchi-Bergmann, 1994, ApJ, 429, 582)">
+        <parameter name="ebv" val="0.5" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="seaton" description="Galactic extinction function (Seaton, M. J. 1979, MNRAS187, 73P)">
+        <parameter name="ebv" val="0.5" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="smc" description="Extinction curve for the Small Magellanic Cloud (Prevot et al., 1984, AA, 132, 389-392)">
+        <parameter name="ebv" val="0.5" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="sm" description="Galactic extinction curve (Savage and Mathis, 1979, ARAA, 17, 73-111)">
+        <parameter name="ebv" val="0.5" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="lmc" description="Extinction curve for the Large Magellanic Cloud (Howart, 1983 MNRAS, 203, 301)">
+        <parameter name="ebv" val="0.5" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+    </model>
+    <model name="fm" description="Fitzpatrick and Massa extinction curve with Drude UV bump (ApJ, 1988, 328, 734)">
+        <parameter name="ebv" val="0.5" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="x0" val="4.6" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="width" val="0.06" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0"
+                   hidden="0" alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="c1" val="0.2" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="c2" val="0.1" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="c3" val="0.02" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+        <parameter name="c4" val="0.1" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+                   alwaysfrozen="0" units="" link="INDEF">
+        </parameter>
+    </model>
+</models>

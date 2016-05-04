@@ -28,14 +28,10 @@ import static org.junit.Assert.*;
 import static cfa.vo.iris.test.unit.TestUtils.*;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.stil.StilPlotter;
-import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
-import org.uispec4j.Button;
-import org.uispec4j.Panel;
 import org.uispec4j.Window;
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
 
@@ -383,7 +379,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
     }
     
     @Test
-    public void testPlotAxesLabels() throws Exception {
+    public void testChangeUnits() throws Exception {
         SedlibSedManager sedManager = (SedlibSedManager) app.getWorkspace().getSedManager();
         
         window.getMenuBar()
@@ -395,6 +391,28 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         Window viewer = desktop.getWindow(windowName);
         StilPlotter plotter = viewer.findSwingComponent(StilPlotter.class);
         
+        // test that no exceptions occur if the user tries to 
+        // change the units of the plotter with no SED loaded in yet.
+        viewer.getButton("unitsButton").click();
+        assertTrue(desktop.containsWindow("Select Units").isTrue());
+        Window unitsChooser = desktop.getWindow("Select Units");
+        unitsChooser.getListBox("xunitsList").select(XUnit.ANGSTROM.getString());
+        unitsChooser.getListBox("yunitsList").select(SPVYUnit.FLUX0.getString());
+        unitsChooser.getButton("Update").click();
+        
+        // create an SED and add it to Swing EDT
+        final ExtSed sed0 = sedManager.newSed("sampleSed1");
+        invokeWithRetry(10, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertSame(sed0, comp.getDefaultPlotterView().getSed());
+            }
+        });
+        
+        // test that changing the units on an empty SED doesn't throw an
+        // exception.  
+        unitsChooser.getButton("Update").click();
+        
         // create 2 segments with different units
         final Segment seg1 = createSampleSegment();
         seg1.setSpectralAxisUnits("Hz");
@@ -404,7 +422,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         seg2.setSpectralAxisUnits("Angstrom");
         seg2.setFluxAxisUnits("erg/s/cm^2/A");
         
-        // add the segments to a SED
+        // add the segments to a new SED
         final ExtSed sed1 = sedManager.newSed("sampleSed1");
         sed1.addSegment(seg1);
         sed1.addSegment(seg2);
@@ -424,9 +442,6 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         assertEquals("Flux density (Jy)", plotter.getPlotPreferences().getYlabel());
         
         // change the units of the SEDs with the UnitsManagerFrame
-        viewer.getButton("unitsButton").click();
-        assertTrue(desktop.containsWindow("Select Units").isTrue());
-        Window unitsChooser = desktop.getWindow("Select Units");
         unitsChooser.getListBox("xunitsList").select(XUnit.ANGSTROM.getString());
         unitsChooser.getListBox("yunitsList").select(SPVYUnit.FLUX0.getString());
         unitsChooser.getButton("Update").click();
@@ -451,9 +466,6 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         });
         
         // test velocity units
-        viewer.getButton("unitsButton").click();
-        assertTrue(desktop.containsWindow("Select Units").isTrue());
-        unitsChooser = desktop.getWindow("Select Units");
         unitsChooser.getListBox("xunitsList").select(XUnit.KMPSCO.getString());
         unitsChooser.getListBox("yunitsList").select(SPVYUnit.FLUXDENSITYFREQ3.getString());
         unitsChooser.getButton("Update").click();

@@ -16,10 +16,7 @@
 
 package cfa.vo.sherpa;
 
-/**
- *
- * @author olaurino
- */
+
 public interface Data {
     String getName();
 
@@ -37,9 +34,9 @@ public interface Data {
 
     void setStaterror(double[] statError);
 
-    double[] getSyserror();
-
-    void setSyserror(double[] sysError);
+//    double[] getSyserror();
+//
+//    void setSyserror(double[] sysError);
 
     
 }

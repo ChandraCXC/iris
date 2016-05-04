@@ -76,7 +76,7 @@ public class CommandLine {
             }
 
             if (prop.equals("debug")) {
-                logLevel = Level.ALL;
+                logLevel = Level.INFO;
             }
 
             if (prop.equals("nosamp")) {

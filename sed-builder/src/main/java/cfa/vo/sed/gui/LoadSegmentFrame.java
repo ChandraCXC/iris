@@ -393,7 +393,6 @@ public final class LoadSegmentFrame extends JInternalFrame {
         jSeparator2 = new javax.swing.JSeparator();
         jButton5 = new javax.swing.JButton();
         helpLabel = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -556,9 +555,6 @@ public final class LoadSegmentFrame extends JInternalFrame {
             }
         });
 
-        jLabel5.setFont(new java.awt.Font("Lucida Grande", 0, 10)); // NOI18N
-        jLabel5.setText("<html>While most Iris tools support data of any length, visualization tools will be slow for SEDs and spectra with more than 2500 points.</html>");
-
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -566,7 +562,6 @@ public final class LoadSegmentFrame extends JInternalFrame {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, jLabel5, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                         .add(jLabel1)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -625,9 +620,7 @@ public final class LoadSegmentFrame extends JInternalFrame {
                     .add(jButton2)
                     .add(jButton5)
                     .add(helpLabel))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jLabel5, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 54, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 12, Short.MAX_VALUE)
                 .add(jSeparator1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(jRadioButton3)
@@ -686,7 +679,6 @@ public final class LoadSegmentFrame extends JInternalFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;

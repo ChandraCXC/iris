@@ -4,6 +4,9 @@ import javax.swing.SwingUtilities;
 
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedNoDataException;
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
 
 /**
  * Class for helpful utility functions to be used in unit testing.
@@ -11,16 +14,20 @@ import cfa.vo.sedlib.common.SedNoDataException;
  */
 public class TestUtils {
     
-    public static Segment createSampleSegment(double[] x, double[] y) throws SedNoDataException {
+    public static Segment createSampleSegment(double[] x, double[] y, String xUnits, String yUnits) throws SedNoDataException {
         Segment segment = new Segment();
         segment.setFluxAxisValues(y);
-        segment.setFluxAxisUnits("Jy");
+        segment.setFluxAxisUnits(yUnits);
         segment.createChar().createFluxAxis().setUcd("ucdf");
         segment.setSpectralAxisValues(x);
-        segment.setSpectralAxisUnits("Angstrom");
+        segment.setSpectralAxisUnits(xUnits);
         segment.getChar().createSpectralAxis().setUcd("ucds");
         return segment;
         
+    }
+
+    public static Segment createSampleSegment(double[] x, double[] y) throws SedNoDataException {
+        return createSampleSegment(x, y, "Angstrom", "Jy");
     }
     
     public static  Segment createSampleSegment() throws SedNoDataException  {
@@ -46,5 +53,18 @@ public class TestUtils {
             }
         }
         throw last;
+    }
+
+    /**
+     * Convenience method for reading baseline test files from resource paths
+     *
+     * @param requestingClass The class requesting the resource. Resource can be found with paths relative to the argument
+     * @param path String path of the resource. May be relative or absolute
+     * @return String representing the file contents
+     * @throws Exception
+     */
+    public static String readFile(Class requestingClass, String path) throws Exception {
+        String p = requestingClass.getResource(path).getFile();
+        return FileUtils.readFileToString(new File(p));
     }
 }
