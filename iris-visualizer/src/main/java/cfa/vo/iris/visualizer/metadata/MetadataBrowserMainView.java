@@ -15,16 +15,12 @@
  */
 package cfa.vo.iris.visualizer.metadata;
 
-import java.awt.Component;
 import java.util.logging.Logger;
 
-import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.ListCellRenderer;
 
 import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
 import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
@@ -69,11 +65,9 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
      */
     public void addRowToSelection(int starTableIndex, int irow) {
         
-        // If the star table isn't currently selected, add it to the selection
-//        int[] selection = starTableList.getSelectedIndices();
-//        if (ArrayUtils.indexOf(selection, starTableIndex) < 0) {
-//            starTableList.setSelectedIndices(ArrayUtils.add(selection, starTableIndex));
-//        }
+        // Add this star table to the selection if it isn't
+        IrisStarTable starTable = dataModel.getSedStarTables().get(starTableIndex);
+        this.starTableList.addToSelection(starTable);
         
         // Select the correct row
         IrisStarJTable table = getSelectedIrisJTable();
@@ -334,7 +328,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         plotterStarJTable.setColumnInfoMatcher(new SegmentColumnInfoMatcher());
         plotterStarJTable.setSortBySpecValues(true);
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, starTableList, org.jdesktop.beansbinding.ELProperty.create("${selectedStarTables}"), plotterStarJTable, org.jdesktop.beansbinding.BeanProperty.create("selectedStarTables"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.selectedStarTables}"), plotterStarJTable, org.jdesktop.beansbinding.BeanProperty.create("selectedStarTables"));
         bindingGroup.addBinding(binding);
 
         plotterMetadataScrollPane.setViewportView(plotterStarJTable);
@@ -359,7 +353,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         pointStarJTable.setUsePlotterDataTables(false);
         pointStarJTable.setUtypeAsNames(true);
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, starTableList, org.jdesktop.beansbinding.ELProperty.create("${selectedStarTables}"), pointStarJTable, org.jdesktop.beansbinding.BeanProperty.create("selectedStarTables"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.selectedStarTables}"), pointStarJTable, org.jdesktop.beansbinding.BeanProperty.create("selectedStarTables"));
         bindingGroup.addBinding(binding);
 
         pointMetadataScrollPane.setViewportView(pointStarJTable);

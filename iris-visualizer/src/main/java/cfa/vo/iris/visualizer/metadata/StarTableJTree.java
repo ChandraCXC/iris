@@ -1,3 +1,18 @@
+/*
+ * Copyright 2016 Chandra X-Ray Observatory.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package cfa.vo.iris.visualizer.metadata;
 
 import java.util.ArrayList;
@@ -11,20 +26,25 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.preferences.SegmentModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
+import java.util.Arrays;
+import java.util.Enumeration;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
+/**
+ * Implementation of a JTree that is tightly coupled to the {@link VisualizerDataModel}.
+ * Used for displaying and selecting Segments from the left-hand panel of the metadata 
+ * browser. The selection model here is tied to the selectedStarTables field in 
+ * the dataModel.
+ * 
+ */
 @SuppressWarnings("serial")
 public class StarTableJTree extends JTree {
     
     public static String PROP_SEDS = "seds";
-    public static String PROP_SED_STARTABLES = "sedStarTables";
-    public static String PROP_SELECTED_STARTABLES = "selectedStarTables";
     
     private List<ExtSed> seds = new ArrayList<>();
-    private List<IrisStarTable> sedStarTables = new ArrayList<>();
-    private List<IrisStarTable> selectedStarTables = new ArrayList<>();
     
     private VisualizerDataModel dataModel;
     
@@ -32,7 +52,7 @@ public class StarTableJTree extends JTree {
         this.addTreeSelectionListener(new TreeSelectionListener() {
             @Override
             public void valueChanged(TreeSelectionEvent tse) {
-                handleSelectionEvent(tse);
+                updateSelectedStarTables();
             }
         });
     }
@@ -50,44 +70,79 @@ public class StarTableJTree extends JTree {
         firePropertyChange(PROP_SEDS, oldSeds, seds);
     }
     
-    public List<IrisStarTable> getSedStarTables() {
-        return selectedStarTables;
-    }
-    
+    /**
+     * Only here for listening to property changes in the dataModel.
+     */
     public void setSedStarTables(List<IrisStarTable> tables) {
-        List<IrisStarTable> oldTables = this.sedStarTables;
-        this.sedStarTables = tables;
-        
         refresh();
-        
-        firePropertyChange(PROP_SED_STARTABLES, oldTables, sedStarTables);
     }
     
-    public List<IrisStarTable> getSelectedStarTables() {
-        return selectedStarTables;
-    }
-    
-    public void setSelectedStarTables(List<IrisStarTable> tables) {
-        List<IrisStarTable> oldTables = this.selectedStarTables;
-        this.selectedStarTables = tables;
-        dataModel.setSelectedStarTables(selectedStarTables);
-        firePropertyChange(PROP_SELECTED_STARTABLES, oldTables, selectedStarTables);
-    }
-    
+    /**
+     * Forces the JTree to update it's model by recreating the model from scratch.
+     * By default the first SED will be selected, if available.
+     */
     private void refresh() {
         this.setModel(new StarTableTreeModel(seds));
         
-        // Always expand SED nodes by default
+        // Always expand all nodes by default
         this.getRowCount();
         for (int i=0; i<getRowCount(); i++) {
             expandRow(i);
         }
+        
+        // Select and display the first SED, if available.
+        if (getRowCount() > 0) {
+            this.getSelectionModel().addSelectionPath(getPathForRow(0));
+        }
+        
+        updateSelectedStarTables();
+    }
+
+    /**
+     * Adds an IrisStarTable to the selection path, if not already present.
+     * @param table 
+     */
+    protected void addToSelection(IrisStarTable table) {
+        
+        if (!dataModel.getSedStarTables().contains(table)) {
+            throw new IllegalArgumentException(table.getName() + " is not in the tree");
+        }
+        
+        // If it is already selected do nothing
+        if (dataModel.getSelectedStarTables().contains(table)) return;
+        
+        // Find this node in the tree
+        TreePath path = findTablePath(table);
+        
+        // Otherwise find the table in the tree and update the selection
+        this.getSelectionModel().addSelectionPath(path);
+        updateSelectedStarTables();
     }
     
-    private void handleSelectionEvent(TreeSelectionEvent tse) {
-        if (tse.getPaths().length == 0) {
-            return;
+    /**
+     * @param table
+     * @return TreePath for the specified StarTable, if available.
+     */
+    private TreePath findTablePath(IrisStarTable table) {
+        DefaultMutableTreeNode root = ( DefaultMutableTreeNode) getModel().getRoot();
+        Enumeration e = root.breadthFirstEnumeration();
+        
+        DefaultMutableTreeNode node = null;
+        while (e.hasMoreElements()) {
+            node = (DefaultMutableTreeNode) e.nextElement();
+            if (node instanceof TableLeafNode) {
+                TableLeafNode tn = (TableLeafNode) node;
+                if (tn.table == table) {
+                    return new TreePath(tn.getPath());
+                }
+            }
         }
+        
+        // Exception thrown before we get here
+        return null;
+    }
+    
+    private synchronized void updateSelectedStarTables() {
         
         // Get all selected tables and add them to the new selction list
         List<IrisStarTable> selection = new ArrayList<>();
@@ -98,10 +153,11 @@ public class StarTableJTree extends JTree {
                 selection.addAll(((SedTreeNode) comp).subTables);
             }
             else if (comp instanceof TableLeafNode) {
-                selection.add(((TableLeafNode) comp).table);
+                TableLeafNode tn = (TableLeafNode) comp;
+                if (!selection.contains(tn.table)) selection.add(tn.table);
             }
         }
-        this.setSelectedStarTables(selection);
+        dataModel.setSelectedStarTables(selection);
     }
     
     private class StarTableTreeModel extends DefaultTreeModel {
@@ -113,9 +169,9 @@ public class StarTableJTree extends JTree {
         public StarTableTreeModel(List<ExtSed> seds) {
             this();
             
-            DefaultMutableTreeNode root = (DefaultMutableTreeNode) getRoot();
+            DefaultMutableTreeNode r = (DefaultMutableTreeNode) getRoot();
             for (ExtSed sed : seds) {
-                root.add(new SedTreeNode(sed));
+                r.add(new SedTreeNode(sed));
             }
         }
     }
