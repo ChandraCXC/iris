@@ -31,8 +31,10 @@ import javax.swing.tree.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class FittingMainView extends JInternalFrame implements SedListener {
     private ExtSed sed;
@@ -84,6 +86,8 @@ public class FittingMainView extends JInternalFrame implements SedListener {
 
     private void setUpMenuBar() {
         saveTextMenuItem.setAction(new SaveTextAction());
+        saveJsonMenuItem.setAction(new SaveJsonAction());
+        loadJsonMenuItem.setAction(new LoadJsonAction());
     }
 
     private void setUpModelViewerPanel() {
@@ -138,10 +142,10 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         currentSedLabel = new javax.swing.JLabel();
         currentSedField = new javax.swing.JTextField();
         menuBar = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
+        fileMenu = new javax.swing.JMenu();
+        loadJsonMenuItem = new javax.swing.JMenuItem();
         saveTextMenuItem = new javax.swing.JMenuItem();
-        loadMenuItem = new javax.swing.JMenuItem();
-        saveXmlMenuItem = new javax.swing.JMenuItem();
+        saveJsonMenuItem = new javax.swing.JMenuItem();
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -247,7 +251,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         );
         resultsContainerLayout.setVerticalGroup(
             resultsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(resultsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
+            .addComponent(resultsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
         );
 
         jSplitPane2.setLeftComponent(resultsContainer);
@@ -275,7 +279,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane4)
+            .addComponent(jSplitPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
         );
 
         jSplitPane1.setRightComponent(jPanel2);
@@ -329,7 +333,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         availableComponentsLayout.setVerticalGroup(
             availableComponentsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(availableComponentsLayout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -387,18 +391,18 @@ public class FittingMainView extends JInternalFrame implements SedListener {
 
         getContentPane().add(jPanel1);
 
-        jMenu1.setText("File");
+        fileMenu.setText("File");
 
-        saveTextMenuItem.setText("load");
-        jMenu1.add(saveTextMenuItem);
+        loadJsonMenuItem.setText("loadJson");
+        fileMenu.add(loadJsonMenuItem);
 
-        loadMenuItem.setText("saveXML");
-        jMenu1.add(loadMenuItem);
+        saveTextMenuItem.setText("saveText");
+        fileMenu.add(saveTextMenuItem);
 
-        saveXmlMenuItem.setText("saveText");
-        jMenu1.add(saveXmlMenuItem);
+        saveJsonMenuItem.setText("saveJson");
+        fileMenu.add(saveJsonMenuItem);
 
-        menuBar.add(jMenu1);
+        menuBar.add(fileMenu);
 
         setJMenuBar(menuBar);
 
@@ -435,10 +439,10 @@ public class FittingMainView extends JInternalFrame implements SedListener {
     private javax.swing.JTextField currentSedField;
     private javax.swing.JLabel currentSedLabel;
     private javax.swing.JTextArea descriptionArea;
+    private javax.swing.JMenu fileMenu;
     private javax.swing.JButton fitButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JMenu jMenu1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
@@ -449,15 +453,15 @@ public class FittingMainView extends JInternalFrame implements SedListener {
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JSplitPane jSplitPane3;
     private javax.swing.JSplitPane jSplitPane4;
-    private javax.swing.JMenuItem loadMenuItem;
+    private javax.swing.JMenuItem loadJsonMenuItem;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JPanel modelPanel;
     private cfa.vo.iris.gui.widgets.ModelViewerPanel modelViewerPanel;
     private javax.swing.JComboBox optimizationCombo;
     private javax.swing.JPanel resultsContainer;
     private cfa.vo.iris.fitting.FitResultsPanel resultsPanel;
+    private javax.swing.JMenuItem saveJsonMenuItem;
     private javax.swing.JMenuItem saveTextMenuItem;
-    private javax.swing.JMenuItem saveXmlMenuItem;
     private javax.swing.JButton searchButton;
     private javax.swing.JTextField searchField;
     private javax.swing.JComboBox statisticCombo;
@@ -521,6 +525,42 @@ public class FittingMainView extends JInternalFrame implements SedListener {
                 try {
                     controller.save(new FileOutputStream(chooser.getSelectedFile()));
                 } catch(FileNotFoundException ex) {
+                    NarrowOptionPane.showMessageDialog(FittingMainView.this, ex.getMessage(), "Error", NarrowOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }
+
+    private class SaveJsonAction extends AbstractAction {
+        public SaveJsonAction() {
+            super("Save Json...");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+            int result = chooser.showOpenDialog(FittingMainView.this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                try {
+                    controller.saveJson(new FileOutputStream(chooser.getSelectedFile()));
+                } catch(IOException ex) {
+                    NarrowOptionPane.showMessageDialog(FittingMainView.this, ex.getMessage(), "Error", NarrowOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }
+    }
+
+    private class LoadJsonAction extends AbstractAction {
+        public LoadJsonAction() {
+            super("Load Json...");
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+            int result = chooser.showOpenDialog(FittingMainView.this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                try {
+                    controller.loadJson(new FileInputStream(chooser.getSelectedFile()));
+                } catch(IOException ex) {
                     NarrowOptionPane.showMessageDialog(FittingMainView.this, ex.getMessage(), "Error", NarrowOptionPane.ERROR_MESSAGE);
                 }
             }

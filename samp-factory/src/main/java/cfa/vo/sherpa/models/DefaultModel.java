@@ -34,6 +34,10 @@ public class DefaultModel implements Model {
 
     private String id;
 
+    public DefaultModel() {
+        // comply to javabeans spec, mostly for deserialization
+    }
+
     public DefaultModel(Model model, String id) {
         this.name = model.getName();
         this.description = model.getDescription();
@@ -89,7 +93,11 @@ public class DefaultModel implements Model {
 
     @Override
     public void setName(String name) {
+        String[] tokens = name.split("\\.");
+        name = tokens.length > 1 ? tokens[0] : name;
+        String id = tokens.length > 1? tokens[1] : null;
         this.name = name;
+        setId(id);
     }
 
     @Override
@@ -103,7 +111,9 @@ public class DefaultModel implements Model {
 
     @Override
     public void setId(String id) {
-        this.id = id;
+        if (id!=null) {
+            this.id = id;
+        }
     }
 
     public Parameter findParameter(String name) throws NoSuchElementException {

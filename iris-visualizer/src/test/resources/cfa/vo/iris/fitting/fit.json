@@ -34,7 +34,7 @@
       } ],
       "description" : null,
       "name" : "tablemodel.m3",
-      "id" : null
+      "id" : "m3"
     }, {
       "pars" : [ {
         "name" : "m1.c0",

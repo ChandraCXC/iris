@@ -16,8 +16,11 @@
 
 package cfa.vo.sherpa.models;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
 import java.util.List;
 
+@JsonDeserialize(as=DefaultModel.class)
 public interface Model {
     String getId();
 

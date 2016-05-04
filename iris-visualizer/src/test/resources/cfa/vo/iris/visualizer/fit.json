@@ -1,0 +1,98 @@
+{
+  "model" : {
+    "parts" : [ {
+      "pars" : [ {
+        "name" : "m.c0",
+        "val" : 1.0,
+        "min" : 1.1754943508222875E-38,
+        "max" : 3.4028234663852886E38,
+        "frozen" : 0,
+        "alwaysfrozen" : 0,
+        "hidden" : null,
+        "units" : null,
+        "link" : null
+      }, {
+        "name" : "m.c1",
+        "val" : 3.25,
+        "min" : 1.1754943508222875E-38,
+        "max" : 3.4028234663852886E38,
+        "frozen" : 0,
+        "alwaysfrozen" : 0,
+        "hidden" : null,
+        "units" : null,
+        "link" : null
+      }, {
+        "name" : "m.c2",
+        "val" : 0.0,
+        "min" : 1.1754943508222875E-38,
+        "max" : 3.4028234663852886E38,
+        "frozen" : 1,
+        "alwaysfrozen" : 0,
+        "hidden" : null,
+        "units" : null,
+        "link" : null
+      }, {
+        "name" : "m.c3",
+        "val" : 0.0,
+        "min" : 1.1754943508222875E-38,
+        "max" : 3.4028234663852886E38,
+        "frozen" : 1,
+        "alwaysfrozen" : 0,
+        "hidden" : null,
+        "units" : null,
+        "link" : null
+      }, {
+        "name" : "m.c4",
+        "val" : 0.0,
+        "min" : 1.1754943508222875E-38,
+        "max" : 3.4028234663852886E38,
+        "frozen" : 1,
+        "alwaysfrozen" : 0,
+        "hidden" : null,
+        "units" : null,
+        "link" : null
+      }, {
+        "name" : "m.c5",
+        "val" : 0.0,
+        "min" : 1.1754943508222875E-38,
+        "max" : 3.4028234663852886E38,
+        "frozen" : 1,
+        "alwaysfrozen" : 0,
+        "hidden" : null,
+        "units" : null,
+        "link" : null
+      }, {
+        "name" : "m.offset",
+        "val" : 0.0,
+        "min" : 1.1754943508222875E-38,
+        "max" : 3.4028234663852886E38,
+        "frozen" : 1,
+        "alwaysfrozen" : 0,
+        "hidden" : null,
+        "units" : null,
+        "link" : null
+      } ],
+      "name" : "polynomial.m",
+      "description" : "1-D polynomial function of order <= 5",
+      "id" : "m"
+    } ],
+    "name" : "m"
+  },
+  "stat" : "Chi2",
+  "method" : "MonteCarlo",
+  "confidence" : {
+    "sigma" : 1.6,
+    "maxiters" : null,
+    "eps" : null,
+    "softLimits" : null,
+    "name" : "conf"
+  },
+  "rStat" : null,
+  "nFev" : null,
+  "qVal" : null,
+  "numPoints" : null,
+  "statVal" : null,
+  "dof" : null,
+  "userModelList" : [ ],
+  "confidenceResults" : null
+}

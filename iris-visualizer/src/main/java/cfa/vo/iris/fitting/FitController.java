@@ -194,6 +194,8 @@ public class FitController {
      * @return the {@link FitConfiguration} instance deserialized from the input stream.
      */
     public FitConfiguration loadJson(InputStream is) throws IOException {
-        return mapper.readValue(is, FitConfiguration.class);
+        FitConfiguration conf = mapper.readValue(is, FitConfiguration.class);
+        sed.setFit(conf);
+        return conf;
     }
 }
