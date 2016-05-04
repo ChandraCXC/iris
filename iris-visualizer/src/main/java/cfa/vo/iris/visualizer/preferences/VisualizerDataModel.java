@@ -74,7 +74,7 @@ public class VisualizerDataModel {
         return selectedSeds;
     }
 
-    protected void setSelectedSeds(List<ExtSed> selectedSeds) {
+    private void setSelectedSeds(List<ExtSed> selectedSeds) {
         List<ExtSed> oldSeds = this.selectedSeds;
         this.selectedSeds = selectedSeds;
         pcs.firePropertyChange(PROP_SELECTED_SEDS, oldSeds, selectedSeds);
