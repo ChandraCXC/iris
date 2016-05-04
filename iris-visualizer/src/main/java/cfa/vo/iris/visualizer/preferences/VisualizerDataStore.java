@@ -45,7 +45,7 @@ public class VisualizerDataStore {
      * @return Preferences for the given SED
      * @param sed
      */
-    public SedModel getSedPreferences(ExtSed sed) {
+    public SedModel getSedModel(ExtSed sed) {
         return sedModels.get(sed);
     }
 

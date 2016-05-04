@@ -8,6 +8,9 @@ import java.util.List;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Dynamic model for the plotter and metadata browser. Maintains the current state
  * of the Visualizer component.
@@ -25,7 +28,8 @@ public class VisualizerDataModel {
     private final VisualizerDataStore store;
 
     // Seds to display in the visualizer
-    // private List<ExtSed> selectedSeds = new LinkedList<>();
+    // TODO: Support multiple SEDS
+    private List<ExtSed> selectedSeds = new LinkedList<>();
     private ExtSed selectedSed;
 
     // list of star tables associated with selectedSed, these tables will all be plotted
@@ -51,39 +55,30 @@ public class VisualizerDataModel {
         this.pcs.removePropertyChangeListener(listener);
     }
     
+    public List<SegmentModel> getModelsForSed(ExtSed sed) {
+        SedModel model = store.getSedModel(sed);
+        if (model == null) return new ArrayList<>();
+        
+        return new ArrayList<>(model.getAllSegmentModels().values());
+    }
+    
     /*
      * 
      * Getters and Setters
      * 
      */
     
-    /*
-    TODO: Support lists of SEDs
+    
+    //TODO: Support lists of SEDs
     public List<ExtSed> getSelectedSeds() {
         return selectedSeds;
     }
 
-    public void setSelectedSeds(List<ExtSed> selectedSeds) {
-        List<ExtSed> oldList = this.selectedSeds;
+    protected void setSelectedSeds(List<ExtSed> selectedSeds) {
+        List<ExtSed> oldSeds = this.selectedSeds;
         this.selectedSeds = selectedSeds;
-        
-        // Update models
-        List<SegmentModel> newModels = new LinkedList<>();
-        List<IrisStarTable> newTables = new LinkedList<>();
-        
-        for (ExtSed sed : selectedSeds) {
-            SedModel sedModel = store.getSedPreferences(sed);
-            for (int i=0; i<sed.getNumberOfSegments(); i++) {
-                SegmentModel segModel = sedModel.getSegmentPreferences(sed.getSegment(i));
-                newModels.add(segModel);
-                newTables.add(segModel.getInSource());
-            }
-        }
-        this.setSelectedSegmentModels(newModels);
-        this.setSedStarTables(newTables);
-        
-        pcs.firePropertyChange(PROP_SELECTED_SEDS, oldList, selectedSeds);
-    }*/
+        pcs.firePropertyChange(PROP_SELECTED_SEDS, oldSeds, selectedSeds);
+    }
     
     public ExtSed getSelectedSed() {
         return selectedSed;
@@ -97,7 +92,7 @@ public class VisualizerDataModel {
         List<IrisStarTable> newSedTables = new LinkedList<>();
 
         // Update models
-        SedModel sedModel = store.getSedPreferences(selectedSed);
+        SedModel sedModel = store.getSedModel(selectedSed);
         for (int i = 0; i < selectedSed.getNumberOfSegments(); i++) {
             SegmentModel segModel = sedModel.getSegmentModel(selectedSed.getSegment(i));
             newSedModels.add(segModel);
@@ -108,6 +103,7 @@ public class VisualizerDataModel {
         
         this.setSedSegmentModels(newSedModels);
         this.setSedStarTables(newSedTables);
+        this.setSelectedSeds(Arrays.asList(selectedSed));
     }
     
     public List<SegmentModel> getSedSegmentModels() {
