@@ -9,8 +9,15 @@ import cfa.vo.sherpa.FitResults;
 import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.models.Model;
 import cfa.vo.sherpa.models.DefaultModel;
+import cfa.vo.sherpa.stats.Stat;
+import cfa.vo.sherpa.stats.Statistic;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.mrbean.MrBeanModule;
 
 import javax.swing.tree.TreeModel;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.logging.Logger;
@@ -26,6 +33,7 @@ public class FitController {
     private ExtSed sed;
     private SherpaClient client;
     private ModelsController modelsController;
+    private ObjectMapper mapper;
 
     private final Logger logger = Logger.getLogger(FitController.class.getName());
 
@@ -50,6 +58,8 @@ public class FitController {
         this.sed = sed;
         this.client = client;
         modelsController = new ModelsController(manager);
+        mapper = new ObjectMapper();
+        mapper.registerModule(new MrBeanModule());
     }
 
     /**
@@ -153,7 +163,7 @@ public class FitController {
     }
 
     /**
-     * Save a summary of the current model in a human readable format to an {@link OutputStream}
+     * Save a summary of the current model's fit configuration in a human readable format to an {@link OutputStream}
      * @param os {@link OutputStream} to write to
      */
     public void save(OutputStream os) {
@@ -162,5 +172,30 @@ public class FitController {
         writer.write(String.format("SED ID: %s\n\n", sed.toString()));
         writer.write(sed.getFit().toString());
         writer.flush();
+    }
+
+    /**
+     * Save current model's fit configuration in json format to an {@link OutputStream}.
+     *
+     * Saved document could be read back to reconstruct an instance of the current model.
+     * @param os
+     */
+    public void saveJson(OutputStream os) throws IOException {
+        mapper.writerWithDefaultPrettyPrinter().writeValue(os, sed.getFit());
+    }
+
+    /**
+     * Load model in json format from {@link InputStream}.
+     *
+     * The Controller sets the current model's internal state to the new {@link FitConfiguration},
+     * but it also returns the read object for convenience.
+     *
+     * @param is
+     * @return the {@link FitConfiguration} instance deserialized from the input stream.
+     */
+    public FitConfiguration loadJson(InputStream is) throws IOException {
+        FitConfiguration conf = mapper.readValue(is, FitConfiguration.class);
+        sed.setFit(conf);
+        return conf;
     }
 }

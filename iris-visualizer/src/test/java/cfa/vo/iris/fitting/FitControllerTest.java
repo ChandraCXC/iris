@@ -1,7 +1,6 @@
 package cfa.vo.iris.fitting;
 
 import cfa.vo.interop.SAMPFactory;
-import cfa.vo.iris.fitting.custom.CustomModelType;
 import cfa.vo.iris.fitting.custom.CustomModelsManager;
 import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.sed.ExtSed;
@@ -11,35 +10,59 @@ import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.models.*;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Statistic;
-import org.apache.commons.io.FileUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.net.MalformedURLException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import net.javacrumbs.jsonunit.JsonAssert;
 import static org.junit.Assert.*;
 
 public class FitControllerTest {
+    private FitController controller;
+    private FitConfiguration configuration;
+    private ByteArrayOutputStream os = new ByteArrayOutputStream();
+
+    @Before
+    public void setUp() throws Exception {
+        ExtSed sed = Mockito.mock(ExtSed.class);
+        configuration = createFit();
+        Mockito.stub(sed.getFit()).toReturn(configuration);
+        Mockito.stub(sed.toString()).toReturn("MySed (Segments: 3)");
+        CustomModelsManager modelsManager = Mockito.mock(CustomModelsManager.class);
+        SherpaClient client = Mockito.mock(SherpaClient.class);
+        controller = new FitController(sed, modelsManager, client);
+    }
 
     @Test
     public void testSave() throws Exception {
-        ExtSed sed = Mockito.mock(ExtSed.class);
-        FitConfiguration configuration = createFit();
-        Mockito.when(sed.getFit()).thenReturn(configuration);
-        Mockito.when(sed.toString()).thenReturn("MySed (Segments: 3)");
-        CustomModelsManager modelsManager = Mockito.mock(CustomModelsManager.class);
-        SherpaClient client = Mockito.mock(SherpaClient.class);
-
-        FitController controller = new FitController(sed, modelsManager, client);
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
         controller.save(os);
-
         assertEquals(TestUtils.readFile(getClass(), "fit.output"), os.toString("UTF-8"));
+    }
+
+    @Test
+    public void testSaveAsJson() throws Exception {
+        controller.saveJson(os);
+        JsonAssert.assertJsonEquals(TestUtils.readFile(getClass(), "fit.json"), os.toString("UTF-8"));
+    }
+
+    @Test
+    public void testLoadJson() throws Exception {
+        FitConfiguration actual = controller.loadJson(getClass().getResource("fit.json").openStream());
+        assertEquals(actual, configuration);
+        assertEquals(actual, controller.getFit());
+    }
+
+    @Test
+    public void testRoundTrip() throws Exception {
+        controller.saveJson(os);
+        InputStream is = new ByteArrayInputStream(os.toString("UTF-8").getBytes("UTF-8"));
+        FitConfiguration actual = controller.loadJson(is);
+        assertEquals(actual, controller.getFit());
     }
 
     private FitConfiguration createFit() throws Exception {
@@ -107,6 +130,16 @@ public class FitControllerTest {
         }
 
         @Override
+        public String getId() {
+            return "m3";
+        }
+
+        @Override
+        public void setId(String id) {
+
+        }
+
+        @Override
         public String getName() {
             return "tablemodel.m3";
         }
@@ -139,6 +172,11 @@ public class FitControllerTest {
         @Override
         public Parameter findParameter(String paramName) {
             return null;
+        }
+
+        @Override
+        public String toString() {
+            return getName();
         }
     }
 

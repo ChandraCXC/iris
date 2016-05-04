@@ -16,10 +16,9 @@
 
 package cfa.vo.sherpa.models;
 
-/**
- *
- * @author olaurino
- */
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+@JsonDeserialize(as=ParameterImpl.class)
 public interface Parameter {
     String getName();
 

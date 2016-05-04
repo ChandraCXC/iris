@@ -17,6 +17,7 @@
 package cfa.vo.sherpa.models;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import java.util.*;
@@ -32,6 +33,10 @@ public class DefaultModel implements Model {
     private String description;
 
     private String id;
+
+    public DefaultModel() {
+        // comply to javabeans spec, mostly for deserialization
+    }
 
     public DefaultModel(Model model, String id) {
         this.name = model.getName();
@@ -88,7 +93,11 @@ public class DefaultModel implements Model {
 
     @Override
     public void setName(String name) {
+        String[] tokens = name.split("\\.");
+        name = tokens.length > 1 ? tokens[0] : name;
+        String id = tokens.length > 1? tokens[1] : null;
         this.name = name;
+        setId(id);
     }
 
     @Override
@@ -98,6 +107,13 @@ public class DefaultModel implements Model {
 
     public String getId() {
         return id;
+    }
+
+    @Override
+    public void setId(String id) {
+        if (id!=null) {
+            this.id = id;
+        }
     }
 
     public Parameter findParameter(String name) throws NoSuchElementException {
@@ -111,6 +127,19 @@ public class DefaultModel implements Model {
     @Override
     public String toString() {
         return getName();
+    }
+
+    @Override
+    public int hashCode() {
+        HashCodeBuilder builder = new HashCodeBuilder(11, 15);
+        if(StringUtils.isNotBlank(name))
+                builder.append(name);
+        if(StringUtils.isNotBlank(description))
+                builder.append(description);
+        if(!pars.isEmpty())
+                builder.append(pars);
+
+        return builder.toHashCode();
     }
 
     private String buildParamName(String paramName) {

@@ -16,6 +16,10 @@ public final class ParameterImpl implements Parameter {
     private String units;
     private String link;
 
+    public ParameterImpl() {
+        // comply to java bean conventions, especially for json deserialization
+    }
+
     public ParameterImpl(Element parElem) {
         setAlwaysfrozen(Integer.parseInt(parElem.getAttribute("alwaysfrozen")));
         setFrozen(Integer.parseInt(parElem.getAttribute("frozen")));
