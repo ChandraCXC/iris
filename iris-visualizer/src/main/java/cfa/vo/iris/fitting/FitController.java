@@ -5,6 +5,7 @@ import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.fitting.custom.ModelsListener;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sherpa.ConfidenceResults;
+import cfa.vo.sherpa.Data;
 import cfa.vo.sherpa.FitResults;
 import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.models.Model;
@@ -197,5 +198,15 @@ public class FitController {
         FitConfiguration conf = mapper.readValue(is, FitConfiguration.class);
         sed.setFit(conf);
         return conf;
+    }
+
+    /**
+     * Evaluate Fitting Model. Returns a {@link Data} instance with the x and y values evaluated according to the
+     * current model
+     * @return a {@link Data} instance
+     * @throws Exception
+     */
+    public Data evaluateModel() throws Exception {
+        return client.evaluate(sed);
     }
 }
