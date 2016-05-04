@@ -4,80 +4,74 @@ import cfa.vo.interop.SAMPFactory;
 import cfa.vo.iris.fitting.custom.CustomModelsManager;
 import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.test.unit.SherpaResource;
 import cfa.vo.iris.test.unit.TestUtils;
+import cfa.vo.sedlib.Segment;
 import cfa.vo.sherpa.ConfidenceResults;
 import cfa.vo.sherpa.Data;
+import cfa.vo.sherpa.FitResults;
 import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.models.*;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Statistic;
+import net.javacrumbs.jsonunit.JsonAssert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import net.javacrumbs.jsonunit.JsonAssert;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
-public class FitControllerTest {
+public class FitControllerIT {
     private FitController controller;
     private FitConfiguration configuration;
     private CustomModelsManager modelsManager;
     private SherpaClient client;
-    private ByteArrayOutputStream os = new ByteArrayOutputStream();
-    private double[] x = {1.0, 1.1, 1.2};
-    private double[] y = {2.0, 2.1, 2.2};
-    private double[] err = {1.0, 1.0, 1.0};
+    private Data data;
+    private double[] x = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
+    private double[] y = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
+    private double[] err = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+
+    @Rule
+    public SherpaResource sherpa = new SherpaResource();
 
     @Before
     public void setUp() throws Exception {
-        ExtSed sed = Mockito.mock(ExtSed.class);
+        ExtSed sed = new ExtSed("Test", false);
+        Segment segment = TestUtils.createSampleSegment(x, y, SherpaClient.X_UNIT, SherpaClient.Y_UNIT);
+        sed.addSegment(segment);
         configuration = createFit();
-        Mockito.stub(sed.getFit()).toReturn(configuration);
-        Mockito.stub(sed.toString()).toReturn("MySed (Segments: 3)");
+        sed.setFit(configuration);
         modelsManager = Mockito.mock(CustomModelsManager.class);
-        client = Mockito.mock(SherpaClient.class);
-        Data data = SAMPFactory.get(Data.class);
+        data = SAMPFactory.get(Data.class);
         data.setX(x);
         data.setY(y);
         data.setStaterror(err);
-        Mockito.stub(client.evaluate(sed)).toReturn(data);
+        client = sherpa.getClient();
         controller = new FitController(sed, modelsManager, client);
     }
 
     @Test
-    public void testSave() throws Exception {
-        controller.save(os);
-        assertEquals(TestUtils.readFile(getClass(), "fit.output"), os.toString("UTF-8"));
-    }
-
-    @Test
-    public void testSaveAsJson() throws Exception {
-        controller.saveJson(os);
-        JsonAssert.assertJsonEquals(TestUtils.readFile(getClass(), "fit.json"), os.toString("UTF-8"));
-    }
-
-    @Test
-    public void testLoadJson() throws Exception {
-        FitConfiguration actual = controller.loadJson(getClass().getResource("fit.json").openStream());
-        assertEquals(actual, configuration);
-        assertEquals(actual, controller.getFit());
-    }
-
-    @Test
-    public void testRoundTrip() throws Exception {
-        controller.saveJson(os);
-        InputStream is = new ByteArrayInputStream(os.toString("UTF-8").getBytes("UTF-8"));
-        FitConfiguration actual = controller.loadJson(is);
-        assertEquals(actual, controller.getFit());
+    public void testFit() throws Exception {
+        FitResults results = controller.fit();
+        double[] expected = {0, 1};
+        assertArrayEquals(expected, results.getParvals(), 0.01);
     }
 
     @Test
     public void testEvaluate() throws Exception {
+        Model model = controller.getFit().getModel().getParts().get(0);
+        model.findParameter("c0").setVal(0.0);
+        model.findParameter("c1").setVal(1.0);
+        model.findParameter("c1").setFrozen(0);
         Data data = controller.evaluateModel();
         assertArrayEquals(x, data.getX(), 0.001);
         assertArrayEquals(y, data.getY(), 0.001);
@@ -91,48 +85,18 @@ public class FitControllerTest {
         Model m = factory.getModel("polynomial", "m1");
         Parameter c0 = m.findParameter("c0");
         c0.setFrozen(0);
-        c0.setVal(0.1);
 
         Parameter c1 = m.findParameter("c1");
         c1.setFrozen(0);
-        c1.setVal(0.2);
-
-        Model m2 = factory.getModel("powlaw1d", "m2");
-        m2.findParameter("gamma").setVal(0.01);
-        m2.findParameter("ampl").setVal(0.02);
-
-        DefaultCustomModel userModel = Mockito.mock(DefaultCustomModel.class);
-        Model model = new ModelStub();
-        UserModel um = new UserModelStub();
-        Mockito.stub(userModel.makeModel(Mockito.anyString())).toReturn(model);
-        Mockito.stub(userModel.makeUserModel(Mockito.anyString())).toReturn(um);
-        fit.addUserModel(userModel, "m3");
 
         CompositeModel cm = fit.getModel();
-        cm.setName("m1+m2+m3");
         cm.addPart(m);
-        cm.addPart(m2);
+        cm.setName("m1");
 
         fit.setModel(cm);
 
         fit.setMethod(OptimizationMethod.LevenbergMarquardt);
         fit.setStat(Statistic.LeastSquares);
-
-        fit.setDof(30);
-        fit.setStatVal(0.1234);
-        fit.setrStat(0.4321);
-        fit.setqVal(0.1357);
-        fit.setDof(30);
-        fit.setNumPoints(430);
-        fit.setnFev(731);
-
-        ConfidenceResults confidenceResults = SAMPFactory.get(ConfidenceResults.class);
-        confidenceResults.setParnames(Arrays.asList("m1.c0", "m1.c1", "m2.c2"));
-        confidenceResults.setParmins(new double[]{-0.1, -0.2, -0.3});
-        confidenceResults.setParmaxes(new double[]{0.1, 0.2, 0.3});
-        confidenceResults.setSigma(1.6);
-        confidenceResults.setPercent(96.3);
-        fit.setConfidenceResults(confidenceResults);
 
         return fit;
     }
