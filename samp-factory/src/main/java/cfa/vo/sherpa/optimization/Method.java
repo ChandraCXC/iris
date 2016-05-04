@@ -16,6 +16,9 @@
 
 package cfa.vo.sherpa.optimization;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+@JsonDeserialize(using=MethodDeserializer.class)
 public interface Method {
     String getName();
 

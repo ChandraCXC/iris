@@ -19,6 +19,10 @@ package cfa.vo.sherpa.models;
 import java.util.List;
 
 public interface Model {
+    String getId();
+
+    void setId(String id);
+
     String getName();
 
     void setName(String name);
