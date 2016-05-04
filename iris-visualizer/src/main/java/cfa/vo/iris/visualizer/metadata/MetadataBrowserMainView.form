@@ -401,7 +401,7 @@
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
-                    <Component class="cfa.vo.iris.visualizer.stil.IrisStarJTable" name="plotterStarJTable">
+                    <Component class="cfa.vo.iris.visualizer.metadata.IrisStarJTable" name="plotterStarJTable">
                       <Properties>
                         <Property name="columnInfoMatcher" type="cfa.vo.iris.visualizer.stil.tables.ColumnInfoMatcher" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                           <Connection code="new SegmentColumnInfoMatcher()" type="code"/>
@@ -447,7 +447,7 @@
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
-                    <Component class="cfa.vo.iris.visualizer.stil.IrisStarJTable" name="pointStarJTable">
+                    <Component class="cfa.vo.iris.visualizer.metadata.IrisStarJTable" name="pointStarJTable">
                       <Properties>
                         <Property name="columnInfoMatcher" type="cfa.vo.iris.visualizer.stil.tables.ColumnInfoMatcher" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                           <Connection code="new UtypeColumnInfoMatcher()" type="code"/>
@@ -495,7 +495,7 @@
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
-                    <Component class="cfa.vo.iris.visualizer.stil.MetadataJTable" name="metadataJTable1">
+                    <Component class="cfa.vo.iris.visualizer.metadata.MetadataJTable" name="metadataJTable1">
                       <BindingProperties>
                         <BindingProperty name="selectedStarTables" source="Form" sourcePath="${dataModel.sedStarTables}" target="metadataJTable1" targetPath="selectedStarTables" updateStrategy="0" immediately="false"/>
                         <BindingProperty name="selectionModel" source="starTableList" sourcePath="${selectionModel}" target="metadataJTable1" targetPath="selectionModel" updateStrategy="0" immediately="false"/>

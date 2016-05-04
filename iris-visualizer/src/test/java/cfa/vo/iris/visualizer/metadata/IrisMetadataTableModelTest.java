@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package cfa.vo.iris.visualizer.stil;
+package cfa.vo.iris.visualizer.metadata;
 
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import org.junit.Test;
 
-import cfa.vo.iris.visualizer.stil.MetadataJTable.IrisMetadataTableModel;
+import cfa.vo.iris.visualizer.metadata.MetadataJTable.IrisMetadataTableModel;
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.DefaultValueInfo;
 import uk.ac.starlink.table.DescribedValue;
