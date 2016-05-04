@@ -55,11 +55,28 @@ public class VisualizerDataModel {
         this.pcs.removePropertyChangeListener(listener);
     }
     
+    /**
+     * Return a list of SegmentModels for the SED - in the same order as the Segments
+     * appear in the SED.
+     * @param sed
+     * @return 
+     */
     public List<SegmentModel> getModelsForSed(ExtSed sed) {
-        SedModel model = store.getSedModel(sed);
-        if (model == null) return new ArrayList<>();
         
-        return new ArrayList<>(model.getAllSegmentModels().values());
+        SedModel sedModel = store.getSedModel(sed);
+        List<SegmentModel> models = new ArrayList<>();
+        
+        // Return an empty list if the model has been removed from the store.
+        // (meaning the Sed was removed from the workspace).
+        if (sedModel == null) {
+            return models;
+        }
+        
+        for (int i=0; i<sed.getNumberOfSegments(); i++) {
+            models.add(sedModel.getSegmentModel(sed.getSegment(i)));
+        }
+        
+        return models;
     }
     
     /*
@@ -68,13 +85,12 @@ public class VisualizerDataModel {
      * 
      */
     
-    
     //TODO: Support lists of SEDs
     public List<ExtSed> getSelectedSeds() {
         return selectedSeds;
     }
 
-    private void setSelectedSeds(List<ExtSed> selectedSeds) {
+    private synchronized void setSelectedSeds(List<ExtSed> selectedSeds) {
         List<ExtSed> oldSeds = this.selectedSeds;
         this.selectedSeds = selectedSeds;
         pcs.firePropertyChange(PROP_SELECTED_SEDS, oldSeds, selectedSeds);
@@ -84,7 +100,7 @@ public class VisualizerDataModel {
         return selectedSed;
     }
 
-    public void setSelectedSed(ExtSed selectedSed) {
+    public synchronized void setSelectedSed(ExtSed selectedSed) {
         ExtSed oldSed = this.selectedSed;
         this.selectedSed = selectedSed;
         
@@ -99,11 +115,11 @@ public class VisualizerDataModel {
             newSedTables.add(segModel.getInSource());
         }
         
-        pcs.firePropertyChange(PROP_SELECTED_SED, oldSed, selectedSed);
-        
         this.setSedSegmentModels(newSedModels);
         this.setSedStarTables(newSedTables);
         this.setSelectedSeds(Arrays.asList(selectedSed));
+        
+        pcs.firePropertyChange(PROP_SELECTED_SED, oldSed, selectedSed);
     }
     
     public List<SegmentModel> getSedSegmentModels() {
@@ -111,7 +127,7 @@ public class VisualizerDataModel {
     }
     
     // Locked down since these are tied to the selected seds
-    void setSedSegmentModels(List<SegmentModel> newModels) {
+    synchronized void setSedSegmentModels(List<SegmentModel> newModels) {
         List<SegmentModel> oldModels = this.sedSegmentModels;
         this.sedSegmentModels = newModels;
         pcs.firePropertyChange(PROP_SELECTED_SEGMENT_MODELS, oldModels, sedSegmentModels);
@@ -122,7 +138,7 @@ public class VisualizerDataModel {
     }
     
     // Locked down since these are tied to the selected seds
-    public void setSedStarTables(List<IrisStarTable> newTables) {
+    public synchronized void setSedStarTables(List<IrisStarTable> newTables) {
         List<IrisStarTable> oldTables = sedStarTables;
         this.sedStarTables = newTables;
         pcs.firePropertyChange(PROP_SED_STARTABLES, oldTables, sedStarTables);
@@ -132,7 +148,7 @@ public class VisualizerDataModel {
         return selectedStarTables;
     }
 
-    public void setSelectedStarTables(List<IrisStarTable> newStarTables) {
+    public synchronized void setSelectedStarTables(List<IrisStarTable> newStarTables) {
         List<IrisStarTable> oldStarTables = selectedStarTables;
         this.selectedStarTables = newStarTables;
         pcs.firePropertyChange(PROP_SELECTED_STARTABLES, oldStarTables, selectedStarTables);
