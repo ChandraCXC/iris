@@ -369,7 +369,7 @@
                         </Property>
                       </Properties>
                       <BindingProperties>
-                        <BindingProperty name="selectedStarTables" source="starTableList" sourcePath="${selectedStarTables}" target="plotterStarJTable" targetPath="selectedStarTables" updateStrategy="0" immediately="false"/>
+                        <BindingProperty name="selectedStarTables" source="Form" sourcePath="${dataModel.selectedStarTables}" target="plotterStarJTable" targetPath="selectedStarTables" updateStrategy="0" immediately="false"/>
                       </BindingProperties>
                     </Component>
                   </SubComponents>
@@ -417,7 +417,7 @@
                         <Property name="utypeAsNames" type="boolean" value="true"/>
                       </Properties>
                       <BindingProperties>
-                        <BindingProperty name="selectedStarTables" source="starTableList" sourcePath="${selectedStarTables}" target="pointStarJTable" targetPath="selectedStarTables" updateStrategy="1" immediately="false"/>
+                        <BindingProperty name="selectedStarTables" source="Form" sourcePath="${dataModel.selectedStarTables}" target="pointStarJTable" targetPath="selectedStarTables" updateStrategy="0" immediately="false"/>
                       </BindingProperties>
                     </Component>
                   </SubComponents>
