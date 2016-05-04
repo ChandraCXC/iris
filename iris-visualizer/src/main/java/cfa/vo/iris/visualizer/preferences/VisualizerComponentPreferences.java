@@ -123,7 +123,7 @@ public class VisualizerComponentPreferences {
      * @return
      *  Preferences map for each SED.
      */
-    public Map<ExtSed, SedModel> getSedPreferences() {
+    public Map<ExtSed, SedModel> getSedModels() {
         return dataStore.getSedModels();
     }
     
@@ -131,8 +131,8 @@ public class VisualizerComponentPreferences {
      * @return
      *  Preferences for the given SED
      */
-    public SedModel getSedPreferences(ExtSed sed) {
-        return dataStore.getSedPreferences(sed);
+    public SedModel getSedModel(ExtSed sed) {
+        return dataStore.getSedModel(sed);
     }
     
     /**
@@ -322,7 +322,7 @@ public class VisualizerComponentPreferences {
             }
             // update plot preferences
             VisualizerComponentPreferences.this.plotPreferences = 
-                    VisualizerComponentPreferences.this.getSedPreferences(sed).getPlotPreferences();
+                    VisualizerComponentPreferences.this.getSedModel(sed).getPlotPreferences();
         }
     }
 }

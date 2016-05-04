@@ -53,8 +53,8 @@ public class UnitsWidget extends javax.swing.JPanel {
         
         // if current sed is null, set X and Y to Iris default units
         if (currentSed != null) {
-            setXunit(prefs.getSedPreferences(currentSed).getXunits());
-            setYunit(prefs.getSedPreferences(currentSed).getYunits());
+            setXunit(prefs.getSedModel(currentSed).getXunits());
+            setYunit(prefs.getSedModel(currentSed).getYunits());
         } else {
             // TODO: use default Iris units here; should be a static
             setXunit(unitsManager.newXUnits("Hz").toString());
@@ -155,7 +155,7 @@ public class UnitsWidget extends javax.swing.JPanel {
         }
         
         // fire Visualizer event to update plot and MB
-        plotter.getVisualizerPreferences().getSedPreferences(plotter.getSed()).setUnits(xunit, yunit);
+        plotter.getVisualizerPreferences().getSedModel(plotter.getSed()).setUnits(xunit, yunit);
         fire(plotter.getSed(), VisualizerCommand.RESET);
     }
     
@@ -175,7 +175,7 @@ public class UnitsWidget extends javax.swing.JPanel {
         }
         
         // fire Visualizer event to update plot and MB
-        plotter.getVisualizerPreferences().getSedPreferences(sed).setUnits(xunit, yunit);
+        plotter.getVisualizerPreferences().getSedModel(sed).setUnits(xunit, yunit);
         fire(sed, VisualizerCommand.RESET);
     }
     

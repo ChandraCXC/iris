@@ -270,7 +270,7 @@ public class StilPlotter extends JPanel {
 
     public Map<Segment, SegmentModel> getSegmentsMap() {
         return Collections.unmodifiableMap(preferences
-                .getSedPreferences(currentSed).getAllSegmentModels());
+                .getSedModel(currentSed).getAllSegmentModels());
     }
 
     public PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> getPlotDisplay() {
@@ -379,7 +379,7 @@ public class StilPlotter extends JPanel {
         logger.info(String.format("Plotting SED with %s segments...",
                 sed.getNamespace()));
 
-        SedModel prefs = preferences.getSedPreferences(sed);
+        SedModel prefs = preferences.getSedModel(sed);
         for (int i = 0; i < sed.getNumberOfSegments(); i++) {
             SegmentModel layer = prefs.getSegmentModel(sed.getSegment(i));
             for (String key : layer.getPreferences().keySet()) {
@@ -411,16 +411,16 @@ public class StilPlotter extends JPanel {
     }
     
     public PlotPreferences getPlotPreferences() {
-        if (this.preferences.getSedPreferences(currentSed) != null) {
-            return preferences.getSedPreferences(currentSed).getPlotPreferences();
+        if (this.preferences.getSedModel(currentSed) != null) {
+            return preferences.getSedModel(currentSed).getPlotPreferences();
         } else {
             return preferences.getPlotPreferences();
         }
     }
     
     public PlotPreferences getPlotPreferences(ExtSed sed) {
-        if (this.preferences.getSedPreferences(sed) != null) {
-            return preferences.getSedPreferences(sed).getPlotPreferences();
+        if (this.preferences.getSedModel(sed) != null) {
+            return preferences.getSedModel(sed).getPlotPreferences();
         } else {
             return preferences.getPlotPreferences();
         }

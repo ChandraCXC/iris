@@ -39,33 +39,33 @@ public class VisualizerComponentPreferencesTest {
             @Override
             protected void addSedListeners() {}
         };
-        assertEquals(0, prefs.getSedPreferences().size());
-        assertNull(prefs.getSedPreferences(sed));
+        assertEquals(0, prefs.getSedModels().size());
+        assertNull(prefs.getSedModel(sed));
         
         // Add SED
         prefs.update(sed);
-        assertEquals(1, prefs.getSedPreferences().size());
-        assertEquals(0, prefs.getSedPreferences(sed).getAllSegmentModels().size());
+        assertEquals(1, prefs.getSedModels().size());
+        assertEquals(0, prefs.getSedModel(sed).getAllSegmentModels().size());
         
         // Add segment to SED
         Segment seg1 = createSampleSegment();
         sed.addSegment(seg1);
         prefs.update(sed, seg1);
-        assertEquals(1, prefs.getSedPreferences().size());
-        assertEquals(1, prefs.getSedPreferences(sed).getAllSegmentModels().size());
+        assertEquals(1, prefs.getSedModels().size());
+        assertEquals(1, prefs.getSedModel(sed).getAllSegmentModels().size());
         
         // Add another segment
         Segment seg2 = createSampleSegment(new double[] {1}, new double[] {2});
         sed.addSegment(seg2);
         prefs.update(sed, seg2);
-        assertEquals(1, prefs.getSedPreferences().size());
-        assertEquals(2, prefs.getSedPreferences(sed).getAllSegmentModels().size());
+        assertEquals(1, prefs.getSedModels().size());
+        assertEquals(2, prefs.getSedModel(sed).getAllSegmentModels().size());
         
         // Remove the first segment
         sed.remove(seg1);
         prefs.remove(sed, seg1);
-        assertEquals(1, prefs.getSedPreferences().size());
-        assertEquals(1, prefs.getSedPreferences(sed).getAllSegmentModels().size());
+        assertEquals(1, prefs.getSedModels().size());
+        assertEquals(1, prefs.getSedModel(sed).getAllSegmentModels().size());
         
         // Add a list of segments at once (test MultipleSegmentEvent listener)
         Segment seg3 = createSampleSegment();
@@ -73,16 +73,16 @@ public class VisualizerComponentPreferencesTest {
         segments.add(seg3); segments.add(seg1); // add two segments
         sed.addSegment(segments);
         prefs.update(sed, segments);
-        assertEquals(1, prefs.getSedPreferences().size());
-        assertEquals(3, prefs.getSedPreferences(sed).getAllSegmentModels().size());
+        assertEquals(1, prefs.getSedModels().size());
+        assertEquals(3, prefs.getSedModel(sed).getAllSegmentModels().size());
         
         sed.remove(segments);
         prefs.remove(sed, segments);
-        assertEquals(1, prefs.getSedPreferences(sed).getAllSegmentModels().size());        
+        assertEquals(1, prefs.getSedModel(sed).getAllSegmentModels().size());        
         
         
         // Remove the SED
         prefs.remove(sed);
-        assertEquals(0, prefs.getSedPreferences().size());
+        assertEquals(0, prefs.getSedModels().size());
     }
 }
