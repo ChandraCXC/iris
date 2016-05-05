@@ -70,7 +70,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         
         // Add this star table to the selection if it isn't
         IrisStarTable starTable = dataModel.getSedStarTables().get(starTableIndex);
-        this.starTableList.addToSelection(starTable);
+        this.starTableTree.addToSelection(starTable);
         
         // Select the correct row
         IrisStarJTable table = getSelectedIrisJTable();
@@ -171,7 +171,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         segmentMetadataScrollPane = new javax.swing.JScrollPane();
         metadataJTable1 = new cfa.vo.iris.visualizer.metadata.MetadataJTable();
         starTableScrollPane = new javax.swing.JScrollPane();
-        starTableList = new cfa.vo.iris.visualizer.metadata.StarTableJTree();
+        starTableTree = new cfa.vo.iris.visualizer.metadata.StarTableJTree();
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         extractToSedMenuItem = new javax.swing.JMenuItem();
@@ -196,7 +196,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         setName(""); // NOI18N
         setPreferredSize(new java.awt.Dimension(800, 454));
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, this, org.jdesktop.beansbinding.ELProperty.create("Metadata Browser (${dataModel.selectedSed.id})"), this, org.jdesktop.beansbinding.BeanProperty.create("title"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, this, org.jdesktop.beansbinding.ELProperty.create("Metadata Browser ${dataModel.dataModelTitle}"), this, org.jdesktop.beansbinding.BeanProperty.create("title"));
         binding.setSourceNullValue("Select SED");
         binding.setSourceUnreadableValue("Select SED");
         bindingGroup.addBinding(binding);
@@ -424,18 +424,19 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
         starTableScrollPane.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        starTableList.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
-        starTableList.setModel(null);
-        starTableList.setRootVisible(false);
+        starTableTree.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        starTableTree.setModel(null);
+        starTableTree.setName("satarTableTree"); // NOI18N
+        starTableTree.setRootVisible(false);
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel}"), starTableList, org.jdesktop.beansbinding.BeanProperty.create("dataModel"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel}"), starTableTree, org.jdesktop.beansbinding.BeanProperty.create("dataModel"));
         bindingGroup.addBinding(binding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.selectedSeds}"), starTableList, org.jdesktop.beansbinding.BeanProperty.create("seds"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.selectedSeds}"), starTableTree, org.jdesktop.beansbinding.BeanProperty.create("seds"));
         bindingGroup.addBinding(binding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.sedStarTables}"), starTableList, org.jdesktop.beansbinding.BeanProperty.create("sedStarTables"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.sedStarTables}"), starTableTree, org.jdesktop.beansbinding.BeanProperty.create("sedStarTables"));
         bindingGroup.addBinding(binding);
 
-        starTableScrollPane.setViewportView(starTableList);
+        starTableScrollPane.setViewportView(starTableTree);
 
         dataPane.setLeftComponent(starTableScrollPane);
 
@@ -673,8 +674,8 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private javax.swing.JMenuItem selectAllMenuItem;
     private javax.swing.JMenu selectMenu;
     private javax.swing.JButton selectPointsButton;
-    private cfa.vo.iris.visualizer.metadata.StarTableJTree starTableList;
     private javax.swing.JScrollPane starTableScrollPane;
+    protected cfa.vo.iris.visualizer.metadata.StarTableJTree starTableTree;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }

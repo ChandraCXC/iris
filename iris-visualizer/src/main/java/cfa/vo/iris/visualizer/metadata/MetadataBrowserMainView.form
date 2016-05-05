@@ -121,7 +121,7 @@
     </Property>
   </Properties>
   <BindingProperties>
-    <BindingProperty name="title" source="Form" sourcePath="Metadata Browser (${dataModel.selectedSed.id})" target="Form" targetPath="title" updateStrategy="1" immediately="false">
+    <BindingProperty name="title" source="Form" sourcePath="Metadata Browser ${dataModel.dataModelTitle}" target="Form" targetPath="title" updateStrategy="1" immediately="false">
       <Property name="nullValue" type="java.lang.String" value="Select SED"/>
       <Property name="incompletePathValue" type="java.lang.String" value="Select SED"/>
     </BindingProperty>
@@ -480,7 +480,7 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
-            <Component class="cfa.vo.iris.visualizer.metadata.StarTableJTree" name="starTableList">
+            <Component class="cfa.vo.iris.visualizer.metadata.StarTableJTree" name="starTableTree">
               <Properties>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
@@ -490,13 +490,17 @@
                 <Property name="model" type="javax.swing.tree.TreeModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="null" type="code"/>
                 </Property>
+                <Property name="name" type="java.lang.String" value="satarTableTree" noResource="true"/>
                 <Property name="rootVisible" type="boolean" value="false"/>
               </Properties>
               <BindingProperties>
-                <BindingProperty name="dataModel" source="Form" sourcePath="${dataModel}" target="starTableList" targetPath="dataModel" updateStrategy="0" immediately="false"/>
-                <BindingProperty name="seds" source="Form" sourcePath="${dataModel.selectedSeds}" target="starTableList" targetPath="seds" updateStrategy="0" immediately="false"/>
-                <BindingProperty name="sedStarTables" source="Form" sourcePath="${dataModel.sedStarTables}" target="starTableList" targetPath="sedStarTables" updateStrategy="0" immediately="false"/>
+                <BindingProperty name="dataModel" source="Form" sourcePath="${dataModel}" target="starTableTree" targetPath="dataModel" updateStrategy="0" immediately="false"/>
+                <BindingProperty name="seds" source="Form" sourcePath="${dataModel.selectedSeds}" target="starTableTree" targetPath="seds" updateStrategy="0" immediately="false"/>
+                <BindingProperty name="sedStarTables" source="Form" sourcePath="${dataModel.sedStarTables}" target="starTableTree" targetPath="sedStarTables" updateStrategy="0" immediately="false"/>
               </BindingProperties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="4"/>
+              </AuxValues>
             </Component>
           </SubComponents>
         </Container>
