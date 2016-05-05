@@ -18,6 +18,7 @@ import java.util.Arrays;
  */
 public class VisualizerDataModel {
     
+    public static final String PROP_DATAMODEL_TITLE = "dataModelTitle";
     public static final String PROP_SELECTED_SEDS = "selectedSeds";
     public static final String PROP_SELECTED_SED = "selectedSed";
     public static final String PROP_SELECTED_SEGMENT_MODELS = "selectedSegmentModels";
@@ -26,6 +27,10 @@ public class VisualizerDataModel {
 
     private final PropertyChangeSupport pcs;
     private final VisualizerDataStore store;
+
+    // Name of the window browser, is adjustable and currently tied to the selectedSed
+    // TODO: Support multiple SEDS
+    private String dataModelTitle = null;
 
     // Seds to display in the visualizer
     // TODO: Support multiple SEDS
@@ -85,6 +90,16 @@ public class VisualizerDataModel {
      * 
      */
     
+    public String getDataModelTitle() {
+        return dataModelTitle;
+    }
+
+    public synchronized void setDataModelTitle(String dataModelTitle) {
+        String oldTitle = this.dataModelTitle;
+        this.dataModelTitle = dataModelTitle;
+        pcs.firePropertyChange(PROP_DATAMODEL_TITLE, oldTitle, dataModelTitle);
+    }
+    
     //TODO: Support lists of SEDs
     public List<ExtSed> getSelectedSeds() {
         return selectedSeds;
@@ -118,6 +133,7 @@ public class VisualizerDataModel {
         this.setSedSegmentModels(newSedModels);
         this.setSedStarTables(newSedTables);
         this.setSelectedSeds(Arrays.asList(selectedSed));
+        this.setDataModelTitle(selectedSed.getId());
         
         pcs.firePropertyChange(PROP_SELECTED_SED, oldSed, selectedSed);
     }

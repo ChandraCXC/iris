@@ -167,7 +167,6 @@ public class VisualizerComponentPreferences {
      */
     public void update(ExtSed sed) {
         dataStore.update(sed);
-        //fire(sed, VisualizerCommand.RESET);
     }
     
     /**
@@ -196,7 +195,6 @@ public class VisualizerComponentPreferences {
      */
     public void remove(ExtSed sed) {
         dataStore.remove(sed);
-        //fire(sed, VisualizerCommand.RESET);
     }
     
     /**
@@ -256,6 +254,7 @@ public class VisualizerComponentPreferences {
             }
             else {
                 // Doesn't merit a full reset, this is basically just here for SED name changes
+                setSelectedSed(sed);
                 fire(sed, VisualizerCommand.REDRAW); // should remove this
             }
         }

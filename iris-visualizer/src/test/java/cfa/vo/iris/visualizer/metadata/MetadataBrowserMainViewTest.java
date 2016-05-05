@@ -19,9 +19,9 @@ package cfa.vo.iris.visualizer.metadata;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.uispec4j.ListBox;
 import org.uispec4j.Panel;
 import org.uispec4j.Table;
+import org.uispec4j.Tree;
 import org.uispec4j.Trigger;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowHandler;
@@ -53,14 +53,13 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
     private SedlibSedManager sedManager;
 
     private Window mbWindow; // metadata window
-    private Window plWindow; // plotter window
     
     private MetadataBrowserMainView mbView;
     private PlotterView plView;
 
-    private Panel plotter;
     private Panel dataPanel;
-    private ListBox starTableList;
+    private Tree tablesTree;
+    StarTableJTree starTableJTree;
     
     private Table plotterTable;
     private Table dataTable;
@@ -78,12 +77,9 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         // Get plot window
         window.getMenuBar().getMenu("Tools").getSubMenu(plWindowName).getSubMenu(plWindowName).click();
         desktop.containsWindow(plWindowName).check();
-        plWindow = desktop.getWindow(plWindowName);
         
         org.uispec4j.Button mbButton = desktop.getWindow(plWindowName).getButton("Metadata");
         mbButton.click();
-        
-        plotter = plWindow.getPanel("plotter");
         
         plView = comp.getDefaultPlotterView();
         mbView = plView.getMetadataBrowserView();
@@ -92,8 +88,11 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         mbWindow = desktop.getWindow(mbView.getTitle());
         dataPanel = mbWindow.getPanel("contentPane");
         
+        // JTree
+        starTableJTree = mbView.starTableTree;
+        
         // Segment list
-        starTableList = dataPanel.getListBox();
+        tablesTree = dataPanel.getTree();
         
         // Data table with plotter info
         dataPanel.getTabGroup().selectTab("Data");
@@ -114,7 +113,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
     public void testMetadataBrowser() throws Exception {
         
         // Nothing should be selected
-        assertEquals("Metadata Browser (Select SED)", mbWindow.getTitle());
+        assertEquals("Metadata Browser ", mbWindow.getTitle());
         
         // Load an sed into the workspace and ensure it shows up in the MB
         final ExtSed sed = sedManager.newSed("test1");
@@ -124,10 +123,9 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertEquals(mbView.getTitle(), mbWindow.getTitle());
                 assertEquals(sed, mbView.getDataModel().getSelectedSed());
                 assertEquals(0, mbView.getDataModel().getSedStarTables().size());
-                assertEquals(0, starTableList.getSize());
+                assertEquals(1, starTableJTree.getSelectionCount());
             }
         });
         
@@ -140,7 +138,6 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 assertEquals(1, mbView.getDataModel().getSedStarTables().size());
-                assertEquals(1, starTableList.getSize());
                 assertEquals(1, segmentTable.getRowCount());
 
                 assertEquals(1, Double.parseDouble((String) plotterTable.getContentAt(0, 2)), 0.1);
@@ -153,18 +150,20 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         final Segment seg2 = createSampleSegment(new double[] {100, 200}, new double[] {300,400});
         sed.addSegment(seg2);
         
-        // 2 segments should have been added to table, first segment still selected
+        // 2 segments should have been added to table, both segments should be visible in the table
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertEquals(2, mbView.getDataModel().getSedStarTables().size());
-                assertEquals(2, starTableList.getSize());
+                assertEquals(2, mbView.getDataModel().getSelectedStarTables().size());
                 assertEquals(2, segmentTable.getRowCount());
 
+                assertEquals(5, plotterTable.getRowCount());
                 assertEquals(1, Double.parseDouble((String) plotterTable.getContentAt(0, 2)), 0.1);
                 assertEquals(2, Double.parseDouble((String) plotterTable.getContentAt(1, 2)), 0.1);
                 assertEquals(3, Double.parseDouble((String) plotterTable.getContentAt(2, 2)), 0.1);
-                
+
+                assertEquals(5, dataTable.getRowCount());
                 assertEquals(1, Double.parseDouble((String) dataTable.getContentAt(0, 1)), 0.1);
                 assertEquals(2, Double.parseDouble((String) dataTable.getContentAt(1, 1)), 0.1);
                 assertEquals(3, Double.parseDouble((String) dataTable.getContentAt(2, 1)), 0.1);
@@ -172,16 +171,21 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         });
         
         // Select the second segment
-        starTableList.clearSelection();
-        starTableList.selectIndex(1);
+        tablesTree.clearSelection();
+        tablesTree.addToSelection(sed.getId(), 1);
         
-        // 2 segments should have been added to table, first segment still selected
+        // 2 segments should have been added to table, only second segment in display
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
+                assertEquals(2, mbView.getDataModel().getSedStarTables().size());
+                assertEquals(1, mbView.getDataModel().getSelectedStarTables().size());
+
+                assertEquals(2, plotterTable.getRowCount());
                 assertEquals(100, Double.parseDouble((String) plotterTable.getContentAt(0, 2)), 0.1);
                 assertEquals(200, Double.parseDouble((String) plotterTable.getContentAt(1, 2)), 0.1);
-                
+
+                assertEquals(2, dataTable.getRowCount());
                 assertEquals(100, Double.parseDouble((String) dataTable.getContentAt(0, 1)), 0.1);
                 assertEquals(200, Double.parseDouble((String) dataTable.getContentAt(1, 1)), 0.1);
             }
@@ -220,7 +224,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             public void run() {
                 assertTrue(StringUtils.contains(mbWindow.getTitle(), sed.getId()));
                 assertEquals(2, mbView.getDataModel().getSedStarTables().size());
-                assertEquals(2, starTableList.getSize());
+//                assertEquals(2, starTableList.getSize());
                 assertEquals(2, segmentTable.getRowCount());
 
                 assertEquals(1, Double.parseDouble((String) plotterTable.getContentAt(0, 2)), 0.1);
@@ -245,9 +249,9 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
                 assertEquals(sed, mbView.getDataModel().getSelectedSed());
                 assertEquals(2, mbView.getDataModel().getSedStarTables().size());
-                assertEquals(2, starTableList.getSize());
-                assertEquals(3, plotterTable.getRowCount());
-                assertEquals(3, dataTable.getRowCount());
+                assertEquals(2, mbView.getDataModel().getSelectedStarTables().size());
+                assertEquals(4, plotterTable.getRowCount());
+                assertEquals(4, dataTable.getRowCount());
                 assertEquals(2, segmentTable.getRowCount());
             }
         });
@@ -257,7 +261,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         plotterTable.addRowToSelection(1);
         
         // dataTable row selection is independent
-        dataTable.rowsAreSelected().check();
+        dataTable.selectionIsEmpty().check();
         
         // Select some rows the the dataTable
         dataTable.selectRow(2);
@@ -265,13 +269,14 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         
         // Plotter data table should still have same rows selected
         plotterTable.rowsAreSelected(0,1).check();
+        dataTable.clearSelection();
         
         // Click select all button
         mbWindow.getButton("Select All").click();
         
         // Everything should be selected, nothing in the segment tab
-        plotterTable.rowsAreSelected(0,1,2).check();
-        segmentTable.rowsAreSelected(0).check();
+        plotterTable.rowsAreSelected(0,1,2,3).check();
+        segmentTable.rowsAreSelected().check();
         
         // Clear selections
         mbWindow.getButton("Clear Selection").click();
@@ -286,7 +291,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         mbWindow.getButton("Invert Selection").click();
         
         // verify inversion
-        plotterTable.rowsAreSelected(1,2).check();
+        plotterTable.rowsAreSelected(1,2,3).check();
         assertFalse(plotterTable.rowIsSelected(0).isTrue());
         
         // Set to segment tab
@@ -314,7 +319,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
                 assertEquals(sed, mbView.getDataModel().getSelectedSed());
                 assertEquals(1, mbView.getDataModel().getSedStarTables().size());
-                assertEquals(1, starTableList.getSize());
+                assertEquals(1, mbView.getDataModel().getSelectedStarTables().size());
                 assertEquals(455, plotterTable.getRowCount());
             }
         });
@@ -351,6 +356,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         });
     }
     
+    @Test
     public void testExtractPoints() throws Exception {
         
         // Should throw a warning message for no SED
@@ -366,7 +372,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         
         final ExtSed sed = new ExtSed("sed");
         sed.addSegment(createSampleSegment());
-        sed.addSegment(createSampleSegment(new double[] {1}, new double[] {2}));
+        sed.addSegment(createSampleSegment(new double[] {100}, new double[] {200}));
         
         // Set target names
         sed.getSegment(0).createTarget();
@@ -383,9 +389,9 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
                 assertEquals(sed, mbView.getDataModel().getSelectedSed());
                 assertEquals(2, mbView.getDataModel().getSedStarTables().size());
-                assertEquals(2, starTableList.getSize());
-                assertEquals(3, plotterTable.getRowCount());
-                assertEquals(3, dataTable.getRowCount());
+                assertEquals(2, mbView.getDataModel().getSelectedStarTables().size());
+                assertEquals(4, plotterTable.getRowCount());
+                assertEquals(4, dataTable.getRowCount());
                 assertEquals(2, segmentTable.getRowCount());
             }
         });
@@ -433,11 +439,8 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             }
         });
         
-        // Select all segments
-        starTableList.selectIndices(1,0);
-        
         // Select first rows from both segments
-        plotterTable.selectRows(3,0);
+        plotterTable.selectRows(0,3);
         
         // Should throw a success message
         makeExtractWindowInterceptor().process(new WindowHandler() {
@@ -474,7 +477,6 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         assertEquals(oldLayer.getSuffix(), newLayer.getSuffix());
         assertEquals(oldLayer.getInSource().getName(), newLayer.getInSource().getName());
         assertEquals(oldLayer.getInSource().getParameters().size(), newLayer.getInSource().getParameters().size());
-        starTableList.contains(newLayer.getSuffix()).check();
         
         oldLayer = mbView.preferences.getSedModel(sed)
                 .getSegmentModel(sed.getSegment(1));
@@ -483,17 +485,6 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         assertEquals(oldLayer.getSuffix(), newLayer.getSuffix());
         assertEquals(oldLayer.getInSource().getName(), newLayer.getInSource().getName());
         assertEquals(oldLayer.getInSource().getParameters().size(), newLayer.getInSource().getParameters().size());
-        starTableList.contains(newLayer.getSuffix()).check();
-    }
-    
-    
-    private WindowInterceptor makeExtractWindowInterceptor() {
-        return WindowInterceptor.init(new Trigger() {
-            @Override
-            public void run() throws Exception {
-                mbWindow.getMenuBar().getMenu("File").getSubMenu("Extract to New SED").click();
-            }
-        });
     }
     
     @Test
@@ -509,11 +500,10 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         invokeWithRetry(50, 100, new Runnable() {
             @Override
             public void run() {
-                starTableList.selectIndices(0,1);
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
                 assertEquals(sed, mbView.getDataModel().getSelectedSed());
                 assertEquals(2, mbView.getDataModel().getSedStarTables().size());
-                assertEquals(2, starTableList.getSize());
+                assertEquals(2, mbView.getDataModel().getSelectedStarTables().size());
                 assertEquals(6, plotterTable.getRowCount());
             }
         });
@@ -562,7 +552,10 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         invokeWithRetry(50, 100, new Runnable() {
             @Override
             public void run() {
-                // two tables in selection, 1 selected, no rows selected
+                // Select just the first segment
+                tablesTree.select(sed.getId(), 0);
+                
+                // two tables in selection, clear the selection and choose just the first table
                 assertEquals(2, mbView.getDataModel().getSedStarTables().size());
                 assertEquals(1, mbView.getDataModel().getSelectedStarTables().size());
                 assertEquals(1, dataTable.getRowCount());
@@ -590,6 +583,16 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             public void run() {
                 plotterTable.rowsAreSelected(1).check();
                 assertEquals(2, mbView.getDataModel().getSelectedStarTables().size());
+            }
+        });
+    }
+    
+    
+    private WindowInterceptor makeExtractWindowInterceptor() {
+        return WindowInterceptor.init(new Trigger() {
+            @Override
+            public void run() throws Exception {
+                mbWindow.getMenuBar().getMenu("File").getSubMenu("Extract to New SED").click();
             }
         });
     }
