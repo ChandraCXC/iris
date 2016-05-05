@@ -35,37 +35,37 @@ public class SedPreferencesTest {
         ExtSed sed = new ExtSed("test");
         IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
         
-        SedModel prefs = new SedModel(sed, adapter);
+        SedModel model = new SedModel(sed, adapter);
         
-        assertEquals(0, prefs.getAllSegmentModels().size());
+        assertEquals(0, model.getAllSegmentModels().size());
         
         Segment seg1 = createSampleSegment();
         sed.addSegment(seg1);
         
         // Should pick up the change
-        prefs.refresh();
-        assertEquals(1, prefs.getAllSegmentModels().size());
+        model.refresh();
+        assertEquals(1, model.getAllSegmentModels().size());
         
         // Re-adding the same segment should not alter the map
-        prefs.addSegment(seg1);
-        assertEquals(1, prefs.getAllSegmentModels().size());
+        model.addSegment(seg1);
+        assertEquals(1, model.getAllSegmentModels().size());
         
         // Whereas adding an identical (but new) segment should add a new map element
         Segment seg2 = createSampleSegment();
         sed.addSegment(seg2);
-        prefs.refresh();
-        assertEquals(2, prefs.getAllSegmentModels().size());
+        model.refresh();
+        assertEquals(2, model.getAllSegmentModels().size());
 
         // Same segments should still have different suffixes
-        SegmentModel layer1 = prefs.getSegmentModel(seg1);
-        SegmentModel layer2 = prefs.getSegmentModel(seg2);
+        SegmentModel layer1 = model.getSegmentModel(seg1);
+        SegmentModel layer2 = model.getSegmentModel(seg2);
         assertFalse(layer1.getSuffix().equals(layer2.getSuffix()));
         
         // Check that the colors for each segment are different
-        String color2 = prefs.getSegmentModel(seg2).getMarkColor();
+        String color2 = model.getSegmentModel(seg2).getMarkColor();
         assertNotEquals(
-                prefs.getSegmentModel(seg1).getMarkColor(),
-                prefs.getSegmentModel(seg2).getMarkColor());
+                model.getSegmentModel(seg1).getMarkColor(),
+                model.getSegmentModel(seg2).getMarkColor());
         
         // Ensure we get the right startables back
         assertEquals(3, layer1.getInSource().getRowCount());
@@ -73,19 +73,19 @@ public class SedPreferencesTest {
         
         // Remove a segment works
         sed.remove(seg1);
-        prefs.refresh();
-        assertEquals(1, prefs.getAllSegmentModels().size());
+        model.refresh();
+        assertEquals(1, model.getAllSegmentModels().size());
         
         // The color for seg2 should still be the same as it was before 
         // seg1 was removed
-        assertEquals(color2, prefs.getSegmentModel(seg2).getMarkColor());
+        assertEquals(color2, model.getSegmentModel(seg2).getMarkColor());
         
-        assertNotNull(prefs.getSegmentModel(seg2));
-        assertNotNull(prefs.getSegmentModel(seg2).getInSource());
+        assertNotNull(model.getSegmentModel(seg2));
+        assertNotNull(model.getSegmentModel(seg2).getInSource());
         
         // Units are correct
-        assertEquals(sed.getSegment(0).getFluxAxisUnits(), prefs.getYunits());
-        assertEquals(sed.getSegment(0).getSpectralAxisUnits(), prefs.getXunits());
+        assertEquals(sed.getSegment(0).getFluxAxisUnits(), model.getYunits());
+        assertEquals(sed.getSegment(0).getSpectralAxisUnits(), model.getXunits());
     }
     
     @Test
@@ -93,7 +93,7 @@ public class SedPreferencesTest {
         ExtSed sed = new ExtSed("test");
         IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
         
-        SedModel prefs = new SedModel(sed, adapter);
+        SedModel model = new SedModel(sed, adapter);
         
         // create two segments with the same Target name
         Target targ = new Target();
@@ -107,9 +107,9 @@ public class SedPreferencesTest {
         sed.addSegment(seg1);
         sed.addSegment(seg2);
         
-        prefs.refresh();
-        assertEquals("my segment", prefs.getSegmentModel(seg1).getSuffix());
-        assertEquals("my segment 1", prefs.getSegmentModel(seg2).getSuffix());
+        model.refresh();
+        assertEquals("my segment", model.getSegmentModel(seg1).getSuffix());
+        assertEquals("my segment 1", model.getSegmentModel(seg2).getSuffix());
         
         // add another segment of the same target name
         // suffix number should go up 1
@@ -117,8 +117,8 @@ public class SedPreferencesTest {
         seg3.setTarget(targ);
         sed.addSegment(seg3);
         
-        prefs.refresh();
-        assertEquals("my segment 2", prefs.getSegmentModel(seg3).getSuffix());
+        model.refresh();
+        assertEquals("my segment 2", model.getSegmentModel(seg3).getSuffix());
     }
     
     @Test
@@ -135,9 +135,9 @@ public class SedPreferencesTest {
         sed.getSegment(1).getTarget().setName(new TextParam("target1"));
         
         IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
-        SedModel prefs = new SedModel(sed, adapter);
+        SedModel model = new SedModel(sed, adapter);
         
-        assertEquals("target1", prefs.getSegmentModel(sed.getSegment(0)).getSuffix());
-        assertEquals("target1 1", prefs.getSegmentModel(sed.getSegment(1)).getSuffix());
+        assertEquals("target1", model.getSegmentModel(sed.getSegment(0)).getSuffix());
+        assertEquals("target1 1", model.getSegmentModel(sed.getSegment(1)).getSuffix());
     }
 }

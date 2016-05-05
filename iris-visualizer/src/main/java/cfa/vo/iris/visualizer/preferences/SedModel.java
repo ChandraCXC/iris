@@ -259,8 +259,8 @@ public class SedModel {
         // Use iterator for concurrent modification
         Iterator<Entry<Segment, SegmentModel>> it = segmentModels.entrySet().iterator();
         
-        boolean shouldRemove = true;
         while (it.hasNext()) {
+            boolean shouldRemove = true;
             Segment seg = it.next().getKey();
             
             // Need to manual check for location equality test
