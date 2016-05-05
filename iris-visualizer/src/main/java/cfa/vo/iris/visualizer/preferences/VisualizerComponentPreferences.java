@@ -21,9 +21,9 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.events.MultipleSegmentEvent;
 import cfa.vo.iris.events.MultipleSegmentListener;
@@ -35,11 +35,11 @@ import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
 import cfa.vo.iris.events.SegmentListener;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.MouseListenerManager;
+import cfa.vo.iris.visualizer.metadata.SegmentExtractor;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
-import cfa.vo.iris.visualizer.plotter.SegmentLayer;
-import cfa.vo.iris.visualizer.stil.tables.ColumnInfoMatcher;
+import cfa.vo.iris.visualizer.plotter.SegmentModel;
+import cfa.vo.iris.visualizer.stil.IrisStarJTable.RowSelection;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
-import cfa.vo.iris.visualizer.stil.tables.UtypeColumnInfoMatcher;
 import cfa.vo.sedlib.Segment;
 
 /**
@@ -51,13 +51,25 @@ public class VisualizerComponentPreferences {
     
     private static final ExecutorService visualizerExecutor = Executors.newFixedThreadPool(5);
     
+    // Top level preferences for the plotter
     PlotPreferences plotPreferences;
-    MouseListenerManager mouseListenerManager;
-    IrisStarTableAdapter adapter;
-    ColumnInfoMatcher columnInfoMatcher;
-    final IWorkspace ws;
-    final Map<ExtSed, SedPreferences> sedPreferences;
     
+    // For accessing plot mouse listeners
+    MouseListenerManager mouseListenerManager;
+    
+    // Converts a segment into an Iris StarTable
+    IrisStarTableAdapter adapter;
+    
+    // Pointer to the Iris workspace
+    final IWorkspace ws;
+    
+    // All preferences for each ExtSed in the workspace
+    final Map<ExtSed, SedModel> sedPreferences;
+    
+    // Sed to display in the Plotter (TODO: support multiple SEDs.)
+    ExtSed selectedSed;
+
+    @SuppressWarnings("unchecked")
     public VisualizerComponentPreferences(IWorkspace ws) {
         this.ws = ws;
         
@@ -68,19 +80,17 @@ public class VisualizerComponentPreferences {
         this.mouseListenerManager = new MouseListenerManager();
         
         // Create and add preferences for the SED
-        this.sedPreferences = Collections.synchronizedMap(new IdentityHashMap<ExtSed, SedPreferences>());
+        this.sedPreferences = Collections.synchronizedMap(new IdentityHashMap<ExtSed, SedModel>());
         for (ExtSed sed : (List<ExtSed>) ws.getSedManager().getSeds()) {
             update(sed);
         }
-        
-        // TODO: Should this be in preferences?
-        this.columnInfoMatcher = new UtypeColumnInfoMatcher();
+        this.selectedSed = (ExtSed) ws.getSedManager().getSelected();
         
         // Plotter global preferences
         if (this.sedPreferences.isEmpty()) {
             this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
         } else {
-            this.plotPreferences = this.getSelectedSedPreferences().getPlotPreferences();
+            this.plotPreferences = this.getSedPreferences(getSelectedSed()).getPlotPreferences();
         }
         
         // Add SED listener
@@ -100,21 +110,21 @@ public class VisualizerComponentPreferences {
     public PlotPreferences getPlotPreferences() {
         return plotPreferences;
     }
-    
-    /**
-     * @return
-     *  ColumnInfoMatcher used in stacking star tables.
-     */
-    public ColumnInfoMatcher getColumnInfoMatcher() {
-        return columnInfoMatcher;
-    }
 
     /**
      * @return
-     *  Preferences for the currently selected SED in the workspace.
+     *  Currently selected SED in the workspace
      */
-    public SedPreferences getSelectedSedPreferences() {
-        return sedPreferences.get((ExtSed) ws.getSedManager().getSelected());
+    public ExtSed getSelectedSed() {
+        return selectedSed;
+    }
+
+    /**
+     * Sets selected SED
+     * @param selectedSed
+     */
+    public void setSelectedSed(ExtSed selectedSed) {
+        this.selectedSed = selectedSed;
     }
 
     /**
@@ -137,8 +147,8 @@ public class VisualizerComponentPreferences {
      * @return
      *  Collection of all the segment layers attached to the currently selected SED.
      */
-    public Collection<SegmentLayer> getSelectedLayers() {
-        SedPreferences p = getSelectedSedPreferences();
+    public Collection<SegmentModel> getSelectedLayers() {
+        SedModel p = getSedPreferences(getSelectedSed());
         if (p == null) {
             return Collections.emptyList();
         }
@@ -150,7 +160,7 @@ public class VisualizerComponentPreferences {
      * @return
      *  Preferences map for each SED.
      */
-    public Map<ExtSed, SedPreferences> getSedPreferences() {
+    public Map<ExtSed, SedModel> getSedPreferences() {
         return sedPreferences;
     }
     
@@ -158,8 +168,34 @@ public class VisualizerComponentPreferences {
      * @return
      *  Preferences for the given SED
      */
-    public SedPreferences getSedPreferences(ExtSed sed) {
+    public SedModel getSedPreferences(ExtSed sed) {
         return sedPreferences.get(sed);
+    }
+    
+    /**
+     * Used by the metadata browser to extract a selection of rows from the browser
+     * into a new ExtSed. We use the SegmentExtractor class to construct a new Sed
+     * from the selected set of StarTables, then asynchronously pass it back to the 
+     * SedManager and let the SedListener do the work of notifying/processing the 
+     * new ExtSed back into the VisualizerComponent.
+     * 
+     * @param selection
+     * @return
+     */
+    public void createNewWorkspaceSed(RowSelection selection) {
+        
+        // Extract selected rows to new Segments
+        final SegmentExtractor extractor = 
+                new SegmentExtractor(selection.selectedTables, selection.selectedRows);
+        
+        visualizerExecutor.submit(new Callable<ExtSed>() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public ExtSed call() throws Exception {
+                ws.getSedManager().add(extractor.constructSed());
+                return null;
+            }
+        });
     }
 
     /**
@@ -170,7 +206,7 @@ public class VisualizerComponentPreferences {
         if (sedPreferences.containsKey(sed)) {
             sedPreferences.get(sed).refresh();
         } else {
-            sedPreferences.put(sed, new SedPreferences(sed, adapter));
+            sedPreferences.put(sed, new SedModel(sed, adapter));
         }
         //fire(sed, VisualizerCommand.RESET);
     }
@@ -189,7 +225,7 @@ public class VisualizerComponentPreferences {
         } else {
             // The segment will automatically be serialized and attached the the 
             // SedPrefrences since it's assumed to be attached to the SED.
-            sedPreferences.put(sed, new SedPreferences(sed, adapter));
+            sedPreferences.put(sed, new SedModel(sed, adapter));
         }
         
         fire(sed, VisualizerCommand.RESET);
@@ -210,7 +246,7 @@ public class VisualizerComponentPreferences {
         } else {
             // The segment will automatically be serialized and attached the the 
             // SedPrefrences since it's assumed to be attached to the SED.
-            sedPreferences.put(sed, new SedPreferences(sed, adapter));
+            sedPreferences.put(sed, new SedModel(sed, adapter));
         }
         fire(sed, VisualizerCommand.RESET);
     }
@@ -293,6 +329,7 @@ public class VisualizerComponentPreferences {
                 remove(sed);
             } 
             else if (SedCommand.SELECTED.equals(payload)) {
+                setSelectedSed(sed);
                 fire(sed, VisualizerCommand.SELECTED);
             }
             else {

@@ -22,17 +22,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import cfa.vo.iris.sed.stil.SegmentStarTable.Column;
+import cfa.vo.iris.sed.stil.SegmentColumn.Column;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
-public class SegmentLayer {
+public class SegmentModel {
     
     // see http://www.star.bris.ac.uk/~mbt/stilts/sun256/sun256.html#plot2plane
     // for a list of all the configurable plot properties
     
-    private static final Logger logger = Logger.getLogger(SegmentLayer.class.getName());
+    private static final Logger logger = Logger.getLogger(SegmentModel.class.getName());
     
     // Override-able Settings
     public static final String SHAPE = "shape";
@@ -74,7 +74,7 @@ public class SegmentLayer {
     private String leglabel;
     private String[] legseq;
     
-    public SegmentLayer(IrisStarTable table) {
+    public SegmentModel(IrisStarTable table) {
         
         if (table == null) {
             throw new InvalidParameterException("star table cannot be null");
@@ -197,7 +197,7 @@ public class SegmentLayer {
         return inSource;
     }
     
-    public SegmentLayer setInSource(IrisStarTable table) {
+    public SegmentModel setInSource(IrisStarTable table) {
         if (table == null) {
             throw new InvalidParameterException("StarTable cannot be null!");
         }
@@ -222,7 +222,7 @@ public class SegmentLayer {
         return suffix;
     }
 
-    public SegmentLayer setSuffix(String suffix) {
+    public SegmentModel setSuffix(String suffix) {
         this.suffix = suffix;
         return this;
     }
@@ -231,7 +231,7 @@ public class SegmentLayer {
         return showErrorBars;
     }
 
-    public SegmentLayer setShowErrorBars(boolean showErrorBars) {
+    public SegmentModel setShowErrorBars(boolean showErrorBars) {
         this.showErrorBars = showErrorBars;
         return this;
     }
@@ -240,7 +240,7 @@ public class SegmentLayer {
         return showMarks;
     }
 
-    public SegmentLayer setShowMarks(boolean showMarks) {
+    public SegmentModel setShowMarks(boolean showMarks) {
         this.showMarks = showMarks;
         return this;
     }
@@ -249,7 +249,7 @@ public class SegmentLayer {
         return errorBarType;
     }
 
-    public SegmentLayer setErrorBarType(ErrorBarType errorBarType) {
+    public SegmentModel setErrorBarType(ErrorBarType errorBarType) {
         this.errorBarType = errorBarType;
         return this;
     }
@@ -258,7 +258,7 @@ public class SegmentLayer {
         return markType;
     }
 
-    public SegmentLayer setMarkType(ShapeType markType) {
+    public SegmentModel setMarkType(ShapeType markType) {
         this.markType = markType;
         return this;
     }
@@ -267,7 +267,7 @@ public class SegmentLayer {
         return size;
     }
 
-    public SegmentLayer setSize(int size) {
+    public SegmentModel setSize(int size) {
         this.size = size;
         return this;
     }
@@ -276,7 +276,7 @@ public class SegmentLayer {
         return markShading;
     }
 
-    public SegmentLayer setMarkShading(ShadingType markShading) {
+    public SegmentModel setMarkShading(ShadingType markShading) {
         this.markShading = markShading;
         return this;
     }
@@ -285,7 +285,7 @@ public class SegmentLayer {
         return errorShading;
     }
 
-    public SegmentLayer setErrorShading(ShadingType errorShading) {
+    public SegmentModel setErrorShading(ShadingType errorShading) {
         this.errorShading = errorShading;
         return this;
     }
@@ -294,7 +294,7 @@ public class SegmentLayer {
         return markColor;
     }
 
-    public SegmentLayer setMarkColor(String markColor) {
+    public SegmentModel setMarkColor(String markColor) {
         this.markColor = markColor;
         return this;
     }
@@ -303,7 +303,7 @@ public class SegmentLayer {
         return errorColor;
     }
 
-    public SegmentLayer setErrorColor(String errorColor) {
+    public SegmentModel setErrorColor(String errorColor) {
         this.errorColor = errorColor;
         return this;
     }
@@ -312,7 +312,7 @@ public class SegmentLayer {
         return markColorWeight;
     }
 
-    public SegmentLayer setMarkColorWeight(double markColorWeight) {
+    public SegmentModel setMarkColorWeight(double markColorWeight) {
         this.markColorWeight = markColorWeight;
         return this;
     }
@@ -321,12 +321,12 @@ public class SegmentLayer {
         return errorColorWeight;
     }
 
-    public SegmentLayer setErrorColorWeight(double errorColorWeight) {
+    public SegmentModel setErrorColorWeight(double errorColorWeight) {
         this.errorColorWeight = errorColorWeight;
         return this;
     }
     
-    public SegmentLayer setLayerSequence(String[] layerSequence) {
+    public SegmentModel setLayerSequence(String[] layerSequence) {
         this.legseq = layerSequence;
         return this;
     }
@@ -336,7 +336,7 @@ public class SegmentLayer {
     }
     
     // the suffix is the layer suffix name from the SedPreferences
-    public SegmentLayer setLabel(String label) {
+    public SegmentModel setLabel(String label) {
         this.leglabel = label;
         return this;
     }

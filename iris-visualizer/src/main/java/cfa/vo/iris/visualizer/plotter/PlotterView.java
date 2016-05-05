@@ -32,7 +32,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Map;
 import java.util.logging.Logger;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.plaf.basic.BasicArrowButton;
@@ -44,7 +43,7 @@ public class PlotterView extends JInternalFrame {
     private static final long serialVersionUID = 1L;
     
     private IWorkspace ws;
-    private IrisApplication app;
+    
     // Plotting Components
     // StilPlotter plotter initialized in initComponents()
     private JInternalFrame residuals;
@@ -82,14 +81,12 @@ public class PlotterView extends JInternalFrame {
         toFront();
         
         this.ws = ws;
-        this.app = app;
-        this.metadataBrowser = new MetadataBrowserMainView(ws, preferences);
+        this.metadataBrowser = new MetadataBrowserMainView(preferences);
         this.residuals = new JInternalFrame();
         
         initComponents();
         
         // initializing the stil plotter
-        plotter.setWorkSpace(ws);
         plotter.setSedManager((SedlibSedManager) ws.getSedManager());
         plotter.setVisualizerPreferences(preferences);
         plotter.reset(null, true);
@@ -185,7 +182,7 @@ public class PlotterView extends JInternalFrame {
         return plotter.getSed();
     }
 
-    public Map<Segment, SegmentLayer> getSegmentsMap() {
+    public Map<Segment, SegmentModel> getSegmentsMap() {
         return plotter.getSegmentsMap();
     }
     

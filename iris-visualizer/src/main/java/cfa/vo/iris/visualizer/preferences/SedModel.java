@@ -33,7 +33,7 @@ import cfa.vo.iris.visualizer.plotter.ColorPalette;
 import cfa.vo.iris.visualizer.plotter.HSVColorPalette;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
-import cfa.vo.iris.visualizer.plotter.SegmentLayer;
+import cfa.vo.iris.visualizer.plotter.SegmentModel;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
@@ -46,10 +46,10 @@ import java.util.logging.Logger;
  * workspace.
  *
  */
-public class SedPreferences {
+public class SedModel {
     
     IrisStarTableAdapter adapter;
-    final Map<MapKey, SegmentLayer> segmentPreferences;
+    final Map<MapKey, SegmentModel> segmentPreferences;
     final ExtSed sed;
     final ColorPalette colors;
     final PlotPreferences plotPreferences;
@@ -57,9 +57,9 @@ public class SedPreferences {
     private String xunits;
     private String yunits;
     
-    public SedPreferences(ExtSed sed, IrisStarTableAdapter adapter) {
+    public SedModel(ExtSed sed, IrisStarTableAdapter adapter) {
         this.sed = sed;
-        this.segmentPreferences = Collections.synchronizedMap(new LinkedHashMap<MapKey, SegmentLayer>());
+        this.segmentPreferences = Collections.synchronizedMap(new LinkedHashMap<MapKey, SegmentModel>());
         this.adapter = adapter;
         this.colors = new HSVColorPalette();
         this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
@@ -75,8 +75,8 @@ public class SedPreferences {
      * @return
      *  A map of all segments and layer preferences currently in use by this SED.
      */
-    public Map<Segment, SegmentLayer> getAllSegmentPreferences() {
-        Map<Segment, SegmentLayer> ret = new IdentityHashMap<>();
+    public Map<Segment, SegmentModel> getAllSegmentPreferences() {
+        Map<Segment, SegmentModel> ret = new IdentityHashMap<>();
         
         for (MapKey me : segmentPreferences.keySet()) {
             ret.put(me.segment, segmentPreferences.get(me));
@@ -85,7 +85,7 @@ public class SedPreferences {
         return Collections.unmodifiableMap(ret);
     }
     
-    public SegmentLayer getSegmentPreferences(Segment seg) {
+    public SegmentModel getSegmentPreferences(Segment seg) {
         return segmentPreferences.get(new MapKey(seg));
     }
     
@@ -122,7 +122,7 @@ public class SedPreferences {
         }
         
         // Ensure that the layer has a unique identifier in the list of segments
-        SegmentLayer layer = new SegmentLayer(convertSegment(seg));
+        SegmentModel layer = new SegmentModel(convertSegment(seg));
         int count = 0;
         String id = layer.getSuffix();
         while (!isUniqueLayerSuffix(id)) {
@@ -171,7 +171,7 @@ public class SedPreferences {
      * are used and set as the SED's preferred units.
      * 
      */
-    private void setUnits(Segment seg, SegmentLayer layer) {
+    private void setUnits(Segment seg, SegmentModel layer) {
         // if this is the first segment to be added to the SED preferences,
         // set the preferred X and Y units to the segment's
         if (StringUtils.isEmpty(xunits) || StringUtils.isEmpty(xunits))
@@ -222,12 +222,12 @@ public class SedPreferences {
         plotPreferences.setYlabel(yunit);
         
         // update the segment layers with the new units
-        for (SegmentLayer seg : segmentPreferences.values()) {
+        for (SegmentModel seg : segmentPreferences.values()) {
             try {
                 seg.setXUnits(xunits);
                 seg.setYUnits(yunits);
             } catch (UnitsException ex) {
-                Logger.getLogger(SedPreferences.class.getName())
+                Logger.getLogger(SedModel.class.getName())
                         .log(Level.SEVERE, null, ex);
             }
         }
@@ -249,7 +249,7 @@ public class SedPreferences {
                 plotPreferences.setYflip(false);
             }
         } catch (SedException ex) {
-            Logger.getLogger(SedPreferences.class.getName())
+            Logger.getLogger(SedModel.class.getName())
                     .log(Level.SEVERE, null, ex);
         }
     }
@@ -258,7 +258,7 @@ public class SedPreferences {
     private void clean() {
         
         // Use iterator for concurrent modification
-        Iterator<Entry<MapKey, SegmentLayer>> it = segmentPreferences.entrySet().iterator();
+        Iterator<Entry<MapKey, SegmentModel>> it = segmentPreferences.entrySet().iterator();
         
         boolean shouldRemove = true;
         while (it.hasNext()) {
@@ -278,7 +278,7 @@ public class SedPreferences {
     }
     
     boolean isUniqueLayerSuffix(String suffix) {
-        for (SegmentLayer layer : segmentPreferences.values()) {
+        for (SegmentModel layer : segmentPreferences.values()) {
             if (StringUtils.equals(layer.getSuffix(), suffix)) {
                 return false;
             }
@@ -292,7 +292,7 @@ public class SedPreferences {
 
     public void setXunits(String xunits) throws UnitsException {
         this.xunits = xunits;
-        for (SegmentLayer layer : segmentPreferences.values()) {
+        for (SegmentModel layer : segmentPreferences.values()) {
             layer.setXUnits(xunits);
         }
     }
@@ -303,7 +303,7 @@ public class SedPreferences {
 
     public void setYunits(String yunits) throws UnitsException {
         this.yunits = yunits;
-        for (SegmentLayer layer : segmentPreferences.values()) {
+        for (SegmentModel layer : segmentPreferences.values()) {
             layer.setYUnits(yunits);
         }
     }

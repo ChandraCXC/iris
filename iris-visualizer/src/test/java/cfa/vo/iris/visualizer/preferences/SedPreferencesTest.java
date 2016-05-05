@@ -23,7 +23,7 @@ import static cfa.vo.iris.test.unit.TestUtils.*;
 import org.junit.Test;
 
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.visualizer.plotter.SegmentLayer;
+import cfa.vo.iris.visualizer.plotter.SegmentModel;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.Target;
@@ -36,7 +36,7 @@ public class SedPreferencesTest {
         ExtSed sed = new ExtSed("test");
         IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
         
-        SedPreferences prefs = new SedPreferences(sed, adapter);
+        SedModel prefs = new SedModel(sed, adapter);
         
         assertEquals(0, prefs.getAllSegmentPreferences().size());
         
@@ -58,8 +58,8 @@ public class SedPreferencesTest {
         assertEquals(2, prefs.getAllSegmentPreferences().size());
 
         // Same segments should still have different suffixes
-        SegmentLayer layer1 = prefs.getSegmentPreferences(seg1);
-        SegmentLayer layer2 = prefs.getSegmentPreferences(seg2);
+        SegmentModel layer1 = prefs.getSegmentPreferences(seg1);
+        SegmentModel layer2 = prefs.getSegmentPreferences(seg2);
         assertFalse(layer1.getSuffix().equals(layer2.getSuffix()));
         
         // Check that the colors for each segment are different
@@ -94,7 +94,7 @@ public class SedPreferencesTest {
         ExtSed sed = new ExtSed("test");
         IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
         
-        SedPreferences prefs = new SedPreferences(sed, adapter);
+        SedModel prefs = new SedModel(sed, adapter);
         
         // create two segments with the same Target name
         Target targ = new Target();
@@ -120,5 +120,25 @@ public class SedPreferencesTest {
         
         prefs.refresh();
         assertEquals("my segment 2", prefs.getSegmentPreferences(seg3).getSuffix());
+    }
+    
+    @Test
+    public void testAddMultipleSegments() throws Exception {
+        
+        final ExtSed sed = new ExtSed("sed");
+        sed.addSegment(createSampleSegment());
+        sed.addSegment(createSampleSegment(new double[] {1}, new double[] {2}));
+        
+        // Set target names to same name
+        sed.getSegment(0).createTarget();
+        sed.getSegment(0).getTarget().setName(new TextParam("target1"));
+        sed.getSegment(1).createTarget();
+        sed.getSegment(1).getTarget().setName(new TextParam("target1"));
+        
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
+        SedModel prefs = new SedModel(sed, adapter);
+        
+        assertEquals("target1", prefs.getSegmentPreferences(sed.getSegment(0)).getSuffix());
+        assertEquals("target1 1", prefs.getSegmentPreferences(sed.getSegment(1)).getSuffix());
     }
 }

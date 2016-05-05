@@ -29,6 +29,10 @@ public class PlotPointSelectionListener extends StilPlotterPointSelectionListene
     @Override
     public void handleSelection(int starTableIndex, int irow, PointSelectionEvent evt) {
         MetadataBrowserMainView mbView = this.getPlotterView().getMetadataBrowserView();
+        
+        // The plotter irow does not take into account masks, so we map it to the row in the
+        // base table before passing it to the metadata browser.
+        irow = mbView.getSelectedTables().get(starTableIndex).getBaseTableRow(irow);
         mbView.addRowToSelection(starTableIndex, irow);
     }
     
