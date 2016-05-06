@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 /**
  *
@@ -56,7 +58,7 @@ public class FilterExpressionValidatorTest {
     }
 
     @Test
-    public void testSimpleExpression() {
+    public void testSimpleExpression() throws Exception {
         
         String expression; // filter expression
         
@@ -95,7 +97,7 @@ public class FilterExpressionValidatorTest {
     }
     
     @Test
-    public void testMoreComplicated() {
+    public void testMoreComplicated() throws Exception {
         String expression; // filter expression
         
         // get all the points whose value is < 6
@@ -134,10 +136,16 @@ public class FilterExpressionValidatorTest {
         expression = "$1 *4 > $2/2 + 10";
         assertArrayEquals(new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10}, 
                 validator.process(expression));
+        
+        // two columns specified on one side of the comparison
+        expression = "$1 + $2*2 == $2*3";
+        assertArrayEquals(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 
+                validator.process(expression));
+        
     }
     
     @Test
-    public void testFindColumnSpecifiers() {
+    public void testFindColumnSpecifiers() throws Exception {
         String expression = "$2 > 5";
         List<String> colSpecifier = FilterExpressionValidator.findColumnSpecifiers(expression);
         assertEquals("2", colSpecifier.get(0));
@@ -156,4 +164,71 @@ public class FilterExpressionValidatorTest {
         assertEquals("1", colSpecifier.get(2));
     }
     
+    //
+    // Invalid expression tests.
+    //
+    // expressions should follow this format:
+    //    LHS comparison_operator RHS
+    // where either LHS or RHS must have a column specifier ($columnNumber).
+    // More than one column specifier can be defined on either side of the 
+    // operator. Column specifiers can be combined in any arthmatic way.
+    
+    @Rule public ExpectedException exception = ExpectedException.none();
+    
+    @Test
+    public void testInvalidExpressionEmpty() throws Exception {
+        
+        // empty expression. Should throw IllegalArgumentException.
+        String expression = "";
+        exception.expect(FilterExpressionException.class);
+        exception.expectMessage(FilterExpressionException.EMPTY_EXPRESSION_MSG);
+        validator.process(expression);
+    }
+    @Test
+    public void testInvalidExpressionNoColumnSpecifiers() throws Exception {
+        // if no column specifier is in the expression, raise a warning
+        String expression = "1 * 5";
+        // "must specify a column"
+        exception.expect(FilterExpressionException.class);
+        exception.expectMessage(FilterExpressionException.DEFAULT_MSG);
+        validator.process(expression);
+    }
+    
+    @Test
+    public void testInvalidExpressionColumnDNE1() throws Exception {
+        // column specified does not exist
+        String expression = "$5 * 2 > $1";
+        exception.expect(FilterExpressionException.class);
+        exception.expectMessage(FilterExpressionException.COLUMN_DNE_MSG);
+        validator.process(expression);
+        System.out.println("");
+    }
+    
+    @Test
+    public void testInvalidExpressionColumnDNE2() throws Exception {
+        // column specified does not exist
+        String expression = "$whats_good * 2 > 1";
+        exception.expect(FilterExpressionException.class);
+        // TODO: change exception message to COLUMN_DNE_MSG when string
+        // column specifiers are implemented.
+        exception.expectMessage(FilterExpressionException.NON_NUMERIC_COLUMN_NAME_MSG);
+        validator.process(expression);
+    }
+    @Test
+    public void testInvalidExpressionBadParentheses() throws Exception {
+        // badly placed parenthesis
+        String expression = "($1 * 2)/ 3) > 5";
+        exception.expect(FilterExpressionException.class);
+        exception.expectMessage(FilterExpressionException.BAD_PARENTHESES_MSG);
+        validator.process(expression);
+    }
+    
+    @Test
+    public void testInvalidExpressionNonsense() throws Exception {
+        // badly placed parenthesis
+        String expression = "< asdkurb";
+        exception.expect(FilterExpressionException.class);
+        exception.expectMessage(FilterExpressionException.DEFAULT_MSG);
+        validator.process(expression);
+    }    
 }

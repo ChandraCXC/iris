@@ -21,6 +21,7 @@ import com.fathzer.soft.javaluator.StaticVariableSet;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -33,32 +34,81 @@ import java.util.regex.Pattern;
 public class FilterExpressionValidator {
     
     IrisStarJTable starJTable; // the stacked startable to filter
+    ComparisonDoubleEvaluator doubleEvaluator; // evaluator for numeric columns
     
     public FilterExpressionValidator(IrisStarJTable table) {
         this.starJTable = table;
+        this.doubleEvaluator = new ComparisonDoubleEvaluator();
     }
     
-    public int[] process(String expression) {
+    /**
+     * Find all rows the in the IrisStarJTable that comply with the given filter
+     * expression.
+     * 
+     * @param expression
+     * @return the array of row indices that comply with the filter expression. 
+     * 
+     * @throws cfa.vo.iris.visualizer.metadata.FilterExpressionException if the 
+     *         expression is invalid.
+     */
+    public int[] process(String expression) throws FilterExpressionException {
         
+        // initial check for bad expressions
+        if (expression.isEmpty()) {
+            throw new FilterExpressionException(FilterExpressionException.EMPTY_EXPRESSION_MSG);
+        }
+        if (!expression.contains("$")) {
+            throw new FilterExpressionException(FilterExpressionException.DEFAULT_MSG);
+        }
+        
+        // get column specifiers
         List<String> colSpecifiers = findColumnSpecifiers(expression);
         
-        ComparisonDoubleEvaluator evaluator = new ComparisonDoubleEvaluator();
+        // javaluator data structure. Stores table column values
         StaticVariableSet<Double> variables = new StaticVariableSet<>();
         
+        // list to hold evaluated expressions
         List<Double> evaluatedExpression = new ArrayList<>();
         
+        // Evaluate the expression for each row in the IrisStarJTable.
         for (int i=0; i<this.starJTable.getStarTable().getRowCount(); i++) {
+            
+            int colNumber;
+            
+            // Get the specified column values. The values are added to the  
+            // StaticVariableSet for the evaluator.
             for (String colName : colSpecifiers) {
-                int colNumber = Integer.parseInt(colName);
+                
+                // right now, only numbered column specifiers are allowed.
+                // TODO: fix this hack:
+                // to make sure only numbers are used as column specifiers, 
+                // throw an exception here:
                 try {
-                    // assuming the column is a Double
-                    Object val = this.starJTable.getStarTable().getCell(i, colNumber);
+                    colNumber = Integer.parseInt(colName);
+                } catch (NumberFormatException ex) {
+                    throw new FilterExpressionException(FilterExpressionException.NON_NUMERIC_COLUMN_NAME_MSG);
+                }
+                
+                try {
                     variables.set("$"+String.valueOf(colNumber), (Double) this.starJTable.getStarTable().getCell(i, colNumber));
+                } catch (NoSuchElementException ex) {
+                    throw new FilterExpressionException("Bad expression: "
+                    + "Specified column $"+colNumber+" does not exist.");
                 } catch (IOException ex) {
-                    Logger.getLogger(FilterExpressionValidator.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(FilterExpressionValidator.class.getName()).
+                            log(Level.SEVERE, null, ex);
                 }
             }
-            evaluatedExpression.add(evaluator.evaluate(expression, variables));
+            
+            // evaluate the expression
+            // TODO: should I just let javaluator throw the exception, 
+            // or is it better to catch javaluator's exception, and create our 
+            // like I do here?
+            try {
+                evaluatedExpression.add(doubleEvaluator.evaluate(expression, variables));
+            } catch (IllegalArgumentException ex) {
+                throw new FilterExpressionException(FilterExpressionException.BAD_PARENTHESES_MSG);
+            }
         }
         
         // return array of indices to select
@@ -90,7 +140,7 @@ public class FilterExpressionValidator {
      * @return a list of Strings containing all column names, in order as they
      * appear in the filter expression.
      */
-    static List<String> findColumnSpecifiers(String expression) {
+    static List<String> findColumnSpecifiers(String expression) throws FilterExpressionException {
         
         List<String> colSpecifiers = new ArrayList<>();
         
@@ -147,11 +197,15 @@ public class FilterExpressionValidator {
     
     /**
      * Process a simple expression and return a list of values
+     * @param expression
+     * @param col
      * @return evaluated expression
      * If no values in <tt>col</tt> match the condition, the function returns 
      * null.
+     * @throws cfa.vo.iris.visualizer.metadata.FilterExpressionException if the 
+     *         expression is invalid.
      */
-    public List<Double> processSingleExpression(String expression, double[] col) {
+    public List<Double> processSingleExpression(String expression, double[] col) throws FilterExpressionException {
         
         DoubleEvaluator evaluator = new DoubleEvaluator();
         StaticVariableSet<Double> variables = new StaticVariableSet<>();
