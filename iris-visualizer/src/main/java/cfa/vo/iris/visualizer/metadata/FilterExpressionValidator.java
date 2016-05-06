@@ -90,7 +90,11 @@ public class FilterExpressionValidator {
                 }
                 
                 try {
-                    variables.set("$"+String.valueOf(colNumber), (Double) this.starJTable.getStarTable().getCell(i, colNumber));
+                    if (!this.starJTable.getStarTable().getColumnInfo(colNumber).getContentClass().isAssignableFrom(String.class)) {
+                        variables.set("$"+String.valueOf(colNumber), (Double) this.starJTable.getStarTable().getCell(i, colNumber));
+                    } else {
+                        throw new FilterExpressionException("Only numeric columns may be filtered at this time.");
+                    }
                 } catch (NoSuchElementException ex) {
                     throw new FilterExpressionException("Bad expression: "
                     + "Specified column $"+colNumber+" does not exist.");
