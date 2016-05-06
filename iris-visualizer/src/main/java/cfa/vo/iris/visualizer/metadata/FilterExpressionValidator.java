@@ -16,26 +16,15 @@
 package cfa.vo.iris.visualizer.metadata;
 
 import cfa.vo.iris.visualizer.stil.IrisStarJTable;
-import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
-import cfa.vo.iris.visualizer.stil.tables.StackedStarTable;
-import com.fathzer.soft.javaluator.AbstractEvaluator;
 import com.fathzer.soft.javaluator.DoubleEvaluator;
-import com.fathzer.soft.javaluator.Operator;
-import com.fathzer.soft.javaluator.Parameters;
 import com.fathzer.soft.javaluator.StaticVariableSet;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.swing.table.TableColumn;
-import javax.swing.tree.TreeNode;
-import sun.reflect.generics.tree.Tree;
-import uk.ac.starlink.table.ColumnData;
 
 /**
  *
@@ -59,9 +48,6 @@ public class FilterExpressionValidator {
         List<Double> evaluatedExpression = new ArrayList<>();
         
         for (int i=0; i<this.starJTable.getStarTable().getRowCount(); i++) {
-//        Iterator itr = colSpecifiers.iterator();    
-//        while (itr.hasNext()) {
-//            int colNumber = (int) itr.next();
             for (String colName : colSpecifiers) {
                 int colNumber = Integer.parseInt(colName);
                 try {
@@ -75,8 +61,12 @@ public class FilterExpressionValidator {
             evaluatedExpression.add(evaluator.evaluate(expression, variables));
         }
         
+        // return array of indices to select
+        return getFilteredIndices(evaluatedExpression);
+    }
+    
+    private int[] getFilteredIndices(List<Double> evaluatedExpression) {
         // TODO: come up with more efficient way of getting non-null indices.
-        // This applies to the rest of the code in this method.
         
         // get non-null indices from evaluatedExpression list
         List<Integer> tmp = new ArrayList<>();
@@ -90,8 +80,6 @@ public class FilterExpressionValidator {
         int[] indices = new int[tmp.size()];
         for (int i=0; i<tmp.size(); i++)
             indices[i] = tmp.get(i);
-        
-        // return array of indices to select
         return indices;
     }
     

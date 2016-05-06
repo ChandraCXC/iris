@@ -15,7 +15,6 @@
  */
 package cfa.vo.iris.visualizer.metadata;
 
-import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.visualizer.stil.IrisStarJTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
@@ -26,11 +25,10 @@ import java.util.concurrent.Executors;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import uk.ac.starlink.table.StarTable;
 
 /**
  *
- * @author jbudynk
+ * Tests for Filter Expression Validator
  */
 public class FilterExpressionValidatorTest {
     
@@ -56,7 +54,6 @@ public class FilterExpressionValidatorTest {
         // filter validator
         validator = new FilterExpressionValidator(jTable);
     }
-    
 
     @Test
     public void testSimpleExpression() {
