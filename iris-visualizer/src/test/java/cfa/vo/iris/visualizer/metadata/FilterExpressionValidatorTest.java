@@ -15,11 +15,14 @@
  */
 package cfa.vo.iris.visualizer.metadata;
 
+import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.visualizer.stil.IrisStarJTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.io.SedFormat;
+import cfa.vo.testdata.TestData;
 import java.util.List;
 import java.util.concurrent.Executors;
 import static org.junit.Assert.*;
@@ -142,6 +145,26 @@ public class FilterExpressionValidatorTest {
         assertArrayEquals(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 
                 validator.process(expression));
         
+    }
+    
+    @Test
+    public void testStringTypeColumn() throws Exception {
+        String expression; // filter expression
+        
+        // setup table to filter
+        ExtSed sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
+        IrisStarTable table = adapter.convertSegment(sed.getSegment(0));
+        
+        IrisStarJTable newJTable = new IrisStarJTable();
+        newJTable.setStarTable(table.getSegmentDataTable());
+        
+        // an exception should be thrown if a column has string values.
+        exception.expect(FilterExpressionException.class);
+        exception.expectMessage("Only numeric columns may be filtered at this time.");
+        
+        expression = "$1 + 2 < 6";
+        FilterExpressionValidator newValidator = new FilterExpressionValidator(newJTable);
+        newValidator.process(expression);
     }
     
     @Test
