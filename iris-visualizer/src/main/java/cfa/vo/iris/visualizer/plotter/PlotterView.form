@@ -257,7 +257,6 @@
         <Component class="javax.swing.JButton" name="zoomIn">
           <Properties>
             <Property name="text" type="java.lang.String" value="In"/>
-            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="zoomInActionPerformed"/>
@@ -301,7 +300,6 @@
         <Component class="javax.swing.JButton" name="zoomOut">
           <Properties>
             <Property name="text" type="java.lang.String" value="Out"/>
-            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="zoomOutActionPerformed"/>

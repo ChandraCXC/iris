@@ -55,7 +55,7 @@ public class PlotterView extends JInternalFrame {
     private String xcoord = "0E0";
     private String ycoord = "0E0";
     
-    private static double ZOOM_SCALE = 0.5;
+    public static double ZOOM_SCALE = 0.5;
     
     /**
      * Create the frame.
@@ -298,7 +298,6 @@ public class PlotterView extends JInternalFrame {
         bindingGroup.addBinding(binding);
 
         zoomIn.setText("In");
-        zoomIn.setEnabled(false);
         zoomIn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 zoomInActionPerformed(evt);
@@ -320,7 +319,6 @@ public class PlotterView extends JInternalFrame {
         left.setText("jButtonArrow1");
 
         zoomOut.setText("Out");
-        zoomOut.setEnabled(false);
         zoomOut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 zoomOutActionPerformed(evt);
@@ -540,7 +538,7 @@ public class PlotterView extends JInternalFrame {
 
     private void zoomOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomOutActionPerformed
         // zoom out by a factor
-        this.plotter.zoom(1 - ZOOM_SCALE);
+        this.plotter.zoom(1 - ZOOM_SCALE*2/3);
     }//GEN-LAST:event_zoomOutActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed

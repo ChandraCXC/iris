@@ -23,6 +23,7 @@ import cfa.vo.iris.sed.quantities.SPVMagnitude;
 import cfa.vo.iris.sed.quantities.SPVYQuantity;
 import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
+import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
 import cfa.vo.iris.visualizer.plotter.SegmentLayer;
 import cfa.vo.iris.visualizer.preferences.SedPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
@@ -46,6 +47,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import uk.ac.starlink.ttools.plot2.Axis;
+import uk.ac.starlink.ttools.plot2.geom.PlaneSurface;
 
 public class StilPlotter extends JPanel {
 
@@ -191,21 +194,54 @@ public class StilPlotter extends JPanel {
      */
     public void zoom(double zoomFactor) {
         
-        throw new UnsupportedOperationException("The zoom functionality is"
-                + "currently unsupported.");
-
-        // TODO: this algorithm is BAD! Need to implement a better one.
-//        double xmax = this.getPlotDisplay().getAspect().getXMax();
-//        double xmin = this.getPlotDisplay().getAspect().getXMin();
-//        double ymax = this.getPlotDisplay().getAspect().getYMax();
-//        double ymin = this.getPlotDisplay().getAspect().getYMin();
-//        
-//        double[] ylimits = new double[] {ymin*zoomFactor, ymax-ymax*(zoomFactor-1)};
-//        double[] xlimits = new double[] {xmin*zoomFactor, xmax-xmax*(zoomFactor-1)};
-//        
-//        PlaneAspect zoomedAspect = new PlaneAspect(xlimits, ylimits);
-//        
-//        this.getPlotDisplay().setAspect(zoomedAspect);
+        double xmax = this.getPlotDisplay().getAspect().getXMax();
+        double xmin = this.getPlotDisplay().getAspect().getXMin();
+        double ymax = this.getPlotDisplay().getAspect().getYMax();
+        double ymin = this.getPlotDisplay().getAspect().getYMin();
+        
+        double [] xlimits = zoomAxis(zoomFactor, xmin, xmax, 
+                getPlotPreferences().getXlog());
+        double [] ylimits = zoomAxis(zoomFactor, ymin, ymax, 
+                getPlotPreferences().getYlog());
+                
+        // create new aspect for zoomed view
+        PlaneAspect zoomedAspect = new PlaneAspect(xlimits, ylimits);
+        this.getPlotDisplay().setAspect(zoomedAspect);
+    }
+    
+    /**
+     * Calculate new zoomed axis range.
+     * @param zoomFactor - scale factor to zoom in/out by
+     * @param min - min axis value
+     * @param max - max axis value
+     * @param isLog - flag if the axis is in log-space (true) or not (false)
+     * @return a double array of the zoomed min and max range: [min, max]
+     */
+    private double[] zoomAxis(double zoomFactor, double min, double max, boolean isLog) {
+        
+        if (isLog) {
+            
+            // calculate central axis value
+            double centerFactor = (Math.log10(max) - Math.log10(min))/2;
+            double center = centerFactor + Math.log10(min);
+            center = Math.pow(10, center);
+            
+            // calculate zoomed min and max values
+            return Axis.zoom(min, max, center, zoomFactor, isLog);
+            
+        } else {
+            
+            // calculate the central axis value
+            double center = (Math.abs(max) - Math.abs(min))/2;
+            if (min < 0 && max > 0) {
+                // pass. leave xcenter as it is
+            } else {
+                center = min + Math.abs(center);
+            }
+            
+            // calculate zoomed min and max values
+            return Axis.zoom(min, max, center, zoomFactor, isLog);
+        }
     }
     
     /**
