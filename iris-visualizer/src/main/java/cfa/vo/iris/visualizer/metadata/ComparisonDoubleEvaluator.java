@@ -15,14 +15,10 @@
  */
 package cfa.vo.iris.visualizer.metadata;
 
-import com.fathzer.soft.javaluator.AbstractEvaluator;
-import com.fathzer.soft.javaluator.BracketPair;
 import com.fathzer.soft.javaluator.DoubleEvaluator;
 import com.fathzer.soft.javaluator.Operator;
 import com.fathzer.soft.javaluator.Parameters;
-import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  *
