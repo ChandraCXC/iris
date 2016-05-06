@@ -1,0 +1,40 @@
+Iris Fitting Tool - Fit Summary
+SED ID: MySed (Segments: 3)
+
+Model Expression: m1+m2+m3
+Components:
+	tablemodel.m3
+		                     m3.p1 =  1.00000E-01 Frozen
+		                     m3.p2 =  2.00000E-01
+		                     m3.p3 =  3.00000E-01
+	polynomial.m1
+		                     m1.c0 =  1.00000E-01
+		                     m1.c1 =  2.00000E-01
+		                     m1.c2 =  0.00000E+00 Frozen
+		                     m1.c3 =  0.00000E+00 Frozen
+		                     m1.c4 =  0.00000E+00 Frozen
+		                     m1.c5 =  0.00000E+00 Frozen
+		                 m1.offset =  0.00000E+00 Frozen
+	powlaw1d.m2
+		                    m2.ref =  5.00000E+03 Frozen
+		                   m2.ampl =  2.00000E-02
+		                  m2.gamma =  1.00000E-02
+
+Fit Results:
+		       Final Fit Statistic =  1.23400E-01
+		         Reduced Statistic =  4.32100E-01
+		     Probability (Q-value) =  1.35700E-01
+		        Degrees of Freedom = 30
+		               Data Points = 430
+		      Function Evaluations = 731
+
+		                 Optimizer = LevenbergMarquardt
+		 Statistic (Cost function) = LeastSquares
+
+Confidence Limits at 1.60 sigma (96.30%):
+                   m1.c0: (-1.00000E-01,  1.00000E-01)
+                   m1.c1: (-2.00000E-01,  2.00000E-01)
+                   m2.c2: (-3.00000E-01,  3.00000E-01)
+
+User Models:
+		function.m3: (file: file://somewhere/on/disk, function: somefunc)

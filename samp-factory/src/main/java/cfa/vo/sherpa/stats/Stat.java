@@ -16,6 +16,9 @@
 
 package cfa.vo.sherpa.stats;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+@JsonDeserialize(using=StatDeserializer.class)
 public interface Stat {
     String getName();
 }

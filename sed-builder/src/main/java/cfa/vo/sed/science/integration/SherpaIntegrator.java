@@ -36,10 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- *
- * @author olaurino
- */
+
 public class SherpaIntegrator {
 
     private SherpaClient client;
@@ -141,10 +138,10 @@ public class SherpaIntegrator {
         SAMPMessage modelMessage = SAMPFactory.createMessage("spectrum.fit.calc.model.values", conf, SherpaFitConfiguration.class);
         org.astrogrid.samp.Response response = client.sendMessage(modelMessage);
 
-        Map result = response.getResult();
+        Data result = SAMPFactory.get(response.getResult(), Data.class);
 
-        double[] xx = cfa.vo.interop.EncodeDoubleArray.decodeBase64(((List<String>)result.get("results")).get(0), false);
-        double[] yy = cfa.vo.interop.EncodeDoubleArray.decodeBase64(((List<String>) result.get("results")).get(1), false);
+        double[] xx = result.getX();
+        double[] yy = result.getY();
 
         yy = um.convertY(yy, xx, "photon/s/cm2/Angstrom", "Angstrom", "erg/s/cm2/Angstrom");
 

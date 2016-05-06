@@ -2,17 +2,29 @@
 
 <Form version="1.7" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JInternalFrameFormInfo">
   <NonVisualComponents>
-    <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
+    <Menu class="javax.swing.JMenuBar" name="menuBar">
       <SubComponents>
-        <Menu class="javax.swing.JMenu" name="jMenu1">
+        <Menu class="javax.swing.JMenu" name="fileMenu">
           <Properties>
             <Property name="text" type="java.lang.String" value="File"/>
           </Properties>
-        </Menu>
-        <Menu class="javax.swing.JMenu" name="menuBar">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Edit"/>
-          </Properties>
+          <SubComponents>
+            <MenuItem class="javax.swing.JMenuItem" name="loadJsonMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="loadJson"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="saveTextMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="saveText"/>
+              </Properties>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="saveJsonMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="saveJson"/>
+              </Properties>
+            </MenuItem>
+          </SubComponents>
         </Menu>
       </SubComponents>
     </Menu>
@@ -30,7 +42,7 @@
     </Property>
   </Properties>
   <SyntheticProperties>
-    <SyntheticProperty name="menuBar" type="java.lang.String" value="jMenuBar1"/>
+    <SyntheticProperty name="menuBar" type="java.lang.String" value="menuBar"/>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
   </SyntheticProperties>
   <AuxValues>
@@ -108,7 +120,7 @@
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jSplitPane4" alignment="0" max="32767" attributes="0"/>
+                      <Component id="jSplitPane4" alignment="0" pref="391" max="32767" attributes="0"/>
                   </Group>
                 </DimensionLayout>
               </Layout>
@@ -225,7 +237,7 @@
                                 <Component class="javax.swing.JComboBox" name="statisticCombo">
                                   <Properties>
                                     <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                                      <Connection code="new DefaultComboBoxModel&lt;&gt;(Stats.values())" type="code"/>
+                                      <Connection code="new DefaultComboBoxModel&lt;&gt;(Statistic.values())" type="code"/>
                                     </Property>
                                     <Property name="name" type="java.lang.String" value="statisticCombo" noResource="true"/>
                                   </Properties>
@@ -291,7 +303,7 @@
                             </DimensionLayout>
                             <DimensionLayout dim="1">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="resultsPanel" alignment="0" pref="187" max="32767" attributes="0"/>
+                                  <Component id="resultsPanel" alignment="0" pref="185" max="32767" attributes="0"/>
                               </Group>
                             </DimensionLayout>
                           </Layout>
@@ -315,7 +327,7 @@
                             </DimensionLayout>
                             <DimensionLayout dim="1">
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="confidencePanel" alignment="1" pref="187" max="32767" attributes="0"/>
+                                  <Component id="confidencePanel" alignment="1" max="32767" attributes="0"/>
                               </Group>
                             </DimensionLayout>
                           </Layout>
@@ -377,7 +389,7 @@
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="jScrollPane3" pref="246" max="32767" attributes="0"/>
+                              <Component id="jScrollPane3" pref="242" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jScrollPane2" min="-2" pref="92" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>

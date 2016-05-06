@@ -44,4 +44,5 @@ public enum Statistic implements Stat {
     public String toString() {
         return name();
     }
+
 }
