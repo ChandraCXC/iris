@@ -329,7 +329,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         
         dataPanel.getTabGroup().selectTab("Data");
         plotterTable.selectRows(0, 2);
-        mbWindow.getButton("Apply Mask").click();
+        mbWindow.getButton("Mask Points").click();
         
         invokeWithRetry(20, 100, new Runnable() {
             @Override
@@ -342,7 +342,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         // Apply a mask to all rows
         plotterTable.selectAllRows();
         masked.set(0, plotterTable.getRowCount());
-        mbWindow.getButton("Apply Mask").click();
+        mbWindow.getButton("Mask Points").click();
         
         invokeWithRetry(20, 100, new Runnable() {
             @Override

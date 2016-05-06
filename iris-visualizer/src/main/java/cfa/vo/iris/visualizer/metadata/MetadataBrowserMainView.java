@@ -326,7 +326,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         getContentPane().add(selectPointsButton, gridBagConstraints);
 
         applyMaskButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
-        applyMaskButton.setText("Apply Masks");
+        applyMaskButton.setText("Mask Points");
         applyMaskButton.setToolTipText("Mask the selected points");
         applyMaskButton.setName(""); // NOI18N
         applyMaskButton.addActionListener(new java.awt.event.ActionListener() {
@@ -392,7 +392,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         getContentPane().add(invertSelectionButton, gridBagConstraints);
 
         clearMaskButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
-        clearMaskButton.setText("Remove Masks");
+        clearMaskButton.setText("Unmask Points");
         clearMaskButton.setToolTipText("Remove the mask from the selected points");
         clearMaskButton.setName(""); // NOI18N
         clearMaskButton.addActionListener(new java.awt.event.ActionListener() {
