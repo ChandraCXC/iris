@@ -19,13 +19,10 @@ import javax.swing.JPanel;
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.iris.sed.quantities.SPVMagnitude;
 import cfa.vo.iris.sed.quantities.SPVYQuantity;
-import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
-import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
-import cfa.vo.iris.visualizer.plotter.SegmentLayer;
-import cfa.vo.iris.visualizer.preferences.SedPreferences;
+import cfa.vo.iris.visualizer.plotter.SegmentModel;
+import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.sedlib.Segment;
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
@@ -48,7 +45,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import uk.ac.starlink.ttools.plot2.Axis;
-import uk.ac.starlink.ttools.plot2.geom.PlaneSurface;
 
 public class StilPlotter extends JPanel {
 
@@ -63,7 +59,7 @@ public class StilPlotter extends JPanel {
 
     private PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> display;
 
-    private IWorkspace ws;
+    //private IWorkspace ws;
     private SedlibSedManager sedManager;
     private ExtSed currentSed;
     private VisualizerComponentPreferences preferences;
@@ -78,7 +74,6 @@ public class StilPlotter extends JPanel {
     
     public StilPlotter(IWorkspace ws, 
             VisualizerComponentPreferences preferences) {
-        this.ws = ws;
         this.sedManager = (SedlibSedManager) ws.getSedManager();
         this.preferences = preferences;
         
@@ -251,15 +246,6 @@ public class StilPlotter extends JPanel {
         
     }
     
-    public StilPlotter setWorkSpace(IWorkspace ws) {
-        this.ws = ws;
-        return this;
-    }
-    
-    public IWorkspace getWorkSpace() {
-        return this.ws;
-    }
-    
     public StilPlotter setVisualizerPreferences(VisualizerComponentPreferences prefs) {
         this.preferences = prefs;
         return this;
@@ -282,7 +268,7 @@ public class StilPlotter extends JPanel {
         return currentSed;
     }
 
-    public Map<Segment, SegmentLayer> getSegmentsMap() {
+    public Map<Segment, SegmentModel> getSegmentsMap() {
         return Collections.unmodifiableMap(preferences
                 .getSedPreferences(currentSed).getAllSegmentPreferences());
     }
@@ -341,6 +327,7 @@ public class StilPlotter extends JPanel {
         logger.log(Level.FINE, ReflectionToStringBuilder.toString(env));
         
         
+        @SuppressWarnings("unchecked")
         PlotDisplay<PlaneSurfaceFactory.Profile,PlaneAspect> display =
                 new PlanePlot2Task().createPlotComponent(env, cached);
         
@@ -392,9 +379,9 @@ public class StilPlotter extends JPanel {
         logger.info(String.format("Plotting SED with %s segments...",
                 sed.getNamespace()));
 
-        SedPreferences prefs = preferences.getSedPreferences(sed);
+        SedModel prefs = preferences.getSedPreferences(sed);
         for (int i = 0; i < sed.getNumberOfSegments(); i++) {
-            SegmentLayer layer = prefs.getSegmentPreferences(sed.getSegment(i));
+            SegmentModel layer = prefs.getSegmentPreferences(sed.getSegment(i));
             for (String key : layer.getPreferences().keySet()) {
                 env.setValue(key, layer.getPreferences().get(key));
             }

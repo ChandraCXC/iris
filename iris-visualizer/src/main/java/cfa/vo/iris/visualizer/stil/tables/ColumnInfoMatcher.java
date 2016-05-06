@@ -16,12 +16,30 @@
 
 package cfa.vo.iris.visualizer.stil.tables;
 
+import java.util.Comparator;
+
+import uk.ac.starlink.table.ColumnData;
 import uk.ac.starlink.table.ColumnInfo;
+import uk.ac.starlink.table.ConstantColumn;
 
 /**
- * Interface for compatibility checks between columns of a StarTable.
+ * Abstract class for compatibility checks between columns of a StarTable when 
+ * stacking multiple tables. Implementations should override one or any of 
+ * these methods to provide correct behavoir to the custom StarTable implementations
+ * available in Iris.
  *
  */
-public interface ColumnInfoMatcher {
-    public boolean isCompatible(ColumnInfo c1, ColumnInfo c2);
+public abstract class ColumnInfoMatcher implements Comparator<ColumnInfo> {
+    
+    public boolean isCompatible(ColumnInfo c1, ColumnInfo c2) {
+        return false;
+    }
+    
+    public ColumnData getDefaultValueColumn(ColumnInfo c) {
+        return new ConstantColumn(c, null);
+    }
+    
+    public int compare(ColumnInfo c1, ColumnInfo c2) {
+        return 0;
+    }
 }

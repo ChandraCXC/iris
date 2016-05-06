@@ -18,24 +18,34 @@ package cfa.vo.iris.visualizer.stil;
 import static org.junit.Assert.*;
 
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
-import cfa.vo.iris.sed.stil.SegmentStarTable;
+import org.uispec4j.utils.ArrayUtils;
+
 import cfa.vo.iris.test.unit.TestUtils;
+import cfa.vo.iris.visualizer.stil.IrisStarJTable.RowSelection;
 import cfa.vo.iris.visualizer.stil.IrisStarJTable.StarJTableHeader;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 
 public class IrisStarJTableTest {
+    
+    private IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
     
     @Test
     public void testColumnHeaderTooltips() throws Exception {
         IrisStarJTable table = new IrisStarJTable();
-        SegmentStarTable segTable = new SegmentStarTable(TestUtils.createSampleSegment());
+        IrisStarTable segTable = adapter.convertSegment(TestUtils.createSampleSegment());
         
-        table.setStarTable(segTable);
+        List<IrisStarTable> tables = Arrays.asList(segTable);
+        table.setSelectedStarTables(tables);
+        
         StarJTableHeader header = (StarJTableHeader) table.getTableHeader();
         TableColumnModel columnModel = table.getColumnModel();
         
@@ -69,5 +79,85 @@ public class IrisStarJTableTest {
         text = header.getToolTipText(evt);
         assertTrue(StringUtils.contains(text, "name: Flux_Value"));
         assertTrue(StringUtils.contains(text, "unit: Jy"));
+    }
+    
+    @Test
+    public void testMaskingColumnBehavior() throws Exception {
+        IrisStarJTable table = new IrisStarJTable();
+        IrisStarTable segTable1 = adapter.convertSegment(TestUtils.createSampleSegment());
+        IrisStarTable segTable2 = adapter.convertSegment(TestUtils.createSampleSegment());
+        
+        List<IrisStarTable> tables = Arrays.asList(segTable1, segTable2);
+        
+        // Mask first row of second table
+        segTable2.applyMasks(new int[] {0});
+        
+        table.setSelectedStarTables(tables);
+        TableColumnModel columnModel = table.getColumnModel();
+
+        // Index
+        TableColumn col = columnModel.getColumn(0);
+        assertEquals(col.getHeaderValue(), "Index");
+        
+        // 2nd index should be the masked column (after index)
+        col = columnModel.getColumn(1);
+        assertEquals(col.getHeaderValue(), "Masked");
+        
+        // Verify first index behavior
+        table.selectRowIndex(0,0);
+        ArrayUtils.assertEquals(new int[] {0}, table.getSelectedRows());
+        
+        // Select 0th index in second star table
+        table.clearSelection();
+        table.selectRowIndex(1, 0);
+        ArrayUtils.assertEquals(new int[] {4}, table.getSelectedRows());
+        
+        // Mask all but first rows in both tables
+        table.clearSelection();
+        IrisStarTable.clearAllMasks(tables);
+        segTable1.applyMasks(new int[] {1,2});
+        segTable2.applyMasks(new int[] {1,2});
+        
+        // Only one row in the two tables, try selected both of them
+        table.selectRowIndex(0, 0);
+        table.selectRowIndex(1, 0);
+        ArrayUtils.assertEquals(new int[] {0,3}, table.getSelectedRows());
+    }
+    
+    @Test
+    public void testRowSelection() throws Exception {
+        IrisStarJTable table = new IrisStarJTable();
+        IrisStarTable segTable1 = adapter.convertSegment(TestUtils.createSampleSegment());
+        IrisStarTable segTable2 = adapter.convertSegment(TestUtils.createSampleSegment());
+        
+        List<IrisStarTable> tables = Arrays.asList(segTable1, segTable2);
+        
+        table.setSelectedStarTables(tables);
+        
+        // Should be two empty lists
+        RowSelection sel = table.getRowSelection();
+        assertEquals(2, sel.selectedRows.length);
+        assertEquals(0, sel.selectedRows[0].length);
+        assertEquals(0, sel.selectedRows[1].length);
+        
+        // Select all rows
+        table.addRowSelectionInterval(0, 5);
+        
+        // Should be two 3 element lists
+        sel = table.getRowSelection();
+        assertEquals(2, sel.selectedRows.length);
+        ArrayUtils.assertEquals(new int[] {0,1,2}, sel.selectedRows[0]);
+        ArrayUtils.assertEquals(new int[] {0,1,2}, sel.selectedRows[1]);
+        
+        table.clearSelection();
+        
+        // Select only last row
+        table.addRowSelectionInterval(5, 5);
+        
+        // One empty one not empty list
+        sel = table.getRowSelection();
+        assertEquals(2, sel.selectedRows.length);
+        ArrayUtils.assertEquals(new int[] {}, sel.selectedRows[0]);
+        ArrayUtils.assertEquals(new int[] {2}, sel.selectedRows[1]);
     }
 }

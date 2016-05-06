@@ -34,12 +34,7 @@ public class ColumnMappingStarTableTest extends VisualizerStarTableTest {
         
         StarTable metadata = new MetadataStarTable(new ColumnInfo[] {c1,c2,c3,c4});
         
-        ColumnStarTable base = new ColumnStarTable() {
-            @Override
-            public long getRowCount() {
-                return 1;
-            }
-        };
+        ColumnStarTable base = ColumnStarTable.makeTableWithRows(1);
         base.addColumn(PrimitiveArrayColumn.makePrimitiveColumn(c1, new double[] {1.0}));
         base.addColumn(PrimitiveArrayColumn.makePrimitiveColumn(c3, new double[] {3.0}));
         

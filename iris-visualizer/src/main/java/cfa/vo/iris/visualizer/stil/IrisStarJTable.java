@@ -18,13 +18,21 @@ package cfa.vo.iris.visualizer.stil;
 
 import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumnModel;
 import java.awt.Rectangle;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import cfa.vo.iris.utils.UTYPE;
+import cfa.vo.iris.visualizer.stil.tables.ColumnInfoMatcher;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
+import cfa.vo.iris.visualizer.stil.tables.SegmentColumnInfoMatcher;
+import cfa.vo.iris.visualizer.stil.tables.StackedStarTable;
 import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.gui.StarJTable;
@@ -41,14 +49,51 @@ public class IrisStarJTable extends StarJTable {
     // Use ColumnNames or Utypes in the column header fields
     private boolean utypeAsNames = false;
     
+    // Use the plotter data star tables or the metadata star tables
+    private boolean usePlotterDataTables;
+
+    private ColumnInfoMatcher columnInfoMatcher;
+    private List<IrisStarTable> selectedStarTables;
+
     public IrisStarJTable() {
         super(false);
+        
+        // By default we use use the plotter data, as it is generally available first
+        columnInfoMatcher = new SegmentColumnInfoMatcher();
+        usePlotterDataTables = true;
+    }
+    
+    public List<IrisStarTable> getSelectedStarTables() {
+        return selectedStarTables;
     }
 
-    public void setStarTable(StarTable table) {
+    /**
+     * Updates the selected list of star tables and creates a new stacked star table to represent
+     * the concatenated tables in a single JTable.
+     * 
+     * @param selectedStarTables
+     */
+    public void setSelectedStarTables(List<IrisStarTable> selectedStarTables) {
+        if (selectedStarTables == null) {
+            return;
+        }
+        
         // Include the index column for non-null/non-empty star tables.
-        boolean showIndex = (table != null && table.getRowCount() > 0);
-        setStarTable(table, showIndex);
+        boolean showIndex = (selectedStarTables.size() > 0);
+        
+        this.selectedStarTables = selectedStarTables;
+        List<StarTable> dataTables = new LinkedList<>();
+        
+        for (IrisStarTable table : selectedStarTables) {
+            if (usePlotterDataTables) {
+                dataTables.add(table.getPlotterDataTable());
+            } else {
+                dataTables.add(table.getSegmentMetadataTable());
+            }
+        }
+        
+        this.setStarTable(new StackedStarTable(dataTables, columnInfoMatcher), showIndex);
+        IrisStarJTable.configureColumnWidths(this, 200, 20);
     }
     
     public boolean isUtypeAsNames() {
@@ -59,6 +104,22 @@ public class IrisStarJTable extends StarJTable {
         this.utypeAsNames = utypeAsNames;
     }
     
+    public boolean isUsePlotterDataTables() {
+        return usePlotterDataTables;
+    }
+
+    public void setUsePlotterDataTables(boolean usePlotterDataTables) {
+        this.usePlotterDataTables = usePlotterDataTables;
+    }
+
+    public ColumnInfoMatcher getColumnInfoMatcher() {
+        return columnInfoMatcher;
+    }
+
+    public void setColumnInfoMatcher(ColumnInfoMatcher columnInfoMatcher) {
+        this.columnInfoMatcher = columnInfoMatcher;
+    }
+    
     @Override 
     protected JTableHeader createDefaultTableHeader() {
         return new StarJTableHeader(columnModel);
@@ -67,10 +128,31 @@ public class IrisStarJTable extends StarJTable {
     @Override
     public void setStarTable(StarTable table, boolean showIndex) {
         super.setStarTable(table, showIndex);
-        
         if (utypeAsNames) {
             setUtypeColumnNames();
         }
+    }
+    
+    public void selectRowIndex(int starTableIndex, int irow) {
+        // TODO: Handle sorting when we add it.
+        
+        // irow corresponds to the row in the (possibly masked) IrisStarTable, we need to 
+        // map it back to the correct row in the dataTable.
+        IrisStarTable selectedTable = this.selectedStarTables.get(starTableIndex);
+        int trueRow = selectedTable.getBaseTableRow(irow);
+        
+        // Actual row is the trueRow plus the length of all the other tables (based on the
+        // base table! Not the masked table!)
+        for (int i=0; i<starTableIndex; i++) {
+            trueRow += this.selectedStarTables.get(i).getBaseTable().getRowCount();
+        }
+        
+        this.selectionModel.addSelectionInterval(trueRow, trueRow);
+        this.scrollRectToVisible(new Rectangle(this.getCellRect(trueRow, 0, true)));
+    }
+    
+    public RowSelection getRowSelection() {
+        return new RowSelection(this.selectedStarTables, this.getSelectedRows());
     }
     
     private void setUtypeColumnNames() {
@@ -86,12 +168,6 @@ public class IrisStarJTable extends StarJTable {
                 c.setHeaderValue(utype);
             }
         }
-    }
-    
-    public void selectRowIndex(int irow) {
-        // TODO: Handle sorting when we add it.
-        this.selectionModel.addSelectionInterval(irow, irow);
-        this.scrollRectToVisible(new Rectangle(this.getCellRect(irow, 0, true)));
     }
     
     protected class StarJTableHeader extends JTableHeader {
@@ -127,6 +203,73 @@ public class IrisStarJTable extends StarJTable {
             bb.append("</html>");
             
             return bb.toString();
+        }
+    }
+    
+    /**
+     * Represents a selection of rows in each star table by mapping the current row selection
+     * into a list of rows for each StarTable currently in the segment plotter.
+     * 
+     * e.g.
+     * 
+     * Given a list of two star tables with 3 rows each
+     * [[r11, r12, r13], [r21, r22, r23]]
+     * 
+     * and a list of selected rows
+     * S = [0,1,4,5]
+     * 
+     * We can map the single array S into a list of arrays corresponding to rows in the
+     * list of star tables since 0,1 applies to the first star table. Any row index beyond 2 
+     * will apply to the second star table (as the first table has 3 rows).
+     * 
+     * The resulting row selection would be:
+     * [[0,1],[1,2]]
+     * 
+     * Corresponding to elements:
+     * [[r11, r12], [r22, r23]]
+     *
+     */
+    public static class RowSelection {
+        
+        public final IrisStarTable[] selectedTables;
+        public final int[][] selectedRows;
+        public final int[] originalRows;
+        
+        private RowSelection(List<IrisStarTable> tables, int[] rows) {
+            
+            // Always sort the selection
+            Arrays.sort(rows);
+            
+            this.selectedRows = new int[tables.size()][];
+            Arrays.fill(selectedRows, new int[0]);
+            
+            this.selectedTables = tables.toArray(new IrisStarTable[tables.size()]);
+            
+            this.originalRows = rows;
+            
+            int startIndex = 0; // start index of current star table
+            int t = 0; // current table
+            int i = 0; // current selected row
+            
+            // In the ordered list of selected rows, each star table will have start index equal
+            // to the sum of the lengths of all previous star tables, and end index equal to the 
+            // start index plus the length of the table.
+            while (t < selectedTables.length) {
+                int end = (int) (startIndex + selectedTables[t].getBaseTable().getRowCount());
+                
+                // Get subarray that applies to this star table
+                int start = i;
+                while (i < rows.length && rows[i] < end) ++i;
+                selectedRows[t] = ArrayUtils.subarray(rows, start, i);
+                
+                // Adjust indexes to match star table start index
+                for (int j=0; j<selectedRows[t].length; j++) {
+                    selectedRows[t][j] -= startIndex;
+                }
+                
+                startIndex += selectedTables[t].getRowCount();
+                t++;
+            }
         }
     }
 }
