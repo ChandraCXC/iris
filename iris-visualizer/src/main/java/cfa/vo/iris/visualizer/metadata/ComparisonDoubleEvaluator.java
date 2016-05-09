@@ -22,7 +22,9 @@ import java.util.Iterator;
 
 /**
  *
- * @author jbudynk
+ * Evaluates expressions containing relational operators. The left-hand side
+ * (LHS) and right-hand side (RHS) of the operators may contain mathematical 
+ * operators like *, -, /, ^, etc.
  */
 public class ComparisonDoubleEvaluator extends DoubleEvaluator {
     
@@ -60,10 +62,27 @@ public class ComparisonDoubleEvaluator extends DoubleEvaluator {
         super(PARAMETERS);
     }
 
+    /**
+     * Evaluate an expression with relational operators. Falls back on parent
+     * class's evaluate method if no relational operators are present.
+     * 
+     * @param operator the operator for the operand(s)
+     * @param operands the numbers which the operator operates on
+     * @param evaluationContext auxiliary information for the evaluation. This 
+     * is used for the parent 
+     * 
+     * @return the evaluated expression. If the expression contains relational operators, 
+     * and the condition is met, the left-hand operand is returned. 
+     * If the condition is not met, then the method returns a Double.NaN.
+     * If the expression does not contain relational operators, the method falls
+     * back on the DoubleEvaluator evaluate() method.
+     */
     @Override
     protected Double evaluate(Operator operator, Iterator<Double> operands, Object evaluationContext) {
-        Double left;
-        Double right;
+        Double left;  // left operand
+        Double right; // right operand
+
+        // for relational operators
         if (operator == EQ) {
             // get the left and right operands
             left = operands.next();
@@ -71,34 +90,29 @@ public class ComparisonDoubleEvaluator extends DoubleEvaluator {
             if (left.equals(right))
                 return left;
         } else if (operator == NE) {
-            // get the left and right operands
             left = operands.next();
             right = operands.next();
             if (!left.equals(right))
                 return left;
         } else if (operator == GT) {
-            // get the left and right operands
             left = operands.next();
             right = operands.next();
             if (left > right) {
                 return left;
             }
         } else if (operator == GE) {
-            // get the left and right operands
             left = operands.next();
             right = operands.next();
             if (left >= right) {
                 return left;
             }
         } else if (operator == LT) {
-            // get the left and right operands
             left = operands.next();
             right = operands.next();
             if (left < right) {
                 return left;
             }
         } else if (operator == LE) {
-            // get the left and right operands
             left = operands.next();
             right = operands.next();
             if (left <= right) {
@@ -108,9 +122,13 @@ public class ComparisonDoubleEvaluator extends DoubleEvaluator {
             left = operands.next();
             right = operands.next();
             return left - right;
+            
         } else {
+            // fall back on the parent method for other Double operators (*, -, +, etc.)
             return super.evaluate(operator, operands, evaluationContext);
         }
+        
+        // return null if the condition is not met.
         return Double.NaN;
     }
 

@@ -27,13 +27,14 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author jbudynk
+ * Evaluates filter expressions for an IrisStarJTable with logical operators 
+ * (AND, OR, and NOT).
  */
 public class LogicalSetEvaluator extends AbstractEvaluator<HashSet> {
         // logical operators
     public final static Operator NOT = new Operator("!", 2, Operator.Associativity.RIGHT, 3);
     public final static Operator AND = new Operator("&&", 2, Operator.Associativity.LEFT, 2);
-    public final static Operator OR = new Operator("||", 2, Operator.Associativity.LEFT, 1);
+    public final static Operator  OR = new Operator("||", 2, Operator.Associativity.LEFT, 1);
     
     private static final Parameters PARAMETERS;
     
@@ -52,9 +53,8 @@ public class LogicalSetEvaluator extends AbstractEvaluator<HashSet> {
     }
 
     /**
-     * Evaluates the expression expression.
+     * Evaluates the filter expression.
      * @param expression the filter expression to evaluate
-     * @param o
      * @return A hash set of the table rows which fulfill the filter expression
      */
     @Override
@@ -107,11 +107,12 @@ public class LogicalSetEvaluator extends AbstractEvaluator<HashSet> {
     }
     
     /**
-     * Get the union of sets A and B
-     * @return the union of HashSet A and B
+     * Get the union of set "a" with set "b". Changes set "a".
+     * @param a set to make unionize with b
+     * @param b set to compare and add to set a
+     * @return set "a" in union with set "b"
      */
     public static HashSet<Integer> union(HashSet a, HashSet b) {
-        //HashSet<Integer> c = new HashSet<>();
         Iterator<Integer> itr = b.iterator();
         while (itr.hasNext()) {
             Integer value = itr.next();

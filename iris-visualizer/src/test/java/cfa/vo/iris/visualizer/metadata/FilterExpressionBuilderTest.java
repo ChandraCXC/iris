@@ -20,7 +20,6 @@ import cfa.vo.iris.visualizer.stil.IrisStarJTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
-import java.util.List;
 import java.util.concurrent.Executors;
 import static org.junit.Assert.*;
 import org.junit.Before;
