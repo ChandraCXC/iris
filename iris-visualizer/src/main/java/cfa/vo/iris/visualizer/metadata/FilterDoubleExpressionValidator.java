@@ -29,14 +29,14 @@ import java.util.regex.Pattern;
 
 /**
  *
- * A class that validates an input filter expression.
+ * A class that validates an input filter expression for numeric data.
  */
-public class FilterExpressionValidator {
+public class FilterDoubleExpressionValidator {
     
     IrisStarJTable starJTable; // the stacked startable to filter
     ComparisonDoubleEvaluator doubleEvaluator; // evaluator for numeric columns
     
-    public FilterExpressionValidator(IrisStarJTable table) {
+    public FilterDoubleExpressionValidator(IrisStarJTable table) {
         this.starJTable = table;
         this.doubleEvaluator = new ComparisonDoubleEvaluator();
     }
@@ -51,7 +51,7 @@ public class FilterExpressionValidator {
      * @throws cfa.vo.iris.visualizer.metadata.FilterExpressionException if the 
      *         expression is invalid.
      */
-    public int[] process(String expression) throws FilterExpressionException {
+    public List<Integer> process(String expression) throws FilterExpressionException {
         
         // initial check for bad expressions
         if (expression.isEmpty()) {
@@ -99,7 +99,7 @@ public class FilterExpressionValidator {
                     throw new FilterExpressionException("Bad expression: "
                     + "Specified column $"+colNumber+" does not exist.");
                 } catch (IOException ex) {
-                    Logger.getLogger(FilterExpressionValidator.class.getName()).
+                    Logger.getLogger(FilterDoubleExpressionValidator.class.getName()).
                             log(Level.SEVERE, null, ex);
                 }
             }
@@ -119,21 +119,21 @@ public class FilterExpressionValidator {
         return getFilteredIndices(evaluatedExpression);
     }
     
-    private int[] getFilteredIndices(List<Double> evaluatedExpression) {
+    private List<Integer> getFilteredIndices(List<Double> evaluatedExpression) {
         // TODO: come up with more efficient way of getting non-null indices.
         
         // get non-null indices from evaluatedExpression list
-        List<Integer> tmp = new ArrayList<>();
+        List<Integer> indices = new ArrayList<>();
         for (int i=0; i<evaluatedExpression.size(); i++) {
             Double val = evaluatedExpression.get(i);
             if (!val.equals(Double.NaN))
-                tmp.add(i);
+                indices.add(i);
         }
         
         // convert from List<Integer> to int[]
-        int[] indices = new int[tmp.size()];
-        for (int i=0; i<tmp.size(); i++)
-            indices[i] = tmp.get(i);
+//        int[] indices = new int[tmp.size()];
+//        for (int i=0; i<tmp.size(); i++)
+//            indices[i] = tmp.get(i);
         return indices;
     }
     
@@ -173,31 +173,6 @@ public class FilterExpressionValidator {
         
         return colSpecifiers;
     }
-    
-//    private void inOrder2PostOrder(String expression) {
-//        
-//    }
-    
-//    public TreeNode createTreeNode() {
-//        Iterator<Character>itr = postOrder.iterator();
-//        Tree tree = new Tree();
-//        NodeStack nodeStack = new NodeStack();
-//        Tree.TreeNode node;
-//        while (itr.hasNext()) {
-//            Character c = itr.next();
-//            if(!isDigit(c)){
-//                node = tree.createNode(c);
-//                node.right = nodeStack.pop();
-//                node.left = nodeStack.pop();
-//                nodeStack.push(node);
-//            }else{
-//                node = tree.createNode(c);
-//                nodeStack.push(node);
-//            }
-//        }
-//        node = nodeStack.pop();
-//        return node;
-//    }
     
     /**
      * Process a simple expression and return a list of values
