@@ -38,7 +38,7 @@ import org.junit.rules.ExpectedException;
 public class FilterExpressionValidatorTest {
     
     private IrisStarTableAdapter adapter = new IrisStarTableAdapter(Executors.newSingleThreadExecutor());
-    private FilterExpressionValidator validator;
+    private FilterDoubleExpressionValidator validator;
     IrisStarJTable jTable;
     
     public FilterExpressionValidatorTest() {
@@ -57,7 +57,7 @@ public class FilterExpressionValidatorTest {
         jTable.setStarTable(table);
         
         // filter validator
-        validator = new FilterExpressionValidator(jTable);
+        validator = new FilterDoubleExpressionValidator(jTable);
     }
 
     @Test
@@ -70,32 +70,34 @@ public class FilterExpressionValidatorTest {
         
         // the evaluator returns the array of rows whose data complies
         // with the filter expression
-        assertArrayEquals(new int[]{4}, validator.process(expression));
+        
+        assertArrayEquals(new Integer[]{4}, 
+                (Integer[]) validator.process(expression).toArray(new Integer[1]));
         
         // get all points whose value is not equal to 5
         expression = "$1 != 5";
-        assertArrayEquals(new int[]{0, 1, 2, 3, 5, 6, 7, 8, 9, 10}, 
-                validator.process(expression));
+        assertArrayEquals(new Integer[]{0, 1, 2, 3, 5, 6, 7, 8, 9, 10}, 
+                (Integer[]) validator.process(expression).toArray(new Integer[9]));
         
         // get all points whose value is less than 5
         expression = "$1 < 5";
-        assertArrayEquals(new int[]{0, 1, 2, 3}, 
-                validator.process(expression));
+        assertArrayEquals(new Integer[]{0, 1, 2, 3}, 
+                (Integer[]) validator.process(expression).toArray(new Integer[4]));
         
         // get all points whose value is greater than 5
         expression = "$1 > 5";
-        assertArrayEquals(new int[]{5, 6, 7, 8, 9, 10}, 
-                validator.process(expression));
+        assertArrayEquals(new Integer[]{5, 6, 7, 8, 9, 10}, 
+                (Integer[]) validator.process(expression).toArray(new Integer[6]));
         
         // get all points whose value is less than or equal to 5
         expression = "$1 <= 5";
-        assertArrayEquals(new int[]{0, 1, 2, 3, 4}, 
-                validator.process(expression));
+        assertArrayEquals(new Integer[]{0, 1, 2, 3, 4}, 
+                (Integer[]) validator.process(expression).toArray(new Integer[5]));
         
         // get all points whose value is greater than or equal to 5
         expression = "$1 >= 5";
-        assertArrayEquals(new int[]{4, 5, 6, 7, 8, 9, 10}, 
-                validator.process(expression));
+        assertArrayEquals(new Integer[]{4, 5, 6, 7, 8, 9, 10}, 
+                (Integer[]) validator.process(expression).toArray(new Integer[7]));
         
     }
     
@@ -108,12 +110,13 @@ public class FilterExpressionValidatorTest {
         
         // the evaluator returns the array of rows whose data complies
         // with the filter expression
-        assertArrayEquals(new int[]{0, 1, 2}, validator.process(expression));
+        assertArrayEquals(new Integer[]{0, 1, 2}, 
+                (Integer[]) validator.process(expression).toArray(new Integer[3]));
         
         // get all the points whose value is greater than or equal to 10
         expression = "$2*3 -6 >= 10 - 1";
-        assertArrayEquals(new int[]{4, 5, 6, 7, 8, 9, 10}, 
-                validator.process(expression));
+        assertArrayEquals(new Integer[]{4, 5, 6, 7, 8, 9, 10}, 
+                (Integer[]) validator.process(expression).toArray(new Integer[7]));
         
         //
         // test comparing values in different columns
@@ -121,29 +124,29 @@ public class FilterExpressionValidatorTest {
         
         // should give all matching rows since $1 and $2 are equal
         expression = "$1 == $2";
-        assertArrayEquals(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 
-                validator.process(expression));
+        assertArrayEquals(new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 
+                (Integer[]) validator.process(expression).toArray(new Integer[11]));
         
         expression = "$2 *2 !=$1";
-        assertArrayEquals(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 
-                validator.process(expression));
+        assertArrayEquals(new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 
+                (Integer[]) validator.process(expression).toArray(new Integer[11]));
         
         expression = "$2 != $1";
-        assertArrayEquals(new int[]{}, 
-                validator.process(expression));
+        assertArrayEquals(new Integer[]{}, 
+                (Integer[]) validator.process(expression).toArray(new Integer[0]));
         
         expression = "$1 *4 < $2+10";
-        assertArrayEquals(new int[]{0, 1, 2}, 
-                validator.process(expression));
+        assertArrayEquals(new Integer[]{0, 1, 2}, 
+                (Integer[]) validator.process(expression).toArray(new Integer[3]));
         
         expression = "$1 *4 > $2/2 + 10";
-        assertArrayEquals(new int[]{2, 3, 4, 5, 6, 7, 8, 9, 10}, 
-                validator.process(expression));
+        assertArrayEquals(new Integer[]{2, 3, 4, 5, 6, 7, 8, 9, 10}, 
+                (Integer[]) validator.process(expression).toArray(new Integer[9]));
         
         // two columns specified on one side of the comparison
         expression = "$1 + $2*2 == $2*3";
-        assertArrayEquals(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 
-                validator.process(expression));
+        assertArrayEquals(new Integer[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 
+                (Integer[]) validator.process(expression).toArray(new Integer[11]));
         
     }
     
@@ -163,24 +166,24 @@ public class FilterExpressionValidatorTest {
         exception.expectMessage("Only numeric columns may be filtered at this time.");
         
         expression = "$1 + 2 < 6";
-        FilterExpressionValidator newValidator = new FilterExpressionValidator(newJTable);
+        FilterDoubleExpressionValidator newValidator = new FilterDoubleExpressionValidator(newJTable);
         newValidator.process(expression);
     }
     
     @Test
     public void testFindColumnSpecifiers() throws Exception {
         String expression = "$2 > 5";
-        List<String> colSpecifier = FilterExpressionValidator.findColumnSpecifiers(expression);
+        List<String> colSpecifier = FilterDoubleExpressionValidator.findColumnSpecifiers(expression);
         assertEquals("2", colSpecifier.get(0));
         
         expression = "$1 > 5 AND $12*2 <= 10";
-        colSpecifier = FilterExpressionValidator.findColumnSpecifiers(expression);
+        colSpecifier = FilterDoubleExpressionValidator.findColumnSpecifiers(expression);
         assertEquals(2, colSpecifier.size());
         assertEquals("1", colSpecifier.get(0));
         assertEquals("12", colSpecifier.get(1));
         
         expression = "$1 > 5 AND $12*2 <= 10 OR 2*$1 > 10";
-        colSpecifier = FilterExpressionValidator.findColumnSpecifiers(expression);
+        colSpecifier = FilterDoubleExpressionValidator.findColumnSpecifiers(expression);
         assertEquals(3, colSpecifier.size());
         assertEquals("1", colSpecifier.get(0));
         assertEquals("12", colSpecifier.get(1));
@@ -253,5 +256,5 @@ public class FilterExpressionValidatorTest {
         exception.expect(FilterExpressionException.class);
         exception.expectMessage(FilterExpressionException.DEFAULT_MSG);
         validator.process(expression);
-    }    
+    }
 }

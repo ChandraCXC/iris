@@ -1,0 +1,125 @@
+/*
+ * Copyright 2016 Chandra X-Ray Observatory.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package cfa.vo.iris.visualizer.metadata;
+
+import cfa.vo.iris.visualizer.stil.IrisStarJTable;
+import com.fathzer.soft.javaluator.AbstractEvaluator;
+import com.fathzer.soft.javaluator.Operator;
+import com.fathzer.soft.javaluator.Parameters;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+/**
+ *
+ * @author jbudynk
+ */
+public class LogicalSetEvaluator extends AbstractEvaluator<HashSet> {
+        // logical operators
+    public final static Operator NOT = new Operator("!", 2, Operator.Associativity.RIGHT, 3);
+    public final static Operator AND = new Operator("&&", 2, Operator.Associativity.LEFT, 2);
+    public final static Operator OR = new Operator("||", 2, Operator.Associativity.LEFT, 1);
+    
+    private static final Parameters PARAMETERS;
+    
+    static {
+        PARAMETERS = new Parameters();
+        PARAMETERS.add(NOT);
+        PARAMETERS.add(AND);
+        PARAMETERS.add(OR);
+    }
+    
+    private FilterDoubleExpressionValidator filterEvaluator;
+    
+    public LogicalSetEvaluator(IrisStarJTable table) {
+        super(PARAMETERS);
+        this.filterEvaluator = new FilterDoubleExpressionValidator(table);
+    }
+
+    /**
+     * Evaluates the expression expression.
+     * @param expression the filter expression to evaluate
+     * @param o
+     * @return A hash set of the table rows which fulfill the filter expression
+     */
+    @Override
+    protected HashSet<Integer> toValue(String expression, Object o) {
+        try {
+            List<Integer> iRows = filterEvaluator.process(expression);
+            HashSet<Integer> setRows = new HashSet<>();
+            setRows.addAll(iRows);
+            return setRows;
+        } catch (FilterExpressionException ex) {
+            Logger.getLogger(LogicalSetEvaluator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    /**
+     * Evaluate a logical expression. Returns 'null' if neither 
+     * @param operator
+     * @param operands
+     * @param evaluationContext
+     * @return 
+     */
+    @Override
+    protected HashSet<Integer> evaluate(Operator operator, Iterator<HashSet> operands, Object evaluationContext) {
+        HashSet<Integer> left;
+        HashSet<Integer> right;
+        if (operator == NOT) {
+            // get the left and right operands
+            left = operands.next();
+            right = operands.next();
+            // subtract sets
+            left.removeAll(right);
+            return left;
+        } else if (operator == AND) {
+            // get the left and right operands
+            left = operands.next();
+            right = operands.next();
+            // return the intersetion
+            left.retainAll(right);
+            return left;
+        } else if (operator == OR) {
+            // get the left and right operands
+            left = operands.next();
+            right = operands.next();
+            // return the union
+            return union(left, right);
+        } else {
+            return null;
+        }
+    }
+    
+    /**
+     * Get the union of sets A and B
+     * @return the union of HashSet A and B
+     */
+    public static HashSet<Integer> union(HashSet a, HashSet b) {
+        //HashSet<Integer> c = new HashSet<>();
+        Iterator<Integer> itr = b.iterator();
+        while (itr.hasNext()) {
+            Integer value = itr.next();
+            if (!a.contains(value)) {
+                a.add(value);
+            }
+        }
+        return a;
+    }
+    
+}
