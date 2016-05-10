@@ -19,7 +19,6 @@ public class IrisDesktopSampConnectionIT extends AbstractUISpecTest {
     @Before
     public void setUp() throws Exception {
         window = appResource.getAdapter().getMainWindow();
-        this.RETRY = 60;
     }
 
     @Test

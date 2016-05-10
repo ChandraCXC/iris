@@ -18,20 +18,31 @@ package cfa.vo.sherpa;
 
 import java.util.List;
 
-/**
- *
- * @author olaurino
- */
+
 public interface ConfidenceResults {
     Double getSigma();
 
+    void setSigma(Double sigma);
+
     Double getPercent();
+
+    void setPercent(Double percent);
 
     List<String> getParnames();
 
-    Double[] getParvals();
+    void setParnames(List<String> parnames);
 
-    Double[] getParmins();
+    void addParname(String parname);
 
-    Double[] getParmaxes();
+    double[] getParvals();
+
+    void setParvals(double[] parvals);
+
+    double[] getParmins();
+
+    void setParmins(double[] parmins);
+
+    double[] getParmaxes();
+
+    void setParmaxes(double[] parmaxes);
 }

@@ -1,26 +1,19 @@
 package cfa.vo.iris.test.unit;
 
-import cfa.vo.iris.utils.LabelFinder;
 import org.junit.After;
 import org.junit.Before;
+import org.uispec4j.TextBox;
 import org.uispec4j.UISpec4J;
 import org.uispec4j.Window;
+import org.uispec4j.assertion.UISpecAssert;
 import org.uispec4j.interception.toolkit.UISpecDisplay;
-
-import javax.swing.*;
-
-import static org.junit.Assert.*;
 
 public abstract class AbstractUISpecTest {
     static {
         UISpec4J.init();
     }
 
-    private final String CONNECTED = "connected";
-    private final String DISCONNECTED = "disconnected";
-    private final String STATUS = " status: ";
-    protected int RETRY = 20;
-    protected int STEP = 500;
+    protected int TIMEOUT = 30000;
 
     /**
      * Initializes the resources needed by the test case.<br>
@@ -40,25 +33,11 @@ public abstract class AbstractUISpecTest {
     }
 
     protected void checkLabel(Window window, String name, boolean connected) {
+        TextBox sampIcon = window.getTextBox(name+"ConnectionStatus");
+        String DISCONNECTED = "disconnected";
+        String CONNECTED = "connected";
         String right = connected ? CONNECTED : DISCONNECTED;
-        String wrong = connected? DISCONNECTED : CONNECTED;
-        boolean shouldFail = true;
-        for (int i=0; i<RETRY; i++) {
-           try {
-               JLabel label = new LabelFinder(name + STATUS + right).find(window);
-               assertNotNull(label);
-               label = new LabelFinder(name+ STATUS + wrong).find(window);
-               assertNull(label);
-               shouldFail = false;
-               break;
-           } catch (AssertionError ex) {
-               try {
-                   Thread.sleep(STEP);
-               } catch (InterruptedException e) {
-                   fail();
-               }
-           }
-        }
-        assertFalse(shouldFail);
+        String STATUS = " status: ";
+        UISpecAssert.waitUntil(sampIcon.textEquals(name+ STATUS +right), TIMEOUT);
     }
 }

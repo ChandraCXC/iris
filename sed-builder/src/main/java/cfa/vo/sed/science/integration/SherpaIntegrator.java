@@ -29,6 +29,8 @@ import cfa.vo.sed.builder.photfilters.EnergyBin;
 import cfa.vo.sed.builder.photfilters.PassBand;
 import cfa.vo.sed.builder.photfilters.PhotometryFilter;
 import cfa.vo.sherpa.*;
+import cfa.vo.sherpa.models.CompositeModel;
+import cfa.vo.sherpa.models.UserModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,7 +91,7 @@ public class SherpaIntegrator {
 
     public synchronized Response integrateComponents(List<PassBand> bands, CompositeModel model, List<UserModel> userModels, Integer nBins) throws Exception {
         
-        FitConfiguration conf = (FitConfiguration) SAMPFactory.get(FitConfiguration.class);
+        SherpaFitConfiguration conf = (SherpaFitConfiguration) SAMPFactory.get(SherpaFitConfiguration.class);
         conf.addModel(model);
 
         if (userModels != null) {
@@ -136,7 +138,7 @@ public class SherpaIntegrator {
 
         dataset.setX(x);
 
-        SAMPMessage modelMessage = SAMPFactory.createMessage("spectrum.fit.calc.model.values", conf, FitConfiguration.class);
+        SAMPMessage modelMessage = SAMPFactory.createMessage("spectrum.fit.calc.model.values", conf, SherpaFitConfiguration.class);
         org.astrogrid.samp.Response response = client.sendMessage(modelMessage);
 
         Map result = response.getResult();

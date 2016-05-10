@@ -125,11 +125,13 @@
                         <include>**/*Test.*</include>
                     </includes>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <rerunFailingTestsCount>3</rerunFailingTestsCount>
                     <systemPropertyVariables>
                         <java.util.logging.config.file>
                             ${project.parent.basedir}/iris/src/test/resources/log.properties
                         </java.util.logging.config.file>
                     </systemPropertyVariables>
+                    <argLine>-Xmx1024m -XX:MaxPermSize=256m</argLine>
                 </configuration>
             </plugin>
             <plugin>
@@ -145,12 +147,15 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <workingDirectory>${project.build.directory}/tests</workingDirectory>
                     <!--<failIfNoTests>true</failIfNoTests>-->
                     <includes>
                         <include>**/*IT.*</include>
                     </includes>
+                    <rerunFailingTestsCount>3</rerunFailingTestsCount>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                     <systemPropertyVariables>
+                        <java.io.tmpdir>${project.build.directory}/tests</java.io.tmpdir>
                         <java.util.logging.config.file>
                             ${project.parent.basedir}/iris/src/test/resources/log.properties
                         </java.util.logging.config.file>
@@ -316,10 +321,20 @@
                 <artifactId>jsamp</artifactId>
                 <version>${jsamp.version}</version>
             </dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>2.5</version>
+                <type>jar</type>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -330,6 +345,36 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>1.10.19</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-core</artifactId>
+            <version>1.6.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <version>1.6.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>1.6.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4-rule</artifactId>
+            <version>1.6.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-classloading-xstream</artifactId>
+            <version>1.6.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

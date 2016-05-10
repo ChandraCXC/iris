@@ -76,7 +76,8 @@ public class IrisDesktop extends JFrame implements PluginListener {
         PluginJarEvent.getInstance().add(this);
 
         initComponents();
-
+        sampIcon.setName("sampConnectionStatus");
+        sherpaIcon.setName("sherpaConnectionStatus");
         this.app = app;
 
         aboutBox = app.getAboutBox();

@@ -143,8 +143,17 @@ public class UnitsWidget extends javax.swing.JPanel {
 
     /**
      * Update the units of the currently selected SED.
+     * 
+     * Note that if the plotter SED is empty, this will still change the 
+     * preferred plotting units for this SED; all segments added to the SED will
+     * be converted to the selected units.
      */
     public void updateUnits() {
+        // if SED is null, don't do anything.
+        if (plotter.getSed() == null) {
+            return;
+        }
+        
         // fire Visualizer event to update plot and MB
         plotter.getVisualizerPreferences().getSedPreferences(plotter.getSed()).setUnits(xunit, yunit);
         fire(plotter.getSed(), VisualizerCommand.RESET);
@@ -153,8 +162,18 @@ public class UnitsWidget extends javax.swing.JPanel {
     /**
      * Update the units of the given SED
      * @param sed 
+     * 
+     * Note that if the plotter SED is empty, this will still change the 
+     * preferred plotting units for this SED; all segments added to the SED will
+     * be converted to the selected units.
      */
     public void updateUnits(ExtSed sed) {
+        
+        // if SED is null, don't do anything.
+        if (plotter.getSed() == null) {
+            return;
+        }
+        
         // fire Visualizer event to update plot and MB
         plotter.getVisualizerPreferences().getSedPreferences(sed).setUnits(xunit, yunit);
         fire(sed, VisualizerCommand.RESET);

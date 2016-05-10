@@ -17,6 +17,7 @@
 package cfa.vo.iris.visualizer.stil.tables;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,7 +28,8 @@ import uk.ac.starlink.table.ConstantColumn;
 import uk.ac.starlink.table.StarTable;
 
 /**
- * StarTable for producing a minimal metadata table for a list of StarTables.
+ * StarTable for producing a minimal metadata table for a list of StarTables. Will
+ * preserve an order on the startable if available in the ColumnInfoMatcher.
  *
  */
 public class ColumnMetadataStarTable extends ColumnStarTable {
@@ -51,6 +53,9 @@ public class ColumnMetadataStarTable extends ColumnStarTable {
                 }
             }
         }
+        
+        // Sort the ColumnInfos
+        Collections.sort(columnInfoList, matcher);
         
         // Setup star table with relevant column data.
         for (ColumnInfo c : columnInfoList) {

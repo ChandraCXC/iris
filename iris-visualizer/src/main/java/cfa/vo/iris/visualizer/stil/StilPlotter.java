@@ -19,12 +19,10 @@ import javax.swing.JPanel;
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.iris.sed.quantities.SPVMagnitude;
 import cfa.vo.iris.sed.quantities.SPVYQuantity;
-import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
-import cfa.vo.iris.visualizer.plotter.SegmentLayer;
-import cfa.vo.iris.visualizer.preferences.SedPreferences;
+import cfa.vo.iris.visualizer.plotter.SegmentModel;
+import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.sedlib.Segment;
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
@@ -46,6 +44,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import uk.ac.starlink.ttools.plot2.Axis;
 
 public class StilPlotter extends JPanel {
 
@@ -60,7 +59,7 @@ public class StilPlotter extends JPanel {
 
     private PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> display;
 
-    private IWorkspace ws;
+    //private IWorkspace ws;
     private SedlibSedManager sedManager;
     private ExtSed currentSed;
     private VisualizerComponentPreferences preferences;
@@ -75,7 +74,6 @@ public class StilPlotter extends JPanel {
     
     public StilPlotter(IWorkspace ws, 
             VisualizerComponentPreferences preferences) {
-        this.ws = ws;
         this.sedManager = (SedlibSedManager) ws.getSedManager();
         this.preferences = preferences;
         
@@ -191,21 +189,54 @@ public class StilPlotter extends JPanel {
      */
     public void zoom(double zoomFactor) {
         
-        throw new UnsupportedOperationException("The zoom functionality is"
-                + "currently unsupported.");
-
-        // TODO: this algorithm is BAD! Need to implement a better one.
-//        double xmax = this.getPlotDisplay().getAspect().getXMax();
-//        double xmin = this.getPlotDisplay().getAspect().getXMin();
-//        double ymax = this.getPlotDisplay().getAspect().getYMax();
-//        double ymin = this.getPlotDisplay().getAspect().getYMin();
-//        
-//        double[] ylimits = new double[] {ymin*zoomFactor, ymax-ymax*(zoomFactor-1)};
-//        double[] xlimits = new double[] {xmin*zoomFactor, xmax-xmax*(zoomFactor-1)};
-//        
-//        PlaneAspect zoomedAspect = new PlaneAspect(xlimits, ylimits);
-//        
-//        this.getPlotDisplay().setAspect(zoomedAspect);
+        double xmax = this.getPlotDisplay().getAspect().getXMax();
+        double xmin = this.getPlotDisplay().getAspect().getXMin();
+        double ymax = this.getPlotDisplay().getAspect().getYMax();
+        double ymin = this.getPlotDisplay().getAspect().getYMin();
+        
+        double [] xlimits = zoomAxis(zoomFactor, xmin, xmax, 
+                getPlotPreferences().getXlog());
+        double [] ylimits = zoomAxis(zoomFactor, ymin, ymax, 
+                getPlotPreferences().getYlog());
+                
+        // create new aspect for zoomed view
+        PlaneAspect zoomedAspect = new PlaneAspect(xlimits, ylimits);
+        this.getPlotDisplay().setAspect(zoomedAspect);
+    }
+    
+    /**
+     * Calculate new zoomed axis range.
+     * @param zoomFactor - scale factor to zoom in/out by
+     * @param min - min axis value
+     * @param max - max axis value
+     * @param isLog - flag if the axis is in log-space (true) or not (false)
+     * @return a double array of the zoomed min and max range: [min, max]
+     */
+    private double[] zoomAxis(double zoomFactor, double min, double max, boolean isLog) {
+        
+        if (isLog) {
+            
+            // calculate central axis value
+            double centerFactor = (Math.log10(max) - Math.log10(min))/2;
+            double center = centerFactor + Math.log10(min);
+            center = Math.pow(10, center);
+            
+            // calculate zoomed min and max values
+            return Axis.zoom(min, max, center, zoomFactor, isLog);
+            
+        } else {
+            
+            // calculate the central axis value
+            double center = (Math.abs(max) - Math.abs(min))/2;
+            if (min < 0 && max > 0) {
+                // pass. leave xcenter as it is
+            } else {
+                center = min + Math.abs(center);
+            }
+            
+            // calculate zoomed min and max values
+            return Axis.zoom(min, max, center, zoomFactor, isLog);
+        }
     }
     
     /**
@@ -213,15 +244,6 @@ public class StilPlotter extends JPanel {
      */
     public void hideErrorBars() {
         
-    }
-    
-    public StilPlotter setWorkSpace(IWorkspace ws) {
-        this.ws = ws;
-        return this;
-    }
-    
-    public IWorkspace getWorkSpace() {
-        return this.ws;
     }
     
     public StilPlotter setVisualizerPreferences(VisualizerComponentPreferences prefs) {
@@ -246,7 +268,7 @@ public class StilPlotter extends JPanel {
         return currentSed;
     }
 
-    public Map<Segment, SegmentLayer> getSegmentsMap() {
+    public Map<Segment, SegmentModel> getSegmentsMap() {
         return Collections.unmodifiableMap(preferences
                 .getSedPreferences(currentSed).getAllSegmentPreferences());
     }
@@ -305,6 +327,7 @@ public class StilPlotter extends JPanel {
         logger.log(Level.FINE, ReflectionToStringBuilder.toString(env));
         
         
+        @SuppressWarnings("unchecked")
         PlotDisplay<PlaneSurfaceFactory.Profile,PlaneAspect> display =
                 new PlanePlot2Task().createPlotComponent(env, cached);
         
@@ -356,9 +379,9 @@ public class StilPlotter extends JPanel {
         logger.info(String.format("Plotting SED with %s segments...",
                 sed.getNamespace()));
 
-        SedPreferences prefs = preferences.getSedPreferences(sed);
+        SedModel prefs = preferences.getSedPreferences(sed);
         for (int i = 0; i < sed.getNumberOfSegments(); i++) {
-            SegmentLayer layer = prefs.getSegmentPreferences(sed.getSegment(i));
+            SegmentModel layer = prefs.getSegmentPreferences(sed.getSegment(i));
             for (String key : layer.getPreferences().keySet()) {
                 env.setValue(key, layer.getPreferences().get(key));
             }

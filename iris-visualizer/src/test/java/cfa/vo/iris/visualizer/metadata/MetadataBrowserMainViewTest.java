@@ -17,10 +17,10 @@
 package cfa.vo.iris.visualizer.metadata;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.junit.Before;
 import org.junit.Test;
 import org.uispec4j.ListBox;
-import org.uispec4j.Mouse;
 import org.uispec4j.Panel;
 import org.uispec4j.Table;
 import org.uispec4j.Window;
@@ -29,10 +29,17 @@ import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
+import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.visualizer.VisualizerComponent;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.io.SedFormat;
+import cfa.vo.testdata.TestData;
+
 import static org.junit.Assert.*;
+
+import java.util.BitSet;
 
 import static cfa.vo.iris.test.unit.TestUtils.*;
 
@@ -80,7 +87,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         
         desktop.containsWindow(mbView.getTitle()).check();
         mbWindow = desktop.getWindow(mbView.getTitle());
-        dataPanel = mbWindow.getPanel("dataPanel");
+        dataPanel = mbWindow.getPanel("contentPane");
         
         // Segment list
         starTableList = dataPanel.getListBox();
@@ -116,7 +123,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             public void run() {
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
                 assertEquals(sed, mbView.selectedSed);
-                assertEquals(0, mbView.selectedTables.size());
+                assertEquals(0, mbView.sedStarTables.size());
                 assertEquals(0, starTableList.getSize());
             }
         });
@@ -129,7 +136,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertEquals(1, mbView.selectedTables.size());
+                assertEquals(1, mbView.sedStarTables.size());
                 assertEquals(1, starTableList.getSize());
                 assertEquals(1, segmentTable.getRowCount());
 
@@ -147,7 +154,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertEquals(2, mbView.selectedTables.size());
+                assertEquals(2, mbView.sedStarTables.size());
                 assertEquals(2, starTableList.getSize());
                 assertEquals(2, segmentTable.getRowCount());
 
@@ -209,7 +216,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 assertTrue(StringUtils.contains(mbWindow.getTitle(), sed.getId()));
-                assertEquals(2, mbView.selectedTables.size());
+                assertEquals(2, mbView.sedStarTables.size());
                 assertEquals(2, starTableList.getSize());
                 assertEquals(2, segmentTable.getRowCount());
 
@@ -234,7 +241,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             public void run() {
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
                 assertEquals(sed, mbView.selectedSed);
-                assertEquals(2, mbView.selectedTables.size());
+                assertEquals(2, mbView.sedStarTables.size());
                 assertEquals(2, starTableList.getSize());
                 assertEquals(3, plotterTable.getRowCount());
                 assertEquals(3, dataTable.getRowCount());
@@ -262,7 +269,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         // Everything should be selected, nothing in the segment tab
         plotterTable.rowsAreSelected(0,1,2).check();
         dataTable.rowsAreSelected(0,1,2).check();
-        segmentTable.rowsAreSelected().check();
+        segmentTable.rowsAreSelected(0).check();
         
         // Clear selections
         mbWindow.getButton("Clear Selection").click();
@@ -287,6 +294,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         // Set to segment tab
         mbWindow.getButton("Clear Selection").click();
         dataPanel.getTabGroup().selectTab("Segment Metadata");
+        mbWindow.getButton("Clear Selection").click();
         segmentTable.selectionIsEmpty().check();
         
         mbWindow.getButton("Select All").click();
@@ -295,7 +303,54 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         // Verify other tables still empty
         plotterTable.selectionIsEmpty().check();
         dataTable.selectionIsEmpty().check();
+    }
+    
+    @Test
+    public void testMetadataBrowserMasking() throws Exception {
+        final ExtSed sed = new ExtSed("");//ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
+        sed.addSegment(TestUtils.createSampleSegment());
+        sedManager.add(sed);
         
+        invokeWithRetry(20, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertEquals(mbView.getTitle(), mbWindow.getTitle());
+                assertEquals(sed, mbView.selectedSed);
+                assertEquals(1, mbView.sedStarTables.size());
+                assertEquals(1, starTableList.getSize());
+                assertEquals(3, plotterTable.getRowCount());
+            }
+        });
+        
+        // Apply a mask on the first and last rows
+        final BitSet masked = new BitSet();
+        masked.set(0);
+        masked.set(2);
+        
+        dataPanel.getTabGroup().selectTab("Data");
+        plotterTable.selectRows(0, 2);
+        mbWindow.getButton("Mask Points").click();
+        
+        invokeWithRetry(20, 100, new Runnable() {
+            @Override
+            public void run() {
+                IrisStarTable table = mbView.selectedStarTables.get(0);
+                assertEquals(masked, table.getMasked());
+            }
+        });
+        
+        // Apply a mask to all rows
+        plotterTable.selectAllRows();
+        masked.set(0, plotterTable.getRowCount());
+        mbWindow.getButton("Mask Points").click();
+        
+        invokeWithRetry(20, 100, new Runnable() {
+            @Override
+            public void run() {
+                IrisStarTable table = mbView.selectedStarTables.get(0);
+                assertEquals(masked, table.getMasked());
+            }
+        });
     }
     
     @Test

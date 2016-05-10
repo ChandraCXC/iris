@@ -22,6 +22,7 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.test.App;
 import cfa.vo.iris.test.Ws;
+import cfa.vo.iris.visualizer.plotter.PlotterView;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.sedlib.ISegment;
 import cfa.vo.sedlib.Segment;
@@ -37,6 +38,7 @@ import uk.ac.starlink.ttools.plot2.geom.PlaneSurfaceFactory.Profile;
 import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 import uk.ac.starlink.ttools.task.MapEnvironment;
 import cfa.vo.testdata.TestData;
+import java.text.DecimalFormat;
 import uk.ac.starlink.task.BooleanParameter;
 
 public class StilPlotterTest {
@@ -175,5 +177,58 @@ public class StilPlotterTest {
         assertEquals(10, aspect3.getYMax(), .0001);
         assertEquals(1, aspect3.getXMin(), .0001);
         assertEquals(1, aspect3.getYMin(), .0001);
+    }
+    
+    @Test
+    public void testZoom() throws Exception {
+        
+        sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
+        StilPlotter plot = new StilPlotter(ws, preferences);
+        preferences.update(sed);
+        
+        // Get initial bounds
+        plot.reset(sed, false);
+        PlotDisplay<Profile, PlaneAspect> display = plot.getPlotDisplay();
+        PlaneAspect aspect1 = display.getAspect();
+        
+        // zoom in
+        plot.zoom(1.5);
+        
+        PlaneAspect aspect = (PlaneAspect) plot.getPlotDisplay().getAspect();
+        double xmax = aspect.getXMax();
+        double xmin = aspect.getXMin();
+        double ymax = aspect.getYMax();
+        double ymin = aspect.getYMin();
+        
+        // expected ranges (log space)
+        double expectedXmax = 1.7779708E21;
+        double expectedXmin = 5.7953144E9;
+        double expectedYmax = 7.3199692;
+        double expectedYmin = 3.1956419E-9;
+        
+        DecimalFormat df = new DecimalFormat("#.#####");
+        String df_format = df.format(xmax);
+        double ndf = Double.valueOf(df_format);
+        
+        assertEquals(Math.log10(expectedXmax), Math.log10(xmax), 0.000001);
+        assertEquals(Math.log10(expectedXmin), Math.log10(xmin), 0.000001);
+        assertEquals(Math.log10(expectedYmax), Math.log10(ymax), 0.000001);
+        assertEquals(Math.log10(expectedYmin), Math.log10(ymin), 0.000001);
+        
+        // zoom out. Plot should be back at the ranges it was at before.
+        // scale factor: 1 - PlotterView.ZOOM_SCALE * 2/3
+        plot.zoom(1 - PlotterView.ZOOM_SCALE * 2/3);
+        
+        aspect = (PlaneAspect) plot.getPlotDisplay().getAspect();
+        xmax = aspect.getXMax();
+        xmin = aspect.getXMin();
+        ymax = aspect.getYMax();
+        ymin = aspect.getYMin();
+        
+        assertEquals(Math.log10(xmax), Math.log10(aspect1.getXMax()), 0.000001);
+        assertEquals(Math.log10(xmin), Math.log10(aspect1.getXMin()), 0.000001);
+        assertEquals(Math.log10(ymax), Math.log10(aspect1.getYMax()), 0.000001);
+        assertEquals(Math.log10(ymin), Math.log10(aspect1.getYMin()), 0.000001);
+        
     }
 }

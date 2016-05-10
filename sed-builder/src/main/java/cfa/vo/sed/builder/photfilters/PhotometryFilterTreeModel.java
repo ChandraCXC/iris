@@ -31,10 +31,6 @@ import java.util.TreeMap;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
-/**
- *
- * @author olaurino
- */
 public class PhotometryFilterTreeModel extends DefaultTreeModel {
     private Map<String, List<PhotometryFilter>> map = new TreeMap();
     private List<PhotometryFilter> originalList;
