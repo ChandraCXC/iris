@@ -16,14 +16,13 @@
 package cfa.vo.iris.visualizer.metadata;
 
 import cfa.vo.iris.test.unit.TestUtils;
-import cfa.vo.iris.visualizer.stil.IrisStarJTable;
-import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
 import java.util.concurrent.Executors;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
+import uk.ac.starlink.table.StarTable;
 
 /**
  *
@@ -33,7 +32,7 @@ public class FilterExpressionBuilderTest {
     
     private IrisStarTableAdapter adapter = new IrisStarTableAdapter(Executors.newSingleThreadExecutor());
     private FilterExpressionBuilder validator;
-    IrisStarJTable jTable;
+    StarTable table;
     
     public FilterExpressionBuilderTest() {
         
@@ -46,12 +45,10 @@ public class FilterExpressionBuilderTest {
         double[] y = x;
         Segment seg = TestUtils.createSampleSegment(x, y);
         
-        IrisStarTable table = adapter.convertSegment(seg);
-        jTable = new IrisStarJTable();
-        jTable.setStarTable(table);
+        table = adapter.convertSegment(seg);
         
         // filter validator
-        validator = new FilterExpressionBuilder(jTable);
+        validator = new FilterExpressionBuilder(table);
     }
     
     @Test
