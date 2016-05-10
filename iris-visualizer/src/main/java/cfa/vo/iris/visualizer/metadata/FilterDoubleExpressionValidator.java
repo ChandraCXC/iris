@@ -15,7 +15,6 @@
  */
 package cfa.vo.iris.visualizer.metadata;
 
-import cfa.vo.iris.visualizer.stil.IrisStarJTable;
 import com.fathzer.soft.javaluator.DoubleEvaluator;
 import com.fathzer.soft.javaluator.StaticVariableSet;
 import java.io.IOException;
@@ -26,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import uk.ac.starlink.table.StarTable;
 
 /**
  *
@@ -33,11 +33,11 @@ import java.util.regex.Pattern;
  */
 public class FilterDoubleExpressionValidator {
     
-    IrisStarJTable starJTable; // the stacked startable to filter
+    StarTable starTable; // the StarTable to filter
     ComparisonDoubleEvaluator doubleEvaluator; // evaluator for numeric columns
     
-    public FilterDoubleExpressionValidator(IrisStarJTable table) {
-        this.starJTable = table;
+    public FilterDoubleExpressionValidator(StarTable table) {
+        this.starTable = table;
         this.doubleEvaluator = new ComparisonDoubleEvaluator();
     }
     
@@ -71,8 +71,8 @@ public class FilterDoubleExpressionValidator {
         List<Double> evaluatedExpression = new ArrayList<>();
         
         // Evaluate the expression for each row in the IrisStarJTable.
-        for (int i=0; i<this.starJTable.getStarTable().getRowCount(); i++) {
-            
+        for (int i=0; i<this.starTable.getRowCount(); i++) {
+                                    
             int colNumber;
             
             // Get the specified column values. The values are added to the  
@@ -90,8 +90,8 @@ public class FilterDoubleExpressionValidator {
                 }
                 
                 try {
-                    if (!this.starJTable.getStarTable().getColumnInfo(colNumber).getContentClass().isAssignableFrom(String.class)) {
-                        variables.set("$"+String.valueOf(colNumber), (Double) this.starJTable.getStarTable().getCell(i, colNumber));
+                    if (!this.starTable.getColumnInfo(colNumber).getContentClass().isAssignableFrom(String.class)) {
+                        variables.set("$"+String.valueOf(colNumber), (Double) this.starTable.getCell(i, colNumber));
                     } else {
                         throw new FilterExpressionException("Only numeric columns may be filtered at this time.");
                     }
@@ -140,19 +140,20 @@ public class FilterDoubleExpressionValidator {
      * appear in the filter expression.
      */
     static List<String> findColumnSpecifiers(String expression) throws FilterExpressionException {
-        
+
         List<String> colSpecifiers = new ArrayList<>();
-        
+
         // split the expression into simple expressions, using the
         // column specifier "$" as the divider. This means the next numeric
         // characters in the array are the columns.
         String[] tmp = expression.split("\\$");
-        
+
+        String col;
+
         // parse each sub-expression to identify the columns
         for (String exp : tmp) {
-            
+
             // look for next non-number.
-            String col;
             Matcher matcher = Pattern.compile("\\d+").matcher(exp);
             matcher.find();
             try {
@@ -161,41 +162,11 @@ public class FilterDoubleExpressionValidator {
                 // catches any empty strings before the first "$"
                 continue;
             }
-            
+
             // extract the column identifier from the sub-expression
             colSpecifiers.add(exp.substring(0, exp.indexOf(col)+col.length()));
         }
-        
+
         return colSpecifiers;
-    }
-    
-    /**
-     * Process a simple expression and return a list of values
-     * @param expression
-     * @param col
-     * @return evaluated expression
-     * If no values in <tt>col</tt> match the condition, the function returns 
-     * null.
-     * @throws cfa.vo.iris.visualizer.metadata.FilterExpressionException if the 
-     *         expression is invalid.
-     */
-    public List<Double> processSingleExpression(String expression, double[] col) throws FilterExpressionException {
-        
-        DoubleEvaluator evaluator = new DoubleEvaluator();
-        StaticVariableSet<Double> variables = new StaticVariableSet<>();
-        
-        // to hold evaluated expression
-        List<Double> evaluatedExpression = new ArrayList<>();
-        
-        // find the column name
-        String colName = findColumnSpecifiers(expression).get(0);
-        
-        // evaluate for every element in col
-        for (double value : col) {
-            variables.set(colName, value); // set variable name from colName
-            evaluatedExpression.add(evaluator.evaluate(expression, variables));
-        }
-        
-        return evaluatedExpression;
     }
 }

@@ -15,11 +15,10 @@
  */
 package cfa.vo.iris.visualizer.metadata;
 
-import cfa.vo.iris.visualizer.stil.IrisStarJTable;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
+import uk.ac.starlink.table.StarTable;
 
 /**
  *
@@ -30,30 +29,14 @@ public class FilterExpressionBuilder {
     
     private LogicalSetEvaluator filterEvaluator;
     
-    public FilterExpressionBuilder(IrisStarJTable table) {
+    public FilterExpressionBuilder(StarTable table) {
         this.filterEvaluator = new LogicalSetEvaluator(table);
     }
     
     public List<Integer> process(String expression) {
         HashSet<Integer> hashSetRows = filterEvaluator.evaluate(expression);
         
-        return set2list(hashSetRows);
-    }
-    
-    /**
-     * helper function: convert a set to a list
-     * @param set
-     * @return 
-     */
-    private List<Integer> set2list(HashSet set) {
-        List<Integer> list = new ArrayList<>();
-        
-        Iterator<Integer> itr = set.iterator();
-        while (itr.hasNext()) {
-            list.add(itr.next());
-        }
-        
-        return list;
+        return new ArrayList<>(hashSetRows);
     }
     
 //    public TreeNode createTreeNode() {

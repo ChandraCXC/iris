@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import uk.ac.starlink.table.StarTable;
 
 /**
  *
@@ -39,7 +40,7 @@ public class FilterExpressionValidatorTest {
     
     private IrisStarTableAdapter adapter = new IrisStarTableAdapter(Executors.newSingleThreadExecutor());
     private FilterDoubleExpressionValidator validator;
-    IrisStarJTable jTable;
+    StarTable starTable;
     
     public FilterExpressionValidatorTest() {
         
@@ -52,12 +53,10 @@ public class FilterExpressionValidatorTest {
         double[] y = x;
         Segment seg = TestUtils.createSampleSegment(x, y);
         
-        IrisStarTable table = adapter.convertSegment(seg);
-        jTable = new IrisStarJTable();
-        jTable.setStarTable(table);
+        starTable = adapter.convertSegment(seg);
         
         // filter validator
-        validator = new FilterDoubleExpressionValidator(jTable);
+        validator = new FilterDoubleExpressionValidator(starTable);
     }
 
     @Test
@@ -158,15 +157,14 @@ public class FilterExpressionValidatorTest {
         ExtSed sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
         IrisStarTable table = adapter.convertSegment(sed.getSegment(0));
         
-        IrisStarJTable newJTable = new IrisStarJTable();
-        newJTable.setStarTable(table.getSegmentDataTable());
-        
         // an exception should be thrown if a column has string values.
         exception.expect(FilterExpressionException.class);
         exception.expectMessage("Only numeric columns may be filtered at this time.");
         
         expression = "$1 + 2 < 6";
-        FilterDoubleExpressionValidator newValidator = new FilterDoubleExpressionValidator(newJTable);
+        
+        // the 1st column has string values
+        FilterDoubleExpressionValidator newValidator = new FilterDoubleExpressionValidator(table.getSegmentDataTable());
         newValidator.process(expression);
     }
     

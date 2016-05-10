@@ -15,7 +15,6 @@
  */
 package cfa.vo.iris.visualizer.metadata;
 
-import cfa.vo.iris.visualizer.stil.IrisStarJTable;
 import com.fathzer.soft.javaluator.AbstractEvaluator;
 import com.fathzer.soft.javaluator.Operator;
 import com.fathzer.soft.javaluator.Parameters;
@@ -24,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import uk.ac.starlink.table.StarTable;
 
 /**
  *
@@ -47,7 +47,7 @@ public class LogicalSetEvaluator extends AbstractEvaluator<HashSet> {
     
     private FilterDoubleExpressionValidator filterEvaluator;
     
-    public LogicalSetEvaluator(IrisStarJTable table) {
+    public LogicalSetEvaluator(StarTable table) {
         super(PARAMETERS);
         this.filterEvaluator = new FilterDoubleExpressionValidator(table);
     }
@@ -100,27 +100,10 @@ public class LogicalSetEvaluator extends AbstractEvaluator<HashSet> {
             left = operands.next();
             right = operands.next();
             // return the union
-            return union(left, right);
+            left.addAll(right);
+            return left;
         } else {
             return null;
         }
     }
-    
-    /**
-     * Get the union of set "a" with set "b". Changes set "a".
-     * @param a set to make unionize with b
-     * @param b set to compare and add to set a
-     * @return set "a" in union with set "b"
-     */
-    public static HashSet<Integer> union(HashSet a, HashSet b) {
-        Iterator<Integer> itr = b.iterator();
-        while (itr.hasNext()) {
-            Integer value = itr.next();
-            if (!a.contains(value)) {
-                a.add(value);
-            }
-        }
-        return a;
-    }
-    
 }
