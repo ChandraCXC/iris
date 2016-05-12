@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cfa.vo.iris.gui;
+package cfa.vo.iris.visualizer.plotter;
 
 import javax.swing.plaf.basic.BasicArrowButton;
 
@@ -22,7 +22,7 @@ import javax.swing.plaf.basic.BasicArrowButton;
  * Code taken from https://forums.netbeans.org/topic63927.html
  */
 public class JButtonArrow extends BasicArrowButton {
-   public JButtonArrow(int direction)  {
-      super(direction);
+   public JButtonArrow()  {
+      super(BasicArrowButton.NORTH);
    }
 }
