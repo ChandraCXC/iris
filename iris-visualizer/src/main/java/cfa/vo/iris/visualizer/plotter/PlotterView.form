@@ -412,7 +412,7 @@
         </Container>
       </SubComponents>
     </Container>
-    <Container class="cfa.vo.iris.visualizer.stil.StilPlotter" name="plotter">
+    <Container class="cfa.vo.iris.visualizer.plotter.StilPlotter" name="plotter">
       <Properties>
         <Property name="name" type="java.lang.String" value="plotter" noResource="true"/>
       </Properties>

@@ -13,18 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cfa.vo.iris.visualizer.stil;
+package cfa.vo.iris.visualizer.plotter;
 
 import javax.swing.JPanel;
-import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.sed.quantities.SPVYQuantity;
-import cfa.vo.iris.visualizer.plotter.PlotPreferences;
-import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.SegmentModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
-import cfa.vo.sedlib.Segment;
+import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
 import uk.ac.starlink.ttools.plot2.geom.PlaneSurfaceFactory;
 import uk.ac.starlink.ttools.plot2.task.PlanePlot2Task;
@@ -40,8 +36,9 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import uk.ac.starlink.ttools.plot2.Axis;
@@ -52,17 +49,14 @@ public class StilPlotter extends JPanel {
             .getLogger(StilPlotter.class.getName());
 
     private static final long serialVersionUID = 1L;
-    
-    // default STILTS parameter for creating plot displays. If true, the
-    // plotter is optimized for data that may change on the fly.
-    private static final boolean DATA_MAY_CHANGE = true;
 
     private PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> display;
 
-    //private IWorkspace ws;
-    private SedlibSedManager sedManager;
-    private ExtSed currentSed;
+    // TODO: Use the list of SEDs
+    private List<ExtSed> seds = new ArrayList<>();
+    private ExtSed selectedSed;
     private VisualizerComponentPreferences preferences;
+    private VisualizerDataModel dataModel;
     
     private MapEnvironment env;
     
@@ -71,47 +65,46 @@ public class StilPlotter extends JPanel {
         setBackground(Color.WHITE);
         setLayout(new GridLayout(1, 0, 0, 0));
     }
-    
-    public StilPlotter(IWorkspace ws, 
-            VisualizerComponentPreferences preferences) {
-        this.sedManager = (SedlibSedManager) ws.getSedManager();
-        this.preferences = preferences;
-        
-        setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-        setBackground(Color.WHITE);
-        setLayout(new GridLayout(1, 0, 0, 0));
 
-        reset(null, true);
-    }
-
-    /**
+    /*
      * 
-     * @param sed
-     *            Sed to reset plot to
-     * @param dataMayChange
-     *            indicates if the data on the plot may change while while the
-     *            current display is active.
+     * Getters and Setters
+     * 
      */
-    public void reset(ExtSed sed, boolean dataMayChange) {
-        
-        // get the fixed parameter from the selected SED
-        boolean fixed = this.getPlotPreferences(sed).getFixed();
-        
-        resetPlot(sed, fixed, dataMayChange);
+    
+    public ExtSed getSelectedSed() {
+        return selectedSed;
     }
 
-    /**
-     * Redraws the current plot in place. Useful for changes to the plot
-     * preferences.
-     *
-     */
-    public void redraw(boolean dataMayChange) {
-        // If there's no display then don't change anything
-        if (display == null) {
-            return;
+    public void setSelectedSed(ExtSed selectedSed) {
+        this.selectedSed = selectedSed;
+        this.seds = Arrays.asList(selectedSed);
+        resetPlot();
+    }
+    
+    public List<ExtSed> getSeds() {
+        return seds;
+    }
+
+    public void setSeds(List<ExtSed> seds) {
+        // TODO: Support more than one SED
+        if (seds.size() > 1) {
+            throw new IllegalArgumentException("Invalid sed list length");
         }
         
-        resetPlot(currentSed, true, dataMayChange);
+        this.seds = seds;
+        selectedSed = seds.get(0);
+        
+        resetPlot();
+    }
+
+    public VisualizerComponentPreferences getPreferences() {
+        return preferences;
+    }
+
+    public void setPreferences(VisualizerComponentPreferences prefs) {
+        this.preferences = prefs;
+        this.dataModel = prefs.getDataModel();
     }
     
     /**
@@ -124,23 +117,16 @@ public class StilPlotter extends JPanel {
      * @param fixed - if set to true, the plot bounds will not change
      * @param dataMayChange - if the data in the sed will change (usually true)
      */
-    private void resetPlot(ExtSed sed,
-                           boolean fixed, 
-                           boolean dataMayChange) 
+    private void resetPlot()
     {
-
+        // TODO: Support multiple seds
+        boolean fixed = getPlotPreferences().getFixed();
+        
         // Clear the display if it's available
         setupForPlotDisplayChange();
-
-        // Update the current SED
-        if (sed == null) {
-            sed = sedManager.getSelected();
-        }
-        this.currentSed = sed;
         
         // Setup new plot component
-        boolean cached = !dataMayChange;
-        display = createPlotComponent(currentSed, cached);
+        display = createPlotComponent();
         
         // Set the bounds using the current SED's aspect if the plot is fixed
         if (fixed) {
@@ -161,8 +147,8 @@ public class StilPlotter extends JPanel {
     public void changePlotType(PlotPreferences.PlotType plotType) {
                 
         try {
-            this.getPlotPreferences().setPlotType(plotType);
-            reset(currentSed, DATA_MAY_CHANGE);
+            getPlotPreferences().setPlotType(plotType);
+            resetPlot();
         } catch (EnumConstantNotPresentException ex) {
             logger.log(Level.WARNING, ex.getMessage());
         } catch (RuntimeException e) {
@@ -174,8 +160,8 @@ public class StilPlotter extends JPanel {
     
     public void setGridOn(boolean on) {
         try {
-            this.getPlotPreferences().setShowGrid(on);
-            reset(currentSed, DATA_MAY_CHANGE);
+            getPlotPreferences().setShowGrid(on);
+            resetPlot();
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -246,40 +232,11 @@ public class StilPlotter extends JPanel {
         
     }
 
-    public StilPlotter setVisualizerPreferences(VisualizerComponentPreferences prefs) {
-        this.preferences = prefs;
-        return this;
-    }
-    
-    public VisualizerComponentPreferences getVisualizerPreferences() {
-        return this.preferences;
-    }
-    
-    public StilPlotter setSedManager(SedlibSedManager sedManager) {
-        this.sedManager = sedManager;
-        return this;
-    }
-    
-    public SedlibSedManager getSedManager() {
-        return this.sedManager;
-    }
-    
-    public ExtSed getSed() {
-        return currentSed;
-    }
-
-    public Map<Segment, SegmentModel> getSegmentsMap() {
-        return Collections.unmodifiableMap(preferences
-                .getSedModel(currentSed).getAllSegmentModels());
-    }
-
     public PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> getPlotDisplay() {
         return display;
     }
 
     /**
-     * Get the value of env
-     *
      * @return the value of env
      */
     protected MapEnvironment getEnv() {
@@ -287,22 +244,17 @@ public class StilPlotter extends JPanel {
     }
 
     /**
-     * 
-     * @param sed
-     *            the SED to plot
-     * @param cached
-     *            If true, cache the environment. Should be false if the data
-     *            might change.
+     * Create the stil plot component
      * @return
      */
     protected PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> 
-        createPlotComponent(ExtSed sed, boolean cached) 
+        createPlotComponent()
     {
-        logger.info("Creating new plot from selected SED");
+        logger.info("Creating new plot from selected SED(s)");
 
         try {
-            setupMapEnvironment(sed);
-            return createPlotComponent(env, cached);
+            setupMapEnvironment();
+            return createPlotComponent(env);
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -321,7 +273,7 @@ public class StilPlotter extends JPanel {
      * @throws Exception
      */
     protected PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> createPlotComponent(
-            MapEnvironment env, boolean cached) throws Exception {
+            MapEnvironment env) throws Exception {
 
         logger.log(Level.FINE, "plot environment:");
         logger.log(Level.FINE, ReflectionToStringBuilder.toString(env));
@@ -329,7 +281,7 @@ public class StilPlotter extends JPanel {
         
         @SuppressWarnings("unchecked")
         PlotDisplay<PlaneSurfaceFactory.Profile,PlaneAspect> display =
-                new PlanePlot2Task().createPlotComponent(env, cached);
+                new PlanePlot2Task().createPlotComponent(env, false);
         
         // Always update mouse listeners with the new display
         preferences.getMouseListenerManager().activateListeners(display);
@@ -337,18 +289,19 @@ public class StilPlotter extends JPanel {
         return display;
     }
 
-    protected void setupMapEnvironment(ExtSed sed) throws IOException {
+    protected void setupMapEnvironment() throws IOException {
 
         env = new MapEnvironment();
         env.setValue("type", "plot2plane");
         env.setValue("insets", new Insets(50, 80, 50, 50));
+        
         // TODO: force numbers on Y axis to only be 3-5 digits long. Keeps
         // Y-label from falling off the jpanel. Conversely, don't set "insets"
         // and let the plotter dynamically change size to keep axes labels
         // on the plot.
 
         // Add high level plot preferences
-        PlotPreferences pp = getPlotPreferences(sed);
+        PlotPreferences pp = getPlotPreferences();
         for (String key : pp.getPreferences().keySet()) {
             
             // if in magnitudes, flip the direction of the Y-axis
@@ -360,30 +313,28 @@ public class StilPlotter extends JPanel {
             env.setValue(key, pp.getPreferences().get(key));
         }
 
-        if (sed != null) {
-            // set title of plot if available
-            env.setValue("title", sed.getId());
-
-            // Add segments and segment preferences
-            addSegmentLayers(sed, env);
+        // set title of plot if available
+        if (selectedSed != null) {
+            env.setValue("title", selectedSed.getId());
         }
+
+        // Add segments and segment preferences
+        addSegmentLayers(env);
     }
 
-    private void addSegmentLayers(ExtSed sed, MapEnvironment env)
+    private void addSegmentLayers(MapEnvironment env)
             throws IOException {
-        if (sed == null) {
+        if (selectedSed == null) {
             logger.info("No SED selected, returning empty plot");
             return;
         }
 
-        logger.info(String.format("Plotting SED with %s segments...",
-                sed.getNamespace()));
-
-        SedModel prefs = preferences.getSedModel(sed);
-        for (int i = 0; i < sed.getNumberOfSegments(); i++) {
-            SegmentModel layer = prefs.getSegmentModel(sed.getSegment(i));
-            for (String key : layer.getPreferences().keySet()) {
-                env.setValue(key, layer.getPreferences().get(key));
+        for (ExtSed sed : this.seds) {
+            List<SegmentModel> models = dataModel.getModelsForSed(sed);
+            for (SegmentModel layer : models) {
+                for (String key : layer.getPreferences().keySet()) {
+                    env.setValue(key, layer.getPreferences().get(key));
+                }
             }
         }
     }
@@ -397,7 +348,7 @@ public class StilPlotter extends JPanel {
             display.removeAll();
             remove(display);
             
-            this.getPlotPreferences().setAspect(display.getAspect());
+            getPlotPreferences().setAspect(display.getAspect());
         }
     }
     
@@ -410,19 +361,14 @@ public class StilPlotter extends JPanel {
         display.repaint();
     }
     
+    /**
+     * Handles getting the plot preferences for the current selection of SEDs in the plotter.
+     */
     public PlotPreferences getPlotPreferences() {
-        if (this.preferences.getSedModel(currentSed) != null) {
-            return preferences.getSedModel(currentSed).getPlotPreferences();
-        } else {
+        if (this.selectedSed == null) {
             return preferences.getPlotPreferences();
-        }
-    }
-    
-    public PlotPreferences getPlotPreferences(ExtSed sed) {
-        if (this.preferences.getSedModel(sed) != null) {
-            return preferences.getSedModel(sed).getPlotPreferences();
         } else {
-            return preferences.getPlotPreferences();
+            return dataModel.getSedModel(selectedSed).getPlotPreferences();
         }
     }
 }

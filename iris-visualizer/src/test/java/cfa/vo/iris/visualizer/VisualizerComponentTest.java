@@ -27,7 +27,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static cfa.vo.iris.test.unit.TestUtils.*;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
-import cfa.vo.iris.visualizer.stil.StilPlotter;
+import cfa.vo.iris.visualizer.plotter.StilPlotter;
+import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
+
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -65,6 +67,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
     @Test
     public void testEventSubscription() throws Exception {
         SedlibSedManager sedManager = (SedlibSedManager) app.getWorkspace().getSedManager();
+        final VisualizerComponentPreferences prefs = comp.getPreferences();
 
         // No view when starting application up
         assertNull(comp.getDefaultPlotterView());
@@ -84,7 +87,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed, comp.getDefaultPlotterView().getSed());
+                assertSame(sed, prefs.getDataModel().getSelectedSed());
             }
         });
 
@@ -97,7 +100,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertTrue(comp.getDefaultPlotterView().getSegmentsMap().containsKey(segment));
+                assertTrue(prefs.getDataModel().getSedModel(sed).getAllSegmentModels().containsKey(segment));
             }
         });
 
@@ -107,7 +110,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed2, comp.getDefaultPlotterView().getSed());
+                assertSame(sed2, prefs.getDataModel().getSelectedSed());
             }
         });
 
@@ -117,7 +120,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed, comp.getDefaultPlotterView().getSed());
+                assertSame(sed, prefs.getDataModel().getSelectedSed());
             }
         });
 
@@ -126,6 +129,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
     @Test
     public void testPlotPreferencesGridAndPlotType() throws Exception {
         SedlibSedManager sedManager = (SedlibSedManager) app.getWorkspace().getSedManager();
+        final VisualizerComponentPreferences prefs = comp.getPreferences();
         
         window.getMenuBar()
                 .getMenu("Tools")
@@ -141,7 +145,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed1, comp.getDefaultPlotterView().getSed());
+                assertSame(sed1, prefs.getDataModel().getSelectedSed());
             }
         });
         
@@ -156,11 +160,11 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
                 .getSubMenu("Grid on/off")
                 .click();
         
-        PlotPreferences prefs = plotter.getPlotPreferences();
+        PlotPreferences preferences = plotter.getPlotPreferences();
         
         // check that box is unchecked
         assertTrue(!gridMenuItem.isSelected()); 
-        assertFalse(prefs.getShowGrid());
+        assertFalse(preferences.getShowGrid());
         
         
         // add another SED
@@ -169,7 +173,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed2, comp.getDefaultPlotterView().getSed());
+                assertSame(sed2, prefs.getDataModel().getSelectedSed());
             }
         });
         
@@ -195,7 +199,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed1, comp.getDefaultPlotterView().getSed());
+                assertSame(sed1, prefs.getDataModel().getSelectedSed());
             }
         });
         
@@ -220,7 +224,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed2, comp.getDefaultPlotterView().getSed());
+                assertSame(sed2, prefs.getDataModel().getSelectedSed());
             }
         });
         
@@ -234,6 +238,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
     @Test
     public void testPlotPreferencesFixed() throws Exception {
         SedlibSedManager sedManager = (SedlibSedManager) app.getWorkspace().getSedManager();
+        final VisualizerComponentPreferences prefs = comp.getPreferences();
         
         window.getMenuBar()
                 .getMenu("Tools")
@@ -252,18 +257,18 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed1, comp.getDefaultPlotterView().getSed());
+                assertSame(sed1, prefs.getDataModel().getSelectedSed());
             }
         });
         
         // get components: PlotPreferences and autoFixed menuCheckBox
-        PlotPreferences prefs = plotter.getPlotPreferences();
+        PlotPreferences preferences = plotter.getPlotPreferences();
         JMenuBar menu = viewer.findSwingComponent(JMenuBar.class, "menuBar");
         JCheckBoxMenuItem autoFixed = (JCheckBoxMenuItem) menu.getMenu(2).getMenuComponent(2);
         
         // check that box is unchecked (auto range viewport by default)
         assertFalse(autoFixed.isSelected());
-        assertFalse(prefs.getFixed());
+        assertFalse(preferences.getFixed());
         
         // now, make it so the viewport is fixed
         viewer.getMenuBar()
@@ -296,7 +301,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertEquals(2, comp.getDefaultPlotterView().getSed().getNumberOfSegments());
+                assertEquals(2, prefs.getDataModel().getSelectedSed().getNumberOfSegments());
             }
         });
         
@@ -335,7 +340,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed2, comp.getDefaultPlotterView().getSed());
+                assertSame(sed2, prefs.getDataModel().getSelectedSed());
             }
         });
         
@@ -356,7 +361,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed1, comp.getDefaultPlotterView().getSed());
+                assertSame(sed1, prefs.getDataModel().getSelectedSed());
             }
         });
         
@@ -381,6 +386,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
     @Test
     public void testChangeUnits() throws Exception {
         SedlibSedManager sedManager = (SedlibSedManager) app.getWorkspace().getSedManager();
+        final VisualizerComponentPreferences prefs = comp.getPreferences();
         
         window.getMenuBar()
                 .getMenu("Tools")
@@ -405,7 +411,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed0, comp.getDefaultPlotterView().getSed());
+                assertSame(sed0, prefs.getDataModel().getSelectedSed());
             }
         });
         
@@ -431,7 +437,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed1, comp.getDefaultPlotterView().getSed());
+                assertSame(sed1, prefs.getDataModel().getSelectedSed());
                 
             }
         });
@@ -447,9 +453,9 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         unitsChooser.getButton("Update").click();
         
         // check that the X and Y units on the plot window updated
-        assertEquals("Wavelength (Angstrom)", plotter.getPlotPreferences(sed1).getXlabel());
+        assertEquals("Wavelength (Angstrom)", plotter.getPlotPreferences().getXlabel());
         assertEquals('\u03BD' + "F(" + '\u03BD' + ")"+" (Jy-Hz)", 
-                plotter.getPlotPreferences(sed1).getYlabel());
+                plotter.getPlotPreferences().getYlabel());
         
         // check that the MB data updated
         
@@ -460,7 +466,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed2, comp.getDefaultPlotterView().getSed());
+                assertSame(sed2, prefs.getDataModel().getSelectedSed());
                 
             }
         });
@@ -472,7 +478,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         
         // check that the velocity unit label set properly
         assertEquals("Velocity (km/s @ 12 CO (11.5GHz))", 
-                plotter.getPlotPreferences(sed2).getXlabel());
+                plotter.getPlotPreferences().getXlabel());
         
         // open units window, switch SEDs, choose new units, apply them, and
         // assert that the selected SED units are changed, and not the SED
@@ -487,30 +493,30 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed1, comp.getDefaultPlotterView().getSed());
+                assertSame(sed1, prefs.getDataModel().getSelectedSed());
                 
             }
         });
         
         // sed1 units should still be the same as they were before changing sed2
         // units
-        assertEquals("Wavelength (Angstrom)", plotter.getPlotPreferences(sed1).getXlabel());
+        assertEquals("Wavelength (Angstrom)", plotter.getPlotPreferences().getXlabel());
         assertEquals('\u03BD' + "F(" + '\u03BD' + ")"+" (Jy-Hz)", 
-                plotter.getPlotPreferences(sed1).getYlabel());
+                plotter.getPlotPreferences().getYlabel());
         
         // update the units for sed1
         unitsChooser.getButton("Update").click();
         
         // sed1 units should update
-        assertEquals("Energy (eV)", plotter.getPlotPreferences(sed1).getXlabel());
+        assertEquals("Energy (eV)", plotter.getPlotPreferences().getXlabel());
         assertEquals("Flux density (Jy)", 
-                plotter.getPlotPreferences(sed1).getYlabel());
+                plotter.getPlotPreferences().getYlabel());
         
         // check that sed2 units remain the same
         assertEquals("Velocity (km/s @ 12 CO (11.5GHz))", 
-                plotter.getPlotPreferences(sed2).getXlabel());
+                plotter.getPlotPreferences().getXlabel());
         assertEquals("Flux density (mJy)", 
-                plotter.getPlotPreferences(sed2).getYlabel());
+                plotter.getPlotPreferences().getYlabel());
         
         // TODO: how to test for magnitudes? The Y-axis should be flipped so 
         // that larger values are on the bottom and lower values on the top

@@ -74,6 +74,10 @@ public class VisualizerComponent implements IrisComponent {
     public PlotterView getDefaultPlotterView() {
         return menuItems.view;
     }
+    
+    public VisualizerComponentPreferences getPreferences() {
+        return preferences;
+    }
 
     private class MenuItems extends ArrayList<IMenuItem> {
         private PlotterView view;

@@ -27,7 +27,6 @@ import javax.swing.JOptionPane;
 
 import org.apache.commons.lang.StringUtils;
 
-import cfa.vo.iris.visualizer.stil.StilPlotter;
 
 
 public class PlotImageWriter {

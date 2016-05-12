@@ -15,13 +15,9 @@
  */
 package cfa.vo.iris.visualizer.plotter;
 
-import cfa.vo.iris.visualizer.stil.StilPlotter;
 import java.awt.BorderLayout;
 
-/**
- *
- * @author jbudynk
- */
+@SuppressWarnings("serial")
 public class UnitsManagerFrame extends javax.swing.JInternalFrame {
 
     private final UnitsWidget unitsWidget;

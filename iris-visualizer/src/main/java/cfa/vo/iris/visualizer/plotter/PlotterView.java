@@ -20,24 +20,17 @@ import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
-import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
-import cfa.vo.iris.visualizer.preferences.SegmentModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
 import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerListener;
-import cfa.vo.iris.visualizer.stil.StilPlotter;
-import cfa.vo.sedlib.Segment;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Map;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
-import javax.swing.SwingConstants;
-import javax.swing.plaf.basic.BasicArrowButton;
 
 public class PlotterView extends JInternalFrame {
     
@@ -88,10 +81,8 @@ public class PlotterView extends JInternalFrame {
         
         initComponents();
         
-        // initializing the stil plotter
-        plotter.setSedManager((SedlibSedManager) ws.getSedManager());
-        plotter.setVisualizerPreferences(preferences);
-        plotter.reset(null, true);
+        // Add preferences to plotter
+        this.plotter.setPreferences(preferences);
         
         // units chooser frame
         this.unitsManagerFrame = new UnitsManagerFrame(plotter);
@@ -171,14 +162,6 @@ public class PlotterView extends JInternalFrame {
         VisualizerChangeEvent.getInstance().add(new PlotChangeListener());
     }
     
-    public ExtSed getSed() {
-        return plotter.getSed();
-    }
-
-    public Map<Segment, SegmentModel> getSegmentsMap() {
-        return plotter.getSegmentsMap();
-    }
-    
     private void openMetadataBrowser() throws Exception {
         if (!metadataBrowser.isVisible()) {
             ws.addFrame(metadataBrowser);
@@ -191,19 +174,6 @@ public class PlotterView extends JInternalFrame {
     
     public MetadataBrowserMainView getMetadataBrowserView() {
         return this.metadataBrowser;
-    }
-    
-    private void resetPlot(ExtSed sed) {
-        // TODO: At somepoint we may want this to be a feature if we ever have static SEDs.
-        this.plotter.reset(sed, true);
-    }
-
-    private void redrawPlot() {
-        this.plotter.redraw(true);
-    }
-    
-    private void updatePlot(ExtSed source) {
-        this.plotter.reset(source, true);
     }
     
     public String getXcoord() {
@@ -256,7 +226,7 @@ public class PlotterView extends JInternalFrame {
         jPanel3 = new javax.swing.JPanel();
         tglbtnShowHideResiduals = new javax.swing.JToggleButton();
         secondaryPlotOptions = new javax.swing.JSpinner();
-        plotter = new cfa.vo.iris.visualizer.stil.StilPlotter();
+        plotter = new cfa.vo.iris.visualizer.plotter.StilPlotter();
         menuBar = new javax.swing.JMenuBar();
         mnF = new javax.swing.JMenu();
         mntmExport = new javax.swing.JMenuItem();
@@ -574,8 +544,6 @@ public class PlotterView extends JInternalFrame {
         if (fixed)
            plotPrefs.setFixed(false);
         
-        resetPlot(getSed());
-        
         if (fixed)
            plotPrefs.setFixed(true);
     }//GEN-LAST:event_btnResetActionPerformed
@@ -636,7 +604,7 @@ public class PlotterView extends JInternalFrame {
     private javax.swing.JRadioButtonMenuItem mntmXlog;
     private javax.swing.JRadioButtonMenuItem mntmYlog;
     private javax.swing.ButtonGroup plotTypeButtonGroup;
-    private cfa.vo.iris.visualizer.stil.StilPlotter plotter;
+    private cfa.vo.iris.visualizer.plotter.StilPlotter plotter;
     private cfa.vo.iris.visualizer.plotter.JButtonArrow right;
     private javax.swing.JSpinner secondaryPlotOptions;
     private javax.swing.JToggleButton tglbtnShowHideResiduals;
@@ -711,14 +679,11 @@ public class PlotterView extends JInternalFrame {
         public void process(ExtSed source, VisualizerCommand payload) {
             if (VisualizerCommand.RESET.equals(payload)) 
             {
-                resetPlot(source);
                 updatePreferences();
             }
             else if (VisualizerCommand.REDRAW.equals(payload)) {
-                redrawPlot();
             }
             else if (VisualizerCommand.SELECTED.equals(payload)) {
-                updatePlot(source);
                 updatePreferences();
             }
         }

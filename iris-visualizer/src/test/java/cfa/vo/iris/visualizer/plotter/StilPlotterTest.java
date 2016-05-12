@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cfa.vo.iris.visualizer.stil;
+package cfa.vo.iris.visualizer.plotter;
 
+import cfa.vo.iris.visualizer.plotter.StilPlotter;
 import static org.junit.Assert.*;
 import static cfa.vo.iris.test.unit.TestUtils.*;
 
@@ -63,8 +64,8 @@ public class StilPlotterTest {
         sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
         preferences.update(sed);
 
-        StilPlotter plot = new StilPlotter(ws, preferences);
-        plot.reset(sed, true);
+        StilPlotter plot = new StilPlotter();
+        plot.setPreferences(preferences);
         PlotDisplay display = plot.getPlotDisplay();
         
         // check that plot env is correctly set
@@ -112,8 +113,8 @@ public class StilPlotterTest {
         sed.addSegment(ExtSed.read(TestData.class.getResource("test.vot").openStream(), SedFormat.VOT).getSegment(0));
         preferences.update(sed);
 
-        StilPlotter plot = new StilPlotter(ws, preferences);
-        plot.reset(sed, true);
+        StilPlotter plot = new StilPlotter();
+        plot.setPreferences(preferences);
         PlotDisplay display = plot.getPlotDisplay();
 
         // using reflection to access layers in plot display
@@ -142,17 +143,16 @@ public class StilPlotterTest {
         
         sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
         Segment seg = sed.getSegment(0);
-        StilPlotter plot = new StilPlotter(ws, preferences);
+        StilPlotter plot = new StilPlotter();
+        plot.setPreferences(preferences);
         preferences.update(sed);
         
         // Get initial bounds
-        plot.reset(sed, false);
         PlotDisplay<Profile, PlaneAspect> display = plot.getPlotDisplay();
         PlaneAspect aspect1 = display.getAspect();
         
         sed.removeSegment(0);
         preferences.remove(sed, seg);
-        plot.redraw(true);
         display = plot.getPlotDisplay();
 
         // Verify no layers
@@ -168,7 +168,6 @@ public class StilPlotterTest {
         assertEquals(aspect1.getXMin(), aspect2.getXMin(), .0001);
         assertEquals(aspect1.getYMin(), aspect2.getYMin(), .0001);
         
-        plot.reset(null, false);
         display = plot.getPlotDisplay();
         
         // Bounds should reset
@@ -183,11 +182,11 @@ public class StilPlotterTest {
     public void testZoom() throws Exception {
         
         sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
-        StilPlotter plot = new StilPlotter(ws, preferences);
+        StilPlotter plot = new StilPlotter();
+        plot.setPreferences(preferences);
         preferences.update(sed);
         
         // Get initial bounds
-        plot.reset(sed, false);
         PlotDisplay<Profile, PlaneAspect> display = plot.getPlotDisplay();
         PlaneAspect aspect1 = display.getAspect();
         

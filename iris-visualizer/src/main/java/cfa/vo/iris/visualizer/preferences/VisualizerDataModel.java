@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 
 import java.util.ArrayList;
@@ -58,6 +59,25 @@ public class VisualizerDataModel {
 
     public void removePropertyChangeListener(PropertyChangeListener listener) {
         this.pcs.removePropertyChangeListener(listener);
+    }
+    
+    /**
+     * Return a list of SedModels - in the same order as the SEDs appear in the the
+     * selectedSeds list.
+     * @return
+     */
+    public List<SedModel> getSedModels() {
+        List<SedModel> models = new ArrayList<>();
+        
+        for (ExtSed sed : this.selectedSeds) {
+            models.add(store.getSedModel(sed));
+        }
+        
+        return models;
+    }
+
+    public SedModel getSedModel(ExtSed sed) {
+        return store.getSedModel(sed);
     }
     
     /**
