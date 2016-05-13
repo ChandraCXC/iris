@@ -295,6 +295,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         selectPointsButton = new javax.swing.JButton();
         applyMaskButton = new javax.swing.JButton();
         selectAllButton = new javax.swing.JButton();
+        extractButton = new javax.swing.JButton();
         clearSelectionButton = new javax.swing.JButton();
         invertSelectionButton = new javax.swing.JButton();
         clearMaskButton = new javax.swing.JButton();
@@ -345,7 +346,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.weightx = 0.1;
@@ -356,7 +357,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         selectPointsButton.setText("Select Points");
         selectPointsButton.setToolTipText("Select points matching the filter expression");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridx = 5;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -373,7 +374,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridx = 5;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -395,6 +396,20 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         getContentPane().add(selectAllButton, gridBagConstraints);
+
+        extractButton.setText("Extract");
+        extractButton.setToolTipText("Extract selection to new SED");
+        extractButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                extractButtonActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHWEST;
+        getContentPane().add(extractButton, gridBagConstraints);
 
         clearSelectionButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
         clearSelectionButton.setText("Clear Selection");
@@ -439,7 +454,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridx = 6;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -456,7 +471,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 6;
+        gridBagConstraints.gridx = 7;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -570,7 +585,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 7;
+        gridBagConstraints.gridwidth = 8;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
@@ -734,6 +749,10 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         extractSelectionToSed();
     }//GEN-LAST:event_extractToSedMenuItemActionPerformed
 
+    private void extractButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_extractButtonActionPerformed
+        extractSelectionToSed();
+    }//GEN-LAST:event_extractButtonActionPerformed
+
     private void selectAllButtonActionPerformed(
             java.awt.event.ActionEvent evt) {// GEN-FIRST:event_selectAllButtonActionPerformed
         JTable table = getSelectedJTable();
@@ -776,6 +795,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private javax.swing.JSplitPane dataPane;
     private javax.swing.JTabbedPane dataTabsPane;
     private javax.swing.JMenu editMenu;
+    private javax.swing.JButton extractButton;
     private javax.swing.JMenuItem extractToSedMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JTextField filterExpressionField;
