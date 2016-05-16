@@ -35,6 +35,8 @@ class FilterExpressionException extends Exception {
             + "Only numeric column specifiers are allowed.\n "
             + "Use the column number to specify the column "
             + "(e.g., to specify the first column, use '$1').";
+    public static final String STRING_COLUMN_MSG = BAD_EXPRESSION
+            + "Only numeric columns may be filtered at this time.";
     
     public FilterExpressionException(String string) {
         super(string);
