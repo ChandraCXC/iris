@@ -21,8 +21,6 @@ import com.fathzer.soft.javaluator.Parameters;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import uk.ac.starlink.table.StarTable;
 
 /**
@@ -59,15 +57,11 @@ public class LogicalSetEvaluator extends AbstractEvaluator<HashSet> {
      */
     @Override
     protected HashSet<Integer> toValue(String expression, Object o) {
-        try {
-            List<Integer> iRows = filterEvaluator.process(expression);
-            HashSet<Integer> setRows = new HashSet<>();
-            setRows.addAll(iRows);
-            return setRows;
-        } catch (FilterExpressionException ex) {
-            Logger.getLogger(LogicalSetEvaluator.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+
+        List<Integer> iRows = filterEvaluator.process(expression);
+        HashSet<Integer> setRows = new HashSet<>();
+        setRows.addAll(iRows);
+        return setRows;
     }
     
     /**
