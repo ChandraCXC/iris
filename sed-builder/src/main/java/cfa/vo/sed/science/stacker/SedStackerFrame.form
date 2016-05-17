@@ -1080,7 +1080,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="stackButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Stack!"/>
+            <Property name="text" type="java.lang.String" value="Stack"/>
             <Property name="name" type="java.lang.String" value="stackButton" noResource="true"/>
           </Properties>
           <Events>
@@ -1117,7 +1117,7 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Managment"/>
+            <TitledBorder title="Management"/>
           </Border>
         </Property>
         <Property name="name" type="java.lang.String" value="jPanel2" noResource="true"/>
