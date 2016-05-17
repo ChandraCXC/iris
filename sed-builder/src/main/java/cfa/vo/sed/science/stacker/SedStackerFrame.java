@@ -270,13 +270,14 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         javax.swing.ButtonGroup buttonGroup1 = new javax.swing.ButtonGroup();
         javax.swing.ButtonGroup buttonGroup2 = new javax.swing.ButtonGroup();
         jPopupMenu1 = new javax.swing.JPopupMenu();
-        javax.swing.JMenuItem jMenuItem1 = new javax.swing.JMenuItem();
+        javax.swing.JMenuItem renameStackMenuItem = new javax.swing.JMenuItem();
+        javax.swing.JMenuItem removeStackMenuItem = new javax.swing.JMenuItem();
         jPopupMenu2 = new javax.swing.JPopupMenu();
         javax.swing.JMenuItem jMenuItem2 = new javax.swing.JMenuItem();
         jButton1 = new javax.swing.JButton();
         javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
         stackPanel = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
+        stackList = new javax.swing.JList();
         javax.swing.JPanel jPanel5 = new javax.swing.JPanel();
         correctFlux = new javax.swing.JCheckBox();
         jTextField8 = new javax.swing.JTextField();
@@ -333,14 +334,24 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
-        jMenuItem1.setText("Rename...");
-        jMenuItem1.setName("jMenuItem1"); // NOI18N
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        renameStackMenuItem.setText("Rename...");
+        renameStackMenuItem.setName("renameStackMenuItem"); // NOI18N
+        renameStackMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                renameStackMenuItemActionPerformed(evt);
             }
         });
-        jPopupMenu1.add(jMenuItem1);
+        jPopupMenu1.add(renameStackMenuItem);
+
+        removeStackMenuItem.setText("Delete");
+        removeStackMenuItem.setToolTipText("Delete the Stack");
+        removeStackMenuItem.setName("removeStackMenuItem"); // NOI18N
+        removeStackMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removeStackMenuItemActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(removeStackMenuItem);
 
         jPopupMenu2.setName("jPopupMenu2"); // NOI18N
 
@@ -372,30 +383,30 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 
         stackPanel.setName("stackPanel"); // NOI18N
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
+        stackList.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        jList1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jList1.setName("jList1"); // NOI18N
+        stackList.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        stackList.setName("stackList"); // NOI18N
 
         org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${stacks}");
-        org.jdesktop.swingbinding.JListBinding jListBinding = org.jdesktop.swingbinding.SwingBindings.createJListBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, jList1);
+        org.jdesktop.swingbinding.JListBinding jListBinding = org.jdesktop.swingbinding.SwingBindings.createJListBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, stackList);
         jListBinding.setSourceUnreadableValue(null);
         bindingGroup.addBinding(jListBinding);
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedStack}"), jList1, org.jdesktop.beansbinding.BeanProperty.create("selectedElement"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedStack}"), stackList, org.jdesktop.beansbinding.BeanProperty.create("selectedElement"));
         bindingGroup.addBinding(binding);
 
-        jList1.addMouseListener(new java.awt.event.MouseAdapter() {
+        stackList.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
-                jList1MousePressed(evt);
+                stackListMousePressed(evt);
             }
             public void mouseReleased(java.awt.event.MouseEvent evt) {
-                jList1MouseReleased(evt);
+                stackListMouseReleased(evt);
             }
         });
-        stackPanel.setViewportView(jList1);
+        stackPanel.setViewportView(stackList);
 
         org.jdesktop.layout.GroupLayout jPanel1Layout = new org.jdesktop.layout.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -1117,7 +1128,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         }
     }//GEN-LAST:event_redshiftButtonActionPerformed
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void renameStackMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_renameStackMenuItemActionPerformed
         String newName = JOptionPane.showInputDialog(stackPanel, "New Stack ID:");
         List<String> names = new ArrayList();
         for (SedStack stack : stacks) {
@@ -1129,44 +1140,28 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
             SedStack stack = getSelectedStack();
             stack.setName(newName);
             setSelectedStack(stack);
-            jList1.setSelectedValue(stack, true);
+            stackList.setSelectedValue(stack, true);
         }
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_renameStackMenuItemActionPerformed
 
-    private void jList1MousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MousePressed
+    private void stackListMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stackListMousePressed
         if (evt.isPopupTrigger()) {
-            jList1.setSelectedIndex(jList1.locationToIndex(evt.getPoint()));
-            jPopupMenu1.show(jList1, evt.getX(), evt.getY());
+            stackList.setSelectedIndex(stackList.locationToIndex(evt.getPoint()));
+            jPopupMenu1.show(stackList, evt.getX(), evt.getY());
         }
-    }//GEN-LAST:event_jList1MousePressed
+    }//GEN-LAST:event_stackListMousePressed
 
-    private void jList1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseReleased
+    private void stackListMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stackListMouseReleased
         if (evt.isPopupTrigger()) {
-            jList1.setSelectedIndex(jList1.locationToIndex(evt.getPoint()));
-            jPopupMenu1.show(jList1, evt.getX(), evt.getY());
+            stackList.setSelectedIndex(stackList.locationToIndex(evt.getPoint()));
+            jPopupMenu1.show(stackList, evt.getX(), evt.getY());
         }
-    }//GEN-LAST:event_jList1MouseReleased
+    }//GEN-LAST:event_stackListMouseReleased
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
 
-        int answer = NarrowOptionPane.showConfirmDialog(this, "Are you sure you want to delete " + selectedStack.getName() + "?",
-                "Delete Stack",
-                JOptionPane.YES_NO_OPTION);
-        if (answer == JOptionPane.NO_OPTION)
-            return;
-
-        try {
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    SedStack stack = selectedStack;
-                    updateStackList(stack, false);
-                }
-            });
-            sedsTable.setModel(new StackTableModel(selectedStack));
-        } catch (ArrayIndexOutOfBoundsException ex) {
-            sedsTable.setModel(new StackTableModel());
-        }
+        deleteSelectedStack();
+        
     }//GEN-LAST:event_deleteButtonActionPerformed
 
     private void createSedButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createSedButtonActionPerformed
@@ -1295,6 +1290,10 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
 
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
+    private void removeStackMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeStackMenuItemActionPerformed
+        deleteSelectedStack();
+    }//GEN-LAST:event_removeStackMenuItemActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     javax.swing.JButton addButton;
     javax.swing.JTextField atPointXText;
@@ -1312,7 +1311,6 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
     javax.swing.JTextField integrationXMinText;
     javax.swing.JComboBox integrationYUnit;
     javax.swing.JButton jButton1;
-    javax.swing.JList jList1;
     javax.swing.JPopupMenu jPopupMenu1;
     javax.swing.JPopupMenu jPopupMenu2;
     javax.swing.JRadioButton jRadioButton1;
@@ -1330,6 +1328,7 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
     javax.swing.JCheckBox smoothCheckBox;
     javax.swing.JComboBox stackBinSizeUnitsComboBox;
     javax.swing.JButton stackButton;
+    javax.swing.JList stackList;
     javax.swing.JScrollPane stackPanel;
     javax.swing.JComboBox stackStatisticComboBox;
     javax.swing.JComboBox stackYUnitComboBox;
@@ -1458,22 +1457,32 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         stack.setName(newName + (c == '@' ? "" : "." + StringUtils.repeat(String.valueOf(c), j)));
     }
 
+    /**
+     * Add or remove the list of open Stacks.
+     * @param stack
+     * @param add boolean flag to specify if the stack should be added to the 
+     * list of open Stacks (true) or removed from the list (false).
+     */
     private void updateStackList(SedStack stack, Boolean add) {
         List<SedStack> newStacks = new ArrayList(stacks);
         if (add) {
+            // add the stack to the list
             newStacks.add(stack);
             setStacks(newStacks);
             setSelectedStack(stack);
-            jList1.setSelectedValue(stack, true);
+            stackList.setSelectedValue(stack, true);
         } else {
+            // remove the stack from the list
             newStacks.remove(stack);
             setStacks(newStacks);
             SedStack newStack;
             if (!getStacks().isEmpty()) {
                 newStack = getStacks().get(newStacks.size() - 1);
                 setSelectedStack(newStack);
-                jList1.setSelectedValue(newStack, true);
+                stackList.setSelectedValue(newStack, true);
             } else {
+                // if the list is now empty, create a new stack and add it to 
+                // the list
                 newStack = new SedStack("Stack");
                 updateStackList(newStack, true);
             }
@@ -1707,6 +1716,37 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
         }
 
         return true;
+    }
+    
+    /**
+     * Delete the selected stack. Opens a confirmation dialog if the stack is
+     * not empty.
+     */
+    private void deleteSelectedStack() {
+        
+        // only give a confirmation if the selected stack isn't empty.
+        if (!selectedStack.getSeds().isEmpty()) {
+            int answer = NarrowOptionPane.showConfirmDialog(this, "Are you sure you want to delete " + selectedStack.getName() + "?",
+                    "Delete Stack",
+                    JOptionPane.YES_NO_OPTION);
+            if (answer == JOptionPane.NO_OPTION)
+                return;
+        }
+        
+        try {
+            SwingUtilities.invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    SedStack stack = selectedStack;
+                    updateStackList(stack, false); // deletes the stack
+                }
+            });
+            
+            // update the Added SEDs table
+            sedsTable.setModel(new StackTableModel(selectedStack));
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            sedsTable.setModel(new StackTableModel());
+        }
     }
 
 }
