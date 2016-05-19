@@ -26,8 +26,6 @@ class FilterExpressionException extends Exception {
     public static final String DEFAULT_MSG = BAD_EXPRESSION
             + "Format is 'LHS operator RHS', where either the LHS or the "
             + "RHS must have a column specifier (e.g., '$columnNumber')";
-    public static final String BAD_PARENTHESES_MSG = BAD_EXPRESSION
-            + "Parentheses mismatched.";
     public static final String COLUMN_DNE_MSG = "";
     public static final String EMPTY_EXPRESSION_MSG = "Empty expression. "
             + "Cannot create a filter with an empty expression.";

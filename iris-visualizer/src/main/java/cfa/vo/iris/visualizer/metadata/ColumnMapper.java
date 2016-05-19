@@ -46,7 +46,8 @@ public class ColumnMapper {
      * @param tableRow the row to evaluate
      * @return the filter expression evaluated on the table row
      * @throws IllegalArgumentException if the column specifiers in the filter 
-     * expression are invalid (e.g., do not exist, contain non-numeric values).
+     * expression are invalid (e.g., do not exist, contain non-numeric values), 
+     * or if the expression is malformed (mismatched parentheses).
      */
     public Double evaluateRow(Object[] tableRow) throws IllegalArgumentException {
 
@@ -73,11 +74,7 @@ public class ColumnMapper {
         }
 
         // evaluate the expression
-        try {
-            evaluatedExpression = doubleEvaluator.evaluate(expression, variables);
-        } catch (IllegalArgumentException ex) {
-            throw new IllegalArgumentException(FilterExpressionException.BAD_PARENTHESES_MSG);
-        }
+        evaluatedExpression = doubleEvaluator.evaluate(expression, variables);
 
         return evaluatedExpression;
     }

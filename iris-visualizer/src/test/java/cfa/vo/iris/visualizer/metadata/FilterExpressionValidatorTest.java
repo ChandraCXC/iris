@@ -17,7 +17,6 @@ package cfa.vo.iris.visualizer.metadata;
 
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.test.unit.TestUtils;
-import cfa.vo.iris.visualizer.stil.IrisStarJTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
@@ -242,7 +241,7 @@ public class FilterExpressionValidatorTest {
         // badly placed parenthesis
         String expression = "($1 * 2)/ 3) > 5";
         exception.expect(IllegalArgumentException.class);
-        exception.expectMessage(FilterExpressionException.BAD_PARENTHESES_MSG);
+        exception.expectMessage("Parentheses mismatched");
         validator.process(expression);
     }
     

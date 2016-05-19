@@ -25,8 +25,8 @@ import org.junit.Test;
 import uk.ac.starlink.table.StarTable;
 
 /**
- *
- * @author jbudynk
+ * Tests for complex filter expressions.
+ * 
  */
 public class FilterExpressionBuilderTest {
     
@@ -60,11 +60,36 @@ public class FilterExpressionBuilderTest {
         // with the filter expression
         
         assertArrayEquals(new Integer[]{5, 6, 7, 8, 9, 10}, 
-                (Integer[]) validator.process(expression).toArray(new Integer[5]));
+                (Integer[]) validator.process(expression).toArray(new Integer[6]));
         
         expression = "($1 * 2) >= 10 && $2 >=6 ! $1 == 11";
         
         assertArrayEquals(new Integer[]{5, 6, 7, 8, 9}, 
                 (Integer[]) validator.process(expression).toArray(new Integer[5]));
+    }
+    
+    @Test
+    public void testLogicalExpressionsWithParentheses() {
+        String expression;
+        
+        expression = "{$1 * 2 >= 10 && $2 >= 6}";
+
+        assertArrayEquals(new Integer[]{5, 6, 7, 8, 9, 10}, 
+                (Integer[]) validator.process(expression).toArray(new Integer[6]));
+
+        expression = "{($1 * 2 >= 10) && $2 >= 6} || $1 == 1";
+
+        assertArrayEquals(new Integer[]{0, 5, 6, 7, 8, 9, 10}, 
+                (Integer[]) validator.process(expression).toArray(new Integer[7]));
+        
+        expression = "{($1 * 2) >= 10 && $2 >= 6} || $1 == 1";
+
+        assertArrayEquals(new Integer[]{0, 5, 6, 7, 8, 9, 10}, 
+                (Integer[]) validator.process(expression).toArray(new Integer[7]));
+        
+        expression = "{(($1 * 2) >= 10) && $2 >= 6} || $1 == 1";
+
+        assertArrayEquals(new Integer[]{0, 5, 6, 7, 8, 9, 10}, 
+                (Integer[]) validator.process(expression).toArray(new Integer[7]));
     }
 }

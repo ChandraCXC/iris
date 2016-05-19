@@ -16,8 +16,12 @@
 package cfa.vo.iris.visualizer.metadata;
 
 import com.fathzer.soft.javaluator.AbstractEvaluator;
+import com.fathzer.soft.javaluator.BracketPair;
+import com.fathzer.soft.javaluator.Constant;
+import com.fathzer.soft.javaluator.Function;
 import com.fathzer.soft.javaluator.Operator;
 import com.fathzer.soft.javaluator.Parameters;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -37,7 +41,10 @@ public class LogicalSetEvaluator extends AbstractEvaluator<HashSet> {
     private static final Parameters PARAMETERS;
     
     static {
+        ArrayList<BracketPair> brackets = new ArrayList<>();
+        brackets.add(BracketPair.BRACES);
         PARAMETERS = new Parameters();
+        PARAMETERS.addExpressionBrackets(brackets);
         PARAMETERS.add(NOT);
         PARAMETERS.add(AND);
         PARAMETERS.add(OR);
@@ -62,6 +69,26 @@ public class LogicalSetEvaluator extends AbstractEvaluator<HashSet> {
         HashSet<Integer> setRows = new HashSet<>();
         setRows.addAll(iRows);
         return setRows;
+    }
+    
+    @Override
+    public HashSet<Integer> evaluate(String expression) {
+        return super.evaluate(expression);
+    }
+    
+    @Override
+    public HashSet<Integer> evaluate(String expression, Object context) {
+        return super.evaluate(expression, context);
+    }
+
+    @Override
+    protected HashSet evaluate(Constant constant, Object evaluationContext) {
+        return super.evaluate(constant, evaluationContext); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected HashSet evaluate(Function function, Iterator<HashSet> arguments, Object evaluationContext) {
+        return super.evaluate(function, arguments, evaluationContext); //To change body of generated methods, choose Tools | Templates.
     }
     
     /**

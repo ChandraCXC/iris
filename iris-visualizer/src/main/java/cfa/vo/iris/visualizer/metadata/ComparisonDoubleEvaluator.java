@@ -40,6 +40,10 @@ public class ComparisonDoubleEvaluator extends DoubleEvaluator {
     public final static Operator EQ = new Operator("==", 2, Operator.Associativity.LEFT, -1);
     public final static Operator NE = new Operator("!=", 2, Operator.Associativity.LEFT, -1);
     
+//    public final static Operator NOT = new Operator("!!", 1, Operator.Associativity.RIGHT, -2);
+//    public final static Operator AND = new Operator("&&", 2, Operator.Associativity.LEFT, -3);
+//    public final static Operator  OR = new Operator("||", 2, Operator.Associativity.LEFT, -4);
+    
     private static final Parameters PARAMETERS;
 
     static {
@@ -56,6 +60,9 @@ public class ComparisonDoubleEvaluator extends DoubleEvaluator {
         PARAMETERS.add(LE); // less than or equal to
         PARAMETERS.add(EQ); // equal to
         PARAMETERS.add(NE); // not equal to
+//        PARAMETERS.add(NOT); // this NOT that
+//        PARAMETERS.add(AND); // this AND that
+//        PARAMETERS.add(OR); // this OR that
     }
 
     public ComparisonDoubleEvaluator() {
@@ -123,6 +130,22 @@ public class ComparisonDoubleEvaluator extends DoubleEvaluator {
             right = operands.next();
             return left - right;
             
+//        // Logical operators
+//        } else if (operator == OR) {
+//            left = operands.next();
+//            right = operands.next();
+//            if (!left.equals(right)) {
+//                return left;
+//            }
+//        } else if (operator == AND) {
+//            left = operands.next();
+//            right = operands.next();
+//            if (left.equals(right)) {
+//                return left;
+//            }
+//        } else if (operator == NOT) {
+//            right = operands.next();
+//            if ()
         } else {
             // fall back on the parent method for other Double operators (*, -, +, etc.)
             return super.evaluate(operator, operands, evaluationContext);
