@@ -18,12 +18,13 @@ package cfa.vo.iris.visualizer.plotter;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
-import cfa.vo.iris.units.UnitsManager;
+import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
-import cfa.vo.utils.Default;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.AbstractListModel;
+
+import org.apache.commons.collections.CollectionUtils;
 
 /**
  *
@@ -34,31 +35,21 @@ import javax.swing.AbstractListModel;
 public class UnitsWidget extends javax.swing.JPanel {
 
     private VisualizerDataModel dataModel;
-    private UnitsManager unitsManager;
-    private StilPlotter plotter;
-    
+
     /**
      * Creates new form UnitsWidget
      * @param plotter 
      */
-    public UnitsWidget(StilPlotter plotter) {
-        this.unitsManager = Default.getInstance().getUnitsManager();
-        this.plotter = plotter;
-        this.dataModel = plotter.getPreferences().getDataModel();
+    public UnitsWidget() {
         initComponents();
-        
-        // if current sed is null, set X and Y to Iris default units
-        if (plotter.getSelectedSed() != null) {
-            setXunit(dataModel.getSedModel(plotter.getSelectedSed()).getXunits());
-            setYunit(dataModel.getSedModel(plotter.getSelectedSed()).getYunits());
-        } else {
-            // TODO: use default Iris units here; should be a static
-            setXunit(unitsManager.newXUnits("Hz").toString());
-            setYunit(unitsManager.newYUnits("Jy").toString());
-        }
-        
-        xunits.setSelectedValue(getXunit(), false);
-        yunits.setSelectedValue(getYunit(), false);
+    }
+    
+    protected VisualizerDataModel getDataModel() {
+        return dataModel;
+    }
+
+    protected void setDataModel(VisualizerDataModel dataModel) {
+        this.dataModel = dataModel;
     }
 
     /**
@@ -146,13 +137,15 @@ public class UnitsWidget extends javax.swing.JPanel {
      */
     public void updateUnits() {
         // if SED is null, don't do anything.
-        if (plotter == null) {
+        if (CollectionUtils.isEmpty(dataModel.getSedModels())) {
             return;
         }
         
         // fire Visualizer event to update plot and MB
-        dataModel.getSedModel(plotter.getSelectedSed()).setUnits(xunit, yunit);
-        dataModel.setSelectedSed(plotter.getSelectedSed());
+        for (SedModel model : dataModel.getSedModels()) {
+            model.setUnits(xunit, yunit);
+        }
+        
         this.setVisible(false);
     }
     
@@ -174,6 +167,7 @@ public class UnitsWidget extends javax.swing.JPanel {
         // fire Visualizer event to update plot and MB
         dataModel.getSedModel(sed).setUnits(xunit, yunit);
         dataModel.setSelectedSed(sed);
+        
         this.setVisible(false);
     }
     

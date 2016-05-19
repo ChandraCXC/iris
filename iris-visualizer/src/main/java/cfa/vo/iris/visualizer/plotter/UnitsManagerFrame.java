@@ -15,27 +15,27 @@
  */
 package cfa.vo.iris.visualizer.plotter;
 
-import java.awt.BorderLayout;
+import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 
 @SuppressWarnings("serial")
 public class UnitsManagerFrame extends javax.swing.JInternalFrame {
+    
+    private VisualizerDataModel dataModel;
 
-    private final UnitsWidget unitsWidget;
-    private final StilPlotter plotter;
-        
     /**
      * Creates new form UnitsManagerFrame
      * @param plotter StilPlotter 
      */
-    public UnitsManagerFrame(StilPlotter plotter) {
-        this.plotter = plotter;
+    public UnitsManagerFrame() {
         initComponents();
-        this.unitsWidget = new UnitsWidget(this.plotter);
-        
-        this.setTitle("Select Units");
+    }
+    
+    protected VisualizerDataModel getDataModel() {
+        return dataModel;
+    }
 
-        this.unitsManagerPanel.add(this.unitsWidget, BorderLayout.NORTH);
-        
+    protected void setDataModel(VisualizerDataModel dataModel) {
+        this.dataModel = dataModel;
     }
 
     /**
@@ -48,6 +48,7 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
     private void initComponents() {
 
         unitsManagerPanel = new javax.swing.JPanel();
+        unitsWidget = new cfa.vo.iris.visualizer.plotter.UnitsWidget();
         jPanel1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -59,6 +60,7 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
         setPreferredSize(new java.awt.Dimension(450, 325));
 
         unitsManagerPanel.setLayout(new java.awt.BorderLayout());
+        unitsManagerPanel.add(unitsWidget, java.awt.BorderLayout.CENTER);
 
         jPanel1.setPreferredSize(new java.awt.Dimension(396, 30));
 
@@ -129,5 +131,6 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel unitsManagerPanel;
+    private cfa.vo.iris.visualizer.plotter.UnitsWidget unitsWidget;
     // End of variables declaration//GEN-END:variables
 }

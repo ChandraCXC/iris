@@ -6,11 +6,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
  * Dynamic model for the plotter and metadata browser. Maintains the current state
@@ -120,12 +120,15 @@ public class VisualizerDataModel {
         pcs.firePropertyChange(PROP_DATAMODEL_TITLE, oldTitle, dataModelTitle);
     }
     
-    //TODO: Support lists of SEDs
     public List<ExtSed> getSelectedSeds() {
         return selectedSeds;
     }
 
-    private synchronized void setSelectedSeds(List<ExtSed> selectedSeds) {
+    //TODO: Support lists of SEDs
+    synchronized void setSelectedSeds(List<ExtSed> selectedSeds) {
+        if (CollectionUtils.size(selectedSeds) > 1) {
+            throw new IllegalArgumentException("Can only select 1 sed at a time");
+        }
         List<ExtSed> oldSeds = this.selectedSeds;
         this.selectedSeds = selectedSeds;
         pcs.firePropertyChange(PROP_SELECTED_SEDS, oldSeds, selectedSeds);
@@ -152,8 +155,8 @@ public class VisualizerDataModel {
         
         this.setSedSegmentModels(newSedModels);
         this.setSedStarTables(newSedTables);
-        this.setSelectedSeds(Arrays.asList(selectedSed));
         this.setDataModelTitle(selectedSed.getId());
+        this.setSelectedSeds(Arrays.asList(selectedSed));
         
         pcs.firePropertyChange(PROP_SELECTED_SED, oldSed, selectedSed);
     }
