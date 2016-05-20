@@ -406,6 +406,7 @@
       </Properties>
       <BindingProperties>
         <BindingProperty name="seds" source="Form" sourcePath="${dataModel.selectedSeds}" target="plotter" targetPath="seds" updateStrategy="0" immediately="false"/>
+        <BindingProperty name="sedSegmentModels" source="Form" sourcePath="${dataModel.sedSegmentModels}" target="plotter" targetPath="sedSegmentModels" updateStrategy="0" immediately="false"/>
       </BindingProperties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new StilPlotter(preferences)"/>

@@ -35,10 +35,7 @@ public class VisualizerComponentPreferencesTest {
         ExtSed sed = new ExtSed("test");
         IWorkspace ws = new StubWorkspace();
         
-        VisualizerComponentPreferences prefs = new VisualizerComponentPreferences(ws) {
-            @Override
-            protected void addSedListeners() {}
-        };
+        VisualizerComponentPreferences prefs = new VisualizerComponentPreferences(ws);
         assertEquals(0, prefs.getSedModels().size());
         assertNull(prefs.getSedModel(sed));
         

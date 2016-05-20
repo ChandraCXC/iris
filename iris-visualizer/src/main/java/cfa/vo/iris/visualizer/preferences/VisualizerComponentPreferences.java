@@ -23,14 +23,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import cfa.vo.iris.IWorkspace;
-import cfa.vo.iris.events.MultipleSegmentEvent;
-import cfa.vo.iris.events.MultipleSegmentListener;
-import cfa.vo.iris.events.SedCommand;
-import cfa.vo.iris.events.SedEvent;
-import cfa.vo.iris.events.SedListener;
-import cfa.vo.iris.events.SegmentEvent;
-import cfa.vo.iris.events.SegmentEvent.SegmentPayload;
-import cfa.vo.iris.events.SegmentListener;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.MouseListenerManager;
 import cfa.vo.iris.visualizer.metadata.SegmentExtractor;
@@ -68,13 +60,6 @@ public class VisualizerComponentPreferences {
         this.mouseListenerManager = new MouseListenerManager();
         
         this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
-        addSedListeners();
-    }
-    
-    protected void addSedListeners() {
-        SegmentEvent.getInstance().add(new VisualizerSegmentListener());
-        SedEvent.getInstance().add(new VisualizerSedListener());
-        MultipleSegmentEvent.getInstance().add(new VisualizerMultipleSegmentListener());
     }
 
     /**
@@ -96,22 +81,6 @@ public class VisualizerComponentPreferences {
      */
     public VisualizerDataModel getDataModel() {
         return dataStore.getDataModel();
-    }
-
-    /**
-     * @return
-     *  Currently selected SED in the workspace
-     */
-    public ExtSed getSelectedSed() {
-        return getDataModel().getSelectedSed();
-    }
-
-    /**
-     * Sets selected SED
-     * @param selectedSed
-     */
-    public void setSelectedSed(ExtSed selectedSed) {
-        getDataModel().setSelectedSed(selectedSed);
     }
     
     /**
@@ -184,7 +153,6 @@ public class VisualizerComponentPreferences {
      */
     public void update(ExtSed sed, Segment segment) {
         dataStore.update(sed, segment);
-        fire(sed, VisualizerCommand.RESET);
     }
     
     /**
@@ -194,7 +162,6 @@ public class VisualizerComponentPreferences {
      */
     public void update(ExtSed sed, List<Segment> segments) {
         dataStore.update(sed, segments);
-        fire(sed, VisualizerCommand.RESET);
     }
     
     /**
@@ -212,7 +179,6 @@ public class VisualizerComponentPreferences {
      */
     public void remove(ExtSed sed, Segment segment) {
         dataStore.remove(sed, segment);
-        fire(sed, VisualizerCommand.RESET);
     }
     
     /**
@@ -222,114 +188,5 @@ public class VisualizerComponentPreferences {
      */
     public void remove(ExtSed sed, List<Segment> segments) {
         dataStore.remove(sed, segments);
-        fire(sed, VisualizerCommand.RESET);
-    }
-    
-    protected void fire(ExtSed source, VisualizerCommand command) {
-        VisualizerChangeEvent.getInstance().fire(source, command);
-    }
-    
-    /**
-     * These listeners are responsible for detecting any changes in the SEDManger and firing
-     * off the appropriate update events for each object in the visualizer component.
-     *
-     */
-    private class VisualizerSedListener implements SedListener {
-        
-        @Override
-        public void process(ExtSed sed, SedCommand payload) {
-            try {
-                processNotification(sed, payload);
-            } catch (Exception e) {
-                // TODO: This happens asynchronously, what should we do with exceptions?
-                e.printStackTrace();
-            }
-        }
-        
-        private void processNotification(ExtSed sed, SedCommand payload) {
-            // Only take actions if an SED was added, removed, or selected.
-            // Rely on Segment events to pick up changes within an SED.
-            if (SedCommand.ADDED.equals(payload))
-            {
-                update(sed);
-            }
-            else if (SedCommand.REMOVED.equals(payload)) {
-                remove(sed);
-            } 
-            else if (SedCommand.SELECTED.equals(payload)) {
-                setSelectedSed(sed);
-                fire(sed, VisualizerCommand.SELECTED);
-            }
-            else {
-                // Doesn't merit a full reset, this is basically just here for SED name changes
-                setSelectedSed(sed);
-                fire(sed, VisualizerCommand.REDRAW); // should remove this
-            }
-        }
-    }
-    
-    private class VisualizerSegmentListener implements SegmentListener {
-
-        @Override
-        public void process(Segment segment, SegmentPayload payload) {
-            try {
-                processNotification(segment, payload);
-            } catch (Exception e) {
-                // TODO: This happens asynchronously, what should we do with exceptions?
-                e.printStackTrace();
-            }
-        }
-        
-        private void processNotification(Segment segment, SegmentPayload payload) {
-            
-            ExtSed sed = payload.getSed();
-            SedCommand command = payload.getSedCommand();
-            
-            // Update the SED with the new or updated segment
-            if (SedCommand.ADDED.equals(command) ||
-                SedCommand.CHANGED.equals(command))
-            {
-                update(sed, segment);
-            }
-            
-            // Remove the deleted segment from the SED
-            else if (SedCommand.REMOVED.equals(command)) {
-                remove(sed, segment);
-            }
-        }
-    }
-    
-    private class VisualizerMultipleSegmentListener implements MultipleSegmentListener {
-        
-        @Override
-        public void process(java.util.List<Segment> segments, SegmentPayload payload) {
-            try {
-                processNotification(segments, payload);
-            } catch (Exception e) {
-                // TODO: This happens asynchronously, what should we do with
-                // exceptions?
-                e.printStackTrace();
-            }
-        }
-        
-        private void processNotification(java.util.List<Segment> segments, SegmentPayload payload) {
-            ExtSed sed = payload.getSed();
-            SedCommand command = payload.getSedCommand();
-            
-            // Update the SED with the new or updated segments
-            if (SedCommand.ADDED.equals(command) ||
-                SedCommand.CHANGED.equals(command))
-            {
-                update(sed, segments);
-            }
-            
-            // Remove the deleted segments from the SED
-            else if (SedCommand.REMOVED.equals(command)) {
-                remove(sed, segments);
-            }
-            // update plot preferences
-            VisualizerComponentPreferences.this.plotPreferences = 
-                    VisualizerComponentPreferences.this.getSedModel(sed).getPlotPreferences();
-        }
     }
 }

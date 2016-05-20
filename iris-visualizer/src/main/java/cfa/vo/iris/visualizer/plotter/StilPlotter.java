@@ -27,16 +27,10 @@ import uk.ac.starlink.ttools.plot2.task.PlanePlot2Task;
 import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 import uk.ac.starlink.ttools.task.MapEnvironment;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import javax.swing.border.BevelBorder;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,7 +48,10 @@ public class StilPlotter extends JPanel {
 
     private PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> display;
 
+    // List of SEDs plotted in Plotter
     private List<ExtSed> seds = new ArrayList<>();
+    
+    // For data model preferences
     private VisualizerComponentPreferences preferences;
     private VisualizerDataModel dataModel;
     
@@ -78,14 +75,17 @@ public class StilPlotter extends JPanel {
         return seds;
     }
 
+    /**
+     * For binding to the datamodel. This function SHOULD NOT be called otherwise.
+     */
     public void setSeds(List<ExtSed> seds) {
         // TODO: Support more than one SED
         if (seds.size() > 1) {
             throw new IllegalArgumentException("Invalid sed list length");
         }
-        this.seds = seds;
         
-        resetPlot(true);
+        this.seds = seds;
+        resetPlot(false);
     }
 
     public VisualizerComponentPreferences getPreferences() {
@@ -101,11 +101,20 @@ public class StilPlotter extends JPanel {
         return dataModel;
     }
     
-    public void setDataModel(VisualizerDataModel dataModel) {
+    void setDataModel(VisualizerDataModel dataModel) {
         this.dataModel = dataModel;
-        
-        // Always reset on a datamodel change
-        resetPlot(true);
+        this.setSeds(dataModel.getSelectedSeds());
+    }
+    
+    public List<SegmentModel> getSedSegmentModels() {
+        return dataModel.getSedSegmentModels();
+    }
+    
+    /**
+     * For binding to the dataModel, this SHOULD NOT be called otherwise.
+     */
+    public void setSedSegmentModels(List<SegmentModel> models) {
+        this.resetPlot(false);
     }
 
     public PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> getPlotDisplay() {
@@ -126,6 +135,7 @@ public class StilPlotter extends JPanel {
         if (CollectionUtils.isEmpty(seds)) {
             return preferences.getPlotPreferences();
         } else {
+            // TODO: Support multiple seds
             return dataModel.getSedModel(this.seds.get(0)).getPlotPreferences();
         }
     }
@@ -133,39 +143,50 @@ public class StilPlotter extends JPanel {
     /**
      * Change the plotting space between logarithmic and linear. One of the axes
      * can be logarithmic, while the other is linear.
-     * @param plotType the plot type to use. Must be one of the 
-     * PlotPreferences.PlotType enums. Choices are LOG, LINEAR, XLOG, and YLOG.
+     * 
+     * @param plotType the plot type to use.
      */
-    public void changePlotType(PlotPreferences.PlotType plotType) {
-                
-        try {
-            getPlotPreferences().setPlotType(plotType);
-            resetPlot(true);
-        } catch (EnumConstantNotPresentException ex) {
-            logger.log(Level.WARNING, ex.getMessage());
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }        
+    public void setPlotType(PlotPreferences.PlotType plotType) {
+        getPlotPreferences().setPlotType(plotType);
+        resetPlot(false);
     }
     
     public void setGridOn(boolean on) {
-        try {
-            getPlotPreferences().setShowGrid(on);
-            resetPlot(true);
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        getPlotPreferences().setShowGrid(on);
+        resetPlot(false);
+    }
+    
+    /**
+     * Resets the plot.
+     * @param forceReset - forces the plot to reset its bounds
+     */
+    void resetPlot(boolean forceReset)
+    {
+        // forceReset can override this class's internal usage of preferences
+        boolean fixed = getPlotPreferences().getFixed();
+        
+        // Clear the display if it's available
+        setupForPlotDisplayChange();
+        
+        // Setup new stil plot component
+        display = createPlotComponent();
+        
+        // Set the bounds using the current SED's aspect if the plot is fixed and if we're not
+        // forcing a redraw
+        if (fixed && !forceReset) {
+            PlaneAspect existingAspect = this.getPlotPreferences().getAspect();
+            display.setAspect(existingAspect);
         }
+        
+        // Add the display to the plot view
+        updatePlotDisplay();
     }
     
     /**
      * Resets boundaries on the zoom to their original settings.
      */
     public void resetZoom() {
-        resetPlot(false);
+        resetPlot(true);
     }
     
     /**
@@ -187,32 +208,6 @@ public class StilPlotter extends JPanel {
         // create new aspect for zoomed view
         PlaneAspect zoomedAspect = new PlaneAspect(xlimits, ylimits);
         this.getPlotDisplay().setAspect(zoomedAspect);
-    }
-    
-    /**
-     * Resets the plot.
-     */
-    private void resetPlot(boolean fixed)
-    {
-        // Preferences can override this class's internal usage of fixed
-        if (fixed) {
-            fixed = getPlotPreferences().getFixed();
-        }
-        
-        // Clear the display if it's available
-        setupForPlotDisplayChange();
-        
-        // Setup new plot component
-        display = createPlotComponent();
-        
-        // Set the bounds using the current SED's aspect if the plot is fixed
-        if (fixed) {
-            PlaneAspect existingAspect = this.getPlotPreferences().getAspect();
-            display.setAspect(existingAspect);
-        }
-        
-        // Add the display to the plot view
-        updatePlotDisplay();
     }
     
     /**
@@ -270,9 +265,7 @@ public class StilPlotter extends JPanel {
     }
 
     /**
-     * 
-     * @param env
-     *            Plot display environment to use
+     * @param env Plot display environment to use
      * @return PlotDisplay
      * @throws Exception
      */
@@ -282,8 +275,6 @@ public class StilPlotter extends JPanel {
         logger.log(Level.FINE, "plot environment:");
         logger.log(Level.FINE, ReflectionToStringBuilder.toString(env));
         
-        
-        // Always cache between repaints
         @SuppressWarnings("unchecked")
         PlotDisplay<PlaneSurfaceFactory.Profile,PlaneAspect> display =
                 new PlanePlot2Task().createPlotComponent(env, true);
@@ -317,27 +308,14 @@ public class StilPlotter extends JPanel {
             
             env.setValue(key, pp.getPreferences().get(key));
         }
-
+        
         // set title of plot
         env.setValue("title", dataModel.getDataModelTitle());
 
         // Add segments and segment preferences
-        addSegmentLayers(env);
-    }
-
-    private void addSegmentLayers(MapEnvironment env)
-            throws IOException {
-        if (CollectionUtils.isEmpty(seds)) {
-            logger.info("No SED selected, returning empty plot");
-            return;
-        }
-
-        for (ExtSed sed : this.seds) {
-            List<SegmentModel> models = dataModel.getModelsForSed(sed);
-            for (SegmentModel layer : models) {
-                for (String key : layer.getPreferences().keySet()) {
-                    env.setValue(key, layer.getPreferences().get(key));
-                }
+        for (SegmentModel layer : dataModel.getSedSegmentModels()) {
+            for (String key : layer.getPreferences().keySet()) {
+                env.setValue(key, layer.getPreferences().get(key));
             }
         }
     }
@@ -346,19 +324,20 @@ public class StilPlotter extends JPanel {
      * Sets PlotDisplay up for new changes, like changing a SED color,
      * switching from linear to logarithmic plotting, etc.
      */
-    private void setupForPlotDisplayChange() {
+    void setupForPlotDisplayChange() {
         if (display != null) {
+            getPlotPreferences().setAspect(display.getAspect());
             display.removeAll();
             remove(display);
-            
-            getPlotPreferences().setAspect(display.getAspect());
         }
     }
     
     /**
      * Add and update the PlotDisplay.
      */
-    private void updatePlotDisplay() {
+    void updatePlotDisplay() {
+        
+        // Ensure it fills the entire display
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.weightx = gbc.weighty = 1.0;
         gbc.gridx = gbc.gridy = 0;

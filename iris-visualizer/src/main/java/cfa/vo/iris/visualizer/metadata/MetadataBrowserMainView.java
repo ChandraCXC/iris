@@ -24,8 +24,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
-import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import cfa.vo.iris.visualizer.metadata.IrisStarJTable.RowSelection;
@@ -128,6 +126,8 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private void resetDataTables() {
         plotterStarJTable.setSelectedStarTables(dataModel.getSelectedStarTables());
         pointStarJTable.setSelectedStarTables(dataModel.getSelectedStarTables());
+        
+        // TODO: Tie this to dataModel resets.
     }
     
     /*
@@ -577,7 +577,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             selection.selectedTables[i].applyMasks(selection.selectedRows[i]);
         }
         
-        VisualizerChangeEvent.getInstance().fire(dataModel.getSelectedSed(), VisualizerCommand.REDRAW);
         resetDataTables();
     }//GEN-LAST:event_applyMaskButtonActionPerformed
 
@@ -592,13 +591,11 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             selection.selectedTables[i].clearMasks(selection.selectedRows[i]);
         }
         
-        VisualizerChangeEvent.getInstance().fire(dataModel.getSelectedSed(), VisualizerCommand.REDRAW);
         resetDataTables();
     }//GEN-LAST:event_clearMaskButtonActionPerformed
 
     private void clearAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearAllButtonActionPerformed
         IrisStarTable.clearAllMasks(dataModel.getSedStarTables());
-        VisualizerChangeEvent.getInstance().fire(dataModel.getSelectedSed(), VisualizerCommand.REDRAW);
         resetDataTables();
     }//GEN-LAST:event_clearAllButtonActionPerformed
 

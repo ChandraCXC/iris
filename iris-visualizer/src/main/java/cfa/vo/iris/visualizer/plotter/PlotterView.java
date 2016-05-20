@@ -18,14 +18,10 @@ package cfa.vo.iris.visualizer.plotter;
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.gui.GUIUtils;
-import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
-import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
-import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
-import cfa.vo.iris.visualizer.preferences.VisualizerListener;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -144,14 +140,8 @@ public class PlotterView extends JInternalFrame {
             }
         });
         
-        addPlotChangeListener();
-        
         // Set listeners to point to this view
         preferences.getMouseListenerManager().setPlotterView(this);
-    }
-    
-    protected void addPlotChangeListener() {
-        VisualizerChangeEvent.getInstance().add(new PlotChangeListener());
     }
     
     private void openMetadataBrowser() throws Exception {
@@ -408,6 +398,8 @@ public class PlotterView extends JInternalFrame {
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.selectedSeds}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("seds"));
         bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.sedSegmentModels}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("sedSegmentModels"));
+        bindingGroup.addBinding(binding);
 
         plotter.setLayout(new java.awt.GridBagLayout());
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -619,7 +611,7 @@ public class PlotterView extends JInternalFrame {
     // End of variables declaration//GEN-END:variables
 
     private void changePlotType(PlotPreferences.PlotType plotType) {
-        plotter.changePlotType(plotType);
+        plotter.setPlotType(plotType);
     }
     
     private void setGridOn(boolean on) {
@@ -673,22 +665,6 @@ public class PlotterView extends JInternalFrame {
         // set plot window fixed
         this.mntmAutoFixed.setSelected(this.plotter.getPlotPreferences()
                 .getFixed());
-    }
-    
-    private class PlotChangeListener implements VisualizerListener {
-
-        @Override
-        public void process(ExtSed source, VisualizerCommand payload) {
-            if (VisualizerCommand.RESET.equals(payload)) 
-            {
-                updatePreferences();
-            }
-            else if (VisualizerCommand.REDRAW.equals(payload)) {
-            }
-            else if (VisualizerCommand.SELECTED.equals(payload)) {
-                updatePreferences();
-            }
-        }
     }
     
     // plotter navigation help window. Is closable, maximizable, and 

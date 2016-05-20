@@ -26,8 +26,6 @@ import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.sed.stil.SerializingStarTableAdapter;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.units.UnitsException;
-import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
-import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
@@ -119,7 +117,7 @@ public class IrisStarTableAdapter {
         }
         
         private void notifyVisualizerComponents() {
-            VisualizerChangeEvent.getInstance().fire(null, VisualizerCommand.REDRAW);
+            // TODO: Notification on completion?
         }
     }
 }

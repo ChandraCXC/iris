@@ -22,7 +22,7 @@ public class VisualizerDataModel {
     public static final String PROP_DATAMODEL_TITLE = "dataModelTitle";
     public static final String PROP_SELECTED_SEDS = "selectedSeds";
     public static final String PROP_SELECTED_SED = "selectedSed";
-    public static final String PROP_SELECTED_SEGMENT_MODELS = "selectedSegmentModels";
+    public static final String PROP_SED_SEGMENT_MODELS = "sedSegmentModels";
     public static final String PROP_SED_STARTABLES = "sedStarTables";
     public static final String PROP_SELECTED_STARTABLES = "selectedStarTables";
 
@@ -152,7 +152,7 @@ public class VisualizerDataModel {
             newSedModels.add(segModel);
             newSedTables.add(segModel.getInSource());
         }
-        
+
         this.setSedSegmentModels(newSedModels);
         this.setSedStarTables(newSedTables);
         this.setDataModelTitle(selectedSed.getId());
@@ -169,7 +169,7 @@ public class VisualizerDataModel {
     synchronized void setSedSegmentModels(List<SegmentModel> newModels) {
         List<SegmentModel> oldModels = this.sedSegmentModels;
         this.sedSegmentModels = newModels;
-        pcs.firePropertyChange(PROP_SELECTED_SEGMENT_MODELS, oldModels, sedSegmentModels);
+        pcs.firePropertyChange(PROP_SED_SEGMENT_MODELS, oldModels, sedSegmentModels);
     }
     
     public List<IrisStarTable> getSedStarTables() {
@@ -191,5 +191,18 @@ public class VisualizerDataModel {
         List<IrisStarTable> oldStarTables = selectedStarTables;
         this.selectedStarTables = newStarTables;
         pcs.firePropertyChange(PROP_SELECTED_STARTABLES, oldStarTables, selectedStarTables);
+    }
+    
+    /**
+     * Can be used by external callers to property changes for the specified SED. Property 
+     * changes will be fired if and only if the specified SED is in the list of currently
+     * selected SEDs.
+     * 
+     * @param sed
+     */
+    public void fireChanges(ExtSed sed) {
+        if (selectedSed == sed) {
+            setSelectedSed(sed);
+        }
     }
 }
