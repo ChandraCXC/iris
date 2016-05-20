@@ -16,6 +16,7 @@
 package cfa.vo.iris.visualizer.metadata;
 
 import java.awt.Component;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JLabel;
@@ -40,6 +41,9 @@ import cfa.vo.iris.visualizer.stil.IrisStarJTable.RowSelection;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.SegmentColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.UtypeColumnInfoMatcher;
+import cfa.vo.sedlib.common.SedInconsistentException;
+import cfa.vo.sedlib.common.SedNoDataException;
+
 import java.util.LinkedList;
 import java.util.List;
 import uk.ac.starlink.table.StarTable;
@@ -173,27 +177,38 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         
         // Do nothing if no SED is selected
         if (selectedSed == null) {
-            JOptionPane.showMessageDialog(this, "No SED in browser. Please load an SED.");
+            JOptionPane.showMessageDialog(this, "No SED in browser. Please load an SED.",
+                    null, JOptionPane.WARNING_MESSAGE);
             return;
         }
         
         // Cannot extract from segment tab
         IrisStarJTable jtable = getSelectedIrisJTable();
         if (jtable == null) {
-            JOptionPane.showMessageDialog(this, "Select either Data or Point Metadata tab.");
+            JOptionPane.showMessageDialog(this, "Select either Data or Point Metadata tab.",
+                    null, JOptionPane.WARNING_MESSAGE);
             return;
         }
         
         // Do nothing if there are no rows selected
         RowSelection selectedRows = jtable.getRowSelection();
         if (selectedRows == null || selectedRows.originalRows.length == 0) {
-            JOptionPane.showMessageDialog(this, "No rows selected to extract. Please select rows.");
+            JOptionPane.showMessageDialog(this, "No rows selected to extract. Please select rows.",
+                    null, JOptionPane.WARNING_MESSAGE);
             return;
         }
         
-        logger.info(String.format("Extracting %s points from Sed.", selectedRows.originalRows.length));
-        preferences.createNewWorkspaceSed(selectedRows);
-        JOptionPane.showMessageDialog(this, "Added new Filter SED to workspace.");
+        try {
+            
+            logger.info(String.format("Extracting %s points from Sed.", selectedRows.originalRows.length));
+            ExtSed newSed = preferences.createNewWorkspaceSed(selectedRows);
+            JOptionPane.showMessageDialog(this, "Added new SED (" + newSed.getId() + ") to workspace.");
+            
+        } catch (SedInconsistentException | SedNoDataException ex) {
+            String msg = "Error extracting SED: " + ex.getMessage();
+            JOptionPane.showMessageDialog(this, msg, null, JOptionPane.ERROR_MESSAGE);
+            logger.log(Level.SEVERE, msg, ex);
+        }
     }
     
     /*

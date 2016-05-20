@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.events.MultipleSegmentEvent;
 import cfa.vo.iris.events.MultipleSegmentListener;
@@ -41,6 +43,8 @@ import cfa.vo.iris.visualizer.plotter.SegmentModel;
 import cfa.vo.iris.visualizer.stil.IrisStarJTable.RowSelection;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.common.SedInconsistentException;
+import cfa.vo.sedlib.common.SedNoDataException;
 
 /**
  * Single object location for data and preferences needed by the iris visualizer 
@@ -175,27 +179,28 @@ public class VisualizerComponentPreferences {
     /**
      * Used by the metadata browser to extract a selection of rows from the browser
      * into a new ExtSed. We use the SegmentExtractor class to construct a new Sed
-     * from the selected set of StarTables, then asynchronously pass it back to the 
-     * SedManager and let the SedListener do the work of notifying/processing the 
-     * new ExtSed back into the VisualizerComponent.
+     * from the selected set of StarTables, then  pass it back to the 
+     * SedManager and let the SedListener do the work of asynchronously 
+     * notifying/processing the new ExtSed back into the VisualizerComponent.
      * 
      * @param selection
      * @return
+     * @throws SedNoDataException 
+     * @throws SedInconsistentException 
      */
-    public void createNewWorkspaceSed(RowSelection selection) {
+    public ExtSed createNewWorkspaceSed(RowSelection selection) throws SedInconsistentException, SedNoDataException {
         
         // Extract selected rows to new Segments
         final SegmentExtractor extractor = 
                 new SegmentExtractor(selection.selectedTables, selection.selectedRows);
         
-        visualizerExecutor.submit(new Callable<ExtSed>() {
-            @SuppressWarnings("unchecked")
-            @Override
-            public ExtSed call() throws Exception {
-                ws.getSedManager().add(extractor.constructSed());
-                return null;
-            }
-        });
+        try {
+            ExtSed newSed = extractor.constructSed();
+            ws.getSedManager().add(newSed);
+            return newSed;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
