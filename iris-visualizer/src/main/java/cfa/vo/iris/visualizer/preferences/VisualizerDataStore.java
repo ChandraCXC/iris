@@ -36,9 +36,9 @@ public class VisualizerDataStore {
     VisualizerDataModel dataModel;
     
     public VisualizerDataStore(ExecutorService visualizerExecutor) {
-        this.adapter = new IrisStarTableAdapter(visualizerExecutor);
         this.sedModels = Collections.synchronizedMap(new IdentityHashMap<ExtSed, SedModel>());
         this.dataModel = new VisualizerDataModel(this);
+        this.adapter = new IrisStarTableAdapter(visualizerExecutor, dataModel);
         
         addSedListeners();
     }

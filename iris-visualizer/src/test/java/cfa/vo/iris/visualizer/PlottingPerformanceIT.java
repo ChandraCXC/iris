@@ -22,7 +22,6 @@ import java.util.Map;
 import javax.swing.SwingUtilities;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import cfa.vo.iris.IrisComponent;
@@ -54,7 +53,6 @@ public class PlottingPerformanceIT extends AbstractComponentGUITest {
     }
 
     // Ignoring this until we can optimize SED conversion.
-//    @Ignore
     @Test(timeout=60000)
     public void testReadPerformance() throws Exception {
         

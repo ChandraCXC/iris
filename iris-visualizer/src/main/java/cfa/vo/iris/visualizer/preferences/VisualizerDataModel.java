@@ -11,6 +11,7 @@ import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import org.apache.commons.collections.CollectionUtils;
+import org.jdesktop.observablecollections.ObservableCollections;
 
 /**
  * Dynamic model for the plotter and metadata browser. Maintains the current state
@@ -35,22 +36,27 @@ public class VisualizerDataModel {
 
     // Seds to display in the visualizer
     // TODO: Support multiple SEDS
-    private List<ExtSed> selectedSeds = new LinkedList<>();
+    private List<ExtSed> selectedSeds;
     private ExtSed selectedSed;
 
     // list of star tables associated with selectedSed, these tables will all be plotted
-    List<SegmentModel> sedSegmentModels = new LinkedList<>();
+    List<SegmentModel> sedSegmentModels;
     
     // list of star tables associated with selectedSed, these tables will all be plotted
-    List<IrisStarTable> sedStarTables = new LinkedList<>();
+    List<IrisStarTable> sedStarTables;
     
     // list of selected StarTables from selectedTables, or which star tables are shown in the 
     // Metadata browser
-    List<IrisStarTable> selectedStarTables = new LinkedList<>();
+    List<IrisStarTable> selectedStarTables;
     
     public VisualizerDataModel(VisualizerDataStore store) {
         this.store = store;
         this.pcs = new PropertyChangeSupport(this);
+        
+        this.setSelectedSeds(new LinkedList<ExtSed>());
+        this.setSedSegmentModels(new LinkedList<SegmentModel>());
+        this.setSedStarTables(new LinkedList<IrisStarTable>());
+        this.setSelectedStarTables(new LinkedList<IrisStarTable>());
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -130,7 +136,7 @@ public class VisualizerDataModel {
             throw new IllegalArgumentException("Can only select 1 sed at a time");
         }
         List<ExtSed> oldSeds = this.selectedSeds;
-        this.selectedSeds = selectedSeds;
+        this.selectedSeds = ObservableCollections.observableList(selectedSeds);
         pcs.firePropertyChange(PROP_SELECTED_SEDS, oldSeds, selectedSeds);
     }
     
@@ -168,7 +174,7 @@ public class VisualizerDataModel {
     // Locked down since these are tied to the selected seds
     synchronized void setSedSegmentModels(List<SegmentModel> newModels) {
         List<SegmentModel> oldModels = this.sedSegmentModels;
-        this.sedSegmentModels = newModels;
+        this.sedSegmentModels = ObservableCollections.observableList(newModels);
         pcs.firePropertyChange(PROP_SED_SEGMENT_MODELS, oldModels, sedSegmentModels);
     }
     
@@ -179,7 +185,7 @@ public class VisualizerDataModel {
     // Locked down since these are tied to the selected seds
     public synchronized void setSedStarTables(List<IrisStarTable> newTables) {
         List<IrisStarTable> oldTables = sedStarTables;
-        this.sedStarTables = newTables;
+        this.sedStarTables = ObservableCollections.observableList(newTables);
         pcs.firePropertyChange(PROP_SED_STARTABLES, oldTables, sedStarTables);
     }
     
@@ -189,7 +195,7 @@ public class VisualizerDataModel {
 
     public synchronized void setSelectedStarTables(List<IrisStarTable> newStarTables) {
         List<IrisStarTable> oldStarTables = selectedStarTables;
-        this.selectedStarTables = newStarTables;
+        this.selectedStarTables = ObservableCollections.observableList(newStarTables);
         pcs.firePropertyChange(PROP_SELECTED_STARTABLES, oldStarTables, selectedStarTables);
     }
     
@@ -204,5 +210,16 @@ public class VisualizerDataModel {
         if (selectedSed == sed) {
             setSelectedSed(sed);
         }
+    }
+    
+    public void refresh() {
+        // This is a total cop-out. Just clear all existing preferences and reset
+        // with the new selected SED.
+        this.setSelectedSeds(new LinkedList<ExtSed>());
+        this.setSedSegmentModels(new LinkedList<SegmentModel>());
+        this.setSedStarTables(new LinkedList<IrisStarTable>());
+        this.setSelectedStarTables(new LinkedList<IrisStarTable>());
+        
+        setSelectedSed(selectedSed);
     }
 }
