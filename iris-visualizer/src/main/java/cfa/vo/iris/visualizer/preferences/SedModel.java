@@ -117,12 +117,15 @@ public class SedModel {
         
         // If the segment is already in the map remake the star table
         if (segmentPreferences.containsKey(me)) {
-            segmentPreferences.get(me).setInSource(convertSegment(seg));
+            SegmentModel mod = segmentPreferences.get(me);
+            
+            // Need to preserve table name on reserialization
+            mod.setInSource(convertSegment(seg, mod.getInSource().getName()));
             return;
         }
         
         // Ensure that the layer has a unique identifier in the list of segments
-        SegmentModel layer = new SegmentModel(convertSegment(seg));
+        SegmentModel layer = new SegmentModel(convertSegment(seg, null));
         int count = 0;
         String id = layer.getSuffix();
         while (!isUniqueLayerSuffix(id)) {
@@ -145,12 +148,14 @@ public class SedModel {
         segmentPreferences.put(me, layer);
     }
     
-    private IrisStarTable convertSegment(Segment seg) {
+    private IrisStarTable convertSegment(Segment seg, String name) {
         // Convert segments with more than 3000 points asynchronously.
         if (seg.getLength() > 3000) {
-            return adapter.convertSegmentAsync(seg);
+            return adapter.convertSegmentAsync(seg, name);
         }
-        return adapter.convertSegment(seg);
+        IrisStarTable table = adapter.convertSegment(seg, name);
+        
+        return table;
     }
     
     /**

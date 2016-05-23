@@ -26,9 +26,9 @@ public class SegmentExtractorTest {
         IrisStarTable[] tables = new IrisStarTable[1];
         tables[0] = adapter.convertSegment(seg1);
         
-        SegmentExtractor extractor = new SegmentExtractor(tables, selection);
-        
-        ExtSed sed = extractor.constructSed();
+        ExtSed sed = new ExtSed("FilterSed");
+        SegmentExtractor extractor = new SegmentExtractor(tables, selection, sed);
+        extractor.constructSed();
         
         // One segment that is identical to the original should be extracted
         assertEquals(1, sed.getNumberOfSegments());
@@ -46,9 +46,9 @@ public class SegmentExtractorTest {
         IrisStarTable[] tables = new IrisStarTable[1];
         tables[0] = adapter.convertSegment(seg1);
         
-        SegmentExtractor extractor = new SegmentExtractor(tables, selection);
-        
-        ExtSed sed = extractor.constructSed();
+        ExtSed sed = new ExtSed("FilterSed");
+        SegmentExtractor extractor = new SegmentExtractor(tables, selection, sed);
+        extractor.constructSed();
         
         // One segment should be extracted
         assertEquals(1, sed.getNumberOfSegments());
@@ -71,8 +71,12 @@ public class SegmentExtractorTest {
         tables[0] = adapter.convertSegment(seg1);
         tables[1] = adapter.convertSegment(seg2);
         
-        SegmentExtractor extractor = new SegmentExtractor(tables, selection);
-        ExtSed sed = extractor.constructSed();
+        tables[0].setName("test");
+        tables[1].setName("test");
+        
+        ExtSed sed = new ExtSed("FilterSed");
+        SegmentExtractor extractor = new SegmentExtractor(tables, selection, sed);
+        extractor.constructSed();
         
         // Verify 2 segments are equal
         assertEquals(2, sed.getNumberOfSegments());
@@ -92,8 +96,9 @@ public class SegmentExtractorTest {
         tables[0] = adapter.convertSegment(seg1);
         tables[1] = adapter.convertSegment(seg2);
         
-        SegmentExtractor extractor = new SegmentExtractor(tables, selection);
-        ExtSed sed = extractor.constructSed();
+        ExtSed sed = new ExtSed("FilterSed");
+        SegmentExtractor extractor = new SegmentExtractor(tables, selection, sed);
+        extractor.constructSed();
         
         // Verify 2 segments are equal
         assertEquals(1, sed.getNumberOfSegments());
@@ -111,9 +116,12 @@ public class SegmentExtractorTest {
 
         IrisStarTable[] tables = new IrisStarTable[1];
         tables[0] = adapter.convertSegment(seg1);
+
         
-        SegmentExtractor extractor = new SegmentExtractor(tables, new int[][] {{0}});
-        Segment clone = extractor.constructSed().getSegment(0);
+        ExtSed sed = new ExtSed("FilterSed");
+        SegmentExtractor extractor = new SegmentExtractor(tables, new int[][] {{0}}, sed);
+        extractor.constructSed();
+        Segment clone = sed.getSegment(0);
         
         assertEquals(clone.getCuration().getDate(), seg1.getCuration().getDate());
         assertEquals(clone.getTarget().getName(), seg1.getTarget().getName());

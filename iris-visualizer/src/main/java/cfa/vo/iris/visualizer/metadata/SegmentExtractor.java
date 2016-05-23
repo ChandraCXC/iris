@@ -19,13 +19,15 @@ public class SegmentExtractor {
     
     private final int[][]  selectedRows;
     private final IrisStarTable[] selectedTables;
+    private final ExtSed sed;
     
     /**
      * @param tables - List of IrisStarTables, in order
      * @param selection - Array of selected ine in the tables, if they were stacked on top of 
      *                  each other.
+     * @param newSed - new Sed to add segments to.
      */
-    public SegmentExtractor(IrisStarTable[] tables, int[][] selection) {
+    public SegmentExtractor(IrisStarTable[] tables, int[][] selection, ExtSed newSed) {
         
         if (tables == null || selection == null) {
             throw new IllegalArgumentException("Neither tables nor selection can be null");
@@ -37,6 +39,7 @@ public class SegmentExtractor {
         
         this.selectedTables = tables;
         this.selectedRows = selection;
+        this.sed = newSed;
     }
     
 
@@ -44,9 +47,7 @@ public class SegmentExtractor {
     /**
      * Process and create a list of Segments with subsets of points.
      */
-    public ExtSed constructSed() throws SedInconsistentException, SedNoDataException {
-        
-        ExtSed sed = new ExtSed("FilterSed", false);
+    public void constructSed() throws SedInconsistentException, SedNoDataException {
 
         // Iterate over each row in the selection, and make a new segment as
         // necessary.
@@ -57,15 +58,13 @@ public class SegmentExtractor {
             Segment newSegment = processTable(table, rows);
             
             if (newSegment != null) {
-                sed.addSegment(newSegment);
+                sed.addSegment(newSegment, sed.getNumberOfSegments());
             }
         }
         
         // TODO: Investigate which fields need to be checked and adjusted in the
         // new sed. Then either uncomment this or set them elsewhere.
         // sed.checkChar();
-        
-        return sed;
     }
     
     private Segment processTable(IrisStarTable table, int[] rows) {

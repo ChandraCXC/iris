@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.events.MultipleSegmentEvent;
@@ -190,17 +189,21 @@ public class VisualizerComponentPreferences {
      */
     public ExtSed createNewWorkspaceSed(RowSelection selection) throws SedInconsistentException, SedNoDataException {
         
+        final ExtSed sed = (ExtSed) ws.getSedManager().newSed("FilterSed");
+        
         // Extract selected rows to new Segments
         final SegmentExtractor extractor = 
-                new SegmentExtractor(selection.selectedTables, selection.selectedRows);
+                new SegmentExtractor(selection.selectedTables, selection.selectedRows, sed);
         
-        try {
-            ExtSed newSed = extractor.constructSed();
-            ws.getSedManager().add(newSed);
-            return newSed;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        visualizerExecutor.submit(new Callable<ExtSed>() {
+            @Override
+            public ExtSed call() throws Exception {
+                extractor.constructSed();
+                return null;
+            }
+        });
+        
+        return sed;
     }
 
     /**
