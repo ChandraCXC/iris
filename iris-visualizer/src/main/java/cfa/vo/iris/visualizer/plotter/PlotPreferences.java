@@ -22,6 +22,9 @@ import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.sed.quantities.YUnit;
 import cfa.vo.iris.units.spv.XUnits;
 import cfa.vo.iris.units.spv.YUnits;
+
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -30,30 +33,32 @@ import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
 
 public class PlotPreferences {
     
+    private final PropertyChangeSupport pcs;
+    
     // This is only a small sample of the preferences available in STILTS, for
     // the full list, see
     // http://www.star.bris.ac.uk/~mbt/stilts/sun256/sun256.html#TypedPlot2Task
     // Global Settings
-    public static final String GRID = "grid";
-    public static final String X_LABEL = "xlabel";
-    public static final String Y_LABEL = "ylabel";
-    public static final String X_LOG = "xlog";
-    public static final String Y_LOG = "ylog";
-    public static final String AUTO_FIX = "auto_fix"; // not STILTS
-    public static final String X_MAX = "xmax";
-    public static final String X_MIN = "xmin";
-    public static final String Y_MAX = "ymax";
-    public static final String Y_MIN = "ymin";
-    public static final String Y_FLIP = "yflip";
-    public static final String X_FLIP = "xflip";
-    public static final String PLOT_TYPE = "plot_type"; // not STILTS
+    static final String GRID = "grid";
+    static final String X_LABEL = "xlabel";
+    static final String Y_LABEL = "ylabel";
+    static final String X_LOG = "xlog";
+    static final String Y_LOG = "ylog";
+    static final String AUTO_FIX = "auto_fix"; // not STILTS
+    static final String X_MAX = "xmax";
+    static final String X_MIN = "xmin";
+    static final String Y_MAX = "ymax";
+    static final String Y_MIN = "ymin";
+    static final String Y_FLIP = "yflip";
+    static final String X_FLIP = "xflip";
+    static final String PLOT_TYPE = "plot_type"; // not STILTS
     //public static final String SHOW_ERRORS = "show_errors"; // not STILTS
     
     // for the plot legend
-    public static final String SHOW_LEGEND = "legend";
-    public static final String LEGEND_BORDER = "legborder";
-    public static final String LEGEND_OPAQUE = "legopaque";
-    public static final String LEGEND_POSITION = "legpos";
+    static final String SHOW_LEGEND = "legend";
+    static final String LEGEND_BORDER = "legborder";
+    static final String LEGEND_OPAQUE = "legopaque";
+    static final String LEGEND_POSITION = "legpos";
     
     private PlaneAspect aspect; // not STILTS. Do not add to the prefs map!
                                 // It'll cause an error in STILTS.
@@ -66,10 +71,10 @@ public class PlotPreferences {
         Y_LOG("ylog", false, true);
         
         public String name;
-        public boolean xlog;
-        public boolean ylog;
+        public Boolean xlog;
+        public Boolean ylog;
     
-        private PlotType(String name, boolean x, boolean y) {
+        private PlotType(String name, Boolean x, Boolean y) {
             this.name = name;
             this.xlog = x;
             this.ylog = y;
@@ -87,42 +92,61 @@ public class PlotPreferences {
         double[] ylimits = new double[] {0, 10};
         PlaneAspect aspect = new PlaneAspect(xlimits, ylimits);
         
-        return new PlotPreferences()
-                .setXlog(true)
-                .setYlog(true)
-                .setShowGrid(true)
-                .setFixed(false)
-                .setYflip(false)
-                .setXflip(false)
-//                .setShowErrors(true)
-                .setPlotType(PlotType.LOG)
-                .setShowLegend(true)
-                .setLegendPosition(1.0, 1.0)
-                .setLegendOpaque(false)
-                .setLegendBorder(true)
-                .setAspect(aspect);
+        PlotPreferences pp = new PlotPreferences();
+        pp.setXlog(true);
+        pp.setYlog(true);
+        pp.setShowGrid(true);
+        pp.setFixed(false);
+        pp.setYflip(false);
+        pp.setXflip(false);
+//        pp.setShowErrors(true)
+        pp.setPlotType(PlotType.LOG);
+        pp.setShowLegend(true);
+        pp.setLegendPosition(new double[] {1.0, 1.0});
+        pp.setLegendOpaque(false);
+        pp.setLegendBorder(true);
+        pp.setAspect(aspect);
+        
+        return pp;
     }
     
     private Map<String, Object> preferences;
 
     public PlotPreferences() {
-        this.preferences = new HashMap<String, Object>();
+        preferences = new HashMap<String, Object>();
+        this.pcs = new PropertyChangeSupport(this);
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.addPropertyChangeListener(listener);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.removePropertyChangeListener(listener);
     }
     
     public Map<String, Object> getPreferences() {
         return preferences;
     }
     
-    public PlotPreferences setShowGrid(boolean arg1) {
-        this.preferences.put(GRID, arg1);
-        return this;
+    public Boolean getShowGrid() {
+        return (Boolean) preferences.get(GRID);
     }
     
-    public boolean getShowGrid() {
-        return (boolean) this.preferences.get(GRID);
+    public static final String PROP_SHOW_GRID = "showGrid";
+    public void setShowGrid(Boolean arg1) {
+        Boolean old = getShowGrid();
+        preferences.put(GRID, arg1);
+        pcs.firePropertyChange(PROP_SHOW_GRID, old, arg1);
     }
-    
-    public PlotPreferences setYlabel(String arg1) {
+
+    public String getYlabel() {
+        return (String) preferences.get(Y_LABEL);
+    }
+
+    public static final String PROP_Y_LABEL = "ylabel";
+    public void setYlabel(String arg1) {
+        String old = getYlabel();
         String ylabel;
         
         try {
@@ -138,15 +162,17 @@ public class PlotPreferences {
                     .log(Level.SEVERE, null, ex);
         }
         
-        this.preferences.put(Y_LABEL, ylabel);
-        return this;
+        preferences.put(Y_LABEL, ylabel);
+        pcs.firePropertyChange(PROP_Y_LABEL, old, ylabel);
     }
     
-    public String getYlabel() {
-        return (String) this.preferences.get(Y_LABEL);
+    public String getXlabel() {
+        return (String) preferences.get(X_LABEL);
     }
-    
-    public PlotPreferences setXlabel(String arg1) {
+
+    public static final String PROP_X_LABEL = "xlabel";
+    public void setXlabel(String arg1) {
+        String old = getXlabel();
         String xlabel;
         
         try {
@@ -161,155 +187,181 @@ public class PlotPreferences {
                     .log(Level.SEVERE, null, ex);
         }
         
-        this.preferences.put(X_LABEL, xlabel);
-        return this;
+        preferences.put(X_LABEL, xlabel);
+        pcs.firePropertyChange(PROP_X_LABEL, old, xlabel);
     }
     
-    public boolean getYflip() {
-        return (boolean) this.preferences.get(Y_FLIP);
+    public Boolean getYflip() {
+        return (Boolean) preferences.get(Y_FLIP);
+    }
+
+    public static final String PROP_Y_FLIP = "yflip";
+    public void setYflip(Boolean arg1) {
+        Boolean old = getYflip();
+        preferences.put(Y_FLIP, arg1);
+        pcs.firePropertyChange(PROP_Y_FLIP, old, arg1);
     }
     
-    public PlotPreferences setYflip(boolean arg1) {
-        this.preferences.put(Y_FLIP, arg1);
-        return this;
+    public Boolean getXflip() {
+        return (Boolean) preferences.get(X_FLIP);
+    }
+
+    public static final String PROP_X_FLIP = "xflip";
+    public void setXflip(Boolean arg1) {
+        Boolean old = getXflip();
+        preferences.put(X_FLIP, arg1);
+        pcs.firePropertyChange(PROP_X_FLIP, old, arg1);
     }
     
-    public boolean getXflip() {
-        return (boolean) this.preferences.get(X_FLIP);
+    public Boolean getXlog() {
+        return (Boolean) preferences.get(X_LOG);
+    }
+
+    public static final String PROP_X_LOG = "xlog";
+    public void setXlog(Boolean arg1) {
+        Boolean old = getXlog();
+        preferences.put(X_LOG, arg1);
+        pcs.firePropertyChange(PROP_X_LOG, old, arg1);
     }
     
-    public PlotPreferences setXflip(boolean arg1) {
-        this.preferences.put(X_FLIP, arg1);
-        return this;
+    public Boolean getYlog() {
+        return (Boolean) preferences.get(Y_LOG);
     }
     
-    public String getXlabel() {
-        return (String) this.preferences.get(X_LABEL);
+    public static final String PROP_Y_LOG = "ylog";
+    public void setYlog(Boolean arg1) {
+        Boolean old = getYlog();
+        preferences.put(Y_LOG, arg1);
+        pcs.firePropertyChange(PROP_Y_LOG, old, arg1);
     }
     
-    public PlotPreferences setXlog(boolean arg1) {
-        this.preferences.put(X_LOG, arg1);
-        return this;
+    public Boolean getFixed() {
+        return (Boolean) preferences.get(AUTO_FIX);
     }
     
-    public boolean getXlog() {
-        return (boolean) this.preferences.get(X_LOG);
-    }
-    
-    public PlotPreferences setYlog(boolean arg1) {
-        this.preferences.put(Y_LOG, arg1);
-        return this;
-    }
-    
-    public boolean getYlog() {
-        return (boolean) this.preferences.get(Y_LOG);
-    }
-    
-    public PlotPreferences setFixed(boolean arg1) {
-        this.preferences.put(AUTO_FIX, arg1);
-        return this;
-    }
-    
-    public boolean getFixed() {
-        return (boolean) this.preferences.get(AUTO_FIX);
-    }
-    
-    public PlotPreferences setXmax(double arg1) {
-        this.preferences.put(X_MAX, arg1);
-        return this;
+    public static final String PROP_FIXED = "fixed";
+    public void setFixed(Boolean arg1) {
+        Boolean old = getFixed();
+        preferences.put(AUTO_FIX, arg1);
+        pcs.firePropertyChange(PROP_FIXED, old, arg1);
     }
     
     public double getXmax() {
-        return (double) this.preferences.get(X_MAX);
+        return (double) preferences.get(X_MAX);
     }
-    
-    public PlotPreferences setXmin(double arg1) {
-        this.preferences.put(X_MIN, arg1);
-        return this;
+
+    public static final String PROP_X_MAX = "xmax";
+    public void setXmax(double arg1) {
+        double old = getXmax();
+        preferences.put(X_MAX, arg1);
+        pcs.firePropertyChange(PROP_X_MAX, old, arg1);
     }
     
     public double getXmin() {
-        return (double) this.preferences.get(X_MIN);
+        return (double) preferences.get(X_MIN);
     }
-    
-    public PlotPreferences setYmax(double arg1) {
-        this.preferences.put(Y_MAX, arg1);
-        return this;
+
+    public static final String PROP_X_MIN = "xmin";
+    public void setXmin(double arg1) {
+        double old = getXmin();
+        preferences.put(X_MIN, arg1);
+        pcs.firePropertyChange(PROP_X_MIN, old, arg1);
     }
     
     public double getYmax() {
-        return (double) this.preferences.get(Y_MAX);
+        return (double) preferences.get(Y_MAX);
     }
-    
-    public PlotPreferences setYmin(double arg1) {
-        this.preferences.put(Y_MIN, arg1);
-        return this;
+
+    public static final String PROP_Y_MAX = "ymax";
+    public void setYmax(double arg1) {
+        double old = getYmax();
+        preferences.put(Y_MAX, arg1);
+        pcs.firePropertyChange(PROP_Y_MAX, old, arg1);
     }
     
     public double getYmin() {
-        return (double) this.preferences.get(Y_MIN);
+        return (double) preferences.get(Y_MIN);
     }
-    
-    public PlotPreferences setPlotType(PlotType arg1) {
-        this.preferences.put(PLOT_TYPE, arg1);
-        setXlog(arg1.xlog);
-        setYlog(arg1.ylog);
-        return this;
-    }
-    
-    public PlotPreferences setAspect(PlaneAspect arg1) {
-        // don't add it to the prefs map; it'll cause an error in STILTS
-        this.aspect = arg1;
-        return this;
-    }
-    
-    public PlaneAspect getAspect() {
-        return aspect;
+
+    public static final String PROP_Y_MIN = "ymin";
+    public void setYmin(double arg1) {
+        double old = getYmin();
+        preferences.put(Y_MIN, arg1);
+        pcs.firePropertyChange(PROP_Y_MIN, old, arg1);
     }
     
     public PlotType getPlotType() {
         return (PlotType) preferences.get(PLOT_TYPE);
     }
     
-//    public PlotPreferences setShowErrors(boolean arg1) {
-//        this.preferences.put(SHOW_ERRORS, arg1);
+    public static final String PROP_PLOT_TYPE = "plotType";
+    public void setPlotType(PlotType arg1) {
+        PlotType old = getPlotType();
+        preferences.put(PLOT_TYPE, arg1);
+        setXlog(arg1.xlog);
+        setYlog(arg1.ylog);
+        pcs.firePropertyChange(PROP_PLOT_TYPE, old, arg1);
+    }
+    
+    public PlaneAspect getAspect() {
+        return aspect;
+    }
+    
+    public static final String PROP_ASPECT = "aspect";
+    public void setAspect(PlaneAspect arg1) {
+        // don't add it to the prefs map; it'll cause an error in STILTS
+        PlaneAspect old = getAspect();
+        this.aspect = arg1;
+        pcs.firePropertyChange(PROP_ASPECT, old, arg1);
+    }
+    
+//    public PlotPreferences setShowErrors(Boolean arg1) {
+//        preferences.put(SHOW_ERRORS, arg1);
 //        return this;
 //    }
     
-    public PlotPreferences setShowLegend(boolean arg1) {
-        this.preferences.put(SHOW_LEGEND, arg1);
-        return this;
+    public Boolean getShowLegend() {
+        return (Boolean) preferences.get(SHOW_LEGEND);
     }
     
-    public boolean getShowLegend() {
-        return (boolean) this.preferences.get(SHOW_LEGEND);
+    public static final String PROP_SHOW_LEGEND = "showLegend";
+    public void setShowLegend(Boolean arg1) {
+        Boolean old = getShowLegend();
+        preferences.put(SHOW_LEGEND, arg1);
+        pcs.firePropertyChange(PROP_SHOW_LEGEND, old, arg1);
     }
     
-    public PlotPreferences setLegendOpaque(boolean arg1) {
-        this.preferences.put(LEGEND_OPAQUE, arg1);
-        return this;
+    public Boolean getLegendOpaque() {
+        return (Boolean) preferences.get(LEGEND_OPAQUE);
     }
-    
-    public boolean getLegendOpaque() {
-        return (boolean) this.preferences.get(LEGEND_OPAQUE);
-    }
-    
-    public PlotPreferences setLegendPosition(double xratio, double yratio) {
-        this.preferences.put(LEGEND_POSITION, new double[] {xratio, yratio});
-        return this;
+
+    public static final String PROP_LEGEND_OPAQUE = "legendOpaque";
+    public void setLegendOpaque(Boolean arg1) {
+        Boolean old = getLegendOpaque();
+        preferences.put(LEGEND_OPAQUE, arg1);
+        pcs.firePropertyChange(PROP_LEGEND_OPAQUE, old, arg1);
     }
     
     public double[] getLegendPostion() {
-        return (double[]) this.preferences.get(LEGEND_POSITION);
+        return (double[]) preferences.get(LEGEND_POSITION);
+    }
+
+    public static final String PROP_LEGEND_POSITION = "legendPosition";
+    public void setLegendPosition(double[] ratios) {
+        double[] old = this.getLegendPostion();
+        preferences.put(LEGEND_POSITION, ratios);
+        pcs.firePropertyChange(PROP_LEGEND_POSITION, old, ratios);
     }
     
-    public PlotPreferences setLegendBorder(boolean arg1) {
-        this.preferences.put(LEGEND_BORDER, arg1);
-        return this;
+    public Boolean getLegendBorder() {
+        return (Boolean) preferences.get(LEGEND_BORDER);
     }
-    
-    public boolean getLegendBorder() {
-        return (boolean) this.preferences.get(LEGEND_BORDER);
+
+    public static final String PROP_LEGEND_BORDER = "legendBorder";
+    public void setLegendBorder(Boolean arg1) {
+        Boolean old = getLegendBorder();
+        preferences.put(LEGEND_BORDER, arg1);
+        pcs.firePropertyChange(PROP_LEGEND_BORDER, old, arg1);
     }
 }
 
