@@ -126,8 +126,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private void resetDataTables() {
         plotterStarJTable.setSelectedStarTables(dataModel.getSelectedStarTables());
         pointStarJTable.setSelectedStarTables(dataModel.getSelectedStarTables());
-        
-        // TODO: Tie this to dataModel resets.
+        dataModel.refresh();
     }
     
     /*
