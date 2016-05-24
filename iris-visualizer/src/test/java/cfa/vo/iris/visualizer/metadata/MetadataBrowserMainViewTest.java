@@ -76,7 +76,13 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         
         // Get plot window
         window.getMenuBar().getMenu("Tools").getSubMenu(plWindowName).getSubMenu(plWindowName).click();
-        desktop.containsWindow(plWindowName).check();
+
+        invokeWithRetry(20, 100, new Runnable() {
+            @Override
+            public void run() {
+                desktop.containsWindow(plWindowName).check();
+            }
+        });
         
         org.uispec4j.Button mbButton = desktop.getWindow(plWindowName).getButton("Metadata");
         mbButton.click();
@@ -416,7 +422,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             public Trigger process(Window warning) throws Exception {
                 // Check warning message
                 assertTrue(StringUtils.contains(warning.getTextBox("OptionPane.label").getText(), 
-                             "Added new Filter SED"));
+                             "Added new SED"));
                 return Trigger.DO_NOTHING;
             }
         }).run();
@@ -448,7 +454,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             public Trigger process(Window warning) throws Exception {
                 // Check warning message
                 assertTrue(StringUtils.contains(warning.getTextBox("OptionPane.label").getText(), 
-                             "Added new Filter SED"));
+                             "Added new SED"));
                 return Trigger.DO_NOTHING;
             }
         }).run();
