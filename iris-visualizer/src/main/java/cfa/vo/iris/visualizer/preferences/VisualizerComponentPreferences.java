@@ -42,16 +42,16 @@ public class VisualizerComponentPreferences {
     private static final ExecutorService visualizerExecutor = Executors.newFixedThreadPool(5);
     
     // Top level preferences for the plotter
-    PlotPreferences plotPreferences;
+    private final PlotPreferences plotPreferences;
     
     // For accessing plot mouse listeners
-    MouseListenerManager mouseListenerManager;
+    private final MouseListenerManager mouseListenerManager;
     
     // Pointer to the Iris workspace
-    final IWorkspace ws;
+    private final IWorkspace ws;
     
     // Persistence for Iris Visualizer data
-    final VisualizerDataStore dataStore;
+    private final VisualizerDataStore dataStore;
 
     public VisualizerComponentPreferences(IWorkspace ws) {
         this.ws = ws;

@@ -136,7 +136,7 @@ public class StilPlotterTest {
         sed.removeSegment(0);
         preferences.remove(sed, seg);
         
-        plot.resetPlot(false);
+        plot.resetPlot(false, false);
         display = plot.getPlotDisplay();
 
         // Verify no layers
@@ -152,7 +152,7 @@ public class StilPlotterTest {
         assertEquals(aspect1.getXMin(), aspect2.getXMin(), .0001);
         assertEquals(aspect1.getYMin(), aspect2.getYMin(), .0001);
 
-        plot.resetPlot(true);
+        plot.resetPlot(true, false);
         display = plot.getPlotDisplay();
         
         // Bounds should reset
@@ -219,7 +219,7 @@ public class StilPlotterTest {
         preferences.getDataModel().setSelectedSed(sed);
         
         StilPlotter plot = new StilPlotter(preferences);
-        plot.resetPlot(false);
+        plot.resetPlot(false, false);
         return plot;
     }
 }

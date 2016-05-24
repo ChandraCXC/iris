@@ -62,9 +62,11 @@ public class StilPlotter extends JPanel {
     
     // Needs a default constructor for Netbeans
     public StilPlotter() {
+        this.setPlotPreferences(PlotPreferences.getDefaultPlotPreferences());
     }
     
     public StilPlotter(VisualizerComponentPreferences preferences) {
+        this.setPlotPreferences(preferences.getPlotPreferences());
         this.setPreferences(preferences);
     }
 
@@ -89,14 +91,14 @@ public class StilPlotter extends JPanel {
         
         this.seds = newSeds;
         
-        // Update plot preferences
-        if (CollectionUtils.isEmpty(seds)) {
+        // Update plot preferences for new seds.
+        if (CollectionUtils.isEmpty(newSeds)) {
             this.setPlotPreferences(preferences.getPlotPreferences());
         } else {
-            this.setPlotPreferences(dataModel.getSedModel(this.seds.get(0)).getPlotPreferences());
+            this.setPlotPreferences(dataModel.getSedModel(newSeds.get(0)).getPlotPreferences());
         }
         
-        resetPlot(false);
+        resetPlot(false, true);
     }
 
     public VisualizerComponentPreferences getPreferences() {
@@ -125,7 +127,7 @@ public class StilPlotter extends JPanel {
      * For binding to the dataModel, this SHOULD NOT be called otherwise.
      */
     public void setSedSegmentModels(List<SegmentModel> models) {
-        this.resetPlot(false);
+        this.resetPlot(false, false);
     }
 
     /**
@@ -153,10 +155,16 @@ public class StilPlotter extends JPanel {
      * Used internally for updating the plot preferences on SED changes.
      */
     public static final String PROP_PLOT_PREFERENCES = "plotPreferences";
-    void setPlotPreferences(PlotPreferences pp) {
+    public void setPlotPreferences(PlotPreferences pp) {
+        // If the preferences are changing we want to save the last known display's
+        // aspect in the old preferences.
+        if (display != null) {
+            getPlotPreferences().setAspect(display.getAspect());
+        }
+        
         PlotPreferences old = this.plotPreferences;
         this.plotPreferences = pp;
-        this.firePropertyChange(PROP_PLOT_PREFERENCES, old, plotPreferences);
+        this.firePropertyChange(PROP_PLOT_PREFERENCES, old, pp);
     }
     
     /**
@@ -167,7 +175,7 @@ public class StilPlotter extends JPanel {
      */
     public void setPlotType(PlotPreferences.PlotType plotType) {
         getPlotPreferences().setPlotType(plotType);
-        resetPlot(false);
+        resetPlot(false, false);
     }
     
     public boolean getGridOn() {
@@ -176,20 +184,22 @@ public class StilPlotter extends JPanel {
     
     public void setGridOn(boolean on) {
         getPlotPreferences().setShowGrid(on);
-        resetPlot(false);
+        resetPlot(false, false);
     }
     
     /**
      * Resets the plot.
      * @param forceReset - forces the plot to reset its bounds
+     * @param newPlot - If we are plotting a new plot or re-plotting an existing plot.
      */
-    void resetPlot(boolean forceReset)
+    void resetPlot(boolean forceReset, boolean newPlot)
     {
         // forceReset can override this class's internal usage of preferences
         boolean fixed = getPlotPreferences().getFixed();
         
-        // Clear the display if it's available
-        setupForPlotDisplayChange();
+        // Clear the display and save all necessary information before we
+        // throw it away on a model change.
+        setupForPlotDisplayChange(newPlot);
         
         // Setup new stil plot component
         display = createPlotComponent();
@@ -197,19 +207,19 @@ public class StilPlotter extends JPanel {
         // Set the bounds using the current SED's aspect if the plot is fixed and if we're not
         // forcing a redraw
         if (fixed && !forceReset) {
-            PlaneAspect existingAspect = this.getPlotPreferences().getAspect();
+            PlaneAspect existingAspect = getPlotPreferences().getAspect();
             display.setAspect(existingAspect);
         }
         
         // Add the display to the plot view
-        updatePlotDisplay();
+        addPlotToDisplay();
     }
     
     /**
      * Resets boundaries on the zoom to their original settings.
      */
     public void resetZoom() {
-        resetPlot(true);
+        resetPlot(true, false);
     }
     
     /**
@@ -343,22 +353,23 @@ public class StilPlotter extends JPanel {
         }
     }
     
-    /**
-     * Sets PlotDisplay up for new changes, like changing a SED color,
-     * switching from linear to logarithmic plotting, etc.
-     */
-    void setupForPlotDisplayChange() {
-        if (display != null) {
+    private void setupForPlotDisplayChange(boolean newPlot) {
+        if (display == null) {
+            return;
+        }
+        
+        display.removeAll();
+        remove(display);
+        
+        if (!newPlot) {
             getPlotPreferences().setAspect(display.getAspect());
-            display.removeAll();
-            remove(display);
         }
     }
     
     /**
      * Add and update the PlotDisplay.
      */
-    void updatePlotDisplay() {
+    private void addPlotToDisplay() {
         
         // Ensure it fills the entire display
         GridBagConstraints gbc = new GridBagConstraints();

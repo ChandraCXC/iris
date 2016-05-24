@@ -46,7 +46,7 @@ public class PlotterView extends JInternalFrame {
     private String xcoord = "0E0";
     private String ycoord = "0E0";
     
-    // For updating options windows
+    // Bound to the StilPlotter preferences
     private PlotPreferences plotPreferences;
     
     public static double ZOOM_SCALE = 0.5;
@@ -170,13 +170,32 @@ public class PlotterView extends JInternalFrame {
         return this.preferences.getDataModel();
     }
     
-
     public PlotPreferences getPlotPreferences() {
-        return plotPreferences;
+        return plotter.getPlotPreferences();
     }
     
-    void setPlotPreferences(PlotPreferences pp) {
+    // Tied to the stil plotter plot preferences
+    public void setPlotPreferences(PlotPreferences pp) {
         this.plotPreferences = pp;
+        
+        // Update the view with the current settings
+        // Plot Type
+        this.mntmLinear.setSelected(plotPreferences.getPlotType()==PlotType.LINEAR);
+        this.mntmLog.setSelected(plotPreferences.getPlotType()==PlotType.LOG);
+        this.mntmXlog.setSelected(plotPreferences.getPlotType()==PlotType.X_LOG);
+        this.mntmYlog.setSelected(plotPreferences.getPlotType()==PlotType.Y_LOG);
+        
+        // Grid on/off
+        this.mntmGridOnOff.setSelected(plotPreferences.getShowGrid());
+        
+        // turn errorbars on/off
+//        this.mntmErrorBars.setSelected(this.stilPlotter1.getVisualizerPreferences()
+//                .getSedPreferences(plotter.getSed()).getPlotPreferences()
+//                .getShowErrorBars());
+        
+        // set plot window fixed
+        
+        this.mntmAutoFixed.setSelected(plotPreferences.getFixed());
     }
     
     /**
@@ -392,9 +411,11 @@ public class PlotterView extends JInternalFrame {
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, plotter, org.jdesktop.beansbinding.ELProperty.create("${plotPreferences.showGrid}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("gridOn"));
         bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${plotPreferences}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("plotPreferences"));
+        bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.selectedSeds}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("seds"));
         bindingGroup.addBinding(binding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.sedSegmentModels}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("sedSegmentModels"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.sedSegmentModels}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("sedSegmentModels"));
         bindingGroup.addBinding(binding);
 
         plotter.setLayout(new java.awt.GridBagLayout());
@@ -523,19 +544,6 @@ public class PlotterView extends JInternalFrame {
     }//GEN-LAST:event_zoomOutActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-        PlotPreferences plotPrefs = plotter.getPlotPreferences();
-        
-        // if fixed, temporarily unfix the plot to reset the viewport to the
-        // full X, Y range
-        boolean fixed = plotPrefs.getFixed();
-        if (fixed) {
-           plotPrefs.setFixed(false);
-        }
-        
-        if (fixed) {
-           plotPrefs.setFixed(true);
-        }
-        
         plotter.resetZoom();
     }//GEN-LAST:event_btnResetActionPerformed
 
@@ -623,44 +631,12 @@ public class PlotterView extends JInternalFrame {
      * and set to "false" to let the viewport resize automatically with changes.
      */
     private void setFixedViewPort(boolean fixed) {
-        
         this.plotter.getPlotPreferences().setFixed(fixed);
-            
-        // needs to be set whenever viewport changes
-        this.plotter.getPlotPreferences()
-                .setAspect(this.plotter.getPlotDisplay().getAspect());
-    }
-    
-    /**
-     * Update the plot preference items in the Viewer to the selected SED's
-     * preferences
-     */
-    public void updatePreferences() {
-        // Plot Type
-        this.mntmLinear.setSelected(this.plotter.getPlotPreferences()
-                .getPlotType()==PlotType.LINEAR);
-        this.mntmLog.setSelected(this.plotter.getPlotPreferences()
-                .getPlotType()==PlotType.LOG);
-        this.mntmXlog.setSelected(this.plotter.getPlotPreferences()
-                .getPlotType()==PlotType.X_LOG);
-        this.mntmYlog.setSelected(this.plotter.getPlotPreferences()
-                .getPlotType()==PlotType.Y_LOG);
-        
-        // Grid on/off
-        this.mntmGridOnOff.setSelected(this.plotter.getPlotPreferences().getShowGrid());
-        
-        // turn errorbars on/off
-//        this.mntmErrorBars.setSelected(this.stilPlotter1.getVisualizerPreferences()
-//                .getSedPreferences(plotter.getSed()).getPlotPreferences()
-//                .getShowErrorBars());
-        
-        // set plot window fixed
-        this.mntmAutoFixed.setSelected(this.plotter.getPlotPreferences()
-                .getFixed());
     }
     
     // plotter navigation help window. Is closable, maximizable, and 
     // iconifiable.
+    @SuppressWarnings("serial")
     public class PlotterNavHelpFrame extends JInternalFrame {
         
         public PlotterNavHelpFrame (String title) {
