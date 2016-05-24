@@ -55,6 +55,9 @@ public class StilPlotter extends JPanel {
     private VisualizerComponentPreferences preferences;
     private VisualizerDataModel dataModel;
     
+    // Plot preferences for the currently plotted selection of SEDs
+    private PlotPreferences plotPreferences;
+    
     private MapEnvironment env;
     
     // Needs a default constructor for Netbeans
@@ -78,13 +81,21 @@ public class StilPlotter extends JPanel {
     /**
      * For binding to the datamodel. This function SHOULD NOT be called otherwise.
      */
-    public void setSeds(List<ExtSed> seds) {
+    public void setSeds(List<ExtSed> newSeds) {
         // TODO: Support more than one SED
-        if (seds.size() > 1) {
+        if (newSeds.size() > 1) {
             throw new IllegalArgumentException("Invalid sed list length");
         }
         
-        this.seds = seds;
+        this.seds = newSeds;
+        
+        // Update plot preferences
+        if (CollectionUtils.isEmpty(seds)) {
+            this.setPlotPreferences(preferences.getPlotPreferences());
+        } else {
+            this.setPlotPreferences(dataModel.getSedModel(this.seds.get(0)).getPlotPreferences());
+        }
+        
         resetPlot(false);
     }
 
@@ -117,27 +128,35 @@ public class StilPlotter extends JPanel {
         this.resetPlot(false);
     }
 
+    /**
+     * @return The stil plot display.
+     */
     public PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> getPlotDisplay() {
         return display;
     }
 
     /**
-     * @return the value of env
+     * @return MapEnvironment configuration for the Stil plot task.
      */
     protected MapEnvironment getEnv() {
         return env;
     }
     
     /**
-     * Handles getting the plot preferences for the current selection of SEDs in the plotter.
+     * @return Current set of PlotPreferences used by the plotter.
      */
     public PlotPreferences getPlotPreferences() {
-        if (CollectionUtils.isEmpty(seds)) {
-            return preferences.getPlotPreferences();
-        } else {
-            // TODO: Support multiple seds
-            return dataModel.getSedModel(this.seds.get(0)).getPlotPreferences();
-        }
+        return plotPreferences;
+    }
+    
+    /**
+     * Used internally for updating the plot preferences on SED changes.
+     */
+    public static final String PROP_PLOT_PREFERENCES = "plotPreferences";
+    void setPlotPreferences(PlotPreferences pp) {
+        PlotPreferences old = this.plotPreferences;
+        this.plotPreferences = pp;
+        this.firePropertyChange(PROP_PLOT_PREFERENCES, old, plotPreferences);
     }
     
     /**
@@ -149,6 +168,10 @@ public class StilPlotter extends JPanel {
     public void setPlotType(PlotPreferences.PlotType plotType) {
         getPlotPreferences().setPlotType(plotType);
         resetPlot(false);
+    }
+    
+    public boolean getGridOn() {
+        return getPlotPreferences().getShowGrid();
     }
     
     public void setGridOn(boolean on) {

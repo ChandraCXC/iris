@@ -121,7 +121,7 @@
                 <Property name="text" type="java.lang.String" value="Grid on/off"/>
               </Properties>
               <BindingProperties>
-                <BindingProperty name="selected" source="plotter" sourcePath="${visualizerPreferences.plotPreferences.showGrid}" target="mntmGridOnOff" targetPath="selected" updateStrategy="0" immediately="false"/>
+                <BindingProperty name="selected" source="plotter" sourcePath="${gridOn}" target="mntmGridOnOff" targetPath="selected" updateStrategy="0" immediately="false"/>
               </BindingProperties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="mntmCoplot">
@@ -405,6 +405,7 @@
         </Property>
       </Properties>
       <BindingProperties>
+        <BindingProperty name="gridOn" source="plotter" sourcePath="${plotPreferences.showGrid}" target="plotter" targetPath="gridOn" updateStrategy="0" immediately="false"/>
         <BindingProperty name="seds" source="Form" sourcePath="${dataModel.selectedSeds}" target="plotter" targetPath="seds" updateStrategy="0" immediately="false"/>
         <BindingProperty name="sedSegmentModels" source="Form" sourcePath="${dataModel.sedSegmentModels}" target="plotter" targetPath="sedSegmentModels" updateStrategy="0" immediately="false"/>
       </BindingProperties>
