@@ -9,7 +9,6 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import org.apache.commons.collections.CollectionUtils;
 import org.jdesktop.observablecollections.ObservableCollections;
 
@@ -83,6 +82,9 @@ public class VisualizerDataModel {
     }
 
     public SedModel getSedModel(ExtSed sed) {
+        if (sed == null) {
+            throw new IllegalArgumentException("Sed cannot be null");
+        }
         return store.getSedModel(sed);
     }
     
@@ -130,9 +132,9 @@ public class VisualizerDataModel {
         return selectedSeds;
     }
 
-    //TODO: Support lists of SEDs
     synchronized void setSelectedSeds(List<ExtSed> selectedSeds) {
         if (CollectionUtils.size(selectedSeds) > 1) {
+            //TODO: Support lists of SEDs
             throw new IllegalArgumentException("Can only select 1 sed at a time");
         }
         List<ExtSed> oldSeds = this.selectedSeds;
@@ -148,21 +150,31 @@ public class VisualizerDataModel {
         ExtSed oldSed = this.selectedSed;
         this.selectedSed = selectedSed;
         
+        // Here to support empty values for null seds
         List<SegmentModel> newSedModels = new LinkedList<>();
         List<IrisStarTable> newSedTables = new LinkedList<>();
-
-        // Update models
-        SedModel sedModel = store.getSedModel(selectedSed);
-        for (int i = 0; i < selectedSed.getNumberOfSegments(); i++) {
-            SegmentModel segModel = sedModel.getSegmentModel(selectedSed.getSegment(i));
-            newSedModels.add(segModel);
-            newSedTables.add(segModel.getInSource());
+        List<ExtSed> newSelectedSeds = new LinkedList<>();
+        String dataModelTitle = "";
+        
+        // TODO: Handle multiple SEDs
+        if (selectedSed != null) {
+            // Add models to the SED
+            SedModel sedModel = store.getSedModel(selectedSed);
+            for (int i = 0; i < selectedSed.getNumberOfSegments(); i++) {
+                SegmentModel segModel = sedModel.getSegmentModel(selectedSed.getSegment(i));
+                newSedModels.add(segModel);
+                newSedTables.add(segModel.getInSource());
+            }
+            
+            dataModelTitle = selectedSed.getId();
+            newSelectedSeds.add(selectedSed);
         }
-
+        
+        // Update existing values
         this.setSedSegmentModels(newSedModels);
         this.setSedStarTables(newSedTables);
-        this.setDataModelTitle(selectedSed.getId());
-        this.setSelectedSeds(Arrays.asList(selectedSed));
+        this.setDataModelTitle(dataModelTitle);
+        this.setSelectedSeds(newSelectedSeds);
         
         pcs.firePropertyChange(PROP_SELECTED_SED, oldSed, selectedSed);
     }

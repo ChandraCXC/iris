@@ -56,7 +56,7 @@ public class VisualizerComponentPreferences {
     public VisualizerComponentPreferences(IWorkspace ws) {
         this.ws = ws;
         
-        this.dataStore = new VisualizerDataStore(visualizerExecutor);
+        this.dataStore = new VisualizerDataStore(visualizerExecutor, ws);
         this.mouseListenerManager = new MouseListenerManager();
         
         this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();

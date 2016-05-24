@@ -1,5 +1,6 @@
 package cfa.vo.iris.visualizer.preferences;
 
+import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.events.MultipleSegmentEvent;
 import cfa.vo.iris.events.MultipleSegmentListener;
 import cfa.vo.iris.events.SedCommand;
@@ -33,12 +34,16 @@ public class VisualizerDataStore {
     // All preferences for each ExtSed in the workspace
     final Map<ExtSed, SedModel> sedModels;
     
+    // Workspace pointer. TODO: Remove references for selectedSed
+    final IWorkspace ws;
+    
     VisualizerDataModel dataModel;
     
-    public VisualizerDataStore(ExecutorService visualizerExecutor) {
+    public VisualizerDataStore(ExecutorService visualizerExecutor, IWorkspace ws) {
         this.sedModels = Collections.synchronizedMap(new IdentityHashMap<ExtSed, SedModel>());
         this.dataModel = new VisualizerDataModel(this);
         this.adapter = new IrisStarTableAdapter(visualizerExecutor, dataModel);
+        this.ws = ws;
         
         addSedListeners();
     }
@@ -52,28 +57,12 @@ public class VisualizerDataStore {
     public VisualizerDataModel getDataModel() {
         return dataModel;
     }
-
-    /**
-     * Set the selected SED in the data model.
-     * @param sed
-     */
-    public void setSelectedSed(ExtSed sed) {
-        // TODO: Support multiple SEDs
-        dataModel.setSelectedSed(sed);
-    }
-    
-    /**
-     * @return the selectedSed in the data model.
-     */
-    public ExtSed getSelectedSed() {
-        return dataModel.getSelectedSed();
-    }
     
     /**
      * @return Preferences map for each SED.
      */
     public Map<ExtSed, SedModel> getSedModels() {
-        return sedModels;
+        return Collections.unmodifiableMap(sedModels);
     }
     
     /**
@@ -149,6 +138,9 @@ public class VisualizerDataStore {
         }
         sedModels.get(sed).removeAll();
         sedModels.remove(sed);
+        
+        // TODO: Remove dependency on workspace
+        dataModel.setSelectedSed((ExtSed) ws.getSedManager().getSelected());
     }
     
     /**
@@ -212,7 +204,7 @@ public class VisualizerDataStore {
                 remove(sed);
             } 
             else if (SedCommand.SELECTED.equals(payload)) {
-                setSelectedSed(sed);
+                dataModel.setSelectedSed(sed);
             }
             else {
                 // Doesn't merit a full reset, this is basically just here for SED name changes
