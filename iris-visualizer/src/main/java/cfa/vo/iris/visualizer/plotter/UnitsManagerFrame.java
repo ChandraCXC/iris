@@ -24,18 +24,21 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
 
     /**
      * Creates new form UnitsManagerFrame
-     * @param plotter StilPlotter 
      */
     public UnitsManagerFrame() {
         initComponents();
     }
     
-    protected VisualizerDataModel getDataModel() {
+    public VisualizerDataModel getDataModel() {
         return dataModel;
     }
 
-    protected void setDataModel(VisualizerDataModel dataModel) {
+    public void setDataModel(VisualizerDataModel dataModel) {
         this.dataModel = dataModel;
+    }
+    
+    protected void updateCurrentUnits() {
+        unitsWidget.updateCurrentUnits(dataModel.getSedModels());
     }
 
     /**
@@ -50,13 +53,13 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
         unitsManagerPanel = new javax.swing.JPanel();
         unitsWidget = new cfa.vo.iris.visualizer.plotter.UnitsWidget();
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        updateButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
 
         setClosable(true);
-        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
-        setIconifiable(true);
         setResizable(true);
+        setTitle("Select Units");
+        setToolTipText("");
         setPreferredSize(new java.awt.Dimension(450, 325));
 
         unitsManagerPanel.setLayout(new java.awt.BorderLayout());
@@ -64,18 +67,18 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
 
         jPanel1.setPreferredSize(new java.awt.Dimension(396, 30));
 
-        jButton1.setText("Update");
-        jButton1.setToolTipText("Change selected SED's units");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        updateButton.setText("Update");
+        updateButton.setToolTipText("Change selected SED's units");
+        updateButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                updateButtonActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Cancel");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                cancelButtonActionPerformed(evt);
             }
         });
 
@@ -85,17 +88,17 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1)
+                .addComponent(updateButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
+                .addComponent(cancelButton)
                 .addContainerGap(315, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(updateButton)
+                    .addComponent(cancelButton))
                 .addContainerGap())
         );
 
@@ -117,20 +120,22 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        this.setVisible(false);
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        unitsWidget.updateUnits();
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
+        unitsWidget.updateUnits(dataModel.getSedModels());
+        dataModel.refresh();
+        this.dispose();
+    }//GEN-LAST:event_updateButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton cancelButton;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel unitsManagerPanel;
     private cfa.vo.iris.visualizer.plotter.UnitsWidget unitsWidget;
+    private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
 }

@@ -395,13 +395,14 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
                 .click();
         
         Window viewer = desktop.getWindow(windowName);
-        StilPlotter plotter = viewer.findSwingComponent(StilPlotter.class);
+        final StilPlotter plotter = viewer.findSwingComponent(StilPlotter.class);
         
         // test that no exceptions occur if the user tries to 
         // change the units of the plotter with no SED loaded in yet.
         viewer.getButton("unitsButton").click();
         assertTrue(desktop.containsWindow("Select Units").isTrue());
         Window unitsChooser = desktop.getWindow("Select Units");
+        
         unitsChooser.getListBox("xunitsList").select(XUnit.ANGSTROM.getString());
         unitsChooser.getListBox("yunitsList").select(SPVYUnit.FLUX0.getString());
         unitsChooser.getButton("Update").click();
@@ -418,7 +419,11 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         // test that changing the units on an empty SED doesn't throw an
         // exception.  
         unitsChooser.getButton("Update").click();
-        
+
+        // Reload units chooser
+        viewer.getButton("unitsButton").click();
+        assertTrue(desktop.containsWindow("Select Units").isTrue());
+        unitsChooser = desktop.getWindow("Select Units");
         // create 2 segments with different units
         final Segment seg1 = createSampleSegment();
         seg1.setSpectralAxisUnits("Hz");
@@ -438,7 +443,6 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 assertSame(sed1, prefs.getDataModel().getSelectedSed());
-                
             }
         });
         
@@ -467,7 +471,6 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 assertSame(sed2, prefs.getDataModel().getSelectedSed());
-                
             }
         });
         
@@ -494,7 +497,6 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 assertSame(sed1, prefs.getDataModel().getSelectedSed());
-                
             }
         });
         
@@ -509,13 +511,23 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         
         // sed1 units should update
         assertEquals("Energy (eV)", plotter.getPlotPreferences().getXlabel());
-        assertEquals("Flux density (Jy)", 
+        assertEquals("Flux density (Jy)",
                 plotter.getPlotPreferences().getYlabel());
+
+        sedManager.select(sed2);
+        
+        // Make sure this is enqueued in the Swing EDT
+        invokeWithRetry(10, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertSame(sed2, prefs.getDataModel().getSelectedSed());
+            }
+        });
         
         // check that sed2 units remain the same
-        assertEquals("Velocity (km/s @ 12 CO (11.5GHz))", 
+        assertEquals("Velocity (km/s @ 12 CO (11.5GHz))",
                 plotter.getPlotPreferences().getXlabel());
-        assertEquals("Flux density (mJy)", 
+        assertEquals("Flux density (mJy)",
                 plotter.getPlotPreferences().getYlabel());
         
         // TODO: how to test for magnitudes? The Y-axis should be flipped so 

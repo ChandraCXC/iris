@@ -38,7 +38,6 @@ public class PlotterView extends JInternalFrame {
     // Plotting Components
     private final VisualizerComponentPreferences preferences;
     private final MetadataBrowserMainView metadataBrowser;
-    private final UnitsManagerFrame unitsManagerFrame;
     private final JInternalFrame plotterNavHelpFrame;
     private final IWorkspace ws;
     
@@ -74,9 +73,6 @@ public class PlotterView extends JInternalFrame {
         this.metadataBrowser = new MetadataBrowserMainView(preferences);
         
         initComponents();
-        
-        // units chooser frame
-        this.unitsManagerFrame = new UnitsManagerFrame();
         
         // plotter navigation help frame
         this.plotterNavHelpFrame = new PlotterNavHelpFrame("Plotter Navigation Help");
@@ -553,10 +549,12 @@ public class PlotterView extends JInternalFrame {
     }//GEN-LAST:event_mntmExportActionPerformed
 
     private void btnUnitsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnitsActionPerformed
-        
-        if (!unitsManagerFrame.isVisible()) {
-            ws.addFrame(unitsManagerFrame);
-        }
+
+        UnitsManagerFrame unitsManagerFrame = new UnitsManagerFrame();
+        unitsManagerFrame.setDataModel(preferences.getDataModel());
+        unitsManagerFrame.updateCurrentUnits();
+
+        ws.addFrame(unitsManagerFrame);
         GUIUtils.moveToFront(unitsManagerFrame);
     }//GEN-LAST:event_btnUnitsActionPerformed
 

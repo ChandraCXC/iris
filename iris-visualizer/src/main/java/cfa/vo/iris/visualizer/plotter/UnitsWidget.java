@@ -15,16 +15,15 @@
  */
 package cfa.vo.iris.visualizer.plotter;
 
-import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.visualizer.preferences.SedModel;
-import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.AbstractListModel;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -34,8 +33,6 @@ import org.apache.commons.collections.CollectionUtils;
 @SuppressWarnings("serial")
 public class UnitsWidget extends javax.swing.JPanel {
 
-    private VisualizerDataModel dataModel;
-
     /**
      * Creates new form UnitsWidget
      * @param plotter 
@@ -44,12 +41,26 @@ public class UnitsWidget extends javax.swing.JPanel {
         initComponents();
     }
     
-    protected VisualizerDataModel getDataModel() {
-        return dataModel;
-    }
-
-    protected void setDataModel(VisualizerDataModel dataModel) {
-        this.dataModel = dataModel;
+    public void updateCurrentUnits(List<SedModel> sedModels) {
+        if (CollectionUtils.isEmpty(sedModels)) {
+            return;
+        }
+        
+        String x = sedModels.get(0).getXunits();
+        String y = sedModels.get(0).getYunits();
+        
+        // TODO: This check may not be necessary when we support multiple SEDs, but
+        // leaving this here as an extra check that the logic elsewhere is correct.
+        for (SedModel model : sedModels) {           
+            if (!StringUtils.equals(x, model.getXunits()) ||
+                !StringUtils.equals(y, model.getYunits())) 
+            {
+                throw new IllegalArgumentException("Units changes requires all models to have the same units!");
+            }
+        }
+        
+        this.setXunit(x);
+        this.setYunit(y);
     }
 
     /**
@@ -129,49 +140,25 @@ public class UnitsWidget extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     /**
-     * Update the units of the currently selected SED.
-     * 
-     * Note that if the plotter SED is empty, this will still change the 
-     * preferred plotting units for this SED; all segments added to the SED will
-     * be converted to the selected units.
+     * Update the units of the provided SedModels, as passed through
+     * by the visualizer data model.
      */
-    public void updateUnits() {
+    public void updateUnits(List<SedModel> sedModels) {
         // if SED is null, don't do anything.
-        if (CollectionUtils.isEmpty(dataModel.getSedModels())) {
+        if (CollectionUtils.isEmpty(sedModels)) {
             return;
         }
         
         // fire Visualizer event to update plot and MB
-        for (SedModel model : dataModel.getSedModels()) {
+        for (SedModel model : sedModels) {
             model.setUnits(xunit, yunit);
         }
         
         this.setVisible(false);
     }
     
-    /**
-     * Update the units of the given SED
-     * @param sed 
-     * 
-     * Note that if the plotter SED is empty, this will still change the 
-     * preferred plotting units for this SED; all segments added to the SED will
-     * be converted to the selected units.
-     */
-    public void updateUnits(ExtSed sed) {
-        
-        // if SED is null, don't do anything.
-        if (sed == null) {
-            return;
-        }
-        
-        // fire Visualizer event to update plot and MB
-        dataModel.getSedModel(sed).setUnits(xunit, yunit);
-        dataModel.setSelectedSed(sed);
-        
-        this.setVisible(false);
-    }
-    
     /*
+     *
      * getters and setters
      *
      */
