@@ -37,9 +37,6 @@ import cfa.vo.iris.visualizer.preferences.SegmentModel;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.TextParam;
-import cfa.vo.sedlib.io.SedFormat;
-import cfa.vo.testdata.TestData;
-
 import static org.junit.Assert.*;
 
 import java.util.BitSet;
@@ -316,7 +313,8 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
     
     @Test
     public void testMetadataBrowserMasking() throws Exception {
-        final ExtSed sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
+        final ExtSed sed = new ExtSed("TEST");
+        sed.addSegment(createSampleSegment());
         sedManager.add(sed);
         
         invokeWithRetry(20, 100, new Runnable() {
@@ -326,18 +324,18 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
                 assertEquals(sed, mbView.getDataModel().getSelectedSed());
                 assertEquals(1, mbView.getDataModel().getSedStarTables().size());
                 assertEquals(1, mbView.getDataModel().getSelectedStarTables().size());
-                assertEquals(455, plotterTable.getRowCount());
+                assertEquals(3, plotterTable.getRowCount());
             }
         });
         
         // Apply a mask on the first and last rows
         final BitSet masked = new BitSet();
         masked.set(0);
-        masked.set(454);
+        masked.set(2);
         
         dataPanel.getTabGroup().selectTab("Data");
         mbView.addRowToSelection(0, 0);
-        mbView.addRowToSelection(0, 454);
+        mbView.addRowToSelection(0, 2);
         mbWindow.getButton("Mask Points").click();
         
         invokeWithRetry(20, 100, new Runnable() {
