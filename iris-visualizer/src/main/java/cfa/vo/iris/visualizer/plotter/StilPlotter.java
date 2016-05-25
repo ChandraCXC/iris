@@ -308,9 +308,13 @@ public class StilPlotter extends JPanel {
         logger.log(Level.FINE, "plot environment:");
         logger.log(Level.FINE, ReflectionToStringBuilder.toString(env));
         
+        // Don't use STIL caching http://tinyurl.com/h7dml6d, our data is already 
+        // cached so it doesn't necessarily buy us any performance gains. Moreover,
+        // it can cause problems in testing with repeating segments, and potentially
+        // production with many changing segments with the same data.
         @SuppressWarnings("unchecked")
         PlotDisplay<PlaneSurfaceFactory.Profile,PlaneAspect> display =
-                new PlanePlot2Task().createPlotComponent(env, true);
+                new PlanePlot2Task().createPlotComponent(env, false);
         
         // Always update mouse listeners with the new display
         preferences.getMouseListenerManager().activateListeners(display);
