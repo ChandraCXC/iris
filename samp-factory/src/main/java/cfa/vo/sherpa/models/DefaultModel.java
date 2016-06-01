@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
 import java.util.*;
 
 public class DefaultModel implements Model {
@@ -93,6 +94,9 @@ public class DefaultModel implements Model {
 
     @Override
     public void setName(String name) {
+        if (name == null) {
+            name = "";
+        }
         String[] tokens = StringUtils.split(name, ".");
         name = tokens.length > 1 ? tokens[0] : name;
         String id = tokens.length > 1? tokens[1] : null;
