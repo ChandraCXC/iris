@@ -49,6 +49,7 @@
         <module>sed-builder</module>
         <module>iris-visualizer</module>
         <module>iris-test-data</module>
+        <module>iris-asdc-plugin</module>
     </modules>
 
     <!-- 
@@ -317,6 +318,11 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>org.jdesktop</groupId>
+                <artifactId>beansbinding</artifactId>
+                <version>1.2.1</version>
+            </dependency>
+            <dependency>
                 <groupId>org.astrogrid</groupId>
                 <artifactId>jsamp</artifactId>
                 <version>${jsamp.version}</version>
@@ -350,6 +356,10 @@
             <groupId>net.javacrumbs.json-unit</groupId>
             <artifactId>json-unit</artifactId>
             <version>1.12.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jdesktop</groupId>
+            <artifactId>beansbinding</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>
