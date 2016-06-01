@@ -46,6 +46,8 @@ import org.uispec4j.interception.FileChooserHandler;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
 
+import javax.swing.*;
+
 public class FittingToolComponentTest extends AbstractComponentGUITest {
 
     private FittingToolComponent comp = new FittingToolComponent();
@@ -193,7 +195,9 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
 
         WindowInterceptor
                 .init(mainFit.getMenuBar().getMenu("File").getSubMenu("Save Text...").triggerClick())
-                .process(FileChooserHandler.init().select(outputFile.getAbsolutePath()))
+                .process(FileChooserHandler.init()
+                        .assertIsSaveDialog()
+                        .select(outputFile.getAbsolutePath()))
                 .run()
         ;
 
@@ -248,7 +252,9 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
 
         WindowInterceptor
                 .init(mainFit.getMenuBar().getMenu("File").getSubMenu("Save Json...").triggerClick())
-                .process(FileChooserHandler.init().select(outputFile.getAbsolutePath()))
+                .process(FileChooserHandler.init()
+                        .assertIsSaveDialog()
+                        .select(outputFile.getAbsolutePath()))
                 .run()
         ;
 

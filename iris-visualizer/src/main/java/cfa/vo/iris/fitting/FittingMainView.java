@@ -520,7 +520,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
 
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            int result = chooser.showOpenDialog(FittingMainView.this);
+            int result = chooser.showSaveDialog(FittingMainView.this);
             if (result == JFileChooser.APPROVE_OPTION) {
                 try {
                     controller.save(new FileOutputStream(chooser.getSelectedFile()));
@@ -538,7 +538,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
 
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
-            int result = chooser.showOpenDialog(FittingMainView.this);
+            int result = chooser.showSaveDialog(FittingMainView.this);
             if (result == JFileChooser.APPROVE_OPTION) {
                 try {
                     controller.saveJson(new FileOutputStream(chooser.getSelectedFile()));
