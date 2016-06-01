@@ -35,6 +35,7 @@ public class SherpaClient {
     private AtomicInteger stringCounter = new AtomicInteger();
     private static final String FIT_MTYPE = "spectrum.fit.fit";
     private static final String CONFIDENCE_MTYPE = "spectrum.fit.confidence";
+    private static final String EVALUATE_MTYPE = "spectrum.fit.calc.model.values";
     private Logger logger = Logger.getLogger(SherpaClient.class.getName());
 
     public SherpaClient(SampService sampService) {
@@ -52,6 +53,18 @@ public class SherpaClient {
     public FitResults fit(ExtSed sed) throws Exception {
         SherpaFitConfiguration conf = make(sed);
         return fit(conf);
+    }
+
+    public Data evaluate(ExtSed sed) throws Exception {
+        SherpaFitConfiguration conf = make(sed);
+        return evaluate(conf);
+    }
+
+    public Data evaluate(SherpaFitConfiguration conf) throws Exception {
+        fixDatasets(conf);
+        SAMPMessage message = SAMPFactory.createMessage(EVALUATE_MTYPE, conf, SherpaFitConfiguration.class);
+        Response response = sendMessage(message);
+        return SAMPFactory.get(response.getResult(), Data.class);
     }
 
     public FitResults fit(Data data, FitConfiguration fit) throws Exception {

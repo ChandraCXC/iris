@@ -14,16 +14,20 @@ import java.io.File;
  */
 public class TestUtils {
     
-    public static Segment createSampleSegment(double[] x, double[] y) throws SedNoDataException {
+    public static Segment createSampleSegment(double[] x, double[] y, String xUnits, String yUnits) throws SedNoDataException {
         Segment segment = new Segment();
         segment.setFluxAxisValues(y);
-        segment.setFluxAxisUnits("Jy");
+        segment.setFluxAxisUnits(yUnits);
         segment.createChar().createFluxAxis().setUcd("ucdf");
         segment.setSpectralAxisValues(x);
-        segment.setSpectralAxisUnits("Angstrom");
+        segment.setSpectralAxisUnits(xUnits);
         segment.getChar().createSpectralAxis().setUcd("ucds");
         return segment;
         
+    }
+
+    public static Segment createSampleSegment(double[] x, double[] y) throws SedNoDataException {
+        return createSampleSegment(x, y, "Angstrom", "Jy");
     }
     
     public static  Segment createSampleSegment() throws SedNoDataException  {
