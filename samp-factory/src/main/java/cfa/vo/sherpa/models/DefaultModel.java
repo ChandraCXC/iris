@@ -93,7 +93,7 @@ public class DefaultModel implements Model {
 
     @Override
     public void setName(String name) {
-        String[] tokens = name.split("\\.");
+        String[] tokens = StringUtils.split(name, ".");
         name = tokens.length > 1 ? tokens[0] : name;
         String id = tokens.length > 1? tokens[1] : null;
         this.name = name;
