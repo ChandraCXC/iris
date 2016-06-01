@@ -24,27 +24,38 @@ import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.sherpa.models.*;
 
+import java.io.File;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Statistic;
+import com.google.common.io.Files;
+import net.javacrumbs.jsonunit.JsonAssert;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import org.uispec4j.ComboBox;
-import org.uispec4j.TextBox;
-import org.uispec4j.Tree;
-import org.uispec4j.Window;
+import org.junit.rules.TemporaryFolder;
+import org.uispec4j.*;
+import org.uispec4j.assertion.UISpecAssert;
 import org.uispec4j.interception.BasicHandler;
+import org.uispec4j.interception.FileChooserHandler;
+import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
+
+import javax.swing.*;
 
 public class FittingToolComponentTest extends AbstractComponentGUITest {
 
     private FittingToolComponent comp = new FittingToolComponent();
     private String windowName;
     private SedlibSedManager sedManager;
+
+    @Rule
+    public TemporaryFolder tempFolder = new TemporaryFolder();
 
     @Before
     public void setUp() throws Exception {
@@ -174,6 +185,98 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         assertTrue(availableTree.contains("Preset Model Components/brokenpowerlaw").isTrue());
     }
 
+    @Test
+    public void testSaveText() throws Exception {
+        ExtSed sed = sedManager.newSed("TestSed");
+        addFit(sed);
+        Window mainFit = openWindow();
+
+        File outputFile = tempFolder.newFile("output.fit");
+
+        WindowInterceptor
+                .init(mainFit.getMenuBar().getMenu("File").getSubMenu("Save Text...").triggerClick())
+                .process(FileChooserHandler.init()
+                        .assertIsSaveDialog()
+                        .select(outputFile.getAbsolutePath()))
+                .run()
+        ;
+
+        String expected = TestUtils.readFile(getClass(), "fit.output");
+        assertEquals(expected, Files.toString(outputFile, Charset.defaultCharset()));
+    }
+
+    @Test
+    public void testLoadJson() throws Exception {
+        ExtSed sed = sedManager.newSed("TestSed");
+        Window mainFit = openWindow();
+
+        String path = getClass().getResource("fit.json").getFile();
+
+        WindowInterceptor
+                .init(mainFit.getMenuBar().getMenu("File").getSubMenu("Load Json...").triggerClick())
+                .process(FileChooserHandler.init().select(path))
+                .run()
+        ;
+
+        FitConfiguration configuration = createFit();
+        configuration.getModel().getParts().get(0).findParameter("c1").setVal(3.25);
+        configuration.setMethod(OptimizationMethod.MonteCarlo);
+        configuration.setStat(Statistic.Chi2);
+
+        assertEquals(configuration, sed.getFit());
+
+        Tree modelsTree = mainFit.getTree("modelsTree");
+        UISpecAssert.waitUntil(modelsTree.contains("polynomial/m.c1"), 1000);
+        modelsTree.click("polynomial.m/m.c1");
+        TextBox parVal = mainFit.getInputTextBox("Par Val");
+        UISpecAssert.waitUntil(parVal.textEquals("3.25"), 1000);
+        mainFit.getComboBox("statisticCombo").selectionEquals("Chi2").check();
+        mainFit.getComboBox("optimizationCombo").selectionEquals("MonteCarlo").check();
+    }
+
+    @Test
+    public void testSaveJson() throws Exception {
+        ExtSed sed = sedManager.newSed("TestSed");
+        addFit(sed);
+        Window mainFit = openWindow();
+
+        Tree modelsTree = mainFit.getTree("modelsTree");
+        modelsTree.click("polynomial.m/m.c1");
+        TextBox parVal = mainFit.getInputTextBox("Par Val");
+        UISpecAssert.waitUntil(parVal.textEquals("0.0"), 1000);
+        parVal.setText("3.25");
+        mainFit.getComboBox("statisticCombo").select("Chi2");
+        mainFit.getComboBox("optimizationCombo").select("MonteCarlo");
+
+        File outputFile = tempFolder.newFile("output.json");
+
+        WindowInterceptor
+                .init(mainFit.getMenuBar().getMenu("File").getSubMenu("Save Json...").triggerClick())
+                .process(FileChooserHandler.init()
+                        .assertIsSaveDialog()
+                        .select(outputFile.getAbsolutePath()))
+                .run()
+        ;
+
+        String expected = TestUtils.readFile(getClass(), "fit.json");
+        JsonAssert.assertJsonEquals(expected, Files.toString(outputFile, Charset.defaultCharset()));
+    }
+
+    @Test
+    public void testSaveTextNonExistentFile() throws Exception {
+        nonExistentFile("Save Text...");
+    }
+
+    @Test
+    public void testSaveJsonNonExistentFile() throws Exception {
+        nonExistentFile("Save Json...");
+    }
+
+    @Test
+    public void testLoadJsonNonExistentFile() throws Exception {
+        nonExistentFile("Load Json...");
+    }
+
     private Window openWindow() {
         window.getMenuBar()
                 .getMenu("Tools")
@@ -183,7 +286,40 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         return desktop.getWindow(windowName);
     }
 
+    private void nonExistentFile(String menu) {
+        ExtSed sed = sedManager.newSed("TestSed");
+        addFit(sed);
+        Window mainFit = openWindow();
+
+        final WindowInterceptor wi = WindowInterceptor
+                .init(mainFit.getMenuBar().getMenu("File").getSubMenu(menu).triggerClick())
+                .process(FileChooserHandler.init().select("/foo/bar/baz"));
+
+        WindowInterceptor
+                .init(new Trigger() {
+                    @Override
+                    public void run() throws Exception {
+                        wi.run();
+                    }
+                })
+                .process(new WindowHandler() {
+                    @Override
+                    public Trigger process(Window window) throws Exception {
+                        window.titleEquals("Error").check();
+                        window.getTextBox("Optionpane.label").textContains("No such file or directory").check();
+                        return window.getButton().triggerClick();
+                    }
+                })
+                .run();
+    }
+
     private FitConfiguration addFit(ExtSed sed) {
+        FitConfiguration fit = createFit();
+        sed.setFit(fit);
+        return fit;
+    }
+
+    private FitConfiguration createFit() {
         FitConfiguration fit = new FitConfiguration();
 
         ModelFactory factory = new ModelFactory();
@@ -202,7 +338,6 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         fit.setMethod(OptimizationMethod.LevenbergMarquardt);
         fit.setStat(Statistic.LeastSquares);
 
-        sed.setFit(fit);
         return fit;
     }
 }

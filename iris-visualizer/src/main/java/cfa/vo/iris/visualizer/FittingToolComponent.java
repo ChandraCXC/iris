@@ -144,7 +144,7 @@ public class FittingToolComponent implements IrisComponent {
                                 return;
                             }
                             FitController controller = new FitController(sed, customManager, sherpaClient);
-                            view = new FittingMainView(controller);
+                            view = new FittingMainView(ws.getFileChooser(), controller);
                             ws.addFrame(view);
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);

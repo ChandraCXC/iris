@@ -1,12 +1,12 @@
 /**
- * Copyright (C) 2012 Smithsonian Astrophysical Observatory
- *
+ * Copyright (C) 2016 Smithsonian Astrophysical Observatory
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *         http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package cfa.vo.sherpa.optimization;
+package cfa.vo.sherpa.models;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.junit.Assert;
+import org.junit.Test;
 
-@JsonDeserialize(using=MethodDeserializer.class)
-public interface Method {
-    String getName();
+public class DefaultModelTest {
 
-    void setName(String name);
+    @Test
+    public void testSetNullName() throws Exception {
+        DefaultModel m = new DefaultModel();
+        m.setName(null);
+        Assert.assertEquals("", m.getName());
+    }
 }

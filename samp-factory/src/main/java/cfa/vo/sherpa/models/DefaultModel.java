@@ -17,8 +17,10 @@
 package cfa.vo.sherpa.models;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
 import java.util.*;
 
 public class DefaultModel implements Model {
@@ -32,6 +34,10 @@ public class DefaultModel implements Model {
     private String description;
 
     private String id;
+
+    public DefaultModel() {
+        // comply to javabeans spec, mostly for deserialization
+    }
 
     public DefaultModel(Model model, String id) {
         this.name = model.getName();
@@ -88,7 +94,14 @@ public class DefaultModel implements Model {
 
     @Override
     public void setName(String name) {
+        if (name == null) {
+            name = "";
+        }
+        String[] tokens = StringUtils.split(name, ".");
+        name = tokens.length > 1 ? tokens[0] : name;
+        String id = tokens.length > 1? tokens[1] : null;
         this.name = name;
+        setId(id);
     }
 
     @Override
@@ -98,6 +111,13 @@ public class DefaultModel implements Model {
 
     public String getId() {
         return id;
+    }
+
+    @Override
+    public void setId(String id) {
+        if (id!=null) {
+            this.id = id;
+        }
     }
 
     public Parameter findParameter(String name) throws NoSuchElementException {
@@ -113,6 +133,19 @@ public class DefaultModel implements Model {
         return getName();
     }
 
+    @Override
+    public int hashCode() {
+        HashCodeBuilder builder = new HashCodeBuilder(11, 15);
+        if(StringUtils.isNotBlank(name))
+                builder.append(name);
+        if(StringUtils.isNotBlank(description))
+                builder.append(description);
+        if(!pars.isEmpty())
+                builder.append(pars);
+
+        return builder.toHashCode();
+    }
+
     private String buildParamName(String paramName) {
         return getId() + "." + paramName;
     }
@@ -123,6 +156,44 @@ public class DefaultModel implements Model {
 
     public static String findId(UserModel m) {
         return findId(m.getName());
+    }
+
+    public static String toString(CompositeModel model) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("Model Expression: ").append(model.getName()).append("\n")
+                .append("Components:\n");
+
+
+        if (model.getParts() != null) {
+            for (Model m : model.getParts()) {
+                builder.append(toString(m));
+            }
+        }
+
+        return builder.toString();
+    }
+
+    private static String toString(Model model) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("\t").append(model.getName()).append("\n");
+        for (Parameter p : model.getPars()) {
+            appendParamToString(p, builder);
+        }
+
+        return builder.toString();
+    }
+
+    private static void appendParamToString(Parameter p, StringBuilder builder) {
+        String name = p.getName();
+        Double value = p.getVal();
+        String frozen = p.getFrozen() == 1 ? " Frozen" : "";
+
+        builder
+                .append(String.format("\t\t%26s = %12.5E%s",name, value, frozen))
+                .append("\n");
+        ;
     }
 
     private static String findId(String name) {
