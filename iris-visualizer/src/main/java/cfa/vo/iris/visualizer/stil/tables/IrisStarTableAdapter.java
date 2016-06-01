@@ -20,6 +20,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+import org.apache.commons.lang.StringUtils;
+
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.sed.stil.SerializingStarTableAdapter;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
@@ -31,6 +33,16 @@ import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import uk.ac.starlink.table.StarTable;
 
+/**
+ * Adapter for converting a SedLibSegment to an IrisStarTable for use by 
+ * the IrisVisualizer. The class can execute the conversion synchronously 
+ * or asynchronously - which users may want to do in the case of large 
+ * (>3000 point) segments.
+ * 
+ * If a name is specified in the conversion method the adapter will apply 
+ * the name to the new StarTables.
+ *
+ */
 public class IrisStarTableAdapter {
     
     private final ExecutorService executor;
@@ -40,24 +52,37 @@ public class IrisStarTableAdapter {
     }
 
     public IrisStarTable convertSegment(Segment data) {
-        return convert(data, false);
+        return convert(data, false, null);
+    }
+
+    public IrisStarTable convertSegment(Segment data, String name) {
+        return convert(data, false, name);
     }
     
     public IrisStarTable convertSegmentAsync(Segment data) {
-        return convert(data, true);
+        return convert(data, true, null);
     }
     
-    private IrisStarTable convert(Segment data, boolean async) {
+    public IrisStarTable convertSegmentAsync(Segment data, String name) {
+        return convert(data, true, name);
+    }
+    
+    private IrisStarTable convert(Segment data, boolean async, String name) {
         try {
             SegmentStarTable segTable = new SegmentStarTable(data);
             IrisStarTable ret;
             
             SerializingStarTableAdapter adapter = new SerializingStarTableAdapter();
             if (async) {
-                Future<StarTable> val = executor.submit(new AsyncSerializer(data, adapter));
+                Future<StarTable> val = executor.submit(new AsyncSerializer(data, adapter, name));
                 ret = new IrisStarTable(segTable, val);
             } else {
                 ret = new IrisStarTable(segTable, adapter.convertStarTable(data));
+            }
+            
+            // Set the name of the new star table if a name has been specified
+            if (StringUtils.isNotBlank(name)) {
+                ret.setName(name);
             }
             
             return ret;
@@ -70,16 +95,23 @@ public class IrisStarTableAdapter {
         
         private final Segment data;
         private final StarTableAdapter<Segment> adapter;
+        private final String name;
 
-        public AsyncSerializer(Segment data, StarTableAdapter<Segment> adapter) {
+        public AsyncSerializer(Segment data, StarTableAdapter<Segment> adapter, String name) {
             this.data = data;
             this.adapter = adapter;
+            this.name = name;
         }
         
         @Override
         public StarTable call() throws Exception {
             // Convert and update the datatable
             StarTable converted = adapter.convertStarTable(data);
+
+            // Set the name of the new star table if a name has been specified
+            if (StringUtils.isNotBlank(name)) {
+                converted.setName(name);
+            }
             
             // Notify components of a change
             notifyVisualizerComponents();

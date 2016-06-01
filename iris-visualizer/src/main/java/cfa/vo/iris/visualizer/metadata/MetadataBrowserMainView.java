@@ -16,10 +16,12 @@
 package cfa.vo.iris.visualizer.metadata;
 
 import java.awt.Component;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -34,10 +36,13 @@ import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
 import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerListener;
+import cfa.vo.iris.visualizer.stil.IrisStarJTable;
 import cfa.vo.iris.visualizer.stil.IrisStarJTable.RowSelection;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.SegmentColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.UtypeColumnInfoMatcher;
+import cfa.vo.sedlib.common.SedInconsistentException;
+import cfa.vo.sedlib.common.SedNoDataException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -107,6 +112,31 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         setTitle(title);
     }
     
+    /**
+     * Specifies a star table (by index) and a row to be added to the selected plotter/
+     * data table tabs' row selections. Note that irow is the row in the Base Table of the
+     * IrisStarTable - not of the masked star table! Any callers specifying rows based
+     * on the IrisStarTable must use .getBaseTableRow in IrisStarTable to map the masked
+     * row index back to the base table row index before calling this method.
+     * 
+     * @param starTableIndex - index of the star table in the selectedTables list.
+     * @param irow - row to be selected in the star table.
+     */
+    public void addRowToSelection(int starTableIndex, int irow) {
+        
+        // If the star table isn't currently selected, add it to the selection
+        int[] selection = starTableList.getSelectedIndices();
+        if (ArrayUtils.indexOf(selection, starTableIndex) < 0) {
+            starTableList.setSelectedIndices(ArrayUtils.add(selection, starTableIndex));
+        }
+        
+        // Select the correct row
+        IrisStarJTable table = getSelectedIrisJTable();
+        if (table == null) return;
+        
+        table.selectRowIndex(starTableIndex, irow);
+    }
+    
     private void updateSelectedTables() {
         List<IrisStarTable> newTables = new LinkedList<>();
         
@@ -137,26 +167,49 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         }
         setSelectedStarTables(newTables);
     }
-    
+
     /**
-     * Specifies a star table (by index) and a row to be added to the selected plotter/
-     * data table tabs' row selections.
+     * Extracts the selected rows in the Metadata browser to a new SED, then adds the SED to the
+     * SedManager through the Iris Workspace.
      * 
-     * @param starTableIndex - index of the star table in the selectedTables list.
-     * @param irow - row to be selected in the star table.
      */
-    public void addRowToSelection(int starTableIndex, int irow) {
+    private void extractSelectionToSed() {
         
-        // If the star table isn't currently selected, add it to the selection
-        int[] selection = starTableList.getSelectedIndices();
-        if (ArrayUtils.indexOf(selection, starTableIndex) < 0) {
-            starTableList.setSelectedIndices(ArrayUtils.add(selection, starTableIndex));
+        // Do nothing if no SED is selected
+        if (selectedSed == null) {
+            JOptionPane.showMessageDialog(this, "No SED in browser. Please load an SED.",
+                    null, JOptionPane.WARNING_MESSAGE);
+            return;
         }
         
-        // Select the correct row
-        plotterStarJTable.selectRowIndex(starTableIndex, irow);
+        // Cannot extract from segment tab
+        IrisStarJTable jtable = getSelectedIrisJTable();
+        if (jtable == null) {
+            JOptionPane.showMessageDialog(this, "Select either Data or Point Metadata tab.",
+                    null, JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        // Do nothing if there are no rows selected
+        RowSelection selectedRows = jtable.getRowSelection();
+        if (selectedRows == null || selectedRows.originalRows.length == 0) {
+            JOptionPane.showMessageDialog(this, "No rows selected to extract. Please select rows.",
+                    null, JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        
+        try {
+            
+            logger.info(String.format("Extracting %s points from Sed.", selectedRows.originalRows.length));
+            ExtSed newSed = preferences.createNewWorkspaceSed(selectedRows);
+            JOptionPane.showMessageDialog(this, "Added new SED (" + newSed.getId() + ") to workspace.");
+            
+        } catch (SedInconsistentException | SedNoDataException ex) {
+            String msg = "Error extracting SED: " + ex.getMessage();
+            JOptionPane.showMessageDialog(this, msg, null, JOptionPane.ERROR_MESSAGE);
+            logger.log(Level.SEVERE, msg, ex);
+        }
     }
-    
     
     /*
      * getters and setters
@@ -257,6 +310,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         selectPointsButton = new javax.swing.JButton();
         applyMaskButton = new javax.swing.JButton();
         selectAllButton = new javax.swing.JButton();
+        extractButton = new javax.swing.JButton();
         clearSelectionButton = new javax.swing.JButton();
         invertSelectionButton = new javax.swing.JButton();
         clearMaskButton = new javax.swing.JButton();
@@ -307,7 +361,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
-        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.weightx = 0.1;
@@ -318,7 +372,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         selectPointsButton.setText("Select Points");
         selectPointsButton.setToolTipText("Select points matching the filter expression");
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridx = 5;
         gridBagConstraints.gridy = 1;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -335,7 +389,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 4;
+        gridBagConstraints.gridx = 5;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -357,6 +411,20 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         getContentPane().add(selectAllButton, gridBagConstraints);
+
+        extractButton.setText("Extract");
+        extractButton.setToolTipText("Extract selection to new SED");
+        extractButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                extractButtonActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHWEST;
+        getContentPane().add(extractButton, gridBagConstraints);
 
         clearSelectionButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
         clearSelectionButton.setText("Clear Selection");
@@ -401,7 +469,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 5;
+        gridBagConstraints.gridx = 6;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -418,7 +486,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 6;
+        gridBagConstraints.gridx = 7;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -459,6 +527,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         plotterMetadataScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         plotterStarJTable.setColumnInfoMatcher(new SegmentColumnInfoMatcher());
+        plotterStarJTable.setSortBySpecValues(true);
 
         org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedStarTables}"), plotterStarJTable, org.jdesktop.beansbinding.BeanProperty.create("selectedStarTables"));
         bindingGroup.addBinding(binding);
@@ -481,12 +550,11 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         pointMetadataScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         pointStarJTable.setColumnInfoMatcher(new UtypeColumnInfoMatcher());
+        pointStarJTable.setSortBySpecValues(false);
         pointStarJTable.setUsePlotterDataTables(false);
         pointStarJTable.setUtypeAsNames(true);
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedStarTables}"), pointStarJTable, org.jdesktop.beansbinding.BeanProperty.create("selectedStarTables"));
-        bindingGroup.addBinding(binding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, plotterStarJTable, org.jdesktop.beansbinding.ELProperty.create("${selectionModel}"), pointStarJTable, org.jdesktop.beansbinding.BeanProperty.create("selectionModel"));
         bindingGroup.addBinding(binding);
 
         pointMetadataScrollPane.setViewportView(pointStarJTable);
@@ -532,7 +600,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 7;
+        gridBagConstraints.gridwidth = 8;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 1.0;
@@ -542,6 +610,11 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         fileMenu.setName("Extract"); // NOI18N
 
         extractToSedMenuItem.setText("Extract to New SED");
+        extractToSedMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                extractToSedMenuItemActionPerformed(evt);
+            }
+        });
         fileMenu.add(extractToSedMenuItem);
 
         broadcastToSampMenuItem.setText("Broadcast to SAMP");
@@ -655,10 +728,10 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_clearSelectionButtonActionPerformed
 
     private void applyMaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyMaskButtonActionPerformed
-        // Applying a mask always acts on the selections from the plotter and 
-        // segment data tables.
-        RowSelection selection = this.plotterStarJTable.getRowSelection();
+        IrisStarJTable selectedTable = getSelectedIrisJTable();
+        if (selectedTable == null) return;
         
+        RowSelection selection = selectedTable.getRowSelection();
         logger.info(String.format("Applying mask of %s points to %s tables", selection.originalRows.length, selectedStarTables.size()));
         
         for (int i=0; i<selection.selectedTables.length; i++) {
@@ -669,9 +742,10 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_applyMaskButtonActionPerformed
 
     private void clearMaskButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearMaskButtonActionPerformed
-
-        RowSelection selection = this.plotterStarJTable.getRowSelection();
+        IrisStarJTable selectedTable = getSelectedIrisJTable();
+        if (selectedTable == null) return;
         
+        RowSelection selection = selectedTable.getRowSelection();
         logger.info(String.format("Removing masks of %s points from %s tables", selection.originalRows.length, selectedStarTables.size()));
         
         for (int i=0; i<selection.selectedTables.length; i++) {
@@ -685,6 +759,14 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         IrisStarTable.clearAllMasks(sedStarTables);
         VisualizerChangeEvent.getInstance().fire(selectedSed, VisualizerCommand.REDRAW);
     }//GEN-LAST:event_clearAllButtonActionPerformed
+
+    private void extractToSedMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_extractToSedMenuItemActionPerformed
+        extractSelectionToSed();
+    }//GEN-LAST:event_extractToSedMenuItemActionPerformed
+
+    private void extractButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_extractButtonActionPerformed
+        extractSelectionToSed();
+    }//GEN-LAST:event_extractButtonActionPerformed
 
     private void selectAllButtonActionPerformed(
             java.awt.event.ActionEvent evt) {// GEN-FIRST:event_selectAllButtonActionPerformed
@@ -700,8 +782,18 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         if (panel == null) {
             return null;
         }
-        
         return (JTable) ((JScrollPane) panel.getComponent(0)).getViewport().getComponent(0);
+    }
+    
+    private IrisStarJTable getSelectedIrisJTable() {
+        int idx = this.dataTabsPane.getSelectedIndex();
+        if (idx == 0) {
+            return this.plotterStarJTable;
+        } else if (idx == 1) {
+            return this.pointStarJTable;
+        } else {
+            return null;
+        }
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -718,6 +810,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private javax.swing.JSplitPane dataPane;
     private javax.swing.JTabbedPane dataTabsPane;
     private javax.swing.JMenu editMenu;
+    private javax.swing.JButton extractButton;
     private javax.swing.JMenuItem extractToSedMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JTextField filterExpressionField;
