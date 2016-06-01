@@ -523,7 +523,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         dataTabsPane.setMinimumSize(new java.awt.Dimension(0, 0));
         dataTabsPane.setName("dataTabsPane"); // NOI18N
 
-        plotterMetadataScrollPane.setToolTipText("");
         plotterMetadataScrollPane.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
         plotterStarJTable.setColumnInfoMatcher(new SegmentColumnInfoMatcher());
