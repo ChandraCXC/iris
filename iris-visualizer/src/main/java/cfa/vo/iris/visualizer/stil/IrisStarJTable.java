@@ -302,6 +302,13 @@ public class IrisStarJTable extends StarJTable {
         public String getToolTipText(MouseEvent evt) {
             Point p = evt.getPoint();
             int index = columnModel.getColumnIndexAtX(p.x);
+            
+            // Tool tip texts might not always be directly over the column's location, apparently.
+            // Don't show anything if the point is off the table's header.
+            if (index < 0) {
+                return null;
+            }
+            
             String tt = printColumnInfo((StarTableColumn) columnModel.getColumn(index));
             return tt;
         }
