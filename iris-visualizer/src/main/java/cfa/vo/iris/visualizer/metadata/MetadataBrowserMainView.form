@@ -391,7 +391,6 @@
               <SubComponents>
                 <Container class="javax.swing.JScrollPane" name="plotterMetadataScrollPane">
                   <Properties>
-                    <Property name="toolTipText" type="java.lang.String" value=""/>
                     <Property name="verticalScrollBarPolicy" type="int" value="22"/>
                   </Properties>
 
