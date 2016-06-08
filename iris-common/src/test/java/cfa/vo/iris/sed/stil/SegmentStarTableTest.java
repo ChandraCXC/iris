@@ -21,6 +21,8 @@ import cfa.vo.iris.sed.stil.SegmentColumn.Column;
 import cfa.vo.iris.units.spv.XUnits;
 import cfa.vo.iris.units.spv.YUnits;
 import cfa.vo.sedlib.Sed;
+import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.common.Utypes;
 import cfa.vo.sedlib.io.SedFormat;
 import cfa.vo.testdata.TestData;
 import uk.ac.starlink.table.RowSequence;
@@ -134,5 +136,61 @@ public class SegmentStarTableTest {
             return;
         }
         fail();
+    }
+    
+    @Test
+    public void testUnits() throws Exception {
+        
+        double[] x = new double[]{1.0, 2.0, 3.0};
+        double[] y = new double[]{1.0, 2.0, 3.0};
+        double[] err = new double[]{0.1, 0.1, 0.1};
+        
+        Segment segment = new Segment();
+        segment.setFluxAxisValues(y);
+        segment.setFluxAxisUnits("erg/s/cm**2/Hz");
+        segment.createChar().createFluxAxis().setUcd("ucdf");
+        segment.setSpectralAxisValues(x);
+        segment.setSpectralAxisUnits("Hz");
+        segment.getChar().createSpectralAxis().setUcd("ucds");
+        segment.getData().setDataValues(err, Utypes.SEG_DATA_FLUXAXIS_ACC_STATERR);
+        
+        SegmentStarTable table = new SegmentStarTable(segment);
+        ColumnIdentifier id = new ColumnIdentifier(table);
+        
+        // erg/s/cm2/Hz to ABMAG
+        table.setFluxUnits(new YUnits("ABMAG"));
+        
+        // m_AB = -2.5 log10(f_nu(erg/s/cm2/Hz)) - 48.60
+        // err(m_ab) = -2.5 log10(1 + err(f_nu)/f_nu)
+        double[] expectedY = new double[]{-48.6, -49.35257499, -49.79280314};
+        double[] expectedYerr = new double[]{0.10348171, 0.05297325, 0.0356011};
+        for (int i=0; i < table.getFluxValues().length; i++) {
+            assertEquals(expectedY[i], table.getFluxValues()[i], 0.000001);
+            assertEquals(expectedYerr[i], table.getFluxErrValues()[i], 0.000001);
+        }
+        
+        // convert between ABMAG and erg/s/cm2/Hz and make sure the values 
+        // switch back and forth correctly
+        
+        // ABMAG back to erg/s/cm2/Hz
+        table.setFluxUnits(new YUnits("erg/s/cm**2/Hz"));
+        for (int i=0; i < table.getFluxValues().length; i++) {
+            assertEquals(y[i], table.getFluxValues()[i], 0.000001);
+            assertEquals(0.1, table.getFluxErrValues()[i], 0.000001);
+        }
+        
+        // erg/s/cm2/Hz to ABMAG
+        table.setFluxUnits(new YUnits("ABMAG"));
+        for (int i=0; i < table.getFluxValues().length; i++) {
+            assertEquals(expectedY[i], table.getFluxValues()[i], 0.000001);
+            assertEquals(expectedYerr[i], table.getFluxErrValues()[i], 0.000001);
+        }
+        
+        // ABMAG back to erg/s/cm2/Hz
+        table.setFluxUnits(new YUnits("erg/s/cm**2/Hz"));
+        for (int i=0; i < table.getFluxValues().length; i++) {
+            assertEquals(y[i], table.getFluxValues()[i], 0.000001);
+            assertEquals(0.1, table.getFluxErrValues()[i], 0.000001);
+        }
     }
 }

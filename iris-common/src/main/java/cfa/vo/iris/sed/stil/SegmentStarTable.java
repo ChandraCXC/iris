@@ -57,6 +57,7 @@ public class SegmentStarTable extends RandomStarTable {
     private Segment segment;
     private XUnit specUnits;
     private YUnit fluxUnits;
+    private YUnit originalFluxUnits;
     private final long rows;
 
     // Columns for name and filtered state
@@ -70,6 +71,9 @@ public class SegmentStarTable extends RandomStarTable {
     private double[] specValues;
     private double[] fluxValues;
     private double[] originalFluxValues;
+    private double[] originalFluxErrValues;
+    private double[] originalFluxErrValuesHi;
+    private double[] originalFluxErrValuesLo;
     private double[] specErrValues;
     private double[] specErrValuesLo;
     private double[] specErrValuesHi;
@@ -88,6 +92,7 @@ public class SegmentStarTable extends RandomStarTable {
         this.segment = segment;
         this.specUnits = units.newXUnits(segment.getSpectralAxisUnits());
         this.fluxUnits = units.newYUnits(segment.getFluxAxisUnits());
+        this.originalFluxUnits = units.newYUnits(segment.getFluxAxisUnits());
         this.columns = new TreeSet<SegmentColumn>();
         
         // Name column will always be first
@@ -116,6 +121,9 @@ public class SegmentStarTable extends RandomStarTable {
         setSpecValues(segment.getSpectralAxisValues());
         setFluxValues(segment.getFluxAxisValues());
         setOriginalFluxValues(segment.getFluxAxisValues()); // Copies data so these aren't the same
+        setOriginalFluxErrValues((double[]) getDataFromSegment(Utypes.SEG_DATA_FLUXAXIS_ACC_STATERR));
+        setOriginalFluxErrValuesHi((double[]) getDataFromSegment(Utypes.SEG_DATA_FLUXAXIS_ACC_STATERRHIGH));
+        setOriginalFluxErrValuesLo((double[]) getDataFromSegment(Utypes.SEG_DATA_FLUXAXIS_ACC_STATERRLOW));
         
         // Try to add flux error values
         setFluxErrValues((double[]) getDataFromSegment(Utypes.SEG_DATA_FLUXAXIS_ACC_STATERR));
@@ -221,12 +229,18 @@ public class SegmentStarTable extends RandomStarTable {
     public void setFluxUnits(YUnit newUnit) throws UnitsException {
         if (specValues == null) return;
         
+        // copy values from original arrays
+        double[] errs = originalFluxErrValues;
+        double[] fluxes = originalFluxValues;
+        double[] errsHi = originalFluxErrValuesHi;
+        double[] errsLo = originalFluxErrValuesLo;
+        
         // Convert units
-        setFluxValues(units.convertY(fluxValues, specValues, fluxUnits, specUnits, newUnit));
-        setOriginalFluxValues(units.convertY(originalFluxValues, specValues, fluxUnits, specUnits, newUnit));
-        setFluxErrValues(units.convertY(fluxErrValues, specValues, fluxUnits, specUnits, newUnit));
-        setFluxErrValuesLo(units.convertY(fluxErrValuesLo, specValues, fluxUnits, specUnits, newUnit));
-        setFluxErrValuesHi(units.convertY(fluxErrValuesLo, specValues, fluxUnits, specUnits, newUnit));
+        
+        setFluxValues(units.convertY(fluxes, specValues, originalFluxUnits, specUnits, newUnit));
+        setFluxErrValues(units.convertErrors(errs, fluxes, specValues, originalFluxUnits, specUnits, newUnit));
+        setFluxErrValuesLo(units.convertErrors(errsLo, fluxes, specValues, originalFluxUnits, specUnits, newUnit));
+        setFluxErrValuesHi(units.convertErrors(errsHi, fluxes, specValues, originalFluxUnits, specUnits, newUnit));
         
         fluxUnits = newUnit;
         
@@ -286,6 +300,30 @@ public class SegmentStarTable extends RandomStarTable {
     public void setOriginalFluxValues(double[] originalFluxValues) {
         this.originalFluxValues = originalFluxValues;
         updateColumnValues(fluxValues, Column.Original_Flux_Value);
+    }
+    
+    public double[] getOriginalFluxErrValues() {
+        return originalFluxErrValuesHi;
+    }
+
+    public void setOriginalFluxErrValues(double[] originalFluxErrValues) {
+        this.originalFluxErrValues = originalFluxErrValues;
+    }
+    
+    public double[] getOriginalFluxErrValuesHi() {
+        return originalFluxErrValuesHi;
+    }
+
+    public void setOriginalFluxErrValuesHi(double[] originalFluxErrValuesHi) {
+        this.originalFluxErrValuesHi = originalFluxErrValuesHi;
+    }
+    
+    public double[] getOriginalFluxErrValuesLo() {
+        return originalFluxErrValuesLo;
+    }
+
+    public void setOriginalFluxErrValuesLo(double[] originalFluxErrValuesLo) {
+        this.originalFluxErrValuesLo = originalFluxErrValuesLo;
     }
 
     public double[] getSpecErrValues() {
