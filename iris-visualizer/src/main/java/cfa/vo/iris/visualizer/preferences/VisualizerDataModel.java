@@ -195,7 +195,7 @@ public class VisualizerDataModel {
     }
     
     // Locked down since these are tied to the selected seds
-    public synchronized void setSedStarTables(List<IrisStarTable> newTables) {
+    synchronized void setSedStarTables(List<IrisStarTable> newTables) {
         List<IrisStarTable> oldTables = sedStarTables;
         this.sedStarTables = ObservableCollections.observableList(newTables);
         pcs.firePropertyChange(PROP_SED_STARTABLES, oldTables, sedStarTables);

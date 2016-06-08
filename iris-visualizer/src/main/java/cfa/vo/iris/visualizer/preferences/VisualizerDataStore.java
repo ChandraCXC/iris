@@ -28,7 +28,7 @@ public class VisualizerDataStore {
     
     private static final Logger logger = Logger.getLogger(VisualizerDataStore.class.getName());
     
-    // Converts a segment into an Iris StarTable
+    // Converts a segment into an IrisStarTable
     IrisStarTableAdapter adapter;
 
     // All preferences for each ExtSed in the workspace
