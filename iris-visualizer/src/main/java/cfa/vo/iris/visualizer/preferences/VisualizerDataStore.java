@@ -1,6 +1,5 @@
 package cfa.vo.iris.visualizer.preferences;
 
-import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.events.MultipleSegmentEvent;
 import cfa.vo.iris.events.MultipleSegmentListener;
 import cfa.vo.iris.events.SedCommand;
@@ -28,22 +27,18 @@ public class VisualizerDataStore {
     
     private static final Logger logger = Logger.getLogger(VisualizerDataStore.class.getName());
     
-    // Converts a segment into an IrisStarTable
-    IrisStarTableAdapter adapter;
-
+    private VisualizerComponentPreferences preferences;
+    
+    // For converting Segments to StarTables
+    private IrisStarTableAdapter adapter;
+    
     // All preferences for each ExtSed in the workspace
     final Map<ExtSed, SedModel> sedModels;
     
-    // Workspace pointer. TODO: Remove references for selectedSed
-    final IWorkspace ws;
-    
-    VisualizerDataModel dataModel;
-    
-    public VisualizerDataStore(ExecutorService visualizerExecutor, IWorkspace ws) {
+    public VisualizerDataStore(ExecutorService visualizerExecutor, VisualizerComponentPreferences preferences) {
         this.sedModels = Collections.synchronizedMap(new IdentityHashMap<ExtSed, SedModel>());
-        this.dataModel = new VisualizerDataModel(this);
-        this.adapter = new IrisStarTableAdapter(visualizerExecutor, dataModel);
-        this.ws = ws;
+        this.preferences = preferences;
+        this.adapter = new IrisStarTableAdapter(visualizerExecutor, preferences);
         
         addSedListeners();
     }
@@ -52,10 +47,6 @@ public class VisualizerDataStore {
         SegmentEvent.getInstance().add(new VisualizerSegmentListener());
         SedEvent.getInstance().add(new VisualizerSedListener());
         MultipleSegmentEvent.getInstance().add(new VisualizerMultipleSegmentListener());
-    }
-    
-    public VisualizerDataModel getDataModel() {
-        return dataModel;
     }
     
     /**
@@ -84,7 +75,7 @@ public class VisualizerDataStore {
             sedModels.put(sed, new SedModel(sed, adapter));
         }
         
-        dataModel.fireChanges(sed);
+        preferences.getDataModel().fireChanges(sed);
     }
     
     /**
@@ -104,7 +95,7 @@ public class VisualizerDataStore {
             sedModels.put(sed, new SedModel(sed, adapter));
         }
         
-        dataModel.fireChanges(sed);
+        preferences.getDataModel().fireChanges(sed);
     }
     
     /**
@@ -125,7 +116,7 @@ public class VisualizerDataStore {
             sedModels.put(sed, new SedModel(sed, adapter));
         }
         
-        dataModel.fireChanges(sed);
+        preferences.getDataModel().fireChanges(sed);
     }
     
     /**
@@ -139,8 +130,7 @@ public class VisualizerDataStore {
         sedModels.get(sed).removeAll();
         sedModels.remove(sed);
         
-        // TODO: Remove dependency on workspace
-        dataModel.setSelectedSed((ExtSed) ws.getSedManager().getSelected());
+        preferences.getDataModel().setSelectedSed(null);
     }
     
     /**
@@ -156,7 +146,7 @@ public class VisualizerDataStore {
             sedModels.get(sed).removeSegment(segment);
         }
         
-        dataModel.fireChanges(sed);
+        preferences.getDataModel().fireChanges(sed);
     }
     
     /**
@@ -173,7 +163,7 @@ public class VisualizerDataStore {
             }
         }
         
-        dataModel.fireChanges(sed);
+        preferences.getDataModel().fireChanges(sed);
     }
     
     /**
@@ -204,11 +194,11 @@ public class VisualizerDataStore {
                 remove(sed);
             } 
             else if (SedCommand.SELECTED.equals(payload)) {
-                dataModel.setSelectedSed(sed);
+                preferences.getDataModel().setSelectedSed(sed);
             }
             else {
                 // Doesn't merit a full reset, this is basically just here for SED name changes
-                dataModel.fireChanges(sed);
+                preferences.getDataModel().fireChanges(sed);
             }
         }
     }

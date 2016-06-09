@@ -24,7 +24,6 @@ import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.MouseListenerManager;
 import cfa.vo.iris.visualizer.metadata.SegmentExtractor;
-import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.metadata.IrisStarJTable.RowSelection;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
@@ -38,9 +37,6 @@ public class VisualizerComponentPreferences {
     
     private static final ExecutorService visualizerExecutor = Executors.newFixedThreadPool(5);
     
-    // Top level preferences for the plotter
-    private final PlotPreferences plotPreferences;
-    
     // For accessing plot mouse listeners
     private final MouseListenerManager mouseListenerManager;
     
@@ -49,23 +45,23 @@ public class VisualizerComponentPreferences {
     
     // Persistence for Iris Visualizer data
     private final VisualizerDataStore dataStore;
+    
+    // Pointer to current data model in the view. Any visualizer components that need access to the
+    // current state of the Visualizer should access the current model through this class.
+    //
+    // TODO: This should become dynamic, and potentially support changing depending on which SEDs
+    // are in the plotter.
+    private VisualizerDataModel dataModel;
 
     public VisualizerComponentPreferences(IWorkspace ws) {
         this.ws = ws;
         
-        this.dataStore = new VisualizerDataStore(visualizerExecutor, ws);
-        this.mouseListenerManager = new MouseListenerManager();
+        this.dataStore = new VisualizerDataStore(visualizerExecutor, this);
         
-        this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
-    }
-
-    /**
-     * @return Top level plot preferences for the stil plotter.
-     */
-    public PlotPreferences getPlotPreferences() {
-        return plotPreferences;
-    }
-    
+        this.dataModel = new VisualizerDataModel(dataStore);
+        
+        this.mouseListenerManager = new MouseListenerManager();
+    }   
     /**
      * @return Visualizer persistence layer
      */
@@ -77,7 +73,7 @@ public class VisualizerComponentPreferences {
      * @return the Visualizer data model
      */
     public VisualizerDataModel getDataModel() {
-        return dataStore.getDataModel();
+        return dataModel;
     }
     
     /**
