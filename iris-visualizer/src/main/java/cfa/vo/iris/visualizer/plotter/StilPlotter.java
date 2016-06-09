@@ -45,6 +45,9 @@ public class StilPlotter extends JPanel {
             .getLogger(StilPlotter.class.getName());
 
     private static final long serialVersionUID = 1L;
+    
+    // Standard PlotPreferences for an empty plot
+    private static final PlotPreferences DEFAULT_PLOT_PREFERENCES = PlotPreferences.getDefaultPlotPreferences();
 
     private PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> display;
 
@@ -56,17 +59,15 @@ public class StilPlotter extends JPanel {
     private VisualizerDataModel dataModel;
     
     // Plot preferences for the currently plotted selection of SEDs
-    private PlotPreferences plotPreferences;
+    private PlotPreferences plotPreferences = DEFAULT_PLOT_PREFERENCES;
     
     private MapEnvironment env;
     
     // Needs a default constructor for Netbeans
     public StilPlotter() {
-        this.setPlotPreferences(PlotPreferences.getDefaultPlotPreferences());
     }
     
     public StilPlotter(VisualizerComponentPreferences preferences) {
-        this.setPlotPreferences(preferences.getPlotPreferences());
         this.setPreferences(preferences);
     }
 
@@ -93,7 +94,7 @@ public class StilPlotter extends JPanel {
         
         // Update plot preferences for new seds.
         if (CollectionUtils.isEmpty(newSeds)) {
-            this.setPlotPreferences(preferences.getPlotPreferences());
+            this.setPlotPreferences(DEFAULT_PLOT_PREFERENCES);
         } else {
             this.setPlotPreferences(dataModel.getSedModel(newSeds.get(0)).getPlotPreferences());
         }
