@@ -134,7 +134,7 @@ public class StilPlotterTest {
         
         // Remove the segment
         sed.removeSegment(0);
-        preferences.remove(sed, seg);
+        preferences.getDataStore().remove(sed, seg);
         
         plot.resetPlot(false, false);
         display = plot.getPlotDisplay();
@@ -215,7 +215,7 @@ public class StilPlotterTest {
     
     private StilPlotter setUpTests(ExtSed sed) throws Exception {
         preferences = new VisualizerComponentPreferences(ws);
-        preferences.update(sed);
+        preferences.getDataStore().update(sed);
         preferences.getDataModel().setSelectedSed(sed);
         
         StilPlotter plot = new StilPlotter(preferences);

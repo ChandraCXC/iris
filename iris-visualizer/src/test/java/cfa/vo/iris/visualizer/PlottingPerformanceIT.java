@@ -87,7 +87,7 @@ public class PlottingPerformanceIT extends AbstractComponentGUITest {
                 
                 // Verify the startable has loaded correctly
                 Map<Segment, SegmentModel> segmentMap = 
-                        prefs.getSedModel(sed).getAllSegmentModels();
+                        prefs.getDataStore().getSedModel(sed).getAllSegmentModels();
                 
                 assertEquals(1, segmentMap.size());
                 for (SegmentModel seg : segmentMap.values()) {

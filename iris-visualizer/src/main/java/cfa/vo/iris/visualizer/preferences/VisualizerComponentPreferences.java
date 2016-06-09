@@ -16,8 +16,6 @@
 
 package cfa.vo.iris.visualizer.preferences;
 
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,7 +26,6 @@ import cfa.vo.iris.visualizer.plotter.MouseListenerManager;
 import cfa.vo.iris.visualizer.metadata.SegmentExtractor;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.metadata.IrisStarJTable.RowSelection;
-import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 
@@ -90,22 +87,6 @@ public class VisualizerComponentPreferences {
     public MouseListenerManager getMouseListenerManager() {
         return mouseListenerManager;
     }
-
-    /**
-     * @return
-     *  Preferences map for each SED.
-     */
-    public Map<ExtSed, SedModel> getSedModels() {
-        return dataStore.getSedModels();
-    }
-    
-    /**
-     * @return
-     *  Preferences for the given SED
-     */
-    public SedModel getSedModel(ExtSed sed) {
-        return dataStore.getSedModel(sed);
-    }
     
     /**
      * Used by the metadata browser to extract a selection of rows from the browser
@@ -136,57 +117,5 @@ public class VisualizerComponentPreferences {
         });
         
         return sed;
-    }
-
-    /**
-     * Adds or updates the SED to the preferences map.
-     * @param sed
-     */
-    public void update(ExtSed sed) {
-        dataStore.update(sed);
-    }
-    
-    /**
-     * Adds or updates the segment within the specified SED.
-     * @param sed - the sed to which the segment is attached
-     * @param segment
-     */
-    public void update(ExtSed sed, Segment segment) {
-        dataStore.update(sed, segment);
-    }
-    
-    /**
-     * Adds or updates the segments within the specified SED.
-     * @param sed - the sed to which the segment is attached
-     * @param segments - the list of segments to add
-     */
-    public void update(ExtSed sed, List<Segment> segments) {
-        dataStore.update(sed, segments);
-    }
-    
-    /**
-     * Removes the SED from the preferences map.
-     * @param sed
-     */
-    public void remove(ExtSed sed) {
-        dataStore.remove(sed);
-    }
-    
-    /**
-     * Removes the segment from the specified Sed Preferences map.
-     * @param sed
-     * @param segment
-     */
-    public void remove(ExtSed sed, Segment segment) {
-        dataStore.remove(sed, segment);
-    }
-    
-    /**
-     * Removes the segments from the specified Sed Preferences map.
-     * @param sed
-     * @param segments
-     */
-    public void remove(ExtSed sed, List<Segment> segments) {
-        dataStore.remove(sed, segments);
     }
 }

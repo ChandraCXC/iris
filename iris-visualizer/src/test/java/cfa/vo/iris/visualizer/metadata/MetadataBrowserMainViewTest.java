@@ -34,6 +34,7 @@ import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.visualizer.VisualizerComponent;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
 import cfa.vo.iris.visualizer.preferences.SegmentModel;
+import cfa.vo.iris.visualizer.preferences.VisualizerDataStore;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.TextParam;
@@ -473,18 +474,20 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         assertEquals(1, newSed.getSegment(0).getLength());
         assertEquals(1, newSed.getSegment(1).getLength());
         
+        VisualizerDataStore store = mbView.preferences.getDataStore();
+        
         // Verify IrisStarTables are all the same
-        SegmentModel oldLayer = mbView.preferences.getSedModel(sed)
+        SegmentModel oldLayer = store.getSedModel(sed)
                 .getSegmentModel(sed.getSegment(0));
-        SegmentModel newLayer = mbView.preferences.getSedModel(newSed)
+        SegmentModel newLayer = store.getSedModel(newSed)
                 .getSegmentModel(newSed.getSegment(0));
         assertEquals(oldLayer.getSuffix(), newLayer.getSuffix());
         assertEquals(oldLayer.getInSource().getName(), newLayer.getInSource().getName());
         assertEquals(oldLayer.getInSource().getParameters().size(), newLayer.getInSource().getParameters().size());
         
-        oldLayer = mbView.preferences.getSedModel(sed)
+        oldLayer = store.getSedModel(sed)
                 .getSegmentModel(sed.getSegment(1));
-        newLayer = mbView.preferences.getSedModel(newSed)
+        newLayer = store.getSedModel(newSed)
                 .getSegmentModel(newSed.getSegment(1));
         assertEquals(oldLayer.getSuffix(), newLayer.getSuffix());
         assertEquals(oldLayer.getInSource().getName(), newLayer.getInSource().getName());

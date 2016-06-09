@@ -34,52 +34,55 @@ public class VisualizerComponentPreferencesTest {
     public void testPreferences() throws Exception {
         ExtSed sed = new ExtSed("test");
         IWorkspace ws = new StubWorkspace();
-        
+
         VisualizerComponentPreferences prefs = new VisualizerComponentPreferences(ws);
-        assertEquals(0, prefs.getSedModels().size());
-        assertNull(prefs.getSedModel(sed));
+        VisualizerDataStore store = prefs.getDataStore();
+        
+        assertEquals(0, store.getSedModels().size());
+        assertNull(store.getSedModel(sed));
+        
         
         // Add SED
-        prefs.update(sed);
-        assertEquals(1, prefs.getSedModels().size());
-        assertEquals(0, prefs.getSedModel(sed).getAllSegmentModels().size());
+        store.update(sed);
+        assertEquals(1, store.getSedModels().size());
+        assertEquals(0, store.getSedModel(sed).getAllSegmentModels().size());
         
         // Add segment to SED
         Segment seg1 = createSampleSegment();
         sed.addSegment(seg1);
-        prefs.update(sed, seg1);
-        assertEquals(1, prefs.getSedModels().size());
-        assertEquals(1, prefs.getSedModel(sed).getAllSegmentModels().size());
+        store.update(sed, seg1);
+        assertEquals(1, store.getSedModels().size());
+        assertEquals(1, store.getSedModel(sed).getAllSegmentModels().size());
         
         // Add another segment
         Segment seg2 = createSampleSegment(new double[] {1}, new double[] {2});
         sed.addSegment(seg2);
-        prefs.update(sed, seg2);
-        assertEquals(1, prefs.getSedModels().size());
-        assertEquals(2, prefs.getSedModel(sed).getAllSegmentModels().size());
+        store.update(sed, seg2);
+        assertEquals(1, store.getSedModels().size());
+        assertEquals(2, store.getSedModel(sed).getAllSegmentModels().size());
         
         // Remove the first segment
         sed.remove(seg1);
-        prefs.remove(sed, seg1);
-        assertEquals(1, prefs.getSedModels().size());
-        assertEquals(1, prefs.getSedModel(sed).getAllSegmentModels().size());
+        store.remove(sed, seg1);
+        assertEquals(1, store.getSedModels().size());
+        assertEquals(1, store.getSedModel(sed).getAllSegmentModels().size());
         
         // Add a list of segments at once (test MultipleSegmentEvent listener)
         Segment seg3 = createSampleSegment();
         List<Segment> segments = new ArrayList<>();
         segments.add(seg3); segments.add(seg1); // add two segments
         sed.addSegment(segments);
-        prefs.update(sed, segments);
-        assertEquals(1, prefs.getSedModels().size());
-        assertEquals(3, prefs.getSedModel(sed).getAllSegmentModels().size());
+        store.update(sed, segments);
+        assertEquals(1, store.getSedModels().size());
+        assertEquals(3, store.getSedModel(sed).getAllSegmentModels().size());
         
         sed.remove(segments);
-        prefs.remove(sed, segments);
-        assertEquals(1, prefs.getSedModel(sed).getAllSegmentModels().size());        
+        store.remove(sed, segments);
+        assertEquals(1, store.getSedModel(sed).getAllSegmentModels().size());        
         
         
         // Remove the SED
-        prefs.remove(sed);
-        assertEquals(0, prefs.getSedModels().size());
+        store.remove(sed);
+        assertEquals(0, store.getSedModels().size());
     }
 }
