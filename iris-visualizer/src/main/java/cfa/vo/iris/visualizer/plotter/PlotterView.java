@@ -18,25 +18,16 @@ package cfa.vo.iris.visualizer.plotter;
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.gui.GUIUtils;
-import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
-import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
-import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
-import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
-import cfa.vo.iris.visualizer.preferences.VisualizerListener;
-import cfa.vo.iris.visualizer.stil.StilPlotter;
-import cfa.vo.sedlib.Segment;
-import java.awt.BorderLayout;
+import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Map;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
-import javax.swing.plaf.basic.BasicArrowButton;
 
 public class PlotterView extends JInternalFrame {
     
@@ -44,18 +35,18 @@ public class PlotterView extends JInternalFrame {
     
     private static final long serialVersionUID = 1L;
     
-    private IWorkspace ws;
-    
     // Plotting Components
-    // StilPlotter plotter initialized in initComponents()
-    private JInternalFrame residuals;
-    private MetadataBrowserMainView metadataBrowser;
-    private UnitsManagerFrame unitsManagerFrame;
-    private JInternalFrame plotterNavHelpFrame;
+    private final VisualizerComponentPreferences preferences;
+    private final MetadataBrowserMainView metadataBrowser;
+    private final JInternalFrame plotterNavHelpFrame;
+    private final IWorkspace ws;
     
     // Plot mouse coordinate locations
     private String xcoord = "0E0";
     private String ycoord = "0E0";
+    
+    // Bound to the StilPlotter preferences
+    private PlotPreferences plotPreferences;
     
     public static double ZOOM_SCALE = 0.5;
     
@@ -75,41 +66,16 @@ public class PlotterView extends JInternalFrame {
     {
         setTitle(title);
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        setSelected(true);
-        setResizable(true);
-        setClosable(true);
-        setMaximizable(true);
-        setIconifiable(true);
-        setBounds(100, 100, 1096, 800);
         toFront();
         
+        this.preferences = preferences;
         this.ws = ws;
         this.metadataBrowser = new MetadataBrowserMainView(preferences);
-        this.residuals = new JInternalFrame();
         
         initComponents();
         
-        // initializing the stil plotter
-        plotter.setSedManager((SedlibSedManager) ws.getSedManager());
-        plotter.setVisualizerPreferences(preferences);
-        plotter.reset(null, true);
-        
-        // units chooser frame
-        this.unitsManagerFrame = new UnitsManagerFrame(plotter);
-        
         // plotter navigation help frame
         this.plotterNavHelpFrame = new PlotterNavHelpFrame("Plotter Navigation Help");
-                
-        // Action for opening metadata browser
-        metadataButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    openMetadataBrowser();
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
-            }
-        });
         
         // Action to set linear plotting
         mntmLinear.addActionListener(new ActionListener() {
@@ -147,23 +113,6 @@ public class PlotterView extends JInternalFrame {
             }
         });
         
-        // TODO: remove this after plotPreference bindings are done properly!!
-        mntmGridOnOff.setSelected(PlotPreferences.getDefaultPlotPreferences()
-                .getShowGrid());
-        
-        // Action to toggle grid on/off
-        mntmGridOnOff.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                boolean on = mntmGridOnOff.isSelected();
-                setGridOn(on);
-            }
-        });
-        
-        // TODO: remove this after plotPreference bindings are done properly!!
-        mntmGridOnOff.setSelected(PlotPreferences.getDefaultPlotPreferences()
-                .getShowGrid());
-        
         // Action to fix or unfix the plot viewport
         mntmAutoFixed.addActionListener(new ActionListener() {
             @Override
@@ -173,22 +122,8 @@ public class PlotterView extends JInternalFrame {
             }
         });
         
-        addPlotChangeListener();
-        
         // Set listeners to point to this view
         preferences.getMouseListenerManager().setPlotterView(this);
-    }
-    
-    protected void addPlotChangeListener() {
-        VisualizerChangeEvent.getInstance().add(new PlotChangeListener());
-    }
-    
-    public ExtSed getSed() {
-        return plotter.getSed();
-    }
-
-    public Map<Segment, SegmentModel> getSegmentsMap() {
-        return plotter.getSegmentsMap();
     }
     
     private void openMetadataBrowser() throws Exception {
@@ -203,19 +138,6 @@ public class PlotterView extends JInternalFrame {
     
     public MetadataBrowserMainView getMetadataBrowserView() {
         return this.metadataBrowser;
-    }
-    
-    private void resetPlot(ExtSed sed) {
-        // TODO: At somepoint we may want this to be a feature if we ever have static SEDs.
-        this.plotter.reset(sed, true);
-    }
-
-    private void redrawPlot() {
-        this.plotter.redraw(true);
-    }
-    
-    private void updatePlot(ExtSed source) {
-        this.plotter.reset(source, true);
     }
     
     public String getXcoord() {
@@ -240,35 +162,66 @@ public class PlotterView extends JInternalFrame {
         firePropertyChange(YCOORD_PROPERTY, old, ycoord);
     }
     
+    public VisualizerDataModel getDataModel() {
+        return this.preferences.getDataModel();
+    }
+    
+    public PlotPreferences getPlotPreferences() {
+        return plotter.getPlotPreferences();
+    }
+    
+    // Tied to the stil plotter plot preferences
+    public void setPlotPreferences(PlotPreferences pp) {
+        this.plotPreferences = pp;
+        
+        // Update the view with the current settings
+        // Plot Type
+        this.mntmLinear.setSelected(plotPreferences.getPlotType()==PlotType.LINEAR);
+        this.mntmLog.setSelected(plotPreferences.getPlotType()==PlotType.LOG);
+        this.mntmXlog.setSelected(plotPreferences.getPlotType()==PlotType.X_LOG);
+        this.mntmYlog.setSelected(plotPreferences.getPlotType()==PlotType.Y_LOG);
+        
+        // Grid on/off
+        this.mntmGridOnOff.setSelected(plotPreferences.getShowGrid());
+        
+        // turn errorbars on/off
+//        this.mntmErrorBars.setSelected(this.stilPlotter1.getVisualizerPreferences()
+//                .getSedPreferences(plotter.getSed()).getPlotPreferences()
+//                .getShowErrorBars());
+        
+        // set plot window fixed
+        
+        this.mntmAutoFixed.setSelected(plotPreferences.getFixed());
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
      * regenerated by the Form Editor.
      */
-    @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         plotTypeButtonGroup = new javax.swing.ButtonGroup();
-        jPanel1 = new javax.swing.JPanel();
+        bottomButtonsPanel = new javax.swing.JPanel();
+        tglbtnShowHideResiduals = new javax.swing.JToggleButton();
+        secondaryPlotOptions = new javax.swing.JSpinner();
+        topButtonsPanel = new javax.swing.JPanel();
         btnReset = new javax.swing.JButton();
         txtXposition = new javax.swing.JTextField();
         zoomIn = new javax.swing.JButton();
         btnUnits = new javax.swing.JButton();
-        down = new cfa.vo.iris.gui.JButtonArrow(BasicArrowButton.SOUTH);
         fluxOrDensity = new javax.swing.JSpinner();
-        left = new cfa.vo.iris.gui.JButtonArrow(BasicArrowButton.WEST);
         zoomOut = new javax.swing.JButton();
         metadataButton = new javax.swing.JButton();
         txtYposition = new javax.swing.JTextField();
-        up = new cfa.vo.iris.gui.JButtonArrow(BasicArrowButton.NORTH);
-        left1 = new cfa.vo.iris.gui.JButtonArrow(BasicArrowButton.EAST);
-        jPanel2 = new javax.swing.JPanel();
-        jPanel3 = new javax.swing.JPanel();
-        tglbtnShowHideResiduals = new javax.swing.JToggleButton();
-        secondaryPlotOptions = new javax.swing.JSpinner();
-        plotter = new cfa.vo.iris.visualizer.stil.StilPlotter();
+        up = new cfa.vo.iris.visualizer.plotter.JButtonArrow();
+        down = new cfa.vo.iris.visualizer.plotter.JButtonArrow();
+        left = new cfa.vo.iris.visualizer.plotter.JButtonArrow();
+        right = new cfa.vo.iris.visualizer.plotter.JButtonArrow();
+        plotter = new StilPlotter(preferences);
         menuBar = new javax.swing.JMenuBar();
         mnF = new javax.swing.JMenu();
         mntmExport = new javax.swing.JMenuItem();
@@ -289,6 +242,49 @@ public class PlotterView extends JInternalFrame {
         mntmCoplot = new javax.swing.JMenuItem();
         mnHelp = new javax.swing.JMenu();
         mntmPlotterNavigationHelp = new javax.swing.JMenuItem();
+
+        setClosable(true);
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        setIconifiable(true);
+        setMaximizable(true);
+        setResizable(true);
+        setMinimumSize(new java.awt.Dimension(40, 40));
+        setPreferredSize(new java.awt.Dimension(800, 546));
+        getContentPane().setLayout(new java.awt.GridBagLayout());
+
+        tglbtnShowHideResiduals.setText("Show Residuals");
+
+        //JFormattedTextField txtBoxShowHideResiduals = ((JSpinner.ListEditor) secondaryPlotOptions.getEditor()).getTextField();
+        //txtBoxShowHideResiduals.setEditable(false);
+        secondaryPlotOptions.setModel(new javax.swing.SpinnerListModel(new String[] {"Residuals", "Ratios"}));
+
+        javax.swing.GroupLayout bottomButtonsPanelLayout = new javax.swing.GroupLayout(bottomButtonsPanel);
+        bottomButtonsPanel.setLayout(bottomButtonsPanelLayout);
+        bottomButtonsPanelLayout.setHorizontalGroup(
+            bottomButtonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(bottomButtonsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(tglbtnShowHideResiduals)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(secondaryPlotOptions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        bottomButtonsPanelLayout.setVerticalGroup(
+            bottomButtonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(bottomButtonsPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(bottomButtonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tglbtnShowHideResiduals)
+                    .addComponent(secondaryPlotOptions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHWEST;
+        getContentPane().add(bottomButtonsPanel, gridBagConstraints);
 
         btnReset.setText("Reset");
         btnReset.addActionListener(new java.awt.event.ActionListener() {
@@ -317,11 +313,7 @@ public class PlotterView extends JInternalFrame {
             }
         });
 
-        down.setText("jButtonArrow4");
-
         fluxOrDensity.setModel(new javax.swing.SpinnerListModel(new String[] {"Flux", "Flux Density"}));
-
-        left.setText("jButtonArrow1");
 
         zoomOut.setText("Out");
         zoomOut.addActionListener(new java.awt.event.ActionListener() {
@@ -331,36 +323,48 @@ public class PlotterView extends JInternalFrame {
         });
 
         metadataButton.setText("Metadata");
+        metadataButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                metadataButtonActionPerformed(evt);
+            }
+        });
 
         txtYposition.setEditable(false);
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${ycoord}"), txtYposition, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
-        up.setText("jButtonArrow3");
+        up.setText("up");
 
-        left1.setText("jButtonArrow1");
+        down.setText("jButtonArrow2");
+        down.setDirection(5);
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        left.setText("jButtonArrow3");
+        left.setDirection(3);
+
+        right.setText("jButtonArrow4");
+        right.setDirection(7);
+
+        javax.swing.GroupLayout topButtonsPanelLayout = new javax.swing.GroupLayout(topButtonsPanel);
+        topButtonsPanel.setLayout(topButtonsPanelLayout);
+        topButtonsPanelLayout.setHorizontalGroup(
+            topButtonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(topButtonsPanelLayout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addComponent(btnReset)
                 .addGap(18, 18, 18)
                 .addComponent(zoomIn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(zoomOut)
-                .addGap(18, 18, 18)
-                .addComponent(left, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(left1, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(up, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(down, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(135, 135, 135)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(left, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(right, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(47, 47, 47)
                 .addComponent(txtXposition, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtYposition, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -372,65 +376,57 @@ public class PlotterView extends JInternalFrame {
                 .addComponent(btnUnits)
                 .addContainerGap())
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        topButtonsPanelLayout.setVerticalGroup(
+            topButtonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(topButtonsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(topButtonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnReset)
                     .addComponent(zoomIn)
                     .addComponent(zoomOut)
-                    .addComponent(left, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(up, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(down, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtXposition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txtYposition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(metadataButton)
                     .addComponent(btnUnits)
                     .addComponent(fluxOrDensity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(left1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(up, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(down, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(left, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(right, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        tglbtnShowHideResiduals.setText("Show Residuals");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 5;
+        getContentPane().add(topButtonsPanel, gridBagConstraints);
 
-        //JFormattedTextField txtBoxShowHideResiduals = ((JSpinner.ListEditor) secondaryPlotOptions.getEditor()).getTextField();
-        //txtBoxShowHideResiduals.setEditable(false);
-        secondaryPlotOptions.setModel(new javax.swing.SpinnerListModel(new String[] {"Residuals", "Ratios"}));
+        plotter.setBackground(java.awt.Color.white);
+        plotter.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(tglbtnShowHideResiduals)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(secondaryPlotOptions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tglbtnShowHideResiduals)
-                    .addComponent(secondaryPlotOptions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, plotter, org.jdesktop.beansbinding.ELProperty.create("${plotPreferences.showGrid}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("gridOn"));
+        bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${plotPreferences}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("plotPreferences"));
+        bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.selectedSeds}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("seds"));
+        bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.sedSegmentModels}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("sedSegmentModels"));
+        bindingGroup.addBinding(binding);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-
-        plotter.setName("plotter"); // NOI18N
+        plotter.setLayout(new java.awt.GridBagLayout());
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 5;
+        gridBagConstraints.gridheight = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 680;
+        gridBagConstraints.ipady = 352;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        getContentPane().add(plotter, gridBagConstraints);
 
         menuBar.setName("menuBar"); // NOI18N
 
@@ -504,7 +500,7 @@ public class PlotterView extends JInternalFrame {
 
         mntmGridOnOff.setText("Grid on/off");
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, plotter, org.jdesktop.beansbinding.ELProperty.create("${visualizerPreferences.plotPreferences.showGrid}"), mntmGridOnOff, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, plotter, org.jdesktop.beansbinding.ELProperty.create("${gridOn}"), mntmGridOnOff, org.jdesktop.beansbinding.BeanProperty.create("selected"));
         bindingGroup.addBinding(binding);
 
         mnView.add(mntmGridOnOff);
@@ -528,32 +524,6 @@ public class PlotterView extends JInternalFrame {
 
         setJMenuBar(menuBar);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(plotter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(plotter, javax.swing.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(5, 5, 5))
-        );
-
-        plotter.getAccessibleContext().setAccessibleName("plotter");
-        plotter.getAccessibleContext().setAccessibleDescription("");
-
         bindingGroup.bind();
 
         pack();
@@ -570,18 +540,7 @@ public class PlotterView extends JInternalFrame {
     }//GEN-LAST:event_zoomOutActionPerformed
 
     private void btnResetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResetActionPerformed
-        PlotPreferences plotPrefs = plotter.getPlotPreferences();
-        
-        // if fixed, temporarily unfix the plot to reset the viewport to the
-        // full X, Y range
-        boolean fixed = plotPrefs.getFixed();
-        if (fixed)
-           plotPrefs.setFixed(false);
-        
-        resetPlot(getSed());
-        
-        if (fixed)
-           plotPrefs.setFixed(true);
+        plotter.resetZoom();
     }//GEN-LAST:event_btnResetActionPerformed
 
     private void mntmExportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mntmExportActionPerformed
@@ -590,10 +549,12 @@ public class PlotterView extends JInternalFrame {
     }//GEN-LAST:event_mntmExportActionPerformed
 
     private void btnUnitsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnitsActionPerformed
-        
-        if (!unitsManagerFrame.isVisible()) {
-            ws.addFrame(unitsManagerFrame);
-        }
+
+        UnitsManagerFrame unitsManagerFrame = new UnitsManagerFrame();
+        unitsManagerFrame.setDataModel(preferences.getDataModel());
+        unitsManagerFrame.updateCurrentUnits();
+
+        ws.addFrame(unitsManagerFrame);
         GUIUtils.moveToFront(unitsManagerFrame);
     }//GEN-LAST:event_btnUnitsActionPerformed
 
@@ -601,16 +562,21 @@ public class PlotterView extends JInternalFrame {
         GUIUtils.moveToFront(plotterNavHelpFrame);
     }//GEN-LAST:event_mntmPlotterNavigationHelpActionPerformed
 
+    private void metadataButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_metadataButtonActionPerformed
+        try {
+            openMetadataBrowser();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }//GEN-LAST:event_metadataButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel bottomButtonsPanel;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnUnits;
-    private cfa.vo.iris.gui.JButtonArrow down;
+    private cfa.vo.iris.visualizer.plotter.JButtonArrow down;
     private javax.swing.JSpinner fluxOrDensity;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private cfa.vo.iris.gui.JButtonArrow left;
-    private cfa.vo.iris.gui.JButtonArrow left1;
+    private cfa.vo.iris.visualizer.plotter.JButtonArrow left;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JButton metadataButton;
     private javax.swing.JMenu mnEdit;
@@ -633,23 +599,21 @@ public class PlotterView extends JInternalFrame {
     private javax.swing.JRadioButtonMenuItem mntmXlog;
     private javax.swing.JRadioButtonMenuItem mntmYlog;
     private javax.swing.ButtonGroup plotTypeButtonGroup;
-    private cfa.vo.iris.visualizer.stil.StilPlotter plotter;
+    private cfa.vo.iris.visualizer.plotter.StilPlotter plotter;
+    private cfa.vo.iris.visualizer.plotter.JButtonArrow right;
     private javax.swing.JSpinner secondaryPlotOptions;
     private javax.swing.JToggleButton tglbtnShowHideResiduals;
+    private javax.swing.JPanel topButtonsPanel;
     private javax.swing.JTextField txtXposition;
     private javax.swing.JTextField txtYposition;
-    private cfa.vo.iris.gui.JButtonArrow up;
+    private cfa.vo.iris.visualizer.plotter.JButtonArrow up;
     private javax.swing.JButton zoomIn;
     private javax.swing.JButton zoomOut;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
     private void changePlotType(PlotPreferences.PlotType plotType) {
-        plotter.changePlotType(plotType);
-    }
-    
-    private void setGridOn(boolean on) {
-        plotter.setGridOn(on);
+        plotter.setPlotType(plotType);
     }
     
     /**
@@ -665,63 +629,12 @@ public class PlotterView extends JInternalFrame {
      * and set to "false" to let the viewport resize automatically with changes.
      */
     private void setFixedViewPort(boolean fixed) {
-        
         this.plotter.getPlotPreferences().setFixed(fixed);
-            
-        // needs to be set whenever viewport changes
-        this.plotter.getPlotPreferences()
-                .setAspect(this.plotter.getPlotDisplay().getAspect());
-    }
-    
-    /**
-     * Update the plot preference items in the Viewer to the selected SED's
-     * preferences
-     */
-    public void updatePreferences() {
-        // Plot Type
-        this.mntmLinear.setSelected(this.plotter.getPlotPreferences()
-                .getPlotType()==PlotType.LINEAR);
-        this.mntmLog.setSelected(this.plotter.getPlotPreferences()
-                .getPlotType()==PlotType.LOG);
-        this.mntmXlog.setSelected(this.plotter.getPlotPreferences()
-                .getPlotType()==PlotType.X_LOG);
-        this.mntmYlog.setSelected(this.plotter.getPlotPreferences()
-                .getPlotType()==PlotType.Y_LOG);
-        
-        // Grid on/off
-        this.mntmGridOnOff.setSelected(this.plotter.getPlotPreferences().getShowGrid());
-        
-        // turn errorbars on/off
-//        this.mntmErrorBars.setSelected(this.stilPlotter1.getVisualizerPreferences()
-//                .getSedPreferences(plotter.getSed()).getPlotPreferences()
-//                .getShowErrorBars());
-        
-        // set plot window fixed
-        this.mntmAutoFixed.setSelected(this.plotter.getPlotPreferences()
-                .getFixed());
-    }
-    
-    private class PlotChangeListener implements VisualizerListener {
-
-        @Override
-        public void process(ExtSed source, VisualizerCommand payload) {
-            if (VisualizerCommand.RESET.equals(payload)) 
-            {
-                resetPlot(source);
-                updatePreferences();
-            }
-            else if (VisualizerCommand.REDRAW.equals(payload)) {
-                redrawPlot();
-            }
-            else if (VisualizerCommand.SELECTED.equals(payload)) {
-                updatePlot(source);
-                updatePreferences();
-            }
-        }
     }
     
     // plotter navigation help window. Is closable, maximizable, and 
     // iconifiable.
+    @SuppressWarnings("serial")
     public class PlotterNavHelpFrame extends JInternalFrame {
         
         public PlotterNavHelpFrame (String title) {

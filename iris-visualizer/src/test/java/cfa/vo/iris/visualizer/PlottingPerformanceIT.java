@@ -29,7 +29,8 @@ import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
-import cfa.vo.iris.visualizer.plotter.SegmentModel;
+import cfa.vo.iris.visualizer.preferences.SegmentModel;
+import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 import cfa.vo.testdata.TestData;
@@ -71,7 +72,8 @@ public class PlottingPerformanceIT extends AbstractComponentGUITest {
         manager.add(sed);
         
         // Wait for the plotting component to load the new selected SED
-        while(comp.getDefaultPlotterView().getSed() == null) {
+        final VisualizerComponentPreferences prefs = comp.getPreferences();
+        while(prefs.getDataModel().getSelectedSed() == null) {
             Thread.sleep(100);
         }
         
@@ -81,11 +83,11 @@ public class PlottingPerformanceIT extends AbstractComponentGUITest {
             public void run() {
                 
                 // Verify the SED has loaded into the sed
-                assertSame(sed, comp.getDefaultPlotterView().getSed());
+                assertSame(sed, prefs.getDataModel().getSelectedSed());
                 
                 // Verify the startable has loaded correctly
                 Map<Segment, SegmentModel> segmentMap = 
-                        comp.getDefaultPlotterView().getSegmentsMap();
+                        prefs.getDataStore().getSedModel(sed).getAllSegmentModels();
                 
                 assertEquals(1, segmentMap.size());
                 for (SegmentModel seg : segmentMap.values()) {

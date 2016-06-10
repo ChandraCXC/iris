@@ -15,54 +15,52 @@
  */
 package cfa.vo.iris.visualizer.plotter;
 
-import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
-import cfa.vo.iris.units.UnitsManager;
-import cfa.vo.iris.visualizer.preferences.VisualizerChangeEvent;
-import cfa.vo.iris.visualizer.preferences.VisualizerCommand;
-import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
-import cfa.vo.iris.visualizer.stil.StilPlotter;
-import cfa.vo.utils.Default;
+import cfa.vo.iris.visualizer.preferences.SedModel;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.AbstractListModel;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
  * Unit selection widget. X-units are on the left split pane, Y-units are
  * on the right side.
  */
+@SuppressWarnings("serial")
 public class UnitsWidget extends javax.swing.JPanel {
 
-    private ExtSed currentSed;
-    private VisualizerComponentPreferences prefs;
-    private UnitsManager unitsManager;
-    private StilPlotter plotter;
-    
     /**
      * Creates new form UnitsWidget
      * @param plotter 
      */
-    public UnitsWidget(StilPlotter plotter) {
-        this.currentSed = plotter.getSed();
-        this.plotter = plotter;
-        this.prefs = plotter.getVisualizerPreferences();
-        this.unitsManager = Default.getInstance().getUnitsManager();
+    public UnitsWidget() {
         initComponents();
-        
-        // if current sed is null, set X and Y to Iris default units
-        if (currentSed != null) {
-            setXunit(prefs.getSedPreferences(currentSed).getXunits());
-            setYunit(prefs.getSedPreferences(currentSed).getYunits());
-        } else {
-            // TODO: use default Iris units here; should be a static
-            setXunit(unitsManager.newXUnits("Hz").toString());
-            setYunit(unitsManager.newYUnits("Jy").toString());
+    }
+    
+    public void updateCurrentUnits(List<SedModel> sedModels) {
+        if (CollectionUtils.isEmpty(sedModels)) {
+            return;
         }
         
-        xunits.setSelectedValue(getXunit(), false);
-        yunits.setSelectedValue(getYunit(), false);
+        String x = sedModels.get(0).getXunits();
+        String y = sedModels.get(0).getYunits();
+        
+        // TODO: This check may not be necessary when we support multiple SEDs, but
+        // leaving this here as an extra check that the logic elsewhere is correct.
+        for (SedModel model : sedModels) {           
+            if (!StringUtils.equals(x, model.getXunits()) ||
+                !StringUtils.equals(y, model.getYunits())) 
+            {
+                throw new IllegalArgumentException("Units changes requires all models to have the same units!");
+            }
+        }
+        
+        this.setXunit(x);
+        this.setYunit(y);
     }
 
     /**
@@ -142,44 +140,25 @@ public class UnitsWidget extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     /**
-     * Update the units of the currently selected SED.
-     * 
-     * Note that if the plotter SED is empty, this will still change the 
-     * preferred plotting units for this SED; all segments added to the SED will
-     * be converted to the selected units.
+     * Update the units of the provided SedModels, as passed through
+     * by the visualizer data model.
      */
-    public void updateUnits() {
+    public void updateUnits(List<SedModel> sedModels) {
         // if SED is null, don't do anything.
-        if (plotter.getSed() == null) {
+        if (CollectionUtils.isEmpty(sedModels)) {
             return;
         }
         
         // fire Visualizer event to update plot and MB
-        plotter.getVisualizerPreferences().getSedPreferences(plotter.getSed()).setUnits(xunit, yunit);
-        fire(plotter.getSed(), VisualizerCommand.RESET);
-    }
-    
-    /**
-     * Update the units of the given SED
-     * @param sed 
-     * 
-     * Note that if the plotter SED is empty, this will still change the 
-     * preferred plotting units for this SED; all segments added to the SED will
-     * be converted to the selected units.
-     */
-    public void updateUnits(ExtSed sed) {
-        
-        // if SED is null, don't do anything.
-        if (plotter.getSed() == null) {
-            return;
+        for (SedModel model : sedModels) {
+            model.setUnits(xunit, yunit);
         }
         
-        // fire Visualizer event to update plot and MB
-        plotter.getVisualizerPreferences().getSedPreferences(sed).setUnits(xunit, yunit);
-        fire(sed, VisualizerCommand.RESET);
+        this.setVisible(false);
     }
     
     /*
+     *
      * getters and setters
      *
      */
@@ -204,7 +183,7 @@ public class UnitsWidget extends javax.swing.JPanel {
     public void setXunit(String xunit) {
         String oldXunit = this.xunit;
         this.xunit = xunit;
-       //firePropertyChange(PROP_XUNIT, oldXunit, xunit);
+        firePropertyChange(PROP_XUNIT, oldXunit, xunit);
     }
 
     private String yunit;
@@ -227,25 +206,13 @@ public class UnitsWidget extends javax.swing.JPanel {
     public void setYunit(String yunit) {
         String oldYunit = this.yunit;
         this.yunit = yunit;
-        //firePropertyChange(PROP_YUNIT, oldYunit, yunit);
-    }
-
-    public ExtSed getSed() {
-        return this.currentSed;
-    }
-    
-    public void setSed(ExtSed sed) {
-        this.currentSed = sed;
+        firePropertyChange(PROP_YUNIT, oldYunit, yunit);
     }
     
     /*
      * end of getters and setters
      *
      */
-    
-    protected void fire(ExtSed source, VisualizerCommand command) {
-        VisualizerChangeEvent.getInstance().fire(source, command);
-    }
     
     /*
      * List Models for Y and X units

@@ -13,8 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cfa.vo.iris.visualizer.stil;
+package cfa.vo.iris.visualizer.metadata;
 
+import cfa.vo.iris.visualizer.metadata.IrisStarJTable;
 import static org.junit.Assert.*;
 
 import java.awt.event.MouseEvent;
@@ -31,8 +32,8 @@ import org.junit.Test;
 import org.uispec4j.utils.ArrayUtils;
 
 import cfa.vo.iris.test.unit.TestUtils;
-import cfa.vo.iris.visualizer.stil.IrisStarJTable.RowSelection;
-import cfa.vo.iris.visualizer.stil.IrisStarJTable.StarJTableHeader;
+import cfa.vo.iris.visualizer.metadata.IrisStarJTable.RowSelection;
+import cfa.vo.iris.visualizer.metadata.IrisStarJTable.StarJTableHeader;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 

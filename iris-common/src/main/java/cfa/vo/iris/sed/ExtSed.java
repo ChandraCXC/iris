@@ -45,6 +45,7 @@ import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sedlib.common.SedParsingException;
 import cfa.vo.sedlib.io.SedFormat;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.astrogrid.samp.client.SampException;
 
 import javax.annotation.Nonnull;
@@ -385,5 +386,19 @@ public class ExtSed extends Sed {
         }
 
     }
-
+    
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof ExtSed)) {
+            return false;
+        }
+        
+        // Two ExtSeds with different Ids are not equal.
+        ExtSed other = (ExtSed) o;
+        if (!StringUtils.equals(id, other.getId())) {
+            return false;
+        }
+        
+        return super.equals(o);
+    }
 }

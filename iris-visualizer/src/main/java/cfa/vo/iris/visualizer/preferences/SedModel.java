@@ -19,7 +19,6 @@ package cfa.vo.iris.visualizer.preferences;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -33,7 +32,6 @@ import cfa.vo.iris.visualizer.plotter.ColorPalette;
 import cfa.vo.iris.visualizer.plotter.HSVColorPalette;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
-import cfa.vo.iris.visualizer.plotter.SegmentModel;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
@@ -49,7 +47,7 @@ import java.util.logging.Logger;
 public class SedModel {
     
     IrisStarTableAdapter adapter;
-    final Map<MapKey, SegmentModel> segmentPreferences;
+    final Map<Segment, SegmentModel> segmentModels;
     final ExtSed sed;
     final ColorPalette colors;
     final PlotPreferences plotPreferences;
@@ -59,7 +57,7 @@ public class SedModel {
     
     public SedModel(ExtSed sed, IrisStarTableAdapter adapter) {
         this.sed = sed;
-        this.segmentPreferences = Collections.synchronizedMap(new LinkedHashMap<MapKey, SegmentModel>());
+        this.segmentModels = Collections.synchronizedMap(new IdentityHashMap<Segment, SegmentModel>());
         this.adapter = adapter;
         this.colors = new HSVColorPalette();
         this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
@@ -75,18 +73,18 @@ public class SedModel {
      * @return
      *  A map of all segments and layer preferences currently in use by this SED.
      */
-    public Map<Segment, SegmentModel> getAllSegmentPreferences() {
+    public Map<Segment, SegmentModel> getAllSegmentModels() {
         Map<Segment, SegmentModel> ret = new IdentityHashMap<>();
         
-        for (MapKey me : segmentPreferences.keySet()) {
-            ret.put(me.segment, segmentPreferences.get(me));
+        for (Segment me : segmentModels.keySet()) {
+            ret.put(me, segmentModels.get(me));
         }
         
         return Collections.unmodifiableMap(ret);
     }
     
-    public SegmentModel getSegmentPreferences(Segment seg) {
-        return segmentPreferences.get(new MapKey(seg));
+    public SegmentModel getSegmentModel(Segment seg) {
+        return segmentModels.get(seg);
     }
     
     /**
@@ -101,27 +99,26 @@ public class SedModel {
     }
 
     void removeAll() {
-        segmentPreferences.clear();
+        segmentModels.clear();
     }
     
     /**
-     * Add a segment to the sed preferences map.
+     * Add a segment to the sed model map.
      * @param seg
+     * @return true if the sed was added to the model.
      */
-    void addSegment(Segment seg) {
+    boolean addSegment(Segment seg) {
         
         // Do not keep track of empty segments
-        if (seg == null) return;
-        
-        MapKey me = new MapKey(seg);
+        if (seg == null) return false;
         
         // If the segment is already in the map remake the star table
-        if (segmentPreferences.containsKey(me)) {
-            SegmentModel mod = segmentPreferences.get(me);
+        if (segmentModels.containsKey(seg)) {
+            SegmentModel mod = segmentModels.get(seg);
             
-            // Need to preserve table name on reserialization
+            // Preserve table name on reserialization
             mod.setInSource(convertSegment(seg, mod.getInSource().getName()));
-            return;
+            return false;
         }
         
         // Ensure that the layer has a unique identifier in the list of segments
@@ -145,7 +142,8 @@ public class SedModel {
         // set the units
         setUnits(seg, layer);
         
-        segmentPreferences.put(me, layer);
+        segmentModels.put(seg, layer);
+        return true;
     }
     
     private IrisStarTable convertSegment(Segment seg, String name) {
@@ -161,13 +159,14 @@ public class SedModel {
     /**
      * Removes a segment from the sed preferences map.
      * @param segment
+     * @return true if the segment was removed from the models map
      */
-    void removeSegment(Segment seg) {
+    boolean removeSegment(Segment seg) {
         // Do not keep track of empty segments
-        if (seg == null) return;
+        if (seg == null) return false;
         
-        MapKey me = new MapKey(seg);
-        segmentPreferences.remove(me);
+        SegmentModel m = segmentModels.remove(seg);
+        return m != null;
     }
     
     /**
@@ -227,7 +226,7 @@ public class SedModel {
         plotPreferences.setYlabel(yunit);
         
         // update the segment layers with the new units
-        for (SegmentModel seg : segmentPreferences.values()) {
+        for (SegmentModel seg : segmentModels.values()) {
             try {
                 seg.setXUnits(xunits);
                 seg.setYUnits(yunits);
@@ -263,15 +262,15 @@ public class SedModel {
     private void clean() {
         
         // Use iterator for concurrent modification
-        Iterator<Entry<MapKey, SegmentModel>> it = segmentPreferences.entrySet().iterator();
+        Iterator<Entry<Segment, SegmentModel>> it = segmentModels.entrySet().iterator();
         
-        boolean shouldRemove = true;
         while (it.hasNext()) {
-            MapKey me = it.next().getKey();
+            boolean shouldRemove = true;
+            Segment seg = it.next().getKey();
             
             // Need to manual check for location equality test
             for (int i=0; i<sed.getNumberOfSegments(); i++) {
-                if (me.segment == sed.getSegment(i)) {
+                if (seg == sed.getSegment(i)) {
                     shouldRemove = false;
                     break;
                 }
@@ -283,7 +282,7 @@ public class SedModel {
     }
     
     boolean isUniqueLayerSuffix(String suffix) {
-        for (SegmentModel layer : segmentPreferences.values()) {
+        for (SegmentModel layer : segmentModels.values()) {
             if (StringUtils.equals(layer.getSuffix(), suffix)) {
                 return false;
             }
@@ -297,7 +296,7 @@ public class SedModel {
 
     public void setXunits(String xunits) throws UnitsException {
         this.xunits = xunits;
-        for (SegmentModel layer : segmentPreferences.values()) {
+        for (SegmentModel layer : segmentModels.values()) {
             layer.setXUnits(xunits);
         }
     }
@@ -308,7 +307,7 @@ public class SedModel {
 
     public void setYunits(String yunits) throws UnitsException {
         this.yunits = yunits;
-        for (SegmentModel layer : segmentPreferences.values()) {
+        for (SegmentModel layer : segmentModels.values()) {
             layer.setYUnits(yunits);
         }
     }
@@ -319,55 +318,5 @@ public class SedModel {
      */
     public PlotPreferences getPlotPreferences() {
         return plotPreferences;
-    }
-
-    /**
-     * Segment equality is based on flux and spectral axis values, whereas we
-     * require the memory location. This is a simple wrapper class for our segment
-     * preferences map to override the usual map expectation of .equals with a
-     * memory location check.
-     *
-     */
-    static class MapKey {
-        
-        public Segment segment;
-        
-        public MapKey(Segment segment) {
-            this.segment = segment;
-        }
-        
-        @Override
-        public boolean equals(Object o) {
-            if (o == null) {
-                return false;
-            }
-            
-            if (!(o instanceof MapKey)) {
-                return false;
-            }
-            
-            MapKey other = (MapKey) o;
-            return this.segment == other.segment;
-        }
-        
-        @Override
-        public int hashCode() {
-            return segment.hashCode();
-        }
-    }
-    
-    /**
-     * Strip an ID of its _ERROR suffix.
-     * @param id the ID to strip "_ERROR" from
-     */
-    private String strip(String id) {
-        
-        int index = id.lastIndexOf("_");
-        
-        // if _ERROR not found, return the unmodified id.
-        if (index < 0) {
-            return id;
-        }
-        return id.substring(0, index);
     }
 }

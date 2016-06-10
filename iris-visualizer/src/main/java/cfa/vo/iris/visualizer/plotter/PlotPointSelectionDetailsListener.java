@@ -18,14 +18,11 @@ package cfa.vo.iris.visualizer.plotter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
-import java.util.logging.Logger;
-
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import cfa.vo.iris.sed.stil.SegmentColumn;
 import cfa.vo.iris.sed.stil.SegmentColumn.Column;
-import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
+import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
@@ -47,10 +44,10 @@ public class PlotPointSelectionDetailsListener extends StilPlotterPointSelection
 
     @Override
     public void handleSelection(int starTableIndex, int irow, PointSelectionEvent evt) {
-        MetadataBrowserMainView mbView = this.getPlotterView().getMetadataBrowserView();
+        VisualizerDataModel dataModel = getPlotterView().getMetadataBrowserView().getDataModel();
         
         // Get selected star table based on PointSelectionEvent
-        IrisStarTable table = mbView.getSelectedTables().get(starTableIndex);
+        IrisStarTable table = dataModel.getSedStarTables().get(starTableIndex);
         ColumnIdentifier id = new ColumnIdentifier(table);
         
         String tt;
@@ -83,6 +80,7 @@ public class PlotPointSelectionDetailsListener extends StilPlotterPointSelection
     
     private static class PointDataPopup extends JPopupMenu {
         
+        private static final long serialVersionUID = 3271330400717576134L;
         private JMenuItem item;
         
         public PointDataPopup() {

@@ -121,7 +121,7 @@
                 <Property name="text" type="java.lang.String" value="Grid on/off"/>
               </Properties>
               <BindingProperties>
-                <BindingProperty name="selected" source="plotter" sourcePath="${visualizerPreferences.plotPreferences.showGrid}" target="mntmGridOnOff" targetPath="selected" updateStrategy="0" immediately="false"/>
+                <BindingProperty name="selected" source="plotter" sourcePath="${gridOn}" target="mntmGridOnOff" targetPath="selected" updateStrategy="0" immediately="false"/>
               </BindingProperties>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="mntmCoplot">
@@ -149,6 +149,19 @@
       </SubComponents>
     </Menu>
   </NonVisualComponents>
+  <Properties>
+    <Property name="closable" type="boolean" value="true"/>
+    <Property name="defaultCloseOperation" type="int" value="1"/>
+    <Property name="iconifiable" type="boolean" value="true"/>
+    <Property name="maximizable" type="boolean" value="true"/>
+    <Property name="resizable" type="boolean" value="true"/>
+    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+      <Dimension value="[40, 40]"/>
+    </Property>
+    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+      <Dimension value="[800, 546]"/>
+    </Property>
+  </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="menuBar" type="java.lang.String" value="menuBar"/>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -163,37 +176,70 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,-7,0,0,2,-54"/>
   </AuxValues>
 
-  <Layout>
-    <DimensionLayout dim="0">
-      <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jPanel1" max="32767" attributes="0"/>
-          <Group type="102" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="plotter" max="32767" attributes="0"/>
-                  <Component id="jPanel2" alignment="1" max="32767" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-          </Group>
-      </Group>
-    </DimensionLayout>
-    <DimensionLayout dim="1">
-      <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
-              <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="plotter" pref="440" max="32767" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-          </Group>
-      </Group>
-    </DimensionLayout>
-  </Layout>
+  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
   <SubComponents>
-    <Container class="javax.swing.JPanel" name="jPanel1">
+    <Container class="javax.swing.JPanel" name="bottomButtonsPanel">
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+          <GridBagConstraints gridX="0" gridY="6" gridWidth="4" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="16" weightX="0.0" weightY="0.0"/>
+        </Constraint>
+      </Constraints>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="tglbtnShowHideResiduals" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="secondaryPlotOptions" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" attributes="0">
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                      <Component id="tglbtnShowHideResiduals" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="secondaryPlotOptions" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <EmptySpace max="32767" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Component class="javax.swing.JToggleButton" name="tglbtnShowHideResiduals">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Show Residuals"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JSpinner" name="secondaryPlotOptions">
+          <Properties>
+            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
+              <SpinnerModel type="list">
+                <ListItem value="Residuals"/>
+                <ListItem value="Ratios"/>
+              </SpinnerModel>
+            </Property>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="//JFormattedTextField txtBoxShowHideResiduals = ((JSpinner.ListEditor) secondaryPlotOptions.getEditor()).getTextField();&#xa;//txtBoxShowHideResiduals.setEditable(false);"/>
+          </AuxValues>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JPanel" name="topButtonsPanel">
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+          <GridBagConstraints gridX="0" gridY="0" gridWidth="5" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="10" weightX="0.0" weightY="0.0"/>
+        </Constraint>
+      </Constraints>
 
       <Layout>
         <DimensionLayout dim="0">
@@ -205,15 +251,15 @@
                   <Component id="zoomIn" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="zoomOut" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="left" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="left1" min="-2" pref="16" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="up" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="down" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="135" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="left" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="right" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="47" max="-2" attributes="0"/>
                   <Component id="txtXposition" min="-2" pref="100" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="txtYposition" min="-2" pref="100" max="-2" attributes="0"/>
@@ -235,15 +281,15 @@
                       <Component id="btnReset" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="zoomIn" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="zoomOut" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="left" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="up" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="down" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="txtXposition" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="txtYposition" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="metadataButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="btnUnits" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="fluxOrDensity" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="left1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="up" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="down" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="left" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="right" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -286,14 +332,6 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnUnitsActionPerformed"/>
           </Events>
         </Component>
-        <Component class="cfa.vo.iris.gui.JButtonArrow" name="down">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="jButtonArrow4"/>
-          </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new cfa.vo.iris.gui.JButtonArrow(BasicArrowButton.SOUTH)"/>
-          </AuxValues>
-        </Component>
         <Component class="javax.swing.JSpinner" name="fluxOrDensity">
           <Properties>
             <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
@@ -303,14 +341,6 @@
               </SpinnerModel>
             </Property>
           </Properties>
-        </Component>
-        <Component class="cfa.vo.iris.gui.JButtonArrow" name="left">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="jButtonArrow1"/>
-          </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new cfa.vo.iris.gui.JButtonArrow(BasicArrowButton.WEST)"/>
-          </AuxValues>
         </Component>
         <Component class="javax.swing.JButton" name="zoomOut">
           <Properties>
@@ -324,6 +354,9 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Metadata"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="metadataButtonActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="txtYposition">
           <Properties>
@@ -335,102 +368,58 @@
             </BindingProperty>
           </BindingProperties>
         </Component>
-        <Component class="cfa.vo.iris.gui.JButtonArrow" name="up">
+        <Component class="cfa.vo.iris.visualizer.plotter.JButtonArrow" name="up">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="up"/>
+          </Properties>
+        </Component>
+        <Component class="cfa.vo.iris.visualizer.plotter.JButtonArrow" name="down">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="jButtonArrow2"/>
+            <Property name="direction" type="int" value="5"/>
+          </Properties>
+        </Component>
+        <Component class="cfa.vo.iris.visualizer.plotter.JButtonArrow" name="left">
           <Properties>
             <Property name="text" type="java.lang.String" value="jButtonArrow3"/>
+            <Property name="direction" type="int" value="3"/>
           </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new cfa.vo.iris.gui.JButtonArrow(BasicArrowButton.NORTH)"/>
-          </AuxValues>
         </Component>
-        <Component class="cfa.vo.iris.gui.JButtonArrow" name="left1">
+        <Component class="cfa.vo.iris.visualizer.plotter.JButtonArrow" name="right">
           <Properties>
-            <Property name="text" type="java.lang.String" value="jButtonArrow1"/>
+            <Property name="text" type="java.lang.String" value="jButtonArrow4"/>
+            <Property name="direction" type="int" value="7"/>
           </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new cfa.vo.iris.gui.JButtonArrow(BasicArrowButton.EAST)"/>
-          </AuxValues>
         </Component>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="jPanel2">
-
-      <Layout>
-        <DimensionLayout dim="0">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
-          </Group>
-        </DimensionLayout>
-        <DimensionLayout dim="1">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
-          </Group>
-        </DimensionLayout>
-      </Layout>
-      <SubComponents>
-        <Container class="javax.swing.JPanel" name="jPanel3">
-
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="tglbtnShowHideResiduals" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="secondaryPlotOptions" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-                          <Component id="tglbtnShowHideResiduals" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="secondaryPlotOptions" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-          </Layout>
-          <SubComponents>
-            <Component class="javax.swing.JToggleButton" name="tglbtnShowHideResiduals">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Show Residuals"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JSpinner" name="secondaryPlotOptions">
-              <Properties>
-                <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-                  <SpinnerModel type="list">
-                    <ListItem value="Residuals"/>
-                    <ListItem value="Ratios"/>
-                  </SpinnerModel>
-                </Property>
-              </Properties>
-              <AuxValues>
-                <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="//JFormattedTextField txtBoxShowHideResiduals = ((JSpinner.ListEditor) secondaryPlotOptions.getEditor()).getTextField();&#xa;//txtBoxShowHideResiduals.setEditable(false);"/>
-              </AuxValues>
-            </Component>
-          </SubComponents>
-        </Container>
-      </SubComponents>
-    </Container>
-    <Container class="cfa.vo.iris.visualizer.stil.StilPlotter" name="plotter">
+    <Container class="cfa.vo.iris.visualizer.plotter.StilPlotter" name="plotter">
       <Properties>
-        <Property name="name" type="java.lang.String" value="plotter" noResource="true"/>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="ff" id="white" palette="1" red="ff" type="palette"/>
+        </Property>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
+            <BevelBorder bevelType="1"/>
+          </Border>
+        </Property>
       </Properties>
-      <AccessibilityProperties>
-        <Property name="AccessibleContext.accessibleName" type="java.lang.String" value="plotter"/>
-        <Property name="AccessibleContext.accessibleDescription" type="java.lang.String" value=""/>
-      </AccessibilityProperties>
+      <BindingProperties>
+        <BindingProperty name="gridOn" source="plotter" sourcePath="${plotPreferences.showGrid}" target="plotter" targetPath="gridOn" updateStrategy="0" immediately="false"/>
+        <BindingProperty name="plotPreferences" source="Form" sourcePath="${plotPreferences}" target="plotter" targetPath="plotPreferences" updateStrategy="0" immediately="false"/>
+        <BindingProperty name="seds" source="Form" sourcePath="${dataModel.selectedSeds}" target="plotter" targetPath="seds" updateStrategy="0" immediately="false"/>
+        <BindingProperty name="sedSegmentModels" source="Form" sourcePath="${dataModel.sedSegmentModels}" target="plotter" targetPath="sedSegmentModels" updateStrategy="1" immediately="false"/>
+      </BindingProperties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new StilPlotter(preferences)"/>
+      </AuxValues>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
+          <GridBagConstraints gridX="0" gridY="1" gridWidth="5" gridHeight="5" fill="1" ipadX="680" ipadY="352" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="17" weightX="1.0" weightY="1.0"/>
+        </Constraint>
+      </Constraints>
 
-      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-        <Property name="columns" type="int" value="0"/>
-        <Property name="rows" type="int" value="1"/>
-      </Layout>
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
     </Container>
   </SubComponents>
 </Form>

@@ -13,23 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cfa.vo.iris.visualizer.stil;
+package cfa.vo.iris.visualizer.plotter;
 
+import cfa.vo.iris.visualizer.plotter.StilPlotter;
 import static org.junit.Assert.*;
-import static cfa.vo.iris.test.unit.TestUtils.*;
-
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.stil.StarTableAdapter;
-import cfa.vo.iris.test.App;
 import cfa.vo.iris.test.Ws;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
-import cfa.vo.sedlib.ISegment;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
+
 import java.lang.reflect.Field;
+
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.junit.Test;
 import uk.ac.starlink.task.StringParameter;
 import uk.ac.starlink.ttools.plot2.PlotLayer;
@@ -38,34 +35,20 @@ import uk.ac.starlink.ttools.plot2.geom.PlaneSurfaceFactory.Profile;
 import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 import uk.ac.starlink.ttools.task.MapEnvironment;
 import cfa.vo.testdata.TestData;
-import java.text.DecimalFormat;
 import uk.ac.starlink.task.BooleanParameter;
 
 public class StilPlotterTest {
     
-    private ExtSed sed;
     private Ws ws = new Ws();
-    private final App app = new App();
-    private StarTableAdapter<ISegment> adapter;
-    private final VisualizerComponentPreferences preferences;
-    
-    public StilPlotterTest() {
-        preferences = new VisualizerComponentPreferences(ws) {
-            @Override
-            protected void addSedListeners() {}
-        };
-        
-    }
+    private VisualizerComponentPreferences preferences;
     
     @Test
     public void testAddSed() throws Exception {
         
-        sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
-        preferences.update(sed);
-
-        StilPlotter plot = new StilPlotter(ws, preferences);
-        plot.reset(sed, true);
-        PlotDisplay display = plot.getPlotDisplay();
+        ExtSed sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
+        StilPlotter plot = setUpTests(sed);
+        
+        PlotDisplay<?, ?> display = plot.getPlotDisplay();
         
         // check that plot env is correctly set
         MapEnvironment env = plot.getEnv();
@@ -108,13 +91,11 @@ public class StilPlotterTest {
     @Test
     public void testAddTwoSegments() throws Exception {
         
-        sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
+        ExtSed sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
         sed.addSegment(ExtSed.read(TestData.class.getResource("test.vot").openStream(), SedFormat.VOT).getSegment(0));
-        preferences.update(sed);
 
-        StilPlotter plot = new StilPlotter(ws, preferences);
-        plot.reset(sed, true);
-        PlotDisplay display = plot.getPlotDisplay();
+        StilPlotter plot = setUpTests(sed);
+        PlotDisplay<?, ?> display = plot.getPlotDisplay();
 
         // using reflection to access layers in plot display
         Field layers_ = PlotDisplay.class.getDeclaredField("layers_");
@@ -139,20 +120,23 @@ public class StilPlotterTest {
     
     @Test
     public void testReset() throws Exception {
-        
-        sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
+
+        ExtSed sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
         Segment seg = sed.getSegment(0);
-        StilPlotter plot = new StilPlotter(ws, preferences);
-        preferences.update(sed);
+        StilPlotter plot = setUpTests(sed);
         
         // Get initial bounds
-        plot.reset(sed, false);
         PlotDisplay<Profile, PlaneAspect> display = plot.getPlotDisplay();
         PlaneAspect aspect1 = display.getAspect();
         
+        // Fix the plot
+        plot.getPlotPreferences().setFixed(true);
+        
+        // Remove the segment
         sed.removeSegment(0);
-        preferences.remove(sed, seg);
-        plot.redraw(true);
+        preferences.getDataStore().remove(sed, seg);
+        
+        plot.resetPlot(false, false);
         display = plot.getPlotDisplay();
 
         // Verify no layers
@@ -167,8 +151,8 @@ public class StilPlotterTest {
         assertEquals(aspect1.getYMax(), aspect2.getYMax(), .0001);
         assertEquals(aspect1.getXMin(), aspect2.getXMin(), .0001);
         assertEquals(aspect1.getYMin(), aspect2.getYMin(), .0001);
-        
-        plot.reset(null, false);
+
+        plot.resetPlot(true, false);
         display = plot.getPlotDisplay();
         
         // Bounds should reset
@@ -181,13 +165,10 @@ public class StilPlotterTest {
     
     @Test
     public void testZoom() throws Exception {
-        
-        sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
-        StilPlotter plot = new StilPlotter(ws, preferences);
-        preferences.update(sed);
+        ExtSed sed = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT);
+        StilPlotter plot = setUpTests(sed);
         
         // Get initial bounds
-        plot.reset(sed, false);
         PlotDisplay<Profile, PlaneAspect> display = plot.getPlotDisplay();
         PlaneAspect aspect1 = display.getAspect();
         
@@ -206,9 +187,9 @@ public class StilPlotterTest {
         double expectedYmax = 7.3199692;
         double expectedYmin = 3.1956419E-9;
         
-        DecimalFormat df = new DecimalFormat("#.#####");
-        String df_format = df.format(xmax);
-        double ndf = Double.valueOf(df_format);
+//        DecimalFormat df = new DecimalFormat("#.#####");
+//        String df_format = df.format(xmax);
+//        double ndf = Double.valueOf(df_format);
         
         assertEquals(Math.log10(expectedXmax), Math.log10(xmax), 0.000001);
         assertEquals(Math.log10(expectedXmin), Math.log10(xmin), 0.000001);
@@ -230,5 +211,14 @@ public class StilPlotterTest {
         assertEquals(Math.log10(ymax), Math.log10(aspect1.getYMax()), 0.000001);
         assertEquals(Math.log10(ymin), Math.log10(aspect1.getYMin()), 0.000001);
         
+    }
+    
+    private StilPlotter setUpTests(ExtSed sed) throws Exception {
+        preferences = new VisualizerComponentPreferences(ws);
+        preferences.getDataStore().update(sed);
+        preferences.getDataModel().setSelectedSed(sed);
+        
+        StilPlotter plot = new StilPlotter(preferences);
+        return plot;
     }
 }

@@ -20,15 +20,12 @@ package cfa.vo.iris.visualizer.stil.tables;
 import java.io.IOException;
 import java.util.BitSet;
 import java.util.List;
-import java.util.concurrent.Future;
-
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.visualizer.masks.Mask;
 import cfa.vo.iris.visualizer.masks.RowSubsetMask;
 import cfa.vo.utils.Default;
 import uk.ac.starlink.table.DescribedValue;
-import uk.ac.starlink.table.EmptyStarTable;
 import uk.ac.starlink.table.RowSequence;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.table.WrapperRowSequence;
@@ -49,18 +46,14 @@ import uk.ac.starlink.table.WrapperStarTable;
  *
  */
 public class IrisStarTable extends WrapperStarTable {
-
-    private static final StarTable EMPTY_STARTABLE = new EmptyStarTable();
     
-    private Future<StarTable> dataTableHolder;
     private StarTable segmentMetadataTable;
     private SegmentStarTable plotterDataTable;
     
     private Mask mask;
     
-    IrisStarTable(SegmentStarTable plotterTable, Future<StarTable> dataTableHolder) {
-        this(plotterTable, EMPTY_STARTABLE);
-        this.dataTableHolder = dataTableHolder;
+    IrisStarTable(SegmentStarTable plotterTable) {
+        this(plotterTable, null);
     }
     
     public IrisStarTable(SegmentStarTable plotterTable, StarTable dataTable)
@@ -97,24 +90,15 @@ public class IrisStarTable extends WrapperStarTable {
         segmentMetadataTable.setName(name);
     }
     
-    public StarTable getSegmentMetadataTable() {
-        if (EMPTY_STARTABLE == segmentMetadataTable) {
-            checkMetadataTable();
-        }
-        return segmentMetadataTable;
+    /**
+     * Updates the segment data table for async serialization.
+     */
+    void setSegmentMetadataTable(StarTable metadataTable) {
+        this.segmentMetadataTable = metadataTable;
     }
     
-    private void checkMetadataTable() {
-        if (dataTableHolder == null || !dataTableHolder.isDone()) {
-            return;
-        }
-        
-        try {
-            segmentMetadataTable = dataTableHolder.get();
-        } catch (Exception e) {
-            // TODO: Maybe show a warning message to users?
-            throw new RuntimeException("Could not serialize segment", e);
-        }
+    public StarTable getSegmentMetadataTable() {
+        return segmentMetadataTable;
     }
     
     public SegmentStarTable getPlotterDataTable() {
