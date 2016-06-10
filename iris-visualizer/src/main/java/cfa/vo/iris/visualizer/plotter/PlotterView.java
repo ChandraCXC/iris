@@ -20,6 +20,7 @@ import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
+import cfa.vo.iris.visualizer.preferences.PlotManagementWindow;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import java.awt.Dimension;
@@ -506,6 +507,11 @@ public class PlotterView extends JInternalFrame {
         mnView.add(mntmGridOnOff);
 
         mntmCoplot.setText("Coplot...");
+        mntmCoplot.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mntmCoplotActionPerformed(evt);
+            }
+        });
         mnView.add(mntmCoplot);
 
         menuBar.add(mnView);
@@ -569,6 +575,12 @@ public class PlotterView extends JInternalFrame {
             throw new RuntimeException(ex);
         }
     }//GEN-LAST:event_metadataButtonActionPerformed
+
+    private void mntmCoplotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mntmCoplotActionPerformed
+        PlotManagementWindow pl = new PlotManagementWindow(this.preferences);
+        ws.addFrame(pl);
+        GUIUtils.moveToFront(pl);
+    }//GEN-LAST:event_mntmCoplotActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel bottomButtonsPanel;

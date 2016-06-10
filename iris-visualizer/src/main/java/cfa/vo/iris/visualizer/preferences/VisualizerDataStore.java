@@ -8,7 +8,6 @@ import cfa.vo.iris.events.SedListener;
 import cfa.vo.iris.events.SegmentEvent;
 import cfa.vo.iris.events.SegmentListener;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
