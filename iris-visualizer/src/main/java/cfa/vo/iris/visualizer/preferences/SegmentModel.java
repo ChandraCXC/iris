@@ -31,6 +31,8 @@ import cfa.vo.iris.visualizer.plotter.ShapeType;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
+import static cfa.vo.iris.visualizer.plotter.PlotPreferences.*;
+
 public class SegmentModel {
     
     // see http://www.star.bris.ac.uk/~mbt/stilts/sun256/sun256.html#plot2plane
@@ -39,8 +41,6 @@ public class SegmentModel {
     private static final Logger logger = Logger.getLogger(SegmentModel.class.getName());
     
     // Override-able Settings
-    public static final String SHAPE = "shape";
-    public static final String TYPE = "layer";
     public static final String IN = "in";
     public static final String X_COL = "x";
     public static final String Y_COL = "y";
@@ -49,9 +49,6 @@ public class SegmentModel {
     public static final String X_ERR_LO = "xerrlo";
     public static final String Y_ERR_LO = "yerrlo";
     public static final String COLOR = "color";
-    public static final String ERROR_BAR_TYPE = "errorbar";
-    public static final String SIZE = "size";
-    public static final String SHADING = "shading";
     
     private static final String ERROR_SUFFIX = "_ERROR";
     
@@ -65,6 +62,8 @@ public class SegmentModel {
     private boolean showMarks;
     
     private IrisStarTable inSource;
+    
+    // Inherited from the SED layer, but can be overridden
     private ErrorBarType errorBarType;
     private ShapeType markType;
     private Integer size;
@@ -86,11 +85,6 @@ public class SegmentModel {
         
         this.setInSource(table);
         this.suffix = table.getName();
-        
-        // Setting default values here
-        this.setErrorBarType(ErrorBarType.capped_lines)
-            .setMarkType(ShapeType.open_circle)
-            .setSize(4);
         
         this.showErrorBars = true;
         this.showMarks = true;
