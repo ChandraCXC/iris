@@ -23,7 +23,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.visualizer.preferences.SegmentModel;
+import cfa.vo.iris.visualizer.preferences.LayerModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import java.util.Arrays;
@@ -189,8 +189,8 @@ public class StarTableJTree extends JTree {
             
             this.sed = sed;
             subTables = new ArrayList<>();
-            List<SegmentModel> models = dataModel.getModelsForSed(sed);
-            for (SegmentModel model : models) {
+            List<LayerModel> models = dataModel.getModelsForSed(sed);
+            for (LayerModel model : models) {
                 this.add(new TableLeafNode(model.getInSource()));
                 subTables.add(model.getInSource());
             }

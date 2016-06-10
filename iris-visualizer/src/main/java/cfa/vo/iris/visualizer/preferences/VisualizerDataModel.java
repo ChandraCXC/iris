@@ -39,7 +39,7 @@ public class VisualizerDataModel {
     private ExtSed selectedSed;
 
     // list of star tables associated with selectedSed, these tables will all be plotted
-    List<SegmentModel> sedSegmentModels;
+    List<LayerModel> sedSegmentModels;
     
     // list of star tables associated with selectedSed, these tables will all be plotted
     List<IrisStarTable> sedStarTables;
@@ -53,7 +53,7 @@ public class VisualizerDataModel {
         this.pcs = new PropertyChangeSupport(this);
         
         this.setSelectedSeds(new LinkedList<ExtSed>());
-        this.setSedSegmentModels(new LinkedList<SegmentModel>());
+        this.setSedSegmentModels(new LinkedList<LayerModel>());
         this.setSedStarTables(new LinkedList<IrisStarTable>());
         this.setSelectedStarTables(new LinkedList<IrisStarTable>());
     }
@@ -94,10 +94,10 @@ public class VisualizerDataModel {
      * @param sed
      * @return 
      */
-    public List<SegmentModel> getModelsForSed(ExtSed sed) {
+    public List<LayerModel> getModelsForSed(ExtSed sed) {
         
         SedModel sedModel = store.getSedModel(sed);
-        List<SegmentModel> models = new ArrayList<>();
+        List<LayerModel> models = new ArrayList<>();
         
         // Return an empty list if the model has been removed from the store.
         // (meaning the Sed was removed from the workspace).
@@ -151,7 +151,7 @@ public class VisualizerDataModel {
         this.selectedSed = selectedSed;
         
         // Here to support empty values for null seds
-        List<SegmentModel> newSedModels = new LinkedList<>();
+        List<LayerModel> newSedModels = new LinkedList<>();
         List<IrisStarTable> newSedTables = new LinkedList<>();
         List<ExtSed> newSelectedSeds = new LinkedList<>();
         String dataModelTitle = "";
@@ -161,7 +161,7 @@ public class VisualizerDataModel {
             // Add models to the SED
             SedModel sedModel = store.getSedModel(selectedSed);
             for (int i = 0; i < selectedSed.getNumberOfSegments(); i++) {
-                SegmentModel segModel = sedModel.getSegmentModel(selectedSed.getSegment(i));
+                LayerModel segModel = sedModel.getSegmentModel(selectedSed.getSegment(i));
                 newSedModels.add(segModel);
                 newSedTables.add(segModel.getInSource());
             }
@@ -179,13 +179,13 @@ public class VisualizerDataModel {
         pcs.firePropertyChange(PROP_SELECTED_SED, oldSed, selectedSed);
     }
     
-    public List<SegmentModel> getSedSegmentModels() {
+    public List<LayerModel> getSedSegmentModels() {
         return sedSegmentModels;
     }
     
     // Locked down since these are tied to the selected seds
-    synchronized void setSedSegmentModels(List<SegmentModel> newModels) {
-        List<SegmentModel> oldModels = this.sedSegmentModels;
+    synchronized void setSedSegmentModels(List<LayerModel> newModels) {
+        List<LayerModel> oldModels = this.sedSegmentModels;
         this.sedSegmentModels = ObservableCollections.observableList(newModels);
         pcs.firePropertyChange(PROP_SED_SEGMENT_MODELS, oldModels, sedSegmentModels);
     }
@@ -228,7 +228,7 @@ public class VisualizerDataModel {
         // This is a total cop-out. Just clear all existing preferences and reset
         // with the new selected SED.
         this.setSelectedSeds(new LinkedList<ExtSed>());
-        this.setSedSegmentModels(new LinkedList<SegmentModel>());
+        this.setSedSegmentModels(new LinkedList<LayerModel>());
         this.setSedStarTables(new LinkedList<IrisStarTable>());
         this.setSelectedStarTables(new LinkedList<IrisStarTable>());
         

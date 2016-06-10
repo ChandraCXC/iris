@@ -59,8 +59,8 @@ public class SedPreferencesTest {
         assertEquals(2, model.getAllSegmentModels().size());
 
         // Same segments should still have different suffixes
-        SegmentModel layer1 = model.getSegmentModel(seg1);
-        SegmentModel layer2 = model.getSegmentModel(seg2);
+        LayerModel layer1 = model.getSegmentModel(seg1);
+        LayerModel layer2 = model.getSegmentModel(seg2);
         assertFalse(layer1.getSuffix().equals(layer2.getSuffix()));
         
         // Check that the colors for each segment are different
