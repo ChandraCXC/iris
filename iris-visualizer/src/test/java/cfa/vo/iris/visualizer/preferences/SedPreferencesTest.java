@@ -33,6 +33,8 @@ public class SedPreferencesTest {
     @Test
     public void testPreferences() throws Exception {
         ExtSed sed = new ExtSed("test");
+        sed.setManaged(false);
+        
         IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
         
         SedModel model = new SedModel(sed, adapter);

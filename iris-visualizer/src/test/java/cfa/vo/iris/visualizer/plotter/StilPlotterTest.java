@@ -219,7 +219,6 @@ public class StilPlotterTest {
         preferences.getDataModel().setSelectedSed(sed);
         
         StilPlotter plot = new StilPlotter(preferences);
-        plot.resetPlot(false, false);
         return plot;
     }
 }
