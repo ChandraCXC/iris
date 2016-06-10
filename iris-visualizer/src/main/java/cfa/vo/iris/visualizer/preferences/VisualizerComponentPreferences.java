@@ -52,7 +52,10 @@ public class VisualizerComponentPreferences {
     // TODO: This should become dynamic, and potentially support changing depending on which SEDs
     // are in the plotter.
     private VisualizerDataModel dataModel;
-
+    
+    // If this is true, the visualizer will be bound to, and will always plot the selected SED.
+    private boolean boundToWorkspace = true;
+    
     public VisualizerComponentPreferences(IWorkspace ws) {
         this.ws = ws;
         
@@ -113,5 +116,19 @@ public class VisualizerComponentPreferences {
         });
         
         return sed;
+    }
+
+    /**
+     * @return if the visualizer using these preferences is bound to the IWorkspace
+     */
+    protected boolean isBoundToWorkspace() {
+        return boundToWorkspace;
+    }
+    
+    /**
+     * Bind or unbind the visualizer using these preferences to the selected SED in the IWorkspace.
+     */
+    protected void setBoundToWorkspace(boolean boundToWorkspace) {
+        this.boundToWorkspace = boundToWorkspace;
     }
 }
