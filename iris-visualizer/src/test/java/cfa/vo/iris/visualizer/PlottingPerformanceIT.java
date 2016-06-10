@@ -29,7 +29,7 @@ import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
-import cfa.vo.iris.visualizer.preferences.SegmentModel;
+import cfa.vo.iris.visualizer.preferences.LayerModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
@@ -86,11 +86,11 @@ public class PlottingPerformanceIT extends AbstractComponentGUITest {
                 assertSame(sed, prefs.getDataModel().getSelectedSed());
                 
                 // Verify the startable has loaded correctly
-                Map<Segment, SegmentModel> segmentMap = 
+                Map<Segment, LayerModel> segmentMap = 
                         prefs.getDataStore().getSedModel(sed).getAllSegmentModels();
                 
                 assertEquals(1, segmentMap.size());
-                for (SegmentModel seg : segmentMap.values()) {
+                for (LayerModel seg : segmentMap.values()) {
                     StarTable table = (StarTable) seg.getInSource();
                     assertEquals(303706, table.getRowCount());
                 }

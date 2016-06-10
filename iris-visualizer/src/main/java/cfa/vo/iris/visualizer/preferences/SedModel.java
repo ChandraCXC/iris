@@ -47,7 +47,7 @@ import java.util.logging.Logger;
 public class SedModel {
     
     IrisStarTableAdapter adapter;
-    final Map<Segment, SegmentModel> segmentModels;
+    final Map<Segment, LayerModel> segmentModels;
     final ExtSed sed;
     final ColorPalette colors;
     final PlotPreferences plotPreferences;
@@ -57,7 +57,7 @@ public class SedModel {
     
     public SedModel(ExtSed sed, IrisStarTableAdapter adapter) {
         this.sed = sed;
-        this.segmentModels = Collections.synchronizedMap(new IdentityHashMap<Segment, SegmentModel>());
+        this.segmentModels = Collections.synchronizedMap(new IdentityHashMap<Segment, LayerModel>());
         this.adapter = adapter;
         this.colors = new HSVColorPalette();
         this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
@@ -73,11 +73,11 @@ public class SedModel {
      * @return
      *  A map of all segments and layer preferences currently in use by this SED.
      */
-    public Map<Segment, SegmentModel> getAllSegmentModels() {
+    public Map<Segment, LayerModel> getAllSegmentModels() {
         return Collections.unmodifiableMap(segmentModels);
     }
     
-    public SegmentModel getSegmentModel(Segment seg) {
+    public LayerModel getSegmentModel(Segment seg) {
         return segmentModels.get(seg);
     }
     
@@ -108,7 +108,7 @@ public class SedModel {
         
         // If the segment is already in the map remake the star table
         if (segmentModels.containsKey(seg)) {
-            SegmentModel mod = segmentModels.get(seg);
+            LayerModel mod = segmentModels.get(seg);
             
             // Preserve table name on reserialization
             mod.setInSource(convertSegment(seg, mod.getInSource().getName()));
@@ -116,7 +116,7 @@ public class SedModel {
         }
         
         // Ensure that the layer has a unique identifier in the list of segments
-        SegmentModel layer = new SegmentModel(convertSegment(seg, null));
+        LayerModel layer = new LayerModel(convertSegment(seg, null));
         int count = 0;
         String id = layer.getSuffix();
         while (!isUniqueLayerSuffix(id)) {
@@ -159,7 +159,7 @@ public class SedModel {
         // Do not keep track of empty segments
         if (seg == null) return false;
         
-        SegmentModel m = segmentModels.remove(seg);
+        LayerModel m = segmentModels.remove(seg);
         return m != null;
     }
     
@@ -169,7 +169,7 @@ public class SedModel {
      * are used and set as the SED's preferred units.
      * 
      */
-    private void setUnits(Segment seg, SegmentModel layer) {
+    private void setUnits(Segment seg, LayerModel layer) {
         // if this is the first segment to be added to the SED preferences,
         // set the preferred X and Y units to the segment's
         if (StringUtils.isEmpty(xunits) || StringUtils.isEmpty(xunits))
@@ -220,7 +220,7 @@ public class SedModel {
         plotPreferences.setYlabel(yunit);
         
         // update the segment layers with the new units
-        for (SegmentModel seg : segmentModels.values()) {
+        for (LayerModel seg : segmentModels.values()) {
             try {
                 seg.setXUnits(xunits);
                 seg.setYUnits(yunits);
@@ -256,7 +256,7 @@ public class SedModel {
     private void clean() {
         
         // Use iterator for concurrent modification
-        Iterator<Entry<Segment, SegmentModel>> it = segmentModels.entrySet().iterator();
+        Iterator<Entry<Segment, LayerModel>> it = segmentModels.entrySet().iterator();
         
         while (it.hasNext()) {
             boolean shouldRemove = true;
@@ -276,7 +276,7 @@ public class SedModel {
     }
     
     boolean isUniqueLayerSuffix(String suffix) {
-        for (SegmentModel layer : segmentModels.values()) {
+        for (LayerModel layer : segmentModels.values()) {
             if (StringUtils.equals(layer.getSuffix(), suffix)) {
                 return false;
             }
@@ -290,7 +290,7 @@ public class SedModel {
 
     public void setXunits(String xunits) throws UnitsException {
         this.xunits = xunits;
-        for (SegmentModel layer : segmentModels.values()) {
+        for (LayerModel layer : segmentModels.values()) {
             layer.setXUnits(xunits);
         }
     }
@@ -301,7 +301,7 @@ public class SedModel {
 
     public void setYunits(String yunits) throws UnitsException {
         this.yunits = yunits;
-        for (SegmentModel layer : segmentModels.values()) {
+        for (LayerModel layer : segmentModels.values()) {
             layer.setYUnits(yunits);
         }
     }

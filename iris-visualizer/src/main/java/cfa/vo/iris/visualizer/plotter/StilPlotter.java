@@ -18,7 +18,7 @@ package cfa.vo.iris.visualizer.plotter;
 import javax.swing.JPanel;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.quantities.SPVYQuantity;
-import cfa.vo.iris.visualizer.preferences.SegmentModel;
+import cfa.vo.iris.visualizer.preferences.LayerModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
@@ -120,14 +120,14 @@ public class StilPlotter extends JPanel {
         this.setSeds(dataModel.getSelectedSeds());
     }
     
-    public List<SegmentModel> getSedSegmentModels() {
+    public List<LayerModel> getSedSegmentModels() {
         return dataModel.getSedSegmentModels();
     }
     
     /**
      * For binding to the dataModel, this SHOULD NOT be called otherwise.
      */
-    public void setSedSegmentModels(List<SegmentModel> models) {
+    public void setSedSegmentModels(List<LayerModel> models) {
         this.resetPlot(false, false);
     }
 
@@ -351,7 +351,7 @@ public class StilPlotter extends JPanel {
         env.setValue("title", dataModel.getDataModelTitle());
 
         // Add segments and segment preferences
-        for (SegmentModel layer : dataModel.getSedSegmentModels()) {
+        for (LayerModel layer : dataModel.getSedSegmentModels()) {
             for (String key : layer.getPreferences().keySet()) {
                 env.setValue(key, layer.getPreferences().get(key));
             }

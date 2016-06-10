@@ -33,7 +33,7 @@ import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.visualizer.VisualizerComponent;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
-import cfa.vo.iris.visualizer.preferences.SegmentModel;
+import cfa.vo.iris.visualizer.preferences.LayerModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataStore;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.sedlib.Segment;
@@ -477,9 +477,9 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         VisualizerDataStore store = mbView.preferences.getDataStore();
         
         // Verify IrisStarTables are all the same
-        SegmentModel oldLayer = store.getSedModel(sed)
+        LayerModel oldLayer = store.getSedModel(sed)
                 .getSegmentModel(sed.getSegment(0));
-        SegmentModel newLayer = store.getSedModel(newSed)
+        LayerModel newLayer = store.getSedModel(newSed)
                 .getSegmentModel(newSed.getSegment(0));
         assertEquals(oldLayer.getSuffix(), newLayer.getSuffix());
         assertEquals(oldLayer.getInSource().getName(), newLayer.getInSource().getName());
