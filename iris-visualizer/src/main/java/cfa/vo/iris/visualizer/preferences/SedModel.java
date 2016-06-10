@@ -74,13 +74,7 @@ public class SedModel {
      *  A map of all segments and layer preferences currently in use by this SED.
      */
     public Map<Segment, SegmentModel> getAllSegmentModels() {
-        Map<Segment, SegmentModel> ret = new IdentityHashMap<>();
-        
-        for (Segment me : segmentModels.keySet()) {
-            ret.put(me, segmentModels.get(me));
-        }
-        
-        return Collections.unmodifiableMap(ret);
+        return Collections.unmodifiableMap(segmentModels);
     }
     
     public SegmentModel getSegmentModel(Segment seg) {
