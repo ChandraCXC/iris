@@ -54,7 +54,7 @@ public class StilPlotterTest {
         MapEnvironment env = plot.getEnv();
 
         // check shape
-        StringParameter par = new StringParameter("shape3C 273");
+        StringParameter par = new StringParameter("shape");
         env.acquireValue(par);
         assertEquals(par.objectValue(env), "open_circle");
         
@@ -67,7 +67,7 @@ public class StilPlotterTest {
         assertEquals(log.objectValue(env), true);
         
         // check errorbars shape
-        par.setName("errorbar3C 273_ERROR");
+        par.setName("errorbar");
         env.acquireValue(par);
         assertEquals(par.objectValue(env), "capped_lines");
         

@@ -38,7 +38,7 @@ public class PlotPreferences {
     // This is only a small sample of the preferences available in STILTS, for
     // the full list, see
     // http://www.star.bris.ac.uk/~mbt/stilts/sun256/sun256.html#TypedPlot2Task
-    // Global Settings
+    // Global Plot Settings
     static final String GRID = "grid";
     static final String X_LABEL = "xlabel";
     static final String Y_LABEL = "ylabel";
@@ -53,6 +53,14 @@ public class PlotPreferences {
     static final String X_FLIP = "xflip";
     static final String PLOT_TYPE = "plot_type"; // not STILTS
     //public static final String SHOW_ERRORS = "show_errors"; // not STILTS
+    
+    // These settings are set at the Sed level, but can be overridden by the underlying
+    // Segments
+    public static final String ERROR_BAR_TYPE = "errorbar";
+    public static final String SIZE = "size";
+    public static final String SHADING = "shading";
+    public static final String SHAPE = "shape";
+    public static final String TYPE = "layer";
     
     // for the plot legend
     static final String SHOW_LEGEND = "legend";
@@ -106,6 +114,9 @@ public class PlotPreferences {
         pp.setLegendOpaque(false);
         pp.setLegendBorder(true);
         pp.setAspect(aspect);
+        pp.setErrorBarType(ErrorBarType.capped_lines);
+        pp.setMarkType(ShapeType.open_circle);
+        pp.setSize(4);
         
         return pp;
     }
@@ -362,6 +373,39 @@ public class PlotPreferences {
         Boolean old = getLegendBorder();
         preferences.put(LEGEND_BORDER, arg1);
         pcs.firePropertyChange(PROP_LEGEND_BORDER, old, arg1);
+    }
+    
+    protected ErrorBarType getErrorBarType() {
+        return (ErrorBarType) preferences.get(ERROR_BAR_TYPE);
+    }
+
+    public static final String PROP_ERROR_BAR_TYPE = "errorBarType";
+    protected void setErrorBarType(ErrorBarType errorBarType) {
+        ErrorBarType old = getErrorBarType();
+        preferences.put(ERROR_BAR_TYPE, errorBarType.name());
+        pcs.firePropertyChange(PROP_LEGEND_BORDER, old, errorBarType);
+    }
+
+    protected ShapeType getMarkType() {
+        return (ShapeType) preferences.get(SHAPE);
+    }
+
+    public static final String PROP_MARK_TYPE = "markType";
+    protected void setMarkType(ShapeType markType) {
+        ShapeType old = getMarkType();
+        preferences.put(SHAPE, markType.name());
+        pcs.firePropertyChange(SHAPE, old, markType);
+    }
+
+    protected Integer getSize() {
+        return (Integer) preferences.get(SIZE);
+    }
+
+    public static final String PROP_MARK_SIZE = "size";
+    protected void setSize(Integer size) {
+        Integer old = getSize();
+        preferences.put(SIZE, size);
+        pcs.firePropertyChange(PROP_LEGEND_BORDER, old, size);
     }
 }
 
