@@ -7,6 +7,8 @@ import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SedListener;
 import cfa.vo.iris.events.SegmentEvent;
 import cfa.vo.iris.events.SegmentListener;
+
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -194,7 +196,10 @@ public class VisualizerDataStore {
                 remove(sed);
             } 
             else if (SedCommand.SELECTED.equals(payload)) {
-                preferences.getDataModel().setSelectedSed(sed);
+                // If the visualizer is tied to the workspace, update the SED
+                if (preferences.isBoundToWorkspace()) {
+                    preferences.getDataModel().setSelectedSed(sed);
+                }
             }
             else {
                 // Doesn't merit a full reset, this is basically just here for SED name changes
