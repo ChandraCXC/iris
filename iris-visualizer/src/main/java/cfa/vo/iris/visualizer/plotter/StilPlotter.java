@@ -121,7 +121,7 @@ public class StilPlotter extends JPanel {
     }
     
     public List<LayerModel> getSedSegmentModels() {
-        return dataModel.getSedSegmentModels();
+        return dataModel.getLayerModels();
     }
     
     /**
@@ -351,7 +351,7 @@ public class StilPlotter extends JPanel {
         env.setValue("title", dataModel.getDataModelTitle());
 
         // Add segments and segment preferences
-        for (LayerModel layer : dataModel.getSedSegmentModels()) {
+        for (LayerModel layer : dataModel.getLayerModels()) {
             for (String key : layer.getPreferences().keySet()) {
                 env.setValue(key, layer.getPreferences().get(key));
             }
