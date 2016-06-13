@@ -24,10 +24,14 @@
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
   <SubComponents>
-    <Component class="javax.swing.JButton" name="selectButton">
+    <Component class="javax.swing.JButton" name="applyChangesButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Plot Seds"/>
+        <Property name="text" type="java.lang.String" value="Apply Changes"/>
+        <Property name="toolTipText" type="java.lang.String" value="Apply changes to the visualizer"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="applyChangesButtonActionPerformed"/>
+      </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="0" gridY="2" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="17" weightX="0.0" weightY="0.0"/>
@@ -81,24 +85,22 @@
                 </Property>
               </Properties>
               <BindingProperties>
-                <BindingProperty name="elements" source="Form" sourcePath="${availableSeds}" target="sedList" targetPath="elements" updateStrategy="0" immediately="false"/>
-                <BindingProperty name="selectedElement" source="Form" sourcePath="${selectedSeds}" target="sedList" targetPath="selectedElement" updateStrategy="0" immediately="false">
-                  <BindingParameter name="IGNORE_ADJUSTING" value="N"/>
-                </BindingProperty>
+                <BindingProperty name="elements" source="Form" sourcePath="${preferences.availableSeds}" target="sedList" targetPath="elements" updateStrategy="0" immediately="false"/>
+                <BindingProperty name="enabled" source="wsBoundCheckbox" sourcePath="${selected}" target="sedList" targetPath="enabled" updateStrategy="0" immediately="false"/>
               </BindingProperties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;ExtSed&gt;"/>
+              </AuxValues>
             </Component>
           </SubComponents>
         </Container>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JCheckBox" name="jCheckBox1">
+    <Component class="javax.swing.JCheckBox" name="wsBoundCheckbox">
       <Properties>
         <Property name="text" type="java.lang.String" value="Enable Co-Plotting"/>
         <Property name="toolTipText" type="java.lang.String" value="If selected, users can manually specify which SEDs to display in the plotter. The plotter will not update when the selected sed in the builder changes."/>
       </Properties>
-      <BindingProperties>
-        <BindingProperty name="selected" source="Form" sourcePath="${preferences.boundToWorkspace}" target="jCheckBox1" targetPath="selected" updateStrategy="0" immediately="false"/>
-      </BindingProperties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="0" gridY="0" gridWidth="2" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="16" weightX="0.0" weightY="0.0"/>
@@ -108,7 +110,11 @@
     <Component class="javax.swing.JButton" name="cancelButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Cancel"/>
+        <Property name="toolTipText" type="java.lang.String" value="Close this window without saving"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cancelButtonActionPerformed"/>
+      </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">
           <GridBagConstraints gridX="1" gridY="2" gridWidth="1" gridHeight="1" fill="0" ipadX="0" ipadY="0" insetsTop="0" insetsLeft="0" insetsBottom="0" insetsRight="0" anchor="17" weightX="0.0" weightY="0.0"/>

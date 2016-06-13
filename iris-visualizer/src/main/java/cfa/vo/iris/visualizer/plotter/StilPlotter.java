@@ -85,18 +85,13 @@ public class StilPlotter extends JPanel {
      * For binding to the datamodel. This function SHOULD NOT be called otherwise.
      */
     public void setSeds(List<ExtSed> newSeds) {
-        // TODO: Support more than one SED
-        if (newSeds.size() > 1) {
-            throw new IllegalArgumentException("Invalid sed list length");
-        }
-        
         this.seds = newSeds;
         
         // Update plot preferences for new seds.
         if (CollectionUtils.isEmpty(newSeds)) {
             this.setPlotPreferences(DEFAULT_PLOT_PREFERENCES);
         } else {
-            this.setPlotPreferences(dataModel.getSedModel(newSeds.get(0)).getPlotPreferences());
+            this.setPlotPreferences(preferences.getPlotPreferences(newSeds));
         }
         
         resetPlot(false, true);

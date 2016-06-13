@@ -17,71 +17,34 @@ package cfa.vo.iris.visualizer.preferences;
 
 import cfa.vo.iris.sed.ExtSed;
 import java.awt.Component;
-import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
-
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
  * Window for accessing Visualizer Preferences. Including co-plotting
  * multiple SEDs and Binding the Visualizer to the Workspace.
  */
 @SuppressWarnings("serial")
-public class PlotManagementWindow extends javax.swing.JInternalFrame {
+public class CoPlotManagementWindow extends javax.swing.JInternalFrame {
 
     private VisualizerComponentPreferences preferences;
-    private List<ExtSed> availableSeds;
-    private List<ExtSed> selectedSeds;
     
     /**
      * Creates new form PlotManagementWindow
      */
-    public PlotManagementWindow(VisualizerComponentPreferences preferences) {
+    public CoPlotManagementWindow(VisualizerComponentPreferences preferences) {
         this.preferences = preferences;
+        
         initComponents();
         
-        this.setAvailableSeds(preferences.getAvailableSeds());
-        this.setSelectedSeds(preferences.getDataModel().getSelectedSeds());
+        this.wsBoundCheckbox.setSelected(!preferences.isBoundToWorkspace());
+        
     }
-    
-    /*
-     * 
-     * Getters and setters
-     * 
-     */
     
     public VisualizerComponentPreferences getPreferences() {
         return preferences;
     }
-    
-    public void setPreferences(VisualizerComponentPreferences preferences) {
-        this.preferences = preferences;
-    }
-    
-    protected List<ExtSed> getAvailableSeds() {
-        return availableSeds;
-    }
-
-    public static final String PROP_AVAILABLE_SEDS = "availableSeds";
-    protected void setAvailableSeds(List<ExtSed> arg1) {
-        List<ExtSed> old = this.availableSeds;
-        this.availableSeds = arg1;
-        this.firePropertyChange(PROP_AVAILABLE_SEDS, old, arg1);
-    }
-
-    protected List<ExtSed> getSelectedSeds() {
-        return selectedSeds;
-    }
-
-    public static final String PROP_SELECTED_SEDS = "selectedSeds";
-    protected void setSelectedSeds(List<ExtSed> arg1) {
-        List<ExtSed> old = this.selectedSeds;
-        this.selectedSeds = arg1;
-        this.firePropertyChange(PROP_SELECTED_SEDS, old, arg1);
-    }
-
     
     static class ExtSedCellRenderer extends JLabel implements ListCellRenderer<ExtSed> {
         private static final long serialVersionUID = 1L;
@@ -120,11 +83,11 @@ public class PlotManagementWindow extends javax.swing.JInternalFrame {
         java.awt.GridBagConstraints gridBagConstraints;
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
-        selectButton = new javax.swing.JButton();
+        applyChangesButton = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         sedScrollPane = new javax.swing.JScrollPane();
-        sedList = new javax.swing.JList();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        sedList = new javax.swing.JList<ExtSed>();
+        wsBoundCheckbox = new javax.swing.JCheckBox();
         cancelButton = new javax.swing.JButton();
 
         setClosable(true);
@@ -132,21 +95,27 @@ public class PlotManagementWindow extends javax.swing.JInternalFrame {
         setToolTipText("");
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        selectButton.setText("Plot Seds");
+        applyChangesButton.setText("Apply Changes");
+        applyChangesButton.setToolTipText("Apply changes to the visualizer");
+        applyChangesButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                applyChangesButtonActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        getContentPane().add(selectButton, gridBagConstraints);
+        getContentPane().add(applyChangesButton, gridBagConstraints);
 
         sedScrollPane.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
         sedList.setCellRenderer(new ExtSedCellRenderer());
 
-        org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${availableSeds}");
+        org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${preferences.availableSeds}");
         org.jdesktop.swingbinding.JListBinding jListBinding = org.jdesktop.swingbinding.SwingBindings.createJListBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, sedList);
         bindingGroup.addBinding(jListBinding);
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${selectedSeds}"), sedList, org.jdesktop.beansbinding.BeanProperty.create("selectedElement"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, wsBoundCheckbox, org.jdesktop.beansbinding.ELProperty.create("${selected}"), sedList, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
         sedScrollPane.setViewportView(sedList);
@@ -172,20 +141,22 @@ public class PlotManagementWindow extends javax.swing.JInternalFrame {
         gridBagConstraints.gridwidth = 2;
         getContentPane().add(jPanel1, gridBagConstraints);
 
-        jCheckBox1.setText("Enable Co-Plotting");
-        jCheckBox1.setToolTipText("If selected, users can manually specify which SEDs to display in the plotter. The plotter will not update when the selected sed in the builder changes.");
-
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${preferences.boundToWorkspace}"), jCheckBox1, org.jdesktop.beansbinding.BeanProperty.create("selected"));
-        bindingGroup.addBinding(binding);
-
+        wsBoundCheckbox.setText("Enable Co-Plotting");
+        wsBoundCheckbox.setToolTipText("If selected, users can manually specify which SEDs to display in the plotter. The plotter will not update when the selected sed in the builder changes.");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHWEST;
-        getContentPane().add(jCheckBox1, gridBagConstraints);
+        getContentPane().add(wsBoundCheckbox, gridBagConstraints);
 
         cancelButton.setText("Cancel");
+        cancelButton.setToolTipText("Close this window without saving");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cancelButtonActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
@@ -197,14 +168,27 @@ public class PlotManagementWindow extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void applyChangesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyChangesButtonActionPerformed
+        preferences.setBoundToWorkspace(!this.wsBoundCheckbox.isSelected());
+        if (this.wsBoundCheckbox.isSelected()) {
+            preferences.getDataModel().setSelectedSeds(this.sedList.getSelectedValuesList());
+        }
+        
+        this.dispose();
+    }//GEN-LAST:event_applyChangesButtonActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_cancelButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton applyChangesButton;
     private javax.swing.JButton cancelButton;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JList sedList;
+    private javax.swing.JList<ExtSed> sedList;
     private javax.swing.JScrollPane sedScrollPane;
-    private javax.swing.JButton selectButton;
+    private javax.swing.JCheckBox wsBoundCheckbox;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }

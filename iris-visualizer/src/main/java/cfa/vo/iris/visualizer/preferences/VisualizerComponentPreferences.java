@@ -16,8 +16,6 @@
 
 package cfa.vo.iris.visualizer.preferences;
 
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,6 +23,7 @@ import java.util.concurrent.Executors;
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.MouseListenerManager;
+import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.metadata.SegmentExtractor;
 import cfa.vo.iris.visualizer.metadata.IrisStarJTable.RowSelection;
 import cfa.vo.sedlib.common.SedInconsistentException;
@@ -62,9 +61,6 @@ public class VisualizerComponentPreferences {
     // If this is true, the visualizer will be bound to, and will always plot the selected SED.
     private boolean boundToWorkspace;
     
-    // Implements property change support
-    private final PropertyChangeSupport pcs;
-    
     public VisualizerComponentPreferences(IWorkspace ws) {
         this.ws = ws;
         
@@ -74,17 +70,7 @@ public class VisualizerComponentPreferences {
         
         this.mouseListenerManager = new MouseListenerManager();
         
-        this.pcs = new PropertyChangeSupport(this);
-        
         this.boundToWorkspace = true;
-    }
-    
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        this.pcs.addPropertyChangeListener(listener);
-    }
-    
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        this.pcs.removePropertyChangeListener(listener);
     }
     
     /**
@@ -158,12 +144,13 @@ public class VisualizerComponentPreferences {
     /**
      * Bind or unbind the visualizer using these preferences to the selected SED in the IWorkspace.
      */
-    public static final String PROP_BOUND_TO_WS = "boundToWorkspace";
     protected void setBoundToWorkspace(boolean arg1) {
-        System.out.println("PROP_BOUND_TO_WS: " + arg1);
-        boolean old = this.boundToWorkspace;
         this.boundToWorkspace = arg1;
-        pcs.firePropertyChange(PROP_BOUND_TO_WS, old, arg1);
+        
+        // If re-binding to workspace we need to set the selected SED.
+        if (boundToWorkspace) {
+            this.updateSelectedSed((ExtSed) ws.getSedManager().getSelected());
+        }
     }
 
     /**
@@ -201,5 +188,9 @@ public class VisualizerComponentPreferences {
         if (selectedSeds.remove(sed)) {
             dataModel.setSelectedSeds(selectedSeds);
         }
+    }
+
+    public PlotPreferences getPlotPreferences(List<ExtSed> newSeds) {
+        return dataModel.getSedModel(newSeds.get(0)).getPlotPreferences();
     }
 }
