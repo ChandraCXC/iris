@@ -29,6 +29,9 @@ import cfa.vo.iris.visualizer.metadata.SegmentExtractor;
 import cfa.vo.iris.visualizer.metadata.IrisStarJTable.RowSelection;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
+
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -161,5 +164,42 @@ public class VisualizerComponentPreferences {
         boolean old = this.boundToWorkspace;
         this.boundToWorkspace = arg1;
         pcs.firePropertyChange(PROP_BOUND_TO_WS, old, arg1);
+    }
+
+    /**
+     * Used to refresh the datamodel's view of the specified SED, if applicable.
+     * @param sed
+     */
+    public void fireChanges(ExtSed sed) {
+        List<ExtSed> selectedSeds = dataModel.getSelectedSeds();
+        if (selectedSeds.contains((sed))) {
+            dataModel.setSelectedSeds(selectedSeds);
+        }
+    }
+
+    /**
+     * If the visualizer is bound to the workspace, this method will clear the settings from the
+     * DataModel and replace them with the specified SED.
+     * @param sed
+     */
+    public void updateSelectedSed(ExtSed sed) {
+        if (this.isBoundToWorkspace()) {
+            if (sed == null) {
+                dataModel.setSelectedSeds(new LinkedList<ExtSed>());
+            } else {
+                dataModel.setSelectedSeds(Arrays.asList(sed));
+            }
+        }
+    }
+
+    /**
+     * Handles removing the specified SED from the current DataModel.
+     * @param sed
+     */
+    public void removeSed(ExtSed sed) {
+        List<ExtSed> selectedSeds = dataModel.getSelectedSeds();
+        if (selectedSeds.remove(sed)) {
+            dataModel.setSelectedSeds(selectedSeds);
+        }
     }
 }

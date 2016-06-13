@@ -21,6 +21,7 @@ import java.util.Map;
 
 import javax.swing.SwingUtilities;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -73,7 +74,7 @@ public class PlottingPerformanceIT extends AbstractComponentGUITest {
         
         // Wait for the plotting component to load the new selected SED
         final VisualizerComponentPreferences prefs = comp.getPreferences();
-        while(prefs.getDataModel().getSelectedSed() == null) {
+        while(CollectionUtils.isEmpty(prefs.getDataModel().getSelectedSeds())) {
             Thread.sleep(100);
         }
         
@@ -83,7 +84,7 @@ public class PlottingPerformanceIT extends AbstractComponentGUITest {
             public void run() {
                 
                 // Verify the SED has loaded into the sed
-                assertSame(sed, prefs.getDataModel().getSelectedSed());
+                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed));
                 
                 // Verify the startable has loaded correctly
                 Map<Segment, LayerModel> segmentMap = 

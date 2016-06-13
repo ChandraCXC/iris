@@ -87,7 +87,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed, prefs.getDataModel().getSelectedSed());
+                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed));
             }
         });
 
@@ -110,7 +110,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed2, prefs.getDataModel().getSelectedSed());
+                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed2));
             }
         });
 
@@ -120,7 +120,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed, prefs.getDataModel().getSelectedSed());
+                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed));
             }
         });
 
@@ -145,7 +145,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed1, prefs.getDataModel().getSelectedSed());
+                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed1));
             }
         });
         
@@ -173,7 +173,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed2, prefs.getDataModel().getSelectedSed());
+                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed2));
             }
         });
         
@@ -199,7 +199,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed1, prefs.getDataModel().getSelectedSed());
+                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed1));
             }
         });
         
@@ -224,7 +224,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed2, prefs.getDataModel().getSelectedSed());
+                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed2));
             }
         });
         
@@ -257,7 +257,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed1, prefs.getDataModel().getSelectedSed());
+                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed1));
             }
         });
         
@@ -301,7 +301,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertEquals(2, prefs.getDataModel().getSelectedSed().getNumberOfSegments());
+                assertEquals(2, prefs.getDataModel().getLayerModels().size());
             }
         });
         
@@ -340,7 +340,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed2, prefs.getDataModel().getSelectedSed());
+                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed2));
             }
         });
         
@@ -361,7 +361,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed1, prefs.getDataModel().getSelectedSed());
+                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed1));
             }
         });
         
@@ -412,7 +412,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed0, prefs.getDataModel().getSelectedSed());
+                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed0));
             }
         });
         
@@ -442,7 +442,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed1, prefs.getDataModel().getSelectedSed());
+                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed1));
             }
         });
         
@@ -470,7 +470,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed2, prefs.getDataModel().getSelectedSed());
+                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed2));
             }
         });
         
@@ -496,7 +496,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed1, prefs.getDataModel().getSelectedSed());
+                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed1));
             }
         });
         
@@ -520,7 +520,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertSame(sed2, prefs.getDataModel().getSelectedSed());
+                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed2));
             }
         });
         

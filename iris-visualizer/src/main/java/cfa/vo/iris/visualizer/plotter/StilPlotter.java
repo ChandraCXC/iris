@@ -120,14 +120,14 @@ public class StilPlotter extends JPanel {
         this.setSeds(dataModel.getSelectedSeds());
     }
     
-    public List<LayerModel> getSedSegmentModels() {
+    public List<LayerModel> getLayerModels() {
         return dataModel.getLayerModels();
     }
     
     /**
      * For binding to the dataModel, this SHOULD NOT be called otherwise.
      */
-    public void setSedSegmentModels(List<LayerModel> models) {
+    public void setLayerModels(List<LayerModel> models) {
         this.resetPlot(false, false);
     }
 

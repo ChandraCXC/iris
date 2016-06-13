@@ -216,7 +216,7 @@ public class StilPlotterTest {
     private StilPlotter setUpTests(ExtSed sed) throws Exception {
         preferences = new VisualizerComponentPreferences(ws);
         preferences.getDataStore().update(sed);
-        preferences.getDataModel().setSelectedSed(sed);
+        preferences.updateSelectedSed(sed);
         
         StilPlotter plot = new StilPlotter(preferences);
         return plot;

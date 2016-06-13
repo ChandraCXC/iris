@@ -26,7 +26,6 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.preferences.LayerModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
-import java.util.Arrays;
 import java.util.Enumeration;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
@@ -125,7 +124,7 @@ public class StarTableJTree extends JTree {
      */
     private TreePath findTablePath(IrisStarTable table) {
         DefaultMutableTreeNode root = ( DefaultMutableTreeNode) getModel().getRoot();
-        Enumeration e = root.breadthFirstEnumeration();
+        Enumeration<?> e = root.breadthFirstEnumeration();
         
         DefaultMutableTreeNode node = null;
         while (e.hasMoreElements()) {
