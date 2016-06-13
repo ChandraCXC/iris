@@ -226,9 +226,8 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertTrue(StringUtils.contains(mbWindow.getTitle(), sed.getId()));
+                assertTrue(mbView.getDataModel().getSelectedSeds().contains(sed));
                 assertEquals(2, mbView.getDataModel().getSedStarTables().size());
-//                assertEquals(2, starTableList.getSize());
                 assertEquals(2, segmentTable.getRowCount());
 
                 assertEquals(1, Double.parseDouble((String) plotterTable.getContentAt(0, 2)), 0.1);

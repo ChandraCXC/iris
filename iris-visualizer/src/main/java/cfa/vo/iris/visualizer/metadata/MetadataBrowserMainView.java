@@ -37,8 +37,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger
             .getLogger(MetadataBrowserMainView.class.getName());
-    
-    public static final String MB_WINDOW_NAME = "Metadata Browser (%s)";
 
     final VisualizerComponentPreferences preferences;
     final VisualizerDataModel dataModel;

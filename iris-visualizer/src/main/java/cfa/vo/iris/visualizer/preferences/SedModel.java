@@ -17,13 +17,12 @@
 package cfa.vo.iris.visualizer.preferences;
 
 import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
-
-import com.google.common.collect.MapMaker;
 
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedException;
@@ -61,9 +60,8 @@ public class SedModel {
         this.adapter = adapter;
         this.colors = new HSVColorPalette();
         this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
-        
-        Map<Segment, LayerModel> map = new MapMaker().weakKeys().weakValues().makeMap();
-        this.segmentModels = Collections.synchronizedMap(map);
+
+        this.segmentModels = Collections.synchronizedMap(new IdentityHashMap<Segment, LayerModel>());
         
         refresh();
     }
