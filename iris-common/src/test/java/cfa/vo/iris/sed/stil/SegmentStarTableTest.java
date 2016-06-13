@@ -91,7 +91,7 @@ public class SegmentStarTableTest {
         
         assertEquals('\u03BC' + "m", table.getColumnInfo(id.getColumnIndex(Column.Spectral_Value.name())).getUnitString());
         assertEquals("erg/s/cm2/Angstrom", table.getColumnInfo(id.getColumnIndex(Column.Flux_Value.name())).getUnitString());
-        assertEquals("erg/s/cm2/Angstrom", table.getColumnInfo(id.getColumnIndex(Column.Original_Flux_Value.name())).getUnitString());
+        assertEquals("Jy", table.getColumnInfo(id.getColumnIndex(Column.Original_Flux_Value.name())).getUnitString()); // shouldn't change
         assertEquals("erg/s/cm2/Angstrom", table.getColumnInfo(id.getColumnIndex(Column.Flux_Error.name())).getUnitString());
     }
     
@@ -173,6 +173,8 @@ public class SegmentStarTableTest {
         // switch back and forth correctly
         
         // ABMAG back to erg/s/cm2/Hz
+        // f_nu(erg/s/cm2/Hz) = 10**(-0.4 (m_ab + 48.6))
+        // f_nu_err(erg/s/cm2/Hz) = 10**(-0.4 (m_ab + m_ab_err + 48.6)) - f_nu
         table.setFluxUnits(new YUnits("erg/s/cm**2/Hz"));
         for (int i=0; i < table.getFluxValues().length; i++) {
             assertEquals(y[i], table.getFluxValues()[i], 0.000001);
