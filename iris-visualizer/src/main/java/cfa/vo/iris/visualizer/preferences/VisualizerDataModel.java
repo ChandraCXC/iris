@@ -9,7 +9,8 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 
 import java.util.ArrayList;
-import org.apache.commons.collections.CollectionUtils;
+import java.util.Arrays;
+
 import org.jdesktop.observablecollections.ObservableCollections;
 
 /**
@@ -29,19 +30,17 @@ public class VisualizerDataModel {
     private final PropertyChangeSupport pcs;
     private final VisualizerDataStore store;
 
-    // Name of the window browser, is adjustable and currently tied to the selectedSed
-    // TODO: Support multiple SEDS
+    // Name of the window browser, is adjustable and currently tied to the list of selected Seds
     private String dataModelTitle = null;
 
     // Seds to display in the visualizer
-    // TODO: Support multiple SEDS
     private List<ExtSed> selectedSeds;
     private ExtSed selectedSed;
 
-    // list of star tables associated with selectedSed, these tables will all be plotted
-    List<LayerModel> sedSegmentModels;
+    // List of LayerModels to be used in the plotter
+    List<LayerModel> layerModels;
     
-    // list of star tables associated with selectedSed, these tables will all be plotted
+    // list of star tables associated with selectedSeds, these tables will all be plotted
     List<IrisStarTable> sedStarTables;
     
     // list of selected StarTables from selectedTables, or which star tables are shown in the 
@@ -53,7 +52,7 @@ public class VisualizerDataModel {
         this.pcs = new PropertyChangeSupport(this);
         
         this.setSelectedSeds(new LinkedList<ExtSed>());
-        this.setSedSegmentModels(new LinkedList<LayerModel>());
+        this.setLayerModels(new LinkedList<LayerModel>());
         this.setSedStarTables(new LinkedList<IrisStarTable>());
         this.setSelectedStarTables(new LinkedList<IrisStarTable>());
     }
@@ -132,13 +131,34 @@ public class VisualizerDataModel {
         return selectedSeds;
     }
 
-    synchronized void setSelectedSeds(List<ExtSed> selectedSeds) {
-        if (CollectionUtils.size(selectedSeds) > 1) {
-            //TODO: Support lists of SEDs
-            throw new IllegalArgumentException("Can only select 1 sed at a time");
-        }
+    public synchronized void setSelectedSeds(List<ExtSed> selectedSeds) {
         List<ExtSed> oldSeds = this.selectedSeds;
         this.selectedSeds = ObservableCollections.observableList(selectedSeds);
+        
+        // Here to support empty values for null seds
+        List<LayerModel> newSedModels = new LinkedList<>();
+        List<IrisStarTable> newSedTables = new LinkedList<>();
+        List<ExtSed> newSelectedSeds = new LinkedList<>();
+        StringBuilder dataModelTitle = new StringBuilder();
+        
+        for (ExtSed sed : selectedSeds) {
+            // Add models to the SED
+            SedModel sedModel = store.getSedModel(sed);
+            for (int i = 0; i < sed.getNumberOfSegments(); i++) {
+                LayerModel segModel = sedModel.getSegmentModel(sed.getSegment(i));
+                newSedModels.add(segModel);
+                newSedTables.add(segModel.getInSource());
+            }
+            
+            dataModelTitle.append(sed.getId() + " ");
+            newSelectedSeds.add(sed);
+        }
+        
+        // Update existing values
+        this.setLayerModels(newSedModels);
+        this.setSedStarTables(newSedTables);
+        this.setDataModelTitle(dataModelTitle.toString());
+        
         pcs.firePropertyChange(PROP_SELECTED_SEDS, oldSeds, selectedSeds);
     }
     
@@ -150,44 +170,19 @@ public class VisualizerDataModel {
         ExtSed oldSed = this.selectedSed;
         this.selectedSed = selectedSed;
         
-        // Here to support empty values for null seds
-        List<LayerModel> newSedModels = new LinkedList<>();
-        List<IrisStarTable> newSedTables = new LinkedList<>();
-        List<ExtSed> newSelectedSeds = new LinkedList<>();
-        String dataModelTitle = "";
-        
-        // TODO: Handle multiple SEDs
-        if (selectedSed != null) {
-            // Add models to the SED
-            SedModel sedModel = store.getSedModel(selectedSed);
-            for (int i = 0; i < selectedSed.getNumberOfSegments(); i++) {
-                LayerModel segModel = sedModel.getSegmentModel(selectedSed.getSegment(i));
-                newSedModels.add(segModel);
-                newSedTables.add(segModel.getInSource());
-            }
-            
-            dataModelTitle = selectedSed.getId();
-            newSelectedSeds.add(selectedSed);
-        }
-        
-        // Update existing values
-        this.setSedSegmentModels(newSedModels);
-        this.setSedStarTables(newSedTables);
-        this.setDataModelTitle(dataModelTitle);
-        this.setSelectedSeds(newSelectedSeds);
-        
+        this.setSelectedSeds(Arrays.asList(selectedSed));
         pcs.firePropertyChange(PROP_SELECTED_SED, oldSed, selectedSed);
     }
     
-    public List<LayerModel> getSedSegmentModels() {
-        return sedSegmentModels;
+    public List<LayerModel> getLayerModels() {
+        return layerModels;
     }
     
     // Locked down since these are tied to the selected seds
-    synchronized void setSedSegmentModels(List<LayerModel> newModels) {
-        List<LayerModel> oldModels = this.sedSegmentModels;
-        this.sedSegmentModels = ObservableCollections.observableList(newModels);
-        pcs.firePropertyChange(PROP_SED_SEGMENT_MODELS, oldModels, sedSegmentModels);
+    synchronized void setLayerModels(List<LayerModel> newModels) {
+        List<LayerModel> oldModels = this.layerModels;
+        this.layerModels = ObservableCollections.observableList(newModels);
+        pcs.firePropertyChange(PROP_SED_SEGMENT_MODELS, oldModels, layerModels);
     }
     
     public List<IrisStarTable> getSedStarTables() {
@@ -228,7 +223,7 @@ public class VisualizerDataModel {
         // This is a total cop-out. Just clear all existing preferences and reset
         // with the new selected SED.
         this.setSelectedSeds(new LinkedList<ExtSed>());
-        this.setSedSegmentModels(new LinkedList<LayerModel>());
+        this.setLayerModels(new LinkedList<LayerModel>());
         this.setSedStarTables(new LinkedList<IrisStarTable>());
         this.setSelectedStarTables(new LinkedList<IrisStarTable>());
         
