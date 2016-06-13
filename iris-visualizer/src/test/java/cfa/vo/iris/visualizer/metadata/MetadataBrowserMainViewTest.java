@@ -127,7 +127,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertEquals(sed, mbView.getDataModel().getSelectedSed());
+                assertTrue(mbView.getDataModel().getSelectedSeds().contains(sed));
                 assertEquals(0, mbView.getDataModel().getSedStarTables().size());
                 assertEquals(1, starTableJTree.getSelectionCount());
             }
@@ -250,7 +250,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
-                assertEquals(sed, mbView.getDataModel().getSelectedSed());
+                assertTrue(mbView.getDataModel().getSelectedSeds().contains(sed));
                 assertEquals(2, mbView.getDataModel().getSedStarTables().size());
                 assertEquals(2, mbView.getDataModel().getSelectedStarTables().size());
                 assertEquals(4, plotterTable.getRowCount());
@@ -321,7 +321,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
-                assertEquals(sed, mbView.getDataModel().getSelectedSed());
+                assertTrue(mbView.getDataModel().getSelectedSeds().contains(sed));
                 assertEquals(1, mbView.getDataModel().getSedStarTables().size());
                 assertEquals(1, mbView.getDataModel().getSelectedStarTables().size());
                 assertEquals(3, plotterTable.getRowCount());
@@ -369,7 +369,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             public Trigger process(Window warning) throws Exception {
                 // Check warning message
                 assertEquals(warning.getTextBox("OptionPane.label").getText(), 
-                             "No SED in browser. Please load an SED.");
+                             "No SEDs in browser. Please load an SED.");
                 return Trigger.DO_NOTHING;
             }
         }).run();
@@ -391,7 +391,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
-                assertEquals(sed, mbView.getDataModel().getSelectedSed());
+                assertTrue(mbView.getDataModel().getSelectedSeds().contains(sed));
                 assertEquals(2, mbView.getDataModel().getSedStarTables().size());
                 assertEquals(2, mbView.getDataModel().getSelectedStarTables().size());
                 assertEquals(4, plotterTable.getRowCount());
@@ -439,7 +439,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
-                assertEquals(sed, mbView.getDataModel().getSelectedSed());
+                assertTrue(mbView.getDataModel().getSelectedSeds().contains(sed));
             }
         });
         
@@ -460,7 +460,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         invokeWithRetry(50, 100, new Runnable() {
             @Override
             public void run() {
-                assertNotEquals(sed, mbView.getDataModel().getSelectedSed());
+                assertTrue(StringUtils.contains(mbView.getDataModel().getDataModelTitle(), "FilterSed"));
             }
         });
         
@@ -507,7 +507,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
-                assertEquals(sed, mbView.getDataModel().getSelectedSed());
+                assertTrue(mbView.getDataModel().getSelectedSeds().contains(sed));
                 assertEquals(2, mbView.getDataModel().getSedStarTables().size());
                 assertEquals(2, mbView.getDataModel().getSelectedStarTables().size());
                 assertEquals(6, plotterTable.getRowCount());

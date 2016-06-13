@@ -76,7 +76,7 @@ public class VisualizerDataStore {
             sedModels.put(sed, new SedModel(sed, adapter));
         }
         
-        preferences.getDataModel().fireChanges(sed);
+        preferences.fireChanges(sed);
     }
     
     /**
@@ -96,7 +96,7 @@ public class VisualizerDataStore {
             sedModels.put(sed, new SedModel(sed, adapter));
         }
         
-        preferences.getDataModel().fireChanges(sed);
+        preferences.fireChanges(sed);
     }
     
     /**
@@ -118,7 +118,7 @@ public class VisualizerDataStore {
             sedModels.put(sed, new SedModel(sed, adapter));
         }
         
-        preferences.getDataModel().fireChanges(sed);
+        preferences.fireChanges(sed);
     }
     
     /**
@@ -132,7 +132,7 @@ public class VisualizerDataStore {
         sedModels.get(sed).removeAll();
         sedModels.remove(sed);
         
-        preferences.getDataModel().setSelectedSed(null);
+        preferences.removeSed(sed);
     }
     
     /**
@@ -148,7 +148,7 @@ public class VisualizerDataStore {
             sedModels.get(sed).removeSegment(segment);
         }
         
-        preferences.getDataModel().fireChanges(sed);
+        preferences.fireChanges(sed);
     }
     
     /**
@@ -165,7 +165,7 @@ public class VisualizerDataStore {
             }
         }
         
-        preferences.getDataModel().fireChanges(sed);
+        preferences.fireChanges(sed);
     }
     
     /**
@@ -198,12 +198,12 @@ public class VisualizerDataStore {
             else if (SedCommand.SELECTED.equals(payload)) {
                 // If the visualizer is tied to the workspace, update the SED
                 if (preferences.isBoundToWorkspace()) {
-                    preferences.getDataModel().setSelectedSed(sed);
+                    preferences.updateSelectedSed(sed);
                 }
             }
             else {
                 // Doesn't merit a full reset, this is basically just here for SED name changes
-                preferences.getDataModel().fireChanges(sed);
+                preferences.fireChanges(sed);
             }
         }
     }

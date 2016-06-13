@@ -9,7 +9,6 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 
 import org.jdesktop.observablecollections.ObservableCollections;
@@ -23,8 +22,7 @@ public class VisualizerDataModel {
     
     public static final String PROP_DATAMODEL_TITLE = "dataModelTitle";
     public static final String PROP_SELECTED_SEDS = "selectedSeds";
-    public static final String PROP_SELECTED_SED = "selectedSed";
-    public static final String PROP_SED_SEGMENT_MODELS = "sedSegmentModels";
+    public static final String PROP_LAYER_MODELS = "layerModels";
     public static final String PROP_SED_STARTABLES = "sedStarTables";
     public static final String PROP_SELECTED_STARTABLES = "selectedStarTables";
 
@@ -36,7 +34,6 @@ public class VisualizerDataModel {
 
     // Seds to display in the visualizer
     private List<ExtSed> selectedSeds;
-    private ExtSed selectedSed;
 
     // List of LayerModels to be used in the plotter, a layer can either be an entire SED or a
     // single segment, depending on user preferences.
@@ -131,7 +128,7 @@ public class VisualizerDataModel {
     }
     
     public List<ExtSed> getSelectedSeds() {
-        return selectedSeds;
+        return new LinkedList<>(selectedSeds);
     }
 
     public synchronized void setSelectedSeds(List<ExtSed> selectedSeds) {
@@ -174,30 +171,19 @@ public class VisualizerDataModel {
         pcs.firePropertyChange(PROP_SELECTED_SEDS, oldSeds, selectedSeds);
     }
     
-    public ExtSed getSelectedSed() {
-        return selectedSed;
-    }
-
-    public synchronized void setSelectedSed(ExtSed selectedSed) {
-        ExtSed oldSed = this.selectedSed;
-        this.selectedSed = selectedSed;
-        this.setSelectedSeds(Arrays.asList(selectedSed));
-        pcs.firePropertyChange(PROP_SELECTED_SED, oldSed, selectedSed);
-    }
-    
     public List<LayerModel> getLayerModels() {
-        return layerModels;
+        return new LinkedList<>(layerModels);
     }
     
     // Locked down since these are tied to the selected seds
     synchronized void setLayerModels(List<LayerModel> newModels) {
         List<LayerModel> oldModels = this.layerModels;
         this.layerModels = ObservableCollections.observableList(newModels);
-        pcs.firePropertyChange(PROP_SED_SEGMENT_MODELS, oldModels, layerModels);
+        pcs.firePropertyChange(PROP_LAYER_MODELS, oldModels, layerModels);
     }
     
     public List<IrisStarTable> getSedStarTables() {
-        return sedStarTables;
+        return new LinkedList<>(sedStarTables);
     }
     
     // Locked down since these are tied to the selected seds
@@ -208,7 +194,7 @@ public class VisualizerDataModel {
     }
     
     public List<IrisStarTable> getSelectedStarTables() {
-        return selectedStarTables;
+        return new LinkedList<>(selectedStarTables);
     }
 
     public synchronized void setSelectedStarTables(List<IrisStarTable> newStarTables) {
@@ -217,27 +203,16 @@ public class VisualizerDataModel {
         pcs.firePropertyChange(PROP_SELECTED_STARTABLES, oldStarTables, selectedStarTables);
     }
     
-    /**
-     * Can be used by external callers to property changes for the specified SED. Property 
-     * changes will be fired if and only if the specified SED is in the list of currently
-     * selected SEDs.
-     * 
-     * @param sed
-     */
-    public void fireChanges(ExtSed sed) {
-        if (selectedSed == sed) {
-            setSelectedSed(sed);
-        }
-    }
-    
     public void refresh() {
         // This is a total cop-out. Just clear all existing preferences and reset
         // with the new selected SED.
+        List<ExtSed> oldSeds = this.selectedSeds;
+        
         this.setSelectedSeds(new LinkedList<ExtSed>());
         this.setLayerModels(new LinkedList<LayerModel>());
         this.setSedStarTables(new LinkedList<IrisStarTable>());
         this.setSelectedStarTables(new LinkedList<IrisStarTable>());
         
-        setSelectedSed(selectedSed);
+        setSelectedSeds(oldSeds);
     }
 }

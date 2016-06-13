@@ -23,6 +23,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
@@ -83,8 +85,8 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private void extractSelectionToSed() {
         
         // Do nothing if no SED is selected
-        if (dataModel.getSelectedSed() == null) {
-            JOptionPane.showMessageDialog(this, "No SED in browser. Please load an SED.",
+        if (CollectionUtils.isEmpty(dataModel.getSelectedSeds())) {
+            JOptionPane.showMessageDialog(this, "No SEDs in browser. Please load an SED.",
                     null, JOptionPane.WARNING_MESSAGE);
             return;
         }
