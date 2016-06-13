@@ -33,6 +33,8 @@ public class VisualizerComponentPreferencesTest {
     @Test
     public void testPreferences() throws Exception {
         ExtSed sed = new ExtSed("test");
+        sed.setManaged(false);
+        
         IWorkspace ws = new StubWorkspace();
 
         VisualizerComponentPreferences prefs = new VisualizerComponentPreferences(ws);
@@ -40,7 +42,6 @@ public class VisualizerComponentPreferencesTest {
         
         assertEquals(0, store.getSedModels().size());
         assertNull(store.getSedModel(sed));
-        
         
         // Add SED
         store.update(sed);
@@ -78,8 +79,7 @@ public class VisualizerComponentPreferencesTest {
         
         sed.remove(segments);
         store.remove(sed, segments);
-        assertEquals(1, store.getSedModel(sed).getAllSegmentModels().size());        
-        
+        assertEquals(1, store.getSedModel(sed).getAllSegmentModels().size());
         
         // Remove the SED
         store.remove(sed);

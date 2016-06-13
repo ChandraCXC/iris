@@ -171,6 +171,10 @@ public class StarTableJTree extends JTree {
             
             DefaultMutableTreeNode r = (DefaultMutableTreeNode) getRoot();
             for (ExtSed sed : seds) {
+                if (sed == null) {
+                    continue;
+                }
+                
                 r.add(new SedTreeNode(sed));
             }
         }

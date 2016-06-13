@@ -10,6 +10,7 @@ import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 
 import org.jdesktop.observablecollections.ObservableCollections;
 
@@ -37,10 +38,12 @@ public class VisualizerDataModel {
     private List<ExtSed> selectedSeds;
     private ExtSed selectedSed;
 
-    // List of LayerModels to be used in the plotter
+    // List of LayerModels to be used in the plotter, a layer can either be an entire SED or a
+    // single segment, depending on user preferences.
     List<LayerModel> layerModels;
     
-    // list of star tables associated with selectedSeds, these tables will all be plotted
+    // list of star tables associated with selectedSeds, these tables will all be plotted. May
+    // not be in 1-1 correspondence with the LayerModels.
     List<IrisStarTable> sedStarTables;
     
     // list of selected StarTables from selectedTables, or which star tables are shown in the 
@@ -141,7 +144,16 @@ public class VisualizerDataModel {
         List<ExtSed> newSelectedSeds = new LinkedList<>();
         StringBuilder dataModelTitle = new StringBuilder();
         
-        for (ExtSed sed : selectedSeds) {
+        Iterator<ExtSed> it = selectedSeds.iterator();
+        while (it.hasNext()) {
+            
+            // this list supports null entries, remove them if present
+            ExtSed sed = it.next();
+            if (sed == null) {
+                it.remove();
+                continue;
+            }
+            
             // Add models to the SED
             SedModel sedModel = store.getSedModel(sed);
             for (int i = 0; i < sed.getNumberOfSegments(); i++) {
@@ -169,7 +181,6 @@ public class VisualizerDataModel {
     public synchronized void setSelectedSed(ExtSed selectedSed) {
         ExtSed oldSed = this.selectedSed;
         this.selectedSed = selectedSed;
-        
         this.setSelectedSeds(Arrays.asList(selectedSed));
         pcs.firePropertyChange(PROP_SELECTED_SED, oldSed, selectedSed);
     }

@@ -106,10 +106,11 @@ public class VisualizerDataStore {
      */
     public void update(ExtSed sed, List<Segment> segments) {
         if (sedModels.containsKey(sed)) {
+            SedModel model = sedModels.get(sed);
             for (Segment segment : segments) {
                 // Do nothing for null segments
                 if (segment == null) continue;
-                sedModels.get(sed).addSegment(segment);
+                model.addSegment(segment);
             }
         } else {
             // The segment will automatically be serialized and attached the the 
