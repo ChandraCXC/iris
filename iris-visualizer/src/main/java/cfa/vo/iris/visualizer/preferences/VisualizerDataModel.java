@@ -6,12 +6,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jdesktop.observablecollections.ObservableCollections;
 
 /**
@@ -31,6 +33,7 @@ public class VisualizerDataModel {
 
     private final PropertyChangeSupport pcs;
     private final VisualizerDataStore store;
+    private final VisualizerComponentPreferences preferences;
 
     // Name of the window browser, is adjustable and currently tied to the list of selected Seds
     private String dataModelTitle = null;
@@ -51,15 +54,16 @@ public class VisualizerDataModel {
     private List<IrisStarTable> selectedStarTables;
     
     // Xunits for StarTables
-    private String xunits = "";
+    private String xUnits = "";
     
     // Yunits for StarTables
-    private String yunits = "";
+    private String yUnits = "";
     
     // Plot preferences for use by the stil plotter
     
-    public VisualizerDataModel(VisualizerDataStore store) {
-        this.store = store;
+    public VisualizerDataModel(VisualizerComponentPreferences prefs) {
+        this.store = prefs.getDataStore();
+        this.preferences = prefs;
         this.pcs = new PropertyChangeSupport(this);
         
         this.setSelectedSeds(new LinkedList<ExtSed>());
@@ -172,20 +176,44 @@ public class VisualizerDataModel {
             dataModelTitle.append(sed.getId() + " ");
             newSelectedSeds.add(sed);
         }
+        this.selectedSeds = ObservableCollections.observableList(selectedSeds);
         
-        // Synchronize units to first sed in list
-        if (CollectionUtils.isNotEmpty(selectedSeds)) {
-            SedModel model = store.getSedModel(selectedSeds.get(0));
-            this.setUnits(model.getXunits(), model.getYunits());
-        }
+        // TODO: Colors, etc... Also, how can we make units preferences easier?!?
+        updateUnits();
         
         // Update existing values
         this.setLayerModels(newSedModels);
         this.setSedStarTables(newSedTables);
         this.setDataModelTitle(dataModelTitle.toString());
-        this.selectedSeds = ObservableCollections.observableList(selectedSeds);
         
         pcs.firePropertyChange(PROP_SELECTED_SEDS, oldSeds, selectedSeds);
+    }
+    
+    private void updateUnits() {
+
+        // If unit preferences are set, use them. Otherwise apply them.
+        PlotPreferences pp = preferences.getPlotPreferences(selectedSeds);
+        String xunits = pp.getXUnits();
+        String yunits = pp.getYUnits();
+        if (StringUtils.isNotBlank(xunits) && StringUtils.isNotBlank(yunits)) {
+            setUnits(xunits, yunits);
+            return;
+        }
+        
+        // Otherwise match the units to the first SED in the list (if available)
+        else if (CollectionUtils.size(selectedSeds) > 0) {
+            SedModel model = store.getSedModel(selectedSeds.get(0));
+            xunits = model.getXUnits();
+            yunits = model.getYUnits();
+            if (StringUtils.isNotBlank(xunits) && StringUtils.isNotBlank(yunits)) {
+                setUnits(xunits, yunits);
+                pp.setXUnits(model.getXUnits());
+                pp.setYUnits(model.getYUnits());
+                return;
+            }
+        }
+        
+        // Otherwise there are no SEDs in the model, so units should stay blank.
     }
     
     public List<LayerModel> getLayerModels() {
@@ -238,27 +266,31 @@ public class VisualizerDataModel {
             this.getSedModel(sed).setUnits(xunit, yunit);
         }
         
-        this.setXunits(xunit);
-        this.setYunits(yunit);
+        this.setXUnits(xunit);
+        this.setYUnits(yunit);
+        
+        PlotPreferences pp = preferences.getPlotPreferences(selectedSeds);
+        pp.setXUnits(xunit);
+        pp.setYUnits(yunit);
     }
     
-    public String getXunits() {
-        return xunits;
+    public String getXUnits() {
+        return xUnits;
     }
     
-    private void setXunits(String xunits) {
-        String old = this.xunits;
-        this.xunits = xunits;
+    private void setXUnits(String xunits) {
+        String old = this.xUnits;
+        this.xUnits = xunits;
         pcs.firePropertyChange(PROP_XUNITS, old, xunits);
     }
     
-    public String getYunits() {
-        return yunits;
+    public String getYUnits() {
+        return yUnits;
     }
     
-    private void setYunits(String yunits) {
-        String old = this.yunits;
-        this.yunits = yunits;
+    private void setYUnits(String yunits) {
+        String old = this.yUnits;
+        this.yUnits = yunits;
         pcs.firePropertyChange(PROP_YUNITS, old, yunits);
     }
 }

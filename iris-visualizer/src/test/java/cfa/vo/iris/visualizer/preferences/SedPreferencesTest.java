@@ -86,8 +86,8 @@ public class SedPreferencesTest {
         assertNotNull(model.getSegmentModel(seg2).getInSource());
         
         // Units are correct
-        assertEquals(sed.getSegment(0).getFluxAxisUnits(), model.getYunits());
-        assertEquals(sed.getSegment(0).getSpectralAxisUnits(), model.getXunits());
+        assertEquals(sed.getSegment(0).getFluxAxisUnits(), model.getYUnits());
+        assertEquals(sed.getSegment(0).getSpectralAxisUnits(), model.getXUnits());
     }
     
     @Test

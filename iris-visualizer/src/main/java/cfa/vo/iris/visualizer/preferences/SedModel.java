@@ -47,6 +47,7 @@ public class SedModel {
     final ExtSed sed;
     final ColorPalette colors;
     
+    // Default unit settings
     private String xunits;
     private String yunits;
     
@@ -204,13 +205,6 @@ public class SedModel {
      */
     public void setUnits(String xunit, String yunit) {
         
-        if (StringUtils.equals(this.xunits, xunit) &&
-            StringUtils.equals(this.yunits, yunit)) 
-        {
-            // Do nothing if nothing is changing
-            return;
-        }
-        
         this.xunits = xunit;
         this.yunits = yunit;
         
@@ -258,22 +252,22 @@ public class SedModel {
         return true;
     }
     
-    public String getXunits() {
+    public String getXUnits() {
         return xunits;
     }
 
-    public void setXunits(String xunits) throws UnitsException {
+    public void setXUnits(String xunits) throws UnitsException {
         this.xunits = xunits;
         for (LayerModel layer : segmentModels.values()) {
             layer.setXUnits(xunits);
         }
     }
 
-    public String getYunits() {
+    public String getYUnits() {
         return yunits;
     }
 
-    public void setYunits(String yunits) throws UnitsException {
+    public void setYUnits(String yunits) throws UnitsException {
         this.yunits = yunits;
         for (LayerModel layer : segmentModels.values()) {
             layer.setYUnits(yunits);

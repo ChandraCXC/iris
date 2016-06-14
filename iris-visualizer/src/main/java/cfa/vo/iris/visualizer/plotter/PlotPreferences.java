@@ -42,6 +42,9 @@ public class PlotPreferences {
     // http://www.star.bris.ac.uk/~mbt/stilts/sun256/sun256.html#TypedPlot2Task
     // Global Plot Settings
     static final String GRID = "grid";
+    
+    // Labels are currently attached to the units for this plot, but that could
+    // change in the future.
     static final String X_LABEL = "xlabel";
     static final String Y_LABEL = "ylabel";
     static final String X_LOG = "xlog";
@@ -54,7 +57,6 @@ public class PlotPreferences {
     static final String Y_FLIP = "yflip";
     static final String X_FLIP = "xflip";
     static final String PLOT_TYPE = "plot_type"; // not STILTS
-    //public static final String SHOW_ERRORS = "show_errors"; // not STILTS
     
     // These settings are set at the Sed level, but can be overridden by the underlying
     // Segments
@@ -72,6 +74,8 @@ public class PlotPreferences {
     
     private PlaneAspect aspect; // not STILTS. Do not add to the prefs map!
                                 // It'll cause an error in STILTS.
+    private String xUnits; // XUnits for this set of plot preferences
+    private String yUnits; // YUnits for this set of plot preferences
     
     // Plot Types - Iris-specific, not STILTS.
     public enum PlotType {
@@ -109,7 +113,6 @@ public class PlotPreferences {
         pp.setFixed(false);
         pp.setYflip(false);
         pp.setXflip(false);
-//        pp.setShowErrors(true)
         pp.setPlotType(PlotType.LOG);
         pp.setShowLegend(true);
         pp.setLegendPosition(new double[] {1.0, 1.0});
@@ -153,16 +156,16 @@ public class PlotPreferences {
         pcs.firePropertyChange(PROP_SHOW_GRID, old, arg1);
     }
 
-    public String getYlabel() {
-        return (String) preferences.get(Y_LABEL);
+    public String getYUnits() {
+        return this.yUnits;
     }
 
-    // Should be bound to the DataModel values
-    public static final String PROP_Y_LABEL = "ylabel";
-    public void setYlabel(String arg1) {
-        String old = getYlabel();
-        String ylabel;
+    public static final String PROP_Y_UNITS = "yUnits";
+    public void setYUnits(String arg1) {
+        String old = getYUnits();
+        this.yUnits = arg1;
         
+        String ylabel;
         try {
             YUnits yconvert = new YUnits(arg1);
             ylabel = yconvert.getLabel() + 
@@ -177,20 +180,20 @@ public class PlotPreferences {
         }
         
         flipYifMag(arg1);
-        preferences.put(Y_LABEL, ylabel);
-        pcs.firePropertyChange(PROP_Y_LABEL, old, ylabel);
+        this.setYLabel(ylabel);
+        pcs.firePropertyChange(PROP_Y_UNITS, old, yUnits);
     }
     
-    public String getXlabel() {
-        return (String) preferences.get(X_LABEL);
+    public String getXUnits() {
+        return this.xUnits;
     }
 
-    // Should be bound to the DataModel values
-    public static final String PROP_X_LABEL = "xlabel";
-    public void setXlabel(String arg1) {
-        String old = getXlabel();
-        String xlabel;
+    public static final String PROP_X_UNITS = "xUnits";
+    public void setXUnits(String arg1) {
+        String old = getXUnits();
+        this.xUnits = arg1;
         
+        String xlabel;
         try {
             XUnits xconvert = new XUnits(arg1);
             xlabel = xconvert.getLabel() +
@@ -203,8 +206,30 @@ public class PlotPreferences {
                     .log(Level.SEVERE, null, ex);
         }
         
-        preferences.put(X_LABEL, xlabel);
-        pcs.firePropertyChange(PROP_X_LABEL, old, xlabel);
+        this.setXLabel(xlabel);
+        pcs.firePropertyChange(PROP_X_UNITS, old, xUnits);
+    }
+    
+    public String getYLabel() {
+        return (String) preferences.get(Y_LABEL);
+    }
+    
+    public static String PROP_Y_LABEL = "yLabel";
+    public void setYLabel(String yLabel) {
+        String old = getYLabel();
+        preferences.put(Y_LABEL, yLabel);
+        pcs.firePropertyChange(PROP_Y_LABEL, old, yLabel);
+    }
+    
+    public String getXLabel() {
+        return (String) preferences.get(X_LABEL);
+    }
+
+    public static String PROP_X_LABEL = "xLabel";
+    public void setXLabel(String xLabel) {
+        String old = getXLabel();
+        preferences.put(X_LABEL, xLabel);
+        pcs.firePropertyChange(PROP_X_LABEL, old, xLabel);
     }
     
     public Boolean getYflip() {
@@ -330,11 +355,6 @@ public class PlotPreferences {
         this.aspect = arg1;
         pcs.firePropertyChange(PROP_ASPECT, old, arg1);
     }
-    
-//    public PlotPreferences setShowErrors(Boolean arg1) {
-//        preferences.put(SHOW_ERRORS, arg1);
-//        return this;
-//    }
     
     public Boolean getShowLegend() {
         return (Boolean) preferences.get(SHOW_LEGEND);

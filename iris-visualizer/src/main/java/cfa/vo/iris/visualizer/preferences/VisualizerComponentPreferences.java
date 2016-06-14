@@ -70,12 +70,15 @@ public class VisualizerComponentPreferences {
     // prevent GC from removing elements with no other pointers.
     private Map<Object, PlotPreferences> preferencesStore;
     
+    // Standard PlotPreferences for an empty plot
+    private final PlotPreferences DEFAULT_PLOT_PREFERENCES = PlotPreferences.getDefaultPlotPreferences();
+    
     public VisualizerComponentPreferences(IWorkspace ws) {
         this.ws = ws;
         
         this.dataStore = new VisualizerDataStore(visualizerExecutor, this);
         
-        this.dataModel = new VisualizerDataModel(dataStore);
+        this.dataModel = new VisualizerDataModel(this);
         
         this.mouseListenerManager = new MouseListenerManager();
         
@@ -203,17 +206,22 @@ public class VisualizerComponentPreferences {
     }
 
     public PlotPreferences getPlotPreferences(List<ExtSed> newSeds) {
+        
+        // Use default preferences for empty seds
+        if (CollectionUtils.isEmpty(newSeds)) {
+            return this.DEFAULT_PLOT_PREFERENCES;
+        }
+        
         // If it's a single SED, key it off of the SED for long-stored preferences.
         // List keys are only guaranteed to last as long as that list of preferences is
         // stored in the plotter.
         Object key = CollectionUtils.size(newSeds) == 1 ? newSeds.get(0) : newSeds;
         
-        // If the object is available return it
         if (preferencesStore.containsKey(key)) {
             return preferencesStore.get(key);
         }
-        // Otherwise place a new default preferences key into the map
         else {
+            // Otherwise place a new default preferences key into the map
             PlotPreferences prefs = PlotPreferences.getDefaultPlotPreferences();
             preferencesStore.put(key, prefs);
             return prefs;

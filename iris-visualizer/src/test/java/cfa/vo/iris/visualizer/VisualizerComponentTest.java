@@ -84,7 +84,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         // Test the plotter reacts to a sed event
         final ExtSed sed = sedManager.newSed("sampleSed");
         // Make sure this is enqueued in the Swing EDT
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed));
@@ -97,7 +97,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         sed.addSegment(segment);
 
         // Make sure this is enqueued in the Swing EDT
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertTrue(prefs.getDataModel().getSedModel(sed).getAllSegmentModels().containsKey(segment));
@@ -107,7 +107,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         // Just double checking this works more than once.
         final ExtSed sed2 = sedManager.newSed("oneMoreSed");
         // Make sure this is enqueued in the Swing EDT
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed2));
@@ -117,7 +117,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         // Just double checking we can go back through select
         sedManager.select(sed);
         // Make sure this is enqueued in the Swing EDT
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed));
@@ -142,7 +142,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         
         final ExtSed sed1 = sedManager.newSed("sampleSed1");
         // Make sure this is enqueued in the Swing EDT
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed1));
@@ -170,7 +170,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         // add another SED
         final ExtSed sed2 = sedManager.newSed("sampleSed2");
         // Make sure this is enqueued in the Swing EDT
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed2));
@@ -196,7 +196,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         sedManager.select(sed1);
         
         // Make sure this is enqueued in the Swing EDT
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed1));
@@ -221,7 +221,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         // go back to sed2
         sedManager.select(sed2);
         // Make sure this is enqueued in the Swing EDT
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed2));
@@ -254,7 +254,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         final ExtSed sed1 = sedManager.newSed("sampleSed1");
         sed1.addSegment(seg1);
         // Make sure this is enqueued in the Swing EDT
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed1));
@@ -298,7 +298,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         // add another segment.
         sed1.addSegment(createSampleSegment());
         // Make sure this is enqueued in the Swing EDT
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertEquals(2, prefs.getDataModel().getLayerModels().size());
@@ -337,7 +337,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         final ExtSed sed2 = sedManager.newSed("sampleSed2");
         sed2.addSegment(seg2);
         // Make sure this is enqueued in the Swing EDT
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed2));
@@ -358,7 +358,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         
         // now switch back to sed1
         sedManager.select(sed1);
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed1));
@@ -409,7 +409,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         
         // create an SED and add it to Swing EDT
         final ExtSed sed0 = sedManager.newSed("sampleSed1");
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed0));
@@ -417,13 +417,15 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         });
         
         // test that changing the units on an empty SED doesn't throw an
-        // exception.  
+        // exception.
         unitsChooser.getButton("Update").click();
 
         // Reload units chooser
+        assertFalse(desktop.containsWindow("Select Units").isTrue());
         viewer.getButton("unitsButton").click();
         assertTrue(desktop.containsWindow("Select Units").isTrue());
         unitsChooser = desktop.getWindow("Select Units");
+        
         // create 2 segments with different units
         final Segment seg1 = createSampleSegment();
         seg1.setSpectralAxisUnits("Hz");
@@ -439,7 +441,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         sed1.addSegment(seg2);
         
         // Make sure this is enqueued in the Swing EDT
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed1));
@@ -448,8 +450,8 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         
         // check that the plot window has the right axes labels
         // should be the same units as the first loaded SED
-        assertEquals("Frequency (Hz)", plotter.getPlotPreferences().getXlabel());
-        assertEquals("Flux density (Jy)", plotter.getPlotPreferences().getYlabel());
+        assertEquals("Frequency (Hz)", plotter.getPlotPreferences().getXLabel());
+        assertEquals("Flux density (Jy)", plotter.getPlotPreferences().getYLabel());
         
         // change the units of the SEDs with the UnitsManagerFrame
         unitsChooser.getListBox("xunitsList").select(XUnit.ANGSTROM.getString());
@@ -457,9 +459,9 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         unitsChooser.getButton("Update").click();
         
         // check that the X and Y units on the plot window updated
-        assertEquals("Wavelength (Angstrom)", plotter.getPlotPreferences().getXlabel());
+        assertEquals("Wavelength (Angstrom)", plotter.getPlotPreferences().getXLabel());
         assertEquals('\u03BD' + "F(" + '\u03BD' + ")"+" (Jy-Hz)", 
-                plotter.getPlotPreferences().getYlabel());
+                plotter.getPlotPreferences().getYLabel());
         
         // check that the MB data updated
         
@@ -467,7 +469,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         sed2.addSegment(seg1);
         
         // Make sure this is enqueued in the Swing EDT
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed2));
@@ -481,7 +483,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         
         // check that the velocity unit label set properly
         assertEquals("Velocity (km/s @ 12 CO (11.5GHz))", 
-                plotter.getPlotPreferences().getXlabel());
+                plotter.getPlotPreferences().getXLabel());
         
         // open units window, switch SEDs, choose new units, apply them, and
         // assert that the selected SED units are changed, and not the SED
@@ -493,7 +495,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         sedManager.select(sed1);
         
         // Make sure this is enqueued in the Swing EDT
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed1));
@@ -502,22 +504,22 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         
         // sed1 units should still be the same as they were before changing sed2
         // units
-        assertEquals("Wavelength (Angstrom)", plotter.getPlotPreferences().getXlabel());
+        assertEquals("Wavelength (Angstrom)", plotter.getPlotPreferences().getXLabel());
         assertEquals('\u03BD' + "F(" + '\u03BD' + ")"+" (Jy-Hz)", 
-                plotter.getPlotPreferences().getYlabel());
+                plotter.getPlotPreferences().getYLabel());
         
         // update the units for sed1
         unitsChooser.getButton("Update").click();
         
         // sed1 units should update
-        assertEquals("Energy (eV)", plotter.getPlotPreferences().getXlabel());
+        assertEquals("Energy (eV)", plotter.getPlotPreferences().getXLabel());
         assertEquals("Flux density (Jy)",
-                plotter.getPlotPreferences().getYlabel());
+                plotter.getPlotPreferences().getYLabel());
 
         sedManager.select(sed2);
         
         // Make sure this is enqueued in the Swing EDT
-        invokeWithRetry(10, 100, new Runnable() {
+        invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
                 assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed2));
@@ -526,9 +528,9 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         
         // check that sed2 units remain the same
         assertEquals("Velocity (km/s @ 12 CO (11.5GHz))",
-                plotter.getPlotPreferences().getXlabel());
+                plotter.getPlotPreferences().getXLabel());
         assertEquals("Flux density (mJy)",
-                plotter.getPlotPreferences().getYlabel());
+                plotter.getPlotPreferences().getYLabel());
         
         // TODO: how to test for magnitudes? The Y-axis should be flipped so 
         // that larger values are on the bottom and lower values on the top
