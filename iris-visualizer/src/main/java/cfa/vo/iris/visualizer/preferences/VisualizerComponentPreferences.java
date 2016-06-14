@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2016 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,12 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package cfa.vo.iris.visualizer.preferences;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import org.apache.commons.collections.CollectionUtils;
+
+import com.google.common.collect.MapMaker;
 
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
@@ -30,8 +33,10 @@ import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Single object location for data and preferences needed by the iris visualizer 
@@ -61,6 +66,10 @@ public class VisualizerComponentPreferences {
     // If this is true, the visualizer will be bound to, and will always plot the selected SED.
     private boolean boundToWorkspace;
     
+    // Map of plot preferences for SEDs or collections of SEDs. Weak reference keyed map will not
+    // prevent GC from removing elements with no other pointers.
+    private Map<Object, PlotPreferences> preferencesStore;
+    
     public VisualizerComponentPreferences(IWorkspace ws) {
         this.ws = ws;
         
@@ -71,6 +80,9 @@ public class VisualizerComponentPreferences {
         this.mouseListenerManager = new MouseListenerManager();
         
         this.boundToWorkspace = true;
+        
+        Map<Object, PlotPreferences> builder = new MapMaker().weakKeys().makeMap();
+        preferencesStore = Collections.synchronizedMap(builder);
     }
     
     /**
@@ -166,7 +178,7 @@ public class VisualizerComponentPreferences {
 
     /**
      * If the visualizer is bound to the workspace, this method will clear the settings from the
-     * DataModel and replace them with the specified SED.
+     * DataModel and replace them with the specified SED. Otherwise it ignores the call.
      * @param sed
      */
     public void updateSelectedSed(ExtSed sed) {
@@ -191,6 +203,18 @@ public class VisualizerComponentPreferences {
     }
 
     public PlotPreferences getPlotPreferences(List<ExtSed> newSeds) {
-        return dataModel.getSedModel(newSeds.get(0)).getPlotPreferences();
+        // If it's a single SED, key it off of the SED for long-stored preferences
+        Object key = CollectionUtils.size(newSeds) == 1 ? newSeds.get(0) : newSeds;
+        
+        // If the object is available return it
+        if (preferencesStore.containsKey(key)) {
+            return preferencesStore.get(key);
+        }
+        // Otherwise place a new default preferences key into the map
+        else {
+            PlotPreferences prefs = PlotPreferences.getDefaultPlotPreferences();
+            preferencesStore.put(key, prefs);
+            return prefs;
+        }
     }
 }
