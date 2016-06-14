@@ -17,13 +17,9 @@ package cfa.vo.iris.visualizer.plotter;
 
 import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
-import cfa.vo.iris.visualizer.preferences.SedModel;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.AbstractListModel;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -39,28 +35,6 @@ public class UnitsWidget extends javax.swing.JPanel {
      */
     public UnitsWidget() {
         initComponents();
-    }
-    
-    public void updateCurrentUnits(List<SedModel> sedModels) {
-        if (CollectionUtils.isEmpty(sedModels)) {
-            return;
-        }
-        
-        String x = sedModels.get(0).getXunits();
-        String y = sedModels.get(0).getYunits();
-        
-        // TODO: This check may not be necessary when we support multiple SEDs, but
-        // leaving this here as an extra check that the logic elsewhere is correct.
-        for (SedModel model : sedModels) {           
-            if (!StringUtils.equals(x, model.getXunits()) ||
-                !StringUtils.equals(y, model.getYunits())) 
-            {
-                throw new IllegalArgumentException("Units changes requires all models to have the same units!");
-            }
-        }
-        
-        this.setXunit(x);
-        this.setYunit(y);
     }
 
     /**
@@ -139,23 +113,6 @@ public class UnitsWidget extends javax.swing.JPanel {
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
-    /**
-     * Update the units of the provided SedModels, as passed through
-     * by the visualizer data model.
-     */
-    public void updateUnits(List<SedModel> sedModels) {
-        // if SED is null, don't do anything.
-        if (CollectionUtils.isEmpty(sedModels)) {
-            return;
-        }
-        
-        // fire Visualizer event to update plot and MB
-        for (SedModel model : sedModels) {
-            model.setUnits(xunit, yunit);
-        }
-        
-        this.setVisible(false);
-    }
     
     /*
      *

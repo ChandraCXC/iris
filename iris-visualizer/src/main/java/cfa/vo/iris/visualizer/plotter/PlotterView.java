@@ -558,7 +558,6 @@ public class PlotterView extends JInternalFrame {
 
         UnitsManagerFrame unitsManagerFrame = new UnitsManagerFrame();
         unitsManagerFrame.setDataModel(preferences.getDataModel());
-        unitsManagerFrame.updateCurrentUnits();
 
         ws.addFrame(unitsManagerFrame);
         GUIUtils.moveToFront(unitsManagerFrame);

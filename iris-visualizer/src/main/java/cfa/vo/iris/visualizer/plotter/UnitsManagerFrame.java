@@ -36,10 +36,6 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
     public void setDataModel(VisualizerDataModel dataModel) {
         this.dataModel = dataModel;
     }
-    
-    protected void updateCurrentUnits() {
-        unitsWidget.updateCurrentUnits(dataModel.getSedModels());
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -49,6 +45,7 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         unitsManagerPanel = new javax.swing.JPanel();
         unitsWidget = new cfa.vo.iris.visualizer.plotter.UnitsWidget();
@@ -63,6 +60,12 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
         setPreferredSize(new java.awt.Dimension(450, 325));
 
         unitsManagerPanel.setLayout(new java.awt.BorderLayout());
+
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.xunits}"), unitsWidget, org.jdesktop.beansbinding.BeanProperty.create("xunit"));
+        bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.yunits}"), unitsWidget, org.jdesktop.beansbinding.BeanProperty.create("yunit"));
+        bindingGroup.addBinding(binding);
+
         unitsManagerPanel.add(unitsWidget, java.awt.BorderLayout.CENTER);
 
         jPanel1.setPreferredSize(new java.awt.Dimension(396, 30));
@@ -117,6 +120,8 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
+        bindingGroup.bind();
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -125,7 +130,7 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
-        unitsWidget.updateUnits(dataModel.getSedModels());
+        dataModel.setUnits(unitsWidget.getXunit(), unitsWidget.getYunit());
         dataModel.refresh();
         this.dispose();
     }//GEN-LAST:event_updateButtonActionPerformed
@@ -137,5 +142,6 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
     private javax.swing.JPanel unitsManagerPanel;
     private cfa.vo.iris.visualizer.plotter.UnitsWidget unitsWidget;
     private javax.swing.JButton updateButton;
+    private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }

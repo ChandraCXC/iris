@@ -328,9 +328,14 @@ public class StilPlotter extends JPanel {
         // Y-label from falling off the jpanel. Conversely, don't set "insets"
         // and let the plotter dynamically change size to keep axes labels
         // on the plot.
-
-        // Add high level plot preferences
+        
         PlotPreferences pp = getPlotPreferences();
+        
+        // Set current unit labels
+        pp.setXlabel(dataModel.getXunits());
+        pp.setYlabel(dataModel.getYunits());
+        
+        // Add high level plot preferences
         for (String key : pp.getPreferences().keySet()) {
             
             // if in magnitudes, flip the direction of the Y-axis
