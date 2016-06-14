@@ -17,11 +17,13 @@
 package cfa.vo.iris.visualizer.plotter;
 
 import cfa.vo.iris.sed.SedException;
+import cfa.vo.iris.sed.quantities.SPVYQuantity;
 import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.sed.quantities.YUnit;
 import cfa.vo.iris.units.spv.XUnits;
 import cfa.vo.iris.units.spv.YUnits;
+import cfa.vo.iris.visualizer.preferences.SedModel;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -173,6 +175,7 @@ public class PlotPreferences {
                     .log(Level.SEVERE, null, ex);
         }
         
+        flipYifMag(arg1);
         preferences.put(Y_LABEL, ylabel);
         pcs.firePropertyChange(PROP_Y_LABEL, old, ylabel);
     }
@@ -406,6 +409,25 @@ public class PlotPreferences {
         Integer old = getSize();
         preferences.put(SIZE, size);
         pcs.firePropertyChange(PROP_LEGEND_BORDER, old, size);
+    }
+    
+    /**
+     * Flips the Y-axis if yunit is a magnitude. A lower magnitude = brighter 
+     * source  higher on Y-axis)
+     * @param yunit 
+     */
+    private void flipYifMag(String yunit) {
+        try {
+            if (SPVYQuantity.MAGNITUDE.getPossibleUnits()
+                    .contains(SPVYUnit.getFromUnitString(yunit))) {
+                this.setYflip(true);
+            } else {
+                this.setYflip(false);
+            }
+        } catch (SedException ex) {
+            Logger.getLogger(SedModel.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
     }
 }
 
