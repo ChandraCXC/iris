@@ -24,8 +24,10 @@ import org.junit.Test;
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.test.unit.StubWorkspace;
+import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.sedlib.Segment;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class VisualizerComponentPreferencesTest {
@@ -84,5 +86,47 @@ public class VisualizerComponentPreferencesTest {
         // Remove the SED
         store.remove(sed);
         assertEquals(0, store.getSedModels().size());
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testMultipleSeds() throws Exception {
+        ExtSed sed1 = new ExtSed("test1");
+        sed1.setManaged(false);
+        sed1.addSegment(TestUtils.createSampleSegment(
+                new double[] {1}, new double[] {1}, "Angstrom", "erg/s/cm2/Angstrom"));
+        
+        ExtSed sed2 = new ExtSed("test2");
+        sed2.setManaged(false);
+        sed2.addSegment(TestUtils.createSampleSegment(
+                new double[] {2}, new double[] {2}, "nm", "mJy"));
+        
+        IWorkspace ws = new StubWorkspace();
+        ws.getSedManager().add(sed1);
+        ws.getSedManager().add(sed2);
+        
+        VisualizerComponentPreferences prefs = new VisualizerComponentPreferences(ws);
+        VisualizerDataStore store = prefs.getDataStore();
+        
+        store.update(sed1);
+        store.update(sed2);
+        
+        prefs.setBoundToWorkspace(false);
+        
+        // Add second segment to the DataModel
+        prefs.getDataModel().setSelectedSeds(Arrays.asList(sed2));
+        assertEquals("nm", prefs.getDataModel().getXUnits());
+        assertEquals("mJy", prefs.getDataModel().getYUnits());
+        
+        // Add both seds, should set all units to first SEDs units
+        prefs.getDataModel().setSelectedSeds(Arrays.asList(sed1, sed2));
+        assertEquals("Angstrom", prefs.getDataModel().getXUnits());
+        assertEquals("erg/s/cm2/Angstrom", prefs.getDataModel().getYUnits());
+        assertEquals("Angstrom", prefs.getDataModel().getSedModel(sed2).getXUnits());
+        
+        // Go back to the second segment, should be back to the original units
+        prefs.getDataModel().setSelectedSeds(Arrays.asList(sed2));
+        assertEquals("nm", prefs.getDataModel().getXUnits());
+        assertEquals("mJy", prefs.getDataModel().getYUnits());
     }
 }

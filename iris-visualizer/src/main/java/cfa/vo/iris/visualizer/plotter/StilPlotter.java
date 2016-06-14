@@ -28,7 +28,6 @@ import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 import uk.ac.starlink.ttools.task.MapEnvironment;
 
 import java.awt.GridBagConstraints;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import java.awt.Insets;
@@ -45,9 +44,6 @@ public class StilPlotter extends JPanel {
             .getLogger(StilPlotter.class.getName());
 
     private static final long serialVersionUID = 1L;
-    
-    // Standard PlotPreferences for an empty plot
-    private static final PlotPreferences DEFAULT_PLOT_PREFERENCES = PlotPreferences.getDefaultPlotPreferences();
 
     private PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> display;
 
@@ -59,7 +55,7 @@ public class StilPlotter extends JPanel {
     private VisualizerDataModel dataModel;
     
     // Plot preferences for the currently plotted selection of SEDs
-    private PlotPreferences plotPreferences = DEFAULT_PLOT_PREFERENCES;
+    private PlotPreferences plotPreferences;
     
     private MapEnvironment env;
     
@@ -88,11 +84,7 @@ public class StilPlotter extends JPanel {
         this.seds = newSeds;
         
         // Update plot preferences for new seds.
-        if (CollectionUtils.isEmpty(newSeds)) {
-            this.setPlotPreferences(DEFAULT_PLOT_PREFERENCES);
-        } else {
-            this.setPlotPreferences(preferences.getPlotPreferences(newSeds));
-        }
+        setPlotPreferences(preferences.getPlotPreferences(newSeds));
         
         resetPlot(false, true);
     }
@@ -330,10 +322,6 @@ public class StilPlotter extends JPanel {
         // on the plot.
         
         PlotPreferences pp = getPlotPreferences();
-        
-        // Set current unit labels
-        pp.setXlabel(dataModel.getXunits());
-        pp.setYlabel(dataModel.getYunits());
         
         // Add high level plot preferences
         for (String key : pp.getPreferences().keySet()) {
