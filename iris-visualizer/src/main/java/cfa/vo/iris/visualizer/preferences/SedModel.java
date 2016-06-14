@@ -203,8 +203,16 @@ public class SedModel {
      * @param yunit    the Y unit
      */
     public void setUnits(String xunit, String yunit) {
-        xunits = xunit;
-        yunits = yunit;
+        
+        if (StringUtils.equals(this.xunits, xunit) &&
+            StringUtils.equals(this.yunits, yunit)) 
+        {
+            // Do nothing if nothing is changing
+            return;
+        }
+        
+        this.xunits = xunit;
+        this.yunits = yunit;
         
         // update the segment layers with the new units
         for (LayerModel seg : segmentModels.values()) {

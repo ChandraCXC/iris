@@ -203,7 +203,9 @@ public class VisualizerComponentPreferences {
     }
 
     public PlotPreferences getPlotPreferences(List<ExtSed> newSeds) {
-        // If it's a single SED, key it off of the SED for long-stored preferences
+        // If it's a single SED, key it off of the SED for long-stored preferences.
+        // List keys are only guaranteed to last as long as that list of preferences is
+        // stored in the plotter.
         Object key = CollectionUtils.size(newSeds) == 1 ? newSeds.get(0) : newSeds;
         
         // If the object is available return it

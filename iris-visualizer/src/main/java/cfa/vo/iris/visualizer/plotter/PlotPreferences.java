@@ -157,6 +157,7 @@ public class PlotPreferences {
         return (String) preferences.get(Y_LABEL);
     }
 
+    // Should be bound to the DataModel values
     public static final String PROP_Y_LABEL = "ylabel";
     public void setYlabel(String arg1) {
         String old = getYlabel();
@@ -184,6 +185,7 @@ public class PlotPreferences {
         return (String) preferences.get(X_LABEL);
     }
 
+    // Should be bound to the DataModel values
     public static final String PROP_X_LABEL = "xlabel";
     public void setXlabel(String arg1) {
         String old = getXlabel();

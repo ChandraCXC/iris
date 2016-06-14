@@ -11,6 +11,7 @@ import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.jdesktop.observablecollections.ObservableCollections;
 
 /**
@@ -25,6 +26,8 @@ public class VisualizerDataModel {
     public static final String PROP_LAYER_MODELS = "layerModels";
     public static final String PROP_SED_STARTABLES = "sedStarTables";
     public static final String PROP_SELECTED_STARTABLES = "selectedStarTables";
+    public static final String PROP_XUNITS = "xunits";
+    public static final String PROP_YUNITS = "yunits";
 
     private final PropertyChangeSupport pcs;
     private final VisualizerDataStore store;
@@ -37,15 +40,23 @@ public class VisualizerDataModel {
 
     // List of LayerModels to be used in the plotter, a layer can either be an entire SED or a
     // single segment, depending on user preferences.
-    List<LayerModel> layerModels;
+    private List<LayerModel> layerModels;
     
     // list of star tables associated with selectedSeds, these tables will all be plotted. May
     // not be in 1-1 correspondence with the LayerModels.
-    List<IrisStarTable> sedStarTables;
+    private List<IrisStarTable> sedStarTables;
     
     // list of selected StarTables from selectedTables, or which star tables are shown in the 
     // Metadata browser
-    List<IrisStarTable> selectedStarTables;
+    private List<IrisStarTable> selectedStarTables;
+    
+    // Xunits for StarTables
+    private String xunits = "";
+    
+    // Yunits for StarTables
+    private String yunits = "";
+    
+    // Plot preferences for use by the stil plotter
     
     public VisualizerDataModel(VisualizerDataStore store) {
         this.store = store;
@@ -128,12 +139,11 @@ public class VisualizerDataModel {
     }
     
     public List<ExtSed> getSelectedSeds() {
-        return new LinkedList<>(selectedSeds);
+        return selectedSeds;
     }
 
     public synchronized void setSelectedSeds(List<ExtSed> selectedSeds) {
         List<ExtSed> oldSeds = this.selectedSeds;
-        this.selectedSeds = ObservableCollections.observableList(selectedSeds);
         
         // Here to support empty values for null seds
         List<LayerModel> newSedModels = new LinkedList<>();
@@ -163,10 +173,17 @@ public class VisualizerDataModel {
             newSelectedSeds.add(sed);
         }
         
+        // Synchronize units to first sed in list
+        if (CollectionUtils.isNotEmpty(selectedSeds)) {
+            SedModel model = store.getSedModel(selectedSeds.get(0));
+            this.setUnits(model.getXunits(), model.getYunits());
+        }
+        
         // Update existing values
         this.setLayerModels(newSedModels);
         this.setSedStarTables(newSedTables);
         this.setDataModelTitle(dataModelTitle.toString());
+        this.selectedSeds = ObservableCollections.observableList(selectedSeds);
         
         pcs.firePropertyChange(PROP_SELECTED_SEDS, oldSeds, selectedSeds);
     }
@@ -214,5 +231,34 @@ public class VisualizerDataModel {
         this.setSelectedStarTables(new LinkedList<IrisStarTable>());
         
         setSelectedSeds(oldSeds);
+    }
+    
+    public void setUnits(String xunit, String yunit) {
+        for (ExtSed sed : this.selectedSeds) {
+            this.getSedModel(sed).setUnits(xunit, yunit);
+        }
+        
+        this.setXunits(xunit);
+        this.setYunits(yunit);
+    }
+    
+    public String getXunits() {
+        return xunits;
+    }
+    
+    private void setXunits(String xunits) {
+        String old = this.xunits;
+        this.xunits = xunits;
+        pcs.firePropertyChange(PROP_XUNITS, old, xunits);
+    }
+    
+    public String getYunits() {
+        return yunits;
+    }
+    
+    private void setYunits(String yunits) {
+        String old = this.yunits;
+        this.yunits = yunits;
+        pcs.firePropertyChange(PROP_YUNITS, old, yunits);
     }
 }
