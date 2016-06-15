@@ -95,11 +95,13 @@ public class VisualizerComponentPreferencesTest {
         sed1.setManaged(false);
         sed1.addSegment(TestUtils.createSampleSegment(
                 new double[] {1}, new double[] {1}, "Angstrom", "erg/s/cm2/Angstrom"));
+        sed1.addSegment(TestUtils.createSampleSegment());
         
         ExtSed sed2 = new ExtSed("test2");
         sed2.setManaged(false);
         sed2.addSegment(TestUtils.createSampleSegment(
                 new double[] {2}, new double[] {2}, "nm", "mJy"));
+        sed2.addSegment(TestUtils.createSampleSegment());
         
         IWorkspace ws = new StubWorkspace();
         ws.getSedManager().add(sed1);
@@ -113,20 +115,26 @@ public class VisualizerComponentPreferencesTest {
         
         prefs.setBoundToWorkspace(false);
         
-        // Add second segment to the DataModel
+        // Add second SED to the DataModel
         prefs.getDataModel().setSelectedSeds(Arrays.asList(sed2));
         assertEquals("nm", prefs.getDataModel().getXUnits());
         assertEquals("mJy", prefs.getDataModel().getYUnits());
+        assertEquals(2, prefs.getDataModel().getLayerModels().size());
+        assertEquals(2, prefs.getDataModel().getSedStarTables().size());
         
         // Add both seds, should set all units to first SEDs units
         prefs.getDataModel().setSelectedSeds(Arrays.asList(sed1, sed2));
         assertEquals("Angstrom", prefs.getDataModel().getXUnits());
         assertEquals("erg/s/cm2/Angstrom", prefs.getDataModel().getYUnits());
         assertEquals("Angstrom", prefs.getDataModel().getSedModel(sed2).getXUnits());
+        assertEquals(2, prefs.getDataModel().getLayerModels().size());
+        assertEquals(4, prefs.getDataModel().getSedStarTables().size());
         
         // Go back to the second segment, should be back to the original units
         prefs.getDataModel().setSelectedSeds(Arrays.asList(sed2));
         assertEquals("nm", prefs.getDataModel().getXUnits());
         assertEquals("mJy", prefs.getDataModel().getYUnits());
+        assertEquals(2, prefs.getDataModel().getLayerModels().size());
+        assertEquals(2, prefs.getDataModel().getSedStarTables().size());
     }
 }
