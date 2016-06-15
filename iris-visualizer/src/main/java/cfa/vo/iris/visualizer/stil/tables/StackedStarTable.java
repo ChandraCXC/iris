@@ -17,6 +17,7 @@
 package cfa.vo.iris.visualizer.stil.tables;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 
 import uk.ac.starlink.table.ConcatStarTable;
@@ -32,11 +33,13 @@ public class StackedStarTable extends WrapperStarTable {
     
     private ColumnMetadataStarTable metadataTable;
     private ColumnMappingStarTable[] dataTables;
+    private final List<? extends StarTable> tables;
 
     public StackedStarTable(List<? extends StarTable> tables, ColumnInfoMatcher matcher)
     {
         super(null);
         
+        this.tables = tables;
         this.metadataTable = new ColumnMetadataStarTable(tables, matcher);
         this.dataTables = new ColumnMappingStarTable[tables.size()];
         
@@ -49,5 +52,9 @@ public class StackedStarTable extends WrapperStarTable {
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+    
+    public List<StarTable> getBaseTables() {
+        return Collections.unmodifiableList(tables);
     }
 }

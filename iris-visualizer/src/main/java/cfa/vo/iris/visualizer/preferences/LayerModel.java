@@ -90,6 +90,17 @@ public class LayerModel {
     }
 
     /**
+     * @return The number of layers in the stilplotter that this LayerModel 
+     * will add (e.g. 2 layers for both the marks layer and the error layer).
+     */
+    public int getNumberOfLayers() {
+        int layers = 0;
+        if (showMarks) layers++;
+        if (showErrorBars) layers++;
+        return layers;
+    }
+
+    /**
      * 
      * @return a map of all preferences currently set for this layer.
      */

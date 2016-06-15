@@ -17,7 +17,6 @@ package cfa.vo.iris.visualizer.plotter;
 
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
-import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 import uk.ac.starlink.ttools.plot2.task.PointSelectionEvent;
 
 /**
@@ -36,10 +35,5 @@ public class PlotPointSelectionListener extends StilPlotterPointSelectionListene
         // base table before passing it to the metadata browser.
         irow = dataModel.getSedStarTables().get(starTableIndex).getBaseTableRow(irow);
         mbView.addRowToSelection(starTableIndex, irow);
-    }
-    
-    @Override
-    public void activate(PlotDisplay<?,?> display) {
-        display.addPointSelectionListener(this);
     }
 }

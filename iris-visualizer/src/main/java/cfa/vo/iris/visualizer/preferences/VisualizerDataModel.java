@@ -62,7 +62,7 @@ public class VisualizerDataModel {
     // Yunits for StarTables
     private String yUnits = "";
     
-    // Plot preferences for use by the stil plotter
+    private boolean coplotted = false;
     
     public VisualizerDataModel(VisualizerComponentPreferences prefs) {
         this.store = prefs.getDataStore();
@@ -133,6 +133,10 @@ public class VisualizerDataModel {
         return sedModel.getDataTables();
     }
     
+    public boolean isCoplotted() {
+        return this.coplotted;
+    }
+    
     /*
      * 
      * Getters and Setters
@@ -155,13 +159,13 @@ public class VisualizerDataModel {
 
     public synchronized void setSelectedSeds(List<ExtSed> selectedSeds) {
         List<ExtSed> oldSeds = this.selectedSeds;
+        this.coplotted = CollectionUtils.size(selectedSeds) > 1;
         
         // Here to support empty values for null seds
         List<LayerModel> newSedModels = new LinkedList<>();
         List<IrisStarTable> newSedTables = new LinkedList<>();
         StringBuilder dataModelTitle = new StringBuilder();
         
-        boolean coplot = CollectionUtils.size(selectedSeds) > 1;
         Iterator<ExtSed> it = selectedSeds.iterator();
         while (it.hasNext()) {
             
@@ -178,7 +182,7 @@ public class VisualizerDataModel {
             dataModelTitle.append(sed.getId() + " ");
 
             // For coplotting we plot the entire SED as a single layer
-            if (coplot) {
+            if (coplotted) {
                 newSedModels.add(sedModel.getSedLayerModel());
             }
             // Otherwise we add a single layer for each corresponding segment
@@ -190,7 +194,7 @@ public class VisualizerDataModel {
         
         // Update units and colors
         updateUnits();
-        updateColors(newSedModels, coplot);
+        updateColors(newSedModels);
         
         // Update existing values
         this.setLayerModels(newSedModels);
@@ -200,9 +204,9 @@ public class VisualizerDataModel {
         pcs.firePropertyChange(PROP_SELECTED_SEDS, oldSeds, selectedSeds);
     }
     
-    private void updateColors(List<LayerModel> layers, boolean coplot) {
+    private void updateColors(List<LayerModel> layers) {
         // If we are not coplotting then don't mess with the preset layer colors
-        if (!coplot) return;
+        if (!coplotted) return;
         
         // Otherwise we need to assign different colors to each layer.
         ColorPalette cp = new HSVColorPalette();
