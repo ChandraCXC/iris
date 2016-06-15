@@ -80,7 +80,7 @@ public class VisualizerComponentPreferences {
         
         this.dataModel = new VisualizerDataModel(this);
         
-        this.mouseListenerManager = new MouseListenerManager();
+        this.mouseListenerManager = new MouseListenerManager(this);
         
         this.boundToWorkspace = true;
         

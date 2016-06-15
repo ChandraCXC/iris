@@ -19,6 +19,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import cfa.vo.iris.visualizer.plotter.MouseCoordinateMotionListener;
+import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
 import uk.ac.starlink.ttools.plot2.geom.PlaneSurfaceFactory.Profile;
 import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
@@ -32,6 +33,7 @@ import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 public class MouseListenerManager {
     
     private Set<StilPlotterMouseListener> listeners;
+    private VisualizerComponentPreferences preferences;
     private PlotterView view;
     
     // Collection of all mouse listeners the plotter
@@ -39,8 +41,9 @@ public class MouseListenerManager {
     PlotPointSelectionListener pointSelectionListener;
     PlotPointSelectionDetailsListener pointDetailsListener;
     
-    public MouseListenerManager() {
+    public MouseListenerManager(VisualizerComponentPreferences preferences) {
         this.listeners = new LinkedHashSet<>();
+        this.preferences = preferences;
         
         // Shows mouse coordinates in the plot view window
         mouseCoordinateMotionListener = new MouseCoordinateMotionListener();
@@ -69,7 +72,7 @@ public class MouseListenerManager {
     public void activateListeners(PlotDisplay<Profile, PlaneAspect> plotDisplay) {
         for (StilPlotterMouseListener listener : listeners) {
             if (listener.isActive()) {
-                listener.activate(plotDisplay);
+                listener.activate(plotDisplay, preferences.getDataModel());
             }
         }
     }

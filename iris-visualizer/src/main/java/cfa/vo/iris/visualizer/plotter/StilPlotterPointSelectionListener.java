@@ -1,7 +1,16 @@
 package cfa.vo.iris.visualizer.plotter;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Logger;
 
+import org.apache.commons.collections.CollectionUtils;
+
+import cfa.vo.iris.visualizer.preferences.LayerModel;
+import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
+import cfa.vo.iris.visualizer.stil.tables.StackedStarTable;
+import uk.ac.starlink.table.StarTable;
+import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 import uk.ac.starlink.ttools.plot2.task.PointSelectionEvent;
 import uk.ac.starlink.ttools.plot2.task.PointSelectionListener;
 
@@ -11,6 +20,13 @@ public abstract class StilPlotterPointSelectionListener
 {
     
     private static Logger logger = Logger.getLogger(StilPlotterPointSelectionListener.class.getName());
+    VisualizerDataModel dataModel;
+    
+    @Override
+    public void activate(PlotDisplay<?,?> display, VisualizerDataModel dataModel) {
+        this.dataModel = dataModel;
+        display.addPointSelectionListener(this);
+    }
     
     @Override
     public void pointSelected(PointSelectionEvent evt) {
@@ -29,18 +45,49 @@ public abstract class StilPlotterPointSelectionListener
      */
     private void processEvent(PointSelectionEvent evt) {
         
-        // TODO: Change this to increment by the number of layers in a given segment layer, 
-        // rather than just 2.
+        // Find the PlotLayer closest to the selected row
         long[] rows = evt.getClosestRows();
-        for (int i=0; i*2<rows.length; i++) {
-            // It is possible that the Event will contain multiple selected points, but
-            // we will only use the first point selected. See http://tinyurl.com/gq9o7te
-            if (rows[2*i] >= 0) {
-                handleSelection(i, (int) rows[2*i], evt);
+        int index = 0;
+        List<LayerModel> layers = dataModel.getLayerModels();
+
+        // For coplotting, either layers.size is either equal to the number of SedModels in the
+        // dataModel or the number of IrisStarTables in the DataModel. For the former, we need
+        // to identify the correct segment identified by the row. For the latter we need to identify
+        // the correct startable identified by the layer index.
+        while (index<rows.length) {
+            LayerModel model = layers.get(index);
+            if (rows[index] >= 0) {
+                if (dataModel.isCoplotted()) {
+                    handleCoplotting(model, rows[index], evt);
+                } else {
+                    int tableIndex = dataModel.getSedStarTables().indexOf(model.getInSource());
+                    handleSelection(tableIndex, (int) rows[index], evt);
+                }
+                
                 return;
             }
+            
+            // Skip to the next layer
+            index += model.getNumberOfLayers();
         }
+    }
+    
+    private void handleCoplotting(LayerModel model, long row, PointSelectionEvent evt) {
+        List<StarTable> sedTables = ((StackedStarTable) model.getInSource())
+                .getBaseTables();
         
+        // Do nothing if the table is empty
+        if (CollectionUtils.isEmpty(sedTables)) return;
+        
+        // Otherwise find the correct StarTable
+        Iterator<StarTable> it = sedTables.iterator();
+        StarTable t = it.next();
+        while (row > t.getRowCount()) {
+            row -= t.getRowCount();
+            t = it.next();
+        }
+        int tableIndex = dataModel.getSedStarTables().indexOf(t);
+        handleSelection(tableIndex, (int) row, evt);
     }
     
     public abstract void handleSelection(int starTableIndex, int irow, PointSelectionEvent evt);
