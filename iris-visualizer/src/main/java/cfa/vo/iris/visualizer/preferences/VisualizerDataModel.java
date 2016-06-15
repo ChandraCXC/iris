@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.visualizer.plotter.ColorPalette;
+import cfa.vo.iris.visualizer.plotter.HSVColorPalette;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 
@@ -159,6 +161,7 @@ public class VisualizerDataModel {
         List<IrisStarTable> newSedTables = new LinkedList<>();
         StringBuilder dataModelTitle = new StringBuilder();
         
+        boolean coplot = CollectionUtils.size(selectedSeds) > 1;
         Iterator<ExtSed> it = selectedSeds.iterator();
         while (it.hasNext()) {
             
@@ -171,14 +174,23 @@ public class VisualizerDataModel {
             
             // Add models to the SED
             SedModel sedModel = store.getSedModel(sed);
-            newSedModels.addAll(sedModel.getLayerModels());
             newSedTables.addAll(sedModel.getDataTables());
             dataModelTitle.append(sed.getId() + " ");
+
+            // For coplotting we plot the entire SED as a single layer
+            if (coplot) {
+                newSedModels.add(sedModel.getSedLayerModel());
+            }
+            // Otherwise we add a single layer for each corresponding segment
+            else {
+                newSedModels.addAll(sedModel.getLayerModels());
+            }
         }
         this.selectedSeds = ObservableCollections.observableList(selectedSeds);
         
-        // TODO: Colors, etc... Also, how can we make units preferences easier?!?
+        // Update units and colors
         updateUnits();
+        updateColors(newSedModels, coplot);
         
         // Update existing values
         this.setLayerModels(newSedModels);
@@ -186,6 +198,19 @@ public class VisualizerDataModel {
         this.setDataModelTitle(dataModelTitle.toString());
         
         pcs.firePropertyChange(PROP_SELECTED_SEDS, oldSeds, selectedSeds);
+    }
+    
+    private void updateColors(List<LayerModel> layers, boolean coplot) {
+        // If we are not coplotting then don't mess with the preset layer colors
+        if (!coplot) return;
+        
+        // Otherwise we need to assign different colors to each layer.
+        ColorPalette cp = new HSVColorPalette();
+        for (LayerModel layer : layers) {
+            String hexColor = ColorPalette.colorToHex(cp.getNextColor());
+            layer.setErrorColor(hexColor);
+            layer.setMarkColor(hexColor);
+        }
     }
     
     private void updateUnits() {

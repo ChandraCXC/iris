@@ -29,8 +29,12 @@ import cfa.vo.iris.visualizer.plotter.HSVColorPalette;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
+import cfa.vo.iris.visualizer.stil.tables.SegmentColumnInfoMatcher;
+import cfa.vo.iris.visualizer.stil.tables.StackedStarTable;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedNoDataException;
+import uk.ac.starlink.table.StarTable;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -76,6 +80,19 @@ public class SedModel {
      */
     public LayerModel getSegmentModel(Segment seg) {
         return tableLayerModels.get(seg);
+    }
+    
+    /**
+     * @return A a Layer that represents this SED as a single layer in the plot.
+     */
+    public LayerModel getSedLayerModel() {
+        StarTable table = new StackedStarTable(getDataTables(), new SegmentColumnInfoMatcher());
+        table.setName(sed.getId());
+        
+        LayerModel ret = new LayerModel(table);
+        ret.setLabel(sed.getId());
+        
+        return ret;
     }
     
     /**
@@ -160,6 +177,7 @@ public class SedModel {
         
         // add colors to segment layer
         String hexColor = ColorPalette.colorToHex(colors.getNextColor());
+        layer.setErrorColor(hexColor);
         layer.setMarkColor(hexColor);
         
         // update legend settings
