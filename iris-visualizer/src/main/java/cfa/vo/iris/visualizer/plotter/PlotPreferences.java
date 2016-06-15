@@ -17,11 +17,13 @@
 package cfa.vo.iris.visualizer.plotter;
 
 import cfa.vo.iris.sed.SedException;
+import cfa.vo.iris.sed.quantities.SPVYQuantity;
 import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.sed.quantities.YUnit;
 import cfa.vo.iris.units.spv.XUnits;
 import cfa.vo.iris.units.spv.YUnits;
+import cfa.vo.iris.visualizer.preferences.SedModel;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -38,8 +40,11 @@ public class PlotPreferences {
     // This is only a small sample of the preferences available in STILTS, for
     // the full list, see
     // http://www.star.bris.ac.uk/~mbt/stilts/sun256/sun256.html#TypedPlot2Task
-    // Global Settings
+    // Global Plot Settings
     static final String GRID = "grid";
+    
+    // Labels are currently attached to the units for this plot, but that could
+    // change in the future.
     static final String X_LABEL = "xlabel";
     static final String Y_LABEL = "ylabel";
     static final String X_LOG = "xlog";
@@ -52,7 +57,14 @@ public class PlotPreferences {
     static final String Y_FLIP = "yflip";
     static final String X_FLIP = "xflip";
     static final String PLOT_TYPE = "plot_type"; // not STILTS
-    //public static final String SHOW_ERRORS = "show_errors"; // not STILTS
+    
+    // These settings are set at the Sed level, but can be overridden by the underlying
+    // Segments
+    public static final String ERROR_BAR_TYPE = "errorbar";
+    public static final String SIZE = "size";
+    public static final String SHADING = "shading";
+    public static final String SHAPE = "shape";
+    public static final String TYPE = "layer";
     
     // for the plot legend
     static final String SHOW_LEGEND = "legend";
@@ -62,6 +74,8 @@ public class PlotPreferences {
     
     private PlaneAspect aspect; // not STILTS. Do not add to the prefs map!
                                 // It'll cause an error in STILTS.
+    private String xUnits; // XUnits for this set of plot preferences
+    private String yUnits; // YUnits for this set of plot preferences
     
     // Plot Types - Iris-specific, not STILTS.
     public enum PlotType {
@@ -99,13 +113,15 @@ public class PlotPreferences {
         pp.setFixed(false);
         pp.setYflip(false);
         pp.setXflip(false);
-//        pp.setShowErrors(true)
         pp.setPlotType(PlotType.LOG);
         pp.setShowLegend(true);
         pp.setLegendPosition(new double[] {1.0, 1.0});
         pp.setLegendOpaque(false);
         pp.setLegendBorder(true);
         pp.setAspect(aspect);
+        pp.setErrorBarType(ErrorBarType.capped_lines);
+        pp.setMarkType(ShapeType.open_circle);
+        pp.setSize(4);
         
         return pp;
     }
@@ -140,15 +156,16 @@ public class PlotPreferences {
         pcs.firePropertyChange(PROP_SHOW_GRID, old, arg1);
     }
 
-    public String getYlabel() {
-        return (String) preferences.get(Y_LABEL);
+    public String getYUnits() {
+        return this.yUnits;
     }
 
-    public static final String PROP_Y_LABEL = "ylabel";
-    public void setYlabel(String arg1) {
-        String old = getYlabel();
-        String ylabel;
+    public static final String PROP_Y_UNITS = "yUnits";
+    public void setYUnits(String arg1) {
+        String old = getYUnits();
+        this.yUnits = arg1;
         
+        String ylabel;
         try {
             YUnits yconvert = new YUnits(arg1);
             ylabel = yconvert.getLabel() + 
@@ -162,19 +179,21 @@ public class PlotPreferences {
                     .log(Level.SEVERE, null, ex);
         }
         
-        preferences.put(Y_LABEL, ylabel);
-        pcs.firePropertyChange(PROP_Y_LABEL, old, ylabel);
+        flipYifMag(arg1);
+        this.setYLabel(ylabel);
+        pcs.firePropertyChange(PROP_Y_UNITS, old, yUnits);
     }
     
-    public String getXlabel() {
-        return (String) preferences.get(X_LABEL);
+    public String getXUnits() {
+        return this.xUnits;
     }
 
-    public static final String PROP_X_LABEL = "xlabel";
-    public void setXlabel(String arg1) {
-        String old = getXlabel();
-        String xlabel;
+    public static final String PROP_X_UNITS = "xUnits";
+    public void setXUnits(String arg1) {
+        String old = getXUnits();
+        this.xUnits = arg1;
         
+        String xlabel;
         try {
             XUnits xconvert = new XUnits(arg1);
             xlabel = xconvert.getLabel() +
@@ -187,8 +206,30 @@ public class PlotPreferences {
                     .log(Level.SEVERE, null, ex);
         }
         
-        preferences.put(X_LABEL, xlabel);
-        pcs.firePropertyChange(PROP_X_LABEL, old, xlabel);
+        this.setXLabel(xlabel);
+        pcs.firePropertyChange(PROP_X_UNITS, old, xUnits);
+    }
+    
+    public String getYLabel() {
+        return (String) preferences.get(Y_LABEL);
+    }
+    
+    public static String PROP_Y_LABEL = "yLabel";
+    public void setYLabel(String yLabel) {
+        String old = getYLabel();
+        preferences.put(Y_LABEL, yLabel);
+        pcs.firePropertyChange(PROP_Y_LABEL, old, yLabel);
+    }
+    
+    public String getXLabel() {
+        return (String) preferences.get(X_LABEL);
+    }
+
+    public static String PROP_X_LABEL = "xLabel";
+    public void setXLabel(String xLabel) {
+        String old = getXLabel();
+        preferences.put(X_LABEL, xLabel);
+        pcs.firePropertyChange(PROP_X_LABEL, old, xLabel);
     }
     
     public Boolean getYflip() {
@@ -315,11 +356,6 @@ public class PlotPreferences {
         pcs.firePropertyChange(PROP_ASPECT, old, arg1);
     }
     
-//    public PlotPreferences setShowErrors(Boolean arg1) {
-//        preferences.put(SHOW_ERRORS, arg1);
-//        return this;
-//    }
-    
     public Boolean getShowLegend() {
         return (Boolean) preferences.get(SHOW_LEGEND);
     }
@@ -362,6 +398,58 @@ public class PlotPreferences {
         Boolean old = getLegendBorder();
         preferences.put(LEGEND_BORDER, arg1);
         pcs.firePropertyChange(PROP_LEGEND_BORDER, old, arg1);
+    }
+    
+    protected ErrorBarType getErrorBarType() {
+        return (ErrorBarType) preferences.get(ERROR_BAR_TYPE);
+    }
+
+    public static final String PROP_ERROR_BAR_TYPE = "errorBarType";
+    protected void setErrorBarType(ErrorBarType errorBarType) {
+        ErrorBarType old = getErrorBarType();
+        preferences.put(ERROR_BAR_TYPE, errorBarType.name());
+        pcs.firePropertyChange(PROP_LEGEND_BORDER, old, errorBarType);
+    }
+
+    protected ShapeType getMarkType() {
+        return (ShapeType) preferences.get(SHAPE);
+    }
+
+    public static final String PROP_MARK_TYPE = "markType";
+    protected void setMarkType(ShapeType markType) {
+        ShapeType old = getMarkType();
+        preferences.put(SHAPE, markType.name());
+        pcs.firePropertyChange(SHAPE, old, markType);
+    }
+
+    protected Integer getSize() {
+        return (Integer) preferences.get(SIZE);
+    }
+
+    public static final String PROP_MARK_SIZE = "size";
+    protected void setSize(Integer size) {
+        Integer old = getSize();
+        preferences.put(SIZE, size);
+        pcs.firePropertyChange(PROP_LEGEND_BORDER, old, size);
+    }
+    
+    /**
+     * Flips the Y-axis if yunit is a magnitude. A lower magnitude = brighter 
+     * source  higher on Y-axis)
+     * @param yunit 
+     */
+    private void flipYifMag(String yunit) {
+        try {
+            if (SPVYQuantity.MAGNITUDE.getPossibleUnits()
+                    .contains(SPVYUnit.getFromUnitString(yunit))) {
+                this.setYflip(true);
+            } else {
+                this.setYflip(false);
+            }
+        } catch (SedException ex) {
+            Logger.getLogger(SedModel.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
     }
 }
 

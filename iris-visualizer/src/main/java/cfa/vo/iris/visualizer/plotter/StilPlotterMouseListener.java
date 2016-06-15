@@ -17,6 +17,7 @@ package cfa.vo.iris.visualizer.plotter;
 
 import java.text.DecimalFormat;
 
+import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 
 public abstract class StilPlotterMouseListener {
@@ -29,7 +30,7 @@ public abstract class StilPlotterMouseListener {
         df.setMaximumFractionDigits(6);
     }
     
-    public abstract void activate(PlotDisplay<?,?> display);
+    public abstract void activate(PlotDisplay<?,?> display, VisualizerDataModel dataModel);
 
     public PlotterView getPlotterView() {
         return plotterView;

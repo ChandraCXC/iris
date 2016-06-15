@@ -20,6 +20,7 @@ import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
+import cfa.vo.iris.visualizer.preferences.CoPlotManagementWindow;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import java.awt.Dimension;
@@ -407,11 +408,11 @@ public class PlotterView extends JInternalFrame {
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, plotter, org.jdesktop.beansbinding.ELProperty.create("${plotPreferences.showGrid}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("gridOn"));
         bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.layerModels}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("layerModels"));
+        bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${plotPreferences}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("plotPreferences"));
         bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.selectedSeds}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("seds"));
-        bindingGroup.addBinding(binding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.sedSegmentModels}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("sedSegmentModels"));
         bindingGroup.addBinding(binding);
 
         plotter.setLayout(new java.awt.GridBagLayout());
@@ -506,6 +507,11 @@ public class PlotterView extends JInternalFrame {
         mnView.add(mntmGridOnOff);
 
         mntmCoplot.setText("Coplot...");
+        mntmCoplot.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mntmCoplotActionPerformed(evt);
+            }
+        });
         mnView.add(mntmCoplot);
 
         menuBar.add(mnView);
@@ -552,7 +558,6 @@ public class PlotterView extends JInternalFrame {
 
         UnitsManagerFrame unitsManagerFrame = new UnitsManagerFrame();
         unitsManagerFrame.setDataModel(preferences.getDataModel());
-        unitsManagerFrame.updateCurrentUnits();
 
         ws.addFrame(unitsManagerFrame);
         GUIUtils.moveToFront(unitsManagerFrame);
@@ -569,6 +574,12 @@ public class PlotterView extends JInternalFrame {
             throw new RuntimeException(ex);
         }
     }//GEN-LAST:event_metadataButtonActionPerformed
+
+    private void mntmCoplotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mntmCoplotActionPerformed
+        CoPlotManagementWindow pl = new CoPlotManagementWindow(this.preferences);
+        ws.addFrame(pl);
+        GUIUtils.moveToFront(pl);
+    }//GEN-LAST:event_mntmCoplotActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel bottomButtonsPanel;

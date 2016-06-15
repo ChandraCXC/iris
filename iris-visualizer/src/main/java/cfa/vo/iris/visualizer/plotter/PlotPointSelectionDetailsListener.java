@@ -44,7 +44,6 @@ public class PlotPointSelectionDetailsListener extends StilPlotterPointSelection
 
     @Override
     public void handleSelection(int starTableIndex, int irow, PointSelectionEvent evt) {
-        VisualizerDataModel dataModel = getPlotterView().getMetadataBrowserView().getDataModel();
         
         // Get selected star table based on PointSelectionEvent
         IrisStarTable table = dataModel.getSedStarTables().get(starTableIndex);
@@ -73,8 +72,8 @@ public class PlotPointSelectionDetailsListener extends StilPlotterPointSelection
     }
 
     @Override
-    public void activate(PlotDisplay<?, ?> display) {
-        display.addPointSelectionListener(this);
+    public void activate(PlotDisplay<?, ?> display, VisualizerDataModel dataModel) {
+        super.activate(display, dataModel);
         this.display = display;
     }
     

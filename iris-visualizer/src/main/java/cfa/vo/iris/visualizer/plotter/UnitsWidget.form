@@ -66,13 +66,11 @@
           <SubComponents>
             <Component class="javax.swing.JList" name="xunits">
               <Properties>
-                <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new XUnitsListModel()" type="code"/>
-                </Property>
                 <Property name="selectionMode" type="int" value="0"/>
                 <Property name="name" type="java.lang.String" value="xunitsList" noResource="true"/>
               </Properties>
               <BindingProperties>
+                <BindingProperty name="elements" source="Form" sourcePath="${XUnitsList}" target="xunits" targetPath="elements" updateStrategy="2" immediately="false"/>
                 <BindingProperty name="selectedElement" source="Form" sourcePath="${xunit}" target="xunits" targetPath="selectedElement" updateStrategy="0" immediately="false">
                   <BindingParameter name="IGNORE_ADJUSTING" value="N"/>
                 </BindingProperty>
@@ -101,13 +99,11 @@
           <SubComponents>
             <Component class="javax.swing.JList" name="yunits">
               <Properties>
-                <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                  <Connection code="new YUnitsListModel()" type="code"/>
-                </Property>
                 <Property name="selectionMode" type="int" value="0"/>
                 <Property name="name" type="java.lang.String" value="yunitsList" noResource="true"/>
               </Properties>
               <BindingProperties>
+                <BindingProperty name="elements" source="Form" sourcePath="${YUnitsList}" target="yunits" targetPath="elements" updateStrategy="2" immediately="false"/>
                 <BindingProperty name="selectedElement" source="Form" sourcePath="${yunit}" target="yunits" targetPath="selectedElement" updateStrategy="0" immediately="false">
                   <BindingParameter name="IGNORE_ADJUSTING" value="N"/>
                 </BindingProperty>

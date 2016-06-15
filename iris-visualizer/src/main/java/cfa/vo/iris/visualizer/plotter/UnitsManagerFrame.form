@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JInternalFrameFormInfo">
+<Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JInternalFrameFormInfo">
   <Properties>
     <Property name="closable" type="boolean" value="true"/>
     <Property name="resizable" type="boolean" value="true"/>
@@ -48,6 +48,10 @@
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
       <SubComponents>
         <Component class="cfa.vo.iris.visualizer.plotter.UnitsWidget" name="unitsWidget">
+          <BindingProperties>
+            <BindingProperty name="xunit" source="Form" sourcePath="${dataModel.xunits}" target="unitsWidget" targetPath="xunit" updateStrategy="1" immediately="false"/>
+            <BindingProperty name="yunit" source="Form" sourcePath="${dataModel.yunits}" target="unitsWidget" targetPath="yunit" updateStrategy="0" immediately="false"/>
+          </BindingProperties>
           <Constraints>
             <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
               <BorderConstraints direction="Center"/>

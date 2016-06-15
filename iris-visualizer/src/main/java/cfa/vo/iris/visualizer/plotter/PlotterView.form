@@ -128,6 +128,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Coplot..."/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mntmCoplotActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
@@ -406,9 +409,9 @@
       </Properties>
       <BindingProperties>
         <BindingProperty name="gridOn" source="plotter" sourcePath="${plotPreferences.showGrid}" target="plotter" targetPath="gridOn" updateStrategy="0" immediately="false"/>
+        <BindingProperty name="layerModels" source="Form" sourcePath="${dataModel.layerModels}" target="plotter" targetPath="layerModels" updateStrategy="0" immediately="false"/>
         <BindingProperty name="plotPreferences" source="Form" sourcePath="${plotPreferences}" target="plotter" targetPath="plotPreferences" updateStrategy="0" immediately="false"/>
         <BindingProperty name="seds" source="Form" sourcePath="${dataModel.selectedSeds}" target="plotter" targetPath="seds" updateStrategy="0" immediately="false"/>
-        <BindingProperty name="sedSegmentModels" source="Form" sourcePath="${dataModel.sedSegmentModels}" target="plotter" targetPath="sedSegmentModels" updateStrategy="1" immediately="false"/>
       </BindingProperties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new StilPlotter(preferences)"/>

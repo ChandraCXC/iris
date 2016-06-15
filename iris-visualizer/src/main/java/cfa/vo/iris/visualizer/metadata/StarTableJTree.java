@@ -23,14 +23,14 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.visualizer.preferences.SegmentModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
-import java.util.Arrays;
 import java.util.Enumeration;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
+
+import org.apache.commons.collections.CollectionUtils;
 
 /**
  * Implementation of a JTree that is tightly coupled to the {@link VisualizerDataModel}.
@@ -84,15 +84,16 @@ public class StarTableJTree extends JTree {
     private void refresh() {
         this.setModel(new StarTableTreeModel(seds));
         
-        // Always expand all nodes by default
-        this.getRowCount();
-        for (int i=0; i<getRowCount(); i++) {
-            expandRow(i);
+        // If there is only a single SED, expand the segments table
+        if (CollectionUtils.size(seds) == 1) {
+            for (int i=0; i<getRowCount(); i++) {
+                expandRow(i);
+            }
         }
         
-        // Select and display the first SED, if available.
+        // Select and display all rows by default
         if (getRowCount() > 0) {
-            this.getSelectionModel().addSelectionPath(getPathForRow(0));
+            this.setSelectionInterval(0, this.getRowCount());
         }
         
         updateSelectedStarTables();
@@ -125,7 +126,7 @@ public class StarTableJTree extends JTree {
      */
     private TreePath findTablePath(IrisStarTable table) {
         DefaultMutableTreeNode root = ( DefaultMutableTreeNode) getModel().getRoot();
-        Enumeration e = root.breadthFirstEnumeration();
+        Enumeration<?> e = root.breadthFirstEnumeration();
         
         DefaultMutableTreeNode node = null;
         while (e.hasMoreElements()) {
@@ -171,6 +172,10 @@ public class StarTableJTree extends JTree {
             
             DefaultMutableTreeNode r = (DefaultMutableTreeNode) getRoot();
             for (ExtSed sed : seds) {
+                if (sed == null) {
+                    continue;
+                }
+                
                 r.add(new SedTreeNode(sed));
             }
         }
@@ -189,10 +194,10 @@ public class StarTableJTree extends JTree {
             
             this.sed = sed;
             subTables = new ArrayList<>();
-            List<SegmentModel> models = dataModel.getModelsForSed(sed);
-            for (SegmentModel model : models) {
-                this.add(new TableLeafNode(model.getInSource()));
-                subTables.add(model.getInSource());
+            List<IrisStarTable> tables = dataModel.getStarTablesForSed(sed);
+            for (IrisStarTable table : tables) {
+                this.add(new TableLeafNode(table));
+                subTables.add(table);
             }
         }
         

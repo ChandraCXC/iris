@@ -1,4 +1,4 @@
-/**
+/*
  * Copyright (C) 2016 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,21 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package cfa.vo.iris.visualizer.preferences;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.commons.collections.CollectionUtils;
+
+import com.google.common.collect.MapMaker;
+
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.MouseListenerManager;
-import cfa.vo.iris.visualizer.metadata.SegmentExtractor;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
+import cfa.vo.iris.visualizer.metadata.SegmentExtractor;
 import cfa.vo.iris.visualizer.metadata.IrisStarJTable.RowSelection;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Single object location for data and preferences needed by the iris visualizer 
@@ -38,9 +47,6 @@ public class VisualizerComponentPreferences {
     
     private static final ExecutorService visualizerExecutor = Executors.newFixedThreadPool(5);
     
-    // Top level preferences for the plotter
-    private final PlotPreferences plotPreferences;
-    
     // For accessing plot mouse listeners
     private final MouseListenerManager mouseListenerManager;
     
@@ -49,25 +55,41 @@ public class VisualizerComponentPreferences {
     
     // Persistence for Iris Visualizer data
     private final VisualizerDataStore dataStore;
-
+    
+    // Pointer to current data model in the view. Any visualizer components that need access to the
+    // current state of the Visualizer should access the current model through this class.
+    //
+    // TODO: This should become dynamic, and potentially support changing depending on which SEDs
+    // are in the plotter.
+    private VisualizerDataModel dataModel;
+    
+    // If this is true, the visualizer will be bound to, and will always plot the selected SED.
+    private boolean boundToWorkspace;
+    
+    // Map of plot preferences for SEDs or collections of SEDs. Weak reference keyed map will not
+    // prevent GC from removing elements with no other pointers.
+    private Map<Object, PlotPreferences> preferencesStore;
+    
+    // Standard PlotPreferences for an empty plot
+    private final PlotPreferences DEFAULT_PLOT_PREFERENCES = PlotPreferences.getDefaultPlotPreferences();
+    
     public VisualizerComponentPreferences(IWorkspace ws) {
         this.ws = ws;
         
-        this.dataStore = new VisualizerDataStore(visualizerExecutor, ws);
-        this.mouseListenerManager = new MouseListenerManager();
+        this.dataStore = new VisualizerDataStore(visualizerExecutor, this);
         
-        this.plotPreferences = PlotPreferences.getDefaultPlotPreferences();
-    }
-
-    /**
-     * @return Top level plot preferences for the stil plotter.
-     */
-    public PlotPreferences getPlotPreferences() {
-        return plotPreferences;
+        this.dataModel = new VisualizerDataModel(this);
+        
+        this.mouseListenerManager = new MouseListenerManager(this);
+        
+        this.boundToWorkspace = true;
+        
+        Map<Object, PlotPreferences> builder = new MapMaker().weakKeys().makeMap();
+        preferencesStore = Collections.synchronizedMap(builder);
     }
     
     /**
-     * @return Visualizer persistence layer
+     * @return Visualizer persistent store
      */
     public VisualizerDataStore getDataStore() {
         return dataStore;
@@ -77,7 +99,7 @@ public class VisualizerComponentPreferences {
      * @return the Visualizer data model
      */
     public VisualizerDataModel getDataModel() {
-        return dataStore.getDataModel();
+        return dataModel;
     }
     
     /**
@@ -117,5 +139,83 @@ public class VisualizerComponentPreferences {
         });
         
         return sed;
+    }
+    
+    /**
+     * @return A list of all ExtSeds available in the Workspace. 
+     */
+    @SuppressWarnings("unchecked")
+    public List<ExtSed> getAvailableSeds() {
+        return (List<ExtSed>) ws.getSedManager().getSeds();
+    }
+    
+    /**
+     * Bind or unbind the visualizer using these preferences to the selected SED in the IWorkspace.
+     */
+    protected void setBoundToWorkspace(boolean arg1) {
+        this.boundToWorkspace = arg1;
+        
+        // If re-binding to workspace we need to set the selected SED.
+        if (boundToWorkspace) {
+            this.updateSelectedSed((ExtSed) ws.getSedManager().getSelected());
+        }
+    }
+
+    /**
+     * Used to refresh the datamodel's view of the specified SED, if applicable.
+     * @param sed
+     */
+    public void fireChanges(ExtSed sed) {
+        List<ExtSed> selectedSeds = dataModel.getSelectedSeds();
+        if (selectedSeds.contains((sed))) {
+            dataModel.setSelectedSeds(selectedSeds);
+        }
+    }
+
+    /**
+     * If the visualizer is bound to the workspace, this method will clear the settings from the
+     * DataModel and replace them with the specified SED. Otherwise it ignores the call.
+     * @param sed
+     */
+    public void updateSelectedSed(ExtSed sed) {
+        if (sed == null) {
+            dataModel.setSelectedSeds(new LinkedList<ExtSed>());
+        } else {
+            dataModel.setSelectedSeds(Arrays.asList(sed));
+        }
+    }
+
+    /**
+     * Handles removing the specified SED from the current DataModel.
+     * @param sed
+     */
+    public void removeSed(ExtSed sed) {
+        List<ExtSed> selectedSeds = dataModel.getSelectedSeds();
+        if (selectedSeds.remove(sed)) {
+            dataModel.setSelectedSeds(selectedSeds);
+        }
+    }
+
+    public PlotPreferences getPlotPreferences(List<ExtSed> newSeds) {
+        
+        // Use default preferences for empty seds
+        if (CollectionUtils.isEmpty(newSeds)) {
+            return this.DEFAULT_PLOT_PREFERENCES;
+        }
+        
+        // If it's a single SED, key it off of the SED for long-stored preferences.
+        // List keys are only guaranteed to last as long as that list of preferences is
+        // stored in the plotter.
+        Object key = CollectionUtils.size(newSeds) == 1 ? newSeds.get(0) : newSeds;
+        
+        if (preferencesStore.containsKey(key)) {
+            return preferencesStore.get(key);
+        }
+        else {
+            // Otherwise place a new default preferences key into the map
+            PlotPreferences prefs = PlotPreferences.getDefaultPlotPreferences();
+            preferencesStore.put(key, prefs);
+            return prefs;
+        }
     }
 }

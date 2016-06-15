@@ -33,7 +33,7 @@ import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.visualizer.VisualizerComponent;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
-import cfa.vo.iris.visualizer.preferences.SegmentModel;
+import cfa.vo.iris.visualizer.preferences.LayerModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataStore;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.sedlib.Segment;
@@ -127,7 +127,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertEquals(sed, mbView.getDataModel().getSelectedSed());
+                assertTrue(mbView.getDataModel().getSelectedSeds().contains(sed));
                 assertEquals(0, mbView.getDataModel().getSedStarTables().size());
                 assertEquals(1, starTableJTree.getSelectionCount());
             }
@@ -226,9 +226,8 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         invokeWithRetry(10, 100, new Runnable() {
             @Override
             public void run() {
-                assertTrue(StringUtils.contains(mbWindow.getTitle(), sed.getId()));
+                assertTrue(mbView.getDataModel().getSelectedSeds().contains(sed));
                 assertEquals(2, mbView.getDataModel().getSedStarTables().size());
-//                assertEquals(2, starTableList.getSize());
                 assertEquals(2, segmentTable.getRowCount());
 
                 assertEquals(1, Double.parseDouble((String) plotterTable.getContentAt(0, 2)), 0.1);
@@ -251,7 +250,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
-                assertEquals(sed, mbView.getDataModel().getSelectedSed());
+                assertTrue(mbView.getDataModel().getSelectedSeds().contains(sed));
                 assertEquals(2, mbView.getDataModel().getSedStarTables().size());
                 assertEquals(2, mbView.getDataModel().getSelectedStarTables().size());
                 assertEquals(4, plotterTable.getRowCount());
@@ -322,7 +321,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
-                assertEquals(sed, mbView.getDataModel().getSelectedSed());
+                assertTrue(mbView.getDataModel().getSelectedSeds().contains(sed));
                 assertEquals(1, mbView.getDataModel().getSedStarTables().size());
                 assertEquals(1, mbView.getDataModel().getSelectedStarTables().size());
                 assertEquals(3, plotterTable.getRowCount());
@@ -370,7 +369,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             public Trigger process(Window warning) throws Exception {
                 // Check warning message
                 assertEquals(warning.getTextBox("OptionPane.label").getText(), 
-                             "No SED in browser. Please load an SED.");
+                             "No SEDs in browser. Please load an SED.");
                 return Trigger.DO_NOTHING;
             }
         }).run();
@@ -392,7 +391,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
-                assertEquals(sed, mbView.getDataModel().getSelectedSed());
+                assertTrue(mbView.getDataModel().getSelectedSeds().contains(sed));
                 assertEquals(2, mbView.getDataModel().getSedStarTables().size());
                 assertEquals(2, mbView.getDataModel().getSelectedStarTables().size());
                 assertEquals(4, plotterTable.getRowCount());
@@ -440,7 +439,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
-                assertEquals(sed, mbView.getDataModel().getSelectedSed());
+                assertTrue(mbView.getDataModel().getSelectedSeds().contains(sed));
             }
         });
         
@@ -461,7 +460,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         invokeWithRetry(50, 100, new Runnable() {
             @Override
             public void run() {
-                assertNotEquals(sed, mbView.getDataModel().getSelectedSed());
+                assertTrue(StringUtils.contains(mbView.getDataModel().getDataModelTitle(), "FilterSed"));
             }
         });
         
@@ -477,9 +476,9 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         VisualizerDataStore store = mbView.preferences.getDataStore();
         
         // Verify IrisStarTables are all the same
-        SegmentModel oldLayer = store.getSedModel(sed)
+        LayerModel oldLayer = store.getSedModel(sed)
                 .getSegmentModel(sed.getSegment(0));
-        SegmentModel newLayer = store.getSedModel(newSed)
+        LayerModel newLayer = store.getSedModel(newSed)
                 .getSegmentModel(newSed.getSegment(0));
         assertEquals(oldLayer.getSuffix(), newLayer.getSuffix());
         assertEquals(oldLayer.getInSource().getName(), newLayer.getInSource().getName());
@@ -508,7 +507,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public void run() {
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
-                assertEquals(sed, mbView.getDataModel().getSelectedSed());
+                assertTrue(mbView.getDataModel().getSelectedSeds().contains(sed));
                 assertEquals(2, mbView.getDataModel().getSedStarTables().size());
                 assertEquals(2, mbView.getDataModel().getSelectedStarTables().size());
                 assertEquals(6, plotterTable.getRowCount());
