@@ -27,7 +27,7 @@ import cfa.vo.iris.visualizer.plotter.ErrorBarType;
 import cfa.vo.iris.visualizer.plotter.LayerType;
 import cfa.vo.iris.visualizer.plotter.ShadingType;
 import cfa.vo.iris.visualizer.plotter.ShapeType;
-import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
+import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
 import static cfa.vo.iris.visualizer.plotter.PlotPreferences.*;
@@ -60,7 +60,7 @@ public class LayerModel {
     private boolean showErrorBars;
     private boolean showMarks;
     
-    private IrisStarTable inSource;
+    private StarTable inSource;
     
     // Inherited from the SED layer, but can be overridden
     private ErrorBarType errorBarType;
@@ -76,7 +76,7 @@ public class LayerModel {
     private String leglabel;
     private String[] legseq;
     
-    public LayerModel(IrisStarTable table) {
+    public LayerModel(StarTable table) {
         
         if (table == null) {
             throw new InvalidParameterException("star table cannot be null");
@@ -174,11 +174,11 @@ public class LayerModel {
             prefs.put(SIZE + suffix, size);
     }
 
-    public IrisStarTable getInSource() {
+    public StarTable getInSource() {
         return inSource;
     }
     
-    public LayerModel setInSource(IrisStarTable table) {
+    public LayerModel setInSource(StarTable table) {
         if (table == null) {
             throw new InvalidParameterException("StarTable cannot be null!");
         }
