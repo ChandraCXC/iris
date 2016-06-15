@@ -30,6 +30,8 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
+import org.apache.commons.collections.CollectionUtils;
+
 /**
  * Implementation of a JTree that is tightly coupled to the {@link VisualizerDataModel}.
  * Used for displaying and selecting Segments from the left-hand panel of the metadata 
@@ -82,15 +84,16 @@ public class StarTableJTree extends JTree {
     private void refresh() {
         this.setModel(new StarTableTreeModel(seds));
         
-        // Always expand all nodes by default
-        this.getRowCount();
-        for (int i=0; i<getRowCount(); i++) {
-            expandRow(i);
+        // If there is only a single SED, expand the segments table
+        if (CollectionUtils.size(seds) == 1) {
+            for (int i=0; i<getRowCount(); i++) {
+                expandRow(i);
+            }
         }
         
-        // Select and display the first SED, if available.
+        // Select and display all rows by default
         if (getRowCount() > 0) {
-            this.getSelectionModel().addSelectionPath(getPathForRow(0));
+            this.setSelectionInterval(0, this.getRowCount());
         }
         
         updateSelectedStarTables();
