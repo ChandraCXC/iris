@@ -30,6 +30,12 @@ public abstract class StilPlotterPointSelectionListener
     
     @Override
     public void pointSelected(PointSelectionEvent evt) {
+        
+        // Do nothing if there are no layers
+        if (CollectionUtils.isEmpty(dataModel.getLayerModels())) {
+            return;
+        }
+        
         try {
             processEvent(evt);
         } catch (Exception e) {
@@ -48,14 +54,14 @@ public abstract class StilPlotterPointSelectionListener
         // Find the PlotLayer closest to the selected row
         long[] rows = evt.getClosestRows();
         int index = 0;
-        List<LayerModel> layers = dataModel.getLayerModels();
-
+        Iterator<LayerModel> it = dataModel.getLayerModels().iterator();
+        
         // For coplotting, either layers.size is either equal to the number of SedModels in the
         // dataModel or the number of IrisStarTables in the DataModel. For the former, we need
         // to identify the correct segment identified by the row. For the latter we need to identify
         // the correct startable identified by the layer index.
-        while (index<rows.length) {
-            LayerModel model = layers.get(index);
+        LayerModel model = it.next();
+        while (index < rows.length) {
             if (rows[index] >= 0) {
                 if (dataModel.isCoplotted()) {
                     handleCoplotting(model, rows[index], evt);
@@ -69,6 +75,7 @@ public abstract class StilPlotterPointSelectionListener
             
             // Skip to the next layer
             index += model.getNumberOfLayers();
+            model = it.next();
         }
     }
     
