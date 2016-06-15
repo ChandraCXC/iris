@@ -18,10 +18,9 @@ package cfa.vo.iris.visualizer.preferences;
 
 import java.util.Collections;
 import java.util.IdentityHashMap;
-import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
 import org.apache.commons.lang.StringUtils;
 
 import cfa.vo.iris.sed.ExtSed;
@@ -43,7 +42,8 @@ import java.util.logging.Logger;
 public class SedModel {
     
     IrisStarTableAdapter adapter;
-    final Map<Segment, LayerModel> segmentModels;
+    final Map<Segment, IrisStarTable> starTableData;
+    final Map<Segment, LayerModel> tableLayerModels;
     final ExtSed sed;
     final ColorPalette colors;
     
@@ -55,41 +55,71 @@ public class SedModel {
         this.sed = sed;
         this.adapter = adapter;
         this.colors = new HSVColorPalette();
-
-        this.segmentModels = Collections.synchronizedMap(new IdentityHashMap<Segment, LayerModel>());
+        
+        this.starTableData = Collections.synchronizedMap(new IdentityHashMap<Segment, IrisStarTable>());
+        this.tableLayerModels = Collections.synchronizedMap(new IdentityHashMap<Segment, LayerModel>());
         
         refresh();
     }
     
     /**
-     * Returns a map of each segment and its preferences currently in use by this
-     * SED. Since Segment equality is broken for normal HashMaps, this uses an
-     * IdentityHashMap for a memory location check. Order is not guaranteed.
-     *  
-     * @return
-     *  A map of all segments and layer preferences currently in use by this SED.
+     * @param seg
+     * @return The IrisStarTable corresponding to the specified SED.
      */
-    public Map<Segment, LayerModel> getAllSegmentModels() {
-        return Collections.unmodifiableMap(segmentModels);
+    public IrisStarTable getStarTable(Segment seg) {
+        return starTableData.get(seg);
     }
     
+    /**
+     * @param seg
+     * @return The LayerModel for the specified segment.
+     */
     public LayerModel getSegmentModel(Segment seg) {
-        return segmentModels.get(seg);
+        return tableLayerModels.get(seg);
+    }
+    
+    /**
+     * @return A list of IrisStarTables for each Segment in this SED. List is in the same
+     * order as they appear in the SED.
+     */
+    public List<IrisStarTable> getDataTables() {
+        List<IrisStarTable> ret = new LinkedList<>();
+        for (Segment seg : sed.getSegments()) {
+            // If this isn't available then it hasn't yet been serialized in the DataStore
+            if (starTableData.containsKey(seg)) {
+                ret.add(starTableData.get(seg));
+            }
+        }
+        return ret;
+    }
+    
+    /**
+     * @return A list of all LayerModels for each Segment in this SED. List is in the same
+     * order as they appear in the SED.
+     */
+    public List<LayerModel> getLayerModels() {
+        List<LayerModel> ret = new LinkedList<>();
+        for (Segment seg : sed.getSegments()) {
+            // If this isn't available then it hasn't yet been serialized in the DataStore
+            if (starTableData.containsKey(seg)) {
+                ret.add(tableLayerModels.get(seg));
+            }
+        }
+        return ret;
     }
     
     /**
      * Reserializes all segments within the sed.
      */
     void refresh() {
-        for (int i=0; i < sed.getNumberOfSegments(); i++) {
-            addSegment(sed.getSegment(i));
+        for (Segment seg : sed.getSegments()) {
+            addSegment(seg);
         }
-        
-        clean();
     }
-
+    
     void removeAll() {
-        segmentModels.clear();
+        starTableData.clear();
+        tableLayerModels.clear();
     }
     
     /**
@@ -103,16 +133,22 @@ public class SedModel {
         if (seg == null) return false;
         
         // If the segment is already in the map remake the star table
-        if (segmentModels.containsKey(seg)) {
-            LayerModel mod = segmentModels.get(seg);
+        if (starTableData.containsKey(seg)) {
+            IrisStarTable table = starTableData.get(seg);
+            LayerModel mod = tableLayerModels.get(seg);
             
             // Preserve table name on reserialization
-            mod.setInSource(convertSegment(seg, mod.getInSource().getName()));
+            IrisStarTable newTable = convertSegment(seg, table.getName());
+            
+            starTableData.put(seg, newTable);
+            mod.setInSource(newTable);
             return false;
         }
         
+        IrisStarTable newTable = convertSegment(seg, null);
+
         // Ensure that the layer has a unique identifier in the list of segments
-        LayerModel layer = new LayerModel(convertSegment(seg, null));
+        LayerModel layer = new LayerModel(newTable);
         int count = 0;
         String id = layer.getSuffix();
         while (!isUniqueLayerSuffix(id)) {
@@ -120,7 +156,7 @@ public class SedModel {
             id = layer.getSuffix() + " " + count;
         }
         layer.setSuffix(id);
-        layer.getInSource().setName(id);
+        newTable.setName(id);
         
         // add colors to segment layer
         String hexColor = ColorPalette.colorToHex(colors.getNextColor());
@@ -130,9 +166,19 @@ public class SedModel {
         layer.setLabel(id);
         
         // set the units
-        setUnits(seg, layer);
+        setUnits(seg, newTable);
         
-        segmentModels.put(seg, layer);
+        starTableData.put(seg, newTable);
+        tableLayerModels.put(seg, layer);
+        return true;
+    }
+    
+    boolean isUniqueLayerSuffix(String suffix) {
+        for (LayerModel layer : tableLayerModels.values()) {
+            if (StringUtils.equals(layer.getSuffix(), suffix)) {
+                return false;
+            }
+        }
         return true;
     }
     
@@ -155,8 +201,8 @@ public class SedModel {
         // Do not keep track of empty segments
         if (seg == null) return false;
         
-        LayerModel m = segmentModels.remove(seg);
-        return m != null;
+        starTableData.remove(seg);
+        return tableLayerModels.remove(seg) != null;
     }
     
     /**
@@ -165,35 +211,24 @@ public class SedModel {
      * are used and set as the SED's preferred units.
      * 
      */
-    private void setUnits(Segment seg, LayerModel layer) {
+    private void setUnits(Segment seg, IrisStarTable table) {
         // if this is the first segment to be added to the SED preferences,
         // set the preferred X and Y units to the segment's
         if (StringUtils.isEmpty(xunits) || StringUtils.isEmpty(xunits)) {
-            setInitialUnits(seg);
+            try {
+                xunits = seg.getSpectralAxisUnits();
+                yunits = seg.getFluxAxisUnits();
+            } catch (SedNoDataException ex) {
+                throw new RuntimeException(ex);
+            }
         }
         
         // set the layer units for this segment
         try {
-            layer.setXUnits(xunits);
-            layer.setYUnits(yunits);
+            table.setXUnits(xunits);
+            table.setYUnits(yunits);
         } catch (UnitsException e) {
             throw new RuntimeException(e);
-        }
-    }
-    
-    /**
-     * Set the SED units for the first time. Only should be called when the
-     * first segment is added to an empty SED. This function sets the X and Y
-     * units to that of the segment's.
-     */
-    private void setInitialUnits(Segment seg) {
-        try {
-            if (StringUtils.isEmpty(xunits))
-                xunits = seg.getSpectralAxisUnits();
-            if (StringUtils.isEmpty(yunits))
-                yunits = seg.getFluxAxisUnits();
-        } catch (SedNoDataException ex) {
-            throw new RuntimeException(ex);
         }
     }
     
@@ -209,10 +244,10 @@ public class SedModel {
         this.yunits = yunit;
         
         // update the segment layers with the new units
-        for (LayerModel seg : segmentModels.values()) {
+        for (IrisStarTable table : starTableData.values()) {
             try {
-                seg.setXUnits(xunits);
-                seg.setYUnits(yunits);
+                table.setXUnits(xunits);
+                table.setYUnits(yunits);
             } catch (UnitsException ex) {
                 Logger.getLogger(SedModel.class.getName())
                         .log(Level.SEVERE, null, ex);
@@ -220,57 +255,11 @@ public class SedModel {
         }
     }
     
-    // Removes any segments that are no longer in the SED
-    private void clean() {
-        
-        // Use iterator for concurrent modification
-        Iterator<Entry<Segment, LayerModel>> it = segmentModels.entrySet().iterator();
-        
-        while (it.hasNext()) {
-            boolean shouldRemove = true;
-            Segment seg = it.next().getKey();
-            
-            // Need to manual check for location equality test
-            for (int i=0; i<sed.getNumberOfSegments(); i++) {
-                if (seg == sed.getSegment(i)) {
-                    shouldRemove = false;
-                    break;
-                }
-            }
-            if (shouldRemove) {
-                it.remove();
-            }
-        }
-    }
-    
-    boolean isUniqueLayerSuffix(String suffix) {
-        for (LayerModel layer : segmentModels.values()) {
-            if (StringUtils.equals(layer.getSuffix(), suffix)) {
-                return false;
-            }
-        }
-        return true;
-    }
-    
     public String getXUnits() {
         return xunits;
     }
 
-    public void setXUnits(String xunits) throws UnitsException {
-        this.xunits = xunits;
-        for (LayerModel layer : segmentModels.values()) {
-            layer.setXUnits(xunits);
-        }
-    }
-
     public String getYUnits() {
         return yunits;
-    }
-
-    public void setYUnits(String yunits) throws UnitsException {
-        this.yunits = yunits;
-        for (LayerModel layer : segmentModels.values()) {
-            layer.setYUnits(yunits);
-        }
     }
 }

@@ -74,8 +74,6 @@ public class VisualizerDataStore {
             sedModels.get(sed).refresh();
         } else {
             sedModels.put(sed, new SedModel(sed, adapter));
-            
-            // If it is a new
         }
         
         preferences.fireChanges(sed);

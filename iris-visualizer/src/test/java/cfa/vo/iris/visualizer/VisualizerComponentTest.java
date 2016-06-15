@@ -29,6 +29,7 @@ import static cfa.vo.iris.test.unit.TestUtils.*;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.plotter.StilPlotter;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
+import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
@@ -68,6 +69,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
     public void testEventSubscription() throws Exception {
         SedlibSedManager sedManager = (SedlibSedManager) app.getWorkspace().getSedManager();
         final VisualizerComponentPreferences prefs = comp.getPreferences();
+        final VisualizerDataModel dataModel = prefs.getDataModel();
 
         // No view when starting application up
         assertNull(comp.getDefaultPlotterView());
@@ -87,7 +89,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed));
+                assertTrue(dataModel.getSelectedSeds().contains(sed));
             }
         });
 
@@ -100,7 +102,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertTrue(prefs.getDataModel().getSedModel(sed).getAllSegmentModels().containsKey(segment));
+                assertNotNull(dataModel.getSedModel(sed).getSegmentModel(segment));
             }
         });
 
@@ -110,7 +112,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed2));
+                assertTrue(dataModel.getSelectedSeds().contains(sed2));
             }
         });
 
@@ -120,7 +122,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed));
+                assertTrue(dataModel.getSelectedSeds().contains(sed));
             }
         });
 
@@ -130,6 +132,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
     public void testPlotPreferencesGridAndPlotType() throws Exception {
         SedlibSedManager sedManager = (SedlibSedManager) app.getWorkspace().getSedManager();
         final VisualizerComponentPreferences prefs = comp.getPreferences();
+        final VisualizerDataModel dataModel = prefs.getDataModel();
         
         window.getMenuBar()
                 .getMenu("Tools")
@@ -145,7 +148,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed1));
+                assertTrue(dataModel.getSelectedSeds().contains(sed1));
             }
         });
         
@@ -173,7 +176,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed2));
+                assertTrue(dataModel.getSelectedSeds().contains(sed2));
             }
         });
         
@@ -199,7 +202,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed1));
+                assertTrue(dataModel.getSelectedSeds().contains(sed1));
             }
         });
         
@@ -224,7 +227,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed2));
+                assertTrue(dataModel.getSelectedSeds().contains(sed2));
             }
         });
         
@@ -239,6 +242,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
     public void testPlotPreferencesFixed() throws Exception {
         SedlibSedManager sedManager = (SedlibSedManager) app.getWorkspace().getSedManager();
         final VisualizerComponentPreferences prefs = comp.getPreferences();
+        final VisualizerDataModel dataModel = prefs.getDataModel();
         
         window.getMenuBar()
                 .getMenu("Tools")
@@ -257,7 +261,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed1));
+                assertTrue(dataModel.getSelectedSeds().contains(sed1));
             }
         });
         
@@ -301,7 +305,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertEquals(2, prefs.getDataModel().getLayerModels().size());
+                assertEquals(2, dataModel.getLayerModels().size());
             }
         });
         
@@ -336,11 +340,13 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         final Segment seg2 = createSampleSegment();
         final ExtSed sed2 = sedManager.newSed("sampleSed2");
         sed2.addSegment(seg2);
+        
         // Make sure this is enqueued in the Swing EDT
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed2));
+                assertTrue(dataModel.getSelectedSeds().contains(sed2));
+                assertNotNull(dataModel.getSedModel(sed2).getSegmentModel(seg2));
             }
         });
         
@@ -361,7 +367,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed1));
+                assertTrue(dataModel.getSelectedSeds().contains(sed1));
             }
         });
         
@@ -387,6 +393,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
     public void testChangeUnits() throws Exception {
         SedlibSedManager sedManager = (SedlibSedManager) app.getWorkspace().getSedManager();
         final VisualizerComponentPreferences prefs = comp.getPreferences();
+        final VisualizerDataModel dataModel = prefs.getDataModel();
         
         window.getMenuBar()
                 .getMenu("Tools")
@@ -412,7 +419,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed0));
+                assertTrue(dataModel.getSelectedSeds().contains(sed0));
             }
         });
         
@@ -444,7 +451,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed1));
+                assertTrue(dataModel.getSelectedSeds().contains(sed1));
             }
         });
         
@@ -472,7 +479,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed2));
+                assertTrue(dataModel.getSelectedSeds().contains(sed2));
             }
         });
         
@@ -498,7 +505,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed1));
+                assertTrue(dataModel.getSelectedSeds().contains(sed1));
             }
         });
         
@@ -522,7 +529,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
-                assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed2));
+                assertTrue(dataModel.getSelectedSeds().contains(sed2));
             }
         });
         

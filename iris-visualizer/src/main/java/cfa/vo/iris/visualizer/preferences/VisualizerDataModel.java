@@ -10,6 +10,7 @@ import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -106,24 +107,28 @@ public class VisualizerDataModel {
      * Return a list of SegmentModels for the SED - in the same order as the Segments
      * appear in the SED.
      * @param sed
-     * @return 
+     * @return
      */
     public List<LayerModel> getModelsForSed(ExtSed sed) {
-        
         SedModel sedModel = store.getSedModel(sed);
-        List<LayerModel> models = new ArrayList<>();
-        
-        // Return an empty list if the model has been removed from the store.
-        // (meaning the Sed was removed from the workspace).
         if (sedModel == null) {
-            return models;
+            return new ArrayList<>();
         }
-        
-        for (int i=0; i<sed.getNumberOfSegments(); i++) {
-            models.add(sedModel.getSegmentModel(sed.getSegment(i)));
+        return sedModel.getLayerModels();
+    }
+    
+    /**
+     * Return a list of IrisStarTables for the SED - in the same order as the Segments
+     * appear in the SED.
+     * @param sed
+     * @return
+     */
+    public List<IrisStarTable> getStarTablesForSed(ExtSed sed) {
+        SedModel sedModel = store.getSedModel(sed);
+        if (sedModel == null) {
+            return new ArrayList<>();
         }
-        
-        return models;
+        return sedModel.getDataTables();
     }
     
     /*
@@ -152,7 +157,6 @@ public class VisualizerDataModel {
         // Here to support empty values for null seds
         List<LayerModel> newSedModels = new LinkedList<>();
         List<IrisStarTable> newSedTables = new LinkedList<>();
-        List<ExtSed> newSelectedSeds = new LinkedList<>();
         StringBuilder dataModelTitle = new StringBuilder();
         
         Iterator<ExtSed> it = selectedSeds.iterator();
@@ -167,14 +171,9 @@ public class VisualizerDataModel {
             
             // Add models to the SED
             SedModel sedModel = store.getSedModel(sed);
-            for (int i = 0; i < sed.getNumberOfSegments(); i++) {
-                LayerModel segModel = sedModel.getSegmentModel(sed.getSegment(i));
-                newSedModels.add(segModel);
-                newSedTables.add(segModel.getInSource());
-            }
-            
+            newSedModels.addAll(sedModel.getLayerModels());
+            newSedTables.addAll(sedModel.getDataTables());
             dataModelTitle.append(sed.getId() + " ");
-            newSelectedSeds.add(sed);
         }
         this.selectedSeds = ObservableCollections.observableList(selectedSeds);
         
@@ -217,7 +216,7 @@ public class VisualizerDataModel {
     }
     
     public List<LayerModel> getLayerModels() {
-        return new LinkedList<>(layerModels);
+        return Collections.unmodifiableList(layerModels);
     }
     
     // Locked down since these are tied to the selected seds
@@ -228,7 +227,7 @@ public class VisualizerDataModel {
     }
     
     public List<IrisStarTable> getSedStarTables() {
-        return new LinkedList<>(sedStarTables);
+        return Collections.unmodifiableList(sedStarTables);
     }
     
     // Locked down since these are tied to the selected seds
@@ -239,7 +238,7 @@ public class VisualizerDataModel {
     }
     
     public List<IrisStarTable> getSelectedStarTables() {
-        return new LinkedList<>(selectedStarTables);
+        return Collections.unmodifiableList(selectedStarTables);
     }
 
     public synchronized void setSelectedStarTables(List<IrisStarTable> newStarTables) {

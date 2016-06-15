@@ -17,8 +17,7 @@
 package cfa.vo.iris.visualizer;
 
 import java.net.URL;
-import java.util.Map;
-
+import java.util.List;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -30,13 +29,10 @@ import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
-import cfa.vo.iris.visualizer.preferences.LayerModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
-import cfa.vo.sedlib.Segment;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.sedlib.io.SedFormat;
 import cfa.vo.testdata.TestData;
-import uk.ac.starlink.table.StarTable;
-
 import static org.junit.Assert.*;
 
 public class PlottingPerformanceIT extends AbstractComponentGUITest {
@@ -87,14 +83,11 @@ public class PlottingPerformanceIT extends AbstractComponentGUITest {
                 assertTrue(prefs.getDataModel().getSelectedSeds().contains(sed));
                 
                 // Verify the startable has loaded correctly
-                Map<Segment, LayerModel> segmentMap = 
-                        prefs.getDataStore().getSedModel(sed).getAllSegmentModels();
+                List<IrisStarTable> tables =
+                        prefs.getDataStore().getSedModel(sed).getDataTables();
                 
-                assertEquals(1, segmentMap.size());
-                for (LayerModel seg : segmentMap.values()) {
-                    StarTable table = (StarTable) seg.getInSource();
-                    assertEquals(303706, table.getRowCount());
-                }
+                assertEquals(1, tables.size());
+                assertEquals(303706, tables.get(0).getRowCount());
             }
         });
     }

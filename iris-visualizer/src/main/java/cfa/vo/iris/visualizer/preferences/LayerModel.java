@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import cfa.vo.iris.sed.stil.SegmentColumn.Column;
-import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.visualizer.plotter.ErrorBarType;
 import cfa.vo.iris.visualizer.plotter.LayerType;
 import cfa.vo.iris.visualizer.plotter.ShadingType;
@@ -173,22 +172,6 @@ public class LayerModel {
         
         if (size != null)
             prefs.put(SIZE + suffix, size);
-    }
-    
-    public String getXUnits() {
-        return inSource.getXUnits();
-    }
-    
-    public void setXUnits(String xunits) throws UnitsException {
-        inSource.setXUnits(xunits);
-    }
-    
-    public String getYUnits() {
-        return inSource.getYUnits();
-    }
-    
-    public void setYUnits(String yunits) throws UnitsException {
-        inSource.setYUnits(yunits);
     }
 
     public IrisStarTable getInSource() {
