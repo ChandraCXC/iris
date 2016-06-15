@@ -148,13 +148,6 @@ public class VisualizerComponentPreferences {
     public List<ExtSed> getAvailableSeds() {
         return (List<ExtSed>) ws.getSedManager().getSeds();
     }
-
-    /**
-     * @return if the visualizer using these preferences is bound to the IWorkspace
-     */
-    protected boolean isBoundToWorkspace() {
-        return boundToWorkspace;
-    }
     
     /**
      * Bind or unbind the visualizer using these preferences to the selected SED in the IWorkspace.
@@ -185,12 +178,10 @@ public class VisualizerComponentPreferences {
      * @param sed
      */
     public void updateSelectedSed(ExtSed sed) {
-        if (this.isBoundToWorkspace()) {
-            if (sed == null) {
-                dataModel.setSelectedSeds(new LinkedList<ExtSed>());
-            } else {
-                dataModel.setSelectedSeds(Arrays.asList(sed));
-            }
+        if (sed == null) {
+            dataModel.setSelectedSeds(new LinkedList<ExtSed>());
+        } else {
+            dataModel.setSelectedSeds(Arrays.asList(sed));
         }
     }
 

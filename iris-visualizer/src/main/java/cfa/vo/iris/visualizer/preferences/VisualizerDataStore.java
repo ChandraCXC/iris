@@ -196,10 +196,7 @@ public class VisualizerDataStore {
                 remove(sed);
             } 
             else if (SedCommand.SELECTED.equals(payload)) {
-                // If the visualizer is tied to the workspace, update the SED
-                if (preferences.isBoundToWorkspace()) {
-                    preferences.updateSelectedSed(sed);
-                }
+                preferences.updateSelectedSed(sed);
             }
             else {
                 // Doesn't merit a full reset, this is basically just here for SED name changes

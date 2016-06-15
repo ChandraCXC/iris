@@ -37,9 +37,6 @@ public class CoPlotManagementWindow extends javax.swing.JInternalFrame {
         this.preferences = preferences;
         
         initComponents();
-        
-        this.wsBoundCheckbox.setSelected(!preferences.isBoundToWorkspace());
-        
     }
     
     public VisualizerComponentPreferences getPreferences() {
@@ -83,11 +80,10 @@ public class CoPlotManagementWindow extends javax.swing.JInternalFrame {
         java.awt.GridBagConstraints gridBagConstraints;
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
-        applyChangesButton = new javax.swing.JButton();
+        plotSedsButton = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         sedScrollPane = new javax.swing.JScrollPane();
         sedList = new javax.swing.JList<ExtSed>();
-        wsBoundCheckbox = new javax.swing.JCheckBox();
         cancelButton = new javax.swing.JButton();
 
         setClosable(true);
@@ -95,18 +91,18 @@ public class CoPlotManagementWindow extends javax.swing.JInternalFrame {
         setToolTipText("");
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        applyChangesButton.setText("Apply Changes");
-        applyChangesButton.setToolTipText("Apply changes to the visualizer");
-        applyChangesButton.addActionListener(new java.awt.event.ActionListener() {
+        plotSedsButton.setText("Plot Seds");
+        plotSedsButton.setToolTipText("Apply changes to the visualizer");
+        plotSedsButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                applyChangesButtonActionPerformed(evt);
+                plotSedsButtonActionPerformed(evt);
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        getContentPane().add(applyChangesButton, gridBagConstraints);
+        getContentPane().add(plotSedsButton, gridBagConstraints);
 
         sedScrollPane.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
 
@@ -115,7 +111,7 @@ public class CoPlotManagementWindow extends javax.swing.JInternalFrame {
         org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${preferences.availableSeds}");
         org.jdesktop.swingbinding.JListBinding jListBinding = org.jdesktop.swingbinding.SwingBindings.createJListBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, eLProperty, sedList);
         bindingGroup.addBinding(jListBinding);
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, wsBoundCheckbox, org.jdesktop.beansbinding.ELProperty.create("${selected}"), sedList, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, new javax.swing.JCheckBox(), org.jdesktop.beansbinding.ELProperty.create("${selected}"), sedList, org.jdesktop.beansbinding.BeanProperty.create("enabled"));
         bindingGroup.addBinding(binding);
 
         sedScrollPane.setViewportView(sedList);
@@ -141,15 +137,6 @@ public class CoPlotManagementWindow extends javax.swing.JInternalFrame {
         gridBagConstraints.gridwidth = 2;
         getContentPane().add(jPanel1, gridBagConstraints);
 
-        wsBoundCheckbox.setText("Enable Co-Plotting");
-        wsBoundCheckbox.setToolTipText("If selected, users can manually specify which SEDs to display in the plotter. The plotter will not update when the selected sed in the builder changes.");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHWEST;
-        getContentPane().add(wsBoundCheckbox, gridBagConstraints);
-
         cancelButton.setText("Cancel");
         cancelButton.setToolTipText("Close this window without saving");
         cancelButton.addActionListener(new java.awt.event.ActionListener() {
@@ -168,14 +155,10 @@ public class CoPlotManagementWindow extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void applyChangesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_applyChangesButtonActionPerformed
-        preferences.setBoundToWorkspace(!this.wsBoundCheckbox.isSelected());
-        if (this.wsBoundCheckbox.isSelected()) {
-            preferences.getDataModel().setSelectedSeds(this.sedList.getSelectedValuesList());
-        }
-        
+    private void plotSedsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_plotSedsButtonActionPerformed
+        preferences.getDataModel().setSelectedSeds(this.sedList.getSelectedValuesList());
         this.dispose();
-    }//GEN-LAST:event_applyChangesButtonActionPerformed
+    }//GEN-LAST:event_plotSedsButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         this.dispose();
@@ -183,12 +166,11 @@ public class CoPlotManagementWindow extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton applyChangesButton;
     private javax.swing.JButton cancelButton;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JButton plotSedsButton;
     private javax.swing.JList<ExtSed> sedList;
     private javax.swing.JScrollPane sedScrollPane;
-    private javax.swing.JCheckBox wsBoundCheckbox;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 }
