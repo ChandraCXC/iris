@@ -48,27 +48,27 @@ public class VisualizerComponentPreferencesTest {
         // Add SED
         store.update(sed);
         assertEquals(1, store.getSedModels().size());
-        assertEquals(0, store.getSedModel(sed).getAllSegmentModels().size());
+        assertEquals(0, store.getSedModel(sed).getLayerModels().size());
         
         // Add segment to SED
         Segment seg1 = createSampleSegment();
         sed.addSegment(seg1);
         store.update(sed, seg1);
         assertEquals(1, store.getSedModels().size());
-        assertEquals(1, store.getSedModel(sed).getAllSegmentModels().size());
+        assertEquals(1, store.getSedModel(sed).getLayerModels().size());
         
         // Add another segment
         Segment seg2 = createSampleSegment(new double[] {1}, new double[] {2});
         sed.addSegment(seg2);
         store.update(sed, seg2);
         assertEquals(1, store.getSedModels().size());
-        assertEquals(2, store.getSedModel(sed).getAllSegmentModels().size());
+        assertEquals(2, store.getSedModel(sed).getLayerModels().size());
         
         // Remove the first segment
         sed.remove(seg1);
         store.remove(sed, seg1);
         assertEquals(1, store.getSedModels().size());
-        assertEquals(1, store.getSedModel(sed).getAllSegmentModels().size());
+        assertEquals(1, store.getSedModel(sed).getLayerModels().size());
         
         // Add a list of segments at once (test MultipleSegmentEvent listener)
         Segment seg3 = createSampleSegment();
@@ -77,11 +77,11 @@ public class VisualizerComponentPreferencesTest {
         sed.addSegment(segments);
         store.update(sed, segments);
         assertEquals(1, store.getSedModels().size());
-        assertEquals(3, store.getSedModel(sed).getAllSegmentModels().size());
+        assertEquals(3, store.getSedModel(sed).getLayerModels().size());
         
         sed.remove(segments);
         store.remove(sed, segments);
-        assertEquals(1, store.getSedModel(sed).getAllSegmentModels().size());
+        assertEquals(1, store.getSedModel(sed).getLayerModels().size());
         
         // Remove the SED
         store.remove(sed);

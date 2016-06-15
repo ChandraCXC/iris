@@ -39,24 +39,24 @@ public class SedPreferencesTest {
         
         SedModel model = new SedModel(sed, adapter);
         
-        assertEquals(0, model.getAllSegmentModels().size());
+        assertEquals(0, model.getLayerModels().size());
         
         Segment seg1 = createSampleSegment();
         sed.addSegment(seg1);
         
         // Should pick up the change
         model.refresh();
-        assertEquals(1, model.getAllSegmentModels().size());
+        assertEquals(1, model.getLayerModels().size());
         
         // Re-adding the same segment should not alter the map
         model.addSegment(seg1);
-        assertEquals(1, model.getAllSegmentModels().size());
+        assertEquals(1, model.getLayerModels().size());
         
         // Whereas adding an identical (but new) segment should add a new map element
         Segment seg2 = createSampleSegment();
         sed.addSegment(seg2);
         model.refresh();
-        assertEquals(2, model.getAllSegmentModels().size());
+        assertEquals(2, model.getLayerModels().size());
 
         // Same segments should still have different suffixes
         LayerModel layer1 = model.getSegmentModel(seg1);
@@ -76,8 +76,8 @@ public class SedPreferencesTest {
         // Remove a segment works
         sed.remove(seg1);
         model.refresh();
-        assertEquals(1, model.getAllSegmentModels().size());
-        
+        assertEquals(1, model.getDataTables().size());
+
         // The color for seg2 should still be the same as it was before 
         // seg1 was removed
         assertEquals(color2, model.getSegmentModel(seg2).getMarkColor());
