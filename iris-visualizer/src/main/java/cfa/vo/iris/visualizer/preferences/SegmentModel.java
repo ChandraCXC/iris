@@ -136,9 +136,9 @@ public class SegmentModel {
             prefs.put(X_ERR_HI + suffix, Column.Spectral_Error_High.name());
             prefs.put(X_ERR_LO + suffix, Column.Spectral_Error_Low.name());
         }
-        if (shouldAddErrorColumn(Column.FLux_Error_Low, id)) {
+        if (shouldAddErrorColumn(Column.Flux_Error_Low, id)) {
             prefs.put(Y_ERR_HI + suffix, Column.Flux_Error_High.name());
-            prefs.put(Y_ERR_LO + suffix, Column.FLux_Error_Low.name());
+            prefs.put(Y_ERR_LO + suffix, Column.Flux_Error_Low.name());
         }
         
         prefs.put(TYPE + suffix, LayerType.xyerror.name());

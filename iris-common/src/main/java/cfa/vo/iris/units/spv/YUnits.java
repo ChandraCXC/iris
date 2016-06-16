@@ -859,7 +859,7 @@ public class YUnits extends Units implements YUnit, Serializable {
             public double convertTo(double f, double w, double d1, double d2) {
                 double arg = Constant.H * f * w;
                 if (arg > 0.0) {
-                    return (-1.085736 * Math.log (arg) + ABZERO);
+                    return (-2.5 * Math.log10(arg) + ABZERO);
                 } else {
                     return Double.NaN;
                 }
@@ -891,7 +891,7 @@ public class YUnits extends Units implements YUnit, Serializable {
             public double convertTo(double f, double w, double d1, double d2) {
                 double arg = Constant.H * Constant.C * f / w;
                 if (arg > 0.0)
-                    return (-1.085736 * Math.log (arg) + STZERO);
+                    return (-2.5 * Math.log10(arg) + STZERO);
                 else
                     return Double.NaN;
             }
@@ -1037,7 +1037,7 @@ public class YUnits extends Units implements YUnit, Serializable {
         // Errors in magnitude must be added to the data magnitude to get
         // the lower error bar in flux, and subtracted to get the upper. We do only
         // one here.
-
+        
         // we first compute where are the end points of the error bars.
         double[] errorBarEndValue = new double[e.length];
         for (int i = 0; i < errorBarEndValue.length; i++) {

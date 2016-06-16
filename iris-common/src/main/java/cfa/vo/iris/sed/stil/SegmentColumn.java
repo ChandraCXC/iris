@@ -158,7 +158,11 @@ public abstract class SegmentColumn extends ColumnData
         Spectral_Error_Low("X axis low error values", "iris.spec.value.error.low", Double.class),
         Flux_Error("Y axis error values", "iris.flux.value.error", Double.class),
         Flux_Error_High("Y axis error values", "iris.flux.value.error.high", Double.class),
-        FLux_Error_Low("Y axis low error values", "iris.flux.value.error.low", Double.class);
+        Flux_Error_Low("Y axis low error values", "iris.flux.value.error.low", Double.class),
+        Original_Flux_Error("Original Y axis error values", "iris.flux.value.original.error", Double.class),
+        Original_Flux_Error_Hi("Original Y axis upper error values", "iris.flux.value.original.error.high", Double.class),
+        Original_Flux_Error_Low("Original Y axis low error values", "iris.flux.value.original.error.low", Double.class);
+        
         
         public String description;
         public String utype;
