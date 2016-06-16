@@ -196,6 +196,7 @@ public class VisualizerDataStore {
                 remove(sed);
             } 
             else if (SedCommand.SELECTED.equals(payload)) {
+                // TODO: Revist the idea of a "frozen" workspace, some work removed by 5e7bc42
                 preferences.updateSelectedSed(sed);
             }
             else {
