@@ -21,7 +21,6 @@ import static org.junit.Assert.*;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.uispec4j.CheckBox;
 import org.uispec4j.ListBox;
 import org.uispec4j.Panel;
 import org.uispec4j.Tree;
@@ -121,20 +120,12 @@ public class CoPlottingTest extends AbstractComponentGUITest {
         });
         Window cpWindow = desktop.getWindow("Select Seds");
         
-        // Should be bound to workspace at start
-        CheckBox box = cpWindow.getCheckBox("Enable Co-Plotting");
-        assertFalse(box.isSelected().isTrue());
-        
         // list box should not be enabled
         ListBox sedList = cpWindow.getPanel("contentPane").getListBox();
-        assertFalse(sedList.isEnabled().isTrue());
-        
-        // Enable box
-        box.select();
-        assertTrue(cpWindow.getListBox().isEnabled().isTrue());
+        assertTrue(sedList.isEnabled().isTrue());
         
         // Applying changes without selected SEDs will clear plotter
-        cpWindow.getButton("Apply Changes").click();
+        cpWindow.getButton("Plot Seds").click();
 
         // verify selected sed
         invokeWithRetry(20, 100, new Runnable() {
@@ -155,12 +146,7 @@ public class CoPlottingTest extends AbstractComponentGUITest {
             }
         });
         cpWindow = desktop.getWindow("Select Seds");
-        box = cpWindow.getCheckBox("Enable Co-Plotting");
         sedList = cpWindow.getPanel("contentPane").getListBox();
-        
-        // Checkbox should now be selected
-        assertTrue(box.isSelected().isTrue());
-        assertTrue(sedList.isEnabled().isTrue());
         
         // Verify list contents
         sedList.contains(sed1.getId()).check();
@@ -171,7 +157,7 @@ public class CoPlottingTest extends AbstractComponentGUITest {
         sedList.selectIndices(0, 1);
         
         // Plot 2 seds
-        cpWindow.getButton("Apply Changes").click();
+        cpWindow.getButton("Plot Seds").click();
 
         // verify multiple seds in datamodel
         invokeWithRetry(20, 100, new Runnable() {
