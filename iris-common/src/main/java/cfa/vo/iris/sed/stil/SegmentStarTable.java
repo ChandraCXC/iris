@@ -299,6 +299,14 @@ public class SegmentStarTable extends RandomStarTable {
         updateColumnValues(fluxValues, Column.Original_Flux_Value);
     }
     
+
+    /**
+     * The original flux error values are not added as columns to the
+     * StarTable. To add these to the StarTable, include
+     * updateColumnValues(errors, Column.Original_Flux_*) in the
+     * setOriginalFluxErrValues*() methods.
+     */
+
     public double[] getOriginalFluxErrValues() {
         return originalFluxErrValues;
     }
@@ -322,6 +330,7 @@ public class SegmentStarTable extends RandomStarTable {
     public void setOriginalFluxErrValuesLo(double[] originalFluxErrValuesLo) {
         this.originalFluxErrValuesLo = originalFluxErrValuesLo;
     }
+
 
     public double[] getSpecErrValues() {
         return specErrValues;
