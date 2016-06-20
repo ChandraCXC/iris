@@ -117,23 +117,23 @@ public class VisualizerComponentPreferencesTest {
         
         // Add second SED to the DataModel
         prefs.getDataModel().setSelectedSeds(Arrays.asList(sed2));
-        assertEquals("nm", prefs.getDataModel().getXUnits());
-        assertEquals("mJy", prefs.getDataModel().getYUnits());
+        assertEquals("nm", prefs.getDataModel().getXunits());
+        assertEquals("mJy", prefs.getDataModel().getYunits());
         assertEquals(2, prefs.getDataModel().getLayerModels().size());
         assertEquals(2, prefs.getDataModel().getSedStarTables().size());
         
         // Add both seds, should set all units to first SEDs units
         prefs.getDataModel().setSelectedSeds(Arrays.asList(sed1, sed2));
-        assertEquals("Angstrom", prefs.getDataModel().getXUnits());
-        assertEquals("erg/s/cm2/Angstrom", prefs.getDataModel().getYUnits());
+        assertEquals("Angstrom", prefs.getDataModel().getXunits());
+        assertEquals("erg/s/cm2/Angstrom", prefs.getDataModel().getYunits());
         assertEquals("Angstrom", prefs.getDataModel().getSedModel(sed2).getXUnits());
         assertEquals(2, prefs.getDataModel().getLayerModels().size());
         assertEquals(4, prefs.getDataModel().getSedStarTables().size());
         
         // Go back to the second segment, should be back to the original units
         prefs.getDataModel().setSelectedSeds(Arrays.asList(sed2));
-        assertEquals("nm", prefs.getDataModel().getXUnits());
-        assertEquals("mJy", prefs.getDataModel().getYUnits());
+        assertEquals("nm", prefs.getDataModel().getXunits());
+        assertEquals("mJy", prefs.getDataModel().getYunits());
         assertEquals(2, prefs.getDataModel().getLayerModels().size());
         assertEquals(2, prefs.getDataModel().getSedStarTables().size());
     }

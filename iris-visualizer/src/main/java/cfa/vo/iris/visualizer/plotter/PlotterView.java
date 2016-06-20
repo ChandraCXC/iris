@@ -40,6 +40,7 @@ public class PlotterView extends JInternalFrame {
     private final VisualizerComponentPreferences preferences;
     private final MetadataBrowserMainView metadataBrowser;
     private final JInternalFrame plotterNavHelpFrame;
+    private final UnitsManagerFrame unitsManagerFrame;
     private final IWorkspace ws;
     
     // Plot mouse coordinate locations
@@ -77,6 +78,9 @@ public class PlotterView extends JInternalFrame {
         
         // plotter navigation help frame
         this.plotterNavHelpFrame = new PlotterNavHelpFrame("Plotter Navigation Help");
+        
+        // Units manager
+        this.unitsManagerFrame = new UnitsManagerFrame();
         
         // Action to set linear plotting
         mntmLinear.addActionListener(new ActionListener() {
@@ -555,11 +559,10 @@ public class PlotterView extends JInternalFrame {
     }//GEN-LAST:event_mntmExportActionPerformed
 
     private void btnUnitsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnitsActionPerformed
-
-        UnitsManagerFrame unitsManagerFrame = new UnitsManagerFrame();
         unitsManagerFrame.setDataModel(preferences.getDataModel());
-
-        ws.addFrame(unitsManagerFrame);
+        if (!unitsManagerFrame.isVisible()) {
+            ws.addFrame(unitsManagerFrame);
+        }
         GUIUtils.moveToFront(unitsManagerFrame);
     }//GEN-LAST:event_btnUnitsActionPerformed
 

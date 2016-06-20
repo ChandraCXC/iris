@@ -35,6 +35,8 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
 
     public void setDataModel(VisualizerDataModel dataModel) {
         this.dataModel = dataModel;
+        this.unitsWidget.setXunit(dataModel.getXunits());
+        this.unitsWidget.setYunit(dataModel.getYunits());
     }
 
     /**
@@ -54,6 +56,7 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
         cancelButton = new javax.swing.JButton();
 
         setClosable(true);
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setResizable(true);
         setTitle("Select Units");
         setToolTipText("");
@@ -63,7 +66,7 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
 
         org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.xunits}"), unitsWidget, org.jdesktop.beansbinding.BeanProperty.create("xunit"));
         bindingGroup.addBinding(binding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.yunits}"), unitsWidget, org.jdesktop.beansbinding.BeanProperty.create("yunit"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.yunits}"), unitsWidget, org.jdesktop.beansbinding.BeanProperty.create("yunit"));
         bindingGroup.addBinding(binding);
 
         unitsManagerPanel.add(unitsWidget, java.awt.BorderLayout.CENTER);
@@ -126,13 +129,13 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        this.dispose();
+        this.hide();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
         dataModel.setUnits(unitsWidget.getXunit(), unitsWidget.getYunit());
         dataModel.refresh();
-        this.dispose();
+        this.hide();
     }//GEN-LAST:event_updateButtonActionPerformed
 
 

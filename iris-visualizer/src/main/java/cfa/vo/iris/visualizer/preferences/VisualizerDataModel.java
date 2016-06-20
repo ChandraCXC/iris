@@ -294,29 +294,29 @@ public class VisualizerDataModel {
             this.getSedModel(sed).setUnits(xunit, yunit);
         }
         
-        this.setXUnits(xunit);
-        this.setYUnits(yunit);
+        this.setXunits(xunit);
+        this.setYunits(yunit);
         
         PlotPreferences pp = preferences.getPlotPreferences(selectedSeds);
         pp.setXUnits(xunit);
         pp.setYUnits(yunit);
     }
     
-    public String getXUnits() {
+    public String getXunits() {
         return xUnits;
     }
     
-    private void setXUnits(String xunits) {
+    private void setXunits(String xunits) {
         String old = this.xUnits;
         this.xUnits = xunits;
         pcs.firePropertyChange(PROP_XUNITS, old, xunits);
     }
     
-    public String getYUnits() {
+    public String getYunits() {
         return yUnits;
     }
     
-    private void setYUnits(String yunits) {
+    private void setYunits(String yunits) {
         String old = this.yUnits;
         this.yUnits = yunits;
         pcs.firePropertyChange(PROP_YUNITS, old, yunits);

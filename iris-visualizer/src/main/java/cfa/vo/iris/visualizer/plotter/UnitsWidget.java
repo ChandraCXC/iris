@@ -20,7 +20,6 @@ import cfa.vo.iris.sed.quantities.XUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.swing.AbstractListModel;
 
 /**
  *
@@ -50,23 +49,19 @@ public class UnitsWidget extends javax.swing.JPanel {
         initComponents();
     }
 
-    
     /*
      *
      * getters and setters
      *
      */
     
-    private String xunit;
-    public static final String PROP_XUNIT = "xunit";
-
     /**
      * Get the value of xunit
      *
      * @return the value of xunit
      */
     public String getXunit() {
-        return xunit;
+        return (String) this.xunits.getSelectedValue();
     }
 
     /**
@@ -75,13 +70,8 @@ public class UnitsWidget extends javax.swing.JPanel {
      * @param xunit new value of xunit
      */
     public void setXunit(String xunit) {
-        String oldXunit = this.xunit;
-        this.xunit = xunit;
-        firePropertyChange(PROP_XUNIT, oldXunit, xunit);
+        this.xunits.setSelectedValue(xunit, true);
     }
-
-    private String yunit;
-    public static final String PROP_YUNIT = "yunit";
 
     /**
      * Get the value of yunit
@@ -89,7 +79,7 @@ public class UnitsWidget extends javax.swing.JPanel {
      * @return the value of yunit
      */
     public String getYunit() {
-        return yunit;
+        return (String) this.yunits.getSelectedValue();
     }
 
     /**
@@ -98,9 +88,7 @@ public class UnitsWidget extends javax.swing.JPanel {
      * @param yunit new value of yunit
      */
     public void setYunit(String yunit) {
-        String oldYunit = this.yunit;
-        this.yunit = yunit;
-        firePropertyChange(PROP_YUNIT, oldYunit, yunit);
+        this.yunits.setSelectedValue(yunit, true);
     }
     
     /*
@@ -133,7 +121,7 @@ public class UnitsWidget extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         yunits = new javax.swing.JList();
 
-        jSplitPane1.setDividerLocation(200);
+        jSplitPane1.setDividerLocation(210);
         jSplitPane1.setResizeWeight(0.5);
         jSplitPane1.setPreferredSize(new java.awt.Dimension(550, 200));
 
@@ -145,8 +133,6 @@ public class UnitsWidget extends javax.swing.JPanel {
         org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${XUnitsList}");
         org.jdesktop.swingbinding.JListBinding jListBinding = org.jdesktop.swingbinding.SwingBindings.createJListBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_ONCE, this, eLProperty, xunits);
         bindingGroup.addBinding(jListBinding);
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${xunit}"), xunits, org.jdesktop.beansbinding.BeanProperty.create("selectedElement"));
-        bindingGroup.addBinding(binding);
 
         jScrollPane1.setViewportView(xunits);
 
@@ -160,8 +146,6 @@ public class UnitsWidget extends javax.swing.JPanel {
         eLProperty = org.jdesktop.beansbinding.ELProperty.create("${YUnitsList}");
         jListBinding = org.jdesktop.swingbinding.SwingBindings.createJListBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_ONCE, this, eLProperty, yunits);
         bindingGroup.addBinding(jListBinding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${yunit}"), yunits, org.jdesktop.beansbinding.BeanProperty.create("selectedElement"));
-        bindingGroup.addBinding(binding);
 
         jScrollPane2.setViewportView(yunits);
 
@@ -196,5 +180,4 @@ public class UnitsWidget extends javax.swing.JPanel {
     private javax.swing.JList yunits;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
-
 }
