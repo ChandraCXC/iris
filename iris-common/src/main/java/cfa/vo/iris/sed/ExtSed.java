@@ -97,7 +97,7 @@ public class ExtSed extends Sed {
     }
     
     public List<Segment> getSegments() {
-        return Collections.unmodifiableList(segmentList);
+        return Collections.unmodifiableList(new ArrayList<>(segmentList));
     }
 
     @Override
