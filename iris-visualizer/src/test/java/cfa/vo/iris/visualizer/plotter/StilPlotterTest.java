@@ -18,8 +18,10 @@ package cfa.vo.iris.visualizer.plotter;
 import cfa.vo.iris.visualizer.plotter.StilPlotter;
 import static org.junit.Assert.*;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.test.Ws;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
+import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.sedlib.Segment;
@@ -292,6 +294,78 @@ public class StilPlotterTest {
         assertEquals(1, aspect.getYMax(), 0.01);
         assertEquals(1.0, aspect.getXMin(), 0.01);
         assertEquals(0, aspect.getYMin(), 0.01);
+    }
+    @Test
+    public void testPlotModel() throws Exception {
+        
+        // create a SegmentStarTable that represents the evaluated model
+        SegmentStarTable evalModelTable = new SegmentStarTable(TestUtils.createSampleSegment());
+        String evalModelTableName = evalModelTable.getName();
+        
+        preferences = new VisualizerComponentPreferences(ws);
+        StilPlotter plot = new StilPlotter(preferences);
+        
+        // plot the model
+        plot.plot_model(evalModelTable);
+        PlotDisplay<?, ?> display = plot.getPlotDisplay();
+        
+        // check that plot env is correctly set
+        MapEnvironment env = plot.getEnv();
+
+        // check color
+        StringParameter par = new StringParameter("color"+evalModelTableName);
+        env.acquireValue(par);
+        assertEquals(par.objectValue(env), "red");
+        
+        // check that a line is plotted
+        par.setName("layer"+evalModelTableName);
+        env.acquireValue(par);
+        assertEquals(par.objectValue(env), "line");
+        
+        // using reflection to access layers in plot display
+        Field layers_ = PlotDisplay.class.getDeclaredField("layers_");
+        layers_.setAccessible(true);
+        PlotLayer[] layers = (PlotLayer[]) layers_.get(display);
+        
+        // there should be one layer for the model
+        assertTrue(!ArrayUtils.isEmpty(layers));
+        assertEquals(ArrayUtils.getLength(layers), 1);
+        assertEquals(layers[0].getDataSpec().getSourceTable().getRowCount(), 
+                evalModelTable.getRowCount());
+        
+        
+        // Now, add some data to the plot, and use a large-ranged model to overplot.
+        // I want to make sure that when a user overplots a model on a 
+        // relatively small dataset, the plotter window doesn't zoom-out to 
+        // include the whole model. Imagine a powerlaw that goes from
+        // -infinity to +infinity; we wouldn't want the plotter to zoom out.
+        
+        // create a small sample SED
+        ExtSed sed = new ExtSed("my_sed");
+        sed.addSegment(TestUtils.createSampleSegment());
+        
+        // create plot
+        plot = setUpTests(sed);
+        
+        // create a large model
+        evalModelTable = new SegmentStarTable(
+                ExtSed.read(
+                        TestData.class.getResource("3c273.vot").openStream(), 
+                        SedFormat.VOT)
+                .getSegment(0));
+        
+        // overplot the model on the StilPlotter
+        plot.plot_model(evalModelTable);
+        
+        display = plot.getPlotDisplay();
+        
+        // using reflection to access layers in plot display
+        layers_ = PlotDisplay.class.getDeclaredField("layers_");
+        layers_.setAccessible(true);
+        layers = (PlotLayer[]) layers_.get(display);
+        
+        // there should be 3 layers: data, errors, and model
+        assertEquals(ArrayUtils.getLength(layers), 3);
     }
     
     private StilPlotter setUpTests(ExtSed sed) throws Exception {

@@ -18,14 +18,19 @@ package cfa.vo.iris.visualizer.plotter;
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.gui.GUIUtils;
+import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.stil.SegmentStarTable;
+import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
 import cfa.vo.iris.visualizer.preferences.CoPlotManagementWindow;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
+import cfa.vo.sedlib.common.SedException;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -248,6 +253,7 @@ public class PlotterView extends JInternalFrame {
         mntmAutoFixed = new javax.swing.JCheckBoxMenuItem();
         mntmGridOnOff = new javax.swing.JCheckBoxMenuItem();
         mntmCoplot = new javax.swing.JMenuItem();
+        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
         mnHelp = new javax.swing.JMenu();
         mntmPlotterNavigationHelp = new javax.swing.JMenuItem();
 
@@ -596,6 +602,15 @@ public class PlotterView extends JInternalFrame {
         });
         mnView.add(mntmCoplot);
 
+        jCheckBoxMenuItem1.setSelected(true);
+        jCheckBoxMenuItem1.setText("jCheckBoxMenuItem1");
+        jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBoxMenuItem1ActionPerformed(evt);
+            }
+        });
+        mnView.add(jCheckBoxMenuItem1);
+
         menuBar.add(mnView);
 
         mnHelp.setText("Help");
@@ -678,6 +693,26 @@ public class PlotterView extends JInternalFrame {
         plotter.dataPan(SwingConstants.WEST);
     }//GEN-LAST:event_rightActionPerformed
 
+    private void jCheckBoxMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBoxMenuItem1ActionPerformed
+        try {
+            // show model
+            
+            // TODO: right now, it just overplots a flattened-version of the SED to
+            // play around with. This should be updated to show the currently
+            // selected SED's model, if it exists.
+            
+            ExtSed sed = preferences.getDataModel().getSelectedSeds().get(0);
+            String xunits = preferences.getDataModel().getSedModel(sed).getXUnits();
+            String yunits = preferences.getDataModel().getSedModel(sed).getYUnits();
+
+            SegmentStarTable model = new SegmentStarTable(ExtSed.flatten(sed, xunits, yunits).getSegment(0), title);
+            plotter.plot_model(model);
+        } catch (SedException | UnitsException ex) {
+            Logger.getLogger(PlotterView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }//GEN-LAST:event_jCheckBoxMenuItem1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel bottomButtonsPanel;
     private javax.swing.JButton btnReset;
@@ -685,6 +720,7 @@ public class PlotterView extends JInternalFrame {
     private javax.swing.JPanel buttonPanel;
     private cfa.vo.iris.visualizer.plotter.JButtonArrow down;
     private javax.swing.JSpinner fluxOrDensity;
+    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
     private cfa.vo.iris.visualizer.plotter.JButtonArrow left;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JButton metadataButton;

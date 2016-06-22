@@ -20,6 +20,7 @@ import javax.swing.SwingConstants;
 
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.quantities.SPVYQuantity;
+import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.visualizer.preferences.LayerModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
@@ -205,6 +206,40 @@ public class StilPlotter extends JPanel {
         addPlotToDisplay();
     }
     
+        /**
+     * Resets the plot.
+     * @param forceReset - forces the plot to reset its bounds
+     * @param newPlot - If we are plotting a new plot or re-plotting an existing plot.
+     * @param env - Supply a map environment to reset the plot with
+     */
+    void resetPlot(boolean forceReset, boolean newPlot, MapEnvironment env)
+    {
+        // forceReset can override this class's internal usage of preferences
+        boolean fixed = getPlotPreferences().getFixed();
+        
+        // Clear the display and save all necessary information before we
+        // throw it away on a model change.
+        setupForPlotDisplayChange(newPlot);
+        
+        try {
+            // Setup new stil plot component using the supplied map environment
+            display = createPlotComponent(env);
+        } catch (Exception ex) {
+            Logger.getLogger(StilPlotter.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
+        
+        // Set the bounds using the current SED's aspect if the plot is fixed and if we're not
+        // forcing a redraw
+        if (fixed && !forceReset) {
+            PlaneAspect existingAspect = getPlotPreferences().getAspect();
+            display.setAspect(existingAspect);
+        }
+        
+        // Add the display to the plot view
+        addPlotToDisplay();
+    }
+    
     /**
      * Resets boundaries on the zoom to their original settings.
      */
@@ -232,7 +267,26 @@ public class StilPlotter extends JPanel {
         PlaneAspect zoomedAspect = new PlaneAspect(xlimits, ylimits);
         this.getPlotDisplay().setAspect(zoomedAspect);
     }
-    
+
+    // TODO: update this when we have an interface defined for grabbing a
+    // selected ExtSed's evaluated model
+    public void plot_model(SegmentStarTable table) {
+        
+        // add evaluated model layer if model exists OR if model should be shown
+        EvaluatedModelLayer layer = new EvaluatedModelLayer(table);
+        if (layer.isShowModel()) {
+            for (String key : layer.getPreferences().keySet()) {
+                env.setValue(key, layer.getPreferences().get(key));
+            }
+        }
+        
+        // overplot the model on top of the current display
+        try {
+            resetPlot(false, false, env);
+        } catch (Exception ex) {
+            Logger.getLogger(StilPlotter.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
     /**
      * Calculate new zoomed axis range.
      * @param zoomFactor - scale factor to zoom in/out by
