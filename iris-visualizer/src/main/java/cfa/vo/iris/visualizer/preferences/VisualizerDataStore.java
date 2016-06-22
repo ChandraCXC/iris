@@ -73,12 +73,12 @@ public class VisualizerDataStore {
         if (sedModels.containsKey(sed)) {
             sedModels.get(sed).refresh();
         } else {
-            sedModels.put(sed, new SedModel(sed, adapter));
+            addNewSedModel(sed);
         }
         
         preferences.fireChanges(sed);
     }
-    
+
     /**
      * Adds or updates the segment within the specified SED.
      * @param sed - the sed to which the segment is attached
@@ -93,7 +93,7 @@ public class VisualizerDataStore {
         } else {
             // The segment will automatically be serialized and attached the the 
             // SedPrefrences since it's assumed to be attached to the SED.
-            sedModels.put(sed, new SedModel(sed, adapter));
+            addNewSedModel(sed);
         }
         
         preferences.fireChanges(sed);
@@ -115,7 +115,7 @@ public class VisualizerDataStore {
         } else {
             // The segment will automatically be serialized and attached the the 
             // SedPrefrences since it's assumed to be attached to the SED.
-            sedModels.put(sed, new SedModel(sed, adapter));
+            addNewSedModel(sed);
         }
         
         preferences.fireChanges(sed);
@@ -166,6 +166,15 @@ public class VisualizerDataStore {
         }
         
         preferences.fireChanges(sed);
+    }
+    
+    /**
+     * Adds a new SedModel to the map keyed off the specified SED
+     * @param sed
+     */
+    private void addNewSedModel(ExtSed sed) {
+        SedModel newModel = new SedModel(sed, adapter);
+        sedModels.put(sed, newModel);
     }
     
     /**

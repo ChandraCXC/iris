@@ -47,13 +47,13 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
-        unitsManagerPanel = new javax.swing.JPanel();
-        unitsWidget = new cfa.vo.iris.visualizer.plotter.UnitsWidget();
         jPanel1 = new javax.swing.JPanel();
         updateButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
+        unitsWidget = new cfa.vo.iris.visualizer.plotter.UnitsWidget();
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
@@ -61,15 +61,7 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
         setTitle("Select Units");
         setToolTipText("");
         setPreferredSize(new java.awt.Dimension(450, 325));
-
-        unitsManagerPanel.setLayout(new java.awt.BorderLayout());
-
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.xunits}"), unitsWidget, org.jdesktop.beansbinding.BeanProperty.create("xunit"));
-        bindingGroup.addBinding(binding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.yunits}"), unitsWidget, org.jdesktop.beansbinding.BeanProperty.create("yunit"));
-        bindingGroup.addBinding(binding);
-
-        unitsManagerPanel.add(unitsWidget, java.awt.BorderLayout.CENTER);
+        getContentPane().setLayout(new java.awt.GridBagLayout());
 
         jPanel1.setPreferredSize(new java.awt.Dimension(396, 30));
 
@@ -108,20 +100,30 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
                 .addContainerGap())
         );
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(unitsManagerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 446, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(unitsManagerPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE)
-                .addGap(0, 0, 0)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.ipadx = 303;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        getContentPane().add(jPanel1, gridBagConstraints);
+
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.xunits}"), unitsWidget, org.jdesktop.beansbinding.BeanProperty.create("xunit"));
+        bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.yunits}"), unitsWidget, org.jdesktop.beansbinding.BeanProperty.create("yunit"));
+        bindingGroup.addBinding(binding);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.ipadx = 344;
+        gridBagConstraints.ipady = 187;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        getContentPane().add(unitsWidget, gridBagConstraints);
 
         bindingGroup.bind();
 
@@ -129,20 +131,19 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        this.hide();
+        setVisible(false);
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
         dataModel.setUnits(unitsWidget.getXunit(), unitsWidget.getYunit());
         dataModel.refresh();
-        this.hide();
+        setVisible(false);
     }//GEN-LAST:event_updateButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cancelButton;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel unitsManagerPanel;
     private cfa.vo.iris.visualizer.plotter.UnitsWidget unitsWidget;
     private javax.swing.JButton updateButton;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;

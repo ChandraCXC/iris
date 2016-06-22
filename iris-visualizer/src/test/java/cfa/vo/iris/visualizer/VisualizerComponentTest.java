@@ -407,7 +407,6 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         // test that no exceptions occur if the user tries to 
         // change the units of the plotter with no SED loaded in yet.
         viewer.getButton("unitsButton").click();
-        assertTrue(desktop.containsWindow("Select Units").isTrue());
         Window unitsChooser = desktop.getWindow("Select Units");
         
         unitsChooser.getListBox("xunitsList").select(XUnit.ANGSTROM.getString());
@@ -428,9 +427,6 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         unitsChooser.getButton("Update").click();
 
         // Reload units chooser
-        assertFalse(desktop.containsWindow("Select Units").isTrue());
-        viewer.getButton("unitsButton").click();
-        assertTrue(desktop.containsWindow("Select Units").isTrue());
         unitsChooser = desktop.getWindow("Select Units");
         
         // create 2 segments with different units
@@ -443,9 +439,10 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         seg2.setFluxAxisUnits("erg/s/cm^2/A");
         
         // add the segments to a new SED
-        final ExtSed sed1 = sedManager.newSed("sampleSed1");
+        final ExtSed sed1 = new ExtSed("sampleSed1", false);
         sed1.addSegment(seg1);
         sed1.addSegment(seg2);
+        sedManager.add(sed1);
         
         // Make sure this is enqueued in the Swing EDT
         invokeWithRetry(20, 100, new Runnable() {
@@ -542,5 +539,40 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         // TODO: how to test for magnitudes? The Y-axis should be flipped so 
         // that larger values are on the bottom and lower values on the top
         
+    }
+    
+    @Test
+    public void testDiffUnitsConcurrencyException() throws Exception {
+        SedlibSedManager sedManager = (SedlibSedManager) app.getWorkspace().getSedManager();
+        final VisualizerComponentPreferences prefs = comp.getPreferences();
+        final VisualizerDataModel dataModel = prefs.getDataModel();
+        
+        window.getMenuBar()
+                .getMenu("Tools")
+                .getSubMenu(windowName)
+                .getSubMenu(windowName)
+                .click();
+        
+        // create 2 segments with different units
+        final Segment seg1 = createSampleSegment();
+        seg1.setSpectralAxisUnits("Hz");
+        seg1.setFluxAxisUnits("Jy");
+        
+        final Segment seg2 = createSampleSegment();
+        seg2.setSpectralAxisUnits("Angstrom");
+        seg2.setFluxAxisUnits("erg/s/cm^2/A");
+        
+        // add the segments to a new SED
+        final ExtSed sed1 = sedManager.newSed("test");
+        sed1.addSegment(seg1);
+        sed1.addSegment(seg2);
+        
+        // Make sure this is enqueued in the Swing EDT
+        invokeWithRetry(20, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertTrue(dataModel.getSelectedSeds().contains(sed1));
+            }
+        });
     }
 }
