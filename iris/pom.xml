@@ -56,11 +56,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>jsky</groupId>
-            <artifactId>jsky</artifactId>
-            <version>3.0</version>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>iris-visualizer</artifactId>
             <version>${project.version}</version>
@@ -83,7 +78,7 @@
         </dependency>
         <dependency>
             <groupId>org.asdc.iris.plugin</groupId>
-            <artifactId>AsdcIrisPlugin</artifactId>
+            <artifactId>asdc-iris-plugin</artifactId>
             <version>1.1.7</version>
         </dependency>
     </dependencies>
