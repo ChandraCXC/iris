@@ -22,6 +22,7 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.quantities.SPVYQuantity;
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.visualizer.preferences.LayerModel;
+import cfa.vo.iris.visualizer.preferences.FunctionModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
@@ -271,10 +272,15 @@ public class StilPlotter extends JPanel {
 
     // TODO: update this when we have an interface defined for grabbing a
     // selected ExtSed's evaluated model
-    public void plot_model(SegmentStarTable table) {
+    /**
+     * Overplot a function on the plotter.
+     * @param table - a SegmentStarTable containing the X and Y values of the 
+     * function to plot
+     */
+    public void plotModel(SegmentStarTable table) {
         
-        // add evaluated model layer if model exists OR if model should be shown
-        EvaluatedModelLayer layer = new EvaluatedModelLayer(table);
+        // add function model layer if model exists OR if model should be shown
+        FunctionModel layer = new FunctionModel(table);
         if (layer.isShowModel()) {
             for (String key : layer.getPreferences().keySet()) {
                 env.setValue(key, layer.getPreferences().get(key));

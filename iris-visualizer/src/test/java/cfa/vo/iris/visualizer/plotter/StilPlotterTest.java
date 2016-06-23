@@ -23,6 +23,7 @@ import cfa.vo.iris.test.Ws;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
 import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
+import cfa.vo.iris.visualizer.preferences.FunctionModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
@@ -296,7 +297,7 @@ public class StilPlotterTest {
         assertEquals(0, aspect.getYMin(), 0.01);
     }
     @Test
-    public void testPlotModel() throws Exception {
+    public void testPlotFunctionModel() throws Exception {
         
         // create a SegmentStarTable that represents the evaluated model
         SegmentStarTable evalModelTable = new SegmentStarTable(TestUtils.createSampleSegment());
@@ -306,7 +307,7 @@ public class StilPlotterTest {
         StilPlotter plot = new StilPlotter(preferences);
         
         // plot the model
-        plot.plot_model(evalModelTable);
+        plot.plotModel(evalModelTable);
         PlotDisplay<?, ?> display = plot.getPlotDisplay();
         
         // check that plot env is correctly set
@@ -327,7 +328,7 @@ public class StilPlotterTest {
         layers_.setAccessible(true);
         PlotLayer[] layers = (PlotLayer[]) layers_.get(display);
         
-        // there should be one layer for the model
+        // there should be one layer for the function/model
         assertTrue(!ArrayUtils.isEmpty(layers));
         assertEquals(ArrayUtils.getLength(layers), 1);
         assertEquals(layers[0].getDataSpec().getSourceTable().getRowCount(), 
@@ -355,7 +356,7 @@ public class StilPlotterTest {
                 .getSegment(0));
         
         // overplot the model on the StilPlotter
-        plot.plot_model(evalModelTable);
+        plot.plotModel(evalModelTable);
         
         display = plot.getPlotDisplay();
         

@@ -706,7 +706,7 @@ public class PlotterView extends JInternalFrame {
                 String yunits = preferences.getDataModel().getSedModel(sed).getYUnits();
 
                 SegmentStarTable model = new SegmentStarTable(ExtSed.flatten(sed, xunits, yunits).getSegment(0), title);
-                plotter.plot_model(model);
+                plotter.plotModel(model);
             } else {
                 plotter.remove_model();
             }
