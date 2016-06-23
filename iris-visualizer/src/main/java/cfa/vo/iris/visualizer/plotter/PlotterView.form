@@ -218,9 +218,9 @@
       </Layout>
       <SubComponents>
         <Component class="javax.swing.JToggleButton" name="tglbtnShowHideResiduals">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Show Residuals"/>
-          </Properties>
+          <BindingProperties>
+            <BindingProperty name="text" source="secondaryPlotOptions" sourcePath="Show ${value}" target="tglbtnShowHideResiduals" targetPath="text" updateStrategy="0" immediately="false"/>
+          </BindingProperties>
         </Component>
         <Component class="javax.swing.JSpinner" name="secondaryPlotOptions">
           <Properties>
@@ -499,6 +499,7 @@
         <BindingProperty name="layerModels" source="Form" sourcePath="${dataModel.layerModels}" target="plotter" targetPath="layerModels" updateStrategy="0" immediately="false"/>
         <BindingProperty name="plotPreferences" source="Form" sourcePath="${plotPreferences}" target="plotter" targetPath="plotPreferences" updateStrategy="0" immediately="false"/>
         <BindingProperty name="seds" source="Form" sourcePath="${dataModel.selectedSeds}" target="plotter" targetPath="seds" updateStrategy="0" immediately="false"/>
+        <BindingProperty name="showResdiduals" source="tglbtnShowHideResiduals" sourcePath="${selected}" target="plotter" targetPath="showResdiduals" updateStrategy="0" immediately="false"/>
       </BindingProperties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new StilPlotter(preferences)"/>

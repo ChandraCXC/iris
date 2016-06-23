@@ -26,7 +26,6 @@ import cfa.vo.iris.visualizer.preferences.FunctionModel;
 import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
-import java.awt.Color;
 import java.awt.Dimension;
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
 import uk.ac.starlink.ttools.plot2.geom.PlaneSurfaceFactory;
@@ -543,7 +542,7 @@ public class StilPlotter extends JPanel {
             residualsGBC.gridwidth = 1;
             
             residuals.setPreferredSize(new Dimension(600,200));
-            residuals.setMaximumSize(new Dimension(Integer.MAX_VALUE, 90));
+            residuals.setMaximumSize(new Dimension(Integer.MAX_VALUE, 70));
             residuals.setMinimumSize(new Dimension(0, 50));
             add(residuals, residualsGBC);
             
