@@ -503,9 +503,11 @@ public class PlotterView extends JInternalFrame {
         bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${plotPreferences}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("plotPreferences"));
         bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, secondaryPlotOptions, org.jdesktop.beansbinding.ELProperty.create("${value}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("residualsOrRatios"));
+        bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.selectedSeds}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("seds"));
         bindingGroup.addBinding(binding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tglbtnShowHideResiduals, org.jdesktop.beansbinding.ELProperty.create("${selected}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("showResdiduals"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tglbtnShowHideResiduals, org.jdesktop.beansbinding.ELProperty.create("${selected}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("showResiduals"));
         bindingGroup.addBinding(binding);
 
         plotter.setLayout(new java.awt.GridBagLayout());

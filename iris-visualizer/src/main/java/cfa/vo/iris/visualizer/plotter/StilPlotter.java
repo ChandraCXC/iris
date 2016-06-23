@@ -59,6 +59,7 @@ public class StilPlotter extends JPanel {
     // Residuals
     private PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> residuals;
     private boolean showResiduals = false;
+    private String residualsOrRatios = "Residuals";
 
     // List of SEDs plotted in Plotter
     private List<ExtSed> seds = new ArrayList<>();
@@ -210,8 +211,17 @@ public class StilPlotter extends JPanel {
         return showResiduals;
     }
     
-    public void setShowResdiduals(boolean on) {
+    public void setShowResiduals(boolean on) {
         this.showResiduals = on;
+        resetPlot(false, false);
+    }
+    
+    public String getResidualsOrRatios() {
+        return residualsOrRatios;
+    }
+    
+    public void setResidualsOrRatios(String residualsOrRatios) {
+        this.residualsOrRatios = residualsOrRatios;
         resetPlot(false, false);
     }
     
@@ -231,40 +241,6 @@ public class StilPlotter extends JPanel {
         
         // Setup new stil plot components
         setupPlotComponents();
-        
-        // Set the bounds using the current SED's aspect if the plot is fixed and if we're not
-        // forcing a redraw
-        if (fixed && !forceReset) {
-            PlaneAspect existingAspect = getPlotPreferences().getAspect();
-            display.setAspect(existingAspect);
-        }
-        
-        // Add the display to the plot view
-        addPlotToDisplay();
-    }
-    
-        /**
-     * Resets the plot.
-     * @param forceReset - forces the plot to reset its bounds
-     * @param newPlot - If we are plotting a new plot or re-plotting an existing plot.
-     * @param env - Supply a map environment to reset the plot with
-     */
-    void resetPlot(boolean forceReset, boolean newPlot, MapEnvironment env)
-    {
-        // forceReset can override this class's internal usage of preferences
-        boolean fixed = getPlotPreferences().getFixed();
-        
-        // Clear the display and save all necessary information before we
-        // throw it away on a model change.
-        setupForPlotDisplayChange(newPlot);
-        
-        try {
-            // Setup new stil plot component using the supplied map environment
-            display = createPlotComponent(env);
-        } catch (Exception ex) {
-            Logger.getLogger(StilPlotter.class.getName())
-                    .log(Level.SEVERE, null, ex);
-        }
         
         // Set the bounds using the current SED's aspect if the plot is fixed and if we're not
         // forcing a redraw
@@ -416,6 +392,8 @@ public class StilPlotter extends JPanel {
             
             // Create the residuals if specified
             residuals = showResiduals ? createPlotComponent(resEnv, false) : null;
+            
+            // TODO: Handle mouse listeners and zooming for the residuals!
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -442,7 +420,6 @@ public class StilPlotter extends JPanel {
         PlotDisplay<PlaneSurfaceFactory.Profile,PlaneAspect> display =
                 new PlanePlot2Task().createPlotComponent(env, false);
         
-        // TODO: Mouse listeners for the residuals?
         if (enableMouseListeners) {
             // Always update mouse listeners with the new display
             preferences.getMouseListenerManager().activateListeners(display);
@@ -516,13 +493,19 @@ public class StilPlotter extends JPanel {
         resEnv.setValue("type", "plot2plane");
         resEnv.setValue("insets", new Insets(20, 80, 20, 50));
         
-        resEnv.setValue("ylabel", "residuals");
+        resEnv.setValue("ylabel", residualsOrRatios);
         resEnv.setValue("xlabel", null);
         resEnv.setValue("xlog", pp.getPlotType().xlog);
         resEnv.setValue("legend", false);
         
-        // TODO: Plot something?
-        // TODO: Handle the PlaneAspect and Zooming somehow!
+        // TODO: Actually plot residuals in the FunctionModel
+        if (dataModel.getLayerModels().size() > 0) {
+            // Plot the first segment, just for funsies
+            Map<String, Object> prefs = dataModel.getLayerModels().get(0).getPreferences();
+            for (String key : prefs.keySet()) {
+                resEnv.setValue(key, prefs.get(key));
+            }
+        }
     }
     
     private void setupForPlotDisplayChange(boolean newPlot) {
