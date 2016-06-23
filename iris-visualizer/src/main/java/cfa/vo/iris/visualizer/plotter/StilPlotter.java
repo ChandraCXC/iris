@@ -18,7 +18,7 @@ package cfa.vo.iris.visualizer.plotter;
 import javax.swing.JPanel;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.quantities.SPVYQuantity;
-import cfa.vo.iris.visualizer.preferences.SegmentModel;
+import cfa.vo.iris.visualizer.preferences.LayerModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
@@ -28,7 +28,6 @@ import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 import uk.ac.starlink.ttools.task.MapEnvironment;
 
 import java.awt.GridBagConstraints;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import java.awt.Insets;
@@ -62,11 +61,9 @@ public class StilPlotter extends JPanel {
     
     // Needs a default constructor for Netbeans
     public StilPlotter() {
-        this.setPlotPreferences(PlotPreferences.getDefaultPlotPreferences());
     }
     
     public StilPlotter(VisualizerComponentPreferences preferences) {
-        this.setPlotPreferences(preferences.getPlotPreferences());
         this.setPreferences(preferences);
     }
 
@@ -84,19 +81,10 @@ public class StilPlotter extends JPanel {
      * For binding to the datamodel. This function SHOULD NOT be called otherwise.
      */
     public void setSeds(List<ExtSed> newSeds) {
-        // TODO: Support more than one SED
-        if (newSeds.size() > 1) {
-            throw new IllegalArgumentException("Invalid sed list length");
-        }
-        
         this.seds = newSeds;
         
         // Update plot preferences for new seds.
-        if (CollectionUtils.isEmpty(newSeds)) {
-            this.setPlotPreferences(preferences.getPlotPreferences());
-        } else {
-            this.setPlotPreferences(dataModel.getSedModel(newSeds.get(0)).getPlotPreferences());
-        }
+        setPlotPreferences(preferences.getPlotPreferences(newSeds));
         
         resetPlot(false, true);
     }
@@ -119,14 +107,14 @@ public class StilPlotter extends JPanel {
         this.setSeds(dataModel.getSelectedSeds());
     }
     
-    public List<SegmentModel> getSedSegmentModels() {
-        return dataModel.getSedSegmentModels();
+    public List<LayerModel> getLayerModels() {
+        return dataModel.getLayerModels();
     }
     
     /**
      * For binding to the dataModel, this SHOULD NOT be called otherwise.
      */
-    public void setSedSegmentModels(List<SegmentModel> models) {
+    public void setLayerModels(List<LayerModel> models) {
         this.resetPlot(false, false);
     }
 
@@ -332,9 +320,10 @@ public class StilPlotter extends JPanel {
         // Y-label from falling off the jpanel. Conversely, don't set "insets"
         // and let the plotter dynamically change size to keep axes labels
         // on the plot.
-
-        // Add high level plot preferences
+        
         PlotPreferences pp = getPlotPreferences();
+        
+        // Add high level plot preferences
         for (String key : pp.getPreferences().keySet()) {
             
             // if in magnitudes, flip the direction of the Y-axis
@@ -350,7 +339,7 @@ public class StilPlotter extends JPanel {
         env.setValue("title", dataModel.getDataModelTitle());
 
         // Add segments and segment preferences
-        for (SegmentModel layer : dataModel.getSedSegmentModels()) {
+        for (LayerModel layer : dataModel.getLayerModels()) {
             for (String key : layer.getPreferences().keySet()) {
                 env.setValue(key, layer.getPreferences().get(key));
             }

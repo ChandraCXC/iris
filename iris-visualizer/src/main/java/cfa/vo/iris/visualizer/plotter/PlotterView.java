@@ -20,6 +20,7 @@ import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
+import cfa.vo.iris.visualizer.preferences.CoPlotManagementWindow;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import java.awt.Dimension;
@@ -39,6 +40,7 @@ public class PlotterView extends JInternalFrame {
     private final VisualizerComponentPreferences preferences;
     private final MetadataBrowserMainView metadataBrowser;
     private final JInternalFrame plotterNavHelpFrame;
+    private final UnitsManagerFrame unitsManagerFrame;
     private final IWorkspace ws;
     
     // Plot mouse coordinate locations
@@ -76,6 +78,9 @@ public class PlotterView extends JInternalFrame {
         
         // plotter navigation help frame
         this.plotterNavHelpFrame = new PlotterNavHelpFrame("Plotter Navigation Help");
+        
+        // Units manager
+        this.unitsManagerFrame = new UnitsManagerFrame();
         
         // Action to set linear plotting
         mntmLinear.addActionListener(new ActionListener() {
@@ -210,17 +215,19 @@ public class PlotterView extends JInternalFrame {
         secondaryPlotOptions = new javax.swing.JSpinner();
         topButtonsPanel = new javax.swing.JPanel();
         btnReset = new javax.swing.JButton();
-        txtXposition = new javax.swing.JTextField();
         zoomIn = new javax.swing.JButton();
         btnUnits = new javax.swing.JButton();
         fluxOrDensity = new javax.swing.JSpinner();
         zoomOut = new javax.swing.JButton();
         metadataButton = new javax.swing.JButton();
-        txtYposition = new javax.swing.JTextField();
+        buttonPanel = new javax.swing.JPanel();
         up = new cfa.vo.iris.visualizer.plotter.JButtonArrow();
         down = new cfa.vo.iris.visualizer.plotter.JButtonArrow();
         left = new cfa.vo.iris.visualizer.plotter.JButtonArrow();
         right = new cfa.vo.iris.visualizer.plotter.JButtonArrow();
+        mouseCoordPanel = new javax.swing.JPanel();
+        txtXposition = new javax.swing.JTextField();
+        txtYposition = new javax.swing.JTextField();
         plotter = new StilPlotter(preferences);
         menuBar = new javax.swing.JMenuBar();
         mnF = new javax.swing.JMenu();
@@ -286,17 +293,20 @@ public class PlotterView extends JInternalFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.SOUTHWEST;
         getContentPane().add(bottomButtonsPanel, gridBagConstraints);
 
+        topButtonsPanel.setLayout(new java.awt.GridBagLayout());
+
         btnReset.setText("Reset");
         btnReset.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnResetActionPerformed(evt);
             }
         });
-
-        txtXposition.setEditable(false);
-
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${xcoord}"), txtXposition, org.jdesktop.beansbinding.BeanProperty.create("text"));
-        bindingGroup.addBinding(binding);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 11);
+        topButtonsPanel.add(btnReset, gridBagConstraints);
 
         zoomIn.setText("In");
         zoomIn.addActionListener(new java.awt.event.ActionListener() {
@@ -304,6 +314,12 @@ public class PlotterView extends JInternalFrame {
                 zoomInActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        topButtonsPanel.add(zoomIn, gridBagConstraints);
 
         btnUnits.setText("Units");
         btnUnits.setName("unitsButton"); // NOI18N
@@ -312,8 +328,20 @@ public class PlotterView extends JInternalFrame {
                 btnUnitsActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 10;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
+        topButtonsPanel.add(btnUnits, gridBagConstraints);
 
         fluxOrDensity.setModel(new javax.swing.SpinnerListModel(new String[] {"Flux", "Flux Density"}));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 9;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 9);
+        topButtonsPanel.add(fluxOrDensity, gridBagConstraints);
 
         zoomOut.setText("Out");
         zoomOut.addActionListener(new java.awt.event.ActionListener() {
@@ -321,6 +349,12 @@ public class PlotterView extends JInternalFrame {
                 zoomOutActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 14);
+        topButtonsPanel.add(zoomOut, gridBagConstraints);
 
         metadataButton.setText("Metadata");
         metadataButton.addActionListener(new java.awt.event.ActionListener() {
@@ -328,78 +362,106 @@ public class PlotterView extends JInternalFrame {
                 metadataButtonActionPerformed(evt);
             }
         });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 8;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
+        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 5);
+        topButtonsPanel.add(metadataButton, gridBagConstraints);
+
+        up.setText("up");
+        up.setContentAreaFilled(false);
+        up.setMaximumSize(null);
+        up.setMinimumSize(null);
+
+        down.setText("jButtonArrow2");
+        down.setContentAreaFilled(false);
+        down.setDirection(5);
+        down.setMaximumSize(null);
+        down.setMinimumSize(null);
+
+        left.setText("jButtonArrow3");
+        left.setContentAreaFilled(false);
+        left.setDirection(3);
+        left.setMaximumSize(null);
+        left.setMinimumSize(null);
+
+        right.setText("jButtonArrow4");
+        right.setContentAreaFilled(false);
+        right.setDirection(7);
+        right.setMaximumSize(null);
+        right.setMinimumSize(null);
+
+        javax.swing.GroupLayout buttonPanelLayout = new javax.swing.GroupLayout(buttonPanel);
+        buttonPanel.setLayout(buttonPanelLayout);
+        buttonPanelLayout.setHorizontalGroup(
+            buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(buttonPanelLayout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addComponent(up, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addComponent(down, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addComponent(left, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addComponent(right, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        buttonPanelLayout.setVerticalGroup(
+            buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(buttonPanelLayout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(up, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(down, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(left, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(right, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 3;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        topButtonsPanel.add(buttonPanel, gridBagConstraints);
+
+        txtXposition.setEditable(false);
+
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${xcoord}"), txtXposition, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
 
         txtYposition.setEditable(false);
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${ycoord}"), txtYposition, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
-        up.setText("up");
-
-        down.setText("jButtonArrow2");
-        down.setDirection(5);
-
-        left.setText("jButtonArrow3");
-        left.setDirection(3);
-
-        right.setText("jButtonArrow4");
-        right.setDirection(7);
-
-        javax.swing.GroupLayout topButtonsPanelLayout = new javax.swing.GroupLayout(topButtonsPanel);
-        topButtonsPanel.setLayout(topButtonsPanelLayout);
-        topButtonsPanelLayout.setHorizontalGroup(
-            topButtonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(topButtonsPanelLayout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(btnReset)
-                .addGap(18, 18, 18)
-                .addComponent(zoomIn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(zoomOut)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(up, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(down, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(left, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(right, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(47, 47, 47)
+        javax.swing.GroupLayout mouseCoordPanelLayout = new javax.swing.GroupLayout(mouseCoordPanel);
+        mouseCoordPanel.setLayout(mouseCoordPanelLayout);
+        mouseCoordPanelLayout.setHorizontalGroup(
+            mouseCoordPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(mouseCoordPanelLayout.createSequentialGroup()
                 .addComponent(txtXposition, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtYposition, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(metadataButton)
-                .addGap(18, 18, 18)
-                .addComponent(fluxOrDensity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnUnits)
-                .addContainerGap())
+                .addComponent(txtYposition, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
-        topButtonsPanelLayout.setVerticalGroup(
-            topButtonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(topButtonsPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(topButtonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnReset)
-                    .addComponent(zoomIn)
-                    .addComponent(zoomOut)
+        mouseCoordPanelLayout.setVerticalGroup(
+            mouseCoordPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mouseCoordPanelLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(mouseCoordPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtXposition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtYposition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(metadataButton)
-                    .addComponent(btnUnits)
-                    .addComponent(fluxOrDensity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(up, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(down, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(left, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(right, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(txtYposition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.insets = new java.awt.Insets(0, 10, 0, 10);
+        topButtonsPanel.add(mouseCoordPanel, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.weightx = 1.0;
         getContentPane().add(topButtonsPanel, gridBagConstraints);
 
         plotter.setBackground(java.awt.Color.white);
@@ -407,11 +469,11 @@ public class PlotterView extends JInternalFrame {
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, plotter, org.jdesktop.beansbinding.ELProperty.create("${plotPreferences.showGrid}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("gridOn"));
         bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.layerModels}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("layerModels"));
+        bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${plotPreferences}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("plotPreferences"));
         bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.selectedSeds}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("seds"));
-        bindingGroup.addBinding(binding);
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.sedSegmentModels}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("sedSegmentModels"));
         bindingGroup.addBinding(binding);
 
         plotter.setLayout(new java.awt.GridBagLayout());
@@ -506,6 +568,11 @@ public class PlotterView extends JInternalFrame {
         mnView.add(mntmGridOnOff);
 
         mntmCoplot.setText("Coplot...");
+        mntmCoplot.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mntmCoplotActionPerformed(evt);
+            }
+        });
         mnView.add(mntmCoplot);
 
         menuBar.add(mnView);
@@ -549,12 +616,10 @@ public class PlotterView extends JInternalFrame {
     }//GEN-LAST:event_mntmExportActionPerformed
 
     private void btnUnitsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUnitsActionPerformed
-
-        UnitsManagerFrame unitsManagerFrame = new UnitsManagerFrame();
         unitsManagerFrame.setDataModel(preferences.getDataModel());
-        unitsManagerFrame.updateCurrentUnits();
-
-        ws.addFrame(unitsManagerFrame);
+        if (!unitsManagerFrame.isVisible()) {
+            ws.addFrame(unitsManagerFrame);
+        }
         GUIUtils.moveToFront(unitsManagerFrame);
     }//GEN-LAST:event_btnUnitsActionPerformed
 
@@ -570,10 +635,17 @@ public class PlotterView extends JInternalFrame {
         }
     }//GEN-LAST:event_metadataButtonActionPerformed
 
+    private void mntmCoplotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mntmCoplotActionPerformed
+        CoPlotManagementWindow pl = new CoPlotManagementWindow(this.preferences);
+        ws.addFrame(pl);
+        GUIUtils.moveToFront(pl);
+    }//GEN-LAST:event_mntmCoplotActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel bottomButtonsPanel;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnUnits;
+    private javax.swing.JPanel buttonPanel;
     private cfa.vo.iris.visualizer.plotter.JButtonArrow down;
     private javax.swing.JSpinner fluxOrDensity;
     private cfa.vo.iris.visualizer.plotter.JButtonArrow left;
@@ -598,6 +670,7 @@ public class PlotterView extends JInternalFrame {
     private javax.swing.JMenuItem mntmSomething;
     private javax.swing.JRadioButtonMenuItem mntmXlog;
     private javax.swing.JRadioButtonMenuItem mntmYlog;
+    private javax.swing.JPanel mouseCoordPanel;
     private javax.swing.ButtonGroup plotTypeButtonGroup;
     private cfa.vo.iris.visualizer.plotter.StilPlotter plotter;
     private cfa.vo.iris.visualizer.plotter.JButtonArrow right;

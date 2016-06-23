@@ -19,6 +19,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 
+import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import uk.ac.starlink.ttools.plot2.Surface;
 import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 
@@ -38,7 +39,7 @@ public class MouseCoordinateMotionListener extends StilPlotterMouseListener
     }
 
     @Override
-    public void activate(PlotDisplay<?,?> display) {
+    public void activate(PlotDisplay<?,?> display, VisualizerDataModel dataModel) {
         this.display = display;
         display.addMouseMotionListener(this);
     }

@@ -95,6 +95,10 @@ public class ExtSed extends Sed {
     public void setManaged(boolean managed) {
         this.managed = managed;
     }
+    
+    public List<Segment> getSegments() {
+        return Collections.unmodifiableList(new ArrayList<>(segmentList));
+    }
 
     @Override
     public void addSegment(Segment segment) throws SedInconsistentException, SedNoDataException {
