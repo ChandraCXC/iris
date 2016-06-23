@@ -4,17 +4,20 @@ import cfa.vo.iris.fitting.custom.CustomModelsManager;
 import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.fitting.custom.ModelsListener;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.stil.SegmentStarTable;
+import cfa.vo.iris.units.UnitsManager;
+import cfa.vo.iris.visualizer.preferences.SedModel;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.sherpa.ConfidenceResults;
 import cfa.vo.sherpa.Data;
 import cfa.vo.sherpa.FitResults;
 import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.models.Model;
 import cfa.vo.sherpa.models.DefaultModel;
-import cfa.vo.sherpa.stats.Stat;
-import cfa.vo.sherpa.stats.Statistic;
-import com.fasterxml.jackson.annotation.JsonCreator;
+import cfa.vo.utils.Default;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.mrbean.MrBeanModule;
+import org.apache.commons.lang.ArrayUtils;
 
 import javax.swing.tree.TreeModel;
 import java.io.IOException;
@@ -201,12 +204,33 @@ public class FitController {
     }
 
     /**
-     * Evaluate Fitting Model. Returns a {@link Data} instance with the x and y values evaluated according to the
-     * current model
-     * @return a {@link Data} instance
+     * Evaluate Fitting Model. Returns a {@link SegmentStarTable} instance with the x and y values evaluated
+     * according to the model passed as argument
+     * @param sedModel The {@link SedModel} whose fit must be evaluated.
+     * @return a {@link SegmentStarTable} instance
      * @throws Exception
      */
-    public Data evaluateModel() throws Exception {
-        return client.evaluate(sed);
+    public SegmentStarTable evaluateModel(SedModel sedModel) throws Exception {
+        String xUnit = sedModel.getXUnits();
+        String yUnit = sedModel.getYUnits();
+
+        UnitsManager uManager = Default.getInstance().getUnitsManager();
+
+        double[] xSegment = new double[]{};
+        double[] ySegment = new double[]{};
+
+        for (IrisStarTable table: sedModel.getDataTables()) {
+            double[] x = table.getSpectralDataValues();
+            double[] xStandardUnit = uManager.convertX(x, xUnit, SherpaClient.X_UNIT);
+            double[] yStandardUnit = client.evaluate(xStandardUnit, sedModel.getFitConfiguration());
+            double[] y = Default.getInstance().getUnitsManager().convertY(yStandardUnit, xStandardUnit,
+                    SherpaClient.Y_UNIT, SherpaClient.X_UNIT, yUnit);
+
+            xSegment = ArrayUtils.addAll(xSegment, x);
+            ySegment = ArrayUtils.addAll(ySegment, y);
+
+        }
+
+        return new SegmentStarTable(xSegment, ySegment, xUnit, yUnit);
     }
 }

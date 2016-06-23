@@ -19,7 +19,10 @@ import cfa.vo.interop.SAMPFactory;
 import cfa.vo.iris.fitting.custom.CustomModelsManager;
 import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.test.unit.TestUtils;
+import cfa.vo.iris.visualizer.preferences.SedModel;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sherpa.ConfidenceResults;
 import cfa.vo.sherpa.Data;
 import cfa.vo.sherpa.SherpaClient;
@@ -41,8 +44,6 @@ import static org.junit.Assert.*;
 public class FitControllerTest {
     private FitController controller;
     private FitConfiguration configuration;
-    private CustomModelsManager modelsManager;
-    private SherpaClient client;
     private ByteArrayOutputStream os = new ByteArrayOutputStream();
     private double[] x = {1.0, 1.1, 1.2};
     private double[] y = {2.0, 2.1, 2.2};
@@ -54,13 +55,13 @@ public class FitControllerTest {
         configuration = createFit();
         Mockito.stub(sed.getFit()).toReturn(configuration);
         Mockito.stub(sed.toString()).toReturn("MySed (Segments: 3)");
-        modelsManager = Mockito.mock(CustomModelsManager.class);
-        client = Mockito.mock(SherpaClient.class);
+        CustomModelsManager modelsManager = Mockito.mock(CustomModelsManager.class);
+        SherpaClient client = Mockito.mock(SherpaClient.class);
         Data data = SAMPFactory.get(Data.class);
         data.setX(x);
         data.setY(y);
         data.setStaterror(err);
-        Mockito.stub(client.evaluate(sed)).toReturn(data);
+        Mockito.stub(client.evaluate(Mockito.any(double[].class), Mockito.any(FitConfiguration.class))).toReturn(y);
         controller = new FitController(sed, modelsManager, client);
     }
 
@@ -93,10 +94,13 @@ public class FitControllerTest {
 
     @Test
     public void testEvaluate() throws Exception {
-        Data data = controller.evaluateModel();
-        assertArrayEquals(x, data.getX(), 0.001);
-        assertArrayEquals(y, data.getY(), 0.001);
-        assertArrayEquals(err, data.getStaterror(), 0.001);
+        ExtSed sed = ExtSed.makeSed("test", false, x, y, SherpaClient.X_UNIT, SherpaClient.Y_UNIT);
+        SedModel model = new SedModel(sed, new IrisStarTableAdapter(null));
+        SegmentStarTable out = controller.evaluateModel(model);
+        assertArrayEquals(x, out.getSpecValues(), 0.001);
+        assertArrayEquals(y, out.getFluxValues(), 0.001);
+        assertEquals(SherpaClient.X_UNIT, out.getSpecUnits().toString());
+        assertEquals(SherpaClient.Y_UNIT, out.getFluxUnits().toString());
     }
 
     private FitConfiguration createFit() throws Exception {

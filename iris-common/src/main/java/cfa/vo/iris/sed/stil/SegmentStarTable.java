@@ -23,6 +23,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import cfa.vo.iris.sed.ExtSed;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -80,7 +81,12 @@ public class SegmentStarTable extends RandomStarTable {
     private double[] fluxErrValues;
     private double[] fluxErrValuesLo;
     private double[] fluxErrValuesHi;
-    
+
+    public SegmentStarTable(double[] x, double[] y, String xUnit, String yUnit)
+            throws SedNoDataException, UnitsException, SedInconsistentException {
+        this(ExtSed.makeSegment(x, y, xUnit, yUnit));
+    }
+
     public SegmentStarTable(Segment segment) 
             throws SedNoDataException, UnitsException, SedInconsistentException {
         this(segment, null);

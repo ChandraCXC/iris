@@ -405,4 +405,24 @@ public class ExtSed extends Sed {
         
         return super.equals(o);
     }
+
+    public static Segment makeSegment(double[] x, double[] y, String xUnit, String yUnit) throws SedNoDataException {
+        Segment s = new Segment();
+        s.setSpectralAxisValues(x);
+        s.setFluxAxisValues(y);
+        s.setSpectralAxisUnits(xUnit);
+        s.setFluxAxisUnits(yUnit);
+        return s;
+    }
+
+    public static ExtSed makeSed(String name, boolean managed, double[] x, double[] y, String xUnit, String yUnit) throws SedNoDataException {
+        Segment s = makeSegment(x, y, xUnit, yUnit);
+        ExtSed sed = new ExtSed(name, managed);
+        try {
+            sed.addSegment(s);
+        } catch (SedInconsistentException e) {
+            throw new IllegalStateException("Incompatible Sed when creating Sed with single Segment");
+        }
+        return sed;
+    }
 }
