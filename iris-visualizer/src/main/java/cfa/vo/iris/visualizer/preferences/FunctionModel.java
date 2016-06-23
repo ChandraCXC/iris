@@ -21,10 +21,16 @@ import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.units.spv.XUnits;
 import cfa.vo.iris.units.spv.YUnits;
 import cfa.vo.iris.visualizer.plotter.LayerType;
+import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.common.SedInconsistentException;
+import cfa.vo.sedlib.common.SedNoDataException;
 import java.security.InvalidParameterException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import uk.ac.starlink.table.StarTable;
 
 /**
  *
@@ -65,6 +71,19 @@ public class FunctionModel {
     
     private boolean show; // show the evaluated model
     
+    public FunctionModel() {
+        this.color = "red";
+        this.thickness = 1;
+        this.show = false;
+        
+        try {
+            // add empty table
+            this.setInSource(new SegmentStarTable(new Segment()));
+        } catch (SedNoDataException | UnitsException | SedInconsistentException ex) {
+            Logger.getLogger(FunctionModel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
     public FunctionModel(SegmentStarTable table) {
         if (table == null) {
             throw new InvalidParameterException("star table cannot be null");
@@ -77,6 +96,14 @@ public class FunctionModel {
         
         // Setting default values here
         this.show = true;
+    }
+    
+    public FunctionModel(List<SegmentStarTable> tables) {
+        for (StarTable st : tables) {
+            if (st == null) {
+                throw new InvalidParameterException("star tables cannot be null");
+            }
+        }
     }
     
     /**

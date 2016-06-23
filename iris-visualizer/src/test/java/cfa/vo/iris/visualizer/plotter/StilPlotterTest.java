@@ -330,43 +330,9 @@ public class StilPlotterTest {
         
         // there should be one layer for the function/model
         assertTrue(!ArrayUtils.isEmpty(layers));
-        assertEquals(ArrayUtils.getLength(layers), 1);
+        assertEquals(1, ArrayUtils.getLength(layers));
         assertEquals(layers[0].getDataSpec().getSourceTable().getRowCount(), 
                 evalModelTable.getRowCount());
-        
-        
-        // Now, add some data to the plot, and use a large-ranged model to overplot.
-        // I want to make sure that when a user overplots a model on a 
-        // relatively small dataset, the plotter window doesn't zoom-out to 
-        // include the whole model. Imagine a powerlaw that goes from
-        // -infinity to +infinity; we wouldn't want the plotter to zoom out.
-        
-        // create a small sample SED
-        ExtSed sed = new ExtSed("my_sed");
-        sed.addSegment(TestUtils.createSampleSegment());
-        
-        // create plot
-        plot = setUpTests(sed);
-        
-        // create a large model
-        evalModelTable = new SegmentStarTable(
-                ExtSed.read(
-                        TestData.class.getResource("3c273.vot").openStream(), 
-                        SedFormat.VOT)
-                .getSegment(0));
-        
-        // overplot the model on the StilPlotter
-        plot.plotModel(evalModelTable);
-        
-        display = plot.getPlotDisplay();
-        
-        // using reflection to access layers in plot display
-        layers_ = PlotDisplay.class.getDeclaredField("layers_");
-        layers_.setAccessible(true);
-        layers = (PlotLayer[]) layers_.get(display);
-        
-        // there should be 3 layers: data, errors, and model
-        assertEquals(ArrayUtils.getLength(layers), 3);
     }
     
     private StilPlotter setUpTests(ExtSed sed) throws Exception {

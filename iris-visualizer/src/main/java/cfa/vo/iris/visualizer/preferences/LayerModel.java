@@ -31,6 +31,7 @@ import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
 import static cfa.vo.iris.visualizer.plotter.PlotPreferences.*;
+import java.util.List;
 
 public class LayerModel {
     
@@ -48,8 +49,12 @@ public class LayerModel {
     public static final String X_ERR_LO = "xerrlo";
     public static final String Y_ERR_LO = "yerrlo";
     public static final String COLOR = "color";
+    public static final String LINE_DASH = "dash";
+    public static final String LINE_COLOR = "color";
+    public static final String LINE_THICK = "thick";
     
     private static final String ERROR_SUFFIX = "_ERROR";
+    private static final String FUNCTION_SUFFIX = "_FUNCTION";
     
     // for the plot legend
     public static final String LEGEND_LABEL = "leglabel";
@@ -59,6 +64,9 @@ public class LayerModel {
     
     private boolean showErrorBars;
     private boolean showMarks;
+    private boolean showFunctions;
+    
+    private List<FunctionModel> functionModels;
     
     private StarTable inSource;
     
@@ -72,6 +80,9 @@ public class LayerModel {
     private String errorColor;
     private Double markColorWeight;
     private Double errorColorWeight;
+    private String lineColor;
+    private Integer lineThickness;
+    private Double lineDash;
     
     private String leglabel;
     private String[] legseq;
@@ -87,6 +98,8 @@ public class LayerModel {
         
         this.showErrorBars = true;
         this.showMarks = true;
+        this.showFunctions = true;
+        this.lineColor = "red"; // TODO: update if we show more than one model per SED. We won't always want this to be red.
     }
 
     /**
@@ -97,6 +110,7 @@ public class LayerModel {
         int layers = 0;
         if (showMarks) layers++;
         if (showErrorBars) layers++;
+        if (showFunctions) layers++;
         return layers;
     }
 
@@ -115,6 +129,11 @@ public class LayerModel {
         // for the base layer into the error bar layer.
         if (showErrorBars) {
             addErrorFields(suffix + ERROR_SUFFIX, preferences);
+        }
+        
+        // for plotting model functions
+        if (showFunctions) {
+            addFunctionFields(suffix + FUNCTION_SUFFIX, preferences);
         }
         
         return preferences;
@@ -168,6 +187,18 @@ public class LayerModel {
             prefs.put(COLOR + suffix, markColor);
         if (markColorWeight != null)
             prefs.put(markShading.name + suffix, markColorWeight);
+        
+        addCommonFields(suffix, prefs);
+    }
+    
+    private void addFunctionFields(String suffix, Map<String, Object> prefs) {
+        prefs.put(TYPE + suffix, LayerType.line.name());
+        if (lineDash != null)
+            prefs.put(LINE_DASH + suffix, lineDash);
+        if (lineColor != null)
+            prefs.put(LINE_COLOR + suffix, lineColor);
+        if (lineThickness != null)
+            prefs.put(LINE_THICK + suffix, lineThickness);
         
         addCommonFields(suffix, prefs);
     }
@@ -235,6 +266,14 @@ public class LayerModel {
     public LayerModel setShowMarks(boolean showMarks) {
         this.showMarks = showMarks;
         return this;
+    }
+    
+    public void setShowFunctions(boolean bool) {
+        this.showFunctions = bool;
+    }
+    
+    public boolean isShowFunctions() {
+        return this.showFunctions;
     }
 
     public ErrorBarType getErrorBarType() {
@@ -335,6 +374,33 @@ public class LayerModel {
     
     public String getLabel() {
         return this.leglabel;
+    }
+    
+    public String getLineColor() {
+        return lineColor;
+    }
+
+    public LayerModel setLineColor(String color) {
+        this.lineColor = color;
+        return this;
+    }
+    
+    public double getLineDash() {
+        return lineDash;
+    }
+
+    public LayerModel setLineDash(double dash) {
+        this.lineDash = dash;
+        return this;
+    }
+    
+    public int getLineThickness() {
+        return lineThickness;
+    }
+
+    public LayerModel setLineThickness(int thickness) {
+        this.lineThickness = thickness;
+        return this;
     }
 
     /*

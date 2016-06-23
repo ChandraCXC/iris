@@ -33,6 +33,7 @@ public class VisualizerDataModel {
     public static final String PROP_SELECTED_STARTABLES = "selectedStarTables";
     public static final String PROP_XUNITS = "xunits";
     public static final String PROP_YUNITS = "yunits";
+    public static final String PROP_FUNCTION_MODELS = "functionModels";
 
     private final PropertyChangeSupport pcs;
     private final VisualizerDataStore store;
@@ -62,6 +63,10 @@ public class VisualizerDataModel {
     // Yunits for StarTables
     private String yUnits = "";
     
+    // list of FunctionModels associated with selectedSeds. These tables will be overplotted
+    // as solid lines
+//    private List<FunctionModel> functionModels;
+    
     private boolean coplotted = false;
     
     public VisualizerDataModel(VisualizerComponentPreferences prefs) {
@@ -73,6 +78,7 @@ public class VisualizerDataModel {
         this.setLayerModels(new LinkedList<LayerModel>());
         this.setSedStarTables(new LinkedList<IrisStarTable>());
         this.setSelectedStarTables(new LinkedList<IrisStarTable>());
+//        this.setFunctionModels(new LinkedList<FunctionModel>());
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -137,6 +143,9 @@ public class VisualizerDataModel {
         return this.coplotted;
     }
     
+    // TODO: should we allow SEDs to have multiple FunctionModels attached?
+    // If so, we should add a "getFunctionModelsForSed()" here.
+    
     /*
      * 
      * Getters and Setters
@@ -165,6 +174,7 @@ public class VisualizerDataModel {
         List<LayerModel> newSedModels = new LinkedList<>();
         List<IrisStarTable> newSedTables = new LinkedList<>();
         StringBuilder dataModelTitle = new StringBuilder();
+        //List<FunctionModel> newFunctionModel = new LinkedList<FunctionModel>();
         
         Iterator<ExtSed> it = selectedSeds.iterator();
         while (it.hasNext()) {
@@ -189,6 +199,9 @@ public class VisualizerDataModel {
             else {
                 newSedModels.addAll(sedModel.getLayerModels());
             }
+            // set a FunctionModel
+            // TODO: handle setting multiple function models
+            //newFunctionModel.add(sedModel.getEvalModel());
         }
         this.selectedSeds = ObservableCollections.observableList(selectedSeds);
         
@@ -200,6 +213,7 @@ public class VisualizerDataModel {
         this.setLayerModels(newSedModels);
         this.setSedStarTables(newSedTables);
         this.setDataModelTitle(dataModelTitle.toString());
+        //this.setFunctionModels(newFunctionModel);
         
         pcs.firePropertyChange(PROP_SELECTED_SEDS, oldSeds, selectedSeds);
     }
@@ -276,6 +290,16 @@ public class VisualizerDataModel {
         pcs.firePropertyChange(PROP_SELECTED_STARTABLES, oldStarTables, selectedStarTables);
     }
     
+//    public List<FunctionModel> getFunctionModels() {
+//        return functionModels;
+//    }
+//    
+//    public synchronized void setFunctionModels(List<FunctionModel> newFunctionModels) {
+//        List<FunctionModel> oldFunctionModels = functionModels;
+//        this.functionModels = ObservableCollections.observableList(newFunctionModels);
+//        pcs.firePropertyChange(PROP_FUNCTION_MODELS, oldFunctionModels, functionModels);
+//    }
+
     public void refresh() {
         // This is a total cop-out. Just clear all existing preferences and reset
         // with the new selected SED.
@@ -285,6 +309,7 @@ public class VisualizerDataModel {
         this.setLayerModels(new LinkedList<LayerModel>());
         this.setSedStarTables(new LinkedList<IrisStarTable>());
         this.setSelectedStarTables(new LinkedList<IrisStarTable>());
+//        this.setFunctionModels(new LinkedList<FunctionModel>());
         
         setSelectedSeds(oldSeds);
     }

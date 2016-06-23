@@ -132,12 +132,12 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mntmCoplotActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="jCheckBoxMenuItem1">
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="mntmPlotModel">
               <Properties>
-                <Property name="text" type="java.lang.String" value="jCheckBoxMenuItem1"/>
+                <Property name="text" type="java.lang.String" value="Plot model"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCheckBoxMenuItem1ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mntmPlotModelActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>
