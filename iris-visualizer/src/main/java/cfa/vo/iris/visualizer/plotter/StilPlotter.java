@@ -26,6 +26,8 @@ import cfa.vo.iris.visualizer.preferences.FunctionModel;
 import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
+import java.awt.Color;
+import java.awt.Dimension;
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
 import uk.ac.starlink.ttools.plot2.geom.PlaneSurfaceFactory;
 import uk.ac.starlink.ttools.plot2.task.PlanePlot2Task;
@@ -38,6 +40,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import java.awt.Insets;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -50,9 +53,14 @@ public class StilPlotter extends JPanel {
             .getLogger(StilPlotter.class.getName());
 
     private static final long serialVersionUID = 1L;
-
+    
+    // Primary plot display
     private PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> display;
     
+    // Residuals
+    private PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> residuals;
+    private boolean showResiduals = false;
+
     // List of SEDs plotted in Plotter
     private List<ExtSed> seds = new ArrayList<>();
     
@@ -181,6 +189,15 @@ public class StilPlotter extends JPanel {
         resetPlot(false, false);
     }
     
+    public boolean isShowResiduals() {
+        return showResiduals;
+    }
+    
+    public void setShowResdiduals(boolean on) {
+        this.showResiduals = on;
+        resetPlot(false, false);
+    }
+    
     /**
      * Resets the plot.
      * @param forceReset - forces the plot to reset its bounds
@@ -195,8 +212,8 @@ public class StilPlotter extends JPanel {
         // throw it away on a model change.
         setupForPlotDisplayChange(newPlot);
         
-        // Setup new stil plot component
-        display = createPlotComponent();
+        // Setup new stil plot components
+        setupPlotComponents();
         
         // Set the bounds using the current SED's aspect if the plot is fixed and if we're not
         // forcing a redraw
@@ -368,14 +385,16 @@ public class StilPlotter extends JPanel {
      * Create the stil plot component
      * @return
      */
-    protected PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> 
-        createPlotComponent()
+    private void setupPlotComponents()
     {
         logger.info("Creating new plot from selected SED(s)");
 
         try {
             setupMapEnvironment();
-            return createPlotComponent(env);
+            display = createPlotComponent(env);
+            if (showResiduals) {
+                residuals = setupResidualsDisplay();
+            }
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -410,9 +429,9 @@ public class StilPlotter extends JPanel {
 
     protected void setupMapEnvironment() throws IOException {
 
-        env = new MapEnvironment();
+        env = new MapEnvironment(new LinkedHashMap<String, Object>());
         env.setValue("type", "plot2plane");
-        env.setValue("insets", new Insets(50, 80, 50, 50));
+        env.setValue("insets", new Insets(30, 80, 40, 50));
         
         // TODO: force numbers on Y axis to only be 3-5 digits long. Keeps
         // Y-label from falling off the jpanel. Conversely, don't set "insets"
@@ -461,12 +480,30 @@ public class StilPlotter extends JPanel {
         
     }
     
+    private PlotDisplay setupResidualsDisplay() throws Exception {
+        
+        PlotPreferences pp = getPlotPreferences();
+
+        MapEnvironment resEnv = new MapEnvironment(new LinkedHashMap<String, Object>());
+        resEnv.setValue("type", "plot2plane");
+        resEnv.setValue("insets", new Insets(20, 80, 20, 50));
+        resEnv.setValue("ylabel", "residuals");
+        resEnv.setValue("xlabel", null);
+        resEnv.setValue("xlog", pp.getPlotType().xlog);
+        resEnv.setValue("legend", false);
+        
+        return new PlanePlot2Task().createPlotComponent(resEnv, false);
+    }
+    
     private void setupForPlotDisplayChange(boolean newPlot) {
         if (display == null) {
             return;
         }
         
-        display.removeAll();
+        if (residuals != null) {
+            remove(residuals);
+        }
+        
         remove(display);
         
         if (!newPlot) {
@@ -479,13 +516,40 @@ public class StilPlotter extends JPanel {
      */
     private void addPlotToDisplay() {
         
-        // Ensure it fills the entire display
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.weightx = gbc.weighty = 1.0;
-        gbc.gridx = gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.BOTH;
+        GridBagConstraints displayGBC = new GridBagConstraints();
+        displayGBC.anchor = GridBagConstraints.NORTHWEST;
+        displayGBC.fill = GridBagConstraints.BOTH;
+        displayGBC.weightx = 1;
+        displayGBC.weighty = .7;
+        displayGBC.gridx = 0;
+        displayGBC.gridy = 0;
+        displayGBC.gridheight = 1;
+        displayGBC.gridwidth = 1;
+
+        display.setPreferredSize(new Dimension(600, 500));
+        add(display, displayGBC);
         
-        add(display, gbc);
+        // Ad the residuals to the jpanel if specified
+        if (showResiduals) {
+            // Ensure it fills the entire display
+            GridBagConstraints residualsGBC = new GridBagConstraints();
+            residualsGBC.anchor = GridBagConstraints.NORTHWEST;
+            residualsGBC.fill = GridBagConstraints.BOTH;
+            residualsGBC.weightx = 1;
+            residualsGBC.weighty = .3;
+            residualsGBC.gridx = 0;
+            residualsGBC.gridy = 1;
+            residualsGBC.gridheight = 1;
+            residualsGBC.gridwidth = 1;
+            
+            residuals.setPreferredSize(new Dimension(600,200));
+            residuals.setMaximumSize(new Dimension(Integer.MAX_VALUE, 90));
+            residuals.setMinimumSize(new Dimension(0, 50));
+            add(residuals, residualsGBC);
+            
+            residuals.revalidate();
+            residuals.repaint();
+        }
         
         display.revalidate();
         display.repaint();

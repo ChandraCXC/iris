@@ -264,7 +264,7 @@ public class PlotterView extends JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
-        setMinimumSize(new java.awt.Dimension(40, 40));
+        setMinimumSize(new java.awt.Dimension(300, 300));
         setPreferredSize(new java.awt.Dimension(800, 546));
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
