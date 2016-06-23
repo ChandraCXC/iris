@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import uk.ac.starlink.task.Parameter;
 import uk.ac.starlink.ttools.plot2.Axis;
 
 public class StilPlotter extends JPanel {
@@ -283,6 +284,15 @@ public class StilPlotter extends JPanel {
         // overplot the model on top of the current display
         try {
             resetPlot(false, false, env);
+        } catch (Exception ex) {
+            Logger.getLogger(StilPlotter.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void remove_model() {
+        
+        try {
+            resetPlot(false, false);
         } catch (Exception ex) {
             Logger.getLogger(StilPlotter.class.getName()).log(Level.SEVERE, null, ex);
         }

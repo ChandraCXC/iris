@@ -602,7 +602,6 @@ public class PlotterView extends JInternalFrame {
         });
         mnView.add(mntmCoplot);
 
-        jCheckBoxMenuItem1.setSelected(true);
         jCheckBoxMenuItem1.setText("jCheckBoxMenuItem1");
         jCheckBoxMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -700,13 +699,17 @@ public class PlotterView extends JInternalFrame {
             // TODO: right now, it just overplots a flattened-version of the SED to
             // play around with. This should be updated to show the currently
             // selected SED's model, if it exists.
-            
-            ExtSed sed = preferences.getDataModel().getSelectedSeds().get(0);
-            String xunits = preferences.getDataModel().getSedModel(sed).getXUnits();
-            String yunits = preferences.getDataModel().getSedModel(sed).getYUnits();
 
-            SegmentStarTable model = new SegmentStarTable(ExtSed.flatten(sed, xunits, yunits).getSegment(0), title);
-            plotter.plot_model(model);
+            if (jCheckBoxMenuItem1.isSelected()) {
+                ExtSed sed = preferences.getDataModel().getSelectedSeds().get(0);
+                String xunits = preferences.getDataModel().getSedModel(sed).getXUnits();
+                String yunits = preferences.getDataModel().getSedModel(sed).getYUnits();
+
+                SegmentStarTable model = new SegmentStarTable(ExtSed.flatten(sed, xunits, yunits).getSegment(0), title);
+                plotter.plot_model(model);
+            } else {
+                plotter.remove_model();
+            }
         } catch (SedException | UnitsException ex) {
             Logger.getLogger(PlotterView.class.getName()).log(Level.SEVERE, null, ex);
         }
