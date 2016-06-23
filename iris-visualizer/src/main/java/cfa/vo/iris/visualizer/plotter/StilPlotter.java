@@ -70,7 +70,11 @@ public class StilPlotter extends JPanel {
     // Plot preferences for the currently plotted selection of SEDs
     private PlotPreferences plotPreferences;
     
+    // MapEnvironment for the primary plotter
     private MapEnvironment env;
+    
+    // MapEnvironment for the residuals plotter
+    private MapEnvironment resEnv;
     
     // Needs a default constructor for Netbeans
     public StilPlotter() {
@@ -139,12 +143,26 @@ public class StilPlotter extends JPanel {
     }
 
     /**
+     * @return The residuals plot display.
+     */
+    public PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> getResidualsPlotDisplay() {
+        return residuals;
+    }
+
+    /**
      * @return MapEnvironment configuration for the Stil plot task.
      */
     protected MapEnvironment getEnv() {
         return env;
     }
     
+    /**
+     * @return MapEnvironment configuration for the residuals.
+     */
+    protected MapEnvironment getResEnv() {
+        return resEnv;
+    }
+   
     /**
      * @return Current set of PlotPreferences used by the plotter.
      */
@@ -389,11 +407,15 @@ public class StilPlotter extends JPanel {
         logger.info("Creating new plot from selected SED(s)");
 
         try {
+            // Setup each MapEnvironment
             setupMapEnvironment();
-            display = createPlotComponent(env);
-            if (showResiduals) {
-                residuals = setupResidualsDisplay();
-            }
+            setupResidualMapEnvironment();
+            
+            // Create the plot display
+            display = createPlotComponent(env, true);
+            
+            // Create the residuals if specified
+            residuals = showResiduals ? createPlotComponent(resEnv, false) : null;
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -407,7 +429,7 @@ public class StilPlotter extends JPanel {
      * @throws Exception
      */
     protected PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> createPlotComponent(
-            MapEnvironment env) throws Exception {
+            MapEnvironment env, boolean enableMouseListeners) throws Exception {
 
         logger.log(Level.FINE, "plot environment:");
         logger.log(Level.FINE, ReflectionToStringBuilder.toString(env));
@@ -420,8 +442,11 @@ public class StilPlotter extends JPanel {
         PlotDisplay<PlaneSurfaceFactory.Profile,PlaneAspect> display =
                 new PlanePlot2Task().createPlotComponent(env, false);
         
-        // Always update mouse listeners with the new display
-        preferences.getMouseListenerManager().activateListeners(display);
+        // TODO: Mouse listeners for the residuals?
+        if (enableMouseListeners) {
+            // Always update mouse listeners with the new display
+            preferences.getMouseListenerManager().activateListeners(display);
+        }
         
         return display;
     }
@@ -479,19 +504,25 @@ public class StilPlotter extends JPanel {
         
     }
     
-    private PlotDisplay setupResidualsDisplay() throws Exception {
+    private void setupResidualMapEnvironment() throws Exception {
+        if (!showResiduals) {
+            resEnv = null;
+            return;
+        }
         
         PlotPreferences pp = getPlotPreferences();
-
-        MapEnvironment resEnv = new MapEnvironment(new LinkedHashMap<String, Object>());
+        
+        resEnv = new MapEnvironment(new LinkedHashMap<String, Object>());
         resEnv.setValue("type", "plot2plane");
         resEnv.setValue("insets", new Insets(20, 80, 20, 50));
+        
         resEnv.setValue("ylabel", "residuals");
         resEnv.setValue("xlabel", null);
         resEnv.setValue("xlog", pp.getPlotType().xlog);
         resEnv.setValue("legend", false);
         
-        return new PlanePlot2Task().createPlotComponent(resEnv, false);
+        // TODO: Plot something?
+        // TODO: Handle the PlaneAspect and Zooming somehow!
     }
     
     private void setupForPlotDisplayChange(boolean newPlot) {

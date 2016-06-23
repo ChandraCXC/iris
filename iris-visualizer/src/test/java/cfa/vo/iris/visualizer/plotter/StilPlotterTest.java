@@ -353,6 +353,25 @@ public class StilPlotterTest {
         assertEquals(3, ArrayUtils.getLength(layers));
     }
     
+    
+    @Test
+    public void testResiduals() throws Exception {
+        ExtSed sed = new ExtSed("test", false);
+        StilPlotter plot = setUpTests(sed);
+        
+        assertFalse(plot.isShowResiduals());
+        assertNull(plot.getResEnv());
+        assertNull(plot.getResidualsPlotDisplay());
+        
+        plot.setShowResdiduals(true);
+        
+        MapEnvironment env = plot.getResEnv();
+        PlotDisplay<Profile, PlaneAspect> res = plot.getResidualsPlotDisplay();
+        
+        assertNotNull(env);
+        assertNotNull(res);
+    }
+    
     private StilPlotter setUpTests(ExtSed sed) throws Exception {
         preferences = new VisualizerComponentPreferences(ws);
         preferences.getDataStore().update(sed);
