@@ -493,7 +493,8 @@ public class StilPlotter extends JPanel {
         resEnv.setValue("insets", new Insets(20, 80, 20, 50));
         
         resEnv.setValue(PlotPreferences.SIZE, pp.getSize());
-        resEnv.setValue("xlog", pp.getPlotType().xlog);
+        resEnv.setValue(PlotPreferences.X_LOG, pp.getPlotType().xlog);
+        resEnv.setValue(PlotPreferences.GRID, pp.getShowGrid());
         
         resEnv.setValue("ylabel", residualsOrRatios);
         resEnv.setValue("xlabel", null);
@@ -546,7 +547,7 @@ public class StilPlotter extends JPanel {
         displayGBC.anchor = GridBagConstraints.NORTHWEST;
         displayGBC.fill = GridBagConstraints.BOTH;
         displayGBC.weightx = 1;
-        displayGBC.weighty = .7;
+        displayGBC.weighty = .75;
         displayGBC.gridx = 0;
         displayGBC.gridy = 0;
         displayGBC.gridheight = 1;
@@ -562,13 +563,13 @@ public class StilPlotter extends JPanel {
             residualsGBC.anchor = GridBagConstraints.NORTHWEST;
             residualsGBC.fill = GridBagConstraints.BOTH;
             residualsGBC.weightx = 1;
-            residualsGBC.weighty = .3;
+            residualsGBC.weighty = .25;
             residualsGBC.gridx = 0;
             residualsGBC.gridy = 1;
             residualsGBC.gridheight = 1;
             residualsGBC.gridwidth = 1;
             
-            residuals.setPreferredSize(new Dimension(600,200));
+            residuals.setPreferredSize(new Dimension(600,100));
             residuals.setMaximumSize(new Dimension(Integer.MAX_VALUE, 70));
             residuals.setMinimumSize(new Dimension(0, 50));
             add(residuals, residualsGBC);
