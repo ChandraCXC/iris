@@ -8,6 +8,7 @@ import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
+import cfa.vo.sedlib.Sed;
 import cfa.vo.sherpa.ConfidenceResults;
 import cfa.vo.sherpa.Data;
 import cfa.vo.sherpa.FitResults;
@@ -210,14 +211,11 @@ public class FitController {
      * @return a {@link SegmentStarTable} instance
      * @throws Exception
      */
-    public SegmentStarTable evaluateModel(SedModel sedModel) throws Exception {
+    public void evaluateModel(SedModel sedModel) throws Exception {
         String xUnit = sedModel.getXUnits();
         String yUnit = sedModel.getYUnits();
 
         UnitsManager uManager = Default.getInstance().getUnitsManager();
-
-        double[] xSegment = new double[]{};
-        double[] ySegment = new double[]{};
 
         for (IrisStarTable table: sedModel.getDataTables()) {
             double[] x = table.getSpectralDataValues();
@@ -226,11 +224,42 @@ public class FitController {
             double[] y = Default.getInstance().getUnitsManager().convertY(yStandardUnit, xStandardUnit,
                     SherpaClient.Y_UNIT, SherpaClient.X_UNIT, yUnit);
 
-            xSegment = ArrayUtils.addAll(xSegment, x);
-            ySegment = ArrayUtils.addAll(ySegment, y);
+            table.getPlotterDataTable().setModelValues(y);
+            table.getPlotterDataTable().setResidualValues(calcResiduals(table.getFluxDataValues(), y));
+            table.getPlotterDataTable().setRatioValues(calcRatios(table.getFluxDataValues(), y));
+        }
+    }
 
+    private double[] calcResiduals(double[] expected, double[] actual) {
+        int len = expected.length;
+
+        if (len != actual.length) {
+            throw new IllegalArgumentException("Expected and Actual array should have the same size");
         }
 
-        return new SegmentStarTable(xSegment, ySegment, xUnit, yUnit);
+        double[] ret = new double[len];
+
+        for (int i=0; i<len; i++) {
+            ret[i] = actual[i] - expected[i];
+        }
+
+        return ret;
+    }
+
+    private double[] calcRatios(double[] expected, double[] actual) {
+        int len = expected.length;
+
+        if (len != actual.length) {
+            throw new IllegalArgumentException("Expected and Actual array should have the same size");
+        }
+
+        double[] ret = new double[len];
+
+        for (int i=0; i<len; i++) {
+            double e = expected[i];
+            ret[i] = Math.abs(e - actual[i])/e;
+        }
+
+        return ret;
     }
 }

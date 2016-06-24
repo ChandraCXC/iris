@@ -81,6 +81,9 @@ public class SegmentStarTable extends RandomStarTable {
     private double[] fluxErrValues;
     private double[] fluxErrValuesLo;
     private double[] fluxErrValuesHi;
+    private double[] modelValues;
+    private double[] residualValues;
+    private double[] ratioValues;
 
     public SegmentStarTable(double[] x, double[] y, String xUnit, String yUnit)
             throws SedNoDataException, UnitsException, SedInconsistentException {
@@ -390,6 +393,33 @@ public class SegmentStarTable extends RandomStarTable {
     public void setFluxErrValuesHi(double[] fluxErrValuesHi) {
         this.fluxErrValuesHi = fluxErrValuesHi;
         updateColumnValues(fluxErrValuesHi, Column.Flux_Error_High);
+    }
+
+    public double[] getModelValues() {
+        return modelValues;
+    }
+
+    public void setModelValues(double[] modelValues) {
+        this.modelValues = modelValues;
+        updateColumnValues(modelValues, Column.Model_Values);
+    }
+
+    public double[] getResidualValues() {
+        return residualValues;
+    }
+
+    public void setResidualValues(double[] residualValues) {
+        this.residualValues = residualValues;
+        updateColumnValues(residualValues, Column.Residuals);
+    }
+
+    public double[] getRatioValues() {
+        return ratioValues;
+    }
+
+    public void setRatioValues(double[] ratioValues) {
+        this.ratioValues = ratioValues;
+        updateColumnValues(ratioValues, Column.Ratios);
     }
 
     /**

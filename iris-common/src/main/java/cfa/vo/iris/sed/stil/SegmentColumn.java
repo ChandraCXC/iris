@@ -161,8 +161,11 @@ public abstract class SegmentColumn extends ColumnData
         Flux_Error_Low("Y axis low error values", "iris.flux.value.error.low", Double.class),
         Original_Flux_Error("Original Y axis error values", "iris.flux.value.original.error", Double.class),
         Original_Flux_Error_Hi("Original Y axis upper error values", "iris.flux.value.original.error.high", Double.class),
-        Original_Flux_Error_Low("Original Y axis low error values", "iris.flux.value.original.error.low", Double.class);
-        
+        Original_Flux_Error_Low("Original Y axis low error values", "iris.flux.value.original.error.low", Double.class),
+        Model_Values("Evaluated values from fit model", "iris.fit.values", Double.class),
+        Residuals("Observed - Expected", "iris.fit.residuals", Double.class),
+        Ratios("abs(Observerd - Expected)/Expected", "iris.fit.ratios", Double.class);
+
         
         public String description;
         public String utype;
