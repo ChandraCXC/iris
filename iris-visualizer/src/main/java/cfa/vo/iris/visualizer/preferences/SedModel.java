@@ -16,7 +16,6 @@
 
 package cfa.vo.iris.visualizer.preferences;
 
-import cfa.vo.iris.fitting.FitConfiguration;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.LinkedList;
@@ -96,6 +95,13 @@ public class SedModel {
         ret.setLabel(sed.getId());
         
         return ret;
+    }
+    
+    /**
+     * @return FunctionModel for the fit on this SED, if available.
+     */
+    public FunctionModel getFunctionModel() {
+        return new FunctionModel(this);
     }
     
     /**
@@ -233,13 +239,6 @@ public class SedModel {
      */
     public void setFunctionModel(FunctionModel model) {
         this.evalModel = model;
-    }
-    
-    /**
-     * Returns the evaluated model belonging to this ExtSed.
-     */
-    public FunctionModel getFunctionModel() {
-        return evalModel;
     }
     
     /**
