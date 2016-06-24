@@ -15,22 +15,15 @@
  */
 package cfa.vo.iris.visualizer.preferences;
 
-import cfa.vo.iris.sed.stil.SegmentColumn.Column;
-import cfa.vo.iris.sed.stil.SegmentStarTable;
-import cfa.vo.iris.units.UnitsException;
-import cfa.vo.iris.units.spv.XUnits;
-import cfa.vo.iris.units.spv.YUnits;
+import cfa.vo.iris.sed.stil.SegmentColumn;
 import cfa.vo.iris.visualizer.plotter.LayerType;
-import cfa.vo.sedlib.Segment;
-import cfa.vo.sedlib.common.SedInconsistentException;
-import cfa.vo.sedlib.common.SedNoDataException;
-import java.security.InvalidParameterException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import cfa.vo.iris.visualizer.stil.tables.SegmentColumnInfoMatcher;
+import cfa.vo.iris.visualizer.stil.tables.SortedStarTable;
+import cfa.vo.iris.visualizer.stil.tables.StackedStarTable;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import uk.ac.starlink.table.StarTable;
+import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
 /**
  *
@@ -38,222 +31,121 @@ import uk.ac.starlink.table.StarTable;
  * an evaluated model.
  */
 public class FunctionModel {
-
-    // see http://www.star.bris.ac.uk/~mbt/stilts/sun256/sun256.html#plot2plane
-    // for a list of all the configurable plot properties
+    
+    public static final String DEFAULT_FUNCTION_COLOR = "red";
+    public static final String RATIO = "ratio";
+    public static final String RESIDUAL = "residual";
+    
+    public static final String FUNCTION_SUFFIX = "_MODEL";
     
     private static final Logger logger = Logger.getLogger(FunctionModel.class.getName());
     
-    // Override-able Settings
-    public static final String TYPE = "layer";
-    public static final String IN = "in";
-    public static final String X_COL = "x";
-    public static final String Y_COL = "y";
-    public static final String COLOR = "color";
-    public static final String THICK = "thick";
-    public static final String DASH = "dash";
-    public static final String SIZE = "size";
+    private SortedStarTable sortedStackedStarTable;
+    private SedModel sedModel;
     
-    // for the plot legend
-    public static final String LEGEND_LABEL = "leglabel";
-    public static final String LEGEND_SEQUENCE = "legseq";
-    
-    private String suffix;
-    
-    private SegmentStarTable inSource;
-    private Integer size;
-    private String color;
-    private Double dash;
-    private Integer thickness;
-    
-    private String leglabel;
-    private String[] legseq;
-    
-    private boolean show; // show the evaluated model
-    
-    public FunctionModel() {
-        this.color = "red";
-        this.thickness = 1;
-        this.show = false;
+    private String functionColor = "red";
+    private Double functionDash = Double.NaN;
+    private Integer functionThickness = 1;
+
+    public FunctionModel(SedModel sedModel) {
         
+        this.sedModel = sedModel;
+        // concat IrisStarTable into StackedStarTable
+        StackedStarTable stackedTable = new StackedStarTable(sedModel.getDataTables(), new SegmentColumnInfoMatcher());
+        stackedTable.setName(sedModel.getSedLayerModel().getSuffix());
+        
+        // sort the table
         try {
-            // add empty table
-            this.setInSource(new SegmentStarTable(new Segment()));
-        } catch (SedNoDataException | UnitsException | SedInconsistentException ex) {
+            // find column containing spectral values
+            int col;
+            ColumnIdentifier colId = new ColumnIdentifier(stackedTable);
+            col = colId.getColumnIndex(SegmentColumn.Column.Spectral_Value.name());
+            
+            // create a table sorted by the spectral axis
+            sortedStackedStarTable = new SortedStarTable(stackedTable, col, true);
+            sortedStackedStarTable.setName(stackedTable.getName()+FUNCTION_SUFFIX);
+            
+        } catch (IOException ex) {
             Logger.getLogger(FunctionModel.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
     }
     
-    public FunctionModel(SegmentStarTable table) {
-        if (table == null) {
-            throw new InvalidParameterException("star table cannot be null");
+    public LayerModel getFunctionLayerModel() {
+        
+        LayerModel layer = new LayerModel(sortedStackedStarTable);
+        layer.setShowErrorBars(false);
+        layer.setShowMarks(false);
+        layer.setShowLines(true);
+        layer.setLayerType(LayerType.line.name());
+        layer.setX(SegmentColumn.Column.Spectral_Value.name());
+        layer.setY(SegmentColumn.Column.Model_Values.name());
+        layer.setLineColor(getFunctionColor());
+        layer.setLineThickness(getFunctionThickness());
+        layer.setLineDash(getFunctionDash());
+        return layer;
+    }
+    
+    public LayerModel getResidualsLayerModel(String residualType) {
+        
+        LayerModel layer = new LayerModel(sortedStackedStarTable);
+        if (residualType.equals(RATIO)) {
+            layer.setX(SegmentColumn.Column.Spectral_Value.name());
+            layer.setY(SegmentColumn.Column.Ratios.name());
+        } else if (residualType.equals(RESIDUAL)) {
+            layer.setX(SegmentColumn.Column.Spectral_Value.name());
+            layer.setY(SegmentColumn.Column.Residuals.name());
+        } else {
+            throw new IllegalArgumentException("Unrecognized residual type. "
+                    + "Must be \"ratio\" or \"residual\"");
         }
         
-        this.setInSource(table);
-        this.suffix = table.getName();
-        this.color = "red";
-        this.thickness = 1;
+        layer.setShowErrorBars(false);
+        layer.setShowMarks(true);
         
-        // Setting default values here
-        this.show = true;
+        return layer;
     }
     
-    public FunctionModel(List<SegmentStarTable> tables) {
-        for (StarTable st : tables) {
-            if (st == null) {
-                throw new InvalidParameterException("star tables cannot be null");
-            }
-        }
+    public void setSedModel(SedModel sedModel) {
+        this.sedModel = sedModel;
     }
     
-    /**
-     * Show or hide the evaluated model
-     * @param bool
-     */
-    public void setShowModel(boolean bool) {
-        this.show = bool;
+    public SedModel getSedModel() {
+        return this.sedModel;
     }
     
-    /**
-     * Returns whether the model should be shown or not
-     */
-    public boolean isShowModel() {
-        return this.show;
-    }
-
-    /**
-     * 
-     * @return a map of all preferences currently set for this layer.
-     */
-    public Map<String, Object> getPreferences() {
-        Map<String, Object> preferences = new HashMap<String, Object>();
-        
-        if (show) {
-            addMarkFields(suffix, preferences);
-        }
-        
-        // TODO: In the future, we may want to have shaded regions for model
-        // upper/lower limits.
-        
-        return preferences;
+    public void setSortedStarTable(SortedStarTable table) {
+        this.sortedStackedStarTable = table;
     }
     
-    private void addMarkFields(String suffix, Map<String, Object> prefs) {
-        prefs.put(TYPE + suffix, LayerType.line.name());
-        if (dash != null)
-            prefs.put(DASH + suffix, dash);
-        if (color != null)
-            prefs.put(COLOR + suffix, color);
-        if (thickness != null)
-            prefs.put(THICK + suffix, thickness);
-        
-        addCommonFields(suffix, prefs);
-
+    public SortedStarTable getSortedStarTable() {
+        return this.sortedStackedStarTable;
     }
     
-    private void addCommonFields(String suffix, Map<String, Object> prefs) {
-        prefs.put(IN + suffix, inSource);
-        prefs.put(X_COL + suffix, Column.Spectral_Value.name());
-        prefs.put(Y_COL + suffix, Column.Flux_Value.name());
-        
-        // for the legend. set the flux and error layer legened names
-        // to the same name
-        prefs.put(LEGEND_LABEL + suffix, getLabel());
-        
-        if (size != null)
-            prefs.put(SIZE + suffix, size);
-    }
-    
-    public String getXUnits() {
-        return inSource.getSpecUnits().toString();
-    }
-    
-    public void setXUnits(String xunits) throws UnitsException {
-        inSource.setSpecUnits(new XUnits(XUnits.getCorrectSpelling(xunits)));
-    }
-    
-    public String getYUnits() {
-        return inSource.getFluxUnits().toString();
-    }
-    
-    public void setYUnits(String yunits) throws UnitsException {
-        inSource.setFluxUnits(new YUnits(YUnits.getCorrectSpelling(yunits)));
-    }
-
-    public SegmentStarTable getInSource() {
-        return inSource;
-    }
-    
-    public FunctionModel setInSource(SegmentStarTable table) {
-        if (table == null) {
-            throw new InvalidParameterException("StarTable cannot be null!");
-        }
-        
-        this.inSource = table;
+    public FunctionModel setFunctionColor(String color) {
+        this.functionColor = color;
         return this;
     }
     
-    public String getSuffix() {
-        return suffix;
+    public String getFunctionColor() {
+        return functionColor;
     }
-
-    public FunctionModel setSuffix(String suffix) {
-        this.suffix = suffix;
-        return this;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public FunctionModel setSize(int size) {
-        this.size = size;
-        return this;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public FunctionModel setColor(String color) {
-        this.color = color;
+    
+    public FunctionModel setFunctionDash(Double dash) {
+        this.functionDash = dash;
         return this;
     }
     
-    public double getDash() {
-        return dash;
+    public double getFunctionDash() {
+        return functionDash;
     }
-
-    public FunctionModel setDash(double dash) {
-        this.dash = dash;
+    
+    public FunctionModel setFunctionThickness(Integer thickness) {
+        this.functionThickness = thickness;
         return this;
     }
     
-    public int getThickness() {
-        return thickness;
+    public int getFunctionThickness() {
+        return functionThickness;
     }
-
-    public FunctionModel setThickness(int thickness) {
-        this.thickness = thickness;
-        return this;
-    }
-    
-    public FunctionModel setLayerSequence(String[] layerSequence) {
-        this.legseq = layerSequence;
-        return this;
-    }
-    
-    public String[] getLayerSequence() {
-        return this.legseq;
-    }
-    
-    // the suffix is the layer suffix name from the SedPreferences
-    public FunctionModel setLabel(String label) {
-        this.leglabel = label;
-        return this;
-    }
-    
-    public String getLabel() {
-        return this.leglabel;
-    }    
 }

@@ -23,6 +23,7 @@ import cfa.vo.iris.sed.quantities.SPVYQuantity;
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.visualizer.preferences.LayerModel;
 import cfa.vo.iris.visualizer.preferences.FunctionModel;
+import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
@@ -38,9 +39,9 @@ import java.awt.Insets;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import uk.ac.starlink.task.Parameter;
 import uk.ac.starlink.ttools.plot2.Axis;
 
 public class StilPlotter extends JPanel {
@@ -51,7 +52,7 @@ public class StilPlotter extends JPanel {
     private static final long serialVersionUID = 1L;
 
     private PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> display;
-
+    
     // List of SEDs plotted in Plotter
     private List<ExtSed> seds = new ArrayList<>();
     
@@ -269,40 +270,7 @@ public class StilPlotter extends JPanel {
         PlaneAspect zoomedAspect = new PlaneAspect(xlimits, ylimits);
         this.getPlotDisplay().setAspect(zoomedAspect);
     }
-
-    // TODO: update this when we have an interface defined for grabbing a
-    // selected ExtSed's evaluated model
-    /**
-     * Overplot a function on the plotter.
-     * @param table - a SegmentStarTable containing the X and Y values of the 
-     * function to plot
-     */
-    public void plotModel(SegmentStarTable table) {
-        
-        // add function model layer if model exists OR if model should be shown
-        FunctionModel layer = new FunctionModel(table);
-        if (layer.isShowModel()) {
-            for (String key : layer.getPreferences().keySet()) {
-                env.setValue(key, layer.getPreferences().get(key));
-            }
-        }
-        
-        // overplot the model on top of the current display
-        try {
-            resetPlot(false, false, env);
-        } catch (Exception ex) {
-            Logger.getLogger(StilPlotter.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
     
-    public void remove_model() {
-        
-        try {
-            resetPlot(false, false);
-        } catch (Exception ex) {
-            Logger.getLogger(StilPlotter.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
     /**
      * Calculate new zoomed axis range.
      * @param zoomFactor - scale factor to zoom in/out by
@@ -470,10 +438,27 @@ public class StilPlotter extends JPanel {
 
         // Add segments and segment preferences
         for (LayerModel layer : dataModel.getLayerModels()) {
-            for (String key : layer.getPreferences().keySet()) {
-                env.setValue(key, layer.getPreferences().get(key));
+            Map<String, Object> prefs = layer.getPreferences();
+            for (String key : prefs.keySet()) {
+                env.setValue(key, prefs.get(key));
             }
         }
+        
+        // add model functions
+        for (SedModel sedModel : dataModel.getSedModels()) {
+            // If no model available (e.g. no fit) skip it
+            FunctionModel mod = sedModel.getFunctionModel();
+            if (mod == null) {
+                continue;
+            }
+            LayerModel layer = mod.getFunctionLayerModel();
+            Map<String, Object> prefs = layer.getPreferences();
+            for (String key : prefs.keySet()) {
+                env.setValue(key, prefs.get(key));
+            }
+            
+        }
+        
     }
     
     private void setupForPlotDisplayChange(boolean newPlot) {
