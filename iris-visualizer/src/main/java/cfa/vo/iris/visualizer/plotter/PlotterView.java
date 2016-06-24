@@ -29,6 +29,7 @@ import java.awt.event.ActionListener;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import javax.swing.SwingConstants;
 
 public class PlotterView extends JInternalFrame {
     
@@ -373,24 +374,44 @@ public class PlotterView extends JInternalFrame {
         up.setContentAreaFilled(false);
         up.setMaximumSize(null);
         up.setMinimumSize(null);
+        up.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                upActionPerformed(evt);
+            }
+        });
 
         down.setText("jButtonArrow2");
         down.setContentAreaFilled(false);
         down.setDirection(5);
         down.setMaximumSize(null);
         down.setMinimumSize(null);
+        down.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                downActionPerformed(evt);
+            }
+        });
 
         left.setText("jButtonArrow3");
         left.setContentAreaFilled(false);
         left.setDirection(3);
         left.setMaximumSize(null);
         left.setMinimumSize(null);
+        left.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                leftActionPerformed(evt);
+            }
+        });
 
         right.setText("jButtonArrow4");
         right.setContentAreaFilled(false);
         right.setDirection(7);
         right.setMaximumSize(null);
         right.setMinimumSize(null);
+        right.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rightActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout buttonPanelLayout = new javax.swing.GroupLayout(buttonPanel);
         buttonPanel.setLayout(buttonPanelLayout);
@@ -640,6 +661,22 @@ public class PlotterView extends JInternalFrame {
         ws.addFrame(pl);
         GUIUtils.moveToFront(pl);
     }//GEN-LAST:event_mntmCoplotActionPerformed
+
+    private void upActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upActionPerformed
+        plotter.dataPan(SwingConstants.NORTH);
+    }//GEN-LAST:event_upActionPerformed
+
+    private void downActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_downActionPerformed
+        plotter.dataPan(SwingConstants.SOUTH);
+    }//GEN-LAST:event_downActionPerformed
+
+    private void leftActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_leftActionPerformed
+        plotter.dataPan(SwingConstants.EAST);
+    }//GEN-LAST:event_leftActionPerformed
+
+    private void rightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rightActionPerformed
+        plotter.dataPan(SwingConstants.WEST);
+    }//GEN-LAST:event_rightActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel bottomButtonsPanel;

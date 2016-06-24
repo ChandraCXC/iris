@@ -375,6 +375,9 @@
                   <Dimension value="null"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="upActionPerformed"/>
+              </Events>
             </Component>
             <Component class="cfa.vo.iris.visualizer.plotter.JButtonArrow" name="down">
               <Properties>
@@ -388,6 +391,9 @@
                   <Dimension value="null"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="downActionPerformed"/>
+              </Events>
             </Component>
             <Component class="cfa.vo.iris.visualizer.plotter.JButtonArrow" name="left">
               <Properties>
@@ -401,6 +407,9 @@
                   <Dimension value="null"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="leftActionPerformed"/>
+              </Events>
             </Component>
             <Component class="cfa.vo.iris.visualizer.plotter.JButtonArrow" name="right">
               <Properties>
@@ -414,6 +423,9 @@
                   <Dimension value="null"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="rightActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

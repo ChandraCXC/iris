@@ -19,12 +19,15 @@ import cfa.vo.iris.visualizer.plotter.StilPlotter;
 import static org.junit.Assert.*;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.test.Ws;
+import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 
 import java.lang.reflect.Field;
+
+import javax.swing.SwingConstants;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.junit.Test;
@@ -210,7 +213,85 @@ public class StilPlotterTest {
         assertEquals(Math.log10(xmin), Math.log10(aspect1.getXMin()), 0.000001);
         assertEquals(Math.log10(ymax), Math.log10(aspect1.getYMax()), 0.000001);
         assertEquals(Math.log10(ymin), Math.log10(aspect1.getYMin()), 0.000001);
+    }
+    
+    @Test
+    public void testPan() throws Exception {
+        ExtSed sed = new ExtSed("test", false);
+        StilPlotter plot = setUpTests(sed);
         
+        // Xlog, Y linear for testing both cases
+        plot.setPlotType(PlotType.X_LOG);
+        
+        // Get initial bounds
+        PlotDisplay<Profile, PlaneAspect> display = plot.getPlotDisplay();
+        PlaneAspect aspect = display.getAspect();
+        
+        // Verifying the default values, in case they ever change
+        assertEquals(10, aspect.getXMax(), 0.01);
+        assertEquals(1, aspect.getYMax(), 0.01);
+        assertEquals(1.0, aspect.getXMin(), 0.01);
+        assertEquals(0, aspect.getYMin(), 0.01);
+        
+        /*
+         * TEST LOG SCALES
+         */
+        
+        // Pan to the right (EAST)
+        // Verify new X-Values shifted by factor of 3
+        plot.dataPan(SwingConstants.EAST);
+        aspect = display.getAspect();
+        assertEquals(30, aspect.getXMax(), 0.01);
+        assertEquals(1, aspect.getYMax(), 0.01);
+        assertEquals(3, aspect.getXMin(), 0.01);
+        assertEquals(0, aspect.getYMin(), 0.01);
+        
+        // Shift back, should get to original values
+        plot.dataPan(SwingConstants.WEST);
+        aspect = display.getAspect();
+        assertEquals(10, aspect.getXMax(), 0.01);
+        assertEquals(1, aspect.getYMax(), 0.01);
+        assertEquals(1.0, aspect.getXMin(), 0.01);
+        assertEquals(0, aspect.getYMin(), 0.01);
+        
+        // Test negative X shift
+        // Verify new X-Values shifted by factor of 3
+        plot.dataPan(SwingConstants.WEST);
+        aspect = display.getAspect();
+        assertEquals(3 + 1.0/3, aspect.getXMax(), 0.01);
+        assertEquals(1, aspect.getYMax(), 0.01);
+        assertEquals(1.0/3, aspect.getXMin(), 0.01);
+        assertEquals(0, aspect.getYMin(), 0.01);
+        
+        // Shift back, should get to original values
+        plot.dataPan(SwingConstants.EAST);
+        aspect = display.getAspect();
+        assertEquals(10, aspect.getXMax(), 0.01);
+        assertEquals(1, aspect.getYMax(), 0.01);
+        assertEquals(1.0, aspect.getXMin(), 0.01);
+        assertEquals(0, aspect.getYMin(), 0.01);
+        
+        /*
+         * TEST LINEAR SCALES
+         */
+        
+        // Pan up
+        // Verify new Y-Values shifted by factor of .25 (width of Y scale)
+        plot.dataPan(SwingConstants.NORTH);
+        aspect = display.getAspect();
+        assertEquals(10, aspect.getXMax(), 0.01);
+        assertEquals(1.25, aspect.getYMax(), 0.01);
+        assertEquals(1, aspect.getXMin(), 0.01);
+        assertEquals(0.25, aspect.getYMin(), 0.01);
+        
+        // Pan back down should return to original values
+        // Verify new Y-Values shifted by factor of .25 (width of Y scale)
+        plot.dataPan(SwingConstants.SOUTH);
+        aspect = display.getAspect();
+        assertEquals(10, aspect.getXMax(), 0.01);
+        assertEquals(1, aspect.getYMax(), 0.01);
+        assertEquals(1.0, aspect.getXMin(), 0.01);
+        assertEquals(0, aspect.getYMin(), 0.01);
     }
     
     private StilPlotter setUpTests(ExtSed sed) throws Exception {
