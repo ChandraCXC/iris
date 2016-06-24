@@ -16,6 +16,8 @@
 package cfa.vo.iris.visualizer.plotter;
 
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.quantities.SPVYQuantity;
 import cfa.vo.iris.visualizer.preferences.LayerModel;
@@ -209,7 +211,7 @@ public class StilPlotter extends JPanel {
     public void resetZoom() {
         resetPlot(true, false);
     }
-    
+
     /**
      * Zoom in or out of plot by a given scale factor.
      * @param zoomFactor 
@@ -264,6 +266,64 @@ public class StilPlotter extends JPanel {
             // calculate zoomed min and max values
             return Axis.zoom(min, max, center, zoomFactor, isLog);
         }
+    }
+    
+    /**
+     * Pan the plotter by a set amount in the direction specified.
+     * @param direction SwingConstant North, South, East, or West.
+     */
+    public void dataPan(int direction) {
+        
+        PlaneAspect aspect = getPlotDisplay().getAspect();
+        
+        double[] newX = new double[] { aspect.getXMin(), aspect.getXMax() };
+        double[] newY = new double[] { aspect.getYMin(), aspect.getYMax() };
+        
+        switch (direction) {
+        case SwingConstants.NORTH:
+            newY = panAxis(newY, getPlotPreferences().getYlog(), true);
+            break;
+        case SwingConstants.SOUTH:
+            newY = panAxis(newY, getPlotPreferences().getYlog(), false);
+            break;
+        case SwingConstants.EAST:
+            newX = panAxis(newX, getPlotPreferences().getXlog(), true);
+            break;
+        case SwingConstants.WEST:
+            newX = panAxis(newX, getPlotPreferences().getXlog(), false);
+            break;
+        default:
+            // ignore it
+            return;
+        }
+        
+        PlaneAspect newAspect = new PlaneAspect(newX, newY);
+        getPlotDisplay().setAspect(newAspect);
+    }
+    
+    private double[] panAxis(double[] cur, boolean isLog, boolean positive) {
+        double d0;
+        double d1;
+        
+        // For log move by a factor of 1/3 or 3
+        if (isLog) {
+            d0 = 1;
+            d1 = 3;
+        } 
+        // For linear move by 1/4 of the width
+        else {
+            d0 = cur[0];
+            d1 = d0 + Math.abs(cur[1] - cur[0])/4;
+        }
+        
+        double[] zoomed;
+        if (positive) {
+            zoomed = Axis.pan(cur[0], cur[1], d1, d0, isLog);
+        } else {
+            zoomed = Axis.pan(cur[0], cur[1], d0, d1, isLog);
+        }
+        
+        return zoomed;
     }
 
     /**
