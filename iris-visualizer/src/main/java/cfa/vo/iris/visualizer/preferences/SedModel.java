@@ -21,6 +21,8 @@ import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import cfa.vo.iris.fitting.FitConfiguration;
 import org.apache.commons.lang.StringUtils;
 
 import cfa.vo.iris.sed.ExtSed;
@@ -279,5 +281,9 @@ public class SedModel {
 
     public String getYUnits() {
         return yunits;
+    }
+
+    public FitConfiguration getFitConfiguration() {
+        return sed.getFit();
     }
 }

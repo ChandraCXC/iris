@@ -55,16 +55,17 @@ public class SherpaClient {
         return fit(conf);
     }
 
-    public Data evaluate(ExtSed sed) throws Exception {
-        SherpaFitConfiguration conf = make(sed);
+    public double[] evaluate(double[] x, FitConfiguration fit) throws Exception {
+        SherpaFitConfiguration conf = make(x, fit);
         return evaluate(conf);
     }
 
-    public Data evaluate(SherpaFitConfiguration conf) throws Exception {
+    public double[] evaluate(SherpaFitConfiguration conf) throws Exception {
         fixDatasets(conf);
         SAMPMessage message = SAMPFactory.createMessage(EVALUATE_MTYPE, conf, SherpaFitConfiguration.class);
         Response response = sendMessage(message);
-        return SAMPFactory.get(response.getResult(), Data.class);
+        Data out = SAMPFactory.get(response.getResult(), Data.class);
+        return out.getY();
     }
 
     public FitResults fit(Data data, FitConfiguration fit) throws Exception {
@@ -150,6 +151,13 @@ public class SherpaClient {
         }
 
         return fc;
+    }
+
+    private SherpaFitConfiguration make(double[] x, FitConfiguration fit) {
+        Data data = SAMPFactory.get(Data.class);
+        data.setName(DATA_NAME);
+        data.setX(x);
+        return make(data, fit);
     }
 
     SherpaFitConfiguration make(ExtSed sed) throws Exception {

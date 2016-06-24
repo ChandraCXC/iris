@@ -17,10 +17,13 @@ package cfa.vo.iris.fitting;
 
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.iris.fitting.custom.CustomModelsManager;
-import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.test.unit.SherpaResource;
 import cfa.vo.iris.test.unit.TestUtils;
+import cfa.vo.iris.units.UnitsManager;
+import cfa.vo.iris.visualizer.preferences.SedModel;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sherpa.ConfidenceResults;
 import cfa.vo.sherpa.Data;
@@ -29,17 +32,13 @@ import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.models.*;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Statistic;
-import net.javacrumbs.jsonunit.JsonAssert;
+import cfa.vo.utils.Default;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertArrayEquals;
@@ -51,6 +50,7 @@ public class FitControllerIT {
     private CustomModelsManager modelsManager;
     private SherpaClient client;
     private Data data;
+    private SedModel sedModel;
     private double[] x = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
     private double[] y = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
     private double[] err = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
@@ -72,6 +72,7 @@ public class FitControllerIT {
         data.setStaterror(err);
         client = sherpa.getClient();
         controller = new FitController(sed, modelsManager, client);
+        sedModel = new SedModel(sed, new IrisStarTableAdapter(null));
     }
 
     @Test
@@ -87,10 +88,89 @@ public class FitControllerIT {
         model.findParameter("c0").setVal(0.0);
         model.findParameter("c1").setVal(1.0);
         model.findParameter("c1").setFrozen(0);
-        Data data = controller.evaluateModel();
-        assertArrayEquals(x, data.getX(), 0.001);
-        assertArrayEquals(y, data.getY(), 0.001);
-        assertArrayEquals(err, data.getStaterror(), 0.001);
+        controller.evaluateModel(sedModel);
+        SegmentStarTable data = sedModel.getDataTables().get(0).getPlotterDataTable();
+        assertArrayEquals(x, data.getSpecValues(), 0.001);
+        assertArrayEquals(y, data.getModelValues(), 0.001);
+
+        double[] zeros = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+        assertArrayEquals(zeros, data.getResidualValues(), 0.001);
+        assertArrayEquals(zeros, data.getRatioValues(), 0.001);
+
+        assertEquals(SherpaClient.X_UNIT, data.getSpecUnits().toString());
+        assertEquals(SherpaClient.Y_UNIT, data.getFluxUnits().toString());
+    }
+
+    @Test
+    public void testEvaluatePoorModel() throws Exception {
+        Model model = controller.getFit().getModel().getParts().get(0);
+        model.findParameter("c0").setVal(0.0);
+        model.findParameter("c1").setVal(2.0); // force to have wrong value
+        model.findParameter("c1").setFrozen(1);
+        controller.evaluateModel(sedModel);
+        SegmentStarTable data = sedModel.getDataTables().get(0).getPlotterDataTable();
+        assertArrayEquals(x, data.getSpecValues(), 0.001);
+
+        double[] y = {2.0, 4.0, 6.0, 8.0, 10.0, 12.0};
+        assertArrayEquals(y, data.getModelValues(), 0.001);
+
+        double[] expectedResiduals = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
+        double[] expectedRatios = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+        assertArrayEquals(expectedResiduals, data.getResidualValues(), 0.001);
+        assertArrayEquals(expectedRatios, data.getRatioValues(), 0.001);
+
+        assertEquals(SherpaClient.X_UNIT, data.getSpecUnits().toString());
+        assertEquals(SherpaClient.Y_UNIT, data.getFluxUnits().toString());
+    }
+
+    @Test
+    public void testEvaluateUnitsConversionY() throws Exception {
+        String localUnit = "Jy";
+        sedModel.setUnits(SherpaClient.X_UNIT, localUnit);
+        Model model = controller.getFit().getModel().getParts().get(0);
+        model.findParameter("c0").setVal(0.0);
+        model.findParameter("c1").setVal(1.0);
+        model.findParameter("c1").setFrozen(0);
+        controller.evaluateModel(sedModel);
+        SegmentStarTable data = sedModel.getDataTables().get(0).getPlotterDataTable();
+        assertArrayEquals(x, data.getSpecValues(), 0.001);
+
+        UnitsManager uManager = Default.getInstance().getUnitsManager();
+        double[] yConverted = uManager.convertY(y, x, SherpaClient.Y_UNIT, SherpaClient.X_UNIT, localUnit);
+        assertArrayEquals(yConverted, data.getModelValues(), 0.001);
+
+        double[] zeros = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+        assertArrayEquals(zeros, data.getResidualValues(), 0.001);
+        assertArrayEquals(zeros, data.getRatioValues(), 0.001);
+
+        assertEquals(SherpaClient.X_UNIT, data.getSpecUnits().toString());
+        assertEquals(localUnit, data.getFluxUnits().toString());
+    }
+
+    @Test
+    public void testEvaluateUnitsConversionXY() throws Exception {
+        String xUnit = "Hz";
+        String yUnit = "Jy";
+        sedModel.setUnits(xUnit, yUnit);
+        Model model = controller.getFit().getModel().getParts().get(0);
+        model.findParameter("c0").setVal(0.0);
+        model.findParameter("c1").setVal(1.0);
+        model.findParameter("c1").setFrozen(0);
+        controller.evaluateModel(sedModel);
+        SegmentStarTable data = sedModel.getDataTables().get(0).getPlotterDataTable();
+
+        UnitsManager uManager = Default.getInstance().getUnitsManager();
+        double[] xConverted = uManager.convertX(x, SherpaClient.X_UNIT, xUnit);
+        double[] yConverted = uManager.convertY(y, x, SherpaClient.Y_UNIT, SherpaClient.X_UNIT, yUnit);
+        assertArrayEquals(xConverted, data.getSpecValues(), 0.001);
+        assertArrayEquals(yConverted, data.getModelValues(), 0.001);
+
+        double[] zeros = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+        assertArrayEquals(zeros, data.getResidualValues(), 0.001);
+        assertArrayEquals(zeros, data.getRatioValues(), 0.001);
+
+        assertEquals(yUnit, data.getFluxUnits().toString());
+        assertEquals(xUnit, data.getSpecUnits().toString());
     }
 
     private FitConfiguration createFit() throws Exception {
