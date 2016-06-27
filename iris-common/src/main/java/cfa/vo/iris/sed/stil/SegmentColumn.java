@@ -165,7 +165,6 @@ public abstract class SegmentColumn extends ColumnData
         Model_Values("Evaluated values from fit model", "iris.fit.values", Double.class),
         Residuals("Observed - Expected", "iris.fit.residuals", Double.class),
         Ratios("abs(Observerd - Expected)/Expected", "iris.fit.ratios", Double.class);
-
         
         public String description;
         public String utype;

@@ -18,10 +18,17 @@ package cfa.vo.iris.visualizer.plotter;
 import cfa.vo.iris.visualizer.plotter.StilPlotter;
 import static org.junit.Assert.*;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.stil.SegmentColumn;
+import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.test.Ws;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
+import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
+import cfa.vo.iris.visualizer.preferences.FunctionModel;
+import cfa.vo.iris.visualizer.preferences.LayerModel;
+import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
+import cfa.vo.iris.visualizer.stil.tables.SortedStarTable;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 
@@ -38,7 +45,9 @@ import uk.ac.starlink.ttools.plot2.geom.PlaneSurfaceFactory.Profile;
 import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 import uk.ac.starlink.ttools.task.MapEnvironment;
 import cfa.vo.testdata.TestData;
+import java.util.List;
 import uk.ac.starlink.task.BooleanParameter;
+import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
 public class StilPlotterTest {
     
@@ -292,6 +301,56 @@ public class StilPlotterTest {
         assertEquals(1, aspect.getYMax(), 0.01);
         assertEquals(1.0, aspect.getXMin(), 0.01);
         assertEquals(0, aspect.getYMin(), 0.01);
+    }
+    @Test
+    public void testPlotFunctionModel() throws Exception {
+        
+        // create a sed
+        Segment seg = TestUtils.createSampleSegment();
+        ExtSed sed = new ExtSed("my_sed", true);
+        sed.addSegment(seg);
+        
+        StilPlotter plot = setUpTests(sed);
+        
+        SedModel model = plot.getPreferences().getDataModel().getSedModel(sed);
+        model.getDataTables().get(0).getPlotterDataTable().setModelValues(seg.getFluxAxisValues());
+        FunctionModel functionModel = new FunctionModel(model);
+        
+        LayerModel layer = functionModel.getFunctionLayerModel();
+        String functionLayerName = layer.getSuffix();
+        
+        assertEquals("red", layer.getLineColor());
+        assertEquals("line", layer.getLayerType());
+        
+        // set the function model
+        plot.getDataModel().getSedModel(sed).setFunctionModel(functionModel);
+        
+        // replot
+        plot.resetPlot(false, false);
+        
+        PlotDisplay<?, ?> display = plot.getPlotDisplay();
+        
+        // check that plot env is correctly set
+        MapEnvironment env = plot.getEnv();
+
+        // check color
+        StringParameter par = new StringParameter("color"+functionLayerName);
+        env.acquireValue(par);
+        assertEquals(par.objectValue(env), "red");
+        
+        // check that a line is plotted
+        par.setName("layer"+functionLayerName);
+        env.acquireValue(par);
+        assertEquals(par.objectValue(env), "line");
+        
+        // using reflection to access layers in plot display
+        Field layers_ = PlotDisplay.class.getDeclaredField("layers_");
+        layers_.setAccessible(true);
+        PlotLayer[] layers = (PlotLayer[]) layers_.get(display);
+        
+        // there should be 3 layers for the function/model, flux, and errs
+        assertTrue(!ArrayUtils.isEmpty(layers));
+        assertEquals(3, ArrayUtils.getLength(layers));
     }
     
     private StilPlotter setUpTests(ExtSed sed) throws Exception {

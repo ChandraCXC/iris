@@ -16,6 +16,7 @@
 
 package cfa.vo.iris.visualizer.preferences;
 
+import cfa.vo.iris.sed.stil.SegmentColumn;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
 import static cfa.vo.iris.visualizer.plotter.PlotPreferences.*;
+import java.util.List;
 
 public class LayerModel {
     
@@ -48,6 +50,9 @@ public class LayerModel {
     public static final String X_ERR_LO = "xerrlo";
     public static final String Y_ERR_LO = "yerrlo";
     public static final String COLOR = "color";
+    public static final String LINE_DASH = "dash";
+    public static final String LINE_COLOR = "color";
+    public static final String LINE_THICK = "thick";
     
     private static final String ERROR_SUFFIX = "_ERROR";
     
@@ -59,6 +64,11 @@ public class LayerModel {
     
     private boolean showErrorBars;
     private boolean showMarks;
+    private boolean showLine; // for models/functions
+    
+    private String xColName;
+    private String yColName;
+    private String layerType;
     
     private StarTable inSource;
     
@@ -72,6 +82,9 @@ public class LayerModel {
     private String errorColor;
     private Double markColorWeight;
     private Double errorColorWeight;
+    private String lineColor;
+    private Integer lineThickness;
+    private Double lineDash;
     
     private String leglabel;
     private String[] legseq;
@@ -85,8 +98,12 @@ public class LayerModel {
         this.setInSource(table);
         this.suffix = table.getName();
         
+        this.xColName = SegmentColumn.Column.Spectral_Value.name();
+        this.yColName = SegmentColumn.Column.Flux_Value.name();
+        
         this.showErrorBars = true;
         this.showMarks = true;
+        this.showLine = false;
     }
 
     /**
@@ -115,6 +132,15 @@ public class LayerModel {
         // for the base layer into the error bar layer.
         if (showErrorBars) {
             addErrorFields(suffix + ERROR_SUFFIX, preferences);
+        }
+        
+        if (showLine) {
+            addLineFields(suffix, preferences);
+        }
+        
+        // if neither marks nor errors are shown, just add the common fields.
+        if (preferences.isEmpty()) {
+            addCommonFields(suffix, preferences);
         }
         
         return preferences;
@@ -172,10 +198,22 @@ public class LayerModel {
         addCommonFields(suffix, prefs);
     }
     
+    private void addLineFields(String suffix, Map<String, Object> prefs) {
+        prefs.put(TYPE + suffix, LayerType.line.name());
+        if (lineColor != null)
+            prefs.put(LINE_COLOR + suffix, lineColor);
+        if (markColorWeight != null)
+            prefs.put(LINE_DASH + suffix, lineDash);
+        if (lineThickness != null)
+            prefs.put(LINE_THICK, lineThickness);
+        
+        addCommonFields(suffix, prefs);
+    }
+    
     private void addCommonFields(String suffix, Map<String, Object> prefs) {
         prefs.put(IN + suffix, inSource);
-        prefs.put(X_COL + suffix, Column.Spectral_Value.name());
-        prefs.put(Y_COL + suffix, Column.Flux_Value.name());
+        prefs.put(X_COL + suffix, xColName);
+        prefs.put(Y_COL + suffix, yColName);
         
         // for the legend. set the flux and error layer legened names
         // to the same name
@@ -234,6 +272,24 @@ public class LayerModel {
 
     public LayerModel setShowMarks(boolean showMarks) {
         this.showMarks = showMarks;
+        return this;
+    }
+    
+    public boolean getShowLines() {
+        return showLine;
+    }
+    
+    public LayerModel setShowLines(boolean showLine) {
+        this.showLine = showLine;
+        return this;
+    }
+    
+    public String getLayerType() {
+        return layerType;
+    }
+    
+    public LayerModel setLayerType(String type) {
+        this.layerType = type;
         return this;
     }
 
@@ -335,6 +391,49 @@ public class LayerModel {
     
     public String getLabel() {
         return this.leglabel;
+    }
+    
+    public String getLineColor() {
+        return lineColor;
+    }
+
+    public LayerModel setLineColor(String color) {
+        this.lineColor = color;
+        return this;
+    }
+    
+    public double getLineDash() {
+        return lineDash;
+    }
+
+    public LayerModel setLineDash(double dash) {
+        this.lineDash = dash;
+        return this;
+    }
+    
+    public int getLineThickness() {
+        return lineThickness;
+    }
+
+    public LayerModel setLineThickness(int thickness) {
+        this.lineThickness = thickness;
+        return this;
+    }
+    
+    public void setX(String colName) {
+        this.xColName = colName;
+    }
+    
+    public String getX() {
+        return xColName;
+    }
+    
+    public void setY(String colName) {
+        this.yColName = colName;
+    }
+    
+    public String getY() {
+        return yColName;
     }
 
     /*

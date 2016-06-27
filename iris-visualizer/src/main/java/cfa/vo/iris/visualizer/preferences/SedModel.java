@@ -16,6 +16,7 @@
 
 package cfa.vo.iris.visualizer.preferences;
 
+import cfa.vo.iris.fitting.FitConfiguration;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.LinkedList;
@@ -35,10 +36,9 @@ import cfa.vo.iris.visualizer.stil.tables.SegmentColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.StackedStarTable;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedNoDataException;
-import uk.ac.starlink.table.StarTable;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import uk.ac.starlink.table.StarTable;
 
 /**
  * Maintains visualizer preferences for an SED currently in the 
@@ -57,6 +57,8 @@ public class SedModel {
     private String xunits;
     private String yunits;
     
+    private FunctionModel evalModel;
+    
     public SedModel(ExtSed sed, IrisStarTableAdapter adapter) {
         this.sed = sed;
         this.adapter = adapter;
@@ -64,7 +66,6 @@ public class SedModel {
         
         this.starTableData = Collections.synchronizedMap(new IdentityHashMap<Segment, IrisStarTable>());
         this.tableLayerModels = Collections.synchronizedMap(new IdentityHashMap<Segment, LayerModel>());
-        
         refresh();
     }
     
@@ -113,8 +114,8 @@ public class SedModel {
     }
     
     /**
-     * @return A list of all LayerModels for each Segment in this SED. List is in the same
-     * order as they appear in the SED.
+     * @return A list of all LayerModels for each Segment in this SED. 
+     * List of Segment layers is in the same order as they appear in the SED.
      */
     public List<LayerModel> getLayerModels() {
         List<LayerModel> ret = new LinkedList<>();
@@ -124,6 +125,7 @@ public class SedModel {
                 ret.add(tableLayerModels.get(seg));
             }
         }
+        
         return ret;
     }
     
@@ -223,6 +225,21 @@ public class SedModel {
         
         starTableData.remove(seg);
         return tableLayerModels.remove(seg) != null;
+    }
+    
+    /**
+     * Attaches an evaluated model to the Sed.
+     * @param model
+     */
+    public void setFunctionModel(FunctionModel model) {
+        this.evalModel = model;
+    }
+    
+    /**
+     * Returns the evaluated model belonging to this ExtSed.
+     */
+    public FunctionModel getFunctionModel() {
+        return evalModel;
     }
     
     /**

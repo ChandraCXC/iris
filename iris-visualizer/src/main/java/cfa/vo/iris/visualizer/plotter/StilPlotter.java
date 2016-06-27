@@ -20,7 +20,10 @@ import javax.swing.SwingConstants;
 
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.quantities.SPVYQuantity;
+import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.visualizer.preferences.LayerModel;
+import cfa.vo.iris.visualizer.preferences.FunctionModel;
+import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
@@ -36,6 +39,7 @@ import java.awt.Insets;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import uk.ac.starlink.ttools.plot2.Axis;
@@ -48,7 +52,7 @@ public class StilPlotter extends JPanel {
     private static final long serialVersionUID = 1L;
 
     private PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> display;
-
+    
     // List of SEDs plotted in Plotter
     private List<ExtSed> seds = new ArrayList<>();
     
@@ -193,6 +197,40 @@ public class StilPlotter extends JPanel {
         
         // Setup new stil plot component
         display = createPlotComponent();
+        
+        // Set the bounds using the current SED's aspect if the plot is fixed and if we're not
+        // forcing a redraw
+        if (fixed && !forceReset) {
+            PlaneAspect existingAspect = getPlotPreferences().getAspect();
+            display.setAspect(existingAspect);
+        }
+        
+        // Add the display to the plot view
+        addPlotToDisplay();
+    }
+    
+        /**
+     * Resets the plot.
+     * @param forceReset - forces the plot to reset its bounds
+     * @param newPlot - If we are plotting a new plot or re-plotting an existing plot.
+     * @param env - Supply a map environment to reset the plot with
+     */
+    void resetPlot(boolean forceReset, boolean newPlot, MapEnvironment env)
+    {
+        // forceReset can override this class's internal usage of preferences
+        boolean fixed = getPlotPreferences().getFixed();
+        
+        // Clear the display and save all necessary information before we
+        // throw it away on a model change.
+        setupForPlotDisplayChange(newPlot);
+        
+        try {
+            // Setup new stil plot component using the supplied map environment
+            display = createPlotComponent(env);
+        } catch (Exception ex) {
+            Logger.getLogger(StilPlotter.class.getName())
+                    .log(Level.SEVERE, null, ex);
+        }
         
         // Set the bounds using the current SED's aspect if the plot is fixed and if we're not
         // forcing a redraw
@@ -400,10 +438,27 @@ public class StilPlotter extends JPanel {
 
         // Add segments and segment preferences
         for (LayerModel layer : dataModel.getLayerModels()) {
-            for (String key : layer.getPreferences().keySet()) {
-                env.setValue(key, layer.getPreferences().get(key));
+            Map<String, Object> prefs = layer.getPreferences();
+            for (String key : prefs.keySet()) {
+                env.setValue(key, prefs.get(key));
             }
         }
+        
+        // add model functions
+        for (SedModel sedModel : dataModel.getSedModels()) {
+            // If no model available (e.g. no fit) skip it
+            FunctionModel mod = sedModel.getFunctionModel();
+            if (mod == null) {
+                continue;
+            }
+            LayerModel layer = mod.getFunctionLayerModel();
+            Map<String, Object> prefs = layer.getPreferences();
+            for (String key : prefs.keySet()) {
+                env.setValue(key, prefs.get(key));
+            }
+            
+        }
+        
     }
     
     private void setupForPlotDisplayChange(boolean newPlot) {
