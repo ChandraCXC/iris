@@ -299,7 +299,10 @@ public class VisualizerDataModel {
         return functionModels;
     }
     
-    public synchronized void setFunctionModels(List<FunctionModel> newFunctionModels) {
+    /**
+     * Locked down as these are currently attached to the selectedSeds
+     */
+    private synchronized void setFunctionModels(List<FunctionModel> newFunctionModels) {
         List<FunctionModel> oldFunctionModels = functionModels;
         this.functionModels = ObservableCollections.observableList(newFunctionModels);
         pcs.firePropertyChange(PROP_FUNCTION_MODELS, oldFunctionModels, functionModels);
