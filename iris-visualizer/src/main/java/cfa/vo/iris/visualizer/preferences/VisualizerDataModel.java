@@ -202,6 +202,7 @@ public class VisualizerDataModel {
             // set a FunctionModel
             // TODO: handle setting multiple function models
             //newFunctionModel.add(sedModel.getEvalModel());
+            // should probably be an 'if' block ('if SED has FunctionModel')
         }
         this.selectedSeds = ObservableCollections.observableList(selectedSeds);
         

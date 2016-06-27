@@ -33,8 +33,8 @@ import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 public class FunctionModel {
     
     public static final String DEFAULT_FUNCTION_COLOR = "red";
-    public static final String RATIO = "ratio";
-    public static final String RESIDUAL = "residual";
+    public static final String RATIOS = "Ratios";
+    public static final String RESIDUALS = "Residuals";
     
     public static final String FUNCTION_SUFFIX = "_MODEL";
     
@@ -49,8 +49,78 @@ public class FunctionModel {
 
     public FunctionModel(SedModel sedModel) {
         
+        setSedModel(sedModel);
+
+    }
+    
+    /**
+     * Create a LayerModel for the evaluated function model associated with the
+     * SedModel.
+     * @return a LayerModel of the evaluated function
+     */
+    public LayerModel getFunctionLayerModel() {
+        
+        LayerModel layer = new LayerModel(sortedStackedStarTable);
+        layer.setShowErrorBars(false);
+        layer.setShowMarks(false);
+        layer.setShowLines(true);
+        layer.setLayerType(LayerType.line.name());
+        layer.setX(SegmentColumn.Column.Spectral_Value.name());
+        layer.setY(SegmentColumn.Column.Model_Values.name());
+        layer.setLineColor(getFunctionColor());
+        layer.setLineThickness(getFunctionThickness());
+        layer.setLineDash(getFunctionDash());
+        return layer;
+    }
+    
+    /**
+     * Create a LayerModel for plotting the residuals of the SedModel's fit. The
+     * residuals can be plotted as the "raw" residual (model - observed) or as 
+     * the ratio
+     * @param residualType - the type of residual to create: "Residuals" is the 
+     * (model - observed), and "Ratios" is the (model - observed)/model. 
+     * @return a LayerModel representing the residuals for the SedModel.
+     */
+    public LayerModel getResidualsLayerModel(String residualType) {
+        
+        LayerModel layer = new LayerModel(sortedStackedStarTable);
+        if (residualType.equals(RATIOS)) {
+            layer.setX(SegmentColumn.Column.Spectral_Value.name());
+            layer.setY(SegmentColumn.Column.Ratios.name());
+        } else if (residualType.equals(RESIDUALS)) {
+            layer.setX(SegmentColumn.Column.Spectral_Value.name());
+            layer.setY(SegmentColumn.Column.Residuals.name());
+        } else {
+            throw new IllegalArgumentException("Unrecognized residual type. "
+                    + "Must be \"ratio\" or \"residual\"");
+        }
+        
+        layer.setShowErrorBars(false);
+        layer.setShowMarks(true);
+        
+        return layer;
+    }
+    
+    /**
+     * Update the SedModel. This will also update the underlying sorted 
+     * StarTable that represents the function model. 
+     * @param sedModel 
+     */
+    public void setSedModel(SedModel sedModel) {
         this.sedModel = sedModel;
-        // concat IrisStarTable into StackedStarTable
+        
+        // update the sorted star table
+        updateSortedStarTable();
+    }
+    
+    public SedModel getSedModel() {
+        return this.sedModel;
+    }
+    
+    /**
+     * Update the sortedStarTable given the current SedModel
+     */
+    private void updateSortedStarTable() {
         StackedStarTable stackedTable = new StackedStarTable(sedModel.getDataTables(), new SegmentColumnInfoMatcher());
         stackedTable.setName(sedModel.getSedLayerModel().getSuffix());
         
@@ -68,54 +138,6 @@ public class FunctionModel {
         } catch (IOException ex) {
             Logger.getLogger(FunctionModel.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-    }
-    
-    public LayerModel getFunctionLayerModel() {
-        
-        LayerModel layer = new LayerModel(sortedStackedStarTable);
-        layer.setShowErrorBars(false);
-        layer.setShowMarks(false);
-        layer.setShowLines(true);
-        layer.setLayerType(LayerType.line.name());
-        layer.setX(SegmentColumn.Column.Spectral_Value.name());
-        layer.setY(SegmentColumn.Column.Model_Values.name());
-        layer.setLineColor(getFunctionColor());
-        layer.setLineThickness(getFunctionThickness());
-        layer.setLineDash(getFunctionDash());
-        return layer;
-    }
-    
-    public LayerModel getResidualsLayerModel(String residualType) {
-        
-        LayerModel layer = new LayerModel(sortedStackedStarTable);
-        if (residualType.equals(RATIO)) {
-            layer.setX(SegmentColumn.Column.Spectral_Value.name());
-            layer.setY(SegmentColumn.Column.Ratios.name());
-        } else if (residualType.equals(RESIDUAL)) {
-            layer.setX(SegmentColumn.Column.Spectral_Value.name());
-            layer.setY(SegmentColumn.Column.Residuals.name());
-        } else {
-            throw new IllegalArgumentException("Unrecognized residual type. "
-                    + "Must be \"ratio\" or \"residual\"");
-        }
-        
-        layer.setShowErrorBars(false);
-        layer.setShowMarks(true);
-        
-        return layer;
-    }
-    
-    public void setSedModel(SedModel sedModel) {
-        this.sedModel = sedModel;
-    }
-    
-    public SedModel getSedModel() {
-        return this.sedModel;
-    }
-    
-    public void setSortedStarTable(SortedStarTable table) {
-        this.sortedStackedStarTable = table;
     }
     
     public SortedStarTable getSortedStarTable() {

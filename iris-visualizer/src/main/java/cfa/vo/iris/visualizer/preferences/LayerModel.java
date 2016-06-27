@@ -139,8 +139,9 @@ public class LayerModel {
         }
         
         // if neither marks nor errors are shown, just add the common fields.
-        if (preferences.isEmpty())
+        if (preferences.isEmpty()) {
             addCommonFields(suffix, preferences);
+        }
         
         return preferences;
     }
