@@ -22,9 +22,9 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.quantities.SPVYQuantity;
 import cfa.vo.iris.visualizer.preferences.FunctionModel;
 import cfa.vo.iris.visualizer.preferences.LayerModel;
-import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
+
 import java.awt.Dimension;
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
 import uk.ac.starlink.ttools.plot2.geom.PlaneSurfaceFactory;
@@ -464,20 +464,18 @@ public class StilPlotter extends JPanel {
         }
         
         // add model functions
-        for (SedModel sedModel : dataModel.getSedModels()) {
+        for (FunctionModel model : dataModel.getFunctionModels()) {
             // If no model available (e.g. no fit) skip it
-            FunctionModel mod = sedModel.getFunctionModel();
-            if (mod == null) {
+            if (!model.hasModelValues()) {
                 continue;
             }
-            LayerModel layer = mod.getFunctionLayerModel();
+            
+            LayerModel layer = model.getFunctionLayerModel();
             Map<String, Object> prefs = layer.getPreferences();
             for (String key : prefs.keySet()) {
                 env.setValue(key, prefs.get(key));
             }
-            
         }
-        
     }
     
     private void setupResidualMapEnvironment() throws Exception {
@@ -500,21 +498,15 @@ public class StilPlotter extends JPanel {
         resEnv.setValue("xlabel", null);
         resEnv.setValue("legend", false);
         
-        // Add the function layer model for each FunctionModel available in the 
-        // dataModel
-        for (SedModel sedModel : dataModel.getSedModels()) {
+
+        // add model functions
+        for (FunctionModel model : dataModel.getFunctionModels()) {
             // If no model available (e.g. no fit) skip it
-            FunctionModel mod = sedModel.getFunctionModel();
-            if (mod == null) {
+            if (!model.hasModelValues()) {
                 continue;
             }
             
-            // If no residuals available Skip
-            LayerModel layer = mod.getResidualsLayerModel(residualsOrRatios);
-            if (layer == null) {
-                continue;
-            }
-            
+            LayerModel layer = model.getResidualsLayerModel(residualsOrRatios);
             Map<String, Object> prefs = layer.getPreferences();
             for (String key : prefs.keySet()) {
                 resEnv.setValue(key, prefs.get(key));

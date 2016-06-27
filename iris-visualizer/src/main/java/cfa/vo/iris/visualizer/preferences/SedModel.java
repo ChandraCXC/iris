@@ -56,8 +56,6 @@ public class SedModel {
     private String xunits;
     private String yunits;
     
-    private FunctionModel evalModel;
-    
     public SedModel(ExtSed sed, IrisStarTableAdapter adapter) {
         this.sed = sed;
         this.adapter = adapter;
@@ -101,7 +99,11 @@ public class SedModel {
      * @return FunctionModel for the fit on this SED, if available.
      */
     public FunctionModel getFunctionModel() {
-        return new FunctionModel(this);
+        // TODO: Only return a model if this SedModel has been fitted.
+        StarTable table = new StackedStarTable(getDataTables(), new SegmentColumnInfoMatcher());
+        table.setName(sed.getId());
+        
+        return new FunctionModel(table);
     }
     
     /**
@@ -231,14 +233,6 @@ public class SedModel {
         
         starTableData.remove(seg);
         return tableLayerModels.remove(seg) != null;
-    }
-    
-    /**
-     * Attaches an evaluated model to the Sed.
-     * @param model
-     */
-    public void setFunctionModel(FunctionModel model) {
-        this.evalModel = model;
     }
     
     /**

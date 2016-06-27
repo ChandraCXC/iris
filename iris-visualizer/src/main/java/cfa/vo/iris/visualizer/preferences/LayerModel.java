@@ -17,6 +17,7 @@
 package cfa.vo.iris.visualizer.preferences;
 
 import cfa.vo.iris.sed.stil.SegmentColumn;
+
 import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.HashMap;
@@ -32,7 +33,6 @@ import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
 import static cfa.vo.iris.visualizer.plotter.PlotPreferences.*;
-import java.util.List;
 
 public class LayerModel {
     

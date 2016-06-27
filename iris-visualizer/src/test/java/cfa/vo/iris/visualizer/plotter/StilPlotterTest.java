@@ -18,8 +18,6 @@ package cfa.vo.iris.visualizer.plotter;
 import cfa.vo.iris.visualizer.plotter.StilPlotter;
 import static org.junit.Assert.*;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.stil.SegmentColumn;
-import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.test.Ws;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
 import cfa.vo.iris.test.unit.TestUtils;
@@ -28,7 +26,6 @@ import cfa.vo.iris.visualizer.preferences.FunctionModel;
 import cfa.vo.iris.visualizer.preferences.LayerModel;
 import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
-import cfa.vo.iris.visualizer.stil.tables.SortedStarTable;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 
@@ -46,9 +43,7 @@ import uk.ac.starlink.ttools.plot2.geom.PlaneSurfaceFactory.Profile;
 import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 import uk.ac.starlink.ttools.task.MapEnvironment;
 import cfa.vo.testdata.TestData;
-import java.util.List;
 import uk.ac.starlink.task.BooleanParameter;
-import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
 public class StilPlotterTest {
     
@@ -308,14 +303,18 @@ public class StilPlotterTest {
         
         // create a sed
         Segment seg = TestUtils.createSampleSegment();
-        ExtSed sed = new ExtSed("my_sed", true);
+        ExtSed sed = new ExtSed("my_sed", false);
         sed.addSegment(seg);
         
         StilPlotter plot = setUpTests(sed);
         
-        SedModel model = plot.getPreferences().getDataModel().getSedModel(sed);
+        SedModel model = plot.getDataModel().getSedModel(sed);
         model.getDataTables().get(0).getPlotterDataTable().setModelValues(seg.getFluxAxisValues());
-        FunctionModel functionModel = new FunctionModel(model);
+        model.getDataTables().get(0).getPlotterDataTable().setRatioValues(seg.getSpectralAxisValues());
+        model.getDataTables().get(0).getPlotterDataTable().setResidualValues(seg.getSpectralAxisValues());
+        plot.getDataModel().refresh();
+        
+        FunctionModel functionModel = model.getFunctionModel();
         
         LayerModel layer = functionModel.getFunctionLayerModel();
         String functionLayerName = layer.getSuffix();
@@ -323,11 +322,8 @@ public class StilPlotterTest {
         assertEquals("red", layer.getLineColor());
         assertEquals("line", layer.getLayerType());
         
-        // set the function model
-        plot.getDataModel().getSedModel(sed).setFunctionModel(functionModel);
-        
-        // replot
-        plot.resetPlot(false, false);
+        // replot with residuals
+        plot.setShowResiduals(true);
         
         PlotDisplay<?, ?> display = plot.getPlotDisplay();
         
@@ -335,12 +331,12 @@ public class StilPlotterTest {
         MapEnvironment env = plot.getEnv();
 
         // check color
-        StringParameter par = new StringParameter("color"+functionLayerName);
+        StringParameter par = new StringParameter("color" + functionLayerName);
         env.acquireValue(par);
         assertEquals(par.objectValue(env), "red");
         
         // check that a line is plotted
-        par.setName("layer"+functionLayerName);
+        par.setName("layer" + functionLayerName);
         env.acquireValue(par);
         assertEquals(par.objectValue(env), "line");
         
@@ -352,6 +348,24 @@ public class StilPlotterTest {
         // there should be 3 layers for the function/model, flux, and errs
         assertTrue(!ArrayUtils.isEmpty(layers));
         assertEquals(3, ArrayUtils.getLength(layers));
+        
+        // check that plot env is correctly set
+        MapEnvironment resEnv = plot.getResEnv();
+        par = new StringParameter("color" + functionLayerName);
+        resEnv.acquireValue(par);
+        assertEquals(par.objectValue(env), "black");
+        
+        // Verify the residuals are plotted
+        display = plot.getResidualsPlotDisplay();
+        
+        // using reflection to access layers in plot display
+        layers_ = PlotDisplay.class.getDeclaredField("layers_");
+        layers_.setAccessible(true);
+        layers = (PlotLayer[]) layers_.get(display);
+        
+        // there should be 1 layer for residuals
+        assertTrue(!ArrayUtils.isEmpty(layers));
+        assertEquals(1, ArrayUtils.getLength(layers));
     }
     
     

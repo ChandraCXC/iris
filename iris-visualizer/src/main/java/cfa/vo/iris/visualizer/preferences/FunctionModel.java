@@ -16,13 +16,12 @@
 package cfa.vo.iris.visualizer.preferences;
 
 import cfa.vo.iris.sed.stil.SegmentColumn;
+import cfa.vo.iris.sed.stil.SegmentColumn.Column;
 import cfa.vo.iris.visualizer.plotter.LayerType;
-import cfa.vo.iris.visualizer.stil.tables.SegmentColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.SortedStarTable;
-import cfa.vo.iris.visualizer.stil.tables.StackedStarTable;
+
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
 /**
@@ -38,19 +37,16 @@ public class FunctionModel {
     
     public static final String FUNCTION_SUFFIX = "_MODEL";
     
-    private static final Logger logger = Logger.getLogger(FunctionModel.class.getName());
-    
     private SortedStarTable sortedStackedStarTable;
-    private SedModel sedModel;
+    private StarTable baseTable;
+    private boolean hasModelValues = false;
     
     private String functionColor = "red";
     private Double functionDash = Double.NaN;
     private Integer functionThickness = 1;
 
-    public FunctionModel(SedModel sedModel) {
-        
-        setSedModel(sedModel);
-
+    public FunctionModel(StarTable baseTable) {
+        setBaseTable(baseTable);
     }
     
     /**
@@ -94,49 +90,64 @@ public class FunctionModel {
             throw new IllegalArgumentException("Unrecognized residual type. "
                     + "Must be \"ratio\" or \"residual\"");
         }
-        
+
         layer.setShowErrorBars(false);
         layer.setShowMarks(true);
+        layer.setMarkColor("black");
         
         return layer;
     }
     
     /**
-     * Update the SedModel. This will also update the underlying sorted 
+     * Set the baseTable for the underlying sorted 
      * StarTable that represents the function model. 
-     * @param sedModel 
+     * @param baseTable 
      */
-    public void setSedModel(SedModel sedModel) {
-        this.sedModel = sedModel;
+    public void setBaseTable(StarTable baseTable) {
+        this.baseTable = baseTable;
         
         // update the sorted star table
         updateSortedStarTable();
     }
     
-    public SedModel getSedModel() {
-        return this.sedModel;
+    public StarTable getBaseTable() {
+        return this.baseTable;
+    }
+    
+    /**
+     * @return True is this function has the Residuals, Ratios, and Model_Values in it's
+     * baseTable.
+     */
+    public boolean hasModelValues() {
+        return this.hasModelValues;
     }
     
     /**
      * Update the sortedStarTable given the current SedModel
      */
     private void updateSortedStarTable() {
-        StackedStarTable stackedTable = new StackedStarTable(sedModel.getDataTables(), new SegmentColumnInfoMatcher());
-        stackedTable.setName(sedModel.getSedLayerModel().getSuffix());
         
-        // sort the table
+        // Verify that the function value columns are present - and set the appropriate fields
+        // in this function model.
+        ColumnIdentifier colId = new ColumnIdentifier(baseTable);
+        
         try {
+            
+            colId.getColumnIndex(Column.Model_Values.name());
+            colId.getColumnIndex(Column.Residuals.name());
+            colId.getColumnIndex(Column.Ratios.name());
+            hasModelValues = true;
+            
             // find column containing spectral values
-            int col;
-            ColumnIdentifier colId = new ColumnIdentifier(stackedTable);
-            col = colId.getColumnIndex(SegmentColumn.Column.Spectral_Value.name());
+            int col = colId.getColumnIndex(SegmentColumn.Column.Spectral_Value.name());
             
             // create a table sorted by the spectral axis
-            sortedStackedStarTable = new SortedStarTable(stackedTable, col, true);
-            sortedStackedStarTable.setName(stackedTable.getName()+FUNCTION_SUFFIX);
+            sortedStackedStarTable = new SortedStarTable(baseTable, col, true);
+            sortedStackedStarTable.setName(baseTable.getName() + FUNCTION_SUFFIX);
             
         } catch (IOException ex) {
-            Logger.getLogger(FunctionModel.class.getName()).log(Level.SEVERE, null, ex);
+            // Any exceptions and this becomes an invalid layer
+            hasModelValues = false;
         }
     }
     
