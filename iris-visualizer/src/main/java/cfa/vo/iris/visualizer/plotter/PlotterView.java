@@ -256,7 +256,6 @@ public class PlotterView extends JInternalFrame {
         mntmAutoFixed = new javax.swing.JCheckBoxMenuItem();
         mntmGridOnOff = new javax.swing.JCheckBoxMenuItem();
         mntmCoplot = new javax.swing.JMenuItem();
-        mntmShowModel = new javax.swing.JCheckBoxMenuItem();
         mnHelp = new javax.swing.JMenu();
         mntmPlotterNavigationHelp = new javax.swing.JMenuItem();
 
@@ -605,14 +604,6 @@ public class PlotterView extends JInternalFrame {
         });
         mnView.add(mntmCoplot);
 
-        mntmShowModel.setText("Show model");
-        mntmShowModel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mntmShowModelActionPerformed(evt);
-            }
-        });
-        mnView.add(mntmShowModel);
-
         menuBar.add(mnView);
 
         mnHelp.setText("Help");
@@ -695,29 +686,6 @@ public class PlotterView extends JInternalFrame {
         plotter.dataPan(SwingConstants.WEST);
     }//GEN-LAST:event_rightActionPerformed
 
-    private void mntmShowModelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mntmShowModelActionPerformed
-        
-        // Plot a model
-        // TODO: This is a dummy model; it's just a line plot of the first segment
-        // in the current SED. We need to replace this with the fitted model
-        ExtSed sed = plotter.getDataModel().getSelectedSeds().get(0);
-        SedModel model = plotter.getDataModel().getSedModel(sed);
-        
-        if (mntmShowModel.isSelected()) {
-            try {
-                model.getDataTables().get(0).getPlotterDataTable().setModelValues(sed.getSegment(0).getFluxAxisValues());
-                FunctionModel functionModel = new FunctionModel(model);
-                plotter.getDataModel().getSedModel(plotter.getDataModel().getSelectedSeds().get(0)).setFunctionModel(functionModel);
-                plotter.resetPlot(false, false);
-            } catch (SedNoDataException ex) {
-                Logger.getLogger(PlotterView.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        } else {
-            plotter.getDataModel().getSedModel(plotter.getDataModel().getSelectedSeds().get(0)).setFunctionModel(null);
-            plotter.resetPlot(false, false);
-        }
-    }//GEN-LAST:event_mntmShowModelActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel bottomButtonsPanel;
     private javax.swing.JButton btnReset;
@@ -744,7 +712,6 @@ public class PlotterView extends JInternalFrame {
     private javax.swing.JMenuItem mntmPlotterNavigationHelp;
     private javax.swing.JMenuItem mntmProperties;
     private javax.swing.JMenuItem mntmSave;
-    private javax.swing.JCheckBoxMenuItem mntmShowModel;
     private javax.swing.JMenuItem mntmSomething;
     private javax.swing.JRadioButtonMenuItem mntmXlog;
     private javax.swing.JRadioButtonMenuItem mntmYlog;
