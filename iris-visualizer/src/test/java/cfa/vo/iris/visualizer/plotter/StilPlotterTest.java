@@ -364,6 +364,9 @@ public class StilPlotterTest {
         assertNull(plot.getResEnv());
         assertNull(plot.getResidualsPlotDisplay());
         
+        // Only one component for primary display
+        assertEquals(1, plot.getComponentCount());
+        
         // Plot residuals (set by default)
         plot.setShowResiduals(true);
         MapEnvironment resEnv = plot.getResEnv();
@@ -371,6 +374,9 @@ public class StilPlotterTest {
         
         assertNotNull(resEnv);
         assertNotNull(res);
+        
+        // Should now be two components for display and residuals
+        assertEquals(2, plot.getComponentCount());
         
         // Verify y axis label
         StringParameter par = new StringParameter("ylabel");
@@ -386,6 +392,12 @@ public class StilPlotterTest {
         par = new StringParameter("ylabel");
         resEnv.acquireValue(par);
         assertEquals(par.objectValue(resEnv), "Ratios");
+        
+        // Hide the ratios and verify
+        plot.setShowResiduals(false);
+        assertNull(plot.getResEnv());
+        assertNull(plot.getResidualsPlotDisplay());
+        assertEquals(1, plot.getComponentCount());
     }
 
     // TODO: Make this work when the secondary plot is attached to the plot zoom.
