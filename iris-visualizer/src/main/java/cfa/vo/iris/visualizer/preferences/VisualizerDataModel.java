@@ -65,7 +65,7 @@ public class VisualizerDataModel {
     
     // list of FunctionModels associated with selectedSeds. These tables will be overplotted
     // as solid lines
-//    private List<FunctionModel> functionModels;
+    private List<FunctionModel> functionModels;
     
     private boolean coplotted = false;
     
@@ -78,7 +78,7 @@ public class VisualizerDataModel {
         this.setLayerModels(new LinkedList<LayerModel>());
         this.setSedStarTables(new LinkedList<IrisStarTable>());
         this.setSelectedStarTables(new LinkedList<IrisStarTable>());
-//        this.setFunctionModels(new LinkedList<FunctionModel>());
+        this.setFunctionModels(new LinkedList<FunctionModel>());
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -174,7 +174,7 @@ public class VisualizerDataModel {
         List<LayerModel> newSedModels = new LinkedList<>();
         List<IrisStarTable> newSedTables = new LinkedList<>();
         StringBuilder dataModelTitle = new StringBuilder();
-        //List<FunctionModel> newFunctionModel = new LinkedList<FunctionModel>();
+        List<FunctionModel> newFunctionModels = new LinkedList<FunctionModel>();
         
         Iterator<ExtSed> it = selectedSeds.iterator();
         while (it.hasNext()) {
@@ -199,10 +199,14 @@ public class VisualizerDataModel {
             else {
                 newSedModels.addAll(sedModel.getLayerModels());
             }
+            
             // set a FunctionModel
             // TODO: handle setting multiple function models
-            //newFunctionModel.add(sedModel.getEvalModel());
-            // should probably be an 'if' block ('if SED has FunctionModel')
+            // TODO: Better if check for present fits ('if SED has FunctionModel')
+            FunctionModel model = sedModel.getFunctionModel();
+            if (model.hasModelValues()) {
+                newFunctionModels.add(model);
+            }
         }
         this.selectedSeds = ObservableCollections.observableList(selectedSeds);
         
@@ -214,7 +218,7 @@ public class VisualizerDataModel {
         this.setLayerModels(newSedModels);
         this.setSedStarTables(newSedTables);
         this.setDataModelTitle(dataModelTitle.toString());
-        //this.setFunctionModels(newFunctionModel);
+        this.setFunctionModels(newFunctionModels);
         
         pcs.firePropertyChange(PROP_SELECTED_SEDS, oldSeds, selectedSeds);
     }
@@ -291,15 +295,18 @@ public class VisualizerDataModel {
         pcs.firePropertyChange(PROP_SELECTED_STARTABLES, oldStarTables, selectedStarTables);
     }
     
-//    public List<FunctionModel> getFunctionModels() {
-//        return functionModels;
-//    }
-//    
-//    public synchronized void setFunctionModels(List<FunctionModel> newFunctionModels) {
-//        List<FunctionModel> oldFunctionModels = functionModels;
-//        this.functionModels = ObservableCollections.observableList(newFunctionModels);
-//        pcs.firePropertyChange(PROP_FUNCTION_MODELS, oldFunctionModels, functionModels);
-//    }
+    public List<FunctionModel> getFunctionModels() {
+        return functionModels;
+    }
+    
+    /**
+     * Locked down as these are currently attached to the selectedSeds
+     */
+    private synchronized void setFunctionModels(List<FunctionModel> newFunctionModels) {
+        List<FunctionModel> oldFunctionModels = functionModels;
+        this.functionModels = ObservableCollections.observableList(newFunctionModels);
+        pcs.firePropertyChange(PROP_FUNCTION_MODELS, oldFunctionModels, functionModels);
+    }
 
     public void refresh() {
         // This is a total cop-out. Just clear all existing preferences and reset
@@ -310,7 +317,7 @@ public class VisualizerDataModel {
         this.setLayerModels(new LinkedList<LayerModel>());
         this.setSedStarTables(new LinkedList<IrisStarTable>());
         this.setSelectedStarTables(new LinkedList<IrisStarTable>());
-//        this.setFunctionModels(new LinkedList<FunctionModel>());
+        this.setFunctionModels(new LinkedList<FunctionModel>());
         
         setSelectedSeds(oldSeds);
     }

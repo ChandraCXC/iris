@@ -221,7 +221,7 @@ public class PlotterView extends JInternalFrame {
         plotTypeButtonGroup = new javax.swing.ButtonGroup();
         bottomButtonsPanel = new javax.swing.JPanel();
         tglbtnShowHideResiduals = new javax.swing.JToggleButton();
-        secondaryPlotOptions = new javax.swing.JSpinner();
+        secondaryPlotTypeComboBox = new javax.swing.JComboBox();
         topButtonsPanel = new javax.swing.JPanel();
         btnReset = new javax.swing.JButton();
         zoomIn = new javax.swing.JButton();
@@ -264,15 +264,14 @@ public class PlotterView extends JInternalFrame {
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
-        setMinimumSize(new java.awt.Dimension(40, 40));
+        setMinimumSize(new java.awt.Dimension(300, 300));
         setPreferredSize(new java.awt.Dimension(800, 546));
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        tglbtnShowHideResiduals.setText("Show Residuals");
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, secondaryPlotTypeComboBox, org.jdesktop.beansbinding.ELProperty.create("Show ${selectedItem}"), tglbtnShowHideResiduals, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        bindingGroup.addBinding(binding);
 
-        //JFormattedTextField txtBoxShowHideResiduals = ((JSpinner.ListEditor) secondaryPlotOptions.getEditor()).getTextField();
-        //txtBoxShowHideResiduals.setEditable(false);
-        secondaryPlotOptions.setModel(new javax.swing.SpinnerListModel(new String[] {"Residuals", "Ratios"}));
+        secondaryPlotTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Residuals", "Ratios" }));
 
         javax.swing.GroupLayout bottomButtonsPanelLayout = new javax.swing.GroupLayout(bottomButtonsPanel);
         bottomButtonsPanel.setLayout(bottomButtonsPanelLayout);
@@ -282,7 +281,7 @@ public class PlotterView extends JInternalFrame {
                 .addContainerGap()
                 .addComponent(tglbtnShowHideResiduals)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(secondaryPlotOptions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(secondaryPlotTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
         bottomButtonsPanelLayout.setVerticalGroup(
@@ -291,7 +290,7 @@ public class PlotterView extends JInternalFrame {
                 .addContainerGap()
                 .addGroup(bottomButtonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tglbtnShowHideResiduals)
-                    .addComponent(secondaryPlotOptions, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(secondaryPlotTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -455,7 +454,7 @@ public class PlotterView extends JInternalFrame {
 
         txtXposition.setEditable(false);
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${xcoord}"), txtXposition, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${xcoord}"), txtXposition, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         txtYposition.setEditable(false);
@@ -502,7 +501,11 @@ public class PlotterView extends JInternalFrame {
         bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${plotPreferences}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("plotPreferences"));
         bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, secondaryPlotTypeComboBox, org.jdesktop.beansbinding.ELProperty.create("${selectedItem}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("residualsOrRatios"));
+        bindingGroup.addBinding(binding);
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${dataModel.selectedSeds}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("seds"));
+        bindingGroup.addBinding(binding);
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, tglbtnShowHideResiduals, org.jdesktop.beansbinding.ELProperty.create("${selected}"), plotter, org.jdesktop.beansbinding.BeanProperty.create("showResiduals"));
         bindingGroup.addBinding(binding);
 
         plotter.setLayout(new java.awt.GridBagLayout());
@@ -719,7 +722,7 @@ public class PlotterView extends JInternalFrame {
     private javax.swing.ButtonGroup plotTypeButtonGroup;
     private cfa.vo.iris.visualizer.plotter.StilPlotter plotter;
     private cfa.vo.iris.visualizer.plotter.JButtonArrow right;
-    private javax.swing.JSpinner secondaryPlotOptions;
+    private javax.swing.JComboBox secondaryPlotTypeComboBox;
     private javax.swing.JToggleButton tglbtnShowHideResiduals;
     private javax.swing.JPanel topButtonsPanel;
     private javax.swing.JTextField txtXposition;

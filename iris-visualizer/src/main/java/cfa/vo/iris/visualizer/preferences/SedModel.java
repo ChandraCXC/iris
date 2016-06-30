@@ -16,7 +16,6 @@
 
 package cfa.vo.iris.visualizer.preferences;
 
-import cfa.vo.iris.fitting.FitConfiguration;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.LinkedList;
@@ -57,8 +56,6 @@ public class SedModel {
     private String xunits;
     private String yunits;
     
-    private FunctionModel evalModel;
-    
     public SedModel(ExtSed sed, IrisStarTableAdapter adapter) {
         this.sed = sed;
         this.adapter = adapter;
@@ -96,6 +93,17 @@ public class SedModel {
         ret.setLabel(sed.getId());
         
         return ret;
+    }
+    
+    /**
+     * @return FunctionModel for the fit on this SED, if available.
+     */
+    public FunctionModel getFunctionModel() {
+        // TODO: Only return a model if this SedModel has been fitted.
+        StarTable table = new StackedStarTable(getDataTables(), new SegmentColumnInfoMatcher());
+        table.setName(sed.getId());
+        
+        return new FunctionModel(table);
     }
     
     /**
@@ -225,21 +233,6 @@ public class SedModel {
         
         starTableData.remove(seg);
         return tableLayerModels.remove(seg) != null;
-    }
-    
-    /**
-     * Attaches an evaluated model to the Sed.
-     * @param model
-     */
-    public void setFunctionModel(FunctionModel model) {
-        this.evalModel = model;
-    }
-    
-    /**
-     * Returns the evaluated model belonging to this ExtSed.
-     */
-    public FunctionModel getFunctionModel() {
-        return evalModel;
     }
     
     /**

@@ -20,12 +20,12 @@ import javax.swing.SwingConstants;
 
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.quantities.SPVYQuantity;
-import cfa.vo.iris.sed.stil.SegmentStarTable;
-import cfa.vo.iris.visualizer.preferences.LayerModel;
 import cfa.vo.iris.visualizer.preferences.FunctionModel;
-import cfa.vo.iris.visualizer.preferences.SedModel;
+import cfa.vo.iris.visualizer.preferences.LayerModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
+
+import java.awt.Dimension;
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
 import uk.ac.starlink.ttools.plot2.geom.PlaneSurfaceFactory;
 import uk.ac.starlink.ttools.plot2.task.PlanePlot2Task;
@@ -38,6 +38,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import java.awt.Insets;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -50,9 +51,15 @@ public class StilPlotter extends JPanel {
             .getLogger(StilPlotter.class.getName());
 
     private static final long serialVersionUID = 1L;
-
+    
+    // Primary plot display
     private PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> display;
     
+    // Residuals
+    private PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> residuals;
+    private boolean showResiduals = false;
+    private String residualsOrRatios = "Residuals";
+
     // List of SEDs plotted in Plotter
     private List<ExtSed> seds = new ArrayList<>();
     
@@ -63,7 +70,11 @@ public class StilPlotter extends JPanel {
     // Plot preferences for the currently plotted selection of SEDs
     private PlotPreferences plotPreferences;
     
+    // MapEnvironment for the primary plotter
     private MapEnvironment env;
+    
+    // MapEnvironment for the residuals plotter
+    private MapEnvironment resEnv;
     
     // Needs a default constructor for Netbeans
     public StilPlotter() {
@@ -132,12 +143,26 @@ public class StilPlotter extends JPanel {
     }
 
     /**
+     * @return The residuals plot display.
+     */
+    public PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> getResidualsPlotDisplay() {
+        return residuals;
+    }
+
+    /**
      * @return MapEnvironment configuration for the Stil plot task.
      */
     protected MapEnvironment getEnv() {
         return env;
     }
     
+    /**
+     * @return MapEnvironment configuration for the residuals.
+     */
+    protected MapEnvironment getResEnv() {
+        return resEnv;
+    }
+   
     /**
      * @return Current set of PlotPreferences used by the plotter.
      */
@@ -181,6 +206,24 @@ public class StilPlotter extends JPanel {
         resetPlot(false, false);
     }
     
+    public boolean isShowResiduals() {
+        return showResiduals;
+    }
+    
+    public void setShowResiduals(boolean on) {
+        this.showResiduals = on;
+        resetPlot(false, false);
+    }
+    
+    public String getResidualsOrRatios() {
+        return residualsOrRatios;
+    }
+    
+    public void setResidualsOrRatios(String residualsOrRatios) {
+        this.residualsOrRatios = residualsOrRatios;
+        resetPlot(false, false);
+    }
+    
     /**
      * Resets the plot.
      * @param forceReset - forces the plot to reset its bounds
@@ -195,42 +238,8 @@ public class StilPlotter extends JPanel {
         // throw it away on a model change.
         setupForPlotDisplayChange(newPlot);
         
-        // Setup new stil plot component
-        display = createPlotComponent();
-        
-        // Set the bounds using the current SED's aspect if the plot is fixed and if we're not
-        // forcing a redraw
-        if (fixed && !forceReset) {
-            PlaneAspect existingAspect = getPlotPreferences().getAspect();
-            display.setAspect(existingAspect);
-        }
-        
-        // Add the display to the plot view
-        addPlotToDisplay();
-    }
-    
-        /**
-     * Resets the plot.
-     * @param forceReset - forces the plot to reset its bounds
-     * @param newPlot - If we are plotting a new plot or re-plotting an existing plot.
-     * @param env - Supply a map environment to reset the plot with
-     */
-    void resetPlot(boolean forceReset, boolean newPlot, MapEnvironment env)
-    {
-        // forceReset can override this class's internal usage of preferences
-        boolean fixed = getPlotPreferences().getFixed();
-        
-        // Clear the display and save all necessary information before we
-        // throw it away on a model change.
-        setupForPlotDisplayChange(newPlot);
-        
-        try {
-            // Setup new stil plot component using the supplied map environment
-            display = createPlotComponent(env);
-        } catch (Exception ex) {
-            Logger.getLogger(StilPlotter.class.getName())
-                    .log(Level.SEVERE, null, ex);
-        }
+        // Setup new stil plot components
+        setupPlotComponents();
         
         // Set the bounds using the current SED's aspect if the plot is fixed and if we're not
         // forcing a redraw
@@ -368,14 +377,22 @@ public class StilPlotter extends JPanel {
      * Create the stil plot component
      * @return
      */
-    protected PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> 
-        createPlotComponent()
+    private void setupPlotComponents()
     {
         logger.info("Creating new plot from selected SED(s)");
 
         try {
+            // Setup each MapEnvironment
             setupMapEnvironment();
-            return createPlotComponent(env);
+            setupResidualMapEnvironment();
+            
+            // Create the plot display
+            display = createPlotComponent(env, true);
+            
+            // Create the residuals if specified
+            residuals = showResiduals ? createPlotComponent(resEnv, false) : null;
+            
+            // TODO: Handle mouse listeners and zooming for the residuals!
         } catch (RuntimeException e) {
             throw e;
         } catch (Exception e) {
@@ -389,7 +406,7 @@ public class StilPlotter extends JPanel {
      * @throws Exception
      */
     protected PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> createPlotComponent(
-            MapEnvironment env) throws Exception {
+            MapEnvironment env, boolean enableMouseListeners) throws Exception {
 
         logger.log(Level.FINE, "plot environment:");
         logger.log(Level.FINE, ReflectionToStringBuilder.toString(env));
@@ -402,17 +419,19 @@ public class StilPlotter extends JPanel {
         PlotDisplay<PlaneSurfaceFactory.Profile,PlaneAspect> display =
                 new PlanePlot2Task().createPlotComponent(env, false);
         
-        // Always update mouse listeners with the new display
-        preferences.getMouseListenerManager().activateListeners(display);
+        if (enableMouseListeners) {
+            // Always update mouse listeners with the new display
+            preferences.getMouseListenerManager().activateListeners(display);
+        }
         
         return display;
     }
 
     protected void setupMapEnvironment() throws IOException {
 
-        env = new MapEnvironment();
+        env = new MapEnvironment(new LinkedHashMap<String, Object>());
         env.setValue("type", "plot2plane");
-        env.setValue("insets", new Insets(50, 80, 50, 50));
+        env.setValue("insets", new Insets(30, 80, 40, 50));
         
         // TODO: force numbers on Y axis to only be 3-5 digits long. Keeps
         // Y-label from falling off the jpanel. Conversely, don't set "insets"
@@ -445,20 +464,54 @@ public class StilPlotter extends JPanel {
         }
         
         // add model functions
-        for (SedModel sedModel : dataModel.getSedModels()) {
+        for (FunctionModel model : dataModel.getFunctionModels()) {
             // If no model available (e.g. no fit) skip it
-            FunctionModel mod = sedModel.getFunctionModel();
-            if (mod == null) {
+            if (!model.hasModelValues()) {
                 continue;
             }
-            LayerModel layer = mod.getFunctionLayerModel();
+            
+            LayerModel layer = model.getFunctionLayerModel();
             Map<String, Object> prefs = layer.getPreferences();
             for (String key : prefs.keySet()) {
                 env.setValue(key, prefs.get(key));
             }
-            
+        }
+    }
+    
+    private void setupResidualMapEnvironment() throws Exception {
+        if (!showResiduals) {
+            resEnv = null;
+            return;
         }
         
+        PlotPreferences pp = getPlotPreferences();
+        
+        resEnv = new MapEnvironment(new LinkedHashMap<String, Object>());
+        resEnv.setValue("type", "plot2plane");
+        resEnv.setValue("insets", new Insets(20, 80, 20, 50));
+        
+        resEnv.setValue(PlotPreferences.SIZE, pp.getSize());
+        resEnv.setValue(PlotPreferences.X_LOG, pp.getPlotType().xlog);
+        resEnv.setValue(PlotPreferences.GRID, pp.getShowGrid());
+        
+        resEnv.setValue("ylabel", residualsOrRatios);
+        resEnv.setValue("xlabel", null);
+        resEnv.setValue("legend", false);
+        
+
+        // add model functions
+        for (FunctionModel model : dataModel.getFunctionModels()) {
+            // If no model available (e.g. no fit) skip it
+            if (!model.hasModelValues()) {
+                continue;
+            }
+            
+            LayerModel layer = model.getResidualsLayerModel(residualsOrRatios);
+            Map<String, Object> prefs = layer.getPreferences();
+            for (String key : prefs.keySet()) {
+                resEnv.setValue(key, prefs.get(key));
+            }
+        }
     }
     
     private void setupForPlotDisplayChange(boolean newPlot) {
@@ -466,7 +519,10 @@ public class StilPlotter extends JPanel {
             return;
         }
         
-        display.removeAll();
+        if (residuals != null) {
+            remove(residuals);
+        }
+        
         remove(display);
         
         if (!newPlot) {
@@ -479,13 +535,40 @@ public class StilPlotter extends JPanel {
      */
     private void addPlotToDisplay() {
         
-        // Ensure it fills the entire display
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.weightx = gbc.weighty = 1.0;
-        gbc.gridx = gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.BOTH;
+        GridBagConstraints displayGBC = new GridBagConstraints();
+        displayGBC.anchor = GridBagConstraints.NORTHWEST;
+        displayGBC.fill = GridBagConstraints.BOTH;
+        displayGBC.weightx = 1;
+        displayGBC.weighty = .75;
+        displayGBC.gridx = 0;
+        displayGBC.gridy = 0;
+        displayGBC.gridheight = 1;
+        displayGBC.gridwidth = 1;
+
+        display.setPreferredSize(new Dimension(600, 500));
+        add(display, displayGBC);
         
-        add(display, gbc);
+        // Ad the residuals to the jpanel if specified
+        if (showResiduals) {
+            // Ensure it fills the entire display
+            GridBagConstraints residualsGBC = new GridBagConstraints();
+            residualsGBC.anchor = GridBagConstraints.NORTHWEST;
+            residualsGBC.fill = GridBagConstraints.BOTH;
+            residualsGBC.weightx = 1;
+            residualsGBC.weighty = .25;
+            residualsGBC.gridx = 0;
+            residualsGBC.gridy = 1;
+            residualsGBC.gridheight = 1;
+            residualsGBC.gridwidth = 1;
+            
+            residuals.setPreferredSize(new Dimension(600,100));
+            residuals.setMaximumSize(new Dimension(Integer.MAX_VALUE, 70));
+            residuals.setMinimumSize(new Dimension(0, 50));
+            add(residuals, residualsGBC);
+            
+            residuals.revalidate();
+            residuals.repaint();
+        }
         
         display.revalidate();
         display.repaint();

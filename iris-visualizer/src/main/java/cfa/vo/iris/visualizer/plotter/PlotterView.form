@@ -159,7 +159,7 @@
     <Property name="maximizable" type="boolean" value="true"/>
     <Property name="resizable" type="boolean" value="true"/>
     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[40, 40]"/>
+      <Dimension value="[300, 300]"/>
     </Property>
     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
       <Dimension value="[800, 546]"/>
@@ -179,7 +179,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,-7,0,0,3,67"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,-26,0,0,2,-80"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout"/>
@@ -198,7 +198,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="tglbtnShowHideResiduals" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="secondaryPlotOptions" min="-2" max="-2" attributes="0"/>
+                  <Component id="secondaryPlotTypeComboBox" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -207,9 +207,9 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                  <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="tglbtnShowHideResiduals" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="secondaryPlotOptions" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="secondaryPlotTypeComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -218,22 +218,19 @@
       </Layout>
       <SubComponents>
         <Component class="javax.swing.JToggleButton" name="tglbtnShowHideResiduals">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Show Residuals"/>
-          </Properties>
+          <BindingProperties>
+            <BindingProperty name="text" source="secondaryPlotTypeComboBox" sourcePath="Show ${selectedItem}" target="tglbtnShowHideResiduals" targetPath="text" updateStrategy="0" immediately="false"/>
+          </BindingProperties>
         </Component>
-        <Component class="javax.swing.JSpinner" name="secondaryPlotOptions">
+        <Component class="javax.swing.JComboBox" name="secondaryPlotTypeComboBox">
           <Properties>
-            <Property name="model" type="javax.swing.SpinnerModel" editor="org.netbeans.modules.form.editors2.SpinnerModelEditor">
-              <SpinnerModel type="list">
-                <ListItem value="Residuals"/>
-                <ListItem value="Ratios"/>
-              </SpinnerModel>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
+              <StringArray count="2">
+                <StringItem index="0" value="Residuals"/>
+                <StringItem index="1" value="Ratios"/>
+              </StringArray>
             </Property>
           </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="//JFormattedTextField txtBoxShowHideResiduals = ((JSpinner.ListEditor) secondaryPlotOptions.getEditor()).getTextField();&#xa;//txtBoxShowHideResiduals.setEditable(false);"/>
-          </AuxValues>
         </Component>
       </SubComponents>
     </Container>
@@ -498,7 +495,9 @@
         <BindingProperty name="gridOn" source="plotter" sourcePath="${plotPreferences.showGrid}" target="plotter" targetPath="gridOn" updateStrategy="0" immediately="false"/>
         <BindingProperty name="layerModels" source="Form" sourcePath="${dataModel.layerModels}" target="plotter" targetPath="layerModels" updateStrategy="0" immediately="false"/>
         <BindingProperty name="plotPreferences" source="Form" sourcePath="${plotPreferences}" target="plotter" targetPath="plotPreferences" updateStrategy="0" immediately="false"/>
+        <BindingProperty name="residualsOrRatios" source="secondaryPlotTypeComboBox" sourcePath="${selectedItem}" target="plotter" targetPath="residualsOrRatios" updateStrategy="0" immediately="false"/>
         <BindingProperty name="seds" source="Form" sourcePath="${dataModel.selectedSeds}" target="plotter" targetPath="seds" updateStrategy="0" immediately="false"/>
+        <BindingProperty name="showResiduals" source="tglbtnShowHideResiduals" sourcePath="${selected}" target="plotter" targetPath="showResiduals" updateStrategy="0" immediately="false"/>
       </BindingProperties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new StilPlotter(preferences)"/>
