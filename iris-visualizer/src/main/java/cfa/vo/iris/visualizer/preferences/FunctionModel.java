@@ -88,7 +88,7 @@ public class FunctionModel {
             layer.setY(SegmentColumn.Column.Residuals.name());
         } else {
             throw new IllegalArgumentException("Unrecognized residual type. "
-                    + "Must be \"ratio\" or \"residual\"");
+                    + "Must be \"Ratios\" or \"Residuals\"");
         }
 
         layer.setShowErrorBars(false);
