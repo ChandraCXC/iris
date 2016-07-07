@@ -22,6 +22,8 @@ import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.fitting.custom.ModelsListener;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.visualizer.preferences.SedModel;
+import cfa.vo.sedlib.Sed;
 import cfa.vo.sherpa.models.Model;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Statistic;
@@ -37,7 +39,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class FittingMainView extends JInternalFrame implements SedListener {
-    private ExtSed sed;
+    private SedModel sed;
     private FitController controller;
     private JFileChooser chooser;
     public final String DEFAULT_DESCRIPTION = "Double click on a Component to add it to the list of selected Components.";
@@ -53,7 +55,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         this();
         this.controller = controller;
         this.chooser = chooser;
-        setSed(controller.getSed());
+        setSedModel(controller.getSedModel());
         initController();
         setUpAvailableModelsTree();
         setUpModelViewerPanel();
@@ -63,20 +65,20 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         pack();
     }
 
-    public ExtSed getSed() {
+    public SedModel getSedModel() {
         return sed;
     }
 
-    public void setSed(ExtSed sed) {
+    public void setSedModel(SedModel sed) {
         this.sed = sed;
         firePropertyChange(PROP_SED, null, sed);
-        controller.setSed(sed);
+        controller.setSedModel(sed);
     }
 
     @Override
     public void process(ExtSed source, SedCommand payload) {
-        if (SedCommand.SELECTED.equals(payload) || SedCommand.CHANGED.equals(payload) && source.equals(sed)) {
-            setSed(source);
+        if (SedCommand.SELECTED.equals(payload) || SedCommand.CHANGED.equals(payload) && source.equals(sed.getSed())) {
+            setSedModel(source);
         }
     }
 
@@ -91,7 +93,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
     }
 
     private void setUpModelViewerPanel() {
-        modelViewerPanel.setSed(sed);
+        modelViewerPanel.setSed(sed.getSed());
         modelViewerPanel.setEditable(true);
     }
 

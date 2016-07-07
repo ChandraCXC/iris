@@ -293,7 +293,15 @@ public class SedModel {
         return yunits;
     }
 
-    public FitConfiguration getFitConfiguration() {
+    public FitConfiguration getFit() {
         return sed.getFit();
+    }
+
+    public void setFit(FitConfiguration fit) {
+        sed.setFit(fit);
+    }
+
+    public ExtSed getSed() {
+        return sed;
     }
 }
