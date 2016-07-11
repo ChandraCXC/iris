@@ -18,7 +18,6 @@ package cfa.vo.iris.visualizer.plotter;
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.fitting.FitController;
 import cfa.vo.iris.IrisApplication;
-import cfa.vo.iris.fitting.FittingRange;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.visualizer.IrisVisualizer;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
@@ -28,18 +27,12 @@ import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
-import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
-import uk.ac.starlink.ttools.plot2.Surface;
-import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class PlotterView extends JInternalFrame {
@@ -144,13 +137,6 @@ public class PlotterView extends JInternalFrame {
         
         // Set listeners to point to this view
         preferences.getMouseListenerManager().setPlotterView(this);
-        this.addMouseListener(new MouseXRangesClickedListener());
-        for (MouseListener listener : this.getMouseListeners()) {
-            if (MouseXRangesClickedListener.class.isInstance(listener)) {
-                MouseXRangesClickedListener l = (MouseXRangesClickedListener) listener;
-                l.activate(this.plotter.getPlotDisplay(), this.getDataModel());
-            }
-        }
     }
     
     private void openMetadataBrowser() throws Exception {
@@ -560,7 +546,7 @@ public class PlotterView extends JInternalFrame {
 
         mnEdit.setText("Edit");
 
-        mntmSomething.setText("Something");
+        mntmSomething.setText("Add fitting range");
         mntmSomething.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mntmSomethingActionPerformed(evt);
@@ -726,7 +712,7 @@ public class PlotterView extends JInternalFrame {
         if (getDataModel().getSedModels().isEmpty()) {
             return;
         }
-        pickFittingRange = true;
+        preferences.getMouseListenerManager().xRangesMouseClickedListener.setPickingRanges(true);
     }//GEN-LAST:event_mntmSomethingActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -808,76 +794,6 @@ public class PlotterView extends JInternalFrame {
             this.setLocation(0, 0);
             
             this.setDefaultCloseOperation(JInternalFrame.HIDE_ON_CLOSE);
-        }
-    }
-    
-    public class MouseXRangesClickedListener extends StilPlotterMouseListener implements MouseListener {
-        private PlotDisplay<?,?> display;
-        private boolean isStartPoint; // flag for if it's a first (start) or second 
-                                      // (end) click on the plot
-        private FittingRange fittingRange = new FittingRange();
-
-        @Override
-        public void setPlotterView(PlotterView plotterView) {
-            super.setPlotterView(plotterView);
-        }
-
-        @Override
-        public void activate(PlotDisplay<?,?> display, VisualizerDataModel dataModel) {
-            this.display = display;
-            isStartPoint = true; // the first click on the plotter will always be the starting point.
-            display.addMouseListener(this);
-        }
-
-        @Override
-        public void mouseClicked(MouseEvent evt) {
-            // if the display is empty, do nothing.
-            if (display == null || display.getSurface() == null) {
-                return;
-            }
-            
-            if (pickFittingRange) {  // if set ranges button was clicked
-
-                Surface surface = display.getSurface();
-
-                Point p = evt.getPoint();
-                if (!surface.getPlotBounds().contains(p)) {
-                    return;
-                }
-
-                double x = surface.graphicsToData(p, null)[0];
-
-                if (isStartPoint) {
-                    fittingRange.setStartPoint(x);
-                    isStartPoint = false;
-                } else {
-                    fittingRange.setEndPoint(x);
-                    getDataModel().getSelectedSeds().get(0).getFit().addFittingRange(fittingRange);
-                    isStartPoint = true;
-                    pickFittingRange = false; // turns-off range picker (done setting range)
-                }
-            }
-
-        }
-
-        @Override
-        public void mousePressed(MouseEvent me) {
-            // do nothing
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent me) {
-            // do nothing
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent me) {
-            // do nothing
-        }
-
-        @Override
-        public void mouseExited(MouseEvent me) {
-            // do nothing
         }
     }
 }

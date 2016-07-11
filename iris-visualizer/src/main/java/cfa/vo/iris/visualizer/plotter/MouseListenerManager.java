@@ -18,7 +18,6 @@ package cfa.vo.iris.visualizer.plotter;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import cfa.vo.iris.visualizer.plotter.MouseCoordinateMotionListener;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
 import uk.ac.starlink.ttools.plot2.geom.PlaneSurfaceFactory.Profile;
@@ -40,6 +39,7 @@ public class MouseListenerManager {
     MouseCoordinateMotionListener mouseCoordinateMotionListener;
     PlotPointSelectionListener pointSelectionListener;
     PlotPointSelectionDetailsListener pointDetailsListener;
+    MouseXRangesClickedListener xRangesMouseClickedListener;
     
     public MouseListenerManager(VisualizerComponentPreferences preferences) {
         this.listeners = new LinkedHashSet<>();
@@ -56,6 +56,10 @@ public class MouseListenerManager {
         // Shows a tooltip when clicking on a point
         pointDetailsListener = new PlotPointSelectionDetailsListener();
         listeners.add(pointDetailsListener);
+        
+        // Selects the start and end points for a fitting range
+        xRangesMouseClickedListener = new MouseXRangesClickedListener();
+        listeners.add(xRangesMouseClickedListener);
     }
     
     public void setPlotterView(PlotterView view) {
