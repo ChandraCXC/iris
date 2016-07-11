@@ -38,6 +38,7 @@ public class FitConfiguration {
     public static final String PROP_CONFIDENCE = "confidence";
 
     private CompositeModel model;
+    private List<FittingRange> fittingRanges;
     private Stat stat;
     private Method method;
     private Confidence confidence;
@@ -62,6 +63,7 @@ public class FitConfiguration {
         confidence.setName("conf");
         stat = Statistic.Chi2;
         method = OptimizationMethod.LevenbergMarquardt;
+        fittingRanges = new ArrayList<>();
     }
 
     @Nonnull
@@ -236,6 +238,54 @@ public class FitConfiguration {
         else {
             return "No Model";
         }
+    }
+    
+    /**
+     * Add a fitting range to the Fit configuration
+     * @param fittingRange 
+     */
+    public void addFittingRange(FittingRange fittingRange) {
+        // verify fitting range is in sorted order (low to high)
+        double tmpStart = fittingRange.getStartPoint();
+        double tmpEnd = fittingRange.getEndPoint();
+        if (tmpEnd < tmpStart) {
+            // switch start and end points
+            fittingRange.setStartPoint(tmpEnd);
+            fittingRange.setEndPoint(tmpStart);
+        }
+        
+        this.fittingRanges.add(fittingRange);
+    }
+    
+    /**
+     * Return a list of the fit configuration fitting ranges
+     * @return List of fitting ranges
+     */
+    public List<FittingRange> getFittingRanges() {
+        return this.fittingRanges;
+    }
+    
+    /**
+     * Remove the ith fitting range from the model
+     * @param i 
+     */
+    public void removeFittingRange(int i) {
+        fittingRanges.remove(i);
+    }
+    
+    /**
+     * Remove the given fitting range from the model
+     * @param fittingRange 
+     */
+    public void removeFittingRange(FittingRange fittingRange) {
+        fittingRanges.remove(fittingRange);
+    }
+    
+    /**
+     * Remove all the fitting ranges from the model
+     */
+    public void clearFittingRanges() {
+        fittingRanges.clear();
     }
 
     public void integrateResults(FitResults results) {

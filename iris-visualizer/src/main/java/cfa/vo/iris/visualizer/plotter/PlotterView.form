@@ -48,6 +48,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Something"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="mntmSomethingActionPerformed"/>
+              </Events>
             </MenuItem>
           </SubComponents>
         </Menu>
