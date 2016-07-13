@@ -22,7 +22,6 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.visualizer.preferences.SedModel;
-import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sherpa.ConfidenceResults;
 import cfa.vo.sherpa.Data;
@@ -63,7 +62,8 @@ public class FitControllerTest {
         data.setY(y);
         data.setStaterror(err);
         Mockito.stub(client.evaluate(Mockito.any(double[].class), Mockito.any(FitConfiguration.class))).toReturn(y);
-        controller = new FitController(sed, modelsManager, client);
+        SedModel sedModel = new SedModel(sed, new IrisStarTableAdapter(null));
+        controller = new FitController(sedModel, modelsManager, client);
     }
 
     @Test

@@ -46,8 +46,6 @@ import org.uispec4j.interception.FileChooserHandler;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
 
-import javax.swing.*;
-
 public class FittingToolComponentTest extends AbstractComponentGUITest {
 
     private FittingToolComponent comp = new FittingToolComponent();

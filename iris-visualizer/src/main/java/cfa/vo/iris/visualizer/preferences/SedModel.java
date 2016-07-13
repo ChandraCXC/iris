@@ -224,7 +224,7 @@ public class SedModel {
     
     /**
      * Removes a segment from the sed preferences map.
-     * @param segment
+     * @param seg
      * @return true if the segment was removed from the models map
      */
     boolean removeSegment(Segment seg) {
@@ -293,7 +293,15 @@ public class SedModel {
         return yunits;
     }
 
-    public FitConfiguration getFitConfiguration() {
+    public FitConfiguration getFit() {
         return sed.getFit();
+    }
+
+    public void setFit(FitConfiguration fit) {
+        sed.setFit(fit);
+    }
+
+    public ExtSed getSed() {
+        return sed;
     }
 }
