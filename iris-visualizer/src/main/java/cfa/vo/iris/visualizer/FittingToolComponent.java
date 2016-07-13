@@ -25,6 +25,8 @@ import cfa.vo.iris.fitting.FittingMainView;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 
+import cfa.vo.iris.visualizer.preferences.SedModel;
+import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.sherpa.SherpaClient;
 import org.astrogrid.samp.client.MessageHandler;
 
@@ -44,6 +46,7 @@ public class FittingToolComponent implements IrisComponent {
     private CustomModelsManagerView customManagerView;
     private File customRootDir;
     private SherpaClient sherpaClient;
+    VisualizerComponentPreferences preferences;
     private final String CUSTOM_PATH = File.separator + "analysis" + File.separator + "custom_models";
     private static final Logger LOGGER = Logger.getLogger(FittingToolComponent.class.getName());
 
@@ -51,6 +54,7 @@ public class FittingToolComponent implements IrisComponent {
     public void init(IrisApplication irisApplication, IWorkspace iWorkspace) {
         this.app = irisApplication;
         this.ws = iWorkspace;
+        preferences = new VisualizerComponentPreferences(ws);
         sherpaClient = new SherpaClient(irisApplication.getSampService());
         customRootDir = new File(app.getConfigurationDir() + CUSTOM_PATH);
         try {
@@ -143,8 +147,9 @@ public class FittingToolComponent implements IrisComponent {
                                 NarrowOptionPane.showMessageDialog(null, "No SEDs open. Please start building SEDs using the SED builder", "Error", NarrowOptionPane.ERROR_MESSAGE);
                                 return;
                             }
-                            FitController controller = new FitController(sed, customManager, sherpaClient);
-                            view = new FittingMainView(ws.getFileChooser(), controller);
+                            SedModel model = preferences.getDataStore().getSedModel(sed);
+                            FitController controller = new FitController(model, customManager, sherpaClient);
+                            view = new FittingMainView(preferences.getDataStore(), ws.getFileChooser(), controller);
                             ws.addFrame(view);
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);

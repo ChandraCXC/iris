@@ -224,7 +224,7 @@ public class SedModel {
     
     /**
      * Removes a segment from the sed preferences map.
-     * @param segment
+     * @param seg
      * @return true if the segment was removed from the models map
      */
     boolean removeSegment(Segment seg) {

@@ -23,7 +23,7 @@ import cfa.vo.iris.fitting.custom.ModelsListener;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.preferences.SedModel;
-import cfa.vo.sedlib.Sed;
+import cfa.vo.iris.visualizer.preferences.VisualizerDataStore;
 import cfa.vo.sherpa.models.Model;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Statistic;
@@ -42,6 +42,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
     private SedModel sed;
     private FitController controller;
     private JFileChooser chooser;
+    private VisualizerDataStore dataStore;
     public final String DEFAULT_DESCRIPTION = "Double click on a Component to add it to the list of selected Components.";
     public final String CUSTOM_DESCRIPTION = "User Model";
     public static final String PROP_SED = "sed";
@@ -51,10 +52,11 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         SedEvent.getInstance().add(this);
     }
 
-    public FittingMainView(JFileChooser chooser, FitController controller) {
+    public FittingMainView(VisualizerDataStore dataStore, JFileChooser chooser, FitController controller) {
         this();
         this.controller = controller;
         this.chooser = chooser;
+        this.dataStore = dataStore;
         setSedModel(controller.getSedModel());
         initController();
         setUpAvailableModelsTree();
@@ -78,7 +80,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
     @Override
     public void process(ExtSed source, SedCommand payload) {
         if (SedCommand.SELECTED.equals(payload) || SedCommand.CHANGED.equals(payload) && source.equals(sed.getSed())) {
-            setSedModel(source);
+            setSedModel(dataStore.getSedModel(source));
         }
     }
 

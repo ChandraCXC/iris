@@ -15,9 +15,16 @@
  */
 package cfa.vo.iris.fitting;
 
+import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.fitting.custom.CustomModelsManager;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.iris.test.Ws;
+import cfa.vo.iris.test.unit.ApplicationStub;
+import cfa.vo.iris.visualizer.preferences.SedModel;
+import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
+import cfa.vo.iris.visualizer.preferences.VisualizerDataStore;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Statistic;
@@ -48,8 +55,11 @@ public class FittingMainViewTest {
         Mockito.when(modelsManager.getCustomModels()).thenReturn(new DefaultMutableTreeNode("Custom Models"));
         SherpaClient client = Mockito.mock(SherpaClient.class);
         JFileChooser chooser = Mockito.mock(JFileChooser.class);
-        FitController controller = new FitController(sed, modelsManager, client);
-        FittingMainView view = new FittingMainView(chooser, controller);
+        SedModel sedModel = new SedModel(sed, new IrisStarTableAdapter(null));
+        FitController controller = new FitController(sedModel, modelsManager, client);
+        ApplicationStub app = new ApplicationStub();
+        VisualizerDataStore store = new VisualizerDataStore(null, new VisualizerComponentPreferences(app.getWorkspace()));
+        FittingMainView view = new FittingMainView(store, chooser, controller);
 
         fittingView = new Window(view);
         sedId = fittingView.getInputTextBox("currentSedField");
