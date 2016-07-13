@@ -191,8 +191,10 @@ public class VisualizerComponentPreferences {
      */
     public void removeSed(ExtSed sed) {
         List<ExtSed> selectedSeds = dataModel.getSelectedSeds();
-        if (selectedSeds.remove(sed)) {
-            dataModel.setSelectedSeds(selectedSeds);
+        if (selectedSeds.contains(sed)) {
+            List<ExtSed> newSeds = new LinkedList<>(selectedSeds);
+            newSeds.remove(sed);
+            dataModel.setSelectedSeds(newSeds);
         }
     }
 
