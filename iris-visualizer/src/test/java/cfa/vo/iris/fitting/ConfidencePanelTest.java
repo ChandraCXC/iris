@@ -50,7 +50,7 @@ public class ConfidencePanelTest {
         sigma.textEquals("1.6").check();
 
         sigma.setText("1.0");
-        assertEquals(1.0, panel.getController().getFit().getConfidence().getSigma(), Double.MIN_VALUE);
+        assertEquals(1.0, panel.getController().getFit().getConfidence().getConfig().getSigma(), Double.MIN_VALUE);
     }
 
     @Test

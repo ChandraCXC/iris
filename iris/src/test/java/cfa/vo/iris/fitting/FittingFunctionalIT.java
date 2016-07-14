@@ -25,6 +25,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.uispec4j.*;
+import org.uispec4j.assertion.Assertion;
 import org.uispec4j.assertion.UISpecAssert;
 import org.uispec4j.interception.FileChooserHandler;
 import org.uispec4j.interception.PopupMenuInterceptor;
@@ -85,11 +86,65 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
     @Test
     public void testFittingThread() throws Exception {
         installModels();
-        loadSed();
+        String[][] table = new String[][]{{"3C 273", "187.28, 2.0524", "NASA/IPAC Extragalactic Database (NED)", "474"}};
+        loadSed("3c273.xml", table);
         setupModelExpression();
         fit();
         fitCustomModel();
         saveText();
+    }
+
+    @Test
+    public void testSimpleFit() throws Exception {
+        final String[][] table = new String[][]{{"3C 066A", "35.665, 43.036", "NASA/IPAC Extragalactic Database (NED)", "34"}};
+        loadSed("3c66a.xml", table);
+
+        window.getMenuBar().getMenu("Tools").getSubMenu("Fitting Tool").getSubMenu("Fitting Tool").click();
+        fittingView = desktop.getWindow("Fitting Tool");
+        availableTree = fittingView.getTree("availableTree");
+        modelsTree = fittingView.getTree("modelsTree");
+
+        availableTree.doubleClick("Preset Model Components/powerlaw");
+        modelsTree.contains("powerlaw.m1").check();
+
+        modelExpression = fittingView.getTextBox("modelExpressionField");
+        modelExpression.textEquals("m1").check();
+
+        fittingView.getComboBox("optimizationCombo").select("NelderMeadSimplex");
+        fittingView.getComboBox("statisticCombo").select("Chi2");
+
+        fittingView.getButton("Fit").click();
+
+        TextBox val = fittingView.getTextBox("Par Val");
+        UISpecAssert.waitUntil(UISpecAssert.not(val.textEquals("-0.5")), 1000);
+
+        TextBox np = fittingView.getInputTextBox("Number of Points");
+        np.textEquals("23").check();
+
+        TextBox statS = fittingView.getInputTextBox("Final Fit Statistic");
+        Double stat = Double.valueOf(statS.getText());
+        assertEquals(14102.333, stat, 0.01);
+
+        fittingView.getInputTextBox("sigma").setText("4");
+        fittingView.getButton("Compute").click();
+
+        Table confidenceTable = fittingView.getTable("confidenceTable");
+        final Double amplInf = Double.valueOf((String) confidenceTable.getContentAt(0, 1));
+        UISpecAssert.waitUntil(new Assertion() {
+            @Override
+            public void check() {
+                assertEquals(-6.202e-6, amplInf, 1e-8);
+            }
+        }, 1000);
+
+        Double value = Double.valueOf((String) confidenceTable.getContentAt(0, 2));
+        assertEquals(6.065e-6, value, 1e-8);
+
+        value = Double.valueOf((String) confidenceTable.getContentAt(1, 1));
+        assertEquals(-0.00438, value, 0.00001);
+
+        value = Double.valueOf((String) confidenceTable.getContentAt(1, 2));
+        assertEquals(0.00486, value, 0.00001);
     }
 
     private void saveText() throws Exception {
@@ -182,17 +237,23 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
 
     }
 
-    private void loadSed() throws Exception {
-        window.getMenuBar().getMenu("File").getSubMenu("Load File").click();
+    private void loadSed(String name, String[][] table) throws Exception {
+        TestUtils.invokeWithRetry(50, 100, new Runnable() {
+            @Override
+            public void run() {
+                window.getMenuBar().getMenu("File").getSubMenu("Load File").click();
+            }
+        });
+
         Window loader = desktop.getWindow("Load an input File");
         loader.getRadioButton("Location on Disk").click();
-        loader.getInputTextBox("diskTextBox").setText(examplesUrlString+"/3c273.xml");
+        loader.getInputTextBox("diskTextBox").setText(examplesUrlString+ "/" + name);
         loader.getComboBox().select("VOTable");
         loader.getButton("Load Spectrum/SED").click();
 
         Window builder = desktop.getWindow("SED Builder");
         builder.getListBox().click(0);
-        builder.getTable().contentEquals(new String[][]{{"3C 273", "187.28, 2.0524", "NASA/IPAC Extragalactic Database (NED)", "474"}}).check();
+        builder.getTable().contentEquals(table).check();
     }
 
     private void setupModelExpression() throws Exception {

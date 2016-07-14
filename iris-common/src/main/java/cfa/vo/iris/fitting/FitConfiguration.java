@@ -10,8 +10,6 @@ import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Stat;
 import cfa.vo.sherpa.stats.Statistic;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
@@ -58,7 +56,7 @@ public class FitConfiguration {
     public FitConfiguration() {
         model = SAMPFactory.get(CompositeModel.class);
         confidence = SAMPFactory.get(Confidence.class);
-        confidence.setSigma(1.6);
+        confidence.getConfig().setSigma(1.6);
         confidence.setName("conf");
         stat = Statistic.Chi2;
         method = OptimizationMethod.LevenbergMarquardt;

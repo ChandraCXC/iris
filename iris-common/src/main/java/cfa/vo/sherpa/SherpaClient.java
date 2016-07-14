@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 public class SherpaClient {
     public static final String DATA_NAME = "fitdata";
     public static final String X_UNIT = "Angstrom";
-    public static final String Y_UNIT = "erg/s/cm2/Angstrom";
+    public static final String Y_UNIT = "photon/s/cm2/Angstrom";
 
     private ModelFactory modelFactory = new ModelFactory();
     private SampService sampService;
