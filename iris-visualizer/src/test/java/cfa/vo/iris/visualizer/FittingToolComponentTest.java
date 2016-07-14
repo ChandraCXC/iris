@@ -90,9 +90,7 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
     
     @Test
     public void testFittingEmptySed() throws Exception {
-        sedManager.newSed("TestSed");
-        
-        final Window mainFit = openWindow();
+        final Window mainFit = setupFitWindow(sedManager.newSed("TestSed"));
 
         TextBox parName = mainFit.getTextBox("Par Name");
         parName.textEquals("No Parameter Selected").check();
@@ -101,8 +99,7 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
 
     @Test
     public void testSedNameChange() throws Exception {
-        sedManager.newSed("TestSed");
-        final Window mainFit = openWindow();
+        final Window mainFit = setupFitWindow(sedManager.newSed("TestSed"));
         assertEquals("TestSed", mainFit.getTextBox("currentSedField").getText());
         sedManager.newSed("TestSed2");
         TestUtils.invokeWithRetry(50, 100, new Runnable(){
@@ -116,10 +113,8 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
     @Test
     public void testViewNonEmptySed() throws Exception {
         ExtSed sed = sedManager.newSed("TestSed");
-
-        final Window mainFit = openWindow();
-
         addFit(sed);
+        final Window mainFit = setupFitWindow(sed);
 
         TestUtils.invokeWithRetry(50, 100, new Runnable(){
             @Override
@@ -152,8 +147,7 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
 
     @Test
     public void testModelSelection() throws Exception {
-        sedManager.newSed("TestSed");
-        Window mainFit = openWindow();
+        final Window mainFit = setupFitWindow(sedManager.newSed("TestSed"));
 
         Tree availableTree = mainFit.getTree("availableTree");
         final TextBox descriptionArea = mainFit.getTextBox("descriptionArea");
@@ -169,8 +163,7 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
 
     @Test
     public void testModelSearch() throws Exception {
-        sedManager.newSed("TestSed");
-        Window mainFit = openWindow();
+        final Window mainFit = setupFitWindow(sedManager.newSed("TestSed"));
 
         TextBox searchField = mainFit.getInputTextBox("searchField");
         searchField.setText("power");
@@ -187,7 +180,7 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
     public void testSaveText() throws Exception {
         ExtSed sed = sedManager.newSed("TestSed");
         addFit(sed);
-        Window mainFit = openWindow();
+        final Window mainFit = setupFitWindow(sed);
 
         File outputFile = tempFolder.newFile("output.fit");
 
@@ -206,7 +199,7 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
     @Test
     public void testLoadJson() throws Exception {
         ExtSed sed = sedManager.newSed("TestSed");
-        Window mainFit = openWindow();
+        final Window mainFit = setupFitWindow(sed);
 
         String path = getClass().getResource("fit.json").getFile();
 
@@ -236,7 +229,7 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
     public void testSaveJson() throws Exception {
         ExtSed sed = sedManager.newSed("TestSed");
         addFit(sed);
-        Window mainFit = openWindow();
+        final Window mainFit = setupFitWindow(sed);
 
         Tree modelsTree = mainFit.getTree("modelsTree");
         modelsTree.click("polynomial.m/m.c1");
@@ -273,6 +266,18 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
     @Test
     public void testLoadJsonNonExistentFile() throws Exception {
         nonExistentFile("Load Json...");
+    }
+    
+    private Window setupFitWindow(final ExtSed sed) throws Exception {
+        // Wait for swing EDT to update datastore with the SED
+        TestUtils.invokeWithRetry(10, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertNotNull(comp.preferences.getDataStore().getSedModel(sed));
+            }
+        });
+        
+        return openWindow();
     }
 
     private Window openWindow() {
