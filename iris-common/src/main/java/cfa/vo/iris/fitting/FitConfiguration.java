@@ -58,7 +58,7 @@ public class FitConfiguration {
     public FitConfiguration() {
         model = SAMPFactory.get(CompositeModel.class);
         confidence = SAMPFactory.get(Confidence.class);
-        confidence.setSigma(1.6);
+        confidence.getConfig().setSigma(1.6);
         confidence.setName("conf");
         stat = Statistic.Chi2;
         method = OptimizationMethod.LevenbergMarquardt;

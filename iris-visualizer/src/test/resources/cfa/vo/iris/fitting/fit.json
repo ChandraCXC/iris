@@ -151,10 +151,9 @@
   "stat" : "LeastSquares",
   "method" : "LevenbergMarquardt",
   "confidence" : {
-    "sigma" : 1.6,
-    "maxiters" : null,
-    "eps" : null,
-    "softLimits" : null,
+    "config": {
+      "sigma": 1.6
+    },
     "name" : "conf"
   },
   "rStat" : 0.4321,
