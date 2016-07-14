@@ -25,23 +25,24 @@ import org.uispec4j.ListBox;
 import org.uispec4j.Panel;
 import org.uispec4j.Tree;
 import org.uispec4j.Window;
-
-import cfa.vo.iris.IrisComponent;
+import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.iris.test.unit.AbstractComponentGUITest;
+import cfa.vo.iris.test.unit.AbstractUISpecTest;
+import cfa.vo.iris.test.unit.StubWorkspace;
 import cfa.vo.iris.test.unit.TestUtils;
-import cfa.vo.iris.visualizer.VisualizerComponent;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
 import cfa.vo.iris.visualizer.metadata.StarTableJTree;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
+import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
+import cfa.vo.iris.visualizer.preferences.VisualizerDataStore;
 
-public class CoPlottingTest extends AbstractComponentGUITest {
-    
-    private VisualizerComponent comp = new VisualizerComponent();
-    private String plWindowName = comp.getName();
-    private SedlibSedManager sedManager;
+public class CoPlottingTest extends AbstractUISpecTest {
+
+    private IWorkspace ws;
+    private VisualizerComponentPreferences prefs;
+    private VisualizerDataStore dataStore;
+    private VisualizerDataModel dataModel;
     
     private Window mbWindow; // metadata window
     private Window plWindow; // plotter window
@@ -54,51 +55,39 @@ public class CoPlottingTest extends AbstractComponentGUITest {
     
     @Before
     public void setupMbTest() throws Exception {
-        sedManager = (SedlibSedManager) app.getWorkspace().getSedManager();
+        ws = new StubWorkspace();
+        prefs = new VisualizerComponentPreferences(ws);
+        dataStore = prefs.getDataStore();
+        dataModel = prefs.getDataModel();
         
-        // Get plot window
-        window.getMenuBar().getMenu("Tools").getSubMenu(plWindowName).getSubMenu(plWindowName).click();
+        // Create windows
+        plView = new PlotterView(null, ws, prefs);
+        mbView = plView.getMetadataBrowserView();
 
-        invokeWithRetry(20, 100, new Runnable() {
-            @Override
-            public void run() {
-                desktop.containsWindow(plWindowName).check();
-            }
-        });
+        plWindow = new Window(plView);
         
-        plWindow = desktop.getWindow(plWindowName);
         org.uispec4j.Button mbButton = plWindow.getButton("Metadata");
         mbButton.click();
+        mbWindow = new Window(mbView);
         
-        plView = comp.getDefaultPlotterView();
-        mbView = plView.getMetadataBrowserView();
-        
-        desktop.containsWindow(mbView.getTitle()).check();
-        mbWindow = desktop.getWindow(mbView.getTitle());
         dataPanel = mbWindow.getPanel("contentPane");
         tablesTree = dataPanel.getTree();
-    }
-    
-    @Override
-    protected IrisComponent getComponent() {
-        return comp;
     }
     
     @Test
     public void TestCoplotting() throws Exception {
         
-        final VisualizerComponentPreferences prefs = comp.getPreferences();
-        
-        final ExtSed sed1 = new ExtSed("test1");
+        final ExtSed sed1 = (ExtSed) ws.getSedManager().newSed("test1");
         sed1.addSegment(TestUtils.createSampleSegment(new double[] {1}, new double[] {1}));
         sed1.addSegment(TestUtils.createSampleSegment(new double[] {2}, new double[] {2}));
 
-        final ExtSed sed2 = new ExtSed("test2");
+        final ExtSed sed2 = (ExtSed) ws.getSedManager().newSed("test2");
         sed2.addSegment(TestUtils.createSampleSegment(new double[] {3}, new double[] {3}));
         sed2.addSegment(TestUtils.createSampleSegment(new double[] {4}, new double[] {4}));
         
-        sedManager.add(sed1);
-        sedManager.add(sed2);
+        dataStore.update(sed1);
+        dataStore.update(sed2);
+        dataModel.setSelectedSed(sed2);
         
         // verify selected sed
         invokeWithRetry(20, 100, new Runnable() {
@@ -106,21 +95,15 @@ public class CoPlottingTest extends AbstractComponentGUITest {
             public void run() {
                 assertTrue(mbView.getDataModel().getSelectedSeds().contains(sed2));
                 assertEquals(2, mbView.getDataModel().getSedStarTables().size());
-                assertEquals(2, prefs.getAvailableSeds().size());
+                assertEquals(2, dataStore.getSedModels().size());
             }
         });
         
         // Open the Co-Plotting window
         plWindow.getMenuBar().getMenu("View").getSubMenu("CoPlot...").click();
-        invokeWithRetry(20, 100, new Runnable() {
-            @Override
-            public void run() {
-                desktop.containsWindow("Select Seds").check();
-            }
-        });
-        Window cpWindow = desktop.getWindow("Select Seds");
+        Window cpWindow = new Window(plView.coplotWindow);
         
-        // list box should not be enabled
+        // list box should be enabled
         ListBox sedList = cpWindow.getPanel("contentPane").getListBox();
         assertTrue(sedList.isEnabled().isTrue());
         
@@ -133,19 +116,13 @@ public class CoPlottingTest extends AbstractComponentGUITest {
             public void run() {
                 assertTrue(mbView.getDataModel().getSelectedSeds().isEmpty());
                 assertEquals(0, mbView.getDataModel().getSedStarTables().size());
-                assertEquals(2, prefs.getAvailableSeds().size());
+                assertEquals(2, dataStore.getSedModels().size());
             }
         });
         
         // Reopen the Co-Plotting window
         plWindow.getMenuBar().getMenu("View").getSubMenu("CoPlot...").click();
-        invokeWithRetry(20, 100, new Runnable() {
-            @Override
-            public void run() {
-                desktop.containsWindow("Select Seds").check();
-            }
-        });
-        cpWindow = desktop.getWindow("Select Seds");
+        cpWindow = new Window(plView.coplotWindow);
         sedList = cpWindow.getPanel("contentPane").getListBox();
         
         // Verify list contents

@@ -25,14 +25,12 @@ import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.SwingConstants;
 
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class PlotterView extends JInternalFrame {
-    
-    private static final Logger logger = Logger.getLogger(StilPlotter.class.getName());
     
     private static final long serialVersionUID = 1L;
     
@@ -49,6 +47,9 @@ public class PlotterView extends JInternalFrame {
     
     // Bound to the StilPlotter preferences
     private PlotPreferences plotPreferences;
+    
+    // Coplotting selection window
+    CoPlotManagementWindow coplotWindow;
     
     public static double ZOOM_SCALE = 0.5;
     
@@ -197,7 +198,7 @@ public class PlotterView extends JInternalFrame {
         
         this.mntmAutoFixed.setSelected(plotPreferences.getFixed());
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -658,9 +659,9 @@ public class PlotterView extends JInternalFrame {
     }//GEN-LAST:event_metadataButtonActionPerformed
 
     private void mntmCoplotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mntmCoplotActionPerformed
-        CoPlotManagementWindow pl = new CoPlotManagementWindow(this.preferences);
-        ws.addFrame(pl);
-        GUIUtils.moveToFront(pl);
+        coplotWindow = new CoPlotManagementWindow(this.preferences);
+        ws.addFrame(coplotWindow);
+        GUIUtils.moveToFront(coplotWindow);
     }//GEN-LAST:event_mntmCoplotActionPerformed
 
     private void upActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upActionPerformed
