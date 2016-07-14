@@ -12,6 +12,7 @@ import cfa.vo.iris.visualizer.plotter.PlotPreferences;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 
@@ -221,6 +222,14 @@ public class VisualizerDataModel {
         this.setFunctionModels(newFunctionModels);
         
         pcs.firePropertyChange(PROP_SELECTED_SEDS, oldSeds, selectedSeds);
+    }
+    
+    /**
+     * Simple function for setting a single selected SED, this is only for SETTING
+     * an SED, does not support binding!
+     */
+    public void setSelectedSed(ExtSed sed) {
+        this.setSelectedSeds(Arrays.asList(sed));
     }
     
     private void updateColors(List<LayerModel> layers) {

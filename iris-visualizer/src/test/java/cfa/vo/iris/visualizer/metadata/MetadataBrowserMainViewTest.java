@@ -27,13 +27,14 @@ import org.uispec4j.Window;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
 
-import cfa.vo.iris.IrisComponent;
+import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.iris.test.unit.AbstractComponentGUITest;
-import cfa.vo.iris.visualizer.VisualizerComponent;
+import cfa.vo.iris.test.unit.AbstractUISpecTest;
+import cfa.vo.iris.test.unit.StubWorkspace;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
 import cfa.vo.iris.visualizer.preferences.LayerModel;
+import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
+import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataStore;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.sedlib.Segment;
@@ -44,13 +45,15 @@ import java.util.BitSet;
 
 import static cfa.vo.iris.test.unit.TestUtils.*;
 
-public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
+public class MetadataBrowserMainViewTest extends AbstractUISpecTest {
 
-    private VisualizerComponent comp = new VisualizerComponent();
-    private String plWindowName = comp.getName();
-    private SedlibSedManager sedManager;
+    private IWorkspace ws;
+    private VisualizerComponentPreferences preferences;
+    private VisualizerDataStore dataStore;
+    private VisualizerDataModel dataModel;
 
     private Window mbWindow; // metadata window
+    private Window plWindow;
     
     private MetadataBrowserMainView mbView;
     private PlotterView plView;
@@ -62,34 +65,25 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
     private Table plotterTable;
     private Table dataTable;
     private Table segmentTable;
-    
-    @Override
-    protected IrisComponent getComponent() {
-        return comp;
-    }
 
     @Before
     public void setupMbTest() throws Exception {
-        sedManager = (SedlibSedManager) app.getWorkspace().getSedManager();
+        // New prefs
+        ws = new StubWorkspace();
+        preferences = new VisualizerComponentPreferences(ws);
+        dataStore = preferences.getDataStore();
+        dataModel = preferences.getDataModel();
         
-        // Get plot window
-        window.getMenuBar().getMenu("Tools").getSubMenu(plWindowName).getSubMenu(plWindowName).click();
-
-        invokeWithRetry(20, 100, new Runnable() {
-            @Override
-            public void run() {
-                desktop.containsWindow(plWindowName).check();
-            }
-        });
-        
-        org.uispec4j.Button mbButton = desktop.getWindow(plWindowName).getButton("Metadata");
-        mbButton.click();
-        
-        plView = comp.getDefaultPlotterView();
+        // Create windows
+        plView = new PlotterView(null, ws, preferences);
         mbView = plView.getMetadataBrowserView();
+
+        plWindow = new Window(plView);
         
-        desktop.containsWindow(mbView.getTitle()).check();
-        mbWindow = desktop.getWindow(mbView.getTitle());
+        org.uispec4j.Button mbButton = plWindow.getButton("Metadata");
+        mbButton.click();
+        mbWindow = new Window(mbView);
+        
         dataPanel = mbWindow.getPanel("contentPane");
         
         // JTree
@@ -113,15 +107,17 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         dataPanel.getTabGroup().selectTab("Data");
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testMetadataBrowser() throws Exception {
         
         // Nothing should be selected
-        assertEquals("Metadata Browser ", mbWindow.getTitle());
+        assertTrue(StringUtils.contains(mbWindow.getTitle(), "Metadata Browser "));
         
         // Load an sed into the workspace and ensure it shows up in the MB
-        final ExtSed sed = sedManager.newSed("test1");
-        sedManager.select(sed);
+        final ExtSed sed = new ExtSed("test1");
+        dataStore.update(sed);
+        dataModel.setSelectedSed(sed);
 
         // verify selected sed
         invokeWithRetry(20, 100, new Runnable() {
@@ -196,8 +192,9 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         });
         
         // Add a new sed to the workspace
-        final ExtSed sed2 = sedManager.newSed("test2");
-        sedManager.select(sed2);
+        final ExtSed sed2 = new ExtSed("test2");
+        dataStore.update(sed2);
+        dataModel.setSelectedSed(sed2);
         
         // Verify changes in the browser
         // 2 segments should have been added to table, first segment still selected
@@ -212,7 +209,7 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         });
         
         // Window changes on rename
-        sedManager.rename(sed2, "purplemonkeydishwasher");
+        ws.getSedManager().rename(sed2, "purplemonkeydishwasher");
         invokeWithRetry(20, 100, new Runnable() {
             @Override
             public void run() {
@@ -221,7 +218,8 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         });
         
         // Delete SED, verify first SED selected
-        sedManager.remove(sed2.getId());
+        dataStore.remove(sed2);
+        dataModel.setSelectedSed(sed);
         
         invokeWithRetry(10, 100, new Runnable() {
             @Override
@@ -243,7 +241,8 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         final ExtSed sed = new ExtSed("sed");
         sed.addSegment(createSampleSegment());
         sed.addSegment(createSampleSegment(new double[] {1}, new double[] {2}));
-        sedManager.add(sed);
+        dataStore.update(sed);
+        dataModel.setSelectedSed(sed);
         
         // verify selected sed
         invokeWithRetry(10, 100, new Runnable() {
@@ -315,7 +314,8 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
     public void testMetadataBrowserMasking() throws Exception {
         final ExtSed sed = new ExtSed("TEST");
         sed.addSegment(createSampleSegment());
-        sedManager.add(sed);
+        dataStore.update(sed);
+        dataModel.setSelectedSed(sed);
         
         invokeWithRetry(20, 100, new Runnable() {
             @Override
@@ -368,8 +368,8 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
             @Override
             public Trigger process(Window warning) throws Exception {
                 // Check warning message
-                assertEquals(warning.getTextBox("OptionPane.label").getText(), 
-                             "No SEDs in browser. Please load an SED.");
+                assertEquals("No SEDs in browser. Please load an SED.", 
+                        warning.getTextBox("OptionPane.label").getText());
                 return Trigger.DO_NOTHING;
             }
         }).run();
@@ -383,8 +383,9 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         sed.getSegment(0).getTarget().setName(new TextParam("target1"));
         sed.getSegment(1).createTarget();
         sed.getSegment(1).getTarget().setName(new TextParam("target2"));
-        
-        sedManager.add(sed);
+
+        dataStore.update(sed);
+        dataModel.setSelectedSed(sed);
         
         // verify selected sed
         invokeWithRetry(50, 100, new Runnable() {
@@ -426,15 +427,26 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         }).run();
         
         // Should now be two SEDs in the workspace
-        assertEquals(2, sedManager.getSeds().size());
+        invokeWithRetry(50, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertEquals(2, dataStore.getSedModels().size());
+            }
+        });
         
         // Get the new SED
-        ExtSed newSed = sedManager.getSelected();
-        assertEquals(1, newSed.getNumberOfSegments());
-        assertEquals(2, newSed.getSegment(0).getLength());
+        ExtSed filterSed = null;
+        for (ExtSed s : dataStore.getSedModels().keySet()) {
+            if (StringUtils.equals("FilterSed", s.getId())) {
+                filterSed = s;
+            }
+        }
+        assertEquals(1, filterSed.getNumberOfSegments());
+        assertEquals(2, filterSed.getSegment(0).getLength());
+        
         
         // Select the first SED with two segments
-        sedManager.select(sed);
+        dataModel.setSelectedSed(sed);
         invokeWithRetry(50, 100, new Runnable() {
             @Override
             public void run() {
@@ -465,29 +477,36 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         });
         
         // 3 Seds in workspace
-        assertEquals(3, sedManager.getSeds().size());
+        invokeWithRetry(50, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertEquals(3, dataStore.getSedModels().size());
+            }
+        });
         
         // Get the new SED
-        newSed = sedManager.getSelected();
-        assertEquals(2, newSed.getNumberOfSegments());
-        assertEquals(1, newSed.getSegment(0).getLength());
-        assertEquals(1, newSed.getSegment(1).getLength());
-        
-        VisualizerDataStore store = mbView.preferences.getDataStore();
+        for (ExtSed s : dataStore.getSedModels().keySet()) {
+            if (StringUtils.equals("FilterSed.1", s.getId())) {
+                filterSed = s;
+            }
+        }
+        assertEquals(2, filterSed.getNumberOfSegments());
+        assertEquals(1, filterSed.getSegment(0).getLength());
+        assertEquals(1, filterSed.getSegment(1).getLength());
         
         // Verify IrisStarTables are all the same
-        LayerModel oldLayer = store.getSedModel(sed)
+        LayerModel oldLayer = dataStore.getSedModel(sed)
                 .getSegmentModel(sed.getSegment(0));
-        LayerModel newLayer = store.getSedModel(newSed)
-                .getSegmentModel(newSed.getSegment(0));
+        LayerModel newLayer = dataStore.getSedModel(filterSed)
+                .getSegmentModel(filterSed.getSegment(0));
         assertEquals(oldLayer.getSuffix(), newLayer.getSuffix());
         assertEquals(oldLayer.getInSource().getName(), newLayer.getInSource().getName());
         assertEquals(oldLayer.getInSource().getParameters().size(), newLayer.getInSource().getParameters().size());
         
-        oldLayer = store.getSedModel(sed)
+        oldLayer = dataStore.getSedModel(sed)
                 .getSegmentModel(sed.getSegment(1));
-        newLayer = store.getSedModel(newSed)
-                .getSegmentModel(newSed.getSegment(1));
+        newLayer = dataStore.getSedModel(filterSed)
+                .getSegmentModel(filterSed.getSegment(1));
         assertEquals(oldLayer.getSuffix(), newLayer.getSuffix());
         assertEquals(oldLayer.getInSource().getName(), newLayer.getInSource().getName());
         assertEquals(oldLayer.getInSource().getParameters().size(), newLayer.getInSource().getParameters().size());
@@ -501,7 +520,8 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         // Spectral Values should be {1, 1, 2, 2, 3, 3} due to spectral sorting.
         sed.addSegment(createSampleSegment());
         sed.addSegment(createSampleSegment());
-        sedManager.add(sed);
+        dataStore.update(sed);
+        dataModel.setSelectedSed(sed);
         
         invokeWithRetry(50, 100, new Runnable() {
             @Override
@@ -552,8 +572,9 @@ public class MetadataBrowserMainViewTest extends AbstractComponentGUITest {
         sed.addSegment(seg1);
         final Segment seg2 = createSampleSegment(new double[] {200}, new double[] {2});
         sed.addSegment(seg2);
-        
-        sedManager.add(sed);
+
+        dataStore.update(sed);
+        dataModel.setSelectedSed(sed);
         
         invokeWithRetry(50, 100, new Runnable() {
             @Override

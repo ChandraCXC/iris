@@ -91,7 +91,7 @@ public class VisualizerComponent implements IrisComponent {
                 public void onClick() {
                     if (view == null) {
                         try {
-                            view = new PlotterView("Iris Visualizer", app, ws, preferences);
+                            view = new PlotterView("Iris Visualizer", ws, preferences);
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);
                         }

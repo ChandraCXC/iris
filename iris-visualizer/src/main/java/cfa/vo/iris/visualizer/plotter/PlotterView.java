@@ -16,24 +16,15 @@
 package cfa.vo.iris.visualizer.plotter;
 
 import cfa.vo.iris.IWorkspace;
-import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.gui.GUIUtils;
-import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.stil.SegmentStarTable;
-import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
 import cfa.vo.iris.visualizer.preferences.CoPlotManagementWindow;
-import cfa.vo.iris.visualizer.preferences.FunctionModel;
-import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
-import cfa.vo.sedlib.common.SedException;
-import cfa.vo.sedlib.common.SedNoDataException;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -70,7 +61,6 @@ public class PlotterView extends JInternalFrame {
      * @throws java.lang.Exception
      */
     public PlotterView(String title, 
-                       IrisApplication app, 
                        IWorkspace ws,
                        VisualizerComponentPreferences preferences) 
                                throws Exception
