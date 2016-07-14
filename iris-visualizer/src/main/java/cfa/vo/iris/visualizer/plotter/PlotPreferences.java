@@ -31,6 +31,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.commons.lang.StringUtils;
+
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
 
 public class PlotPreferences {
@@ -412,7 +415,8 @@ public class PlotPreferences {
     }
 
     protected ShapeType getMarkType() {
-        return (ShapeType) preferences.get(SHAPE);
+        String name = (String) preferences.get(SHAPE);
+        return StringUtils.isEmpty(name) ? null : ShapeType.valueOf(name);
     }
 
     public static final String PROP_MARK_TYPE = "markType";

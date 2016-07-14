@@ -490,7 +490,9 @@ public class StilPlotter extends JPanel {
         resEnv.setValue("type", "plot2plane");
         resEnv.setValue("insets", new Insets(20, 80, 20, 50));
         
+        // Get settings from the overall plot preferences and manually add them here.
         resEnv.setValue(PlotPreferences.SIZE, pp.getSize());
+        resEnv.setValue(PlotPreferences.SHAPE, pp.getMarkType().name());
         resEnv.setValue(PlotPreferences.X_LOG, pp.getPlotType().xlog);
         resEnv.setValue(PlotPreferences.GRID, pp.getShowGrid());
         
@@ -498,7 +500,6 @@ public class StilPlotter extends JPanel {
         resEnv.setValue("xlabel", null);
         resEnv.setValue("legend", false);
         
-
         // add model functions
         for (FunctionModel model : dataModel.getFunctionModels()) {
             // If no model available (e.g. no fit) skip it
