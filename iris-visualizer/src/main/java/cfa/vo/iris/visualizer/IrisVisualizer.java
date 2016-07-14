@@ -17,11 +17,15 @@ public class IrisVisualizer {
         return Holder.INSTANCE;
     }
     
-    public VisualizerComponentPreferences getActivePreferences(IWorkspace ws) {
+    public VisualizerComponentPreferences createPreferences(IWorkspace ws) {
         if (preferences == null) {
             preferences = new VisualizerComponentPreferences(ws);
         }
         
+        return preferences;
+    }
+    
+    public VisualizerComponentPreferences getActivePreferences() {
         return preferences;
     }
 }

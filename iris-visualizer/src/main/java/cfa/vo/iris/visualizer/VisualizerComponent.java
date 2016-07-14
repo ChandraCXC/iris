@@ -36,7 +36,7 @@ public class VisualizerComponent implements IrisComponent {
         this.app = irisApplication;
         this.ws = iWorkspace;
         
-        preferences = IrisVisualizer.getInstance().getActivePreferences(ws);
+        preferences = IrisVisualizer.getInstance().createPreferences(ws);
     }
 
     @Override

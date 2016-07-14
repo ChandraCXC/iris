@@ -24,6 +24,7 @@ import org.apache.commons.collections.CollectionUtils;
 import com.google.common.collect.MapMaker;
 
 import cfa.vo.iris.IWorkspace;
+import cfa.vo.iris.fitting.FitController;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.MouseListenerManager;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
@@ -139,6 +140,34 @@ public class VisualizerComponentPreferences {
         });
         
         return sed;
+    }
+    
+    /**
+     * Asynchronously evaluates the model using the fit controller specified. The visualizer
+     * will refresh if the specified sed model is currently live.
+     * 
+     */
+    public void evaluateModel(final SedModel model, final FitController controller) {
+        
+        // Do nothing for null data 
+        if (controller == null || model == null) {
+            return;
+        }
+        
+        // Otherwise asynchronously evaluate the model
+        final VisualizerDataModel dataModel = this.getDataModel();
+        visualizerExecutor.submit(new Callable<SedModel>() {
+            @Override
+            public SedModel call() throws Exception {
+                controller.evaluateModel(model);
+                
+                // Refresh the model once completed
+                if (dataModel.getSelectedSeds().contains(model.getSed())) {
+                    dataModel.refresh();
+                }
+                return model;
+            }
+        });
     }
     
     /**

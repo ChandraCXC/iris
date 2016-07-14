@@ -22,7 +22,9 @@ import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.fitting.custom.ModelsListener;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.visualizer.IrisVisualizer;
 import cfa.vo.iris.visualizer.preferences.SedModel;
+import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataStore;
 import cfa.vo.sherpa.models.Model;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
@@ -426,6 +428,12 @@ public class FittingMainView extends JInternalFrame implements SedListener {
     private void doFit(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doFit
         try {
             controller.fit();
+            
+            // Asynchronously evaluate the model
+            VisualizerComponentPreferences prefs = IrisVisualizer.getInstance().getActivePreferences();
+            if (prefs != null) {
+                prefs.evaluateModel(sedModel, controller);
+            }
         } catch (Exception e) {
             NarrowOptionPane.showMessageDialog(this,
                     e.getMessage(),

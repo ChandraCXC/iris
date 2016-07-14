@@ -54,7 +54,7 @@ public class FittingToolComponent implements IrisComponent {
     public void init(IrisApplication irisApplication, IWorkspace iWorkspace) {
         this.app = irisApplication;
         this.ws = iWorkspace;
-        preferences = IrisVisualizer.getInstance().getActivePreferences(ws);
+        preferences = IrisVisualizer.getInstance().createPreferences(ws);
         sherpaClient = new SherpaClient(irisApplication.getSampService());
         customRootDir = new File(app.getConfigurationDir() + CUSTOM_PATH);
         try {
