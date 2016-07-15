@@ -199,6 +199,8 @@
                   <Component id="tglbtnShowHideResiduals" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="secondaryPlotTypeComboBox" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
+                  <Component id="evaluateButton" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -210,6 +212,7 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="tglbtnShowHideResiduals" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="secondaryPlotTypeComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="evaluateButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -231,6 +234,15 @@
               </StringArray>
             </Property>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JButton" name="evaluateButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Evaluate Models"/>
+            <Property name="toolTipText" type="java.lang.String" value="Re-evaluates the models using the current fit results"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="evaluateButtonActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

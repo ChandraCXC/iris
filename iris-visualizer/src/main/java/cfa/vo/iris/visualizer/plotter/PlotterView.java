@@ -16,10 +16,13 @@
 package cfa.vo.iris.visualizer.plotter;
 
 import cfa.vo.iris.IWorkspace;
+import cfa.vo.iris.fitting.FitController;
 import cfa.vo.iris.gui.GUIUtils;
+import cfa.vo.iris.visualizer.IrisVisualizer;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
 import cfa.vo.iris.visualizer.preferences.CoPlotManagementWindow;
+import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import java.awt.Dimension;
@@ -213,6 +216,7 @@ public class PlotterView extends JInternalFrame {
         bottomButtonsPanel = new javax.swing.JPanel();
         tglbtnShowHideResiduals = new javax.swing.JToggleButton();
         secondaryPlotTypeComboBox = new javax.swing.JComboBox();
+        evaluateButton = new javax.swing.JButton();
         topButtonsPanel = new javax.swing.JPanel();
         btnReset = new javax.swing.JButton();
         zoomIn = new javax.swing.JButton();
@@ -264,6 +268,14 @@ public class PlotterView extends JInternalFrame {
 
         secondaryPlotTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Residuals", "Ratios" }));
 
+        evaluateButton.setText("Evaluate Models");
+        evaluateButton.setToolTipText("Re-evaluates the models using the current fit results");
+        evaluateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                evaluateButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout bottomButtonsPanelLayout = new javax.swing.GroupLayout(bottomButtonsPanel);
         bottomButtonsPanel.setLayout(bottomButtonsPanelLayout);
         bottomButtonsPanelLayout.setHorizontalGroup(
@@ -273,6 +285,8 @@ public class PlotterView extends JInternalFrame {
                 .addComponent(tglbtnShowHideResiduals)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(secondaryPlotTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(evaluateButton)
                 .addContainerGap())
         );
         bottomButtonsPanelLayout.setVerticalGroup(
@@ -281,7 +295,8 @@ public class PlotterView extends JInternalFrame {
                 .addContainerGap()
                 .addGroup(bottomButtonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tglbtnShowHideResiduals)
-                    .addComponent(secondaryPlotTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(secondaryPlotTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(evaluateButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -680,12 +695,26 @@ public class PlotterView extends JInternalFrame {
         plotter.dataPan(SwingConstants.WEST);
     }//GEN-LAST:event_rightActionPerformed
 
+    private void evaluateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_evaluateButtonActionPerformed
+        // Do nothing if there is not controller available
+        FitController controller = IrisVisualizer.getInstance().getController();
+        if (controller == null) {
+            return;
+        }
+        
+        // Re-evaluate all models currently plotted
+        for (SedModel model : preferences.getDataModel().getSedModels()) {
+            preferences.evaluateModel(model, controller);
+        }
+    }//GEN-LAST:event_evaluateButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel bottomButtonsPanel;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnUnits;
     private javax.swing.JPanel buttonPanel;
     private cfa.vo.iris.visualizer.plotter.JButtonArrow down;
+    private javax.swing.JButton evaluateButton;
     private javax.swing.JSpinner fluxOrDensity;
     private cfa.vo.iris.visualizer.plotter.JButtonArrow left;
     private javax.swing.JMenuBar menuBar;
