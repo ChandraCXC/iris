@@ -18,6 +18,7 @@ package cfa.vo.iris.sed.stil;
 import org.junit.Before;
 import org.junit.Test;
 import cfa.vo.iris.sed.stil.SegmentColumn.Column;
+import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.units.spv.XUnits;
 import cfa.vo.iris.units.spv.YUnits;
 import cfa.vo.sedlib.Sed;
@@ -155,7 +156,6 @@ public class SegmentStarTableTest {
         segment.getData().setDataValues(err, Utypes.SEG_DATA_FLUXAXIS_ACC_STATERR);
         
         SegmentStarTable table = new SegmentStarTable(segment);
-        ColumnIdentifier id = new ColumnIdentifier(table);
         
         // erg/s/cm2/Hz to ABMAG
         table.setFluxUnits(new YUnits("ABMAG"));
@@ -194,5 +194,31 @@ public class SegmentStarTableTest {
             assertEquals(y[i], table.getFluxValues()[i], 0.000001);
             assertEquals(0.1, table.getFluxErrValues()[i], 0.000001);
         }
+    }
+    
+    @Test
+    public void hashCodeTest() throws Exception {
+        Segment segment = TestUtils.createSampleSegment(new double[] {1}, new double[] {1});
+        SegmentStarTable table = new SegmentStarTable(segment);
+        
+        assertFalse(table.validHashCode);
+        
+        // Compute initial hashCode
+        int h1 = table.hashCode();
+        assertTrue(table.validHashCode);
+        
+        // Update values
+        table.setSpecErrValues(new double[] {2});
+        assertFalse(table.validHashCode);
+        int h2 = table.hashCode();
+        assertFalse(h1 == h2);
+        assertTrue(table.validHashCode);
+        
+        // Update values
+        table.setFluxErrValues(new double[] {2});
+        assertFalse(table.validHashCode);
+        int h3 = table.hashCode();
+        assertFalse(h2 == h3);
+        assertTrue(table.validHashCode);
     }
 }

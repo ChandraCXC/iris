@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 import cfa.vo.iris.sed.ExtSed;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import uk.ac.starlink.table.ColumnData;
 import uk.ac.starlink.table.ColumnInfo;
@@ -84,6 +85,11 @@ public class SegmentStarTable extends RandomStarTable {
     private double[] modelValues;
     private double[] residualValues;
     private double[] ratioValues;
+    
+    // Store the hashCode for cached computation, and whether or not the hashCode
+    // is valid and needs to be recomputed.
+    private int hashCode;
+    volatile boolean validHashCode = false;
 
     public SegmentStarTable(double[] x, double[] y, String xUnit, String yUnit)
             throws SedNoDataException, UnitsException, SedInconsistentException {
@@ -286,6 +292,7 @@ public class SegmentStarTable extends RandomStarTable {
     }
     
     public void setSpecValues(double[] specValues) {
+        this.validHashCode = false;
         this.specValues = specValues;
         updateColumnValues(specValues, Column.Spectral_Value);
     }
@@ -295,6 +302,7 @@ public class SegmentStarTable extends RandomStarTable {
     }
 
     public void setFluxValues(double[] fluxValues) {
+        this.validHashCode = false;
         this.fluxValues = fluxValues;
         updateColumnValues(fluxValues, Column.Flux_Value);
     }
@@ -346,6 +354,7 @@ public class SegmentStarTable extends RandomStarTable {
     }
 
     public void setSpecErrValues(double[] specErrValues) {
+        this.validHashCode = false;
         this.specErrValues = specErrValues;
         updateColumnValues(specErrValues, Column.Spectral_Error);
     }
@@ -355,6 +364,7 @@ public class SegmentStarTable extends RandomStarTable {
     }
 
     public void setSpecErrValuesLo(double[] specErrValuesLo) {
+        this.validHashCode = false;
         this.specErrValuesLo = specErrValuesLo;
         updateColumnValues(specErrValuesLo, Column.Spectral_Error_Low);
     }
@@ -364,6 +374,7 @@ public class SegmentStarTable extends RandomStarTable {
     }
 
     public void setSpecErrValuesHi(double[] specErrValuesHi) {
+        this.validHashCode = false;
         this.specErrValuesHi = specErrValuesHi;
         updateColumnValues(specErrValuesHi, Column.Spectral_Error_High);
     }
@@ -373,6 +384,7 @@ public class SegmentStarTable extends RandomStarTable {
     }
 
     public void setFluxErrValues(double[] fluxErrValues) {
+        this.validHashCode = false;
         this.fluxErrValues = fluxErrValues;
         updateColumnValues(fluxErrValues, Column.Flux_Error);
     }
@@ -382,6 +394,7 @@ public class SegmentStarTable extends RandomStarTable {
     }
 
     public void setFluxErrValuesLo(double[] fluxErrValuesLo) {
+        this.validHashCode = false;
         this.fluxErrValuesLo = fluxErrValuesLo;
         updateColumnValues(fluxErrValuesLo, Column.Flux_Error_Low);
     }
@@ -391,6 +404,7 @@ public class SegmentStarTable extends RandomStarTable {
     }
 
     public void setFluxErrValuesHi(double[] fluxErrValuesHi) {
+        this.validHashCode = false;
         this.fluxErrValuesHi = fluxErrValuesHi;
         updateColumnValues(fluxErrValuesHi, Column.Flux_Error_High);
     }
@@ -453,6 +467,29 @@ public class SegmentStarTable extends RandomStarTable {
             throw new IllegalArgumentException("Data must have equal length to existing segments");
         }
         columns.add(newColumn);
+    }
+    
+    @Override
+    public int hashCode() {
+        
+        if (this.validHashCode) {
+            return this.hashCode;
+        }
+        
+        this.hashCode = new HashCodeBuilder(17,31)
+            .append(this.specValues)
+            .append(this.fluxValues)
+            .append(this.specErrValues)
+            .append(this.specErrValuesLo)
+            .append(this.specErrValuesHi)
+            .append(this.specErrValuesHi)
+            .append(this.fluxErrValues)
+            .append(this.fluxErrValuesLo)
+            .append(this.fluxErrValuesHi)
+            .hashCode();
+        
+        this.validHashCode = true;
+        return this.hashCode;
     }
 
     /**
