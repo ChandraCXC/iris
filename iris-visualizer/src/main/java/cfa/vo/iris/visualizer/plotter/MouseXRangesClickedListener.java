@@ -30,7 +30,7 @@ import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
  */
 public class MouseXRangesClickedListener extends StilPlotterMouseListener implements MouseListener {
     private PlotDisplay<?,?> display;
-    private FittingRange fittingRange = new FittingRange();
+    private FittingRange fittingRange;
     private boolean isStartPoint; // flag for if it's a first (start) or second (end) click on the plot
     private boolean pickingRanges; // flag for if fit ranges are currently being choosen. This mouse listener only reacts if this flag is set to true.
 
@@ -54,6 +54,7 @@ public class MouseXRangesClickedListener extends StilPlotterMouseListener implem
     
     public void setPickingRanges(boolean pickingRanges) {
         this.pickingRanges = pickingRanges;
+        this.fittingRange = new FittingRange();
     }
 
     @Override
