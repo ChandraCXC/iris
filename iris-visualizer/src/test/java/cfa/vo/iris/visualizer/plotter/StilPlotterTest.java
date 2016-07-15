@@ -30,6 +30,7 @@ import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 
 import javax.swing.SwingConstants;
 
@@ -298,6 +299,7 @@ public class StilPlotterTest {
         assertEquals(1.0, aspect.getXMin(), 0.01);
         assertEquals(0, aspect.getYMin(), 0.01);
     }
+    
     @Test
     public void testPlotFunctionModel() throws Exception {
         
@@ -330,10 +332,10 @@ public class StilPlotterTest {
         // check that plot env is correctly set
         MapEnvironment env = plot.getEnv();
 
-        // check color
+        // check color is "ff1e02" (red)
         StringParameter par = new StringParameter("color" + functionLayerName);
         env.acquireValue(par);
-        assertEquals(par.objectValue(env), "red");
+        assertEquals("ff1e02", par.objectValue(env));
         
         // check that a line is plotted
         par.setName("layer" + functionLayerName);
@@ -368,6 +370,83 @@ public class StilPlotterTest {
         assertEquals(1, ArrayUtils.getLength(layers));
     }
     
+    @Test
+    public void testCoplottedFunctionModel() throws Exception {
+        
+        // create a sed
+        Segment seg1 = TestUtils.createSampleSegment();
+        ExtSed sed1 = new ExtSed("my_sed1", false);
+        sed1.addSegment(seg1);
+        
+        StilPlotter plot = setUpTests(sed1);
+        
+        // Add additional SED
+        Segment seg2 = TestUtils.createSampleSegment();
+        ExtSed sed2 = new ExtSed("my_sed2", false);
+        sed2.addSegment(seg2);
+        
+        preferences.getDataStore().update(sed2);
+        preferences.getDataModel().setSelectedSeds(Arrays.asList(sed1, sed2));
+        
+        // Add model functions
+        SedModel model1 = plot.getDataModel().getSedModel(sed1);
+        model1.getDataTables().get(0).getPlotterDataTable().setModelValues(seg1.getFluxAxisValues());
+        model1.getDataTables().get(0).getPlotterDataTable().setRatioValues(seg1.getSpectralAxisValues());
+        model1.getDataTables().get(0).getPlotterDataTable().setResidualValues(seg1.getSpectralAxisValues());
+        
+        SedModel model2 = plot.getDataModel().getSedModel(sed2);
+        model2.getDataTables().get(0).getPlotterDataTable().setModelValues(seg2.getFluxAxisValues());
+        model2.getDataTables().get(0).getPlotterDataTable().setRatioValues(seg2.getSpectralAxisValues());
+        model2.getDataTables().get(0).getPlotterDataTable().setResidualValues(seg2.getSpectralAxisValues());
+        
+        // Refresh the plotter
+        plot.getDataModel().refresh();
+        
+        FunctionModel functionModel1 = model1.getFunctionModel();
+        LayerModel layer1 = functionModel1.getFunctionLayerModel();
+        String functionLayerName1 = layer1.getSuffix();
+
+        FunctionModel functionModel2 = model2.getFunctionModel();
+        LayerModel layer2 = functionModel2.getFunctionLayerModel();
+        String functionLayerName2 = layer2.getSuffix();
+        
+        // replot with residuals
+        plot.setShowResiduals(true);
+        
+        PlotDisplay<?, ?> display = plot.getPlotDisplay();
+        
+        // check that plot env is correctly set
+        MapEnvironment env = plot.getEnv();
+
+        // check colors are different
+        StringParameter par = new StringParameter("color" + functionLayerName1);
+        env.acquireValue(par);
+        assertEquals("ff1e02", par.objectValue(env));
+        par = new StringParameter("color" + functionLayerName2);
+        env.acquireValue(par);
+        assertEquals("fe75ff", par.objectValue(env));
+        
+        // using reflection to access layers in plot display
+        Field layers_ = PlotDisplay.class.getDeclaredField("layers_");
+        layers_.setAccessible(true);
+        PlotLayer[] layers = (PlotLayer[]) layers_.get(display);
+        
+        // there should be 6 layers for the functions/models, fluxes, and errs
+        assertTrue(!ArrayUtils.isEmpty(layers));
+        assertEquals(6, ArrayUtils.getLength(layers));
+        
+        // Verify the residuals are plotted
+        display = plot.getResidualsPlotDisplay();
+        
+        // using reflection to access layers in plot display
+        layers_ = PlotDisplay.class.getDeclaredField("layers_");
+        layers_.setAccessible(true);
+        layers = (PlotLayer[]) layers_.get(display);
+        
+        // there should be 2 layers for residuals
+        assertTrue(!ArrayUtils.isEmpty(layers));
+        assertEquals(2, ArrayUtils.getLength(layers));
+    }
     
     @Test
     public void testResiduals() throws Exception {

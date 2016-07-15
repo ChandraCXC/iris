@@ -462,15 +462,28 @@ public class StilPlotter extends JPanel {
                 env.setValue(key, prefs.get(key));
             }
         }
+
+        // Add model functions
+        addFunctionModels(env);
+    }
+    
+    private void addFunctionModels(MapEnvironment env) {
         
-        // add model functions
+        // Override color settings so that each model function is a different color,
+        // starting with dark red
+        ColorPalette palette = new HSVColorPalette(360, 100, 75);
+        
         for (FunctionModel model : dataModel.getFunctionModels()) {
             // If no model available (e.g. no fit) skip it
             if (!model.hasModelValues()) {
                 continue;
             }
             
+            // Update color
             LayerModel layer = model.getFunctionLayerModel();
+            layer.setLineColor(ColorPalette.colorToHex(palette.getNextColor()));
+            
+            // Add layer prefereces for function models
             Map<String, Object> prefs = layer.getPreferences();
             for (String key : prefs.keySet()) {
                 env.setValue(key, prefs.get(key));
