@@ -58,8 +58,8 @@ public class FittingMainViewTest {
         SedModel sedModel = new SedModel(sed, new IrisStarTableAdapter(null));
         FitController controller = new FitController(sedModel, modelsManager, client);
         ApplicationStub app = new ApplicationStub();
-        VisualizerDataStore store = new VisualizerDataStore(null, new VisualizerComponentPreferences(app.getWorkspace()));
-        FittingMainView view = new FittingMainView(store, chooser, controller);
+        VisualizerComponentPreferences preferences = new VisualizerComponentPreferences(app.getWorkspace());
+        FittingMainView view = new FittingMainView(preferences, chooser, controller);
 
         fittingView = new Window(view);
         sedId = fittingView.getInputTextBox("currentSedField");

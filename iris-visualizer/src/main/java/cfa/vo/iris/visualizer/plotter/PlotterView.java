@@ -29,7 +29,6 @@ import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.SwingConstants;
@@ -707,12 +706,6 @@ public class PlotterView extends JInternalFrame {
     }//GEN-LAST:event_evaluateButtonActionPerformed
 
     private void mntmSomethingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mntmSomethingActionPerformed
-        // TODO: remove me when done testing getting plot ranges from plotter
-        // if there are no SEDs, don't set the fitting ranges
-        if (getDataModel().getSedModels().isEmpty()) {
-            return;
-        }
-        preferences.getMouseListenerManager().xRangesMouseClickedListener.setPickingRanges(true);
     }//GEN-LAST:event_mntmSomethingActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
