@@ -58,6 +58,9 @@ public class SedModel {
     private String xunits;
     private String yunits;
     
+    // Evaluated model version number
+    private int modelVersion;
+
     public SedModel(ExtSed sed, IrisStarTableAdapter adapter) {
         this.sed = sed;
         this.adapter = adapter;
@@ -310,7 +313,15 @@ public class SedModel {
     public void setFit(FitConfiguration fit) {
         sed.setFit(fit);
     }
+    
+    public int getModelVersion() {
+        return modelVersion;
+    }
 
+    public void setModelVersion(int modelVersion) {
+        this.modelVersion = modelVersion;
+    }
+    
     public ExtSed getSed() {
         return sed;
     }
