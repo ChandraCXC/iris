@@ -59,7 +59,8 @@ public class SedModel {
     private String yunits;
     
     // Evaluated model version number
-    private int modelVersion;
+    private int modelVersion = 13;
+    private boolean hasModelFunction = false;
 
     public SedModel(ExtSed sed, IrisStarTableAdapter adapter) {
         this.sed = sed;
@@ -290,14 +291,6 @@ public class SedModel {
         }
     }
     
-    public int getVersion() {
-        HashCodeBuilder hcb = new HashCodeBuilder(13,31);
-        for (IrisStarTable table : getDataTables()) {
-            hcb.append(table.getPlotterDataTable().hashCode());
-        }
-        return hcb.hashCode();
-    }
-    
     public String getXUnits() {
         return xunits;
     }
@@ -314,12 +307,28 @@ public class SedModel {
         sed.setFit(fit);
     }
     
+    public int getVersion() {
+        HashCodeBuilder hcb = new HashCodeBuilder(13,31);
+        for (IrisStarTable table : getDataTables()) {
+            hcb.append(table.getPlotterDataTable().hashCode());
+        }
+        return hcb.hashCode();
+    }
+    
     public int getModelVersion() {
         return modelVersion;
     }
 
     public void setModelVersion(int modelVersion) {
         this.modelVersion = modelVersion;
+    }
+
+    public boolean getHasModelFunction() {
+        return hasModelFunction;
+    }
+
+    public void setHasModelFunction(boolean hasModelFunction) {
+        this.hasModelFunction = hasModelFunction;
     }
     
     public ExtSed getSed() {
