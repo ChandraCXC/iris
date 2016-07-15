@@ -20,6 +20,7 @@ import static org.junit.Assert.*;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.test.Ws;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
+import cfa.vo.iris.test.unit.AbstractUISpecTest;
 import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
 import cfa.vo.iris.visualizer.preferences.FunctionModel;
@@ -35,8 +36,14 @@ import java.util.Arrays;
 import javax.swing.SwingConstants;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.uispec4j.Trigger;
+import org.uispec4j.Window;
+import org.uispec4j.interception.WindowHandler;
+import org.uispec4j.interception.WindowInterceptor;
+
 import uk.ac.starlink.task.StringParameter;
 import uk.ac.starlink.ttools.plot2.PlotLayer;
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
@@ -46,7 +53,7 @@ import uk.ac.starlink.ttools.task.MapEnvironment;
 import cfa.vo.testdata.TestData;
 import uk.ac.starlink.task.BooleanParameter;
 
-public class StilPlotterTest {
+public class StilPlotterTest extends AbstractUISpecTest {
     
     private Ws ws = new Ws();
     private VisualizerComponentPreferences preferences;
@@ -446,6 +453,55 @@ public class StilPlotterTest {
         // there should be 2 layers for residuals
         assertTrue(!ArrayUtils.isEmpty(layers));
         assertEquals(2, ArrayUtils.getLength(layers));
+    }
+    
+    @Test
+    public void testModelFunctionValidity() throws Exception {
+        
+        // create a sed
+        Segment seg1 = TestUtils.createSampleSegment();
+        final ExtSed sed1 = new ExtSed("my_sed", false);
+        sed1.addSegment(seg1);
+        
+        // There should be no window shown as there's no model
+        final StilPlotter plot = setUpTests(sed1);
+        
+        // Add model function to SED
+        SedModel model = plot.getDataModel().getSedModel(sed1);
+        model.getDataTables().get(0).getPlotterDataTable().setModelValues(seg1.getFluxAxisValues());
+        model.getDataTables().get(0).getPlotterDataTable().setRatioValues(seg1.getSpectralAxisValues());
+        model.getDataTables().get(0).getPlotterDataTable().setResidualValues(seg1.getSpectralAxisValues());
+        
+        // SedModel now has a version
+        model.setModelVersion(model.getVersion());
+        model.setHasModelFunction(true);
+        
+        // Reset the plotter, no message should be sent
+        plot.setSeds(Arrays.asList(sed1));
+        
+        // Update the sed with a new segment and replot
+        Segment seg2 = TestUtils.createSampleSegment();
+        sed1.addSegment(seg2);
+        preferences.getDataStore().update(sed1, seg2);
+
+        // Reset the plotter, since the segment has changed we expect a warning message
+        WindowInterceptor.init(new Trigger() {
+            @Override
+            public void run() throws Exception {
+                plot.setSeds(Arrays.asList(sed1));
+            }
+        }).process(new WindowHandler() {
+            @Override
+            public Trigger process(Window warning) throws Exception {
+                assertTrue(StringUtils.contains(warning.getTitle(), "Warning"));
+                assertTrue(StringUtils.contains(
+                        warning.getTextBox("OptionPane.label").getText(), sed1.getId()));
+                return Trigger.DO_NOTHING;
+            }
+        }).run();
+        
+        // Now that it has been run, the dialog should not show up again
+        plot.setSeds(Arrays.asList(sed1));
     }
     
     @Test
