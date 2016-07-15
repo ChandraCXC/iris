@@ -239,8 +239,6 @@ public class PlotterView extends JInternalFrame {
         menuBar = new javax.swing.JMenuBar();
         mnF = new javax.swing.JMenu();
         mntmExport = new javax.swing.JMenuItem();
-	mnEdit = new javax.swing.JMenu();
-	mntmSomething = new javax.swing.JMenuItem();
         mnView = new javax.swing.JMenu();
         mnPlotType = new javax.swing.JMenu();
         mntmLog = new javax.swing.JRadioButtonMenuItem();
@@ -542,18 +540,6 @@ public class PlotterView extends JInternalFrame {
 
         menuBar.add(mnF);
 
-        mnEdit.setText("Edit");
-
-        mntmSomething.setText("Add fitting range");
-        mntmSomething.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mntmSomethingActionPerformed(evt);
-            }
-        });
-        mnEdit.add(mntmSomething);
-
-        menuBar.add(mnEdit);
-
         mnView.setText("View");
 
         mnPlotType.setText("Plot Type");
@@ -718,7 +704,6 @@ public class PlotterView extends JInternalFrame {
     private cfa.vo.iris.visualizer.plotter.JButtonArrow left;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JButton metadataButton;
-    private javax.swing.JMenu mnEdit;
     private javax.swing.JMenu mnF;
     private javax.swing.JMenu mnHelp;
     private javax.swing.JMenu mnPlotType;
@@ -731,7 +716,6 @@ public class PlotterView extends JInternalFrame {
     private javax.swing.JRadioButtonMenuItem mntmLinear;
     private javax.swing.JRadioButtonMenuItem mntmLog;
     private javax.swing.JMenuItem mntmPlotterNavigationHelp;
-    private javax.swing.JMenuItem mntmSomething;
     private javax.swing.JRadioButtonMenuItem mntmXlog;
     private javax.swing.JRadioButtonMenuItem mntmYlog;
     private javax.swing.JPanel mouseCoordPanel;
