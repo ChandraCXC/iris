@@ -469,6 +469,11 @@ public class SegmentStarTable extends RandomStarTable {
         columns.add(newColumn);
     }
     
+    /**
+     * Produces a hashCode based on the StarTables spectral, flux, and error values. All other
+     * object specific values are ignored.
+     * 
+     */
     @Override
     public int hashCode() {
         
@@ -481,7 +486,6 @@ public class SegmentStarTable extends RandomStarTable {
             .append(this.fluxValues)
             .append(this.specErrValues)
             .append(this.specErrValuesLo)
-            .append(this.specErrValuesHi)
             .append(this.specErrValuesHi)
             .append(this.fluxErrValues)
             .append(this.fluxErrValuesLo)

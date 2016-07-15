@@ -284,7 +284,7 @@ public class StilPlotter extends JPanel {
         if (sedIds.length() > 0) {
             JOptionPane.showMessageDialog(this, 
                     String.format(
-                    "Warning: %smay no longer be valid, you may want to refit the sed or reevaluate the model",
+                    "Warning: %smay no longer be valid! You may want to refit the sed or re-evaluate the model for the fit.",
                     sedIds.toString()),
                     "Warning",
                     NarrowOptionPane.WARNING_MESSAGE);
