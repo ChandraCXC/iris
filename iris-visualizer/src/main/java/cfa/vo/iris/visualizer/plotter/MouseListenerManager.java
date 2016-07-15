@@ -19,6 +19,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
+import java.util.Iterator;
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
 import uk.ac.starlink.ttools.plot2.geom.PlaneSurfaceFactory.Profile;
 import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
@@ -71,6 +72,25 @@ public class MouseListenerManager {
     
     public Set<StilPlotterMouseListener> getListeners() {
         return listeners;
+    }
+    
+    /**
+     * Returns the mouse listener of the specified class
+     * @param listenerClass
+     * @return StilPlotterMouseListener specified. If no mouse listener is 
+     * found, returns null.
+     */
+    public StilPlotterMouseListener getListener(Class<?> listenerClass) {
+        Iterator itr = listeners.iterator();
+        StilPlotterMouseListener listener;
+        while (itr.hasNext()) {
+            listener = (StilPlotterMouseListener) itr.next();
+            if (listenerClass.isInstance(listener)) {
+                return listener;
+            }
+        }
+        // TODO: error handling...
+        return null;
     }
     
     public void activateListeners(PlotDisplay<Profile, PlaneAspect> plotDisplay) {

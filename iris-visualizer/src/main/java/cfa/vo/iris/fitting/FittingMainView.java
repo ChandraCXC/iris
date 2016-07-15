@@ -23,6 +23,7 @@ import cfa.vo.iris.fitting.custom.ModelsListener;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.IrisVisualizer;
+import cfa.vo.iris.visualizer.plotter.MouseXRangesClickedListener;
 import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataStore;
@@ -50,6 +51,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
     private FitController controller;
     private JFileChooser chooser;
     private VisualizerDataStore dataStore;
+    private VisualizerComponentPreferences preferences;
     
     public final String DEFAULT_DESCRIPTION = "Double click on a Component to add it to the list of selected Components.";
     public final String CUSTOM_DESCRIPTION = "User Model";
@@ -61,11 +63,12 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         SedEvent.getInstance().add(this);
     }
 
-    public FittingMainView(VisualizerDataStore dataStore, JFileChooser chooser, FitController controller) {
+    public FittingMainView(VisualizerComponentPreferences preferences, JFileChooser chooser, FitController controller) {
         this();
         this.controller = controller;
         this.chooser = chooser;
-        this.dataStore = dataStore;
+        this.dataStore = preferences.getDataStore();
+        this.preferences = preferences;
         setSedModel(controller.getSedModel());
         initController();
         setUpAvailableModelsTree();
@@ -139,6 +142,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         optimizationCombo = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
         statisticCombo = new javax.swing.JComboBox();
+        addFitRangeButton = new javax.swing.JButton();
         fitButton = new javax.swing.JButton();
         busyFit = new org.jdesktop.swingx.JXBusyLabel();
         modelViewerPanel = new cfa.vo.iris.gui.widgets.ModelViewerPanel();
@@ -243,6 +247,23 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 6, 0);
         jPanel5.add(statisticCombo, gridBagConstraints);
 
+        addFitRangeButton.setText("Add Range");
+        addFitRangeButton.setToolTipText("Add a fitting range using the plotter.");
+        addFitRangeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addFitRangeButtonActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 82;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        jPanel5.add(addFitRangeButton, gridBagConstraints);
+
         fitButton.setText("Fit");
         fitButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -251,7 +272,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 64;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -260,7 +281,8 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         jPanel5.add(fitButton, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         jPanel5.add(busyFit, gridBagConstraints);
 
         jSplitPane3.setRightComponent(jPanel5);
@@ -537,7 +559,17 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         
     }//GEN-LAST:event_doFit
 
+    private void addFitRangeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addFitRangeButtonActionPerformed
+        // if there are no SEDs, don't set the fitting ranges
+        if (this.getSedModel() == null) {
+            return;
+        }
+        MouseXRangesClickedListener listener = (MouseXRangesClickedListener) this.preferences.getMouseListenerManager().getListener(MouseXRangesClickedListener.class);
+        listener.setPickingRanges(true);
+    }//GEN-LAST:event_addFitRangeButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addFitRangeButton;
     private javax.swing.JPanel availableComponents;
     private javax.swing.JTree availableTree;
     private org.jdesktop.swingx.JXBusyLabel busyFit;

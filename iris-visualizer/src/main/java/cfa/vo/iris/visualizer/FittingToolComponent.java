@@ -149,11 +149,11 @@ public class FittingToolComponent implements IrisComponent {
                             }
                             SedModel model = preferences.getDataStore().getSedModel(sed);
                             FitController controller = new FitController(model, customManager, sherpaClient);
-                            view = new FittingMainView(preferences.getDataStore(), ws.getFileChooser(), controller);
                             
                             // Add the FitController to the IrisVisualizer
                             IrisVisualizer.getInstance().setFitController(controller);
                             
+                            view = new FittingMainView(preferences, ws.getFileChooser(), controller);
                             ws.addFrame(view);
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);
