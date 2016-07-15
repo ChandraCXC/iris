@@ -35,7 +35,8 @@ public class VisualizerComponent implements IrisComponent {
     public void init(IrisApplication irisApplication, IWorkspace iWorkspace) {
         this.app = irisApplication;
         this.ws = iWorkspace;
-        preferences = new VisualizerComponentPreferences(ws);
+        
+        preferences = IrisVisualizer.getInstance().createPreferences(ws);
     }
 
     @Override
@@ -90,7 +91,7 @@ public class VisualizerComponent implements IrisComponent {
                 public void onClick() {
                     if (view == null) {
                         try {
-                            view = new PlotterView("Iris Visualizer", app, ws, preferences);
+                            view = new PlotterView("Iris Visualizer", ws, preferences);
                         } catch (Exception ex) {
                             throw new RuntimeException(ex);
                         }

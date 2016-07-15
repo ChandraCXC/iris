@@ -22,6 +22,10 @@ import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.fitting.custom.ModelsListener;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.visualizer.IrisVisualizer;
+import cfa.vo.iris.visualizer.preferences.SedModel;
+import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
+import cfa.vo.iris.visualizer.preferences.VisualizerDataStore;
 import cfa.vo.sherpa.models.Model;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Statistic;
@@ -37,23 +41,28 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class FittingMainView extends JInternalFrame implements SedListener {
-    private ExtSed sed;
+    
+    private SedModel sedModel;
     private FitController controller;
     private JFileChooser chooser;
+    private VisualizerDataStore dataStore;
+    
     public final String DEFAULT_DESCRIPTION = "Double click on a Component to add it to the list of selected Components.";
     public final String CUSTOM_DESCRIPTION = "User Model";
-    public static final String PROP_SED = "sed";
+    
+    public static final String PROP_SEDMODEL = "sedModel";
 
     public FittingMainView() {
         initComponents();
         SedEvent.getInstance().add(this);
     }
 
-    public FittingMainView(JFileChooser chooser, FitController controller) {
+    public FittingMainView(VisualizerDataStore dataStore, JFileChooser chooser, FitController controller) {
         this();
         this.controller = controller;
         this.chooser = chooser;
-        setSed(controller.getSed());
+        this.dataStore = dataStore;
+        setSedModel(controller.getSedModel());
         initController();
         setUpAvailableModelsTree();
         setUpModelViewerPanel();
@@ -63,20 +72,21 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         pack();
     }
 
-    public ExtSed getSed() {
-        return sed;
+    public SedModel getSedModel() {
+        return sedModel;
     }
 
-    public void setSed(ExtSed sed) {
-        this.sed = sed;
-        firePropertyChange(PROP_SED, null, sed);
-        controller.setSed(sed);
+    public void setSedModel(SedModel sedModel) {
+        this.sedModel = sedModel;
+        firePropertyChange(PROP_SEDMODEL, null, sedModel);
+        controller.setSedModel(sedModel);
     }
 
     @Override
     public void process(ExtSed source, SedCommand payload) {
-        if (SedCommand.SELECTED.equals(payload) || SedCommand.CHANGED.equals(payload) && source.equals(sed)) {
-            setSed(source);
+        if (SedCommand.SELECTED.equals(payload) || 
+                (SedCommand.CHANGED.equals(payload) && source.equals(sedModel.getSed()))) {
+            setSedModel(dataStore.getSedModel(source));
         }
     }
 
@@ -91,7 +101,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
     }
 
     private void setUpModelViewerPanel() {
-        modelViewerPanel.setSed(sed);
+        modelViewerPanel.setSed(sedModel.getSed());
         modelViewerPanel.setEditable(true);
     }
 
@@ -171,7 +181,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         optimizationCombo.setModel(new DefaultComboBoxModel<>(OptimizationMethod.values()));
         optimizationCombo.setName("optimizationCombo"); // NOI18N
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sed.fit.method}"), optimizationCombo, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sedModel.sed.fit.method}"), optimizationCombo, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
         bindingGroup.addBinding(binding);
 
         jLabel2.setText("Statistic:");
@@ -179,7 +189,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         statisticCombo.setModel(new DefaultComboBoxModel<>(Statistic.values()));
         statisticCombo.setName("statisticCombo"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sed.fit.stat}"), statisticCombo, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sedModel.sed.fit.stat}"), statisticCombo, org.jdesktop.beansbinding.BeanProperty.create("selectedItem"));
         bindingGroup.addBinding(binding);
 
         fitButton.setText("Fit");
@@ -233,7 +243,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         );
         modelPanelLayout.setVerticalGroup(
             modelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
+            .addComponent(jSplitPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 193, Short.MAX_VALUE)
         );
 
         jSplitPane4.setLeftComponent(modelPanel);
@@ -251,7 +261,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         );
         resultsContainerLayout.setVerticalGroup(
             resultsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(resultsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
+            .addComponent(resultsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 185, Short.MAX_VALUE)
         );
 
         jSplitPane2.setLeftComponent(resultsContainer);
@@ -260,7 +270,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         confidenceContainer.setLayout(confidenceContainerLayout);
         confidenceContainerLayout.setHorizontalGroup(
             confidenceContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(confidencePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+            .addComponent(confidencePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 290, Short.MAX_VALUE)
         );
         confidenceContainerLayout.setVerticalGroup(
             confidenceContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -279,7 +289,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
+            .addComponent(jSplitPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 391, Short.MAX_VALUE)
         );
 
         jSplitPane1.setRightComponent(jPanel2);
@@ -363,7 +373,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         currentSedField.setEnabled(false);
         currentSedField.setName("currentSedField"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sed.id}"), currentSedField, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${sedModel.sed.id}"), currentSedField, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -418,6 +428,12 @@ public class FittingMainView extends JInternalFrame implements SedListener {
     private void doFit(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doFit
         try {
             controller.fit();
+            
+            // Asynchronously evaluate the model
+            VisualizerComponentPreferences prefs = IrisVisualizer.getInstance().getActivePreferences();
+            if (prefs != null) {
+                prefs.evaluateModel(sedModel, controller);
+            }
         } catch (Exception e) {
             NarrowOptionPane.showMessageDialog(this,
                     e.getMessage(),
@@ -426,7 +442,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
             modelViewerPanel.fitResult(false);
             return; // TODO maybe should do something more/different.
         }
-        resultsPanel.setFit(sed.getFit());
+        resultsPanel.setFit(sedModel.getFit());
         modelViewerPanel.fitResult(true);
         modelViewerPanel.updateUI();
     }//GEN-LAST:event_doFit

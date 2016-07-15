@@ -3,14 +3,11 @@ package cfa.vo.iris.fitting;
 import cfa.vo.iris.fitting.custom.CustomModelsManager;
 import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.fitting.custom.ModelsListener;
-import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
-import cfa.vo.sedlib.Sed;
 import cfa.vo.sherpa.ConfidenceResults;
-import cfa.vo.sherpa.Data;
 import cfa.vo.sherpa.FitResults;
 import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.models.Model;
@@ -18,7 +15,6 @@ import cfa.vo.sherpa.models.DefaultModel;
 import cfa.vo.utils.Default;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.mrbean.MrBeanModule;
-import org.apache.commons.lang.ArrayUtils;
 
 import javax.swing.tree.TreeModel;
 import java.io.IOException;
@@ -35,7 +31,7 @@ import java.util.logging.Logger;
  */
 public class FitController {
 
-    private ExtSed sed;
+    private SedModel sedModel;
     private SherpaClient client;
     private ModelsController modelsController;
     private ObjectMapper mapper;
@@ -43,10 +39,10 @@ public class FitController {
     private final Logger logger = Logger.getLogger(FitController.class.getName());
 
     /**
-     * The model for the fitting tool is actually the whole SED, at least in the current scenario
+     * The model for the fitting tool is the same as the Viewer, i.e. {@link SedModel}, at least in the current scenario
      * where fits belong to SEDs.
      *
-     * The model also delegates models management to a {@link CustomModelsManager} that must be initialized
+     * The controller also delegates models management to a {@link CustomModelsManager} that must be initialized
      * by the {@link cfa.vo.iris.visualizer.FittingToolComponent}.
      *
      * Finally, an instance of a {@link SherpaClient} is required in order to call the actual operations
@@ -55,12 +51,12 @@ public class FitController {
      * There is an abuse of notations between Models in the MVC sense and Fitting Model Components, which
      * are referred to as Model in the Iris/Sherpa interface specification.
      *
-     * @param sed the current model
+     * @param sedModel the current model
      * @param manager a manager for custom Fitting Model Components
      * @param client a representation of the sherpa-samp service.
      */
-    public FitController(ExtSed sed, CustomModelsManager manager, SherpaClient client) {
-        this.sed = sed;
+    public FitController(SedModel sedModel, CustomModelsManager manager, SherpaClient client) {
+        this.sedModel = sedModel;
         this.client = client;
         modelsController = new ModelsController(manager);
         mapper = new ObjectMapper();
@@ -85,7 +81,7 @@ public class FitController {
         logger.info("Added model " + m);
         String id = client.createId();
         Model toAdd = new DefaultModel(m, id);
-        sed.getFit().addModel(toAdd);
+        sedModel.getFit().addModel(toAdd);
     }
 
     /**
@@ -96,7 +92,7 @@ public class FitController {
      */
     public void addModel(DefaultCustomModel m) {
         logger.info("Added user model " + m);
-        sed.getFit().addUserModel(m, client.createId());
+        sedModel.getFit().addUserModel(m, client.createId());
     }
 
     /**
@@ -118,8 +114,8 @@ public class FitController {
      * @throws Exception An exception may be thrown by the sherpa-samp service if the fitting operation failed.
      */
     public FitResults fit() throws Exception {
-        FitResults retVal = client.fit(sed);
-        sed.getFit().integrateResults(retVal);
+        FitResults retVal = client.fit(sedModel.getSed());
+        sedModel.getFit().integrateResults(retVal);
         return retVal;
     }
 
@@ -130,7 +126,7 @@ public class FitController {
      * @throws Exception an exception may be thrown by the sherpa-samp service if the operation failed
      */
     public ConfidenceResults computeConfidence() throws Exception {
-        ConfidenceResults retVal = client.computeConfidence(sed);
+        ConfidenceResults retVal = client.computeConfidence(sedModel.getSed());
         getFit().setConfidenceResults(retVal);
         return retVal;
     }
@@ -145,18 +141,18 @@ public class FitController {
 
     /**
      * Return the current model
-     * @return {@link ExtSed} instance
+     * @return {@link SedModel} instance
      */
-    public ExtSed getSed() {
-        return sed;
+    public SedModel getSedModel() {
+        return sedModel;
     }
 
     /**
      * Set the current model
-     * @param sed {@link ExtSed} instance
+     * @param sedModel {@link SedModel} instance
      */
-    public void setSed(ExtSed sed) {
-        this.sed = sed;
+    public void setSedModel(SedModel sedModel) {
+        this.sedModel = sedModel;
     }
 
     /**
@@ -164,7 +160,7 @@ public class FitController {
      * @return {@link FitConfiguration} instance
      */
     public FitConfiguration getFit() {
-        return sed.getFit();
+        return sedModel.getFit();
     }
 
     /**
@@ -174,8 +170,8 @@ public class FitController {
     public void save(OutputStream os) {
         PrintWriter writer = new PrintWriter(os);
         writer.write("Iris Fitting Tool - Fit Summary\n");
-        writer.write(String.format("SED ID: %s\n\n", sed.toString()));
-        writer.write(sed.getFit().toString());
+        writer.write(String.format("SED ID: %s\n\n", sedModel.getSed().toString()));
+        writer.write(sedModel.getFit().toString());
         writer.flush();
     }
 
@@ -186,7 +182,7 @@ public class FitController {
      * @param os
      */
     public void saveJson(OutputStream os) throws IOException {
-        mapper.writerWithDefaultPrettyPrinter().writeValue(os, sed.getFit());
+        mapper.writerWithDefaultPrettyPrinter().writeValue(os, sedModel.getFit());
     }
 
     /**
@@ -200,7 +196,7 @@ public class FitController {
      */
     public FitConfiguration loadJson(InputStream is) throws IOException {
         FitConfiguration conf = mapper.readValue(is, FitConfiguration.class);
-        sed.setFit(conf);
+        sedModel.setFit(conf);
         return conf;
     }
 
@@ -220,7 +216,7 @@ public class FitController {
         for (IrisStarTable table: sedModel.getDataTables()) {
             double[] x = table.getSpectralDataValues();
             double[] xStandardUnit = uManager.convertX(x, xUnit, SherpaClient.X_UNIT);
-            double[] yStandardUnit = client.evaluate(xStandardUnit, sedModel.getFitConfiguration());
+            double[] yStandardUnit = client.evaluate(xStandardUnit, sedModel.getFit());
             double[] y = Default.getInstance().getUnitsManager().convertY(yStandardUnit, xStandardUnit,
                     SherpaClient.Y_UNIT, SherpaClient.X_UNIT, yUnit);
 

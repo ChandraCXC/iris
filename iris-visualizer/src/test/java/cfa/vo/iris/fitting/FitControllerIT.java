@@ -25,7 +25,6 @@ import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
-import cfa.vo.sherpa.ConfidenceResults;
 import cfa.vo.sherpa.Data;
 import cfa.vo.sherpa.FitResults;
 import cfa.vo.sherpa.SherpaClient;
@@ -46,10 +45,6 @@ import static org.junit.Assert.assertEquals;
 
 public class FitControllerIT {
     private FitController controller;
-    private FitConfiguration configuration;
-    private CustomModelsManager modelsManager;
-    private SherpaClient client;
-    private Data data;
     private SedModel sedModel;
     private double[] x = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
     private double[] y = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
@@ -63,16 +58,16 @@ public class FitControllerIT {
         ExtSed sed = new ExtSed("Test", false);
         Segment segment = TestUtils.createSampleSegment(x, y, SherpaClient.X_UNIT, SherpaClient.Y_UNIT);
         sed.addSegment(segment);
-        configuration = createFit();
+        FitConfiguration configuration = createFit();
         sed.setFit(configuration);
-        modelsManager = Mockito.mock(CustomModelsManager.class);
-        data = SAMPFactory.get(Data.class);
+        CustomModelsManager modelsManager = Mockito.mock(CustomModelsManager.class);
+        Data data = SAMPFactory.get(Data.class);
         data.setX(x);
         data.setY(y);
         data.setStaterror(err);
-        client = sherpa.getClient();
-        controller = new FitController(sed, modelsManager, client);
+        SherpaClient client = sherpa.getClient();
         sedModel = new SedModel(sed, new IrisStarTableAdapter(null));
+        controller = new FitController(sedModel, modelsManager, client);
     }
 
     @Test

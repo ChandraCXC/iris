@@ -462,15 +462,28 @@ public class StilPlotter extends JPanel {
                 env.setValue(key, prefs.get(key));
             }
         }
+
+        // Add model functions
+        addFunctionModels(env);
+    }
+    
+    private void addFunctionModels(MapEnvironment env) {
         
-        // add model functions
+        // Override color settings so that each model function is a different color,
+        // starting with dark red
+        ColorPalette palette = new HSVColorPalette(360, 100, 75);
+        
         for (FunctionModel model : dataModel.getFunctionModels()) {
             // If no model available (e.g. no fit) skip it
             if (!model.hasModelValues()) {
                 continue;
             }
             
+            // Update color
             LayerModel layer = model.getFunctionLayerModel();
+            layer.setLineColor(ColorPalette.colorToHex(palette.getNextColor()));
+            
+            // Add layer prefereces for function models
             Map<String, Object> prefs = layer.getPreferences();
             for (String key : prefs.keySet()) {
                 env.setValue(key, prefs.get(key));
@@ -490,7 +503,9 @@ public class StilPlotter extends JPanel {
         resEnv.setValue("type", "plot2plane");
         resEnv.setValue("insets", new Insets(20, 80, 20, 50));
         
+        // Get settings from the overall plot preferences and manually add them here.
         resEnv.setValue(PlotPreferences.SIZE, pp.getSize());
+        resEnv.setValue(PlotPreferences.SHAPE, pp.getMarkType().name());
         resEnv.setValue(PlotPreferences.X_LOG, pp.getPlotType().xlog);
         resEnv.setValue(PlotPreferences.GRID, pp.getShowGrid());
         
@@ -498,7 +513,6 @@ public class StilPlotter extends JPanel {
         resEnv.setValue("xlabel", null);
         resEnv.setValue("legend", false);
         
-
         // add model functions
         for (FunctionModel model : dataModel.getFunctionModels()) {
             // If no model available (e.g. no fit) skip it

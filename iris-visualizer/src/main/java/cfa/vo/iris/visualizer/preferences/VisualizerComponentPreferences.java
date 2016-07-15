@@ -24,6 +24,7 @@ import org.apache.commons.collections.CollectionUtils;
 import com.google.common.collect.MapMaker;
 
 import cfa.vo.iris.IWorkspace;
+import cfa.vo.iris.fitting.FitController;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.MouseListenerManager;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences;
@@ -142,6 +143,34 @@ public class VisualizerComponentPreferences {
     }
     
     /**
+     * Asynchronously evaluates the model using the fit controller specified. The visualizer
+     * will refresh if the specified sed model is currently live.
+     * 
+     */
+    public void evaluateModel(final SedModel model, final FitController controller) {
+        
+        // Do nothing for null data 
+        if (controller == null || model == null) {
+            return;
+        }
+        
+        // Otherwise asynchronously evaluate the model
+        final VisualizerDataModel dataModel = this.getDataModel();
+        visualizerExecutor.submit(new Callable<SedModel>() {
+            @Override
+            public SedModel call() throws Exception {
+                controller.evaluateModel(model);
+                
+                // Refresh the model once completed
+                if (dataModel.getSelectedSeds().contains(model.getSed())) {
+                    dataModel.refresh();
+                }
+                return model;
+            }
+        });
+    }
+    
+    /**
      * @return A list of all ExtSeds available in the Workspace. 
      */
     @SuppressWarnings("unchecked")
@@ -191,8 +220,10 @@ public class VisualizerComponentPreferences {
      */
     public void removeSed(ExtSed sed) {
         List<ExtSed> selectedSeds = dataModel.getSelectedSeds();
-        if (selectedSeds.remove(sed)) {
-            dataModel.setSelectedSeds(selectedSeds);
+        if (selectedSeds.contains(sed)) {
+            List<ExtSed> newSeds = new LinkedList<>(selectedSeds);
+            newSeds.remove(sed);
+            dataModel.setSelectedSeds(newSeds);
         }
     }
 

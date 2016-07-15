@@ -26,17 +26,40 @@ import java.util.Random;
  */
 public class HSVColorPalette extends ColorPalette {
     
-    private Random random = new Random();
-    private Color color = new Color(Color.black.getRGB());
-    private double hue = 0;
-    private double saturation = 1.0;
-    private double brightness = 0;
-    private long index;
-    private final double INVERSE_GOLDEN_RATION = 1/1.61803398875;
+    private static final double INVERSE_GOLDEN_RATION = 1/1.61803398875;
     
     // saturation and brightness thresholds
-    private final double SATURATION_THRESHOLD = 0.3;
-    private final double BRIGHTNESS_THRESHOLD = 0.25;
+    private static final double SATURATION_THRESHOLD = 0.3;
+    private static final double BRIGHTNESS_THRESHOLD = 0.25;
+    
+    private Random random = new Random();
+    private Color color;
+    private double hue;
+    private double saturation;
+    private double brightness;
+    private long index;
+    
+    // Default constructor
+    public HSVColorPalette() {
+        this.hue = 0;
+        this.saturation = 1.0;
+        this.brightness = 0;
+        this.color = Color.getHSBColor((float) hue, (float) saturation, (float) brightness);
+    }
+    
+    /**
+     * Constructor for initial settings of the color palette. The wheel starts at the 
+     * specified hue, saturation, and brightness.
+     * @param hue
+     * @param saturation
+     * @param brightness
+     */
+    public HSVColorPalette(double hue, double saturation, double brightness) {
+        this.hue = hue;
+        this.saturation = saturation;
+        this.brightness = brightness;
+        this.color = Color.getHSBColor((float) hue, (float) saturation, (float) brightness);
+    }
     
     /**
      * Generate n distinct colors
@@ -66,9 +89,8 @@ public class HSVColorPalette extends ColorPalette {
     @Override
     public final Color getNextColor() {
         
-        // first, set the current color in the palette. 
-        // This is the return value
-        color = Color.getHSBColor((float) hue, (float) saturation, (float) brightness);
+        // Return current color then increment
+        Color ret = this.color;
         
         // calculate the next hue using the golden ratio
         hue += INVERSE_GOLDEN_RATION;
@@ -103,6 +125,9 @@ public class HSVColorPalette extends ColorPalette {
 //        // counter for hues.
 //        index++;
         
-        return color;
+        // Update the next color value
+        color = Color.getHSBColor((float) hue, (float) saturation, (float) brightness);
+        
+        return ret;
     }
 }
