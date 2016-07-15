@@ -23,6 +23,7 @@ import cfa.vo.iris.fitting.custom.ModelsListener;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.IrisVisualizer;
+import cfa.vo.iris.visualizer.plotter.MouseXRangesClickedListener;
 import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataStore;
@@ -46,6 +47,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
     private FitController controller;
     private JFileChooser chooser;
     private VisualizerDataStore dataStore;
+    private VisualizerComponentPreferences preferences;
     
     public final String DEFAULT_DESCRIPTION = "Double click on a Component to add it to the list of selected Components.";
     public final String CUSTOM_DESCRIPTION = "User Model";
@@ -57,11 +59,12 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         SedEvent.getInstance().add(this);
     }
 
-    public FittingMainView(VisualizerDataStore dataStore, JFileChooser chooser, FitController controller) {
+    public FittingMainView(VisualizerComponentPreferences preferences, JFileChooser chooser, FitController controller) {
         this();
         this.controller = controller;
         this.chooser = chooser;
-        this.dataStore = dataStore;
+        this.dataStore = preferences.getDataStore();
+        this.preferences = preferences;
         setSedModel(controller.getSedModel());
         initController();
         setUpAvailableModelsTree();
@@ -135,6 +138,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         jLabel2 = new javax.swing.JLabel();
         statisticCombo = new javax.swing.JComboBox();
         fitButton = new javax.swing.JButton();
+        addFitRangeButton = new javax.swing.JButton();
         modelViewerPanel = new cfa.vo.iris.gui.widgets.ModelViewerPanel();
         jSplitPane2 = new javax.swing.JSplitPane();
         resultsContainer = new javax.swing.JPanel();
@@ -199,6 +203,14 @@ public class FittingMainView extends JInternalFrame implements SedListener {
             }
         });
 
+        addFitRangeButton.setText("Add Range");
+        addFitRangeButton.setToolTipText("Add a fitting range using the plotter.");
+        addFitRangeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addFitRangeButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -207,13 +219,14 @@ public class FittingMainView extends JInternalFrame implements SedListener {
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(optimizationCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(statisticCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
                             .addComponent(jLabel2)
-                            .addComponent(fitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(statisticCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(fitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(addFitRangeButton))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -227,9 +240,11 @@ public class FittingMainView extends JInternalFrame implements SedListener {
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(statisticCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(addFitRangeButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
                 .addComponent(fitButton)
-                .addContainerGap(58, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         jSplitPane3.setRightComponent(jPanel5);
@@ -270,7 +285,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         confidenceContainer.setLayout(confidenceContainerLayout);
         confidenceContainerLayout.setHorizontalGroup(
             confidenceContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(confidencePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 290, Short.MAX_VALUE)
+            .addComponent(confidencePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
         );
         confidenceContainerLayout.setVerticalGroup(
             confidenceContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -447,7 +462,17 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         modelViewerPanel.updateUI();
     }//GEN-LAST:event_doFit
 
+    private void addFitRangeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addFitRangeButtonActionPerformed
+        // if there are no SEDs, don't set the fitting ranges
+        if (this.getSedModel() == null) {
+            return;
+        }
+        MouseXRangesClickedListener listener = (MouseXRangesClickedListener) this.preferences.getMouseListenerManager().getListener(MouseXRangesClickedListener.class);
+        listener.setPickingRanges(true);
+    }//GEN-LAST:event_addFitRangeButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addFitRangeButton;
     private javax.swing.JPanel availableComponents;
     private javax.swing.JTree availableTree;
     private javax.swing.JPanel confidenceContainer;
