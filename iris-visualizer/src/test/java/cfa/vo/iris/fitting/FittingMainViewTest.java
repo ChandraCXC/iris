@@ -36,6 +36,7 @@ import org.uispec4j.assertion.UISpecAssert;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
+import static org.junit.Assert.assertEquals;
 
 public class FittingMainViewTest {
     private SedlibSedManager manager;
@@ -43,6 +44,7 @@ public class FittingMainViewTest {
     private TextBox sedId;
     private ComboBox optimizationCombo;
     private ComboBox statCombo;
+    private FitController controller;
 
     @Before
     public void setUp() throws Exception {
@@ -53,7 +55,7 @@ public class FittingMainViewTest {
         SherpaClient client = Mockito.mock(SherpaClient.class);
         JFileChooser chooser = Mockito.mock(JFileChooser.class);
         SedModel sedModel = new SedModel(sed, new IrisStarTableAdapter(null));
-        FitController controller = new FitController(sedModel, modelsManager, client);
+        controller = new FitController(sedModel, modelsManager, client);
         ApplicationStub app = new ApplicationStub();
         VisualizerComponentPreferences preferences = new VisualizerComponentPreferences(app.getWorkspace());
         FittingMainView view = new FittingMainView(preferences, chooser, controller);
@@ -96,4 +98,15 @@ public class FittingMainViewTest {
         Assert.assertEquals(sed.getFit().getStat(), Statistic.Cash);
     }
 
+    @Test
+    public void testClearFittingRanges() throws Exception {
+        controller.getFit().addFittingRange(new FittingRange(1.0, 2.0, "Angstrom"));
+        controller.getFit().addFittingRange(new FittingRange(3.0, 4.0, "Angstrom"));
+        
+        assertEquals(2, controller.getFit().getFittingRanges().size());
+        
+        fittingView.getButton("Clear Ranges").click();
+        
+        assertEquals(0, controller.getFit().getFittingRanges().size());
+    }
 }

@@ -164,6 +164,11 @@ public class FitControllerTest {
         assertEquals(10.5, ranges.get(0).getStartPoint(), 0.00001);
         assertEquals(13.0, ranges.get(0).getEndPoint(), 0.00001);
         
+        // add dummy range to check that clearRanges works
+        config.addFittingRange(range);
+        config.clearFittingRanges();
+        assertEquals(0, config.getFittingRanges().size());
+        
         // TODO: uncomment when setting fit ranges to the data is done
         // check that the evaluated model only has 2 points
 //        SegmentStarTable data = model.getDataTables().get(0).getPlotterDataTable();

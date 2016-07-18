@@ -139,6 +139,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         statisticCombo = new javax.swing.JComboBox();
         fitButton = new javax.swing.JButton();
         addFitRangeButton = new javax.swing.JButton();
+        clearRangesButton = new javax.swing.JButton();
         modelViewerPanel = new cfa.vo.iris.gui.widgets.ModelViewerPanel();
         jSplitPane2 = new javax.swing.JSplitPane();
         resultsContainer = new javax.swing.JPanel();
@@ -212,6 +213,14 @@ public class FittingMainView extends JInternalFrame implements SedListener {
             }
         });
 
+        clearRangesButton.setText("Clear Ranges");
+        clearRangesButton.setToolTipText("Clear all fitting ranges from the model.");
+        clearRangesButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearRangesButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -221,13 +230,13 @@ public class FittingMainView extends JInternalFrame implements SedListener {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(optimizationCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(statisticCombo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(fitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2)
-                            .addComponent(fitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(addFitRangeButton))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(addFitRangeButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(clearRangesButton)))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -242,7 +251,9 @@ public class FittingMainView extends JInternalFrame implements SedListener {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(statisticCombo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(addFitRangeButton)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addFitRangeButton)
+                    .addComponent(clearRangesButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
                 .addComponent(fitButton)
                 .addContainerGap())
@@ -255,7 +266,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         modelPanel.setLayout(modelPanelLayout);
         modelPanelLayout.setHorizontalGroup(
             modelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane3)
+            .addComponent(jSplitPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE)
         );
         modelPanelLayout.setVerticalGroup(
             modelPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -273,11 +284,11 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         resultsContainer.setLayout(resultsContainerLayout);
         resultsContainerLayout.setHorizontalGroup(
             resultsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(resultsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE)
+            .addComponent(resultsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 284, Short.MAX_VALUE)
         );
         resultsContainerLayout.setVerticalGroup(
             resultsContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(resultsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 185, Short.MAX_VALUE)
+            .addComponent(resultsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 189, Short.MAX_VALUE)
         );
 
         jSplitPane2.setLeftComponent(resultsContainer);
@@ -286,11 +297,11 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         confidenceContainer.setLayout(confidenceContainerLayout);
         confidenceContainerLayout.setHorizontalGroup(
             confidenceContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(confidencePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+            .addComponent(confidencePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
         );
         confidenceContainerLayout.setVerticalGroup(
             confidenceContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(confidencePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(confidencePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
         );
 
         jSplitPane2.setRightComponent(confidenceContainer);
@@ -305,7 +316,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSplitPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 391, Short.MAX_VALUE)
+            .addComponent(jSplitPane4)
         );
 
         jSplitPane1.setRightComponent(jPanel2);
@@ -353,7 +364,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
                 .addComponent(searchField)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 232, Short.MAX_VALUE)
             .addComponent(jScrollPane3)
         );
         availableComponentsLayout.setVerticalGroup(
@@ -478,10 +489,15 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         listener.setPickingRanges(true);
     }//GEN-LAST:event_addFitRangeButtonActionPerformed
 
+    private void clearRangesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearRangesButtonActionPerformed
+        controller.getFit().clearFittingRanges();
+    }//GEN-LAST:event_clearRangesButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addFitRangeButton;
     private javax.swing.JPanel availableComponents;
     private javax.swing.JTree availableTree;
+    private javax.swing.JButton clearRangesButton;
     private javax.swing.JPanel confidenceContainer;
     private cfa.vo.iris.fitting.ConfidencePanel confidencePanel;
     private javax.swing.JTextField currentSedField;
