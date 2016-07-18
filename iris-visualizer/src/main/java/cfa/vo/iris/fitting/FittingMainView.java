@@ -583,9 +583,10 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         
         // if the PlotterView isn't up, ask the user to open it
         MouseXRangesClickedListener listener = (MouseXRangesClickedListener) this.preferences.getMouseListenerManager().getListener(MouseXRangesClickedListener.class);
-        if (listener.getPlotterView() == null || !listener.getPlotterView().isVisible()) {
+        if (listener == null || listener.getPlotterView() == null || !listener.getPlotterView().isVisible()) {
             String message = "The Visualizer must be open before selecting a fitting range.";
             NarrowOptionPane.showMessageDialog(this, message, "Fitting Tool", NarrowOptionPane.WARNING_MESSAGE);
+            return;
         }
         listener.setPickingRanges(true);
     }//GEN-LAST:event_addFitRangeButtonActionPerformed
