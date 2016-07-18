@@ -15,6 +15,9 @@
  */
 package cfa.vo.iris.fitting;
 
+import cfa.vo.iris.units.XUnit;
+import cfa.vo.iris.units.spv.XUnits;
+
 /**
  *
  * Simple object for holding the start and end points of a fitting range.
@@ -22,7 +25,7 @@ package cfa.vo.iris.fitting;
 public class FittingRange {
     private double startPoint;
     private double endPoint;
-    private String xunit;
+    private XUnit xunit;
     
     public FittingRange() {
     }
@@ -30,10 +33,10 @@ public class FittingRange {
     public FittingRange(double startPoint, double endPoint) {
         this.startPoint = startPoint;
         this.endPoint = endPoint;
-        this.xunit = "Angstrom";
+        this.xunit = new XUnits("Angstrom");
     }
     
-    public FittingRange(double startPoint, double endPoint, String xunit) {
+    public FittingRange(double startPoint, double endPoint, XUnit xunit) {
         this.startPoint = startPoint;
         this.endPoint = endPoint;
         this.xunit = xunit;
@@ -55,11 +58,11 @@ public class FittingRange {
         this.endPoint = endPoint;
     }
     
-    public String getXUnit() {
+    public XUnit getXUnit() {
         return this.xunit;
     }
     
-    public void setXUnit(String xunit) {
+    public void setXUnit(XUnit xunit) {
         this.xunit = xunit;
     }
 }

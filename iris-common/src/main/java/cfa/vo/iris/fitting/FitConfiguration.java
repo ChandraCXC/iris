@@ -252,9 +252,9 @@ public class FitConfiguration {
 
         // convert to Angstroms
         // TODO: update this to convert to user preferences later on
-        XUnit oldUnit = new XUnits(fittingRange.getXUnit());
-        XUnit newUnit = new XUnits(cfa.vo.iris.sed.quantities.XUnit.ANGSTROM.getString());
-        fittingRange.setXUnit(cfa.vo.iris.sed.quantities.XUnit.ANGSTROM.getString());
+        XUnit oldUnit = fittingRange.getXUnit();
+        XUnit newUnit = new XUnits("Angstrom");
+        fittingRange.setXUnit(newUnit);
         
         try {
             double tmpStart = XUnits.convert(new double[]{fittingRange.getStartPoint()}, oldUnit, newUnit)[0];
