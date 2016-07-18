@@ -4,6 +4,7 @@ import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.gui.widgets.ModelExpressionVerifier;
 import cfa.vo.sherpa.*;
 import cfa.vo.interop.SAMPFactory;
+import cfa.vo.iris.sed.SedException;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.units.XUnit;
 import cfa.vo.iris.units.spv.XUnits;
@@ -250,11 +251,11 @@ public class FitConfiguration {
 
         // convert to Angstroms
         // TODO: update this to convert to user preferences later on
-        XUnit oldUnit = fittingRange.getXUnit();
+        XUnit oldUnit = new XUnits(fittingRange.getXUnit().getString());
         XUnit newUnit = new XUnits("Angstrom");
-        fittingRange.setXUnit(newUnit);
         
         try {
+            fittingRange.setXUnit(cfa.vo.iris.sed.quantities.XUnit.getFromUnitString(newUnit.toString()));
             double tmpStart = XUnits.convert(new double[]{fittingRange.getStartPoint()}, oldUnit, newUnit)[0];
             double tmpEnd = XUnits.convert(new double[]{fittingRange.getEndPoint()}, oldUnit, newUnit)[0];
             
@@ -268,7 +269,7 @@ public class FitConfiguration {
                 fittingRange.setStartPoint(tmpStart);
                 fittingRange.setEndPoint(tmpEnd);
             }
-        } catch (UnitsException ex) {
+        } catch (UnitsException | SedException ex) {
             Logger.getLogger(FitConfiguration.class.getName()).log(Level.SEVERE, null, ex);
         }
         

@@ -15,8 +15,7 @@
  */
 package cfa.vo.iris.fitting;
 
-import cfa.vo.iris.units.XUnit;
-import cfa.vo.iris.units.spv.XUnits;
+import cfa.vo.iris.sed.quantities.XUnit;
 
 /**
  *
@@ -33,7 +32,7 @@ public class FittingRange {
     public FittingRange(double startPoint, double endPoint) {
         this.startPoint = startPoint;
         this.endPoint = endPoint;
-        this.xunit = new XUnits("Angstrom");
+        this.xunit = XUnit.ANGSTROM;
     }
     
     public FittingRange(double startPoint, double endPoint, XUnit xunit) {
