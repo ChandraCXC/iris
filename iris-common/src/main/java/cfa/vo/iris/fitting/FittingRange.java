@@ -22,6 +22,7 @@ package cfa.vo.iris.fitting;
 public class FittingRange {
     private double startPoint;
     private double endPoint;
+    private String xunit;
     
     public FittingRange() {
     }
@@ -29,6 +30,13 @@ public class FittingRange {
     public FittingRange(double startPoint, double endPoint) {
         this.startPoint = startPoint;
         this.endPoint = endPoint;
+        this.xunit = "Angstrom";
+    }
+    
+    public FittingRange(double startPoint, double endPoint, String xunit) {
+        this.startPoint = startPoint;
+        this.endPoint = endPoint;
+        this.xunit = xunit;
     }
 
     public double getStartPoint() {
@@ -45,5 +53,13 @@ public class FittingRange {
 
     public void setEndPoint(double endPoint) {
         this.endPoint = endPoint;
+    }
+    
+    public String getXUnit() {
+        return this.xunit;
+    }
+    
+    public void setXUnit(String xunit) {
+        this.xunit = xunit;
     }
 }
