@@ -249,6 +249,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
 
         addFitRangeButton.setText("Add Range");
         addFitRangeButton.setToolTipText("Add a fitting range using the plotter.");
+        addFitRangeButton.setName("addFittingRange"); // NOI18N
         addFitRangeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 addFitRangeButtonActionPerformed(evt);
