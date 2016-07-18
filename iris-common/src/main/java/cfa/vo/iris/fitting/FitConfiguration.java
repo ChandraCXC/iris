@@ -249,15 +249,7 @@ public class FitConfiguration {
      * @param fittingRange 
      */
     public void addFittingRange(FittingRange fittingRange) {
-        // verify fitting range is in sorted order (low to high)
-        double tmpStart = fittingRange.getStartPoint();
-        double tmpEnd = fittingRange.getEndPoint();
-        if (tmpEnd < tmpStart) {
-            // switch start and end points
-            fittingRange.setStartPoint(tmpEnd);
-            fittingRange.setEndPoint(tmpStart);
-        }
-        
+
         // convert to Angstroms
         // TODO: update this to convert to user preferences later on
         XUnit oldUnit = new XUnits(fittingRange.getXUnit());
@@ -265,10 +257,19 @@ public class FitConfiguration {
         fittingRange.setXUnit(cfa.vo.iris.sed.quantities.XUnit.ANGSTROM.getString());
         
         try {
-            tmpStart = XUnits.convert(new double[]{fittingRange.getStartPoint()}, oldUnit, newUnit)[0];
-            tmpEnd = XUnits.convert(new double[]{fittingRange.getEndPoint()}, oldUnit, newUnit)[0];
-            fittingRange.setStartPoint(tmpStart);
-            fittingRange.setEndPoint(tmpEnd);
+            double tmpStart = XUnits.convert(new double[]{fittingRange.getStartPoint()}, oldUnit, newUnit)[0];
+            double tmpEnd = XUnits.convert(new double[]{fittingRange.getEndPoint()}, oldUnit, newUnit)[0];
+            
+            // verify fitting range is in sorted order (low to high)
+            if (tmpEnd < tmpStart) {
+                // switch start and end points
+                fittingRange.setStartPoint(tmpEnd);
+                fittingRange.setEndPoint(tmpStart);
+            } else {
+                // original order is correct
+                fittingRange.setStartPoint(tmpStart);
+                fittingRange.setEndPoint(tmpEnd);
+            }
         } catch (UnitsException ex) {
             Logger.getLogger(FitConfiguration.class.getName()).log(Level.SEVERE, null, ex);
         }
