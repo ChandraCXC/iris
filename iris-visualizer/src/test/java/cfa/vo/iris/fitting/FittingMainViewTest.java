@@ -18,6 +18,7 @@ package cfa.vo.iris.fitting;
 import cfa.vo.iris.fitting.custom.CustomModelsManager;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
+import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.test.unit.ApplicationStub;
 import cfa.vo.iris.units.spv.XUnits;
 import cfa.vo.iris.visualizer.preferences.SedModel;
@@ -101,8 +102,8 @@ public class FittingMainViewTest {
 
     @Test
     public void testClearFittingRanges() throws Exception {
-        controller.getFit().addFittingRange(new FittingRange(1.0, 2.0, new XUnits("Angstrom")));
-        controller.getFit().addFittingRange(new FittingRange(3.0, 4.0, new XUnits("Angstrom")));
+        controller.getFit().addFittingRange(new FittingRange(1.0, 2.0, XUnit.ANGSTROM));
+        controller.getFit().addFittingRange(new FittingRange(3.0, 4.0, XUnit.ANGSTROM));
         
         assertEquals(2, controller.getFit().getFittingRanges().size());
         
