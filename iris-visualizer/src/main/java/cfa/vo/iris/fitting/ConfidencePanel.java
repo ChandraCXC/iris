@@ -23,6 +23,7 @@ import org.jdesktop.swingbinding.JTableBinding;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jdesktop.beansbinding.Converter;
 
 
 public class ConfidencePanel extends javax.swing.JPanel {
@@ -98,7 +99,7 @@ public class ConfidencePanel extends javax.swing.JPanel {
 
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        sigmaText = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -129,13 +130,19 @@ public class ConfidencePanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(12, 12, 0, 0);
         add(jTextField1, gridBagConstraints);
 
-        jLabel2.setText("sigma - 89.04%");
+        sigmaText.setText("sigma - 90.00%");
+        sigmaText.setName("sigmaPercent"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${confidenceResults.percent}"), sigmaText, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding.setConverter(new SigmaConverter());
+        bindingGroup.addBinding(binding);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         gridBagConstraints.insets = new java.awt.Insets(17, 12, 0, 12);
-        add(jLabel2, gridBagConstraints);
+        add(sigmaText, gridBagConstraints);
 
         jButton1.setText("Compute");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -194,11 +201,25 @@ public class ConfidencePanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel sigmaText;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
+
+    private class SigmaConverter extends Converter {
+
+        @Override
+        public Object convertForward(Object s) {
+            Double sigma = (Double) s;
+            return String.format("sigma - %2.2f%%", sigma);
+        }
+
+        @Override
+        public Object convertReverse(Object t) {
+            throw new UnsupportedOperationException("Not supported yet."); // Never called
+        }
+    }
 
 }

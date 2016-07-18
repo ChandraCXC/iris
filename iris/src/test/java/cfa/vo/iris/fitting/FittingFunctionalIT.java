@@ -131,6 +131,9 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
 
         value = Double.valueOf((String) confidenceTable.getContentAt(1, 2));
         assertEquals(0.00486, value, 0.00001);
+
+        // check the confidence interval label updated
+        fittingView.getTextBox("sigmaPercent").textEquals("sigma - 99.99%").check();
     }
 
     private void saveText() throws Exception {
