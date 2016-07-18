@@ -17,12 +17,14 @@ package cfa.vo.iris.fitting;
 
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.sherpa.ConfidenceResults;
+import java.util.concurrent.ExecutionException;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Property;
 import org.jdesktop.swingbinding.JTableBinding;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.SwingWorker;
 import org.jdesktop.beansbinding.Converter;
 
 
@@ -100,9 +102,11 @@ public class ConfidencePanel extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         sigmaText = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
+        busyConfidence = new org.jdesktop.swingx.JXBusyLabel();
+        jButton1 = new javax.swing.JButton();
 
         setMinimumSize(new java.awt.Dimension(287, 191));
         setLayout(new java.awt.GridBagLayout());
@@ -112,6 +116,7 @@ public class ConfidencePanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(17, 12, 0, 0);
         add(jLabel1, gridBagConstraints);
 
@@ -127,6 +132,7 @@ public class ConfidencePanel extends javax.swing.JPanel {
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 30;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.1;
         gridBagConstraints.insets = new java.awt.Insets(12, 12, 0, 0);
         add(jTextField1, gridBagConstraints);
 
@@ -141,21 +147,9 @@ public class ConfidencePanel extends javax.swing.JPanel {
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.insets = new java.awt.Insets(17, 12, 0, 12);
+        gridBagConstraints.weightx = 0.8;
+        gridBagConstraints.insets = new java.awt.Insets(17, 10, 0, 12);
         add(sigmaText, gridBagConstraints);
-
-        jButton1.setText("Compute");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                doConfidence(evt);
-            }
-        });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 35, 12, 12);
-        add(jButton1, gridBagConstraints);
 
         jTable1.setName("confidenceTable"); // NOI18N
 
@@ -179,28 +173,67 @@ public class ConfidencePanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(6, 12, 0, 12);
         add(jScrollPane1, gridBagConstraints);
 
+        jPanel1.add(busyConfidence);
+
+        jButton1.setText("Compute");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                doConfidence(evt);
+            }
+        });
+        jPanel1.add(jButton1);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        add(jPanel1, gridBagConstraints);
+
         bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
     private void doConfidence(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doConfidence
-        try {
-            ConfidenceResults results = controller.computeConfidence();
-            setConfidenceResults(results);
-        } catch (Exception e) {
-            NarrowOptionPane.showMessageDialog(
-                    this,
-                    e.getMessage(),
-                    e.getClass().getSimpleName(),
-                    NarrowOptionPane.ERROR_MESSAGE
-            );
-            logger.log(Level.SEVERE, "Error computing confidence", e);
-        }
+        SwingWorker worker = new SwingWorker<ConfidenceResults, Void>() {
+
+            @Override
+            protected ConfidenceResults doInBackground() throws Exception {
+                return controller.computeConfidence();
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    setConfidenceResults(get());
+                   
+                } catch (InterruptedException ex) {
+                    // noop
+                } catch (ExecutionException ex) {
+                    Logger.getLogger(FittingMainView.class.getName()).log(Level.SEVERE, null, ex);
+                    Throwable cause = ex.getCause();
+                    NarrowOptionPane.showMessageDialog(
+                        ConfidencePanel.this,
+                        cause.getMessage(),
+                        cause.getClass().getSimpleName(),
+                        NarrowOptionPane.ERROR_MESSAGE
+                    );
+                    logger.log(Level.SEVERE, "Error computing confidence", ex);
+                } finally {
+                    busyConfidence.setBusy(false);
+                }
+            }
+        };
+            
+        busyConfidence.setBusy(true);
+        worker.execute();
+        
     }//GEN-LAST:event_doConfidence
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private org.jdesktop.swingx.JXBusyLabel busyConfidence;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;

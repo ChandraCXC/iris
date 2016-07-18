@@ -26,6 +26,7 @@ import cfa.vo.iris.visualizer.IrisVisualizer;
 import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataStore;
+import cfa.vo.sherpa.FitResults;
 import cfa.vo.sherpa.models.Model;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Statistic;
@@ -39,6 +40,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class FittingMainView extends JInternalFrame implements SedListener {
     
@@ -136,6 +140,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         jLabel2 = new javax.swing.JLabel();
         statisticCombo = new javax.swing.JComboBox();
         fitButton = new javax.swing.JButton();
+        busyFit = new org.jdesktop.swingx.JXBusyLabel();
         modelViewerPanel = new cfa.vo.iris.gui.widgets.ModelViewerPanel();
         jSplitPane2 = new javax.swing.JSplitPane();
         resultsContainer = new javax.swing.JPanel();
@@ -188,6 +193,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 1.0;
@@ -202,6 +208,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 82;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
@@ -213,6 +220,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 1.0;
@@ -227,6 +235,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 82;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -241,7 +250,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
             }
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 64;
@@ -249,6 +258,10 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.insets = new java.awt.Insets(18, 0, 18, 0);
         jPanel5.add(fitButton, gridBagConstraints);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        jPanel5.add(busyFit, gridBagConstraints);
 
         jSplitPane3.setRightComponent(jPanel5);
 
@@ -482,30 +495,52 @@ public class FittingMainView extends JInternalFrame implements SedListener {
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void doFit(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doFit
-        try {
-            controller.fit();
-            
-            // Asynchronously evaluate the model
-            VisualizerComponentPreferences prefs = IrisVisualizer.getInstance().getActivePreferences();
-            if (prefs != null) {
-                prefs.evaluateModel(sedModel, controller);
+
+        SwingWorker worker = new SwingWorker<FitResults, Void>() {
+
+            @Override
+            protected FitResults doInBackground() throws Exception {
+                return controller.fit();
             }
-        } catch (Exception e) {
-            NarrowOptionPane.showMessageDialog(this,
-                    e.getMessage(),
-                    e.getClass().getSimpleName(),
-                    NarrowOptionPane.ERROR_MESSAGE);
-            modelViewerPanel.fitResult(false);
-            return; // TODO maybe should do something more/different.
-        }
-        resultsPanel.setFit(sedModel.getFit());
-        modelViewerPanel.fitResult(true);
-        modelViewerPanel.updateUI();
+
+            @Override
+            protected void done() {
+                try {
+                    get();
+                    resultsPanel.setFit(sedModel.getFit());
+                    modelViewerPanel.fitResult(true);
+                    modelViewerPanel.updateUI();
+                    modelViewerPanel.fitResult(true);
+                    // Asynchronously evaluate the model
+                    VisualizerComponentPreferences prefs = IrisVisualizer.getInstance().getActivePreferences();
+                    if (prefs != null) {
+                        prefs.evaluateModel(sedModel, controller);
+                    }
+                } catch (InterruptedException ex) {
+                    // noop
+                } catch (ExecutionException ex) {
+                    Logger.getLogger(FittingMainView.class.getName()).log(Level.SEVERE, null, ex);
+                    NarrowOptionPane.showMessageDialog(FittingMainView.this,
+                        ex.getMessage(),
+                        ex.getClass().getSimpleName(),
+                        NarrowOptionPane.ERROR_MESSAGE);
+                        modelViewerPanel.fitResult(false);
+                } finally {
+                    busyFit.setBusy(false);
+                }
+            }
+        };
+            
+        busyFit.setBusy(true);
+        worker.execute();
+            
+        
     }//GEN-LAST:event_doFit
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel availableComponents;
     private javax.swing.JTree availableTree;
+    private org.jdesktop.swingx.JXBusyLabel busyFit;
     private javax.swing.JPanel confidenceContainer;
     private cfa.vo.iris.fitting.ConfidencePanel confidencePanel;
     private javax.swing.JTextField currentSedField;

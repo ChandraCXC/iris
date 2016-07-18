@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.uispec4j.Panel;
 import org.uispec4j.TextBox;
+import org.uispec4j.assertion.UISpecAssert;
 
 import java.util.Arrays;
 
@@ -66,6 +67,6 @@ public class ConfidencePanelTest {
     @Test
     public void testDoConfidence() throws Exception {
         uiPanel.getButton().click();
-        uiPanel.getTable().contentEquals(columnNames, expected).check();
+        UISpecAssert.waitUntil(uiPanel.getTable().contentEquals(columnNames, expected), 1000);
     }
 }

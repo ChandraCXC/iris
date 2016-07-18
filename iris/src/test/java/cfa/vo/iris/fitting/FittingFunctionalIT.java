@@ -59,6 +59,11 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
 
     @Before
     public void setUp() throws Exception {
+        window = appResource.getAdapter().getMainWindow();
+        desktop = window.getDesktop();
+
+        // Set up tests/examples directory.
+        examplesUrlString = tempFolder.getRoot().getParentFile().getAbsolutePath()+"/examples";
         // Set up tests/examples directory.
         templateLibUrlString = examplesUrlString+"/sed_templates.dat";
         functionUrlString = examplesUrlString+"/mypowlaw.py";
@@ -101,11 +106,8 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
 
         fittingView.getButton("Fit").click();
 
-        TextBox val = fittingView.getTextBox("Par Val");
-        UISpecAssert.waitUntil(UISpecAssert.not(val.textEquals("-0.5")), 1000);
-
         TextBox np = fittingView.getInputTextBox("Number of Points");
-        np.textEquals("23").check();
+        UISpecAssert.waitUntil(np.textEquals("23"), 1000);
 
         TextBox statS = fittingView.getInputTextBox("Final Fit Statistic");
         Double stat = Double.valueOf(statS.getText());
@@ -114,11 +116,11 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         fittingView.getInputTextBox("sigma").setText("4");
         fittingView.getButton("Compute").click();
 
-        Table confidenceTable = fittingView.getTable("confidenceTable");
-        final Double amplInf = Double.valueOf((String) confidenceTable.getContentAt(0, 1));
+        final Table confidenceTable = fittingView.getTable("confidenceTable");
         UISpecAssert.waitUntil(new Assertion() {
             @Override
             public void check() {
+                Double amplInf = Double.valueOf((String) confidenceTable.getContentAt(0, 1));
                 assertEquals(-6.202e-6, amplInf, 1e-8);
             }
         }, 1000);
