@@ -42,17 +42,17 @@ public class TestUtils {
      * 
      */
     public static void invokeWithRetry(int maxRetries, long wait, Runnable runnable) throws Exception {
-        Exception last = null;
+        Throwable last = null;
         for (int i=0; i<maxRetries; i++) {
             try {
                 SwingUtilities.invokeAndWait(runnable);
                 return;
-            } catch (Exception e) {
+            } catch (Exception | AssertionError e) {
                 last = e;
                 Thread.sleep(wait);
             }
         }
-        throw last;
+        throw new RuntimeException("Giving up invoke and retry", last);
     }
 
     /**
