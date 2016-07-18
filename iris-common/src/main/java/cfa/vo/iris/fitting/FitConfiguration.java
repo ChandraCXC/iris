@@ -4,6 +4,9 @@ import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.gui.widgets.ModelExpressionVerifier;
 import cfa.vo.sherpa.*;
 import cfa.vo.interop.SAMPFactory;
+import cfa.vo.iris.units.UnitsException;
+import cfa.vo.iris.units.XUnit;
+import cfa.vo.iris.units.spv.XUnits;
 import cfa.vo.sherpa.models.*;
 import cfa.vo.sherpa.optimization.Method;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
@@ -19,6 +22,7 @@ import javax.swing.tree.TreeModel;
 import java.beans.PropertyChangeSupport;
 
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @JsonIgnoreProperties({"treeModel", "modelValid", "expression", "sedVersion"})
@@ -252,6 +256,21 @@ public class FitConfiguration {
             // switch start and end points
             fittingRange.setStartPoint(tmpEnd);
             fittingRange.setEndPoint(tmpStart);
+        }
+        
+        // convert to Angstroms
+        // TODO: update this to convert to user preferences later on
+        XUnit oldUnit = new XUnits(fittingRange.getXUnit());
+        XUnit newUnit = new XUnits(cfa.vo.iris.sed.quantities.XUnit.ANGSTROM.getString());
+        fittingRange.setXUnit(cfa.vo.iris.sed.quantities.XUnit.ANGSTROM.getString());
+        
+        try {
+            tmpStart = XUnits.convert(new double[]{fittingRange.getStartPoint()}, oldUnit, newUnit)[0];
+            tmpEnd = XUnits.convert(new double[]{fittingRange.getEndPoint()}, oldUnit, newUnit)[0];
+            fittingRange.setStartPoint(tmpStart);
+            fittingRange.setEndPoint(tmpEnd);
+        } catch (UnitsException ex) {
+            Logger.getLogger(FitConfiguration.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         this.fittingRanges.add(fittingRange);

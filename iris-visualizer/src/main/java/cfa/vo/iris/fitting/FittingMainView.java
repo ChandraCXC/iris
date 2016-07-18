@@ -564,6 +564,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         if (this.getSedModel() == null) {
             return;
         }
+
         MouseXRangesClickedListener listener = (MouseXRangesClickedListener) this.preferences.getMouseListenerManager().getListener(MouseXRangesClickedListener.class);
         listener.setPickingRanges(true);
     }//GEN-LAST:event_addFitRangeButtonActionPerformed

@@ -30,6 +30,7 @@ import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
  */
 public class MouseXRangesClickedListener extends StilPlotterMouseListener implements MouseListener {
     private PlotDisplay<?,?> display;
+    private VisualizerDataModel dataModel;
     private FittingRange fittingRange;
     private boolean isStartPoint; // flag for if it's a first (start) or second (end) click on the plot
     private boolean pickingRanges; // flag for if fit ranges are currently being choosen. This mouse listener only reacts if this flag is set to true.
@@ -42,6 +43,7 @@ public class MouseXRangesClickedListener extends StilPlotterMouseListener implem
     @Override
     public void activate(PlotDisplay<?,?> display, VisualizerDataModel dataModel) {
         this.display = display;
+        this.dataModel = dataModel;
         isStartPoint = true;   // the first click on the plotter will always be the starting point.
         pickingRanges = false; // set picking ranges off initially
         display.addMouseListener(this);
@@ -80,6 +82,9 @@ public class MouseXRangesClickedListener extends StilPlotterMouseListener implem
                 isStartPoint = false;
             } else {
                 fittingRange.setEndPoint(x);
+                
+                // set unit
+                fittingRange.setXUnit(dataModel.getXunits());
                 
                 // add fitting range to SED fit configuration
                 for (ExtSed sed : plotterView.getDataModel().getSelectedSeds()) {
