@@ -278,12 +278,19 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         // when the visualizer isn't open / visible
         final Window mainFit = setupFitWindow(sedManager.newSed("TestSed"));
         
-        WindowInterceptor wi = WindowInterceptor.init(
-            mainFit.getButton("addFittingRange").triggerClick()
-        );
-        String message = "The Visualizer must be open before selecting a fitting range.";
-        
-        wi.process(BasicHandler.init().assertContainsText(message).triggerButtonClick("OK")).run();
+        TestUtils.invokeWithRetry(50, 100, new Runnable() {
+            
+            @Override
+            public void run() {
+                WindowInterceptor wi = WindowInterceptor.init(
+                        mainFit.getButton("addFittingRange").triggerClick());
+                String message = "The Visualizer must be open before selecting a fitting range.";
+                wi.process(BasicHandler.init()
+                        .assertContainsText(message)
+                        .triggerButtonClick("OK"))
+                        .run();
+            }
+        });
     }
     
     private Window setupFitWindow(final ExtSed sed) throws Exception {
