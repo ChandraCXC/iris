@@ -223,15 +223,15 @@ public class FitController {
         UnitsManager uManager = Default.getInstance().getUnitsManager();
 
         for (IrisStarTable table: sedModel.getDataTables()) {
-            double[] x = table.getSpectralDataValues();
+            double[] x = table.getSpecValues();
             double[] xStandardUnit = uManager.convertX(x, xUnit, SherpaClient.X_UNIT);
             double[] yStandardUnit = client.evaluate(xStandardUnit, sedModel.getFit());
             double[] y = Default.getInstance().getUnitsManager().convertY(yStandardUnit, xStandardUnit,
                     SherpaClient.Y_UNIT, SherpaClient.X_UNIT, yUnit);
 
             table.getPlotterDataTable().setModelValues(y);
-            table.getPlotterDataTable().setResidualValues(calcResiduals(table.getFluxDataValues(), y));
-            table.getPlotterDataTable().setRatioValues(calcRatios(table.getFluxDataValues(), y));
+            table.getPlotterDataTable().setResidualValues(calcResiduals(table.getFluxValues(), y));
+            table.getPlotterDataTable().setRatioValues(calcRatios(table.getFluxValues(), y));
         }
     }
 
