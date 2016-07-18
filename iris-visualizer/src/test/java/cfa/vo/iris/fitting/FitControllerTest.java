@@ -205,7 +205,7 @@ public class FitControllerTest {
         FitConfiguration config = model.getFit();
         
         // set fit ranges
-        FittingRange range = new FittingRange(1.05, 1.3, new XUnits("nm"));
+        FittingRange range = new FittingRange(1.05, 1.3, XUnit.NM);
         config.addFittingRange(range);
         controller.evaluateModel(model);
         
@@ -217,7 +217,7 @@ public class FitControllerTest {
         
         // add new range, with end point and start point switched.
         // check that the ranges get sorted correctly.
-        range = new FittingRange(1.3, 1.05, new XUnits("nm"));
+        range = new FittingRange(1.3, 1.05, XUnit.NM);
         config.addFittingRange(range);
         
         // there should be two fitting ranges now
@@ -228,7 +228,7 @@ public class FitControllerTest {
         assertEquals(13.0, ranges.get(1).getEndPoint(), 0.00001);
         
         // add another fitting range, in energy units
-        range = new FittingRange(1.05, 1.3, new XUnits("keV"));
+        range = new FittingRange(1.05, 1.3, XUnit.KEV);
         config.addFittingRange(range);
         
         ranges = model.getFit().getFittingRanges();
