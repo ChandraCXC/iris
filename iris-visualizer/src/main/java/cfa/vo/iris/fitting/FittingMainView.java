@@ -145,6 +145,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         addFitRangeButton = new javax.swing.JButton();
         fitButton = new javax.swing.JButton();
         busyFit = new org.jdesktop.swingx.JXBusyLabel();
+        clearRangesButton = new javax.swing.JButton();
         modelViewerPanel = new cfa.vo.iris.gui.widgets.ModelViewerPanel();
         jSplitPane2 = new javax.swing.JSplitPane();
         resultsContainer = new javax.swing.JPanel();
@@ -258,7 +259,6 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridwidth = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 82;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -285,6 +285,21 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         gridBagConstraints.gridy = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         jPanel5.add(busyFit, gridBagConstraints);
+
+        clearRangesButton.setText("Clear Ranges");
+        clearRangesButton.setToolTipText("Clear all fitting ranges from the model.");
+        clearRangesButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearRangesButtonActionPerformed(evt);
+            }
+        });
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.ipadx = 84;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.weightx = 1.0;
+        jPanel5.add(clearRangesButton, gridBagConstraints);
 
         jSplitPane3.setRightComponent(jPanel5);
 
@@ -575,11 +590,16 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         listener.setPickingRanges(true);
     }//GEN-LAST:event_addFitRangeButtonActionPerformed
 
+    private void clearRangesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearRangesButtonActionPerformed
+        controller.getFit().clearFittingRanges();
+    }//GEN-LAST:event_clearRangesButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addFitRangeButton;
     private javax.swing.JPanel availableComponents;
     private javax.swing.JTree availableTree;
     private org.jdesktop.swingx.JXBusyLabel busyFit;
+    private javax.swing.JButton clearRangesButton;
     private javax.swing.JPanel confidenceContainer;
     private cfa.vo.iris.fitting.ConfidencePanel confidencePanel;
     private javax.swing.JTextField currentSedField;
