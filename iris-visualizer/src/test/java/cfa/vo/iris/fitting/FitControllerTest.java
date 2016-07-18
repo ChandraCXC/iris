@@ -19,8 +19,10 @@ import cfa.vo.interop.SAMPFactory;
 import cfa.vo.iris.fitting.custom.CustomModelsManager;
 import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.test.unit.TestUtils;
+import cfa.vo.iris.units.spv.XUnits;
 import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sherpa.ConfidenceResults;
@@ -116,7 +118,7 @@ public class FitControllerTest {
         FitConfiguration config = model.getFit();
         
         // set fit ranges
-        FittingRange range = new FittingRange(1.05, 1.3, "nm");
+        FittingRange range = new FittingRange(1.05, 1.3, new XUnits("nm"));
         config.addFittingRange(range);
         controller.evaluateModel(model);
         
@@ -128,7 +130,7 @@ public class FitControllerTest {
         
         // add new range, with end point and start point switched.
         // check that the ranges get sorted correctly.
-        range = new FittingRange(1.3, 1.05, "nm");
+        range = new FittingRange(1.3, 1.05, new XUnits("nm"));
         config.addFittingRange(range);
         
         // there should be two fitting ranges now
@@ -139,7 +141,7 @@ public class FitControllerTest {
         assertEquals(13.0, ranges.get(1).getEndPoint(), 0.00001);
         
         // add another fitting range, in energy units
-        range = new FittingRange(1.05, 1.3, "keV");
+        range = new FittingRange(1.05, 1.3, new XUnits("keV"));
         config.addFittingRange(range);
         
         ranges = model.getFit().getFittingRanges();

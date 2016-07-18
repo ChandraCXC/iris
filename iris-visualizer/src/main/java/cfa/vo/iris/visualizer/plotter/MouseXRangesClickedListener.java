@@ -17,6 +17,7 @@ package cfa.vo.iris.visualizer.plotter;
 
 import cfa.vo.iris.fitting.FittingRange;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.units.spv.XUnits;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -84,7 +85,7 @@ public class MouseXRangesClickedListener extends StilPlotterMouseListener implem
                 fittingRange.setEndPoint(x);
                 
                 // set unit
-                fittingRange.setXUnit(dataModel.getXunits());
+                fittingRange.setXUnit(new XUnits(dataModel.getXunits()));
                 
                 // add fitting range to SED fit configuration
                 for (ExtSed sed : plotterView.getDataModel().getSelectedSeds()) {
