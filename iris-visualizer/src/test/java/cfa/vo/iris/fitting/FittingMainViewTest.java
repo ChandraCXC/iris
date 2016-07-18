@@ -15,15 +15,12 @@
  */
 package cfa.vo.iris.fitting;
 
-import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.fitting.custom.CustomModelsManager;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.iris.test.Ws;
 import cfa.vo.iris.test.unit.ApplicationStub;
 import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
-import cfa.vo.iris.visualizer.preferences.VisualizerDataStore;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.optimization.OptimizationMethod;

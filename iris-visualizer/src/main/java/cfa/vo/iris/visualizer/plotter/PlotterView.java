@@ -59,7 +59,6 @@ public class PlotterView extends JInternalFrame {
     /**
      * Create the frame.
      * @param ws 
-     * @param app 
      * @param title
      * @param preferences
      * @throws java.lang.Exception
