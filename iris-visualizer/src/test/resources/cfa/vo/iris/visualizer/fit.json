@@ -78,6 +78,7 @@
     } ],
     "name" : "m"
   },
+  "fittingRanges" : [ ],
   "stat" : "Chi2",
   "method" : "MonteCarlo",
   "confidence" : {

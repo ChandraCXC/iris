@@ -260,6 +260,7 @@
                                   <Properties>
                                     <Property name="text" type="java.lang.String" value="Add Range"/>
                                     <Property name="toolTipText" type="java.lang.String" value="Add a fitting range using the plotter."/>
+                                    <Property name="name" type="java.lang.String" value="addFittingRange" noResource="true"/>
                                   </Properties>
                                   <Events>
                                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addFitRangeButtonActionPerformed"/>

@@ -19,9 +19,12 @@ import cfa.vo.interop.SAMPFactory;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.fitting.FitConfiguration;
+import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.TestUtils;
+import cfa.vo.iris.visualizer.plotter.MouseXRangesClickedListener;
+import cfa.vo.iris.visualizer.plotter.StilPlotter;
 import cfa.vo.sherpa.models.*;
 
 import java.io.File;
@@ -30,6 +33,7 @@ import java.util.ArrayList;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Statistic;
 import com.google.common.io.Files;
+import java.awt.event.MouseEvent;
 import net.javacrumbs.jsonunit.JsonAssert;
 import org.junit.After;
 import org.junit.Before;
@@ -266,6 +270,20 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
     @Test
     public void testLoadJsonNonExistentFile() throws Exception {
         nonExistentFile("Load Json...");
+    }
+    
+    @Test
+    public void testSetFittingRangesNoPlotter() throws Exception {
+        // check that a warning is shown if the user adds a fitting range
+        // when the visualizer isn't open / visible
+        final Window mainFit = setupFitWindow(sedManager.newSed("TestSed"));
+        
+        WindowInterceptor wi = WindowInterceptor.init(
+            mainFit.getButton("addFittingRange").triggerClick()
+        );
+        String message = "The Visualizer must be open before selecting a fitting range.";
+        
+        wi.process(BasicHandler.init().assertContainsText(message).triggerButtonClick("OK")).run();
     }
     
     private Window setupFitWindow(final ExtSed sed) throws Exception {

@@ -148,6 +148,7 @@
     } ],
     "name" : "m1+m2+m3"
   },
+  "fittingRanges" : [ ],
   "stat" : "LeastSquares",
   "method" : "LevenbergMarquardt",
   "confidence" : {
