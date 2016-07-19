@@ -18,6 +18,7 @@ package cfa.vo.iris.visualizer.preferences;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -25,11 +26,14 @@ import static cfa.vo.iris.test.unit.TestUtils.*;
 
 import org.junit.Test;
 
+import cfa.vo.interop.SAMPFactory;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.Target;
 import cfa.vo.sedlib.TextParam;
+import cfa.vo.sherpa.Data;
 
 public class SedPreferencesTest {
     
@@ -192,5 +196,37 @@ public class SedPreferencesTest {
         model.refresh();
         int h5 = model.getVersion();
         assertFalse(h4 == h5);
+    }
+    
+    @Test
+    public void testFittingDataMethod() throws Exception {
+        
+        final ExtSed sed = new ExtSed("sed", false);
+        sed.addSegment(createSampleSegment(new double[] {1,2,3}, new double[] {100,200,300}), 0);
+        sed.addSegment(createSampleSegment(new double[] {4,5}, new double[] {400,500}), 1);
+
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
+        SedModel model = new SedModel(sed, adapter);
+        
+        // Mask last row in both tables
+        List<IrisStarTable> tables = model.getDataTables();
+        tables.get(0).applyMasks(new int[] {2});
+        tables.get(1).applyMasks(new int[] {1});
+        
+        Data allData = SAMPFactory.get(Data.class);
+        Data maskedData = SAMPFactory.get(Data.class);
+        
+        model.getFittingData(allData, true);
+        model.getFittingData(maskedData, false);
+        
+        // Verify allData is correct
+        assertArrayEquals(new double[] {1,2,3,4,5}, allData.getX(), .01);
+        assertArrayEquals(new double[] {100,200,300,400,500}, allData.getY(), .01);
+        assertArrayEquals(new double[] {Double.NaN,Double.NaN,Double.NaN,Double.NaN,Double.NaN}, allData.getStaterror(), .01);
+        
+        // Verify masked data is masked...
+        assertArrayEquals(new double[] {1,2,4}, maskedData.getX(), .01);
+        assertArrayEquals(new double[] {100,200,400}, maskedData.getY(), .01);
+        assertArrayEquals(new double[] {Double.NaN,Double.NaN,Double.NaN}, maskedData.getStaterror(), .01);
     }
 }
