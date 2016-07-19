@@ -40,6 +40,8 @@ import static org.junit.Assert.assertEquals;
 
 public class FittingFunctionalIT extends AbstractUISpecTest {
 
+    private final long TIMEOUT=2000;
+    
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
 
@@ -94,10 +96,10 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         String[][] table = new String[][]{{"3C 066A", "35.665, 43.036", "NASA/IPAC Extragalactic Database (NED)", "34"}};
         loadSed("3c66a.xml", table);
 
-        UISpecAssert.waitUntil(modelExpression.textEquals("No Model"), 1000);
+        UISpecAssert.waitUntil(modelExpression.textEquals("No Model"), TIMEOUT);
 
         availableTree.doubleClick("Preset Model Components/powerlaw");
-        UISpecAssert.waitUntil(modelsTree.contains("powerlaw.m9"), 1000);
+        UISpecAssert.waitUntil(modelsTree.contains("powerlaw.m9"), TIMEOUT);
 
         modelExpression.textEquals("m9").check();
 
@@ -107,7 +109,7 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         fittingView.getButton("Fit").click();
 
         TextBox np = fittingView.getInputTextBox("Number of Points");
-        UISpecAssert.waitUntil(np.textEquals("23"), 1000);
+        UISpecAssert.waitUntil(np.textEquals("23"), TIMEOUT);
 
         TextBox statS = fittingView.getInputTextBox("Final Fit Statistic");
         Double stat = Double.valueOf(statS.getText());
@@ -123,7 +125,7 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
                 Double amplInf = Double.valueOf((String) confidenceTable.getContentAt(0, 1));
                 assertEquals(-6.202e-6, amplInf, 1e-8);
             }
-        }, 1000);
+        }, TIMEOUT);
 
         Double value = Double.valueOf((String) confidenceTable.getContentAt(0, 2));
         assertEquals(6.065e-6, value, 1e-8);
@@ -337,9 +339,8 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
 
         fittingView.getButton("Fit").click();
 
-        UISpecAssert.waitUntil(UISpecAssert.not(val.textEquals("-0.5")), 1000);
+        UISpecAssert.waitUntil(val.textContains("-0.0526"), TIMEOUT);
 
-        val.textContains("-0.0526").check();
         modelsTree.select("powerlaw.m5/m5.ampl");
         val.textContains("0.00507").check();
 
@@ -363,13 +364,13 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         fittingView.getComboBox("statisticCombo").select("Chi2");
         fittingView.getButton("Fit").click();
 
-        UISpecAssert.waitUntil(np.textEquals("363"), 1000);
+        UISpecAssert.waitUntil(np.textEquals("363"), TIMEOUT);
 
         fittingView.getButton("Compute").click();
 
         Table confTable = fittingView.getTable();
         String[] columns = {"Parameter", "Lower Limit", "Upper Limit"};
-        UISpecAssert.waitUntil(UISpecAssert.not(confTable.isEmpty()), 1000);
+        UISpecAssert.waitUntil(UISpecAssert.not(confTable.isEmpty()), TIMEOUT);
 
         Assert.assertEquals(confTable.getContentAt(0, 0), "m5.ampl");
         Assert.assertEquals(confTable.getContentAt(1, 0), "m5.index");
@@ -391,7 +392,7 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
     }
 
     private void assertFitSucceeded() {
-        UISpecAssert.waitUntil(fittingView.getTextBox("status").textEquals(ModelViewerPanel.FIT_SUCCEEDED), 1000);
+        UISpecAssert.waitUntil(fittingView.getTextBox("status").textEquals(ModelViewerPanel.FIT_SUCCEEDED), TIMEOUT);
 
     }
 
@@ -428,6 +429,6 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
 
         Window builder = desktop.getWindow("SED Builder");
 //        builder.getListBox().click(0);
-        UISpecAssert.waitUntil(builder.getTable().contentEquals(table), 1000);
+        UISpecAssert.waitUntil(builder.getTable().contentEquals(table), TIMEOUT);
     }
 }
