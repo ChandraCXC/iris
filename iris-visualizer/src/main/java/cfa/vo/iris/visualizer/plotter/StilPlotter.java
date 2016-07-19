@@ -19,7 +19,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.quantities.SPVYQuantity;
 import cfa.vo.iris.visualizer.preferences.FunctionModel;
@@ -284,10 +283,10 @@ public class StilPlotter extends JPanel {
         if (sedIds.length() > 0) {
             JOptionPane.showMessageDialog(this, 
                     String.format(
-                    "Warning: %smay no longer be valid! You may want to refit the sed or re-evaluate the model for the fit.",
+                    "Warning: %smay no longer be valid! You may want to\n refit the sed or re-evaluate the model for the fit.",
                     sedIds.toString()),
                     "Warning",
-                    NarrowOptionPane.WARNING_MESSAGE);
+                    JOptionPane.WARNING_MESSAGE);
         }
     }
 

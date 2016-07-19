@@ -495,7 +495,7 @@ public class StilPlotterTest extends AbstractUISpecTest {
             public Trigger process(Window warning) throws Exception {
                 assertTrue(StringUtils.contains(warning.getTitle(), "Warning"));
                 assertTrue(StringUtils.contains(
-                        warning.getTextBox("OptionPane.label").getText(), sed1.getId()));
+                        warning.getTextBox("Warning").getText(), sed1.getId()));
                 return Trigger.DO_NOTHING;
             }
         }).run();
