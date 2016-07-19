@@ -196,6 +196,16 @@ public class SedPreferencesTest {
         model.refresh();
         int h5 = model.getVersion();
         assertFalse(h4 == h5);
+        
+        // Masking points changes version
+        model.getDataTables().get(0).applyMasks(new int[] {0});
+        int h6 = model.getVersion();
+        assertFalse(h5 == h6);
+        
+        // Remove mask
+        model.getDataTables().get(0).clearMasks();
+        int h7 = model.getVersion();
+        assertTrue(h5 == h7);
     }
     
     @Test
