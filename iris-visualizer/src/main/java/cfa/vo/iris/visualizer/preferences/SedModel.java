@@ -370,6 +370,7 @@ public class SedModel {
         HashCodeBuilder hcb = new HashCodeBuilder(13,31);
         for (IrisStarTable table : getDataTables()) {
             hcb.append(table.getPlotterDataTable().hashCode());
+            hcb.append(table.getMasked());
         }
         return hcb.hashCode();
     }
