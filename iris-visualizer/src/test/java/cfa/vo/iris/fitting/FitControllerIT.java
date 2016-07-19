@@ -23,6 +23,7 @@ import cfa.vo.iris.test.unit.SherpaResource;
 import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.visualizer.preferences.SedModel;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sherpa.Data;
@@ -75,6 +76,19 @@ public class FitControllerIT {
         FitResults results = controller.fit();
         double[] expected = {0, 1};
         assertArrayEquals(expected, results.getParvals(), 0.01);
+    }
+
+    @Test
+    public void testFitMasked() throws Exception {
+        
+        FitResults original = controller.fit();
+        
+        // Mask first and last rows
+        sedModel.getDataTables().get(0).applyMasks(new int[] {0});
+        FitResults masked = controller.fit();
+        
+        // One less point
+        assertEquals((int) original.getNumpoints() - 1, (int) masked.getNumpoints());
     }
 
     @Test
