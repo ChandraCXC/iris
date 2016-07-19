@@ -17,11 +17,12 @@
 package cfa.vo.iris.sed.stil;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.TreeSet;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 import cfa.vo.iris.sed.ExtSed;
 import org.apache.commons.lang.ArrayUtils;
@@ -39,10 +40,10 @@ import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.units.XUnit;
 import cfa.vo.iris.units.YUnit;
+import cfa.vo.sedlib.Point;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
-import cfa.vo.sedlib.common.Utypes;
 import cfa.vo.utils.Default;
 
 /**
@@ -53,7 +54,6 @@ import cfa.vo.utils.Default;
  */
 public class SegmentStarTable extends RandomStarTable {
     
-    private static final Logger logger = Logger.getLogger(SegmentStarTable.class.getName());
     private static final UnitsManager units = Default.getInstance().getUnitsManager();
     
     private Segment segment;
@@ -132,31 +132,87 @@ public class SegmentStarTable extends RandomStarTable {
         // Set number of rows for this table
         rows = segment.getLength();
         
-        // Add spectral, flux, and original flux values
-        setSpecValues(segment.getSpectralAxisValues());
-        setFluxValues(segment.getFluxAxisValues());
-        setOriginalFluxValues(segment.getFluxAxisValues()); // Copies data so these aren't the same
-        
-        // Try to add flux error values
-        setFluxErrValues((double[]) getDataFromSegment(Utypes.SEG_DATA_FLUXAXIS_ACC_STATERR));
-        setFluxErrValuesHi((double[]) getDataFromSegment(Utypes.SEG_DATA_FLUXAXIS_ACC_STATERRHIGH));
-        setFluxErrValuesLo((double[]) getDataFromSegment(Utypes.SEG_DATA_FLUXAXIS_ACC_STATERRLOW));
-        
-        // Set the original flux error values - store for more precise unit conversion
-        setOriginalFluxErrValues(getFluxErrValues());
-        setOriginalFluxErrValuesHi(getFluxErrValuesHi());
-        setOriginalFluxErrValuesLo(getFluxErrValuesLo());
-        
-        // Try to add spectral error columns
-        setSpecErrValues((double[]) getDataFromSegment(Utypes.SEG_DATA_SPECTRALAXIS_ACC_STATERR));
-        setSpecErrValuesHi((double[]) getDataFromSegment(Utypes.SEG_DATA_SPECTRALAXIS_ACC_STATERRHIGH));
-        setSpecErrValuesLo((double[]) getDataFromSegment(Utypes.SEG_DATA_SPECTRALAXIS_ACC_STATERRLOW));
+        // Extract data
+        extractSegmentDataToArrays();
         
         // Update column unit values
         updateSpecColumnUnitStrings();
         updateFluxColumnUnitStrings();
     }
-
+    
+    private void extractSegmentDataToArrays() {
+        
+        // Initialize all arrays to NaN
+        specValues = getNanDoubleArray((int) rows);
+        fluxValues = getNanDoubleArray((int) rows);
+        specErrValues = getNanDoubleArray((int) rows);
+        specErrValuesLo = getNanDoubleArray((int) rows);
+        specErrValuesHi = getNanDoubleArray((int) rows);
+        fluxErrValues = getNanDoubleArray((int) rows);
+        fluxErrValuesLo = getNanDoubleArray((int) rows);
+        fluxErrValuesHi = getNanDoubleArray((int) rows);
+        
+        // Iterate over each point in the segment and fill in the arrays
+        List<Point> pointData = segment.getData().getPoint();
+        for (int i=0; i<pointData.size(); i++) {
+            Point p = pointData.get(i);
+            specValues[i] = (double) p.getSpectralAxis().getValue().getCastValue();
+            fluxValues[i] = (double) p.getFluxAxis().getValue().getCastValue();
+            
+            // Check for spec error values
+            if (p.getSpectralAxis().isSetAccuracy()) {
+                if (p.getSpectralAxis().getAccuracy().isSetStatError()) {
+                    specErrValues[i] = (double) p.getSpectralAxis().getAccuracy().getStatError().getCastValue();
+                }
+                if (p.getSpectralAxis().getAccuracy().isSetStatErrLow()) {
+                    specErrValuesLo[i] = (double) p.getSpectralAxis().getAccuracy().getStatErrLow().getCastValue();
+                }
+                if (p.getFluxAxis().getAccuracy().isSetStatErrHigh()) {
+                    specErrValuesHi[i] = (double) p.getSpectralAxis().getAccuracy().getStatErrHigh().getCastValue();
+                }
+            }
+            
+            // Check for flux error values
+            if (p.getFluxAxis().isSetAccuracy()) {
+                if (p.getFluxAxis().getAccuracy().isSetStatError()) {
+                    fluxErrValues[i] = (double) p.getFluxAxis().getAccuracy().getStatError().getCastValue();
+                } 
+                if (p.getFluxAxis().getAccuracy().isSetStatErrLow()) {
+                    fluxErrValuesLo[i] = (double) p.getFluxAxis().getAccuracy().getStatErrLow().getCastValue();
+                }
+                if (p.getFluxAxis().getAccuracy().isSetStatErrHigh()) {
+                    fluxErrValuesHi[i] = (double) p.getFluxAxis().getAccuracy().getStatErrHigh().getCastValue();
+                }
+            }
+        }
+        
+        // Add spectral, flux, and original flux values
+        setSpecValues(specValues);
+        setFluxValues(fluxValues);
+        setOriginalFluxValues(Arrays.copyOf(fluxValues, fluxValues.length)); // Copies data so these aren't the same
+        
+        // Add spectral error columns
+        setSpecErrValues(specErrValues);
+        setSpecErrValuesLo(specErrValuesLo);
+        setSpecErrValuesHi(specErrValuesHi);
+        
+        // Add flux error values
+        setFluxErrValues(fluxErrValues);
+        setFluxErrValuesLo(fluxErrValuesLo);
+        setFluxErrValuesHi(fluxErrValuesHi);
+        
+        // Set the original flux error values - store for more precise unit conversion
+        setOriginalFluxErrValues(getFluxErrValues());
+        setOriginalFluxErrValuesHi(getFluxErrValuesHi());
+        setOriginalFluxErrValuesLo(getFluxErrValuesLo());
+    }
+    
+    private double[] getNanDoubleArray(int rows) {
+        double[] data = new double[rows];
+        Arrays.fill(data, Double.NaN);
+        return data;
+    }
+    
     @Override
     public int getColumnCount() {
         return columns.size();
@@ -172,7 +228,6 @@ public class SegmentStarTable extends RandomStarTable {
         return it.next();
     }
     
-
     @Override
     public ColumnInfo getColumnInfo(int index) {
         return getColumnData(index).getColumnInfo();
@@ -434,20 +489,6 @@ public class SegmentStarTable extends RandomStarTable {
     public void setRatioValues(double[] ratioValues) {
         this.ratioValues = ratioValues;
         updateColumnValues(ratioValues, Column.Ratios);
-    }
-
-    /**
-     * Attempts to extract data with the specified Utype from the segment.
-     * 
-     */
-    private double[] getDataFromSegment(int utype) {
-        double[] ret = null;
-        try {
-            ret = (double[]) segment.getData().getDataValues(utype);
-        } catch (SedNoDataException | SedInconsistentException e) {
-            logger.fine("Cannot read data for segment for utype: " + e.getLocalizedMessage());
-        }
-        return ret;
     }
     
     /**
