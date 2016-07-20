@@ -41,6 +41,9 @@ public class SerializingStarTableAdapter implements StarTableAdapter<Segment> {
             tmp.addSegment(data);
             ByteArrayOutputStream os = toVOTable(tmp);
             table = convertOSStream(os);
+            if (table == null) {
+                throw new IllegalStateException("Got null deserialization from segment");
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

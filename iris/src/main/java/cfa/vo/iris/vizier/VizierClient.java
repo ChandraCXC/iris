@@ -19,7 +19,7 @@
  * and open the template in the editor.
  */
 
-package cfa.vo.iris.test.vizier;
+package cfa.vo.iris.vizier;
 
 import cfa.vo.iris.AbstractDesktopItem;
 import cfa.vo.iris.ICommandLineInterface;
