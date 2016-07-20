@@ -135,17 +135,17 @@ public class FitController {
         
         // Extract fitting data from SedModel, don't include masked points.
         sedModel.getFittingData(data, false);
-        double[] xOriginalUnit = data.getX();
-        double[] yOriginalUnit = data.getY();
-        double[] errOriginalUnit = data.getStaterror();
+        double[] xOriginalValues = data.getX();
+        double[] yOriginalValues = data.getY();
+        double[] errOriginalValues = data.getStaterror();
         
         // Convert data's units to fitting units
         UnitsManager um = Default.getInstance().getUnitsManager();
-        data.setX(um.convertX(xOriginalUnit, sedModel.getXUnits(), SherpaClient.X_UNIT));
-        data.setY(um.convertY(yOriginalUnit, xOriginalUnit,
+        data.setX(um.convertX(xOriginalValues, sedModel.getXUnits(), SherpaClient.X_UNIT));
+        data.setY(um.convertY(yOriginalValues, xOriginalValues,
                 sedModel.getYUnits(), sedModel.getXUnits(),
                 SherpaClient.Y_UNIT));
-        data.setStaterror(um.convertY(errOriginalUnit, xOriginalUnit,
+        data.setStaterror(um.convertErrors(errOriginalValues, yOriginalValues, xOriginalValues,
                 sedModel.getYUnits(), sedModel.getXUnits(),
                 SherpaClient.Y_UNIT));
         return data;
