@@ -13,6 +13,7 @@ import cfa.vo.sherpa.ConfidenceResults;
 import cfa.vo.sherpa.Data;
 import cfa.vo.sherpa.FitResults;
 import cfa.vo.sherpa.SherpaClient;
+import cfa.vo.sherpa.SherpaFitConfiguration;
 import cfa.vo.sherpa.models.Model;
 import cfa.vo.sherpa.models.DefaultModel;
 import cfa.vo.utils.Default;
@@ -20,6 +21,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.mrbean.MrBeanModule;
 
 import javax.swing.tree.TreeModel;
+
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.fest.swing.util.Arrays;
+import org.junit.Assert;
+import org.uispec4j.utils.ArrayUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -119,8 +126,54 @@ public class FitController {
     public FitResults fit() throws Exception {
         Data data = constructSherpaCall(sedModel);
         
+        /*
+         * ERH TEMP ADD
+         */
+        SherpaFitConfiguration fit = client.makeSherpaFitConfiguration(sedModel.getSed());
+        SherpaFitConfiguration fit1 = client.makeSherpaFitConfiguration(data, getFit());
+        
+        // Ensure data produced is identical
+        Data d1 = fit1.getDatasets().get(0);
+        Data d = fit.getDatasets().get(0);
+
+        double[] x1 = d1.getX();
+        double[] x = d.getX();
+        try {
+            Assert.assertArrayEquals(x, x1, 1E-30);
+        } catch (AssertionError e) {
+            e.printStackTrace();
+        }
+
+        x1 = d1.getY();
+        x = d.getY();
+        try {
+            Assert.assertArrayEquals(x, x1, 1E-30);
+        } catch (AssertionError e) {
+            e.printStackTrace();
+        }
+
+        x1 = d1.getStaterror();
+        x = d.getStaterror();
+        try {
+            Assert.assertArrayEquals(x, x1, 1E-30);
+            Assert.assertEquals(d.getName(), d1.getName());
+        } catch (AssertionError e) {
+            e.printStackTrace();
+        }
+
         // Make call to sherpa to fit data
-        FitResults retVal = client.fit(data, getFit());
+        FitResults retVal1 = client.fit(fit1);
+        FitResults retVal = client.fit(fit);
+
+        try {
+            Assert.assertEquals(retVal.getNumpoints(), retVal1.getNumpoints());
+            Assert.assertArrayEquals(retVal.getParvals(), retVal1.getParvals(),
+                    1E-30);
+        } catch (AssertionError e) {
+            e.printStackTrace();
+        }
+        
+        // Integrate results
         sedModel.getFit().integrateResults(retVal);
         
         // Record the version number on the SED in the FitConfiguration
@@ -158,7 +211,58 @@ public class FitController {
      * @throws Exception an exception may be thrown by the sherpa-samp service if the operation failed
      */
     public ConfidenceResults computeConfidence() throws Exception {
-        ConfidenceResults retVal = client.computeConfidence(constructSherpaCall(sedModel), getFit());
+        
+        /*
+         * ERH TEMP ADD
+         */
+        SherpaFitConfiguration fit = client.makeSherpaFitConfiguration(sedModel.getSed());
+        
+        Data data = constructSherpaCall(sedModel);
+        SherpaFitConfiguration fit1 = client.makeSherpaFitConfiguration(data, getFit());
+        
+        // Ensure data produced is identical
+        Data d1 = fit1.getDatasets().get(0);
+        Data d = fit.getDatasets().get(0);
+        
+
+        double[] x1 = d1.getX();
+        double[] x = d.getX();
+        try {
+            Assert.assertArrayEquals(x, x1, 1E-30);
+        } catch (AssertionError e) {
+            e.printStackTrace();
+        }
+
+        x1 = d1.getY();
+        x = d.getY();
+        try {
+            Assert.assertArrayEquals(x, x1, 1E-30);
+        } catch (AssertionError e) {
+            e.printStackTrace();
+        }
+
+        x1 = d1.getStaterror();
+        x = d.getStaterror();
+        try {
+            Assert.assertArrayEquals(x, x1, 1E-30);
+            Assert.assertEquals(d.getName(), d1.getName());
+        } catch (AssertionError e) {
+            e.printStackTrace();
+        }
+        
+        ////////////
+        
+        ConfidenceResults retVal1 = client.computeConfidence(fit1);
+        ConfidenceResults retVal = client.computeConfidence(fit);
+
+        try {
+            Assert.assertArrayEquals(retVal1.getParmaxes(), retVal.getParmaxes(), 1E-15);
+            Assert.assertArrayEquals(retVal1.getParmins(), retVal.getParmins(), 1E-15);
+            Assert.assertArrayEquals(retVal1.getParvals(), retVal.getParvals(), 1E-15);
+        } catch (AssertionError e) {
+            e.printStackTrace();
+        }
+        
         getFit().setConfidenceResults(retVal);
         return retVal;
     }

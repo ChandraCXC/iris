@@ -64,7 +64,7 @@ public class SherpaClientTest {
 
     @Test
     public void testMake() throws Exception {
-        SherpaFitConfiguration fitConf = client.make(sed);
+        SherpaFitConfiguration fitConf = client.makeSherpaFitConfiguration(sed);
         assertEquals(1, fitConf.getDatasets().size());
         Data data = fitConf.getDatasets().get(0);
         for (int i=0; i<3; i++) {

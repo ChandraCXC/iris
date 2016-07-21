@@ -42,7 +42,7 @@ public class SherpaClient {
         this.sampService = sampService;
     }
 
-    FitResults fit(SherpaFitConfiguration conf) throws Exception {
+    public FitResults fit(SherpaFitConfiguration conf) throws Exception {
         fixDatasets(conf);
         SAMPMessage message = SAMPFactory.createMessage(FIT_MTYPE, conf, SherpaFitConfiguration.class);
         Response response = sendMessage(message);
@@ -51,12 +51,12 @@ public class SherpaClient {
     }
 
     public FitResults fit(ExtSed sed) throws Exception {
-        SherpaFitConfiguration conf = make(sed);
+        SherpaFitConfiguration conf = makeSherpaFitConfiguration(sed);
         return fit(conf);
     }
 
     public double[] evaluate(double[] x, FitConfiguration fit) throws Exception {
-        SherpaFitConfiguration conf = make(x, fit);
+        SherpaFitConfiguration conf = makeSherpaEvaluateConfiguration(x, fit);
         return evaluate(conf);
     }
 
@@ -69,7 +69,7 @@ public class SherpaClient {
     }
 
     public FitResults fit(Data data, FitConfiguration fit) throws Exception {
-        SherpaFitConfiguration conf = make(data, fit);
+        SherpaFitConfiguration conf = makeSherpaFitConfiguration(data, fit);
         return fit(conf);
     }
 
@@ -80,14 +80,14 @@ public class SherpaClient {
     }
     
     public ConfidenceResults computeConfidence(Data data, FitConfiguration configuration) throws Exception {
-        return computeConfidence(make(data, configuration));
+        return computeConfidence(makeSherpaFitConfiguration(data, configuration));
     }
 
     public ConfidenceResults computeConfidence(ExtSed sed) throws Exception {
-        return computeConfidence(make(sed));
+        return computeConfidence(makeSherpaFitConfiguration(sed));
     }
     
-    private ConfidenceResults computeConfidence(SherpaFitConfiguration conf) throws Exception {
+    public ConfidenceResults computeConfidence(SherpaFitConfiguration conf) throws Exception {
         fixDatasets(conf);
         SAMPMessage message = SAMPFactory.createMessage(CONFIDENCE_MTYPE, conf, SherpaFitConfiguration.class);
         Response response = sendMessage(message);
@@ -145,7 +145,19 @@ public class SherpaClient {
         return prefix + stringCounter.incrementAndGet();
     }
 
-    private SherpaFitConfiguration make(Data data, FitConfiguration fit) {
+    public SherpaFitConfiguration makeSherpaFitConfiguration(ExtSed sed) throws Exception {
+        FitConfiguration fit = sed.getFit();
+        Data data = SAMPFactory.get(Data.class);
+        data.setName(DATA_NAME);
+        ExtSed flat = ExtSed.flatten(sed, X_UNIT, Y_UNIT);
+        data.setX(flat.getSegment(0).getSpectralAxisValues());
+        data.setY(flat.getSegment(0).getFluxAxisValues());
+        data.setStaterror((double[]) flat.getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR));
+
+        return makeSherpaFitConfiguration(data, fit);
+    }
+
+    public SherpaFitConfiguration makeSherpaFitConfiguration(Data data, FitConfiguration fit) {
         SherpaFitConfiguration fc = SAMPFactory.get(SherpaFitConfiguration.class);
 
         fc.addDataset(data);
@@ -160,23 +172,11 @@ public class SherpaClient {
         return fc;
     }
 
-    private SherpaFitConfiguration make(double[] x, FitConfiguration fit) {
+    private SherpaFitConfiguration makeSherpaEvaluateConfiguration(double[] x, FitConfiguration fit) {
         Data data = SAMPFactory.get(Data.class);
         data.setName(DATA_NAME);
         data.setX(x);
-        return make(data, fit);
-    }
-
-    SherpaFitConfiguration make(ExtSed sed) throws Exception {
-        FitConfiguration fit = sed.getFit();
-        Data data = SAMPFactory.get(Data.class);
-        data.setName(DATA_NAME);
-        ExtSed flat = ExtSed.flatten(sed, X_UNIT, Y_UNIT);
-        data.setX(flat.getSegment(0).getSpectralAxisValues());
-        data.setY(flat.getSegment(0).getFluxAxisValues());
-        data.setStaterror((double[]) flat.getSegment(0).getDataValues(UTYPE.FLUX_STAT_ERROR));
-
-        return make(data, fit);
+        return makeSherpaFitConfiguration(data, fit);
     }
 
     private void fixDatasets(SherpaFitConfiguration conf) {

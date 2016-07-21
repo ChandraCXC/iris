@@ -23,9 +23,9 @@ import cfa.vo.iris.test.unit.SherpaResource;
 import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.visualizer.preferences.SedModel;
-import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
+import cfa.vo.sherpa.ConfidenceResults;
 import cfa.vo.sherpa.Data;
 import cfa.vo.sherpa.FitResults;
 import cfa.vo.sherpa.SherpaClient;
@@ -33,18 +33,17 @@ import cfa.vo.sherpa.models.*;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Statistic;
 import cfa.vo.utils.Default;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 public class FitControllerIT {
+    
     private FitController controller;
     private SedModel sedModel;
     private double[] x = {1.0, 2.0, 3.0, 4.0, 5.0, 6.0};
@@ -74,8 +73,13 @@ public class FitControllerIT {
     @Test
     public void testFit() throws Exception {
         FitResults results = controller.fit();
-        double[] expected = {0, 1};
-        assertArrayEquals(expected, results.getParvals(), 0.01);
+        double[] expected = {0.0026159648660802892, 1.0011971292318782};
+        assertArrayEquals(expected, results.getParvals(), 1E-15);
+        
+        ConfidenceResults conf = controller.computeConfidence();
+        assertArrayEquals(new double[] {2.5042588276725897, 0.4012959241913576} , conf.getParmaxes(), 1E-15);
+        assertArrayEquals(new double[] {-1.3568985622029128, -0.6881227423832292} , conf.getParmins(), 1E-15);
+        assertArrayEquals(new double[] {0.0026159648660802892, 1.0011971292318782} , conf.getParvals(), 1E-15);
     }
 
     @Test
@@ -200,205 +204,8 @@ public class FitControllerIT {
         fit.setModel(cm);
 
         fit.setMethod(OptimizationMethod.LevenbergMarquardt);
-        fit.setStat(Statistic.LeastSquares);
+        fit.setStat(Statistic.CStat);
 
         return fit;
-    }
-
-
-    private class ModelStub implements Model {
-        private List<Parameter> pars;
-
-        public ModelStub() {
-            pars = new ArrayList<>();
-            pars.add(new ParameterStub("m3.p1", 0.1, 1));
-            pars.add(new ParameterStub("m3.p2", 0.2, 0));
-            pars.add(new ParameterStub("m3.p3", 0.3, 0));
-        }
-
-        @Override
-        public String getId() {
-            return "m3";
-        }
-
-        @Override
-        public void setId(String id) {
-
-        }
-
-        @Override
-        public String getName() {
-            return "tablemodel.m3";
-        }
-
-        @Override
-        public void setName(String name) {
-
-        }
-
-        @Override
-        public String getDescription() {
-            return null;
-        }
-
-        @Override
-        public void setDescription(String description) {
-
-        }
-
-        @Override
-        public List<Parameter> getPars() {
-            return pars;
-        }
-
-        @Override
-        public void addPar(Parameter par) {
-
-        }
-
-        @Override
-        public Parameter findParameter(String paramName) {
-            return null;
-        }
-
-        @Override
-        public String toString() {
-            return getName();
-        }
-    }
-
-    private class ParameterStub implements Parameter {
-        private String name;
-        private Double val;
-        private Integer frozen;
-
-        public ParameterStub(String name, Double val, Integer frozen) {
-            this.name = name;
-            this.val = val;
-            this.frozen = frozen;
-        }
-
-        @Override
-        public String getName() {
-            return name;
-        }
-
-        @Override
-        public void setName(String name) {
-
-        }
-
-        @Override
-        public Double getVal() {
-            return val;
-        }
-
-        @Override
-        public void setVal(Double value) {
-
-        }
-
-        @Override
-        public Double getMin() {
-            return null;
-        }
-
-        @Override
-        public void setMin(Double min) {
-
-        }
-
-        @Override
-        public Double getMax() {
-            return null;
-        }
-
-        @Override
-        public void setMax(Double max) {
-
-        }
-
-        @Override
-        public Integer getFrozen() {
-            return frozen;
-        }
-
-        @Override
-        public void setFrozen(Integer frozen) {
-
-        }
-
-        @Override
-        public Integer getHidden() {
-            return null;
-        }
-
-        @Override
-        public void setHidden(Integer hidden) {
-
-        }
-
-        @Override
-        public Integer getAlwaysfrozen() {
-            return null;
-        }
-
-        @Override
-        public void setAlwaysfrozen(Integer alwaysfrozen) {
-
-        }
-
-        @Override
-        public String getUnits() {
-            return null;
-        }
-
-        @Override
-        public void setUnits(String units) {
-
-        }
-
-        @Override
-        public String getLink() {
-            return null;
-        }
-
-        @Override
-        public void setLink(String link) {
-
-        }
-    }
-
-    private class UserModelStub implements UserModel {
-
-        @Override
-        public String getName() {
-            return "function.m3";
-        }
-
-        @Override
-        public void setName(String name) {
-
-        }
-
-        @Override
-        public String getFile() {
-            return "file://somewhere/on/disk";
-        }
-
-        @Override
-        public void setFile(String path) {
-
-        }
-
-        @Override
-        public String getFunction() {
-            return "somefunc";
-        }
-
-        @Override
-        public void setFunction(String function) {
-
-        }
     }
 }
