@@ -15,7 +15,7 @@
  */
 package cfa.vo.sherpa;
 
-public interface Configuration {
+public interface ConfidenceConfiguration {
     Double getSigma();
 
     void setSigma(Double sigma);

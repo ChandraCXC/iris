@@ -22,7 +22,7 @@ public interface Confidence {
 
     void setName(String name);
 
-    Configuration getConfig();
+    ConfidenceConfiguration getConfig();
 
-    void setConfig(Configuration conf);
+    void setConfig(ConfidenceConfiguration conf);
 }
