@@ -19,12 +19,17 @@ import cfa.vo.interop.SAMPFactory;
 import cfa.vo.iris.fitting.custom.CustomModelsManager;
 import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.quantities.SPVYUnit;
+import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.visualizer.preferences.SedModel;
+import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
+import cfa.vo.sedlib.common.Utypes;
 import cfa.vo.sherpa.ConfidenceResults;
 import cfa.vo.sherpa.Data;
+import cfa.vo.sherpa.FitResults;
 import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.models.*;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
@@ -32,19 +37,21 @@ import cfa.vo.sherpa.stats.Statistic;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import net.javacrumbs.jsonunit.JsonAssert;
+
+import static cfa.vo.iris.test.unit.TestUtils.createSampleSegment;
 import static org.junit.Assert.*;
 
 public class FitControllerTest {
     private FitController controller;
     private FitConfiguration configuration;
     private ByteArrayOutputStream os = new ByteArrayOutputStream();
+    private SherpaClient mockClient;
     private double[] x = {1.0, 1.1, 1.2};
     private double[] y = {2.0, 2.1, 2.2};
     private double[] err = {1.0, 1.0, 1.0};
@@ -56,14 +63,14 @@ public class FitControllerTest {
         Mockito.stub(sed.getFit()).toReturn(configuration);
         Mockito.stub(sed.toString()).toReturn("MySed (Segments: 3)");
         CustomModelsManager modelsManager = Mockito.mock(CustomModelsManager.class);
-        SherpaClient client = Mockito.mock(SherpaClient.class);
+        mockClient = Mockito.mock(SherpaClient.class);
         Data data = SAMPFactory.get(Data.class);
         data.setX(x);
         data.setY(y);
         data.setStaterror(err);
-        Mockito.stub(client.evaluate(Mockito.any(double[].class), Mockito.any(FitConfiguration.class))).toReturn(y);
+        Mockito.stub(mockClient.evaluate(Mockito.any(double[].class), Mockito.any(FitConfiguration.class))).toReturn(y);
         SedModel sedModel = new SedModel(sed, new IrisStarTableAdapter(null));
-        controller = new FitController(sedModel, modelsManager, client);
+        controller = new FitController(sedModel, modelsManager, mockClient);
     }
 
     @Test
@@ -107,6 +114,87 @@ public class FitControllerTest {
         assertArrayEquals(zeros, data.getRatioValues(), 0.001);
         assertEquals(SherpaClient.X_UNIT, data.getSpecUnits().toString());
         assertEquals(SherpaClient.Y_UNIT, data.getFluxUnits().toString());
+    }
+    
+    @Test
+    public void testFitMaskedSeds() throws Exception {
+        
+        // Expectations
+        FitResults mockResults = Mockito.mock(FitResults.class);
+        Mockito.stub(mockResults.getParvals()).toReturn(new double[] {});
+        Mockito.stub(mockResults.getParvals()).toReturn(new double[] {});
+        Mockito.stub(mockClient.fit(Mockito.any(Data.class), Mockito.any(FitConfiguration.class))).toReturn(mockResults);
+        
+        final ExtSed sed = new ExtSed("sed", false);
+        sed.addSegment(createSampleSegment(new double[] {1,2,3}, new double[] {100,200,300},
+                "nm", "Jy"));
+        sed.setFit(configuration);
+        
+        SedModel model = new SedModel(sed, new IrisStarTableAdapter(null));
+        controller.setSedModel(model);
+        
+        // mask first row in data table
+        model.getDataTables().get(0).applyMasks(new int[] {0});
+        
+        // These are here to make sure array lengths are kosher throughout the wiring in the 
+        // controller.
+        // Fit the model
+        controller.fit();
+        
+        // Evaluate model
+        controller.evaluateModel(model);
+        
+        // SedModel should be evaluated at ALL points
+        controller.evaluateModel(model);
+        
+        IrisStarTable segment = model.getDataTables().get(0);
+        double[] modelVal = segment.getPlotterDataTable().getModelValues();
+        double[] ratVal = segment.getPlotterDataTable().getRatioValues();
+        double[] resVal = segment.getPlotterDataTable().getResidualValues();
+        
+        assertEquals(3, modelVal.length);
+        assertEquals(3, ratVal.length);
+        assertEquals(3, resVal.length);
+    }
+    
+    @Test
+    public void testConstructSherpaClientDataCall() throws Exception {
+        
+        final ExtSed sed = new ExtSed("sed", false);
+        sed.addSegment(createSampleSegment(new double[] {1,2,3}, new double[] {10,20,30},
+                XUnit.EV.getString(), SPVYUnit.ABMAG.getString()));
+        sed.addSegment(createSampleSegment(new double[] {30}, new double[] {3},
+                XUnit.EV.getString(), SPVYUnit.ABMAG.getString()));
+        
+        // Add errors to first segment
+        sed.getSegment(0).getData().setDataValues(new double[] {.001,.002,.003}, Utypes.SEG_DATA_FLUXAXIS_ACC_STATERR);
+        sed.setFit(configuration);
+        
+        // We used ExtSed.flatten to get expected values
+        ExtSed flatSed = ExtSed.flatten(sed, SherpaClient.X_UNIT, SherpaClient.Y_UNIT);
+        double[] expectedX = flatSed.getSegment(0).getSpectralAxisValues();
+        double[] expectedY = flatSed.getSegment(0).getFluxAxisValues();
+        double[] expectedErrs = (double[]) flatSed.getSegment(0).getData().getDataValues(Utypes.SEG_DATA_FLUXAXIS_ACC_STATERR);
+        
+        SedModel model = new SedModel(sed, new IrisStarTableAdapter(null));
+        controller.setSedModel(model);
+        
+        // Get data
+        Data allData = controller.constructSherpaCall(model);
+        
+        // Should have converted units
+        assertArrayEquals(expectedX, allData.getX(), 1E-15);
+        assertArrayEquals(expectedY, allData.getY(), 1E-15);
+        assertArrayEquals(expectedErrs, allData.getStaterror(), 1E-15);
+        
+        // mask first row in data table
+        model.getDataTables().get(0).applyMasks(new int[] {0});
+        Data maskedData = controller.constructSherpaCall(model);
+        
+        // Should have converted units AND masked first row
+        assertArrayEquals(Arrays.copyOfRange(expectedX, 1, 4), maskedData.getX(), 1E-15);
+        assertArrayEquals(Arrays.copyOfRange(expectedY, 1, 4), maskedData.getY(), 1E-15);
+        assertArrayEquals(Arrays.copyOfRange(expectedErrs, 1, 4), maskedData.getStaterror(), 1E-15);
     }
 
     private FitConfiguration createFit() throws Exception {

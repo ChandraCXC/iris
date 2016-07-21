@@ -24,10 +24,13 @@ import java.util.List;
 import java.util.Map;
 
 import cfa.vo.iris.fitting.FitConfiguration;
+
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.stil.IrisDataStarTable;
 import cfa.vo.iris.visualizer.plotter.ColorPalette;
 import cfa.vo.iris.visualizer.plotter.HSVColorPalette;
 import cfa.vo.iris.units.UnitsException;
@@ -37,8 +40,11 @@ import cfa.vo.iris.visualizer.stil.tables.SegmentColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.StackedStarTable;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedNoDataException;
+import cfa.vo.sherpa.Data;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import uk.ac.starlink.table.StarTable;
 
 /**
@@ -128,6 +134,28 @@ public class SedModel {
     }
     
     /**
+     * @return A list of IrisDataStarTables for each Segment in this SED. List is in the same
+     * order as they appear in the SED. Rows are masked if specified.
+     * 
+     * NOTE: The values returned are in the current units of the SED model.
+     * 
+     * @param includeMasked if true the returned table will include all points, if false
+     * it will not include points that have been specified as 'masked'.
+     */
+    public List<IrisDataStarTable> getIrisDataTables(boolean includeMasked) {
+        List<IrisStarTable> tables = getDataTables();
+        List<IrisDataStarTable> dataTables = new ArrayList<>(tables.size());;
+        
+        if (includeMasked) {
+            for (IrisStarTable t : tables) dataTables.add(t.getPlotterDataTable());
+        } else {
+            for (IrisStarTable t : tables) dataTables.add(t);
+        }
+        
+        return dataTables;
+    }
+    
+    /**
      * @return A list of all LayerModels for each Segment in this SED. 
      * List of Segment layers is in the same order as they appear in the SED.
      */
@@ -141,6 +169,37 @@ public class SedModel {
         }
         
         return ret;
+    }
+    
+    /**
+     * Updated the passed {@link Data} object with the fitting data from this SED. As of 
+     * now that include flux, spectral, and stat error values.
+     * 
+     * @param includeMasked if true the returned table will include all points, if false
+     * it will not include points that have been specified as 'masked'.
+     * 
+     */
+    // TODO: Make this better! e.g., should have some mechanism to just have a stacked
+    // IrisStarTable that would allow us to more easily and efficiently extract data. Still, 
+    // performance wise much better than sedlib.
+    public void getFittingData(final Data data, boolean includeMasked) {
+        
+        List<IrisDataStarTable> dataTables = this.getIrisDataTables(includeMasked);
+        
+        // Extract and construct column data
+        double[] specData = new double[] {};
+        double[] fluxData = new double[] {};
+        double[] fluxErrData = new double[] {};
+        
+        for (IrisDataStarTable table : dataTables) {
+            specData = ArrayUtils.addAll(specData, table.getSpecValues());
+            fluxData = ArrayUtils.addAll(fluxData, table.getFluxValues());
+            fluxErrData = ArrayUtils.addAll(fluxErrData, table.getFluxErrValues());
+        }
+        
+        data.setX(specData);
+        data.setY(fluxData);
+        data.setStaterror(fluxErrData);
     }
     
     /**
@@ -311,6 +370,7 @@ public class SedModel {
         HashCodeBuilder hcb = new HashCodeBuilder(13,31);
         for (IrisStarTable table : getDataTables()) {
             hcb.append(table.getPlotterDataTable().hashCode());
+            hcb.append(table.getMasked());
         }
         return hcb.hashCode();
     }

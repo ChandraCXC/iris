@@ -76,24 +76,24 @@ public class MaskingTest {
         ArrayUtils.assertEquals(new Object[] {false, test.getName(), 4.0, 9.0, 9.0}, test.getRow(3));
         
         // verify values
-        checkEquals(new double[] {7,8,9}, test.getFluxDataValues());
-        checkEquals(new double[] {2,3,4}, test.getSpectralDataValues());
+        checkEquals(new double[] {7,8,9}, test.getFluxValues());
+        checkEquals(new double[] {2,3,4}, test.getSpecValues());
         
         // Apply a filter to row 2
         test.applyMasks(new int[] {2});
         assertEquals(2, test.getRowCount());
         
         // verify values
-        checkEquals(new double[] {7,9}, test.getFluxDataValues());
-        checkEquals(new double[] {2,4}, test.getSpectralDataValues());
+        checkEquals(new double[] {7,9}, test.getFluxValues());
+        checkEquals(new double[] {2,4}, test.getSpecValues());
         
         // Remove the first filter
         test.clearMasks(new int[] {0, 4});
         assertEquals(4, test.getRowCount());
         
         // verify values
-        checkEquals(new double[] {6,7,9,10}, test.getFluxDataValues());
-        checkEquals(new double[] {1,2,4,5}, test.getSpectralDataValues());
+        checkEquals(new double[] {6,7,9,10}, test.getFluxValues());
+        checkEquals(new double[] {1,2,4,5}, test.getSpecValues());
     }
     
     
@@ -182,8 +182,8 @@ public class MaskingTest {
         assertEquals(2, table1.getRowCount());
         assertEquals(1, table2.getRowCount());
         
-        checkEquals(new double[] {2,3}, table1.getFluxDataValues());
-        checkEquals(new double[] {2}, table2.getFluxDataValues());
+        checkEquals(new double[] {2,3}, table1.getFluxValues());
+        checkEquals(new double[] {2}, table2.getFluxValues());
         
         // Clear filter from second star table. Non-masked values should have no effect.
         table2.clearMasks(new int[] {0,4});
@@ -191,8 +191,8 @@ public class MaskingTest {
         assertEquals(2, table1.getRowCount());
         assertEquals(2, table2.getRowCount());
         
-        checkEquals(new double[] {2,3}, table1.getFluxDataValues());
-        checkEquals(new double[] {1,2}, table2.getFluxDataValues());
+        checkEquals(new double[] {2,3}, table1.getFluxValues());
+        checkEquals(new double[] {1,2}, table2.getFluxValues());
         
         // Remove all filters
         IrisStarTable.clearAllMasks(tables);
@@ -200,8 +200,8 @@ public class MaskingTest {
         assertEquals(3, table1.getRowCount());
         assertEquals(3, table2.getRowCount());
         
-        checkEquals(new double[] {1,2,3}, table1.getFluxDataValues());
-        checkEquals(new double[] {1,2,3}, table2.getFluxDataValues());
+        checkEquals(new double[] {1,2,3}, table1.getFluxValues());
+        checkEquals(new double[] {1,2,3}, table2.getFluxValues());
     }
     
     @Test

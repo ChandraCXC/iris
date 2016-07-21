@@ -51,7 +51,7 @@ import cfa.vo.utils.Default;
  * no more than 8 columns representing spectral and flux values and error ranges.
  *
  */
-public class SegmentStarTable extends RandomStarTable {
+public class SegmentStarTable extends RandomStarTable implements IrisDataStarTable {
     
     private static final Logger logger = Logger.getLogger(SegmentStarTable.class.getName());
     private static final UnitsManager units = Default.getInstance().getUnitsManager();
