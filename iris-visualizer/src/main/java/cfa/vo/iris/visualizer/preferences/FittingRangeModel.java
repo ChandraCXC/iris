@@ -1,3 +1,18 @@
+/*
+ * Copyright 2016 Chandra X-Ray Observatory.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package cfa.vo.iris.visualizer.preferences;
 
 import java.util.Arrays;
@@ -8,6 +23,7 @@ import cfa.vo.iris.sed.stil.SegmentColumn;
 import cfa.vo.iris.sed.stil.SegmentColumn.Column;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.units.UnitsManager;
+import cfa.vo.iris.visualizer.plotter.ErrorBarType;
 import cfa.vo.utils.Default;
 import uk.ac.starlink.table.ColumnStarTable;
 import uk.ac.starlink.table.StarTable;
@@ -20,7 +36,8 @@ public class FittingRangeModel extends LayerModel {
     public FittingRangeModel(List<FittingRange> ranges, String xunit, double yvalue) {
         super(getFittingRangeTable(ranges, xunit, yvalue));
         this.setShowMarks(false);
-        this.setErrorColor("Red");
+        this.setErrorBarType(ErrorBarType.capped_lines);
+        this.setErrorColor("ff004e");
     }
 
     private static StarTable getFittingRangeTable(List<FittingRange> ranges, String xunit, double yvalue) 
@@ -39,9 +56,10 @@ public class FittingRangeModel extends LayerModel {
         }
         
         ColumnStarTable ret = ColumnStarTable.makeTableWithRows(ranges.size());
+        ret.addColumn(new SegmentColumn.SegmentDataColumn(Column.Spectral_Value, xvaluesLow));
         ret.addColumn(new SegmentColumn.SegmentDataColumn(Column.Spectral_Error_Low, xvaluesLow));
         ret.addColumn(new SegmentColumn.SegmentDataColumn(Column.Spectral_Error_High, xvaluesHigh));
-        ret.addColumn(new SegmentColumn.SegmentDataColumn(Column.Spectral_Error_High, yvalues));
+        ret.addColumn(new SegmentColumn.SegmentDataColumn(Column.Flux_Value, yvalues));
         ret.setName(FITTING_LAYER);
         
         return ret;
