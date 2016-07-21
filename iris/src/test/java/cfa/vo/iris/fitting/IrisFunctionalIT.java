@@ -37,7 +37,7 @@ import static org.junit.Assert.assertEquals;
 
 public class IrisFunctionalIT extends AbstractUISpecTest {
 
-    private final long TIMEOUT=3000;
+    private final long TIMEOUT=5000;
     
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -477,6 +477,7 @@ public class IrisFunctionalIT extends AbstractUISpecTest {
             public void run() {
                 window.getMenuBar().getMenu("Tools").getSubMenu("SED Builder").getSubMenu("SED Builder").click();
                 desktop.containsWindow("SED Builder").check();
+                desktop.getWindow("SED Builder").getButton("New").click();
                 desktop.getWindow("SED Builder").getButton("Load File").click();
                 desktop.containsWindow("Load an input File").check();
             }
