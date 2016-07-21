@@ -110,6 +110,7 @@ public class VizierFrame extends javax.swing.JInternalFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
         sedCreationType = new javax.swing.JComboBox();
+        busy = new org.jdesktop.swingx.JXBusyLabel();
         jButton1 = new javax.swing.JButton();
 
         setClosable(true);
@@ -168,6 +169,9 @@ public class VizierFrame extends javax.swing.JInternalFrame {
         sedCreationType.setName("sedCreationType"); // NOI18N
         jPanel2.add(sedCreationType);
 
+        busy.setName("busy"); // NOI18N
+        jPanel2.add(busy);
+
         jButton1.setText("Load");
         jButton1.setName("jButton1"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -196,6 +200,7 @@ public class VizierFrame extends javax.swing.JInternalFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private org.jdesktop.swingx.JXBusyLabel busy;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -220,6 +225,7 @@ public class VizierFrame extends javax.swing.JInternalFrame {
             this.name = name;
             this.radius = radius;
             this.selectedIndex = selectedIndex;
+            busy.setBusy(true);
         }
 
         @Override
@@ -228,6 +234,7 @@ public class VizierFrame extends javax.swing.JInternalFrame {
                 NarrowOptionPane.showMessageDialog(VizierFrame.this, error,
                         "Error", NarrowOptionPane.ERROR_MESSAGE);
             }
+            busy.setBusy(false);
         }
 
         @Override

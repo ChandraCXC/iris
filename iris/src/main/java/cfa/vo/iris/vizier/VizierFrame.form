@@ -116,6 +116,11 @@
             <Property name="name" type="java.lang.String" value="sedCreationType" noResource="true"/>
           </Properties>
         </Component>
+        <Component class="org.jdesktop.swingx.JXBusyLabel" name="busy">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="busy" noResource="true"/>
+          </Properties>
+        </Component>
         <Component class="javax.swing.JButton" name="jButton1">
           <Properties>
             <Property name="text" type="java.lang.String" value="Load"/>
