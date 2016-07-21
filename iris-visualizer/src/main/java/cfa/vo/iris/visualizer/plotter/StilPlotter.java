@@ -273,10 +273,6 @@ public class StilPlotter extends JPanel {
             }
             
             sedIds.append(sedModel.getSed().getId() + ", ");
-            
-            // We will have warned the user, so update the modelVersionNumber so
-            // this popup doesn't show twice for the same sed model
-            sedModel.setModelVersion(sedModel.getVersion());
         }
         
         // If any models were invalid notify the user, this should only display once
@@ -287,6 +283,10 @@ public class StilPlotter extends JPanel {
                     sedIds.toString()),
                     "Warning",
                     JOptionPane.WARNING_MESSAGE);
+            
+            // We will have warned the user, so update the modelVersionNumbers for all SedModels so
+            // this popup doesn't show twice for the same sed model
+            dataModel.updateFittingVersionNumbers();
         }
     }
 

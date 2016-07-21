@@ -137,7 +137,11 @@ public class UnitsManagerFrame extends javax.swing.JInternalFrame {
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
         dataModel.setUnits(unitsWidget.getXunit(), unitsWidget.getYunit());
+        
+        // Updating units doesn't fundamentally change the segments, so we force update the version
+        dataModel.updateFittingVersionNumbers();
         dataModel.refresh();
+        
         setVisible(false);
     }//GEN-LAST:event_updateButtonActionPerformed
 

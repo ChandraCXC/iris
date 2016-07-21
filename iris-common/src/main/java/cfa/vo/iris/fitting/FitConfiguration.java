@@ -237,11 +237,11 @@ public class FitConfiguration {
         }
     }
 
-    protected int getSedVersion() {
+    public int getSedVersion() {
         return sedVersion;
     }
 
-    protected void setSedVersion(int sedVersion) {
+    public void setSedVersion(int sedVersion) {
         this.sedVersion = sedVersion;
     }
 
