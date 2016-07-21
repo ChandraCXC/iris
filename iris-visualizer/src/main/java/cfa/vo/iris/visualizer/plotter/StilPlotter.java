@@ -19,8 +19,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import cfa.vo.iris.fitting.FittingRange;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.quantities.SPVYQuantity;
+import cfa.vo.iris.visualizer.preferences.FittingRangeModel;
 import cfa.vo.iris.visualizer.preferences.FunctionModel;
 import cfa.vo.iris.visualizer.preferences.LayerModel;
 import cfa.vo.iris.visualizer.preferences.SedModel;
@@ -35,6 +37,8 @@ import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 import uk.ac.starlink.ttools.task.MapEnvironment;
 
 import java.awt.GridBagConstraints;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import java.awt.Insets;
@@ -77,6 +81,9 @@ public class StilPlotter extends JPanel {
     
     // MapEnvironment for the residuals plotter
     private MapEnvironment resEnv;
+    
+    // Fitting ranges currently plotted
+    FittingRangeModel fittingRanges;
     
     // Needs a default constructor for Netbeans
     public StilPlotter() {
@@ -503,8 +510,11 @@ public class StilPlotter extends JPanel {
 
         // Add model functions
         addFunctionModels(env);
+        
+        // Add Fitting ranges
+        addFittingRanges(env);
     }
-    
+
     private void addFunctionModels(MapEnvironment env) {
         
         // Override color settings so that each model function is a different color,
@@ -563,6 +573,26 @@ public class StilPlotter extends JPanel {
             for (String key : prefs.keySet()) {
                 resEnv.setValue(key, prefs.get(key));
             }
+        }
+    }
+    
+    private void addFittingRanges(MapEnvironment env) {
+        List<FittingRange> ranges = dataModel.getFittingRanges();
+
+        // Do nothing if none are available
+        if (CollectionUtils.isEmpty(ranges)) return;
+        
+        // If there is no aspect then do nothing
+        PlaneAspect aspect = getPlotPreferences().getAspect();
+        if (aspect == null) return;
+        
+        // Otherwise add the layer at 5% from the bottom of the aspect
+        double y = aspect.getYMin() + ((aspect.getYMax() - aspect.getYMin()) * .05);
+        fittingRanges = new FittingRangeModel(ranges, dataModel.getXunits(), y);
+        
+        Map<String, Object> prefs = fittingRanges.getPreferences();
+        for (String key : prefs.keySet()) {
+            env.setValue(key, prefs.get(key));
         }
     }
     
