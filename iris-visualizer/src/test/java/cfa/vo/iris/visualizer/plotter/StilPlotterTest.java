@@ -17,11 +17,15 @@ package cfa.vo.iris.visualizer.plotter;
 
 import cfa.vo.iris.visualizer.plotter.StilPlotter;
 import static org.junit.Assert.*;
+
+import cfa.vo.iris.fitting.FitConfiguration;
+import cfa.vo.iris.fitting.FittingRange;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.test.Ws;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
 import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
+import cfa.vo.iris.visualizer.preferences.FittingRangeModel;
 import cfa.vo.iris.visualizer.preferences.FunctionModel;
 import cfa.vo.iris.visualizer.preferences.LayerModel;
 import cfa.vo.iris.visualizer.preferences.SedModel;
@@ -44,6 +48,7 @@ import uk.ac.starlink.ttools.plot2.geom.PlaneSurfaceFactory.Profile;
 import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 import uk.ac.starlink.ttools.task.MapEnvironment;
 import cfa.vo.testdata.TestData;
+import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.task.BooleanParameter;
 
 public class StilPlotterTest {
@@ -93,7 +98,7 @@ public class StilPlotterTest {
                 layers[1].getDataSpec().getSourceTable().getRowCount());
         
         // assert that the plot has the same amount of data as the original SED
-        assertEquals(sed.getSegment(0).getLength(), 
+        assertEquals(sed.getSegment(0).getLength(),
                 layers[0].getDataSpec().getSourceTable().getRowCount());
     }
     
@@ -510,12 +515,52 @@ public class StilPlotterTest {
         assertEquals(disp.getAspect().getXMin(), res.getAspect().getXMin(), 0.01);
     }
     
+    @Test
+    public void testFittingRangePlot() throws Exception {
+        ExtSed sed = new ExtSed("test", false);
+        
+        // Fix plot at initial bounds (1,10) (1,10)
+        StilPlotter plot = setUpTests(sed);
+        plot.getPlotPreferences().setFixed(true);
+        
+        // Just make sure plot aspect hasn't changed
+        assertEquals(1, plot.getPlotDisplay().getAspect().getYMin(), 0.001);
+        assertEquals(10, plot.getPlotDisplay().getAspect().getYMax(), 0.001);
+        
+        // Add fitting range
+        FitConfiguration fit = new FitConfiguration();
+        fit.addFittingRange(new FittingRange(1, 9));
+        sed.setFit(fit);
+        plot.setSeds(Arrays.asList(sed));
+        plot.resetPlot(false, false);
+        
+        // Just make sure plot aspect hasn't changed
+        assertEquals(1, plot.getPlotDisplay().getAspect().getYMin(), 0.001);
+        assertEquals(10, plot.getPlotDisplay().getAspect().getYMax(), 0.001);
+        
+        // using reflection to access layers in plot display
+        Field layers_ = PlotDisplay.class.getDeclaredField("layers_");
+        layers_.setAccessible(true);
+        PlotLayer[] layers = (PlotLayer[]) layers_.get(plot.getPlotDisplay());
+        
+        // there should be 1 layer for the FunctionModel
+        assertEquals(1, ArrayUtils.getLength(layers));
+        
+        FittingRangeModel model = plot.fittingRanges;
+        StarTable fitStarTable = model.getInSource();
+        
+        // Validate values, y value should be at 1 + (10 - 1)*.5 = 1.45
+        assertEquals(1, fitStarTable.getRowCount());
+        assertArrayEquals(new Object[] {1.0, 1.0, 9.0, 1.45}, fitStarTable.getRow(0));
+    }
+    
     private StilPlotter setUpTests(ExtSed sed) throws Exception {
         preferences = new VisualizerComponentPreferences(ws);
         preferences.getDataStore().update(sed);
         preferences.updateSelectedSed(sed);
         
         StilPlotter plot = new StilPlotter(preferences);
+        
         return plot;
     }
 }

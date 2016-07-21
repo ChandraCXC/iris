@@ -5,6 +5,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.LinkedList;
 import java.util.List;
 
+import cfa.vo.iris.fitting.FittingRange;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.ColorPalette;
 import cfa.vo.iris.visualizer.plotter.HSVColorPalette;
@@ -58,15 +59,18 @@ public class VisualizerDataModel {
     // Metadata browser
     private List<IrisStarTable> selectedStarTables;
     
-    // Xunits for StarTables
-    private String xUnits = "";
+    // Xunits for StarTables (default to Angstrom)
+    private String xUnits = "Angstrom";
     
-    // Yunits for StarTables
-    private String yUnits = "";
+    // Yunits for StarTables (default to erg cm**(-2) s**(-1) angstrom**(-1))
+    private String yUnits = "erg/s/cm2/Angstrom";
     
     // list of FunctionModels associated with selectedSeds. These tables will be overplotted
     // as solid lines
     private List<FunctionModel> functionModels;
+    
+    // List of fitting ranges corresponding to the fit functions
+    private List<FittingRange> fittingRanges;
     
     private boolean coplotted = false;
     
@@ -175,7 +179,8 @@ public class VisualizerDataModel {
         List<LayerModel> newSedModels = new LinkedList<>();
         List<IrisStarTable> newSedTables = new LinkedList<>();
         StringBuilder dataModelTitle = new StringBuilder();
-        List<FunctionModel> newFunctionModels = new LinkedList<FunctionModel>();
+        List<FunctionModel> newFunctionModels = new LinkedList<>();
+        this.fittingRanges = new LinkedList<>();
         
         Iterator<ExtSed> it = selectedSeds.iterator();
         while (it.hasNext()) {
@@ -207,6 +212,11 @@ public class VisualizerDataModel {
             FunctionModel model = sedModel.getFunctionModel();
             if (model.hasModelValues()) {
                 newFunctionModels.add(model);
+            }
+            
+            // Add fitting ranges, if available AND we are not coplotting
+            if (!coplotted && sed.getFit() != null) {
+                fittingRanges.addAll(sed.getFit().getFittingRanges());
             }
         }
         this.selectedSeds = ObservableCollections.observableList(selectedSeds);
@@ -306,6 +316,10 @@ public class VisualizerDataModel {
     
     public List<FunctionModel> getFunctionModels() {
         return functionModels;
+    }
+    
+    public List<FittingRange> getFittingRanges() {
+        return fittingRanges;
     }
     
     /**
