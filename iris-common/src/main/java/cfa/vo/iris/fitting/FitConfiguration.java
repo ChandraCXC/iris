@@ -9,6 +9,7 @@ import cfa.vo.sherpa.optimization.Method;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Stat;
 import cfa.vo.sherpa.stats.Statistic;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jdesktop.observablecollections.ObservableCollections;
@@ -20,7 +21,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.*;
 import java.util.logging.Logger;
 
-@JsonIgnoreProperties({"treeModel", "modelValid", "expression"})
+@JsonIgnoreProperties({"treeModel", "modelValid", "expression", "sedVersion"})
 public class FitConfiguration {
     public static final String PROP_MODEL = "model";
     public static final String PROP_STAT = "stat";
