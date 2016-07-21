@@ -16,6 +16,7 @@
 package cfa.vo.iris.visualizer;
 
 import cfa.vo.iris.IWorkspace;
+import cfa.vo.iris.fitting.FitController;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 
 /**
@@ -27,6 +28,9 @@ public class IrisVisualizer {
     
     // Active visualizer component preferences
     private VisualizerComponentPreferences preferences;
+    
+    // Active FitController
+    private FitController controller;
     
     private IrisVisualizer() {};
     
@@ -60,5 +64,13 @@ public class IrisVisualizer {
      */
     public VisualizerComponentPreferences getActivePreferences() {
         return preferences;
+    }
+
+    public void setFitController(FitController controller) {
+        this.controller = controller;
+    }
+    
+    public FitController getController() {
+        return this.controller;
     }
 }

@@ -15,6 +15,7 @@
  */
 package cfa.vo.iris.visualizer.plotter;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
@@ -22,6 +23,7 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.quantities.SPVYQuantity;
 import cfa.vo.iris.visualizer.preferences.FunctionModel;
 import cfa.vo.iris.visualizer.preferences.LayerModel;
+import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 
@@ -250,8 +252,44 @@ public class StilPlotter extends JPanel {
         
         // Add the display to the plot view
         addPlotToDisplay();
+        
+        // Check for valid model functions on redraws
+        validateModelFunctions();
     }
     
+    /**
+     * Verify all model functions are valid and up to date with the original version
+     * of the fit function. Notify the user if not.
+     */
+    private void validateModelFunctions() {
+        StringBuilder sedIds = new StringBuilder();
+        for (SedModel sedModel : dataModel.getSedModels()) {
+            
+            // If there is no model or the model is valid, then we're good
+            if (!sedModel.getHasModelFunction() ||
+               (sedModel.getVersion() == sedModel.getModelVersion())) 
+            {
+                continue;
+            }
+            
+            sedIds.append(sedModel.getSed().getId() + ", ");
+        }
+        
+        // If any models were invalid notify the user, this should only display once
+        if (sedIds.length() > 0) {
+            JOptionPane.showMessageDialog(this, 
+                    String.format(
+                    "Warning: %smay no longer be valid! You may want to\n refit the sed or re-evaluate the model for the fit.",
+                    sedIds.toString()),
+                    "Warning",
+                    JOptionPane.WARNING_MESSAGE);
+            
+            // We will have warned the user, so update the modelVersionNumbers for all SedModels so
+            // this popup doesn't show twice for the same sed model
+            dataModel.updateFittingVersionNumbers();
+        }
+    }
+
     /**
      * Resets boundaries on the zoom to their original settings.
      */

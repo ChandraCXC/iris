@@ -16,6 +16,7 @@
 
 package cfa.vo.iris.visualizer.preferences;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.LinkedList;
@@ -24,6 +25,7 @@ import java.util.Map;
 
 import cfa.vo.iris.fitting.FitConfiguration;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.plotter.ColorPalette;
@@ -56,6 +58,10 @@ public class SedModel {
     private String xunits;
     private String yunits;
     
+    // Evaluated model version number
+    private int modelVersion = 13;
+    private boolean hasModelFunction = false;
+
     public SedModel(ExtSed sed, IrisStarTableAdapter adapter) {
         this.sed = sed;
         this.adapter = adapter;
@@ -111,7 +117,7 @@ public class SedModel {
      * order as they appear in the SED.
      */
     public List<IrisStarTable> getDataTables() {
-        List<IrisStarTable> ret = new LinkedList<>();
+        List<IrisStarTable> ret = new ArrayList<>();
         for (Segment seg : sed.getSegments()) {
             // If this isn't available then it hasn't yet been serialized in the DataStore
             if (starTableData.containsKey(seg)) {
@@ -300,7 +306,31 @@ public class SedModel {
     public void setFit(FitConfiguration fit) {
         sed.setFit(fit);
     }
+    
+    public int getVersion() {
+        HashCodeBuilder hcb = new HashCodeBuilder(13,31);
+        for (IrisStarTable table : getDataTables()) {
+            hcb.append(table.getPlotterDataTable().hashCode());
+        }
+        return hcb.hashCode();
+    }
+    
+    public int getModelVersion() {
+        return modelVersion;
+    }
 
+    public void setModelVersion(int modelVersion) {
+        this.modelVersion = modelVersion;
+    }
+
+    public boolean getHasModelFunction() {
+        return hasModelFunction;
+    }
+
+    public void setHasModelFunction(boolean hasModelFunction) {
+        this.hasModelFunction = hasModelFunction;
+    }
+    
     public ExtSed getSed() {
         return sed;
     }

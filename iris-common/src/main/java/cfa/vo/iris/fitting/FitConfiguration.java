@@ -9,9 +9,8 @@ import cfa.vo.sherpa.optimization.Method;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Stat;
 import cfa.vo.sherpa.stats.Statistic;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
@@ -22,7 +21,7 @@ import java.beans.PropertyChangeSupport;
 import java.util.*;
 import java.util.logging.Logger;
 
-@JsonIgnoreProperties({"treeModel", "modelValid", "expression"})
+@JsonIgnoreProperties({"treeModel", "modelValid", "expression", "sedVersion"})
 public class FitConfiguration {
     public static final String PROP_MODEL = "model";
     public static final String PROP_STAT = "stat";
@@ -48,6 +47,7 @@ public class FitConfiguration {
     private Integer numPoints;
     private Double statVal;
     private Integer dof;
+    private int sedVersion;
 
     private ObservableList<UserModel> userModelList = ObservableCollections.observableList(new ArrayList<UserModel>());
     private ModelExpressionVerifier verifier = new ModelExpressionVerifier();
@@ -236,6 +236,14 @@ public class FitConfiguration {
         else {
             return "No Model";
         }
+    }
+
+    public int getSedVersion() {
+        return sedVersion;
+    }
+
+    public void setSedVersion(int sedVersion) {
+        this.sedVersion = sedVersion;
     }
 
     public void integrateResults(FitResults results) {

@@ -344,6 +344,26 @@ public class VisualizerDataModel {
         pp.setYUnits(yunit);
     }
     
+    /**
+     * This method should be called when we want to explicitly bring the version numbers
+     * of each SedModel's fitting and evaluated models up to date with the latest version
+     * of the Sed. In particular, when changing units we want the version numbers to update.
+     * Or when the user explicitly asks to ignore future warnings of the model being out 
+     * of date.
+     * 
+     */
+    public void updateFittingVersionNumbers() {
+        for (SedModel model : getSedModels()) {
+            int version = model.getVersion();
+            if (model.getHasModelFunction()) {
+                model.setModelVersion(version);
+            }
+            if (model.getSed().getFit() != null) {
+                model.getSed().getFit().setSedVersion(version);
+            }
+        }
+    }
+    
     public String getXunits() {
         return xUnits;
     }

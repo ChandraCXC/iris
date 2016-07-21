@@ -16,10 +16,13 @@
 package cfa.vo.iris.visualizer.plotter;
 
 import cfa.vo.iris.IWorkspace;
+import cfa.vo.iris.fitting.FitController;
 import cfa.vo.iris.gui.GUIUtils;
+import cfa.vo.iris.visualizer.IrisVisualizer;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
 import cfa.vo.iris.visualizer.preferences.CoPlotManagementWindow;
+import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import java.awt.Dimension;
@@ -213,6 +216,7 @@ public class PlotterView extends JInternalFrame {
         bottomButtonsPanel = new javax.swing.JPanel();
         tglbtnShowHideResiduals = new javax.swing.JToggleButton();
         secondaryPlotTypeComboBox = new javax.swing.JComboBox();
+        evaluateButton = new javax.swing.JButton();
         topButtonsPanel = new javax.swing.JPanel();
         btnReset = new javax.swing.JButton();
         zoomIn = new javax.swing.JButton();
@@ -232,11 +236,6 @@ public class PlotterView extends JInternalFrame {
         menuBar = new javax.swing.JMenuBar();
         mnF = new javax.swing.JMenu();
         mntmExport = new javax.swing.JMenuItem();
-        mntmProperties = new javax.swing.JMenuItem();
-        mntmOpen = new javax.swing.JMenuItem();
-        mntmSave = new javax.swing.JMenuItem();
-        mnEdit = new javax.swing.JMenu();
-        mntmSomething = new javax.swing.JMenuItem();
         mnView = new javax.swing.JMenu();
         mnPlotType = new javax.swing.JMenu();
         mntmLog = new javax.swing.JRadioButtonMenuItem();
@@ -264,6 +263,14 @@ public class PlotterView extends JInternalFrame {
 
         secondaryPlotTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Residuals", "Ratios" }));
 
+        evaluateButton.setText("Evaluate Models");
+        evaluateButton.setToolTipText("Re-evaluates the models using the current fit results");
+        evaluateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                evaluateButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout bottomButtonsPanelLayout = new javax.swing.GroupLayout(bottomButtonsPanel);
         bottomButtonsPanel.setLayout(bottomButtonsPanelLayout);
         bottomButtonsPanelLayout.setHorizontalGroup(
@@ -273,6 +280,8 @@ public class PlotterView extends JInternalFrame {
                 .addComponent(tglbtnShowHideResiduals)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(secondaryPlotTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(evaluateButton)
                 .addContainerGap())
         );
         bottomButtonsPanelLayout.setVerticalGroup(
@@ -281,7 +290,8 @@ public class PlotterView extends JInternalFrame {
                 .addContainerGap()
                 .addGroup(bottomButtonsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tglbtnShowHideResiduals)
-                    .addComponent(secondaryPlotTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(secondaryPlotTypeComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(evaluateButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -525,23 +535,7 @@ public class PlotterView extends JInternalFrame {
         });
         mnF.add(mntmExport);
 
-        mntmProperties.setText("Properties");
-        mnF.add(mntmProperties);
-
-        mntmOpen.setText("Open");
-        mnF.add(mntmOpen);
-
-        mntmSave.setText("Save");
-        mnF.add(mntmSave);
-
         menuBar.add(mnF);
-
-        mnEdit.setText("Edit");
-
-        mntmSomething.setText("Something");
-        mnEdit.add(mntmSomething);
-
-        menuBar.add(mnEdit);
 
         mnView.setText("View");
 
@@ -680,17 +674,30 @@ public class PlotterView extends JInternalFrame {
         plotter.dataPan(SwingConstants.WEST);
     }//GEN-LAST:event_rightActionPerformed
 
+    private void evaluateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_evaluateButtonActionPerformed
+        // Do nothing if there is not controller available
+        FitController controller = IrisVisualizer.getInstance().getController();
+        if (controller == null) {
+            return;
+        }
+        
+        // Re-evaluate all models currently plotted
+        for (SedModel model : preferences.getDataModel().getSedModels()) {
+            preferences.evaluateModel(model, controller);
+        }
+    }//GEN-LAST:event_evaluateButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel bottomButtonsPanel;
     private javax.swing.JButton btnReset;
     private javax.swing.JButton btnUnits;
     private javax.swing.JPanel buttonPanel;
     private cfa.vo.iris.visualizer.plotter.JButtonArrow down;
+    private javax.swing.JButton evaluateButton;
     private javax.swing.JSpinner fluxOrDensity;
     private cfa.vo.iris.visualizer.plotter.JButtonArrow left;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JButton metadataButton;
-    private javax.swing.JMenu mnEdit;
     private javax.swing.JMenu mnF;
     private javax.swing.JMenu mnHelp;
     private javax.swing.JMenu mnPlotType;
@@ -702,11 +709,7 @@ public class PlotterView extends JInternalFrame {
     private javax.swing.JCheckBoxMenuItem mntmGridOnOff;
     private javax.swing.JRadioButtonMenuItem mntmLinear;
     private javax.swing.JRadioButtonMenuItem mntmLog;
-    private javax.swing.JMenuItem mntmOpen;
     private javax.swing.JMenuItem mntmPlotterNavigationHelp;
-    private javax.swing.JMenuItem mntmProperties;
-    private javax.swing.JMenuItem mntmSave;
-    private javax.swing.JMenuItem mntmSomething;
     private javax.swing.JRadioButtonMenuItem mntmXlog;
     private javax.swing.JRadioButtonMenuItem mntmYlog;
     private javax.swing.JPanel mouseCoordPanel;

@@ -18,6 +18,9 @@ package cfa.vo.iris.visualizer.preferences;
 
 import static org.junit.Assert.*;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import static cfa.vo.iris.test.unit.TestUtils.*;
 
 import org.junit.Test;
@@ -141,5 +144,53 @@ public class SedPreferencesTest {
         
         assertEquals("target1", model.getSegmentModel(sed.getSegment(0)).getSuffix());
         assertEquals("target1 1", model.getSegmentModel(sed.getSegment(1)).getSuffix());
+    }
+    
+    @Test
+    public void testSedModelVersioning() throws Exception {
+        
+        final ExecutorService executor = Executors.newFixedThreadPool(1);
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter(executor);
+        try {
+            runTestSedModelVersioning(adapter);
+        } finally {
+            executor.shutdown();
+        }
+    }
+    
+    private void runTestSedModelVersioning(IrisStarTableAdapter adapter) throws Exception {
+        
+        final ExtSed sed = new ExtSed("sed", false);
+        
+        // Empty SED -> 0 version
+        SedModel model = new SedModel(sed, adapter);
+        int h1 = model.getVersion();
+        assertEquals(13, h1);
+        
+        // Add basic segment
+        Segment segment1 = createSampleSegment();//createSampleSegment(new double[] {1,1}, new double[] {1,1});
+        sed.addSegment(segment1);
+        model.refresh();
+        int h2 = model.getVersion();
+        assertFalse(h1 == h2);
+
+        // Additional segment changes hashcode
+        Segment segment2 = createSampleSegment(new double[] {1,2}, new double[] {2,2});
+        sed.addSegment(segment2);
+        model.refresh();
+        int h3 = model.getVersion();
+        assertFalse(h2 == h3);
+        
+        // Remove 2nd segment
+        sed.remove(segment2);
+        model.refresh();
+        int h4 = model.getVersion();
+        assertTrue(h2 == h4);
+        
+        // Changing values changes version
+        segment1.setSpectralAxisValues(new double[] {1, 2, 100});
+        model.refresh();
+        int h5 = model.getVersion();
+        assertFalse(h4 == h5);
     }
 }

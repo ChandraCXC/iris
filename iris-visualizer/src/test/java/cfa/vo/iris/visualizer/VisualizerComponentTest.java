@@ -154,7 +154,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         
         // check the grid is on by default
         JMenuBar menu = viewer.findSwingComponent(JMenuBar.class, "menuBar");
-        JCheckBoxMenuItem gridMenuItem = (JCheckBoxMenuItem) menu.getMenu(2).getMenuComponent(3);
+        JCheckBoxMenuItem gridMenuItem = (JCheckBoxMenuItem) menu.getMenu(1).getMenuComponent(3);
         assertTrue(gridMenuItem.isSelected());
         
         // on by default. switch grids off
@@ -182,7 +182,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         
         // when a new SED is added, it should have the default plot preferences.
         // check that the Grid on/off checkbox is selected.
-        gridMenuItem = (JCheckBoxMenuItem) menu.getMenu(2).getMenuComponent(3);
+        gridMenuItem = (JCheckBoxMenuItem) menu.getMenu(1).getMenuComponent(3);
         assertTrue(gridMenuItem.isSelected());
         
         // switch sed2's plot type to xlog
@@ -191,7 +191,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
                 .getSubMenu("Plot Type")
                 .getSubMenu("X Log")
                 .click();
-        JMenu plotTypeMenu = (JMenu) menu.getMenu(2).getMenuComponent(0);
+        JMenu plotTypeMenu = (JMenu) menu.getMenu(1).getMenuComponent(0);
         JRadioButtonMenuItem xlog = (JRadioButtonMenuItem) plotTypeMenu.getItem(2);
         assertTrue(xlog.isSelected());
         
@@ -207,7 +207,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         });
         
         // grid check box should still be unselected.
-        gridMenuItem = (JCheckBoxMenuItem) menu.getMenu(2).getMenuComponent(3);
+        gridMenuItem = (JCheckBoxMenuItem) menu.getMenu(1).getMenuComponent(3);
         assertTrue(!gridMenuItem.isSelected());
         
         // now, switch sed1 to linear space
@@ -217,7 +217,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
                 .getSubMenu("Linear")
                 .click();
         
-        plotTypeMenu = (JMenu) menu.getMenu(2).getMenuComponent(0);
+        plotTypeMenu = (JMenu) menu.getMenu(1).getMenuComponent(0);
         JRadioButtonMenuItem linear = (JRadioButtonMenuItem) plotTypeMenu.getItem(1);
         assertTrue(linear.isSelected());
         
@@ -268,7 +268,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         // get components: PlotPreferences and autoFixed menuCheckBox
         PlotPreferences preferences = plotter.getPlotPreferences();
         JMenuBar menu = viewer.findSwingComponent(JMenuBar.class, "menuBar");
-        JCheckBoxMenuItem autoFixed = (JCheckBoxMenuItem) menu.getMenu(2).getMenuComponent(2);
+        JCheckBoxMenuItem autoFixed = (JCheckBoxMenuItem) menu.getMenu(1).getMenuComponent(2);
         
         // check that box is unchecked (auto range viewport by default)
         assertFalse(autoFixed.isSelected());
@@ -351,7 +351,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         });
         
         // check that the fixed check box is unmarked (default value)
-        autoFixed = (JCheckBoxMenuItem) menu.getMenu(2).getMenuComponent(2);
+        autoFixed = (JCheckBoxMenuItem) menu.getMenu(1).getMenuComponent(2);
         assertFalse(autoFixed.isSelected());
         
         // assert that the plot range is for sed2, which should be the default
@@ -372,7 +372,7 @@ public class VisualizerComponentTest extends AbstractComponentGUITest {
         });
         
         // check that the fixed check box is marked since we're on sed1 now
-        autoFixed = (JCheckBoxMenuItem) menu.getMenu(2).getMenuComponent(2);
+        autoFixed = (JCheckBoxMenuItem) menu.getMenu(1).getMenuComponent(2);
         assertTrue(autoFixed.isSelected());
         
         // make sure the view port is the same as it was before switching

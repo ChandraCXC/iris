@@ -116,6 +116,10 @@ public class FitController {
     public FitResults fit() throws Exception {
         FitResults retVal = client.fit(sedModel.getSed());
         sedModel.getFit().integrateResults(retVal);
+        
+        // Record the version number on the SED in the FitConfiguration
+        sedModel.getFit().setSedVersion(sedModel.getVersion());
+        
         return retVal;
     }
 
@@ -208,6 +212,11 @@ public class FitController {
      * @throws Exception
      */
     public void evaluateModel(SedModel sedModel) throws Exception {
+        
+        // Update the model version with the current version of the Sed
+        sedModel.setModelVersion(sedModel.getVersion());
+        sedModel.setHasModelFunction(true);
+        
         String xUnit = sedModel.getXUnits();
         String yUnit = sedModel.getYUnits();
 
