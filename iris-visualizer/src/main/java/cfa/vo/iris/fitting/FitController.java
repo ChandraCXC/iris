@@ -120,7 +120,7 @@ public class FitController {
         Data data = constructSherpaCall(sedModel);
         
         // Make call to sherpa to fit data
-        FitResults retVal = client.fit(data, sedModel.getSed().getFit());
+        FitResults retVal = client.fit(data, getFit());
         sedModel.getFit().integrateResults(retVal);
         
         // Record the version number on the SED in the FitConfiguration
@@ -158,7 +158,7 @@ public class FitController {
      * @throws Exception an exception may be thrown by the sherpa-samp service if the operation failed
      */
     public ConfidenceResults computeConfidence() throws Exception {
-        ConfidenceResults retVal = client.computeConfidence(sedModel.getSed());
+        ConfidenceResults retVal = client.computeConfidence(constructSherpaCall(sedModel), getFit());
         getFit().setConfidenceResults(retVal);
         return retVal;
     }
