@@ -78,9 +78,16 @@ public class SherpaClient {
         data.setName(name);
         return data;
     }
+    
+    public ConfidenceResults computeConfidence(Data data, FitConfiguration configuration) throws Exception {
+        return computeConfidence(make(data, configuration));
+    }
 
     public ConfidenceResults computeConfidence(ExtSed sed) throws Exception {
-        SherpaFitConfiguration conf = make(sed);
+        return computeConfidence(make(sed));
+    }
+    
+    private ConfidenceResults computeConfidence(SherpaFitConfiguration conf) throws Exception {
         fixDatasets(conf);
         SAMPMessage message = SAMPFactory.createMessage(CONFIDENCE_MTYPE, conf, SherpaFitConfiguration.class);
         Response response = sendMessage(message);
