@@ -24,10 +24,7 @@ import org.junit.rules.TemporaryFolder;
 import org.uispec4j.*;
 import org.uispec4j.assertion.Assertion;
 import org.uispec4j.assertion.UISpecAssert;
-import org.uispec4j.interception.FileChooserHandler;
-import org.uispec4j.interception.PopupMenuInterceptor;
-import org.uispec4j.interception.WindowHandler;
-import org.uispec4j.interception.WindowInterceptor;
+import org.uispec4j.interception.*;
 
 import java.io.File;
 import java.nio.charset.Charset;
@@ -38,7 +35,7 @@ import java.nio.file.Paths;
 
 import static org.junit.Assert.assertEquals;
 
-public class FittingFunctionalIT extends AbstractUISpecTest {
+public class IrisFunctionalIT extends AbstractUISpecTest {
 
     private final long TIMEOUT=3000;
     
@@ -80,7 +77,8 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
     }
 
     @Test
-    public void testFittingThread() throws Exception {
+    public void testThread() throws Exception {
+        testVizierPlugin();
         installModels();
         String[][] table = new String[][]{{"3C 273", "187.28, 2.0524", "NASA/IPAC Extragalactic Database (NED)", "474"}};
         loadSed("3c273.xml", table);
@@ -138,6 +136,69 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
 
         // check the confidence interval label updated
         fittingView.getTextBox("sigmaPercent").textEquals("sigma - 99.99%").check();
+    }
+
+    private void clickVizier() throws Exception {
+        TestUtils.invokeWithRetry(50, 100, new Runnable() {
+            @Override
+            public void run() {
+                window.getMenuBar().getMenu("Tools").getSubMenu("VizierClient").getSubMenu("Vizier SED Client").click();
+            }
+        });
+    }
+
+    private void testVizierPlugin() throws Exception {
+        testVizierPluginLoad();
+        testVizierPluginError();
+        testVizierPluginErrorRadius();
+    }
+
+    private void testVizierPluginErrorRadius() throws Exception {
+        clickVizier();
+        window.getInputTextBox("jtextField1").setText("3c273");
+        window.getInputTextBox("vizierRadius").setText("foo");
+        window.getComboBox("sedCreationType").select("Create");
+        WindowInterceptor.init(window.getButton("load").triggerClick())
+                .process(
+                        BasicHandler.init()
+                                .assertContainsText("Not a valid search radius: foo")
+                                .triggerButtonClick("OK"))
+                .run();
+    }
+
+    private void testVizierPluginError() throws Exception {
+        clickVizier();
+
+        window.getInputTextBox("vizierTargetName").setText("foo");
+        window.getComboBox("sedCreationType").select("Create");
+
+
+        WindowInterceptor.init(window.getButton("load").triggerClick())
+                .process(
+                        BasicHandler.init()
+                                .assertContainsText("Cannot find data for target foo")
+                                .triggerButtonClick("OK"))
+                .run();
+    }
+
+    private void testVizierPluginLoad() throws Exception {
+        clickVizier();
+
+        window.getInputTextBox("vizierTargetName").setText("3c273");
+        window.getInputTextBox("vizierRadius").setText("5");
+        window.getComboBox().select("Create");
+        window.getButton("load").click();
+
+        window.getMenuBar().getMenu("Tools").getSubMenu("SED Builder").getSubMenu("SED Builder").click();
+        Window builder = window.getDesktop().getWindow("SED Builder");
+
+        final String publisher = (String) builder.getTable().getContentAt(0, 2);
+        UISpecAssert.waitUntil(new Assertion() {
+            @Override
+            public void check() {
+                junit.framework.Assert.assertTrue(publisher.startsWith("Vizier - CDS"));
+            }
+        }, 20000);
     }
 
     private void saveText() throws Exception {

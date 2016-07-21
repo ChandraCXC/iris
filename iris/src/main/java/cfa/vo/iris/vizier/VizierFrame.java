@@ -32,6 +32,8 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.ISedManager;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.sedlib.Segment;
+
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -96,15 +98,14 @@ public class VizierFrame extends javax.swing.JInternalFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-        java.awt.GridBagConstraints gridBagConstraints;
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        vizierTargetName = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        vizierRadius = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel4 = new javax.swing.JLabel();
@@ -127,12 +128,12 @@ public class VizierFrame extends javax.swing.JInternalFrame {
         jLabel1.setName("jLabel1"); // NOI18N
         jPanel1.add(jLabel1);
 
-        jTextField1.setName("jTextField1"); // NOI18N
+        vizierTargetName.setName("vizierTargetName"); // NOI18N
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${targetName}"), jTextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${targetName}"), vizierTargetName, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
-        jPanel1.add(jTextField1);
+        jPanel1.add(vizierTargetName);
 
         getContentPane().add(jPanel1);
 
@@ -143,13 +144,12 @@ public class VizierFrame extends javax.swing.JInternalFrame {
         jLabel3.setName("jLabel3"); // NOI18N
         jPanel3.add(jLabel3);
 
-        jTextField2.setText("5");
-        jTextField2.setName("jTextField2"); // NOI18N
+        vizierRadius.setName("vizierRadius"); // NOI18N
 
-        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${searchRadius}"), jTextField2, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${searchRadius}"), vizierRadius, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
-        jPanel3.add(jTextField2);
+        jPanel3.add(vizierRadius);
 
         jLabel2.setText("(arcseconds)");
         jLabel2.setName("jLabel2"); // NOI18N
@@ -189,43 +189,9 @@ public class VizierFrame extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_load
 
     private void load() {
-        try {
-            Collection<Segment> segments = VizierImporter.getSedFromName(targetName, Double.parseDouble(searchRadius));
-            ExtSed selectedSed = manager.getSelected();
-            
-            int idx = sedCreationType.getSelectedIndex();
-            boolean add = false;
-
-            if (selectedSed == null || idx == 1) {
-                add = true;
-                selectedSed = new ExtSed("Vizier", false);
-            }
-            
-            /* Check for duplicate points.
-             * 
-             * If duplicate point values are in segMap, fire VizierDuplicatePointsFrame
-             * and based on the user input, keep or remove all duplicate points.
-             * 
-             * Check for duplicate points
-             * 
-             * TODO
-             */             
-
-            List<Segment> segs = new ArrayList<>(segments);
-
-            selectedSed.addSegment(segs);
-            if (add) {
-                manager.add(selectedSed);
-            }
-        } catch (NumberFormatException ex) {
-            Logger.getLogger(VizierFrame.class.getName()).log(Level.SEVERE, null, ex);
-            NarrowOptionPane.showMessageDialog(this, "Not a valid search radius: " + searchRadius,
-                    "Error", NarrowOptionPane.ERROR_MESSAGE);
-        } catch (Exception ex) {
-            Logger.getLogger(VizierFrame.class.getName()).log(Level.SEVERE, null, ex);
-            NarrowOptionPane.showMessageDialog(this, "Cannot find data for target " + targetName,
-                    "Error", NarrowOptionPane.ERROR_MESSAGE);
-        }
+        int idx = sedCreationType.getSelectedIndex();
+        SwingWorker worker = new VizierSwingWorker(targetName, searchRadius, idx);
+        worker.execute();
     }
 
 
@@ -238,11 +204,70 @@ public class VizierFrame extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JComboBox sedCreationType;
+    private javax.swing.JTextField vizierRadius;
+    private javax.swing.JTextField vizierTargetName;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
+    private class VizierSwingWorker extends SwingWorker {
+        private String name;
+        private String radius;
+        private int selectedIndex;
+        private String error;
+
+        public VizierSwingWorker(String name, String radius, int selectedIndex) {
+            this.name = name;
+            this.radius = radius;
+            this.selectedIndex = selectedIndex;
+        }
+
+        @Override
+        protected void done() {
+            if (error != null) {
+                NarrowOptionPane.showMessageDialog(VizierFrame.this, error,
+                        "Error", NarrowOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+        @Override
+        protected Void doInBackground() throws Exception {
+            try {
+                Collection<Segment> segments = VizierImporter.getSedFromName(name, Double.parseDouble(radius));
+                ExtSed selectedSed = manager.getSelected();
+
+                boolean add = false;
+
+                if (selectedSed == null || selectedIndex == 1) {
+                    add = true;
+                    selectedSed = new ExtSed("Vizier", false);
+                }
+
+            /* Check for duplicate points.
+             *
+             * If duplicate point values are in segMap, fire VizierDuplicatePointsFrame
+             * and based on the user input, keep or remove all duplicate points.
+             *
+             * Check for duplicate points
+             *
+             * TODO
+             */
+
+                List<Segment> segs = new ArrayList<>(segments);
+
+                selectedSed.addSegment(segs);
+                if (add) {
+                    manager.add(selectedSed);
+                }
+            } catch (NumberFormatException ex) {
+                Logger.getLogger(VizierFrame.class.getName()).log(Level.SEVERE, null, ex);
+                error = "Not a valid search radius: " + radius;
+            } catch (Exception ex) {
+                Logger.getLogger(VizierFrame.class.getName()).log(Level.SEVERE, null, ex);
+                error = "Cannot find data for target " + name;
+            }
+            return null;
+        }
+    }
 }
 
