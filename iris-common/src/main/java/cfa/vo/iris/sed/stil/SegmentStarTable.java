@@ -24,6 +24,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.sherpa.SherpaClient;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -251,11 +252,25 @@ public class SegmentStarTable extends RandomStarTable {
         setFluxErrValues(units.convertErrors(getOriginalFluxErrValues(), getOriginalFluxValues(), specValues, originalFluxUnits, specUnits, newUnit));
         setFluxErrValuesLo(units.convertErrors(getOriginalFluxErrValuesLo(), getOriginalFluxValues(), specValues, originalFluxUnits, specUnits, newUnit));
         setFluxErrValuesHi(units.convertErrors(getOriginalFluxErrValuesHi(), getOriginalFluxValues(), specValues, originalFluxUnits, specUnits, newUnit));
+
+        if(modelValues != null) {
+            setModelValues(units.convertY(modelValues, specValues, yUnits, xUnits, newUnit));
+        }
         
         fluxUnits = newUnit;
         
         // Update column units
         updateFluxColumnUnitStrings();
+    }
+
+    private YUnit yUnits;
+    public void setModelYUnits(YUnit yUnits) {
+        this.yUnits = yUnits;
+    }
+
+    private XUnit xUnits;
+    public void setModelXUnits(XUnit xUnits) {
+        this.xUnits = xUnits;
     }
     
     private void updateFluxColumnUnitStrings() {
