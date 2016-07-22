@@ -149,6 +149,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         fitButton = new javax.swing.JButton();
         busyFit = new org.jdesktop.swingx.JXBusyLabel();
         clearRangesButton = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
         modelViewerPanel = new cfa.vo.iris.gui.widgets.ModelViewerPanel();
         jSplitPane2 = new javax.swing.JSplitPane();
         resultsContainer = new javax.swing.JPanel();
@@ -253,7 +254,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 6, 0);
         jPanel5.add(statisticCombo, gridBagConstraints);
 
-        addRangeFromPlotButton.setText("Add Range");
+        addRangeFromPlotButton.setText("Add");
         addRangeFromPlotButton.setToolTipText("Add a fitting range using the plotter.");
         addRangeFromPlotButton.setName("addFittingRange"); // NOI18N
         addRangeFromPlotButton.addActionListener(new java.awt.event.ActionListener() {
@@ -263,7 +264,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 82;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -278,7 +279,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 64;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
@@ -287,11 +288,11 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         jPanel5.add(fitButton, gridBagConstraints);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        gridBagConstraints.gridy = 6;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
         jPanel5.add(busyFit, gridBagConstraints);
 
-        clearRangesButton.setText("Clear Ranges");
+        clearRangesButton.setText("Clear");
         clearRangesButton.setToolTipText("Clear all fitting ranges from the model.");
         clearRangesButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -300,11 +301,21 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.ipadx = 84;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
         gridBagConstraints.weightx = 1.0;
         jPanel5.add(clearRangesButton, gridBagConstraints);
+
+        jLabel3.setText("Fitting Ranges:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
+        jPanel5.add(jLabel3, gridBagConstraints);
 
         jSplitPane3.setRightComponent(jPanel5);
 
@@ -635,6 +646,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
     private javax.swing.JButton fitButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
