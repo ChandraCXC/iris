@@ -103,6 +103,9 @@ public class MouseXRangesClickedListener extends StilPlotterMouseListener implem
                 // reset fitting range flags
                 isStartPoint = true;
                 pickingRanges = false;
+                
+                // Reset the plotter
+                dataModel.refresh();
             }
         }
     }
