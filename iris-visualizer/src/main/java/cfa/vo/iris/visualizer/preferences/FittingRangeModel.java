@@ -23,6 +23,7 @@ import cfa.vo.iris.sed.stil.SegmentColumn;
 import cfa.vo.iris.sed.stil.SegmentColumn.Column;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.units.UnitsManager;
+import cfa.vo.iris.visualizer.plotter.LayerType;
 import cfa.vo.iris.visualizer.plotter.ShapeType;
 import cfa.vo.utils.Default;
 import uk.ac.starlink.table.ColumnStarTable;
@@ -43,6 +44,7 @@ public class FittingRangeModel extends LayerModel {
         this.setErrorColor(COLOR);
         
         // Actually looks okay
+        this.setLayerType(LayerType.xyerror.name());
         this.setMarkType(ShapeType.filled_triangle_up);
         this.setSize(0);
     }
@@ -68,9 +70,9 @@ public class FittingRangeModel extends LayerModel {
                 high = tmp[0];
             }
             
-            xvaluesLow[i] = low;
-            xvaluesHigh[i] = high;
             xmiddles[i] = (low + high)/2;
+            xvaluesLow[i] = xmiddles[i] - low;
+            xvaluesHigh[i] = high - xmiddles[i];
         }
         
         ColumnStarTable ret = ColumnStarTable.makeTableWithRows(ranges.size());
