@@ -295,6 +295,20 @@ public class FitConfiguration {
     }
     
     /**
+     * Remove a list of indices from the fitting ranges
+     * @param indices - list of indices of fitting ranges to remove
+     */
+    public void removeFittingRanges(int[] indices) {
+        int ct = 0;
+        for (int i : indices) {
+            // remove the (i - ct)th range in the FitCOnfiguration since each
+            // iteration makes the list of ranges smaller by one.
+            fittingRanges.remove(i-ct);
+            ct++;
+        }
+    }
+    
+    /**
      * Remove the given fitting range from the model
      * @param fittingRange 
      */
