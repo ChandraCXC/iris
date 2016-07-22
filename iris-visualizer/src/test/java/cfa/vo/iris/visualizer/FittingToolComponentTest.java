@@ -19,12 +19,9 @@ import cfa.vo.interop.SAMPFactory;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
 import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.fitting.FitConfiguration;
-import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.test.unit.TestUtils;
-import cfa.vo.iris.visualizer.plotter.MouseXRangesClickedListener;
-import cfa.vo.iris.visualizer.plotter.StilPlotter;
 import cfa.vo.sherpa.models.*;
 
 import java.io.File;
@@ -33,7 +30,6 @@ import java.util.ArrayList;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Statistic;
 import com.google.common.io.Files;
-import java.awt.event.MouseEvent;
 import net.javacrumbs.jsonunit.JsonAssert;
 import org.junit.After;
 import org.junit.Before;
@@ -278,12 +274,16 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         // when the visualizer isn't open / visible
         final Window mainFit = setupFitWindow(sedManager.newSed("TestSed"));
         
+        mainFit.getButton("Add Ranges...").click();
+        
+        final Window rangesWindow = desktop.getWindow("Fitting Ranges Manager");
+        
         TestUtils.invokeWithRetry(50, 100, new Runnable() {
             
             @Override
             public void run() {
                 WindowInterceptor wi = WindowInterceptor.init(
-                        mainFit.getButton("addFittingRange").triggerClick());
+                        rangesWindow.getButton("Add from plot").triggerClick());
                 String message = "The Visualizer must be open before selecting a fitting range.";
                 wi.process(BasicHandler.init()
                         .assertContainsText(message)
