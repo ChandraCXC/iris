@@ -20,18 +20,12 @@ import cfa.vo.iris.sed.SedException;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.visualizer.plotter.MouseXRangesClickedListener;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
-import java.awt.GridLayout;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.DefaultComboBoxModel;
 
 /**
  *
@@ -75,11 +69,18 @@ public class FittingRangesFrame extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         addRangeFromPlotButton = new javax.swing.JButton();
-        addRangeButton = new javax.swing.JButton();
         removeButton = new javax.swing.JButton();
         clearAllButton = new javax.swing.JButton();
         OKButton = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        x1TextBox = new javax.swing.JTextField();
+        x2TextBox = new javax.swing.JTextField();
+        xUnitComboBox = new javax.swing.JComboBox();
+        addRangeButton = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -129,14 +130,6 @@ public class FittingRangesFrame extends javax.swing.JInternalFrame {
             }
         });
 
-        addRangeButton.setText("Add range");
-        addRangeButton.setToolTipText("Add a fitting range");
-        addRangeButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addRangeButtonActionPerformed(evt);
-            }
-        });
-
         removeButton.setText("Remove");
         removeButton.setToolTipText("Remove selected fitting ranges");
         removeButton.addActionListener(new java.awt.event.ActionListener() {
@@ -170,6 +163,72 @@ public class FittingRangesFrame extends javax.swing.JInternalFrame {
             }
         });
 
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Add range"));
+        jPanel2.setName("addRangePanel"); // NOI18N
+
+        jLabel1.setText("Start:");
+
+        jLabel2.setText("End:");
+
+        jLabel3.setText("Unit:");
+
+        x1TextBox.setName("x1TextBox"); // NOI18N
+
+        x2TextBox.setName("x2TextBox"); // NOI18N
+
+        xUnitComboBox.setModel(new DefaultComboBoxModel(loadEnum(XUnit.class))
+        );
+        xUnitComboBox.setName("xUnitComboBox"); // NOI18N
+
+        addRangeButton.setText("Add");
+        addRangeButton.setToolTipText("Add a fitting range");
+        addRangeButton.setName("addRangeButton"); // NOI18N
+        addRangeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addRangeButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(x1TextBox, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
+                        .addGap(24, 24, 24)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(x2TextBox, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(xUnitComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 150, Short.MAX_VALUE)
+                        .addComponent(addRangeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2)
+                    .addComponent(x2TextBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(x1TextBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addRangeButton)
+                    .addComponent(xUnitComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -180,36 +239,38 @@ public class FittingRangesFrame extends javax.swing.JInternalFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(addRangeButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(addRangeFromPlotButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(addRangeFromPlotButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(removeButton, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
                             .addComponent(clearAllButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jButton1)
-                        .addGap(82, 82, 82)
+                        .addGap(144, 144, 144)
                         .addComponent(OKButton, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 133, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(addRangeButton)
-                    .addComponent(removeButton))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(clearAllButton)
-                    .addComponent(addRangeFromPlotButton))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(removeButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(clearAllButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(addRangeFromPlotButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton1)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(OKButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(OKButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -220,7 +281,7 @@ public class FittingRangesFrame extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_OKButtonActionPerformed
 
     private void addRangeFromPlotButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addRangeFromPlotButtonActionPerformed
-         // if there are no SEDs, don't set the fitting rangesss
+         // if there are no SEDs, don't set the fitting ranges
         if (this.controller.getSedModel() == null) {
             return;
         }
@@ -234,83 +295,14 @@ public class FittingRangesFrame extends javax.swing.JInternalFrame {
         listener.setPickingRanges(true);
     }//GEN-LAST:event_addRangeFromPlotButtonActionPerformed
 
-    private void addRangeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addRangeButtonActionPerformed
-
-        //
-        // Make the panel for setting start, end, and units for fitting range
-        //
-        JPanel panel = new JPanel(new GridLayout(0, 1));
-        
-        // start point
-        JLabel startLabel = new JLabel("Start point", JLabel.TRAILING);
-        panel.add(startLabel);
-        JTextField startPoint = new JTextField();
-        panel.add(startPoint);
-        
-        // end point
-        JLabel endLabel = new JLabel("End point", JLabel.TRAILING);
-        panel.add(endLabel);
-        JTextField endPoint = new JTextField();
-        panel.add(endPoint);
-
-        // xunits combo box
-        JLabel unitsLabel = new JLabel("Unit", JLabel.TRAILING);
-        panel.add(unitsLabel);
-        JComboBox units = new JComboBox();
-        units.setModel(new DefaultComboBoxModel(loadEnum(XUnit.class)));
-        units.setSelectedIndex(0);
-        panel.add(units);
-        //
-        // end making panel
-        //
-        
-        int result = JOptionPane.showConfirmDialog(this, panel, 
-                "Set Fitting Range", 
-                JOptionPane.OK_CANCEL_OPTION, 
-                JOptionPane.PLAIN_MESSAGE
-        );
-        
-        // add fitting range to FitConfiguration
-        if (result == JOptionPane.OK_OPTION) {
-            
-            String[] range = {startPoint.getText(), endPoint.getText()};
-            
-            // check for valid range values
-            if (!checkValidRanges(range)) {
-                NarrowOptionPane.showMessageDialog(null, "Invalid fitting range values", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            
-            FittingRange frange;
-            try {
-            String unit = units.getSelectedItem().toString();
-            frange = new FittingRange(
-                    Double.parseDouble(range[0]),
-                    Double.parseDouble(range[1]),
-                    XUnit.getFromUnitString(XUnit.valueOf(unit).getString())
-            );
-                
-                controller.getFit().addFittingRange(frange);
-            } catch (SedException ex) {
-                // this shouldn't happen...
-                Logger.getLogger(FittingRangesFrame.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            
-            // update table
-            updateTable();
-        }
-    }//GEN-LAST:event_addRangeButtonActionPerformed
-
     private void clearAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearAllButtonActionPerformed
         controller.getFit().clearFittingRanges();
         updateTable();
     }//GEN-LAST:event_clearAllButtonActionPerformed
 
     private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
-        // remove selected fitting rangesss
-        for (int i : this.jTable1.getSelectedRows()) {
-            controller.getFit().removeFittingRange(i);
-        }
+        // remove selected fitting ranges
+        controller.getFit().removeFittingRanges(this.jTable1.getSelectedRows());
         updateTable();
     }//GEN-LAST:event_removeButtonActionPerformed
 
@@ -319,6 +311,36 @@ public class FittingRangesFrame extends javax.swing.JInternalFrame {
         updateTable();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void addRangeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addRangeButtonActionPerformed
+        // add fitting range to FitConfiguration
+
+        String[] range = {x1TextBox.getText(), x2TextBox.getText()};
+
+        // check for valid range values
+        if (!checkValidRanges(range)) {
+            NarrowOptionPane.showMessageDialog(null, "Invalid fitting range values", "ERROR", NarrowOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        FittingRange frange;
+        try {
+            String unit = xUnitComboBox.getSelectedItem().toString();
+            frange = new FittingRange(
+                Double.parseDouble(range[0]),
+                Double.parseDouble(range[1]),
+                XUnit.getFromUnitString(XUnit.valueOf(unit).getString())
+            );
+
+            controller.getFit().addFittingRange(frange);
+        } catch (SedException ex) {
+            // this shouldn't happen...
+            Logger.getLogger(FittingRangesFrame.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        // update table
+        updateTable();
+    }//GEN-LAST:event_addRangeButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton OKButton;
@@ -326,10 +348,17 @@ public class FittingRangesFrame extends javax.swing.JInternalFrame {
     private javax.swing.JButton addRangeFromPlotButton;
     private javax.swing.JButton clearAllButton;
     private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JButton removeButton;
+    private javax.swing.JTextField x1TextBox;
+    private javax.swing.JTextField x2TextBox;
+    private javax.swing.JComboBox xUnitComboBox;
     // End of variables declaration//GEN-END:variables
 
     public void updateTable() {
@@ -397,7 +426,8 @@ public class FittingRangesFrame extends javax.swing.JInternalFrame {
     }
 
     /**
-     * Checks that the input array of strings are valid numeric, positive values.
+     * Checks that the input array of strings are valid numeric values.
+     * Negative values are allowed.
      * @param range - array of strings to check
      */
     private boolean checkValidRanges(String[] range) {
@@ -408,8 +438,6 @@ public class FittingRangesFrame extends javax.swing.JInternalFrame {
             } else if (range1.isEmpty()) {
                 aok = false;
             } else if (!isNumeric(range1)) {
-                aok = false;
-            } else if (Double.parseDouble(range1) < 0) {
                 aok = false;
             } else {
             }
