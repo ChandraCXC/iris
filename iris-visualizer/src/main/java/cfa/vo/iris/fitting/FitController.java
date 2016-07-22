@@ -255,7 +255,7 @@ public class FitController {
             double[] x = table.getSpecValues();
             double[] xStandardUnit = uManager.convertX(x, xUnit, SherpaClient.X_UNIT);
             double[] yStandardUnit = client.evaluate(xStandardUnit, sedModel.getFit());
-            double[] y = Default.getInstance().getUnitsManager().convertY(yStandardUnit, xStandardUnit,
+            double[] y = uManager.convertY(yStandardUnit, xStandardUnit,
                     SherpaClient.Y_UNIT, SherpaClient.X_UNIT, yUnit);
 
             table.setModelValues(y);

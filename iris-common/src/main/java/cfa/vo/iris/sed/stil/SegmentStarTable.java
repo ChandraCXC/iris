@@ -25,6 +25,7 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.sherpa.SherpaClient;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -310,6 +311,10 @@ public class SegmentStarTable extends RandomStarTable implements IrisDataStarTab
         setFluxErrValues(units.convertErrors(getOriginalFluxErrValues(), getOriginalFluxValues(), specValues, originalFluxUnits, specUnits, newUnit));
         setFluxErrValuesLo(units.convertErrors(getOriginalFluxErrValuesLo(), getOriginalFluxValues(), specValues, originalFluxUnits, specUnits, newUnit));
         setFluxErrValuesHi(units.convertErrors(getOriginalFluxErrValuesHi(), getOriginalFluxValues(), specValues, originalFluxUnits, specUnits, newUnit));
+
+        if(modelValues != null) {
+            setModelValues(units.convertY(modelValues, specValues, fluxUnits, specUnits, newUnit));
+        }
         
         fluxUnits = newUnit;
         
