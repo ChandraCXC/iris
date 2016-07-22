@@ -29,20 +29,19 @@ public class FittingModelTest {
     
     @Test
     public void testFittingModel() throws Exception {
-        FittingRange range1 = new FittingRange(1000, 10, XUnit.NM);
-        FittingRange range2 = new FittingRange(5, 3, XUnit.CM);
+        FittingRange range1 = new FittingRange(10, 1000, XUnit.NM);
+        FittingRange range2 = new FittingRange(3, 5, XUnit.CM);
         
         FittingRangeModel model = new FittingRangeModel(Arrays.asList(range1, range2), "Angstrom", 1);
         
         StarTable table = model.getInSource();
         assertEquals(2, table.getRowCount());
-        assertArrayEquals(new Object[] {5050.0, 10000.0, 100.0, 1.0}, table.getRow(0));
-        assertArrayEquals(new Object[] {4E8, 5E8, 3E8, 1.0}, table.getRow(1));
+        assertArrayEquals(new Object[] {5050.0, 100.0, 10000.0, 1.0}, table.getRow(0));
+        assertArrayEquals(new Object[] {4E8, 3E8, 5E8, 1.0}, table.getRow(1));
         
         assertEquals(2, model.getNumberOfLayers());
         assertFalse(model.getShowLines());
         assertTrue(model.isShowMarks());
         assertTrue(model.isShowErrorBars());
     }
-
 }

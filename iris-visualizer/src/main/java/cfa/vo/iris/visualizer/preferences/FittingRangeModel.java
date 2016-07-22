@@ -59,9 +59,18 @@ public class FittingRangeModel extends LayerModel {
         double[] xmiddles = new double[ranges.size()];
         for (int i=0; i<ranges.size(); i++) {
             double[] tmp = convertUnits(ranges.get(i), xunit);
-            xvaluesLow[i] = tmp[0];
-            xvaluesHigh[i] = tmp[1];
-            xmiddles[i] = (tmp[0] + tmp[1])/2;
+            double low = tmp[0];
+            double high = tmp[1];
+            
+            // May have switched depending on plotter units
+            if (low > high) {
+                low = tmp[1];
+                high = tmp[0];
+            }
+            
+            xvaluesLow[i] = low;
+            xvaluesHigh[i] = high;
+            xmiddles[i] = (low + high)/2;
         }
         
         ColumnStarTable ret = ColumnStarTable.makeTableWithRows(ranges.size());
