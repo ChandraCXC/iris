@@ -36,13 +36,12 @@ public class FittingModelTest {
         
         StarTable table = model.getInSource();
         assertEquals(2, table.getRowCount());
-        System.out.println(Arrays.toString( table.getRow(0)));
-        assertArrayEquals(new Object[] {10000.0, 10000.0, 100.0, 1.0}, table.getRow(0));
-        assertArrayEquals(new Object[] {5E8, 5E8, 3E8, 1.0}, table.getRow(1));
+        assertArrayEquals(new Object[] {5050.0, 10000.0, 100.0, 1.0}, table.getRow(0));
+        assertArrayEquals(new Object[] {4E8, 5E8, 3E8, 1.0}, table.getRow(1));
         
-        assertEquals(1, model.getNumberOfLayers());
-        assertFalse(model.isShowMarks());
+        assertEquals(2, model.getNumberOfLayers());
         assertFalse(model.getShowLines());
+        assertTrue(model.isShowMarks());
         assertTrue(model.isShowErrorBars());
     }
 

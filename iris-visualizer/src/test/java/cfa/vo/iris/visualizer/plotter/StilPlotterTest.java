@@ -599,15 +599,15 @@ public class StilPlotterTest extends AbstractUISpecTest {
         layers_.setAccessible(true);
         PlotLayer[] layers = (PlotLayer[]) layers_.get(plot.getPlotDisplay());
         
-        // there should be 1 layer for the FunctionModel
-        assertEquals(1, ArrayUtils.getLength(layers));
+        // there should be 2 layers for the FunctionModel, one for marks and one for errors
+        assertEquals(2, ArrayUtils.getLength(layers));
         
         FittingRangeModel model = plot.fittingRanges;
         StarTable fitStarTable = model.getInSource();
         
         // Validate values, y value should be at 1 + (10 - 1)*.5 = 1.45
         assertEquals(1, fitStarTable.getRowCount());
-        assertArrayEquals(new Object[] {1.0, 1.0, 9.0, 1.45}, fitStarTable.getRow(0));
+        assertArrayEquals(new Object[] {5.0, 1.0, 9.0, 1.9}, fitStarTable.getRow(0));
     }
     
     private StilPlotter setUpTests(ExtSed sed) throws Exception {
