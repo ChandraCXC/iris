@@ -268,6 +268,8 @@ public class FitConfiguration {
         setNumPoints(results.getNumpoints());
         setStatVal(results.getStatval());
         setDof(results.getDof().intValue());
+
+        setConfidenceResults(null);
     }
 
     @Override

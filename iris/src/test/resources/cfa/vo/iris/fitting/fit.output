@@ -24,10 +24,6 @@ Fit Results:
 		                 Optimizer = LevenbergMarquardt
 		 Statistic (Cost function) = Chi2
 
-Confidence Limits at 1.60 sigma (89.04%):
-                 m5.ampl: (-1.66983E-06,  1.67318E-06)
-                m5.index: (-2.56885E-05,  5.29382E-05)
-
 User Models:
 		tablemodel.m6: (file: $HOME/.vao/iris/analysis/custom_models/tables/test_table, function: None)
 		usermodel.m7: (file: $HOME/.vao/iris/analysis/custom_models/functions/test_function, function: mypowlaw)

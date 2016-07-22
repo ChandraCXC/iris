@@ -40,7 +40,7 @@ import static org.junit.Assert.assertEquals;
 
 public class FittingFunctionalIT extends AbstractUISpecTest {
 
-    private final long TIMEOUT=2000;
+    private final long TIMEOUT=3000;
     
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
