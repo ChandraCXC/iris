@@ -72,10 +72,6 @@ public class SegmentStarTable extends RandomStarTable implements IrisDataStarTab
     // Data holders
     private double[] specValues;
     private double[] fluxValues;
-    private double[] originalFluxValues;
-    private double[] originalFluxErrValues;
-    private double[] originalFluxErrValuesHi;
-    private double[] originalFluxErrValuesLo;
     private double[] specErrValues;
     private double[] specErrValuesLo;
     private double[] specErrValuesHi;
@@ -85,6 +81,13 @@ public class SegmentStarTable extends RandomStarTable implements IrisDataStarTab
     private double[] modelValues;
     private double[] residualValues;
     private double[] ratioValues;
+    
+    // Retain original values of tables
+    private double[] originalSpecValues;
+    private double[] originalFluxValues;
+    private double[] originalFluxErrValues;
+    private double[] originalFluxErrValuesHi;
+    private double[] originalFluxErrValuesLo;
     
     // Store the hashCode for cached computation, and whether or not the hashCode
     // is valid and needs to be recomputed.
@@ -189,7 +192,8 @@ public class SegmentStarTable extends RandomStarTable implements IrisDataStarTab
         // Add spectral, flux, and original flux values
         setSpecValues(specValues);
         setFluxValues(fluxValues);
-        setOriginalFluxValues(Arrays.copyOf(fluxValues, fluxValues.length)); // Copies data so these aren't the same
+        setOriginalSpecValues(getSpecValues());
+        setOriginalFluxValues(getFluxValues());
         
         // Add spectral error columns
         setSpecErrValues(specErrValues);
@@ -206,7 +210,7 @@ public class SegmentStarTable extends RandomStarTable implements IrisDataStarTab
         setOriginalFluxErrValuesHi(getFluxErrValuesHi());
         setOriginalFluxErrValuesLo(getFluxErrValuesLo());
     }
-    
+
     private double[] getNanDoubleArray(int rows) {
         double[] data = new double[rows];
         Arrays.fill(data, Double.NaN);
@@ -366,24 +370,31 @@ public class SegmentStarTable extends RandomStarTable implements IrisDataStarTab
         return originalFluxValues;
     }
 
-    public void setOriginalFluxValues(double[] originalFluxValues) {
+    private void setOriginalFluxValues(double[] originalFluxValues) {
         this.originalFluxValues = originalFluxValues;
         updateColumnValues(fluxValues, Column.Original_Flux_Value);
     }
     
-
     /**
-     * The original flux error values are not added as columns to the
+     * The original flux error and spec values are not added as columns to the
      * StarTable. To add these to the StarTable, include
      * updateColumnValues(errors, Column.Original_Flux_*) in the
      * setOriginalFluxErrValues*() methods.
      */
+    
+    public double[] getOriginalSpecValues() {
+        return originalSpecValues;
+    }
+    
+    private void setOriginalSpecValues(double[] originalSpecValues) {
+        this.originalSpecValues = originalSpecValues;
+    }
 
     public double[] getOriginalFluxErrValues() {
         return originalFluxErrValues;
     }
 
-    public void setOriginalFluxErrValues(double[] originalFluxErrValues) {
+    private void setOriginalFluxErrValues(double[] originalFluxErrValues) {
         this.originalFluxErrValues = originalFluxErrValues;
     }
     
@@ -391,7 +402,7 @@ public class SegmentStarTable extends RandomStarTable implements IrisDataStarTab
         return originalFluxErrValuesHi;
     }
 
-    public void setOriginalFluxErrValuesHi(double[] originalFluxErrValuesHi) {
+    private void setOriginalFluxErrValuesHi(double[] originalFluxErrValuesHi) {
         this.originalFluxErrValuesHi = originalFluxErrValuesHi;
     }
     
@@ -399,10 +410,9 @@ public class SegmentStarTable extends RandomStarTable implements IrisDataStarTab
         return originalFluxErrValuesLo;
     }
 
-    public void setOriginalFluxErrValuesLo(double[] originalFluxErrValuesLo) {
+    private void setOriginalFluxErrValuesLo(double[] originalFluxErrValuesLo) {
         this.originalFluxErrValuesLo = originalFluxErrValuesLo;
     }
-
 
     public double[] getSpecErrValues() {
         return specErrValues;

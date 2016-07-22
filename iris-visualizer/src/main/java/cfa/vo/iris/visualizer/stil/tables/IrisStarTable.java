@@ -131,6 +131,31 @@ public class IrisStarTable extends WrapperStarTable implements IrisDataStarTable
     public double[] getFluxErrValuesHi() {
         return getFilteredValues(plotterDataTable.getFluxErrValuesHi());
     }
+
+    @Override
+    public double[] getOriginalFluxValues() {
+        return getFilteredValues(plotterDataTable.getOriginalFluxValues());
+    }
+
+    @Override
+    public double[] getOriginalSpecValues() {
+        return getFilteredValues(plotterDataTable.getOriginalSpecValues());
+    }
+
+    @Override
+    public double[] getOriginalFluxErrValues() {
+        return getFilteredValues(plotterDataTable.getOriginalFluxErrValues());
+    }
+
+    @Override
+    public double[] getOriginalFluxErrValuesHi() {
+        return getFilteredValues(plotterDataTable.getOriginalFluxErrValuesHi());
+    }
+
+    @Override
+    public double[] getOriginalFluxErrValuesLo() {
+        return getFilteredValues(plotterDataTable.getOriginalFluxErrValuesLo());
+    }
     
     /**
      * Uses the BitSet mask to return a subset of data from the 
