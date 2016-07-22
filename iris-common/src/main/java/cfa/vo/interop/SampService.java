@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,7 +36,7 @@ public class SampService {
 
     private boolean autoRunHub = false;
     private boolean sampUp = false;
-    private boolean sherpaUp = false;
+    private AtomicBoolean sherpaUp = new AtomicBoolean(false);
     private boolean startingHub = false;
     private boolean started = false;
 
@@ -155,11 +156,10 @@ public class SampService {
         try {
             newState = pingSherpa();
             logger.log(LEVEL, "Sherpa client connected: " + newState);
-            if (newState != sherpaUp) {
+            if (sherpaUp.compareAndSet(!newState, newState)) {
                 logger.log(Level.INFO, "Sherpa Client connection status changed: "+sherpaUp+ " -> "+newState);
-                sherpaUp = newState;
                 for(SAMPConnectionListener listener : sherpaListeners) {
-                    listener.run(sherpaUp);
+                    listener.run(newState);
                 }
             }
         } catch (Exception e) {
@@ -235,7 +235,7 @@ public class SampService {
 
     public void addSherpaConnectionListener(SAMPConnectionListener listener) {
         sherpaListeners.add(listener);
-        listener.run(sherpaUp);
+        listener.run(sherpaUp.get());
     }
 
     public Response callSherpaAndRetry(SAMPMessage message) throws SEDException, SampException {
