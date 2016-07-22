@@ -49,6 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import uk.ac.starlink.ttools.plot2.Axis;
 
 public class StilPlotter extends JPanel {
@@ -451,7 +452,7 @@ public class StilPlotter extends JPanel {
      * @throws Exception
      */
     protected PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> createPlotComponent(
-            MapEnvironment env, boolean enableMouseListeners) throws Exception {
+            MapEnvironment env, boolean isPrimaryPlot) throws Exception {
 
         logger.log(Level.FINE, "plot environment:");
         logger.log(Level.FINE, ReflectionToStringBuilder.toString(env));
@@ -464,12 +465,55 @@ public class StilPlotter extends JPanel {
         PlotDisplay<PlaneSurfaceFactory.Profile,PlaneAspect> display =
                 new PlanePlot2Task().createPlotComponent(env, false);
         
-        if (enableMouseListeners) {
+        // Add Fitting ranges, if necessary
+        // TODO: This is a terribly inefficient way to compute fitting ranges, this needs
+        // be improved either by getting access to stil to add another layer after the plot 
+        // has been created (preferred by long term), adding a layer type to stil that lets
+        // us define points by x value and dynamic y value, or by computing the y value 
+        // independently of the PlotDisplay.
+        if (isPrimaryPlot) {
+            display = addFittingRanges(env, display);
+        }
+        
+        if (isPrimaryPlot) {
             // Always update mouse listeners with the new display
             preferences.getMouseListenerManager().activateListeners(display);
         }
         
         return display;
+    }
+    
+    private PlotDisplay<PlaneSurfaceFactory.Profile,PlaneAspect> addFittingRanges(MapEnvironment env, 
+                PlotDisplay<PlaneSurfaceFactory.Profile,PlaneAspect> display) throws Exception
+    {
+        List<FittingRange> ranges = dataModel.getFittingRanges();
+
+        // Do nothing if none are available
+        if (CollectionUtils.isEmpty(ranges)) return display;
+        
+        // Otherwise add the layer at 10% of the current aspect
+        PlaneAspect aspect = display.getAspect();
+        double y = aspect.getYMin() + ((aspect.getYMax() - aspect.getYMin()) * .1);
+        
+        // Construct the model for the fitting ranges and add it to the plot
+        fittingRanges = new FittingRangeModel(ranges, dataModel.getXunits(), y);
+        Map<String, Object> prefs = fittingRanges.getPreferences();
+        for (String key : prefs.keySet()) {
+            env.setValue(key, prefs.get(key));
+        }
+        
+        // Make a new display that includes the fitting range layer
+        @SuppressWarnings("unchecked")
+        PlotDisplay<PlaneSurfaceFactory.Profile,PlaneAspect> newDisplay =
+                new PlanePlot2Task().createPlotComponent(env, false);
+        
+        // Preserve original aspect
+        newDisplay.setAspect(display.getAspect());
+        
+        // Ask nicely for GC
+        System.gc();
+        
+        return newDisplay;
     }
 
     protected void setupMapEnvironment() throws IOException {
@@ -510,9 +554,6 @@ public class StilPlotter extends JPanel {
 
         // Add model functions
         addFunctionModels(env);
-        
-        // Add Fitting ranges
-        addFittingRanges(env);
     }
 
     private void addFunctionModels(MapEnvironment env) {
@@ -573,26 +614,6 @@ public class StilPlotter extends JPanel {
             for (String key : prefs.keySet()) {
                 resEnv.setValue(key, prefs.get(key));
             }
-        }
-    }
-    
-    private void addFittingRanges(MapEnvironment env) {
-        List<FittingRange> ranges = dataModel.getFittingRanges();
-
-        // Do nothing if none are available
-        if (CollectionUtils.isEmpty(ranges)) return;
-        
-        // If there is no aspect then do nothing
-        PlaneAspect aspect = getPlotPreferences().getAspect();
-        if (aspect == null) return;
-        
-        // Otherwise add the layer at 5% from the bottom of the aspect
-        double y = aspect.getYMin() + ((aspect.getYMax() - aspect.getYMin()) * .05);
-        fittingRanges = new FittingRangeModel(ranges, dataModel.getXunits(), y);
-        
-        Map<String, Object> prefs = fittingRanges.getPreferences();
-        for (String key : prefs.keySet()) {
-            env.setValue(key, prefs.get(key));
         }
     }
     
