@@ -4,29 +4,25 @@ SED ID: Sed (Segments: 1)
 Model Expression: m6 + m7 + m8
 Components:
 	tablemodel.m6
-		                   m6.ampl =  1.00000E-38
+		                   m6.ampl =  1.04981E+00
 	usermodel.m7
 		                    m7.ref =  5.00000E+03 Frozen
-		                   m7.ampl =  1.00000E-38
-		                  m7.index = -4.08735E-01
+		                   m7.ampl =  9.78911E-06
+		                  m7.index = -3.75375E-01
 	template.m8
-		                    m8.idx = -3.75000E-01
+		                    m8.idx =  0.00000E+00
 		                  m8.refer =  5.00000E+03
 
 Fit Results:
-		       Final Fit Statistic =  2.01188E+20
-		         Reduced Statistic =  5.61977E+17
+		       Final Fit Statistic =  6.54346E+05
+		         Reduced Statistic =  1.82778E+03
 		     Probability (Q-value) =  0.00000E+00
 		        Degrees of Freedom = 358
 		               Data Points = 363
-		      Function Evaluations = 48
+		      Function Evaluations = 84
 
 		                 Optimizer = LevenbergMarquardt
 		 Statistic (Cost function) = Chi2
-
-Confidence Limits at 1.64 sigma (90.00%):
-                 m5.ampl: (-8.48169E-18,  6.44529E-18)
-                m5.index: (-7.27584E-06,          NAN)
 
 User Models:
 		tablemodel.m6: (file: $HOME/.vao/iris/analysis/custom_models/tables/test_table, function: None)

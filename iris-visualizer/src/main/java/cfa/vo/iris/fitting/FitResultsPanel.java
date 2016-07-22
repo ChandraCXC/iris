@@ -1,6 +1,7 @@
 package cfa.vo.iris.fitting;
 
 import cfa.vo.iris.gui.widgets.AbstractGridPanel;
+import java.awt.Dimension;
 
 import javax.swing.*;
 
@@ -34,6 +35,7 @@ public class FitResultsPanel extends AbstractGridPanel {
         numPoints = addTextField("Number of Points");
         dof = addTextField("Degrees of Freedom");
         this.setEnabled(false);
+        setMinimumSize(new Dimension(250, 50));
     }
 
     @Override

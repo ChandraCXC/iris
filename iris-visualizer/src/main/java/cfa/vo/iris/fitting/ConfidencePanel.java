@@ -17,12 +17,15 @@ package cfa.vo.iris.fitting;
 
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.sherpa.ConfidenceResults;
+import java.util.concurrent.ExecutionException;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Property;
 import org.jdesktop.swingbinding.JTableBinding;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.SwingWorker;
+import org.jdesktop.beansbinding.Converter;
 
 
 public class ConfidencePanel extends javax.swing.JPanel {
@@ -93,28 +96,62 @@ public class ConfidencePanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        sigmaText = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
+        busyConfidence = new org.jdesktop.swingx.JXBusyLabel();
+        jButton1 = new javax.swing.JButton();
+
+        setMinimumSize(new java.awt.Dimension(287, 191));
+        setLayout(new java.awt.GridBagLayout());
 
         jLabel1.setText("Confidence Interval: ");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(17, 12, 0, 0);
+        add(jLabel1, gridBagConstraints);
 
-        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${controller.fit.confidence.sigma}"), jTextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        jTextField1.setName("sigma"); // NOI18N
+
+        org.jdesktop.beansbinding.Binding binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${controller.fit.confidence.config.sigma}"), jTextField1, org.jdesktop.beansbinding.BeanProperty.create("text"));
         bindingGroup.addBinding(binding);
 
-        jLabel2.setText("sigma - 89.04%");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridheight = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.ipadx = 30;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 0.1;
+        gridBagConstraints.insets = new java.awt.Insets(12, 12, 0, 0);
+        add(jTextField1, gridBagConstraints);
 
-        jButton1.setText("Compute");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                doConfidence(evt);
-            }
-        });
+        sigmaText.setText("sigma - 90.00%");
+        sigmaText.setName("sigmaPercent"); // NOI18N
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${confidenceResults.percent}"), sigmaText, org.jdesktop.beansbinding.BeanProperty.create("text"));
+        binding.setConverter(new SigmaConverter());
+        bindingGroup.addBinding(binding);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        gridBagConstraints.weightx = 0.8;
+        gridBagConstraints.insets = new java.awt.Insets(17, 10, 0, 12);
+        add(sigmaText, gridBagConstraints);
+
+        jTable1.setName("confidenceTable"); // NOI18N
 
         org.jdesktop.beansbinding.ELProperty eLProperty = org.jdesktop.beansbinding.ELProperty.create("${confidenceResults}");
         org.jdesktop.swingbinding.JTableBinding jTableBinding = org.jdesktop.swingbinding.SwingBindings.createJTableBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, this, eLProperty, jTable1, "table");
@@ -123,65 +160,99 @@ public class ConfidencePanel extends javax.swing.JPanel {
         jTableBinding.bind();
         jScrollPane1.setViewportView(jTable1);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)))
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
-                .addContainerGap())
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 239;
+        gridBagConstraints.ipady = 79;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(6, 12, 0, 12);
+        add(jScrollPane1, gridBagConstraints);
+
+        jPanel1.add(busyConfidence);
+
+        jButton1.setText("Compute");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                doConfidence(evt);
+            }
+        });
+        jPanel1.add(jButton1);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
+        add(jPanel1, gridBagConstraints);
 
         bindingGroup.bind();
     }// </editor-fold>//GEN-END:initComponents
 
     private void doConfidence(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doConfidence
-        try {
-            ConfidenceResults results = controller.computeConfidence();
-            setConfidenceResults(results);
-        } catch (Exception e) {
-            NarrowOptionPane.showMessageDialog(
-                    this,
-                    e.getMessage(),
-                    e.getClass().getSimpleName(),
-                    NarrowOptionPane.ERROR_MESSAGE
-            );
-            logger.log(Level.SEVERE, "Error computing confidence", e);
-        }
+        SwingWorker worker = new SwingWorker<ConfidenceResults, Void>() {
+
+            @Override
+            protected ConfidenceResults doInBackground() throws Exception {
+                return controller.computeConfidence();
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    setConfidenceResults(get());
+                   
+                } catch (InterruptedException ex) {
+                    // noop
+                } catch (ExecutionException ex) {
+                    Logger.getLogger(FittingMainView.class.getName()).log(Level.SEVERE, null, ex);
+                    Throwable cause = ex.getCause();
+                    NarrowOptionPane.showMessageDialog(
+                        ConfidencePanel.this,
+                        cause.getMessage(),
+                        cause.getClass().getSimpleName(),
+                        NarrowOptionPane.ERROR_MESSAGE
+                    );
+                    logger.log(Level.SEVERE, "Error computing confidence", ex);
+                } finally {
+                    busyConfidence.setBusy(false);
+                }
+            }
+        };
+            
+        busyConfidence.setBusy(true);
+        worker.execute();
+        
     }//GEN-LAST:event_doConfidence
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private org.jdesktop.swingx.JXBusyLabel busyConfidence;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel sigmaText;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
+
+    private class SigmaConverter extends Converter {
+
+        @Override
+        public Object convertForward(Object s) {
+            Double sigma = (Double) s;
+            return String.format("sigma - %2.2f%%", sigma);
+        }
+
+        @Override
+        public Object convertReverse(Object t) {
+            throw new UnsupportedOperationException("Not supported yet."); // Never called
+        }
+    }
 
 }

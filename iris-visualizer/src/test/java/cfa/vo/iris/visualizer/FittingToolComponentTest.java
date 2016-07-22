@@ -280,16 +280,21 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         return openWindow();
     }
 
-    private Window openWindow() {
-        window.getMenuBar()
-                .getMenu("Tools")
-                .getSubMenu(comp.getName())
-                .getSubMenu(comp.getName())
-                .click();
+    private Window openWindow() throws Exception {
+        TestUtils.invokeWithRetry(50, 100, new Runnable() {
+            @Override
+            public void run() {
+                window.getMenuBar()
+                        .getMenu("Tools")
+                        .getSubMenu(comp.getName())
+                        .getSubMenu(comp.getName())
+                        .click();
+            }
+        });
         return desktop.getWindow(windowName);
     }
 
-    private void nonExistentFile(String menu) {
+    private void nonExistentFile(String menu) throws Exception {
         ExtSed sed = sedManager.newSed("TestSed");
         addFit(sed);
         Window mainFit = openWindow();

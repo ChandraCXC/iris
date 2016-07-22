@@ -19,12 +19,10 @@ import cfa.vo.iris.gui.widgets.ModelViewerPanel;
 import cfa.vo.iris.test.IrisAppResource;
 import cfa.vo.iris.test.unit.AbstractUISpecTest;
 import cfa.vo.iris.test.unit.TestUtils;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 import org.uispec4j.*;
+import org.uispec4j.assertion.Assertion;
 import org.uispec4j.assertion.UISpecAssert;
 import org.uispec4j.interception.FileChooserHandler;
 import org.uispec4j.interception.PopupMenuInterceptor;
@@ -41,27 +39,25 @@ import java.nio.file.Paths;
 import static org.junit.Assert.assertEquals;
 
 public class FittingFunctionalIT extends AbstractUISpecTest {
-    @Rule
-    public IrisAppResource appResource = new IrisAppResource(false, true);
 
+    private final long TIMEOUT=3000;
+    
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
 
-    private String examplesUrlString;
+    @Rule
+    public IrisAppResource appResource = new IrisAppResource(false, true);
+    protected Window window;
+    protected Desktop desktop;
+    protected String examplesUrlString;
     private String templateLibUrlString;
     private String templateUrlString;
     private String functionUrlString;
 
-    private Window window;
-    private Desktop desktop;
     private Window fittingView;
     private Tree modelsTree;
     private Tree availableTree;
     private TextBox modelExpression;
-
-    private final String TABLE="tablemodel";
-    private final String FUNCTION="usermodel";
-    private final String TEMPLATE="template";
 
     @Before
     public void setUp() throws Exception {
@@ -70,6 +66,7 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
 
         // Set up tests/examples directory.
         examplesUrlString = tempFolder.getRoot().getParentFile().getAbsolutePath()+"/examples";
+        // Set up tests/examples directory.
         templateLibUrlString = examplesUrlString+"/sed_templates.dat";
         functionUrlString = examplesUrlString+"/mypowlaw.py";
         templateUrlString = examplesUrlString+"/sed_temp_data.dat";
@@ -85,11 +82,62 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
     @Test
     public void testFittingThread() throws Exception {
         installModels();
-        loadSed();
+        String[][] table = new String[][]{{"3C 273", "187.28, 2.0524", "NASA/IPAC Extragalactic Database (NED)", "474"}};
+        loadSed("3c273.xml", table);
         setupModelExpression();
         fit();
         fitCustomModel();
         saveText();
+        simplefit();
+    }
+
+    private void simplefit() throws Exception {
+        desktop.getWindow("SED Builder").getButton("New").click();
+        String[][] table = new String[][]{{"3C 066A", "35.665, 43.036", "NASA/IPAC Extragalactic Database (NED)", "34"}};
+        loadSed("3c66a.xml", table);
+
+        UISpecAssert.waitUntil(modelExpression.textEquals("No Model"), TIMEOUT);
+
+        availableTree.doubleClick("Preset Model Components/powerlaw");
+        UISpecAssert.waitUntil(modelsTree.contains("powerlaw.m9"), TIMEOUT);
+
+        modelExpression.textEquals("m9").check();
+
+        fittingView.getComboBox("optimizationCombo").select("NelderMeadSimplex");
+        fittingView.getComboBox("statisticCombo").select("Chi2");
+
+        fittingView.getButton("Fit").click();
+
+        TextBox np = fittingView.getInputTextBox("Number of Points");
+        UISpecAssert.waitUntil(np.textEquals("23"), TIMEOUT);
+
+        TextBox statS = fittingView.getInputTextBox("Final Fit Statistic");
+        Double stat = Double.valueOf(statS.getText());
+        assertEquals(14102.333, stat, 0.01);
+
+        fittingView.getInputTextBox("sigma").setText("4");
+        fittingView.getButton("Compute").click();
+
+        final Table confidenceTable = fittingView.getTable("confidenceTable");
+        UISpecAssert.waitUntil(new Assertion() {
+            @Override
+            public void check() {
+                Double amplInf = Double.valueOf((String) confidenceTable.getContentAt(0, 1));
+                assertEquals(-6.202e-6, amplInf, 1e-8);
+            }
+        }, TIMEOUT);
+
+        Double value = Double.valueOf((String) confidenceTable.getContentAt(0, 2));
+        assertEquals(6.065e-6, value, 1e-8);
+
+        value = Double.valueOf((String) confidenceTable.getContentAt(1, 1));
+        assertEquals(-0.00438, value, 0.00001);
+
+        value = Double.valueOf((String) confidenceTable.getContentAt(1, 2));
+        assertEquals(0.00486, value, 0.00001);
+
+        // check the confidence interval label updated
+        fittingView.getTextBox("sigmaPercent").textEquals("sigma - 99.99%").check();
     }
 
     private void saveText() throws Exception {
@@ -180,19 +228,7 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         modelsTree.contains("functions/test_function").check();
         modelsTree.contains("tables/test_table").check();
 
-    }
-
-    private void loadSed() throws Exception {
-        window.getMenuBar().getMenu("File").getSubMenu("Load File").click();
-        Window loader = desktop.getWindow("Load an input File");
-        loader.getRadioButton("Location on Disk").click();
-        loader.getInputTextBox("diskTextBox").setText(examplesUrlString+"/3c273.xml");
-        loader.getComboBox().select("VOTable");
-        loader.getButton("Load Spectrum/SED").click();
-
-        Window builder = desktop.getWindow("SED Builder");
-        builder.getListBox().click(0);
-        builder.getTable().contentEquals(new String[][]{{"3C 273", "187.28, 2.0524", "NASA/IPAC Extragalactic Database (NED)", "474"}}).check();
+        modelsManager.dispose();
     }
 
     private void setupModelExpression() throws Exception {
@@ -212,11 +248,14 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         availableTree.contains("Preset Model Components/powerlaw").check();
 
         availableTree.doubleClick("User Model Components/tables/test_table");
-        modelsTree.contains(TABLE+".m1").check();
+        String TABLE = "tablemodel";
+        modelsTree.contains(TABLE +".m1").check();
         availableTree.doubleClick("User Model Components/functions/test_function");
-        modelsTree.contains(FUNCTION+".m2").check();
+        String FUNCTION = "usermodel";
+        modelsTree.contains(FUNCTION +".m2").check();
         availableTree.doubleClick("User Model Components/templates/test_template");
-        modelsTree.contains(TEMPLATE+".m3").check();
+        String TEMPLATE = "template";
+        modelsTree.contains(TEMPLATE +".m3").check();
         availableTree.doubleClick("Preset Model Components/powerlaw");
         modelsTree.contains("powerlaw.m4").check();
 
@@ -229,7 +268,7 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         modelExpression.setText("m1 + m2 + m3 + m4");
         status.textIsEmpty().check();
 
-        removeModel(TABLE+".m1");
+        removeModel(TABLE +".m1");
 
         UISpecAssert.not(modelsTree.contains("test_table.m1"));
 
@@ -239,8 +278,8 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         modelExpression.setText("m2 + m3 + m4");
         status.textIsEmpty().check();
 
-        removeModel(TEMPLATE+".m3");
-        removeModel(FUNCTION+".m2");
+        removeModel(TEMPLATE +".m3");
+        removeModel(FUNCTION +".m2");
         removeModel("powerlaw.m4");
         status.textEquals("Invalid Model Expression").check();
 
@@ -300,11 +339,10 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
 
         fittingView.getButton("Fit").click();
 
-        UISpecAssert.waitUntil(UISpecAssert.not(val.textEquals("-0.5")), 1000);
+        UISpecAssert.waitUntil(val.textContains("-0.0526"), TIMEOUT);
 
-        val.textContains("-0.467").check();
         modelsTree.select("powerlaw.m5/m5.ampl");
-        val.textContains("1.852").check();
+        val.textContains("0.00507").check();
 
         TextBox np = fittingView.getInputTextBox("Number of Points");
         np.textEquals("474").check();
@@ -326,13 +364,13 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
         fittingView.getComboBox("statisticCombo").select("Chi2");
         fittingView.getButton("Fit").click();
 
-        UISpecAssert.waitUntil(np.textEquals("363"), 1000);
+        UISpecAssert.waitUntil(np.textEquals("363"), TIMEOUT);
 
         fittingView.getButton("Compute").click();
 
         Table confTable = fittingView.getTable();
         String[] columns = {"Parameter", "Lower Limit", "Upper Limit"};
-        UISpecAssert.waitUntil(UISpecAssert.not(confTable.isEmpty()), 1000);
+        UISpecAssert.waitUntil(UISpecAssert.not(confTable.isEmpty()), TIMEOUT);
 
         Assert.assertEquals(confTable.getContentAt(0, 0), "m5.ampl");
         Assert.assertEquals(confTable.getContentAt(1, 0), "m5.index");
@@ -354,7 +392,7 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
     }
 
     private void assertFitSucceeded() {
-        UISpecAssert.waitUntil(fittingView.getTextBox("status").textEquals(ModelViewerPanel.FIT_SUCCEEDED), 1000);
+        UISpecAssert.waitUntil(fittingView.getTextBox("status").textEquals(ModelViewerPanel.FIT_SUCCEEDED), TIMEOUT);
 
     }
 
@@ -363,5 +401,34 @@ public class FittingFunctionalIT extends AbstractUISpecTest {
                 modelsTree.triggerRightClick(m))
                 .getSubMenu("Remove")
                 .click();
+    }
+
+    @Before
+    public void abstractSetUp() throws Exception {
+        window = appResource.getAdapter().getMainWindow();
+        desktop = window.getDesktop();
+        examplesUrlString = tempFolder.getRoot().getParentFile().getAbsolutePath()+"/examples";
+    }
+
+    protected void loadSed(String name, String[][] table) throws Exception {
+        TestUtils.invokeWithRetry(50, 100, new Runnable() {
+            @Override
+            public void run() {
+                window.getMenuBar().getMenu("Tools").getSubMenu("SED Builder").getSubMenu("SED Builder").click();
+                desktop.containsWindow("SED Builder").check();
+                desktop.getWindow("SED Builder").getButton("Load File").click();
+                desktop.containsWindow("Load an input File").check();
+            }
+        });
+
+        Window loader = desktop.getWindow("Load an input File");
+        loader.getRadioButton("Location on Disk").click();
+        loader.getInputTextBox("diskTextBox").setText(examplesUrlString+ "/" + name);
+        loader.getComboBox().select("VOTable");
+        loader.getButton("Load Spectrum/SED").click();
+
+        Window builder = desktop.getWindow("SED Builder");
+//        builder.getListBox().click(0);
+        UISpecAssert.waitUntil(builder.getTable().contentEquals(table), TIMEOUT);
     }
 }

@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.uispec4j.Panel;
 import org.uispec4j.TextBox;
+import org.uispec4j.assertion.UISpecAssert;
 
 import java.util.Arrays;
 
@@ -50,7 +51,7 @@ public class ConfidencePanelTest {
         sigma.textEquals("1.6").check();
 
         sigma.setText("1.0");
-        assertEquals(1.0, panel.getController().getFit().getConfidence().getSigma(), Double.MIN_VALUE);
+        assertEquals(1.0, panel.getController().getFit().getConfidence().getConfig().getSigma(), Double.MIN_VALUE);
     }
 
     @Test
@@ -66,6 +67,6 @@ public class ConfidencePanelTest {
     @Test
     public void testDoConfidence() throws Exception {
         uiPanel.getButton().click();
-        uiPanel.getTable().contentEquals(columnNames, expected).check();
+        UISpecAssert.waitUntil(uiPanel.getTable().contentEquals(columnNames, expected), 1000);
     }
 }

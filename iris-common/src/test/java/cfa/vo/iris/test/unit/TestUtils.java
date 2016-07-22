@@ -50,6 +50,9 @@ public class TestUtils {
             } catch (Exception e) {
                 last = e;
                 Thread.sleep(wait);
+            } catch (AssertionError e) {
+                last = new RuntimeException(e);
+                Thread.sleep(wait);
             }
         }
         throw last;
