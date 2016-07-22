@@ -157,7 +157,7 @@ public class SampService {
             newState = pingSherpa();
             logger.log(LEVEL, "Sherpa client connected: " + newState);
             if (sherpaUp.compareAndSet(!newState, newState)) {
-                logger.log(Level.INFO, "Sherpa Client connection status changed: "+sherpaUp+ " -> "+newState);
+                logger.log(Level.INFO, "Sherpa Client connection status changed: "+!newState+ " -> "+newState);
                 for(SAMPConnectionListener listener : sherpaListeners) {
                     listener.run(newState);
                 }
@@ -175,7 +175,7 @@ public class SampService {
                 monitorSherpaOnce();
             }
         };
-        sherpaMonitorHandle = executor.scheduleAtFixedRate(sherpaMonitor, 0, 1, TimeUnit.SECONDS);
+        sherpaMonitorHandle = executor.scheduleAtFixedRate(sherpaMonitor, 0, 3, TimeUnit.SECONDS);
     }
 
     private void startSamp() {
@@ -195,7 +195,7 @@ public class SampService {
             logger.log(Level.INFO, "Starting SAMP resource server");
         }
         logger.log(Level.INFO, "Starting SAMP monitor thread");
-        sampMonitorHandle = executor.scheduleAtFixedRate(sampMonitor, 0, 1, TimeUnit.SECONDS);
+        sampMonitorHandle = executor.scheduleAtFixedRate(sampMonitor, 0, 3, TimeUnit.SECONDS);
     }
 
     private void shutdownSamp() {
