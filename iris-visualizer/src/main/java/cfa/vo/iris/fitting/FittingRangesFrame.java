@@ -15,6 +15,7 @@
  */
 package cfa.vo.iris.fitting;
 
+import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.SedException;
 import cfa.vo.iris.sed.quantities.XUnit;
@@ -293,6 +294,7 @@ public class FittingRangesFrame extends javax.swing.JInternalFrame {
             return;
         }
         listener.setPickingRanges(true);
+        GUIUtils.moveToFront(listener.getPlotterView());
     }//GEN-LAST:event_addRangeFromPlotButtonActionPerformed
 
     private void clearAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearAllButtonActionPerformed
