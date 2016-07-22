@@ -192,9 +192,9 @@ public class SedModel {
         double[] fluxErrData = new double[] {};
         
         for (IrisDataStarTable table : dataTables) {
-            specData = ArrayUtils.addAll(specData, table.getSpecValues());
-            fluxData = ArrayUtils.addAll(fluxData, table.getFluxValues());
-            fluxErrData = ArrayUtils.addAll(fluxErrData, table.getFluxErrValues());
+            specData = ArrayUtils.addAll(specData, table.getOriginalSpecValues());
+            fluxData = ArrayUtils.addAll(fluxData, table.getOriginalFluxValues());
+            fluxErrData = ArrayUtils.addAll(fluxErrData, table.getOriginalFluxErrValues());
         }
         
         data.setX(specData);
