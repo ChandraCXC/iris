@@ -99,16 +99,4 @@ public class FittingMainViewTest {
         Assert.assertEquals(sed.getFit().getMethod(), OptimizationMethod.NelderMeadSimplex);
         Assert.assertEquals(sed.getFit().getStat(), Statistic.Cash);
     }
-
-    @Test
-    public void testClearFittingRanges() throws Exception {
-        controller.getFit().addFittingRange(new FittingRange(1.0, 2.0, XUnit.ANGSTROM));
-        controller.getFit().addFittingRange(new FittingRange(3.0, 4.0, XUnit.ANGSTROM));
-        
-        assertEquals(2, controller.getFit().getFittingRanges().size());
-        
-        fittingView.getButton("Clear Ranges").click();
-        
-        assertEquals(0, controller.getFit().getFittingRanges().size());
-    }
 }

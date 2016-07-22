@@ -19,19 +19,11 @@ import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
-import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.visualizer.FittingToolComponent;
-import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
-import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
-import java.awt.Component;
-import javax.swing.JOptionPane;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.uispec4j.Panel;
 import org.uispec4j.Window;
-import org.uispec4j.finder.ComponentMatcher;
-import org.uispec4j.interception.BasicHandler;
 import org.uispec4j.interception.WindowInterceptor;
 
 /**
@@ -80,7 +72,7 @@ public class FittingRangesFrameTest extends AbstractComponentGUITest {
         fitConfig.addFittingRange(range3);
         
         // open FittingRangesManager
-        fittingTool.getMenuBar().getMenu("Edit").getSubMenu("Add/Edit Fitting Ranges...").click();
+        fittingTool.getButton("Add Ranges...").click();
         
         // assert fitting ranges manager appears
         desktop.containsWindow("Fitting Ranges Manager").check();
