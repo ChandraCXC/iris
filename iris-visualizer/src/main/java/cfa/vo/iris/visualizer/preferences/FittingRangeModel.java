@@ -23,7 +23,7 @@ import cfa.vo.iris.sed.stil.SegmentColumn;
 import cfa.vo.iris.sed.stil.SegmentColumn.Column;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.units.UnitsManager;
-import cfa.vo.iris.visualizer.plotter.ErrorBarType;
+import cfa.vo.iris.visualizer.plotter.ShapeType;
 import cfa.vo.utils.Default;
 import uk.ac.starlink.table.ColumnStarTable;
 import uk.ac.starlink.table.StarTable;
@@ -31,13 +31,20 @@ import uk.ac.starlink.table.StarTable;
 public class FittingRangeModel extends LayerModel {
     
     private static final UnitsManager um = Default.getInstance().getUnitsManager();
+    
     private static final String FITTING_LAYER = "Fitting Ranges";
+    private static final String COLOR = "3305ff";
 
     public FittingRangeModel(List<FittingRange> ranges, String xunit, double yvalue) {
         super(getFittingRangeTable(ranges, xunit, yvalue));
-        this.setShowMarks(false);
-        this.setErrorBarType(ErrorBarType.capped_lines);
-        this.setErrorColor("ff004e");
+        
+        // Set Color to Blue
+        this.setMarkColor(COLOR);
+        this.setErrorColor(COLOR);
+        
+        // Actually looks okay
+        this.setMarkType(ShapeType.filled_triangle_up);
+        this.setSize(0);
     }
 
     private static StarTable getFittingRangeTable(List<FittingRange> ranges, String xunit, double yvalue) 
@@ -49,14 +56,16 @@ public class FittingRangeModel extends LayerModel {
         // Get fitting ranges from the range list, converting as we go
         double[] xvaluesLow = new double[ranges.size()];
         double[] xvaluesHigh = new double[ranges.size()];
+        double[] xmiddles = new double[ranges.size()];
         for (int i=0; i<ranges.size(); i++) {
             double[] tmp = convertUnits(ranges.get(i), xunit);
             xvaluesLow[i] = tmp[0];
             xvaluesHigh[i] = tmp[1];
+            xmiddles[i] = (tmp[0] + tmp[1])/2;
         }
         
         ColumnStarTable ret = ColumnStarTable.makeTableWithRows(ranges.size());
-        ret.addColumn(new SegmentColumn.SegmentDataColumn(Column.Spectral_Value, xvaluesLow));
+        ret.addColumn(new SegmentColumn.SegmentDataColumn(Column.Spectral_Value, xmiddles));
         ret.addColumn(new SegmentColumn.SegmentDataColumn(Column.Spectral_Error_Low, xvaluesLow));
         ret.addColumn(new SegmentColumn.SegmentDataColumn(Column.Spectral_Error_High, xvaluesHigh));
         ret.addColumn(new SegmentColumn.SegmentDataColumn(Column.Flux_Value, yvalues));
