@@ -298,13 +298,16 @@ public class FittingRangesFrame extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_addRangeFromPlotButtonActionPerformed
 
     private void clearAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearAllButtonActionPerformed
+        // remove all fitting ranges
         controller.getFit().clearFittingRanges();
+        listener.getPlotterView().getDataModel().refresh();
         updateTable();
     }//GEN-LAST:event_clearAllButtonActionPerformed
 
     private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
         // remove selected fitting ranges
         controller.getFit().removeFittingRanges(this.jTable1.getSelectedRows());
+        listener.getPlotterView().getDataModel().refresh();
         updateTable();
     }//GEN-LAST:event_removeButtonActionPerformed
 
