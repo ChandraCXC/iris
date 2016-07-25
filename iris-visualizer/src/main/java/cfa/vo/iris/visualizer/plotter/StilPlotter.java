@@ -493,7 +493,9 @@ public class StilPlotter extends JPanel {
         
         // Otherwise add the layer at 10% of the current aspect
         PlaneAspect aspect = display.getAspect();
-        double y = aspect.getYMin() + ((aspect.getYMax() - aspect.getYMin()) * .1);
+        double min = Math.min(aspect.getYMin(), aspect.getYMax());
+        double max = Math.max(aspect.getYMin(), aspect.getYMax());
+        double y = min + ((max - min) * .1);
         
         // Construct the model for the fitting ranges and add it to the plot
         fittingRanges = new FittingRangeModel(ranges, dataModel.getXunits(), y);
