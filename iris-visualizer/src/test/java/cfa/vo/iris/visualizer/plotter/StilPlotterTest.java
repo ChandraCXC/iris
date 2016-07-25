@@ -18,6 +18,7 @@ package cfa.vo.iris.visualizer.plotter;
 import cfa.vo.iris.visualizer.plotter.StilPlotter;
 import static org.junit.Assert.*;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.test.Ws;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
 import cfa.vo.iris.test.unit.AbstractUISpecTest;
@@ -375,6 +376,12 @@ public class StilPlotterTest extends AbstractUISpecTest {
         // there should be 1 layer for residuals
         assertTrue(!ArrayUtils.isEmpty(layers));
         assertEquals(1, ArrayUtils.getLength(layers));
+        
+        // now, change the units on the plotter and verify the model units change
+        plot.getDataModel().setUnits("Angstrom", "mJy");
+        for (int i=0; i<seg.getLength(); i++) {
+            assertNotEquals(seg.getFluxAxisValues()[i], model.getDataTables().get(0).getPlotterDataTable().getModelValues()[i]);
+        }
     }
     
     @Test
