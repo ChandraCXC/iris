@@ -20,6 +20,8 @@ package cfa.vo.iris.visualizer.stil.tables;
 import java.io.IOException;
 import java.util.BitSet;
 import java.util.List;
+
+import cfa.vo.iris.sed.stil.IrisDataStarTable;
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.visualizer.masks.Mask;
@@ -45,7 +47,7 @@ import uk.ac.starlink.table.WrapperStarTable;
  *  to the fitting tool.
  *
  */
-public class IrisStarTable extends WrapperStarTable {
+public class IrisStarTable extends WrapperStarTable implements IrisDataStarTable {
     
     private StarTable segmentMetadataTable;
     private SegmentStarTable plotterDataTable;
@@ -88,6 +90,91 @@ public class IrisStarTable extends WrapperStarTable {
         super.setName(name);
         plotterDataTable.setName(name);
         segmentMetadataTable.setName(name);
+    }
+
+    @Override
+    public double[] getSpecValues() {
+        return getFilteredValues(plotterDataTable.getSpecValues());
+    }
+
+    @Override
+    public double[] getFluxValues() {
+        return getFilteredValues(plotterDataTable.getFluxValues());
+    }
+
+    @Override
+    public double[] getSpecErrValues() {
+        return getFilteredValues(plotterDataTable.getSpecErrValues());
+    }
+
+    @Override
+    public double[] getSpecErrValuesLo() {
+        return getFilteredValues(plotterDataTable.getSpecErrValuesLo());
+    }
+
+    @Override
+    public double[] getSpecErrValuesHi() {
+        return getFilteredValues(plotterDataTable.getSpecErrValuesHi());
+    }
+
+    @Override
+    public double[] getFluxErrValues() {
+        return getFilteredValues(plotterDataTable.getFluxErrValues());
+    }
+
+    @Override
+    public double[] getFluxErrValuesLo() {
+        return getFilteredValues(plotterDataTable.getFluxErrValuesLo());
+    }
+
+    @Override
+    public double[] getFluxErrValuesHi() {
+        return getFilteredValues(plotterDataTable.getFluxErrValuesHi());
+    }
+
+    @Override
+    public double[] getOriginalFluxValues() {
+        return getFilteredValues(plotterDataTable.getOriginalFluxValues());
+    }
+
+    @Override
+    public double[] getOriginalSpecValues() {
+        return getFilteredValues(plotterDataTable.getOriginalSpecValues());
+    }
+
+    @Override
+    public double[] getOriginalFluxErrValues() {
+        return getFilteredValues(plotterDataTable.getOriginalFluxErrValues());
+    }
+
+    @Override
+    public double[] getOriginalFluxErrValuesHi() {
+        return getFilteredValues(plotterDataTable.getOriginalFluxErrValuesHi());
+    }
+
+    @Override
+    public double[] getOriginalFluxErrValuesLo() {
+        return getFilteredValues(plotterDataTable.getOriginalFluxErrValuesLo());
+    }
+    
+    /**
+     * Uses the BitSet mask to return a subset of data from the 
+     * provided double[].
+     */
+    private double[] getFilteredValues(double[] data) {
+        
+        int rows = (int) getRowCount();
+        double[] values = new double[rows];
+        
+        BitSet masked = mask.getMaskedRows(this);
+        int c = 0;
+        for (int i=0; i<(int) plotterDataTable.getRowCount(); i++) {
+            // Add only non-masked values.
+            if (!masked.get(i)) {
+                values[c++] = data[i];
+            }
+        }
+        return values;
     }
     
     /**
@@ -155,6 +242,13 @@ public class IrisStarTable extends WrapperStarTable {
         
         return -1;
     }
+    
+    /**
+     * @return BitSet of masked rows in the table.
+     */
+    public BitSet getMasked() {
+        return mask.getMaskedRows(this);
+    }
 
     /**
      * Mask rows from this StarTable.
@@ -181,47 +275,6 @@ public class IrisStarTable extends WrapperStarTable {
     public void clearMasks() {
         mask = new RowSubsetMask(new int[0], this);
         plotterDataTable.setMasked(mask.getMaskedRows(this));
-    }
-    
-    /**
-     * @return BitSet of masked rows in the table.
-     */
-    public BitSet getMasked() {
-        return mask.getMaskedRows(this);
-    }
-    
-    /**
-     * @return the filtered set of spectral axis data values.
-     */
-    public double[] getSpectralDataValues() {
-        return getFilteredValues(plotterDataTable.getSpecValues());
-    }
-    
-    /**
-     * @return the filtered set of flux axis data values.
-     */
-    public double[] getFluxDataValues() {
-        return getFilteredValues(plotterDataTable.getFluxValues());
-    }
-    
-    /*
-     * Uses the BitSet mask to return a subset of data from the 
-     * provided double[].
-     */
-    private double[] getFilteredValues(double[] data) {
-        
-        int rows = (int) getRowCount();
-        double[] values = new double[rows];
-        
-        BitSet masked = mask.getMaskedRows(this);
-        int c = 0;
-        for (int i=0; i<(int) plotterDataTable.getRowCount(); i++) {
-            // Add only non-masked values.
-            if (!masked.get(i)) {
-                values[c++] = data[i];
-            }
-        }
-        return values;
     }
     
     /**

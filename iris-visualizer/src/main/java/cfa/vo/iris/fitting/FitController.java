@@ -1,13 +1,16 @@
 package cfa.vo.iris.fitting;
 
+import cfa.vo.interop.SAMPFactory;
 import cfa.vo.iris.fitting.custom.CustomModelsManager;
 import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.fitting.custom.ModelsListener;
 import cfa.vo.iris.sed.stil.SegmentStarTable;
+import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.sherpa.ConfidenceResults;
+import cfa.vo.sherpa.Data;
 import cfa.vo.sherpa.FitResults;
 import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.models.Model;
@@ -114,13 +117,38 @@ public class FitController {
      * @throws Exception An exception may be thrown by the sherpa-samp service if the fitting operation failed.
      */
     public FitResults fit() throws Exception {
-        FitResults retVal = client.fit(sedModel.getSed());
+        Data data = constructSherpaCall(sedModel);
+        
+        // Make call to sherpa to fit data
+        FitResults retVal = client.fit(data, getFit());
         sedModel.getFit().integrateResults(retVal);
         
         // Record the version number on the SED in the FitConfiguration
         sedModel.getFit().setSedVersion(sedModel.getVersion());
         
         return retVal;
+    }
+    
+    Data constructSherpaCall(SedModel model) throws UnitsException {
+        Data data = SAMPFactory.get(Data.class);
+        data.setName(SherpaClient.DATA_NAME);
+        
+        // Extract fitting data from SedModel, don't include masked points.
+        sedModel.getFittingData(data, false);
+        double[] xoldvalues = data.getX();
+        double[] yoldvalues = data.getY();
+        double[] erroldvalues = data.getStaterror();
+        String xoldunits = sedModel.getXUnits();
+        String yoldUnits = sedModel.getYUnits();
+        
+        // Convert data's units to fitting units
+        UnitsManager um = Default.getInstance().getUnitsManager();
+        data.setY(um.convertY(yoldvalues, xoldvalues, yoldUnits, xoldunits, SherpaClient.Y_UNIT));
+        data.setStaterror(um.convertErrors(erroldvalues, yoldvalues, xoldvalues,
+                yoldUnits, xoldunits, SherpaClient.Y_UNIT));
+        data.setX(um.convertX(xoldvalues, xoldunits, SherpaClient.X_UNIT));
+        
+        return data;
     }
 
     /**
@@ -130,7 +158,7 @@ public class FitController {
      * @throws Exception an exception may be thrown by the sherpa-samp service if the operation failed
      */
     public ConfidenceResults computeConfidence() throws Exception {
-        ConfidenceResults retVal = client.computeConfidence(sedModel.getSed());
+        ConfidenceResults retVal = client.computeConfidence(constructSherpaCall(sedModel), getFit());
         getFit().setConfidenceResults(retVal);
         return retVal;
     }
@@ -222,16 +250,17 @@ public class FitController {
 
         UnitsManager uManager = Default.getInstance().getUnitsManager();
 
-        for (IrisStarTable table: sedModel.getDataTables()) {
-            double[] x = table.getSpectralDataValues();
+        for (IrisStarTable ist: sedModel.getDataTables()) {
+            SegmentStarTable table = ist.getPlotterDataTable();
+            double[] x = table.getSpecValues();
             double[] xStandardUnit = uManager.convertX(x, xUnit, SherpaClient.X_UNIT);
             double[] yStandardUnit = client.evaluate(xStandardUnit, sedModel.getFit());
             double[] y = Default.getInstance().getUnitsManager().convertY(yStandardUnit, xStandardUnit,
                     SherpaClient.Y_UNIT, SherpaClient.X_UNIT, yUnit);
 
-            table.getPlotterDataTable().setModelValues(y);
-            table.getPlotterDataTable().setResidualValues(calcResiduals(table.getFluxDataValues(), y));
-            table.getPlotterDataTable().setRatioValues(calcRatios(table.getFluxDataValues(), y));
+            table.setModelValues(y);
+            table.setResidualValues(calcResiduals(table.getFluxValues(), y));
+            table.setRatioValues(calcRatios(table.getFluxValues(), y));
         }
     }
 
