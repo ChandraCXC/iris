@@ -203,11 +203,17 @@ public class SedModel {
     }
     
     /**
-     * Reserializes all segments within the sed.
+     * Reserializes all segments within the sed, re adds them in the order they
+     * appear in the SED.
      */
     void refresh() {
         for (Segment seg : sed.getSegments()) {
-            addSegment(seg);
+            if (starTableData.containsKey(seg)) {
+                refreshSegment(seg);
+            }
+            else {
+                addSegment(seg);
+            }
         }
     }
     
@@ -216,75 +222,44 @@ public class SedModel {
         tableLayerModels.clear();
     }
     
+    void refreshSegment(Segment seg) {
+        // If the segment is already in the map then just update the insource
+        // and keep everything else the same
+        IrisStarTable newTable = adapter.convertSegment(seg);
+        
+        // Update layermodel with new star table data
+        LayerModel layer = tableLayerModels.get(seg);
+        layer.setInSource(newTable);
+        layer.setSuffix(newTable.getName());
+        
+        // Update local map data with new table
+        starTableData.put(seg, newTable);
+    }
+    
     /**
-     * Add a segment to the sed model map.
+     * Adds or updates a segment in the model map.
      * @param seg
-     * @return true if the sed was added to the model.
      */
-    boolean addSegment(Segment seg) {
+    void addSegment(Segment seg) {
         
         // Do not keep track of empty segments
-        if (seg == null) return false;
+        if (seg == null) return;
         
-        // If the segment is already in the map remake the star table
-        if (starTableData.containsKey(seg)) {
-            IrisStarTable table = starTableData.get(seg);
-            LayerModel mod = tableLayerModels.get(seg);
-            
-            // Preserve table name on reserialization
-            IrisStarTable newTable = convertSegment(seg, table.getName());
-            
-            starTableData.put(seg, newTable);
-            mod.setInSource(newTable);
-            return false;
-        }
-        
-        IrisStarTable newTable = convertSegment(seg, null);
-
-        // Ensure that the layer has a unique identifier in the list of segments
+        // Make the star table
+        IrisStarTable newTable = adapter.convertSegment(seg);
         LayerModel layer = new LayerModel(newTable);
-        int count = 0;
-        String id = layer.getSuffix();
-        while (!isUniqueLayerSuffix(id)) {
-            count++;
-            id = layer.getSuffix() + " " + count;
-        }
-        layer.setSuffix(id);
-        newTable.setName(id);
+        
+        // set the units
+        setUnits(seg, newTable);
         
         // add colors to segment layer
         String hexColor = ColorPalette.colorToHex(colors.getNextColor());
         layer.setErrorColor(hexColor);
         layer.setMarkColor(hexColor);
         
-        // update legend settings
-        layer.setLabel(id);
-        
-        // set the units
-        setUnits(seg, newTable);
-        
+        // Update local map data with new table
         starTableData.put(seg, newTable);
         tableLayerModels.put(seg, layer);
-        return true;
-    }
-    
-    boolean isUniqueLayerSuffix(String suffix) {
-        for (LayerModel layer : tableLayerModels.values()) {
-            if (StringUtils.equals(layer.getSuffix(), suffix)) {
-                return false;
-            }
-        }
-        return true;
-    }
-    
-    private IrisStarTable convertSegment(Segment seg, String name) {
-        // Convert segments with more than 3000 points asynchronously.
-        if (seg.getLength() > 3000) {
-            return adapter.convertSegmentAsync(seg, name);
-        }
-        IrisStarTable table = adapter.convertSegment(seg, name);
-        
-        return table;
     }
     
     /**
