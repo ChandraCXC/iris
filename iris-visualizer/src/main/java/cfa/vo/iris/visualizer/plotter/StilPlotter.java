@@ -208,6 +208,19 @@ public class StilPlotter extends JPanel {
         resetPlot(false, false);
     }
     
+    public boolean getShowLegend() {
+        return getPlotPreferences().getShowLegend();
+    }
+    
+    public void setShowLegend(boolean on) {
+        // Fix the plot between showing legends
+        boolean isFixed = getPlotPreferences().getFixed();
+        getPlotPreferences().setFixed(true);
+        getPlotPreferences().setShowLegend(on);
+        resetPlot(false, false);
+        getPlotPreferences().setFixed(isFixed);
+    }
+    
     public boolean isShowResiduals() {
         return showResiduals;
     }

@@ -245,6 +245,7 @@ public class PlotterView extends JInternalFrame {
         mntmErrorBars = new javax.swing.JCheckBoxMenuItem();
         mntmAutoFixed = new javax.swing.JCheckBoxMenuItem();
         mntmGridOnOff = new javax.swing.JCheckBoxMenuItem();
+        showLegendCheckBox = new javax.swing.JCheckBoxMenuItem();
         mntmCoplot = new javax.swing.JMenuItem();
         mnHelp = new javax.swing.JMenu();
         mntmPlotterNavigationHelp = new javax.swing.JMenuItem();
@@ -584,6 +585,13 @@ public class PlotterView extends JInternalFrame {
 
         mnView.add(mntmGridOnOff);
 
+        showLegendCheckBox.setText("Show Legend");
+
+        binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, plotter, org.jdesktop.beansbinding.ELProperty.create("${showLegend}"), showLegendCheckBox, org.jdesktop.beansbinding.BeanProperty.create("selected"));
+        bindingGroup.addBinding(binding);
+
+        mnView.add(showLegendCheckBox);
+
         mntmCoplot.setText("Coplot...");
         mntmCoplot.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -717,6 +725,7 @@ public class PlotterView extends JInternalFrame {
     private cfa.vo.iris.visualizer.plotter.StilPlotter plotter;
     private cfa.vo.iris.visualizer.plotter.JButtonArrow right;
     private javax.swing.JComboBox secondaryPlotTypeComboBox;
+    private javax.swing.JCheckBoxMenuItem showLegendCheckBox;
     private javax.swing.JToggleButton tglbtnShowHideResiduals;
     private javax.swing.JPanel topButtonsPanel;
     private javax.swing.JTextField txtXposition;
