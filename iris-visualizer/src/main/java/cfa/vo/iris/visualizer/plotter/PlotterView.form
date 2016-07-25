@@ -97,6 +97,14 @@
                 <BindingProperty name="selected" source="plotter" sourcePath="${gridOn}" target="mntmGridOnOff" targetPath="selected" updateStrategy="0" immediately="false"/>
               </BindingProperties>
             </MenuItem>
+            <MenuItem class="javax.swing.JCheckBoxMenuItem" name="showLegendCheckBox">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Show Legend"/>
+              </Properties>
+              <BindingProperties>
+                <BindingProperty name="selected" source="plotter" sourcePath="${showLegend}" target="showLegendCheckBox" targetPath="selected" updateStrategy="0" immediately="false"/>
+              </BindingProperties>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="mntmCoplot">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Coplot..."/>
