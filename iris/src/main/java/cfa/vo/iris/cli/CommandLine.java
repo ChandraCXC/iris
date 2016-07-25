@@ -19,7 +19,6 @@ import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.test.TestBuilder;
 import cfa.vo.iris.test.TestLogger;
 import cfa.vo.iris.test.TestSSAServer;
-import cfa.vo.iris.test.vizier.VizierClient;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -69,10 +68,6 @@ public class CommandLine {
 
             if (prop.equals("lnf")) {
                 isCrossLookAndFeel = true;
-            }
-
-            if (prop.equals("vizier")) {
-                components.add(VizierClient.class);
             }
 
             if (prop.equals("debug")) {
