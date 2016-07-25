@@ -36,8 +36,8 @@ public class FittingModelTest {
         
         StarTable table = model.getInSource();
         assertEquals(2, table.getRowCount());
-        assertArrayEquals(new Object[] {5050.0, 100.0, 10000.0, 1.0}, table.getRow(0));
-        assertArrayEquals(new Object[] {4E8, 3E8, 5E8, 1.0}, table.getRow(1));
+        assertArrayEquals(new Object[] {5050.0, 4950.0, 4950.0, 1.0}, table.getRow(0));
+        assertArrayEquals(new Object[] {4.0E8, 1.0E8, 1.0E8, 1.0}, table.getRow(1));
         
         assertEquals(2, model.getNumberOfLayers());
         assertFalse(model.getShowLines());

@@ -607,7 +607,7 @@ public class StilPlotterTest extends AbstractUISpecTest {
         
         // Validate values, y value should be at 1 + (10 - 1)*.5 = 1.45
         assertEquals(1, fitStarTable.getRowCount());
-        assertArrayEquals(new Object[] {5.0, 1.0, 9.0, 1.9}, fitStarTable.getRow(0));
+        assertArrayEquals(new Object[] {5.0, 4.0, 4.0, 1.9}, fitStarTable.getRow(0));
     }
     
     private StilPlotter setUpTests(ExtSed sed) throws Exception {
