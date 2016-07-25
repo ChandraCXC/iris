@@ -98,8 +98,10 @@ public class VizierFrame extends javax.swing.JInternalFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
+        java.awt.GridBagConstraints gridBagConstraints;
         bindingGroup = new org.jdesktop.beansbinding.BindingGroup();
 
+        jPanel4 = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         vizierTargetName = new javax.swing.JTextField();
@@ -116,11 +118,15 @@ public class VizierFrame extends javax.swing.JInternalFrame {
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setIconifiable(true);
+        setResizable(true);
         setTitle("Vizier Client");
-        setMaximumSize(new java.awt.Dimension(200, 100));
-        setMinimumSize(new java.awt.Dimension(200, 100));
-        setPreferredSize(new java.awt.Dimension(200, 100));
-        getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.PAGE_AXIS));
+        setMaximumSize(null);
+        setMinimumSize(null);
+        setPreferredSize(null);
+        getContentPane().setLayout(new java.awt.GridBagLayout());
+
+        jPanel4.setName("jPanel4"); // NOI18N
+        jPanel4.setLayout(new javax.swing.BoxLayout(jPanel4, javax.swing.BoxLayout.PAGE_AXIS));
 
         jPanel1.setName("jPanel1"); // NOI18N
         jPanel1.setLayout(new javax.swing.BoxLayout(jPanel1, javax.swing.BoxLayout.LINE_AXIS));
@@ -136,7 +142,7 @@ public class VizierFrame extends javax.swing.JInternalFrame {
 
         jPanel1.add(vizierTargetName);
 
-        getContentPane().add(jPanel1);
+        jPanel4.add(jPanel1);
 
         jPanel3.setName("jPanel3"); // NOI18N
         jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.LINE_AXIS));
@@ -145,6 +151,7 @@ public class VizierFrame extends javax.swing.JInternalFrame {
         jLabel3.setName("jLabel3"); // NOI18N
         jPanel3.add(jLabel3);
 
+        vizierRadius.setMinimumSize(new java.awt.Dimension(60, 23));
         vizierRadius.setName("vizierRadius"); // NOI18N
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${searchRadius}"), vizierRadius, org.jdesktop.beansbinding.BeanProperty.create("text"));
@@ -156,7 +163,7 @@ public class VizierFrame extends javax.swing.JInternalFrame {
         jLabel2.setName("jLabel2"); // NOI18N
         jPanel3.add(jLabel2);
 
-        getContentPane().add(jPanel3);
+        jPanel4.add(jPanel3);
 
         jPanel2.setName("jPanel2"); // NOI18N
         jPanel2.setLayout(new javax.swing.BoxLayout(jPanel2, javax.swing.BoxLayout.LINE_AXIS));
@@ -181,7 +188,15 @@ public class VizierFrame extends javax.swing.JInternalFrame {
         });
         jPanel2.add(jButton1);
 
-        getContentPane().add(jPanel2);
+        jPanel4.add(jPanel2);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        gridBagConstraints.insets = new java.awt.Insets(10, 10, 10, 10);
+        getContentPane().add(jPanel4, gridBagConstraints);
 
         bindingGroup.bind();
 
@@ -209,6 +224,7 @@ public class VizierFrame extends javax.swing.JInternalFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JComboBox sedCreationType;
     private javax.swing.JTextField vizierRadius;
     private javax.swing.JTextField vizierTargetName;
