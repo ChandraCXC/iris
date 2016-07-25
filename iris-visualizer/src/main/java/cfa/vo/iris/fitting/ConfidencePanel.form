@@ -3,7 +3,10 @@
 <Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <Properties>
     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[287, 191]"/>
+      <Dimension value="null"/>
+    </Property>
+    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+      <Dimension value="null"/>
     </Property>
   </Properties>
   <AuxValues>
@@ -48,7 +51,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="sigmaText">
       <Properties>
-        <Property name="text" type="java.lang.String" value="sigma - 90.00%"/>
+        <Property name="text" type="java.lang.String" value="sigma - 90.0%"/>
         <Property name="name" type="java.lang.String" value="sigmaPercent" noResource="true"/>
       </Properties>
       <BindingProperties>

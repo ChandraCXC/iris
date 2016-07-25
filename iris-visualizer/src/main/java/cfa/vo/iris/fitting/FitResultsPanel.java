@@ -36,6 +36,7 @@ public class FitResultsPanel extends AbstractGridPanel {
         dof = addTextField("Degrees of Freedom");
         this.setEnabled(false);
         setMinimumSize(new Dimension(250, 50));
+        revalidate();
     }
 
     @Override
