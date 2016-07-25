@@ -19,6 +19,7 @@ import cfa.vo.iris.IrisComponent;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.test.unit.AbstractComponentGUITest;
+import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.visualizer.FittingToolComponent;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,12 +38,22 @@ public class FittingRangesFrameTest extends AbstractComponentGUITest {
     private SedlibSedManager sedManager;
     
     @Before
-    public void setUp() {
+    public void setUp() throws Exception {
         
         // add a SED
         sedManager = (SedlibSedManager) app.getWorkspace().getSedManager();
         sedManager.newSed("sed");
         
+        // wait for the SED to be added to the EDT
+        TestUtils.invokeWithRetry(20, 100, new Runnable() {
+
+            @Override
+            public void run() {
+                assertEquals(1, sedManager.getSeds().size());
+            }
+
+        });
+
         String windowName = "Fitting Tool";
         
         // open fitting tool
