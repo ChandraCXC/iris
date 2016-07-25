@@ -20,6 +20,7 @@ import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.SedException;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.visualizer.plotter.MouseXRangesClickedListener;
+import cfa.vo.iris.visualizer.plotter.PlotterView;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import java.math.BigDecimal;
 import java.util.List;
@@ -300,14 +301,20 @@ public class FittingRangesFrame extends javax.swing.JInternalFrame {
     private void clearAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearAllButtonActionPerformed
         // remove all fitting ranges
         controller.getFit().clearFittingRanges();
-        listener.getPlotterView().getDataModel().refresh();
+        PlotterView plotter = listener.getPlotterView();
+        if (plotter != null) {
+            plotter.getDataModel().refresh();
+        }
         updateTable();
     }//GEN-LAST:event_clearAllButtonActionPerformed
 
     private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
         // remove selected fitting ranges
         controller.getFit().removeFittingRanges(this.jTable1.getSelectedRows());
-        listener.getPlotterView().getDataModel().refresh();
+        PlotterView plotter = listener.getPlotterView();
+        if (plotter != null) {
+            plotter.getDataModel().refresh();
+        }
         updateTable();
     }//GEN-LAST:event_removeButtonActionPerformed
 
