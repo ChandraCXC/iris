@@ -147,6 +147,7 @@
   <SubComponents>
     <Component class="javax.swing.JTextField" name="filterExpressionField">
       <Properties>
+        <Property name="editable" type="boolean" value="false"/>
         <Property name="columns" type="int" value="2"/>
         <Property name="text" type="java.lang.String" value="Filter Expression"/>
         <Property name="toolTipText" type="java.lang.String" value="Enter a column selection expression"/>
@@ -167,6 +168,7 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Select Points"/>
         <Property name="toolTipText" type="java.lang.String" value="Select points matching the filter expression"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout" value="org.netbeans.modules.form.compat2.layouts.DesignGridBagLayout$GridBagConstraintsDescription">

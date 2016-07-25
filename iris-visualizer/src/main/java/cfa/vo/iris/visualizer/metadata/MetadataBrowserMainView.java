@@ -202,6 +202,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
+        filterExpressionField.setEditable(false);
         filterExpressionField.setColumns(2);
         filterExpressionField.setText("Filter Expression");
         filterExpressionField.setToolTipText("Enter a column selection expression");
@@ -219,6 +220,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         selectPointsButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
         selectPointsButton.setText("Select Points");
         selectPointsButton.setToolTipText("Select points matching the filter expression");
+        selectPointsButton.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 5;
         gridBagConstraints.gridy = 1;
