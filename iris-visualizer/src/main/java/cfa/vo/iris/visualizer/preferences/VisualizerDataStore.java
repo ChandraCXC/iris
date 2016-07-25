@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -36,10 +37,14 @@ public class VisualizerDataStore {
     // All preferences for each ExtSed in the workspace
     final Map<ExtSed, SedModel> sedModels;
     
+    // Async executor
+    final ExecutorService visualizerExecutor;
+    
     public VisualizerDataStore(ExecutorService visualizerExecutor, VisualizerComponentPreferences preferences) {
         this.sedModels = Collections.synchronizedMap(new IdentityHashMap<ExtSed, SedModel>());
         this.preferences = preferences;
         this.adapter = new IrisStarTableAdapter(visualizerExecutor, preferences);
+        this.visualizerExecutor = visualizerExecutor;
         
         addSedListeners();
     }
@@ -185,9 +190,15 @@ public class VisualizerDataStore {
     private class VisualizerSedListener implements SedListener {
         
         @Override
-        public void process(ExtSed sed, SedCommand payload) {
+        public void process(final ExtSed sed, final SedCommand payload) {
             try {
-                processNotification(sed, payload);
+                visualizerExecutor.submit(new Callable<ExtSed>() {
+                    @Override
+                    public ExtSed call() throws Exception {
+                        processNotification(sed, payload);
+                        return null;
+                    };
+                });
             } catch (Exception e) {
                 // TODO: This happens asynchronously, what should we do with exceptions?
                 logger.log(Level.SEVERE, "Exception in visualizer data processing", e);
@@ -218,9 +229,15 @@ public class VisualizerDataStore {
     private class VisualizerSegmentListener implements SegmentListener {
 
         @Override
-        public void process(Segment segment, SegmentEvent.SegmentPayload payload) {
+        public void process(final Segment segment, final SegmentEvent.SegmentPayload payload) {
             try {
-                processNotification(segment, payload);
+                visualizerExecutor.submit(new Callable<ExtSed>() {
+                    @Override
+                    public ExtSed call() throws Exception {
+                        processNotification(segment, payload);
+                        return null;
+                    };
+                });
             } catch (Exception e) {
                 // TODO: This happens asynchronously, what should we do with exceptions?
                 logger.log(Level.SEVERE, "Exception in visualizer data processing", e);
@@ -249,9 +266,15 @@ public class VisualizerDataStore {
     private class VisualizerMultipleSegmentListener implements MultipleSegmentListener {
         
         @Override
-        public void process(java.util.List<Segment> segments, SegmentEvent.SegmentPayload payload) {
+        public void process(final java.util.List<Segment> segments, final SegmentEvent.SegmentPayload payload) {
             try {
-                processNotification(segments, payload);
+                visualizerExecutor.submit(new Callable<ExtSed>() {
+                    @Override
+                    public ExtSed call() throws Exception {
+                        processNotification(segments, payload);
+                        return null;
+                    };
+                });
             } catch (Exception e) {
                 // TODO: This happens asynchronously, what should we do with
                 // exceptions?
