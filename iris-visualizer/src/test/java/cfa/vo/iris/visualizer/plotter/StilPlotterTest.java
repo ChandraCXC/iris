@@ -57,6 +57,7 @@ import uk.ac.starlink.ttools.task.MapEnvironment;
 import cfa.vo.testdata.TestData;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.task.BooleanParameter;
+import uk.ac.starlink.ttools.plot2.geom.PlaneSurfaceFactory;
 
 public class StilPlotterTest extends AbstractUISpecTest {
     
@@ -576,7 +577,7 @@ public class StilPlotterTest extends AbstractUISpecTest {
         ExtSed sed = new ExtSed("test", false);
         
         // Fix plot at initial bounds (1,10) (1,10)
-        StilPlotter plot = setUpTests(sed);
+        final StilPlotter plot = setUpTests(sed);
         plot.getPlotPreferences().setFixed(true);
         
         // Just make sure plot aspect hasn't changed
@@ -590,14 +591,23 @@ public class StilPlotterTest extends AbstractUISpecTest {
         plot.setSeds(Arrays.asList(sed));
         plot.resetPlot(false, false);
         
+        TestUtils.invokeWithRetry(50, 100, new Runnable() {
+            @Override
+            public void run() {
+                assertTrue(plot.fittingRanges != null);
+            }
+        });
+        
+        PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> display = plot.getPlotDisplay();
+        
         // Just make sure plot aspect hasn't changed
-        assertEquals(1, plot.getPlotDisplay().getAspect().getYMin(), 0.001);
-        assertEquals(10, plot.getPlotDisplay().getAspect().getYMax(), 0.001);
+        assertEquals(1, display.getAspect().getYMin(), 0.001);
+        assertEquals(10, display.getAspect().getYMax(), 0.001);
         
         // using reflection to access layers in plot display
         Field layers_ = PlotDisplay.class.getDeclaredField("layers_");
         layers_.setAccessible(true);
-        PlotLayer[] layers = (PlotLayer[]) layers_.get(plot.getPlotDisplay());
+        PlotLayer[] layers = (PlotLayer[]) layers_.get(display);
         
         // there should be 2 layers for the FunctionModel, one for marks and one for errors
         assertEquals(2, ArrayUtils.getLength(layers));
