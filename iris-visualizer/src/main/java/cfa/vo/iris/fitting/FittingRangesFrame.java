@@ -343,6 +343,9 @@ public class FittingRangesFrame extends javax.swing.JInternalFrame {
             Logger.getLogger(FittingRangesFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        // refresh the plot to show new fitting range
+        preferences.getDataModel().refresh();
+        
         // update table
         updateTable();
     }//GEN-LAST:event_addRangeButtonActionPerformed
