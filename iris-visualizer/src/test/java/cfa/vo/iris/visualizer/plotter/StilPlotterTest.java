@@ -24,7 +24,6 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.test.Ws;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
-import cfa.vo.iris.test.unit.AbstractUISpecTest;
 import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
 import cfa.vo.iris.visualizer.preferences.FittingRangeModel;
@@ -45,6 +44,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.uispec4j.Trigger;
+import org.uispec4j.UISpec4J;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
@@ -60,7 +60,11 @@ import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.task.BooleanParameter;
 import uk.ac.starlink.ttools.plot2.geom.PlaneSurfaceFactory;
 
-public class StilPlotterTest extends AbstractUISpecTest {
+public class StilPlotterTest {
+    
+    static {
+        UISpec4J.init();
+    }
     
     private Ws ws = new Ws();
     private VisualizerComponentPreferences preferences;
@@ -603,7 +607,7 @@ public class StilPlotterTest extends AbstractUISpecTest {
             @Override
             public void run() {
                 assertTrue(plot.fittingRanges != null);
-                assertTrue(plot.fittingRanges.getSize() == 1);
+                assertEquals(FittingRangeModel.FITTING_LAYER, plot.fittingRanges.getInSource().getName());
             }
         });
 
