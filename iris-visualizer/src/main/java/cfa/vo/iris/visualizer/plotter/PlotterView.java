@@ -17,6 +17,7 @@ package cfa.vo.iris.visualizer.plotter;
 
 import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.fitting.FitController;
+import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.gui.GUIUtils;
 import cfa.vo.iris.visualizer.IrisVisualizer;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
@@ -54,12 +55,14 @@ public class PlotterView extends JInternalFrame {
     // Coplotting selection window
     CoPlotManagementWindow coplotWindow;
     
+    // initially, not in state for picking fit ranges
+    boolean pickFittingRange = false;
+    
     public static double ZOOM_SCALE = 0.5;
     
     /**
      * Create the frame.
      * @param ws 
-     * @param app 
      * @param title
      * @param preferences
      * @throws java.lang.Exception
@@ -694,6 +697,9 @@ public class PlotterView extends JInternalFrame {
             preferences.evaluateModel(model, controller);
         }
     }//GEN-LAST:event_evaluateButtonActionPerformed
+
+    private void mntmSomethingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mntmSomethingActionPerformed
+    }//GEN-LAST:event_mntmSomethingActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel bottomButtonsPanel;

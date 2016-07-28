@@ -19,8 +19,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import cfa.vo.iris.fitting.FittingRange;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.quantities.SPVYQuantity;
+import cfa.vo.iris.visualizer.preferences.FittingRangeModel;
 import cfa.vo.iris.visualizer.preferences.FunctionModel;
 import cfa.vo.iris.visualizer.preferences.LayerModel;
 import cfa.vo.iris.visualizer.preferences.SedModel;
@@ -35,6 +37,8 @@ import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
 import uk.ac.starlink.ttools.task.MapEnvironment;
 
 import java.awt.GridBagConstraints;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import java.awt.Insets;
@@ -45,6 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import uk.ac.starlink.ttools.plot2.Axis;
 
 public class StilPlotter extends JPanel {
@@ -77,6 +82,9 @@ public class StilPlotter extends JPanel {
     
     // MapEnvironment for the residuals plotter
     private MapEnvironment resEnv;
+    
+    // Fitting ranges currently plotted
+    FittingRangeModel fittingRanges;
     
     // Needs a default constructor for Netbeans
     public StilPlotter() {
@@ -457,7 +465,7 @@ public class StilPlotter extends JPanel {
      * @throws Exception
      */
     protected PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> createPlotComponent(
-            MapEnvironment env, boolean enableMouseListeners) throws Exception {
+            MapEnvironment env, boolean isPrimaryPlot) throws Exception {
 
         logger.log(Level.FINE, "plot environment:");
         logger.log(Level.FINE, ReflectionToStringBuilder.toString(env));
@@ -470,12 +478,57 @@ public class StilPlotter extends JPanel {
         PlotDisplay<PlaneSurfaceFactory.Profile,PlaneAspect> display =
                 new PlanePlot2Task().createPlotComponent(env, false);
         
-        if (enableMouseListeners) {
+        // Add Fitting ranges, if necessary
+        // TODO: This is a terribly inefficient way to compute fitting ranges, this needs
+        // be improved either by getting access to stil to add another layer after the plot 
+        // has been created (preferred by long term), adding a layer type to stil that lets
+        // us define points by x value and dynamic y value, or by computing the y value 
+        // independently of the PlotDisplay.
+        if (isPrimaryPlot) {
+            display = addFittingRanges(env, display);
+        }
+        
+        if (isPrimaryPlot) {
             // Always update mouse listeners with the new display
             preferences.getMouseListenerManager().activateListeners(display);
         }
         
         return display;
+    }
+    
+    private PlotDisplay<PlaneSurfaceFactory.Profile,PlaneAspect> addFittingRanges(MapEnvironment env, 
+                PlotDisplay<PlaneSurfaceFactory.Profile,PlaneAspect> display) throws Exception
+    {
+        List<FittingRange> ranges = dataModel.getFittingRanges();
+
+        // Do nothing if none are available
+        if (CollectionUtils.isEmpty(ranges)) return display;
+        
+        // Otherwise add the layer at 10% of the current aspect
+        PlaneAspect aspect = display.getAspect();
+        double min = Math.min(aspect.getYMin(), aspect.getYMax());
+        double max = Math.max(aspect.getYMin(), aspect.getYMax());
+        double y = min + ((max - min) * .1);
+        
+        // Construct the model for the fitting ranges and add it to the plot
+        fittingRanges = new FittingRangeModel(ranges, dataModel.getXunits(), y);
+        Map<String, Object> prefs = fittingRanges.getPreferences();
+        for (String key : prefs.keySet()) {
+            env.setValue(key, prefs.get(key));
+        }
+        
+        // Make a new display that includes the fitting range layer
+        @SuppressWarnings("unchecked")
+        PlotDisplay<PlaneSurfaceFactory.Profile,PlaneAspect> newDisplay =
+                new PlanePlot2Task().createPlotComponent(env, false);
+        
+        // Preserve original aspect
+        newDisplay.setAspect(display.getAspect());
+        
+        // Ask nicely for GC
+        System.gc();
+        
+        return newDisplay;
     }
 
     protected void setupMapEnvironment() throws IOException {
@@ -517,7 +570,7 @@ public class StilPlotter extends JPanel {
         // Add model functions
         addFunctionModels(env);
     }
-    
+
     private void addFunctionModels(MapEnvironment env) {
         
         // Override color settings so that each model function is a different color,

@@ -15,15 +15,14 @@
  */
 package cfa.vo.iris.fitting;
 
-import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.fitting.custom.CustomModelsManager;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
-import cfa.vo.iris.test.Ws;
+import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.test.unit.ApplicationStub;
+import cfa.vo.iris.units.spv.XUnits;
 import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
-import cfa.vo.iris.visualizer.preferences.VisualizerDataStore;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
@@ -39,6 +38,7 @@ import org.uispec4j.assertion.UISpecAssert;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
+import static org.junit.Assert.assertEquals;
 
 public class FittingMainViewTest {
     private SedlibSedManager manager;
@@ -46,6 +46,7 @@ public class FittingMainViewTest {
     private TextBox sedId;
     private ComboBox optimizationCombo;
     private ComboBox statCombo;
+    private FitController controller;
 
     @Before
     public void setUp() throws Exception {
@@ -56,10 +57,10 @@ public class FittingMainViewTest {
         SherpaClient client = Mockito.mock(SherpaClient.class);
         JFileChooser chooser = Mockito.mock(JFileChooser.class);
         SedModel sedModel = new SedModel(sed, new IrisStarTableAdapter(null));
-        FitController controller = new FitController(sedModel, modelsManager, client);
+        controller = new FitController(sedModel, modelsManager, client);
         ApplicationStub app = new ApplicationStub();
-        VisualizerDataStore store = new VisualizerDataStore(null, new VisualizerComponentPreferences(app.getWorkspace()));
-        FittingMainView view = new FittingMainView(store, chooser, controller);
+        VisualizerComponentPreferences preferences = new VisualizerComponentPreferences(app.getWorkspace());
+        FittingMainView view = new FittingMainView(preferences, chooser, controller);
 
         fittingView = new Window(view);
         sedId = fittingView.getInputTextBox("currentSedField");
@@ -98,5 +99,4 @@ public class FittingMainViewTest {
         Assert.assertEquals(sed.getFit().getMethod(), OptimizationMethod.NelderMeadSimplex);
         Assert.assertEquals(sed.getFit().getStat(), Statistic.Cash);
     }
-
 }

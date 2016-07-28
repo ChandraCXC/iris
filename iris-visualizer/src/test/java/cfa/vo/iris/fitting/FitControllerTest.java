@@ -23,6 +23,7 @@ import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.test.unit.TestUtils;
+import cfa.vo.iris.units.spv.XUnits;
 import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
@@ -195,6 +196,73 @@ public class FitControllerTest {
         assertArrayEquals(Arrays.copyOfRange(expectedX, 1, 4), maskedData.getX(), 1E-15);
         assertArrayEquals(Arrays.copyOfRange(expectedY, 1, 4), maskedData.getY(), 1E-15);
         assertArrayEquals(Arrays.copyOfRange(expectedErrs, 1, 4), maskedData.getStaterror(), 1E-15);
+    }
+
+    @Test
+    public void testSetFittingRanges() throws Exception {
+        ExtSed sed = ExtSed.makeSed("test", false, x, y, "nm", SherpaClient.Y_UNIT);
+        SedModel model = new SedModel(sed, new IrisStarTableAdapter(null));
+        FitConfiguration config = model.getFit();
+        
+        // set fit ranges
+        FittingRange range = new FittingRange(1.05, 1.3, XUnit.NM);
+        config.addFittingRange(range);
+        controller.evaluateModel(model);
+        
+        // first check ranges are correct. Original XUnits were nm; they should 
+        // be in Angstroms now
+        List<FittingRange> ranges = model.getFit().getFittingRanges();
+        assertEquals(10.5, ranges.get(0).getStartPoint(), 0.00001);
+        assertEquals(13.0, ranges.get(0).getEndPoint(), 0.00001);
+        
+        // add new range, with end point and start point switched.
+        // check that the ranges get sorted correctly.
+        range = new FittingRange(1.3, 1.05, XUnit.NM);
+        config.addFittingRange(range);
+        
+        // there should be two fitting ranges now
+        assertEquals(2, ranges.size());
+        
+        ranges = model.getFit().getFittingRanges();
+        assertEquals(10.5, ranges.get(1).getStartPoint(), 0.00001);
+        assertEquals(13.0, ranges.get(1).getEndPoint(), 0.00001);
+        
+        // add another fitting range, in energy units
+        range = new FittingRange(1.05, 1.3, XUnit.KEV);
+        config.addFittingRange(range);
+        
+        ranges = model.getFit().getFittingRanges();
+        assertEquals(9.5372, ranges.get(2).getStartPoint(), 0.001);
+        assertEquals(11.808, ranges.get(2).getEndPoint(), 0.001);
+        
+        // make sure fitting ranges aren't overwriting each other
+        assertEquals(10.5, ranges.get(0).getStartPoint(), 0.00001);
+        assertEquals(13.0, ranges.get(0).getEndPoint(), 0.00001);
+        
+        // remove one of the ranges
+        config.removeFittingRange(range); // last one added
+        assertEquals(2, ranges.size());
+        assertEquals(10.5, ranges.get(0).getStartPoint(), 0.00001);
+        assertEquals(13.0, ranges.get(0).getEndPoint(), 0.00001);
+        assertEquals(10.5, ranges.get(1).getStartPoint(), 0.00001);
+        assertEquals(13.0, ranges.get(1).getEndPoint(), 0.00001);
+        
+        // remove another range
+        config.removeFittingRange(0);
+        assertEquals(1, ranges.size());
+        assertEquals(10.5, ranges.get(0).getStartPoint(), 0.00001);
+        assertEquals(13.0, ranges.get(0).getEndPoint(), 0.00001);
+        
+        // add dummy range to check that clearRanges works
+        config.addFittingRange(range);
+        config.clearFittingRanges();
+        assertEquals(0, config.getFittingRanges().size());
+        
+        // TODO: uncomment when setting fit ranges to the data is done
+        // check that the evaluated model only has 2 points
+//        SegmentStarTable data = model.getDataTables().get(0).getPlotterDataTable();
+//        assertArrayEquals(new double[]{1.1, 1.2}, data.getSpecValues(), 0.001);
+//        assertArrayEquals(new double[]{2.1, 2.2}, data.getModelValues(), 0.001);
     }
 
     private FitConfiguration createFit() throws Exception {

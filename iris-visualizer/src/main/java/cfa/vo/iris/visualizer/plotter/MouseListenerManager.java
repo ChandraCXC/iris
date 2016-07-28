@@ -18,8 +18,8 @@ package cfa.vo.iris.visualizer.plotter;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import cfa.vo.iris.visualizer.plotter.MouseCoordinateMotionListener;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
+import java.util.Iterator;
 import uk.ac.starlink.ttools.plot2.geom.PlaneAspect;
 import uk.ac.starlink.ttools.plot2.geom.PlaneSurfaceFactory.Profile;
 import uk.ac.starlink.ttools.plot2.task.PlotDisplay;
@@ -40,6 +40,7 @@ public class MouseListenerManager {
     MouseCoordinateMotionListener mouseCoordinateMotionListener;
     PlotPointSelectionListener pointSelectionListener;
     PlotPointSelectionDetailsListener pointDetailsListener;
+    MouseXRangesClickedListener xRangesMouseClickedListener;
     
     public MouseListenerManager(VisualizerComponentPreferences preferences) {
         this.listeners = new LinkedHashSet<>();
@@ -56,6 +57,10 @@ public class MouseListenerManager {
         // Shows a tooltip when clicking on a point
         pointDetailsListener = new PlotPointSelectionDetailsListener();
         listeners.add(pointDetailsListener);
+        
+        // Selects the start and end points for a fitting range
+        xRangesMouseClickedListener = new MouseXRangesClickedListener();
+        listeners.add(xRangesMouseClickedListener);
     }
     
     public void setPlotterView(PlotterView view) {
@@ -67,6 +72,25 @@ public class MouseListenerManager {
     
     public Set<StilPlotterMouseListener> getListeners() {
         return listeners;
+    }
+    
+    /**
+     * Returns the mouse listener of the specified class
+     * @param listenerClass
+     * @return StilPlotterMouseListener specified. If no mouse listener is 
+     * found, returns null.
+     */
+    public StilPlotterMouseListener getListener(Class<?> listenerClass) {
+        Iterator itr = listeners.iterator();
+        StilPlotterMouseListener listener;
+        while (itr.hasNext()) {
+            listener = (StilPlotterMouseListener) itr.next();
+            if (listenerClass.isInstance(listener)) {
+                return listener;
+            }
+        }
+        // TODO: error handling...
+        return null;
     }
     
     public void activateListeners(PlotDisplay<Profile, PlaneAspect> plotDisplay) {

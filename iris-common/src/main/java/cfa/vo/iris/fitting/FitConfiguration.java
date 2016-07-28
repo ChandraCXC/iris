@@ -4,6 +4,10 @@ import cfa.vo.iris.fitting.custom.DefaultCustomModel;
 import cfa.vo.iris.gui.widgets.ModelExpressionVerifier;
 import cfa.vo.sherpa.*;
 import cfa.vo.interop.SAMPFactory;
+import cfa.vo.iris.sed.SedException;
+import cfa.vo.iris.units.UnitsException;
+import cfa.vo.iris.units.XUnit;
+import cfa.vo.iris.units.spv.XUnits;
 import cfa.vo.sherpa.models.*;
 import cfa.vo.sherpa.optimization.Method;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
@@ -19,6 +23,7 @@ import javax.swing.tree.TreeModel;
 import java.beans.PropertyChangeSupport;
 
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @JsonIgnoreProperties({"treeModel", "modelValid", "expression", "sedVersion"})
@@ -37,6 +42,7 @@ public class FitConfiguration {
     public static final String PROP_CONFIDENCE = "confidence";
 
     private CompositeModel model;
+    private List<FittingRange> fittingRanges;
     private Stat stat;
     private Method method;
     private Confidence confidence;
@@ -62,6 +68,7 @@ public class FitConfiguration {
         confidence.setName("conf");
         stat = Statistic.Chi2;
         method = OptimizationMethod.LevenbergMarquardt;
+        fittingRanges = new ArrayList<>();
     }
 
     @Nonnull
@@ -236,6 +243,84 @@ public class FitConfiguration {
         else {
             return "No Model";
         }
+    }
+    
+    /**
+     * Add a fitting range to the Fit configuration
+     * @param fittingRange 
+     */
+    public void addFittingRange(FittingRange fittingRange) {
+
+        // convert to Angstroms
+        // TODO: update this to convert to user preferences later on
+        XUnit oldUnit = new XUnits(fittingRange.getXUnit().getString());
+        XUnit newUnit = new XUnits("Angstrom");
+        
+        try {
+            fittingRange.setXUnit(cfa.vo.iris.sed.quantities.XUnit.getFromUnitString(newUnit.toString()));
+            double tmpStart = XUnits.convert(new double[]{fittingRange.getStartPoint()}, oldUnit, newUnit)[0];
+            double tmpEnd = XUnits.convert(new double[]{fittingRange.getEndPoint()}, oldUnit, newUnit)[0];
+            
+            // verify fitting range is in sorted order (low to high)
+            if (tmpEnd < tmpStart) {
+                // switch start and end points
+                fittingRange.setStartPoint(tmpEnd);
+                fittingRange.setEndPoint(tmpStart);
+            } else {
+                // original order is correct
+                fittingRange.setStartPoint(tmpStart);
+                fittingRange.setEndPoint(tmpEnd);
+            }
+        } catch (UnitsException | SedException ex) {
+            Logger.getLogger(FitConfiguration.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        this.fittingRanges.add(fittingRange);
+    }
+    
+    /**
+     * Return a list of the fit configuration fitting ranges
+     * @return List of fitting ranges
+     */
+    public List<FittingRange> getFittingRanges() {
+        return this.fittingRanges;
+    }
+    
+    /**
+     * Remove the ith fitting range from the model
+     * @param i 
+     */
+    public void removeFittingRange(int i) {
+        fittingRanges.remove(i);
+    }
+    
+    /**
+     * Remove a list of indices from the fitting ranges
+     * @param indices - list of indices of fitting ranges to remove
+     */
+    public void removeFittingRanges(int[] indices) {
+        int ct = 0;
+        for (int i : indices) {
+            // remove the (i - ct)th range in the FitCOnfiguration since each
+            // iteration makes the list of ranges smaller by one.
+            fittingRanges.remove(i-ct);
+            ct++;
+        }
+    }
+    
+    /**
+     * Remove the given fitting range from the model
+     * @param fittingRange 
+     */
+    public void removeFittingRange(FittingRange fittingRange) {
+        fittingRanges.remove(fittingRange);
+    }
+    
+    /**
+     * Remove all the fitting ranges from the model
+     */
+    public void clearFittingRanges() {
+        fittingRanges.clear();
     }
 
     public int getSedVersion() {

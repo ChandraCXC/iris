@@ -268,6 +268,31 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         nonExistentFile("Load Json...");
     }
     
+    @Test
+    public void testSetFittingRangesNoPlotter() throws Exception {
+        // check that a warning is shown if the user adds a fitting range
+        // when the visualizer isn't open / visible
+        final Window mainFit = setupFitWindow(sedManager.newSed("TestSed"));
+        
+        mainFit.getButton("Add Ranges...").click();
+        
+        final Window rangesWindow = desktop.getWindow("Fitting Ranges Manager");
+        
+        TestUtils.invokeWithRetry(50, 100, new Runnable() {
+            
+            @Override
+            public void run() {
+                WindowInterceptor wi = WindowInterceptor.init(
+                        rangesWindow.getButton("Add from plot").triggerClick());
+                String message = "The Visualizer must be open before selecting a fitting range.";
+                wi.process(BasicHandler.init()
+                        .assertContainsText(message)
+                        .triggerButtonClick("OK"))
+                        .run();
+            }
+        });
+    }
+    
     private Window setupFitWindow(final ExtSed sed) throws Exception {
         // Wait for swing EDT to update datastore with the SED
         TestUtils.invokeWithRetry(10, 100, new Runnable() {

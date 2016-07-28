@@ -194,6 +194,8 @@ public class LayerModel {
             prefs.put(COLOR + suffix, markColor);
         if (markColorWeight != null)
             prefs.put(markShading.name + suffix, markColorWeight);
+        if (size != null)
+            prefs.put(SIZE + suffix, size);
         
         addCommonFields(suffix, prefs);
     }
@@ -218,9 +220,6 @@ public class LayerModel {
         // for the legend. set the flux and error layer legened names
         // to the same name
         prefs.put(LEGEND_LABEL + suffix, getLabel());
-        
-        if (size != null)
-            prefs.put(SIZE + suffix, size);
     }
 
     public StarTable getInSource() {
