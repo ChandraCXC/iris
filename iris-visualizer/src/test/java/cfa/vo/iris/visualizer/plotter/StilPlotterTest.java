@@ -598,13 +598,14 @@ public class StilPlotterTest extends AbstractUISpecTest {
         plot.setSeds(Arrays.asList(sed));
         plot.resetPlot(false, false);
         
-        TestUtils.invokeWithRetry(50, 100, new Runnable() {
+        TestUtils.invokeWithRetry(100, 100, new Runnable() {
             @Override
             public void run() {
                 assertTrue(plot.fittingRanges != null);
+                assertTrue(plot.fittingRanges.getSize() == 1);
             }
         });
-        
+
         PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> display = plot.getPlotDisplay();
         
         // Just make sure plot aspect hasn't changed
@@ -622,9 +623,33 @@ public class StilPlotterTest extends AbstractUISpecTest {
         FittingRangeModel model = plot.fittingRanges;
         StarTable fitStarTable = model.getInSource();
         
-        // Validate values, y value should be at 1 + (10 - 1)*.5 = 1.45
+        // Validate values
         assertEquals(1, fitStarTable.getRowCount());
-        assertArrayEquals(new Object[] {5.0, 4.0, 4.0, 1.9}, fitStarTable.getRow(0));
+        Object[] row = fitStarTable.getRow(0);
+        assertEquals(4, row.length);
+        
+        assertEquals(5.0, (double) row[0], 0.00001);
+        assertEquals(4.0, (double) row[1], 0.00001);
+        assertEquals(4.0, (double) row[2], 0.00001);
+        assertEquals(1.258925, (double) row[3], 0.00001);
+    }
+    
+    @Test
+    public void testFittingRangeCalculation() {
+        
+        // Linear tests
+        PlaneAspect aspect = new PlaneAspect(new double[] {0,10}, new double[] {.1,10});
+        assertEquals(1.09, StilPlotter.computeFittingLocation(aspect, false), 0.0001);
+
+        aspect = new PlaneAspect(new double[] {0,10}, new double[] {-10,1});
+        assertEquals(-8.9, StilPlotter.computeFittingLocation(aspect, false), 0.0001);
+        
+        // Log tests
+        aspect = new PlaneAspect(new double[] {0,10}, new double[] {.1,.5});
+        assertEquals(.11745, StilPlotter.computeFittingLocation(aspect, true), 0.0001);
+        
+        aspect = new PlaneAspect(new double[] {0,10}, new double[] {.1,5});
+        assertEquals(.14787, StilPlotter.computeFittingLocation(aspect, true), 0.0001);
     }
     
     private StilPlotter setUpTests(ExtSed sed) throws Exception {
