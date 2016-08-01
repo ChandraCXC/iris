@@ -194,12 +194,15 @@ public class VisualizerDataModel {
             
             // Add models to the SED
             SedModel sedModel = store.getSedModel(sed);
-            newSedTables.addAll(sedModel.getDataTables());
             dataModelTitle.append(sed.getId() + " ");
-
-            // For coplotting we plot the entire SED as a single layer
+            
+            // For coplotting we plot the entire SED as a single layer, do not add layers
+            // for SEDs with no segments
             if (coplotted) {
-                newSedModels.add(sedModel.getSedLayerModel());
+                // Only add LayerModels if they have data available
+                if (sed.getNumberOfSegments() > 0) {
+                    newSedModels.add(sedModel.getSedLayerModel());
+                }
             }
             // Otherwise we add a single layer for each corresponding segment
             else {
@@ -218,6 +221,9 @@ public class VisualizerDataModel {
             if (!coplotted && sed.getFit() != null) {
                 fittingRanges.addAll(sed.getFit().getFittingRanges());
             }
+            
+            // Add data from the sedModel
+            newSedTables.addAll(sedModel.getDataTables());
         }
         this.selectedSeds = ObservableCollections.observableList(selectedSeds);
         
