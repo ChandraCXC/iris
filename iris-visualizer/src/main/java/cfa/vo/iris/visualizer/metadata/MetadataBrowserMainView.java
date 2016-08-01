@@ -174,11 +174,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         extractToSedMenuItem = new javax.swing.JMenuItem();
-        broadcastToSampMenuItem = new javax.swing.JMenuItem();
-        createSubsetMenuItem = new javax.swing.JMenuItem();
-        editMenu = new javax.swing.JMenu();
-        createNewColumnMenuItem = new javax.swing.JMenuItem();
-        restoreSetMenuItem = new javax.swing.JMenuItem();
         selectMenu = new javax.swing.JMenu();
         selectAllMenuItem = new javax.swing.JMenuItem();
         clearSelectionMenuItem = new javax.swing.JMenuItem();
@@ -461,23 +456,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         });
         fileMenu.add(extractToSedMenuItem);
 
-        broadcastToSampMenuItem.setText("Broadcast to SAMP");
-        fileMenu.add(broadcastToSampMenuItem);
-
-        createSubsetMenuItem.setText("Create Subset");
-        fileMenu.add(createSubsetMenuItem);
-
         jMenuBar1.add(fileMenu);
-
-        editMenu.setText("Edit");
-
-        createNewColumnMenuItem.setText("Create New Column");
-        editMenu.add(createNewColumnMenuItem);
-
-        restoreSetMenuItem.setText("Restore Set");
-        editMenu.add(restoreSetMenuItem);
-
-        jMenuBar1.add(editMenu);
 
         selectMenu.setText("Select");
         selectMenu.setName(""); // NOI18N
@@ -639,17 +618,13 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton applyMaskButton;
     private javax.swing.JMenuItem applyMaskMenuItem;
-    private javax.swing.JMenuItem broadcastToSampMenuItem;
     private javax.swing.JButton clearAllButton;
     private javax.swing.JMenuItem clearAllMenuItem;
     private javax.swing.JButton clearMaskButton;
     private javax.swing.JButton clearSelectionButton;
     private javax.swing.JMenuItem clearSelectionMenuItem;
-    private javax.swing.JMenuItem createNewColumnMenuItem;
-    private javax.swing.JMenuItem createSubsetMenuItem;
     private javax.swing.JSplitPane dataPane;
     private javax.swing.JTabbedPane dataTabsPane;
-    private javax.swing.JMenu editMenu;
     private javax.swing.JButton extractButton;
     private javax.swing.JMenuItem extractToSedMenuItem;
     private javax.swing.JMenu fileMenu;
@@ -665,7 +640,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane pointMetadataScrollPane;
     private cfa.vo.iris.visualizer.metadata.IrisStarJTable pointStarJTable;
     private javax.swing.JMenuItem removeMasksMenuItem;
-    private javax.swing.JMenuItem restoreSetMenuItem;
     private javax.swing.JPanel segmentMetadataPanel;
     private javax.swing.JScrollPane segmentMetadataScrollPane;
     private javax.swing.JButton selectAllButton;
