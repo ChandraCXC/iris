@@ -190,12 +190,12 @@ public class IrisFunctionalIT extends AbstractUISpecTest {
         window.getButton("load").click();
 
         window.getMenuBar().getMenu("Tools").getSubMenu("SED Builder").getSubMenu("SED Builder").click();
-        Window builder = window.getDesktop().getWindow("SED Builder");
+        final Window builder = window.getDesktop().getWindow("SED Builder");
 
-        final String publisher = (String) builder.getTable().getContentAt(0, 2);
         UISpecAssert.waitUntil(new Assertion() {
             @Override
             public void check() {
+                String publisher = (String) builder.getTable().getContentAt(0, 2);
                 junit.framework.Assert.assertTrue(publisher.startsWith("Vizier - CDS"));
             }
         }, 20000);
