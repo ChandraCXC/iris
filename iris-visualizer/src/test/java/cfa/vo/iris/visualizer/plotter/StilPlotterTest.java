@@ -21,7 +21,6 @@ import static org.junit.Assert.*;
 import cfa.vo.iris.fitting.FitConfiguration;
 import cfa.vo.iris.fitting.FittingRange;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.test.Ws;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
 import cfa.vo.iris.test.unit.TestUtils;
@@ -83,7 +82,7 @@ public class StilPlotterTest {
         // check shape
         StringParameter par = new StringParameter("shape");
         env.acquireValue(par);
-        assertEquals(par.objectValue(env), "open_circle");
+        assertEquals(par.objectValue(env), ShapeType.filled_diamond.name());
         
         // check xlog and ylog
         BooleanParameter log = new BooleanParameter("xlog");
