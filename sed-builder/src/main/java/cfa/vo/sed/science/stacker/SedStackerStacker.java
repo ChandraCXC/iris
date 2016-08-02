@@ -32,6 +32,8 @@ import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.Target;
+import cfa.vo.sedlib.TextParam;
 import cfa.vo.sedlib.common.SedException;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
@@ -246,6 +248,11 @@ public class SedStackerStacker {
         seg.setDataValues(segment.getYerr(), UTYPE.FLUX_STAT_ERROR);
         seg.setFluxAxisUnits(stackConfig.getYUnits());
         seg.setSpectralAxisUnits(stackConfig.getBinsizeUnit());
+        
+        // for segment's name - give it Stack's name
+        Target tmpTarget = new Target();
+        tmpTarget.setName(new TextParam(stack.getName()));
+        seg.setTarget(tmpTarget);
 
         ExtSed stackedSed = new ExtSed(stack.getName() + "_stacked_" + stackConfig.getStatistic());
         stackedSed.addSegment(seg);

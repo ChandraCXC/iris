@@ -1228,9 +1228,6 @@ public class SedStackerFrame extends javax.swing.JInternalFrame {
     private void stackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stackButtonActionPerformed
         StackConfiguration stackConfig = selectedStack.getConf().getStackConfiguration();
 
-        // Check for invalid values
-
-
         if (stacker == null) {
             stacker = new SedStackerStacker(client, ws.getUnitsManager());
         }
