@@ -53,6 +53,7 @@ import cfa.vo.sed.science.interpolation.ZConfig;
 import cfa.vo.sedlib.Param;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedException;
+import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sherpa.models.CompositeModel;
 import cfa.vo.sherpa.SherpaClient;
 import cfa.vo.sherpa.models.Model;
@@ -926,6 +927,8 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
                 setPoints(null);
 //                ppoints.addAll(out);
                 setPoints(out);
+            } catch (SedNoDataException ex) {
+                NarrowOptionPane.showMessageDialog(null, "Cannot integrate empty SED. Please add some data and retry.", "Error", NarrowOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
                 NarrowOptionPane.showMessageDialog(null, ex.getMessage(), "Error", NarrowOptionPane.ERROR_MESSAGE);
                 Logger.getLogger(ScienceFrame.class.getName()).log(Level.SEVERE, null, ex);
