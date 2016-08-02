@@ -120,18 +120,18 @@ public class IrisFunctionalIT extends AbstractUISpecTest {
         UISpecAssert.waitUntil(new Assertion() {
             @Override
             public void check() {
-                Double amplInf = Double.valueOf((String) confidenceTable.getContentAt(0, 1));
+                Double amplInf = Double.valueOf((String) confidenceTable.getContentAt(0, 2));
                 assertEquals(-6.202e-6, amplInf, 1e-8);
             }
         }, TIMEOUT);
 
-        Double value = Double.valueOf((String) confidenceTable.getContentAt(0, 2));
+        Double value = Double.valueOf((String) confidenceTable.getContentAt(0, 3));
         assertEquals(6.065e-6, value, 1e-8);
 
-        value = Double.valueOf((String) confidenceTable.getContentAt(1, 1));
+        value = Double.valueOf((String) confidenceTable.getContentAt(1, 2));
         assertEquals(-0.00438, value, 0.00001);
 
-        value = Double.valueOf((String) confidenceTable.getContentAt(1, 2));
+        value = Double.valueOf((String) confidenceTable.getContentAt(1, 3));
         assertEquals(0.00486, value, 0.00001);
 
         // check the confidence interval label updated
@@ -430,7 +430,7 @@ public class IrisFunctionalIT extends AbstractUISpecTest {
         fittingView.getButton("Compute").click();
 
         Table confTable = fittingView.getTable();
-        String[] columns = {"Parameter", "Lower Limit", "Upper Limit"};
+        String[] columns = {"Parameter", "Value", "Lower Bound", "Upper Bound"};
         UISpecAssert.waitUntil(UISpecAssert.not(confTable.isEmpty()), TIMEOUT);
 
         Assert.assertEquals(confTable.getContentAt(0, 0), "m5.ampl");

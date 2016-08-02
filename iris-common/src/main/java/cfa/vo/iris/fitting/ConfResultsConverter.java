@@ -28,11 +28,12 @@ public class ConfResultsConverter extends Converter<ConfidenceResults, List<Conf
     public List<ParameterLimits> convertForward(ConfidenceResults res) {
         List<ParameterLimits> retVal = new ArrayList<>();
         List<String> names = res.getParnames();
+        double[] vals = res.getParvals();
         double[] mins = res.getParmins();
         double[] maxes = res.getParmaxes();
         int l = maxes.length;
         for (int i=0; i<l; i++) {
-            retVal.add(new ParameterLimits(names.get(i), mins[i], maxes[i]));
+            retVal.add(new ParameterLimits(names.get(i), vals[i], mins[i], maxes[i]));
         }
 
         return retVal;
@@ -47,9 +48,11 @@ public class ConfResultsConverter extends Converter<ConfidenceResults, List<Conf
         private String name;
         private Double lowerLimit;
         private Double upperLimit;
+        private Double val;
 
-        public ParameterLimits(String name, Double lower, Double upper) {
+        public ParameterLimits(String name, Double val, Double lower, Double upper) {
             this.name = name;
+            this.val = val;
             this.lowerLimit = lower;
             this.upperLimit = upper;
         }
@@ -64,6 +67,10 @@ public class ConfResultsConverter extends Converter<ConfidenceResults, List<Conf
 
         public Double getUpperLimit() {
             return upperLimit;
+        }
+
+        public Double getValue() {
+            return val;
         }
     }
 }
