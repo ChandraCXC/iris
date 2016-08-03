@@ -112,7 +112,7 @@ public class SedModel {
      */
     public FunctionModel getFunctionModel() {
         // TODO: Only return a model if this SedModel has been fitted.
-        StarTable table = new StackedStarTable(getDataTables(), new SegmentColumnInfoMatcher());
+        StarTable table = new StackedStarTable(getIrisDataTables(true), new SegmentColumnInfoMatcher());
         table.setName(sed.getId());
         
         return new FunctionModel(table);
