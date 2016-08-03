@@ -34,16 +34,13 @@ import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.sedlib.Segment;
 
 import javax.swing.*;
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author olaurino
- */
 public class VizierFrame extends javax.swing.JInternalFrame {
     private SedlibSedManager manager;
 
@@ -285,6 +282,9 @@ public class VizierFrame extends javax.swing.JInternalFrame {
             } catch (NumberFormatException ex) {
                 Logger.getLogger(VizierFrame.class.getName()).log(Level.SEVERE, null, ex);
                 error = "Not a valid search radius: " + radius;
+            } catch (ConnectException ex) {
+                Logger.getLogger(VizierFrame.class.getName()).log(Level.SEVERE, null, ex);
+                error = "Connection error with Vizier/CDS service" + name;
             } catch (Exception ex) {
                 Logger.getLogger(VizierFrame.class.getName()).log(Level.SEVERE, null, ex);
                 error = "Cannot find data for target " + name;
