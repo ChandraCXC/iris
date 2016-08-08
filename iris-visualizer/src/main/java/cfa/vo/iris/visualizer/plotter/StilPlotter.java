@@ -203,6 +203,9 @@ public class StilPlotter extends JPanel {
      * @param plotType the plot type to use.
      */
     public void setPlotType(PlotPreferences.PlotType plotType) {
+        // Don't reset if value isn't changed
+        if (getPlotPreferences().getPlotType().equals(plotType)) return;
+        
         getPlotPreferences().setPlotType(plotType);
         resetPlot(false, false);
     }
@@ -212,6 +215,9 @@ public class StilPlotter extends JPanel {
     }
     
     public void setGridOn(boolean on) {
+        // Don't reset if value isn't changed
+        if (on == getGridOn()) return;
+        
         getPlotPreferences().setShowGrid(on);
         resetPlot(false, false);
     }
@@ -221,6 +227,9 @@ public class StilPlotter extends JPanel {
     }
     
     public void setShowLegend(boolean on) {
+        // Don't reset if value isn't changed
+        if (on == getShowLegend()) return;
+        
         // Fix the plot between showing legends
         boolean isFixed = getPlotPreferences().getFixed();
         getPlotPreferences().setFixed(true);
