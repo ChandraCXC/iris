@@ -42,6 +42,7 @@ public class SherpaClient {
     private static final String CONFIDENCE_MTYPE = "spectrum.fit.confidence";
     private static final String EVALUATE_MTYPE = "spectrum.fit.calc.model.values";
     private static final String STOP_FIT_MTYPE = "spectrum.fit.fit.stop";
+    private static final String STOP_CONFIDENCE_MTYPE = "spectrum.fit.confidence.stop";
     private Logger logger = Logger.getLogger(SherpaClient.class.getName());
 
     public SherpaClient(SampService sampService) {
@@ -154,6 +155,16 @@ public class SherpaClient {
     public void stopFit() throws SampException {
         try {
             Message msg = new Message(STOP_FIT_MTYPE, new HashMap());
+            sampService.sendMessage(new SimpleSAMPMessage(msg));
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, null, ex);
+            throw ex;
+        }
+    }
+
+    public void stopConfidence() throws SampException {
+        try {
+            Message msg = new Message(STOP_CONFIDENCE_MTYPE, new HashMap());
             sampService.sendMessage(new SimpleSAMPMessage(msg));
         } catch (Exception ex) {
             logger.log(Level.SEVERE, null, ex);

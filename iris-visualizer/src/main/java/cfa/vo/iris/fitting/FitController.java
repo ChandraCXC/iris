@@ -277,6 +277,13 @@ public class FitController {
         client.stopFit();
     }
 
+    /**
+     * Stop confidence calculation
+     */
+    public void stopConfidence() throws SampException {
+        client.stopConfidence();
+    }
+
     private double[] calcResiduals(double[] expected, double[] actual) {
         int len = expected.length;
 
