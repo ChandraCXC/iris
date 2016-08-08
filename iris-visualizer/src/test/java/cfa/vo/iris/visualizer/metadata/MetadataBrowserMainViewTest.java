@@ -317,7 +317,7 @@ public class MetadataBrowserMainViewTest extends AbstractUISpecTest {
         dataStore.update(sed);
         dataModel.setSelectedSed(sed);
         
-        invokeWithRetry(20, 100, new Runnable() {
+        invokeWithRetry(50, 100, new Runnable() {
             @Override
             public void run() {
                 assertEquals(mbView.getTitle(), mbWindow.getTitle());
@@ -338,7 +338,7 @@ public class MetadataBrowserMainViewTest extends AbstractUISpecTest {
         mbView.addRowToSelection(0, 2);
         mbWindow.getButton("Mask Points").click();
         
-        invokeWithRetry(20, 100, new Runnable() {
+        invokeWithRetry(50, 100, new Runnable() {
             @Override
             public void run() {
                 IrisStarTable table = mbView.getDataModel().getSelectedStarTables().get(0);
@@ -351,7 +351,7 @@ public class MetadataBrowserMainViewTest extends AbstractUISpecTest {
         masked.set(0, plotterTable.getRowCount());
         mbWindow.getButton("Mask Points").click();
         
-        invokeWithRetry(20, 100, new Runnable() {
+        invokeWithRetry(50, 100, new Runnable() {
             @Override
             public void run() {
                 IrisStarTable table = mbView.getDataModel().getSelectedStarTables().get(0);
