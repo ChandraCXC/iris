@@ -124,8 +124,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
      * Forces plotter and point tables to redraw themselves by manually resetting the models.
      */
     private void resetDataTables() {
-        plotterStarJTable.setSelectedStarTables(dataModel.getSelectedStarTables());
-        pointStarJTable.setSelectedStarTables(dataModel.getSelectedStarTables());
         dataModel.refresh();
     }
     

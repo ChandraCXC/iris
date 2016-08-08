@@ -145,7 +145,7 @@ public class IrisStarJTable extends StarJTable {
     public void setRowSorter(RowSorter<? extends TableModel> sorter) {
         if (getRowSorter() != null) {
             List<SortKey> keys = updateSortKeys(
-                    getRowSorter().getSortKeys(), getStarTable(), true);
+                    getRowSorter().getSortKeys(), getStarTable(), getStarTable());
             sorter.setSortKeys(keys);
         }
         super.setRowSorter(sorter);
@@ -182,9 +182,6 @@ public class IrisStarJTable extends StarJTable {
         StarTable oldStarTable = getStarTable();
         List<? extends SortKey> sortKeys = getRowSorter().getSortKeys();
         
-        // Include the index column for non-null/non-empty star tables.
-        boolean showIndex = (selectedStarTables.size() > 0);
-        
         this.selectedStarTables = selectedStarTables;
         List<StarTable> dataTables = new LinkedList<>();
         
@@ -196,17 +193,20 @@ public class IrisStarJTable extends StarJTable {
             }
         }
         
-        this.setStarTable(new StackedStarTable(dataTables, columnInfoMatcher), showIndex);
-        IrisStarJTable.configureColumnWidths(this, 200, 20);
+        // Construct star table
+        StarTable newTable = new StackedStarTable(dataTables, columnInfoMatcher);
+        this.setStarTable(newTable, true);
         
         // If the previous table was sorted try to apply the map to this table
         if (sortKeys.size() > 0) {
-            getRowSorter().setSortKeys(updateSortKeys(sortKeys, oldStarTable, showIndex));
+            getRowSorter().setSortKeys(updateSortKeys(sortKeys, oldStarTable, newTable));
         }
         // Otherwise if specified we re-sort by spectral values
         else if (sortBySpecValues) {
-            sortBySpectralValue(showIndex);
+            sortBySpectralValue();
         }
+        
+        IrisStarJTable.configureColumnWidths(this, 200, 20);
     }
     
     public boolean isUtypeAsNames() {
@@ -264,7 +264,7 @@ public class IrisStarJTable extends StarJTable {
         }
     }
     
-    private void sortBySpectralValue(boolean showIndex) {
+    private void sortBySpectralValue() {
         
         // Do nothing is we have no data
         if (getStarTable().getRowCount() <= 0) return;
@@ -276,8 +276,8 @@ public class IrisStarJTable extends StarJTable {
             // Nothing to be done if there is no spectral value
             if (col == -1) return;
             
-            // Add one if there's an index column
-            if (showIndex) col++;
+            // Add one since there's an index column
+            col++;
             
             // Sort based on spectral value column
             TableRowSorter<?> sorter = (TableRowSorter<?>) getRowSorter();
@@ -402,7 +402,7 @@ public class IrisStarJTable extends StarJTable {
      */
     private List<SortKey> updateSortKeys(List<? extends SortKey> keys,
             StarTable oldTable,
-            boolean showIndex)
+            StarTable newTable)
     {
         List<SortKey> newKeys = new ArrayList<>(1);
         
@@ -411,14 +411,13 @@ public class IrisStarJTable extends StarJTable {
         }
         
         ColumnIdentifier id = new ColumnIdentifier(getStarTable());
-        int adjust = showIndex ? 1 : 0;
 
         // Primary key
         SortKey key = keys.get(0);
-        ColumnInfo info = oldTable.getColumnInfo(key.getColumn() - adjust);
+        ColumnInfo info = oldTable.getColumnInfo(key.getColumn() - 1);
         
         // Is the new key in the current star table?
-        int newCol = adjust;
+        int newCol = 1; // Starts at 1 because of the index column
         try {
             newCol += id.getColumnIndex(info.getName());
         } catch (IOException ex) {
