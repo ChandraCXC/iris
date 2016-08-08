@@ -222,11 +222,13 @@ public class ConfidencePanel extends javax.swing.JPanel {
                     logger.log(Level.SEVERE, "Error computing confidence", ex);
                 } finally {
                     busyConfidence.setBusy(false);
+                    jButton1.setEnabled(true);
                 }
             }
         };
             
         busyConfidence.setBusy(true);
+        jButton1.setEnabled(false);
         worker.execute();
         
     }//GEN-LAST:event_doConfidence
