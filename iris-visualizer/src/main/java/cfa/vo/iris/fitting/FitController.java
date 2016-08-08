@@ -121,7 +121,11 @@ public class FitController {
      */
     public FitResults fit() throws Exception {
         Data data = constructSherpaCall(sedModel);
-        
+
+        if (!getFit().isModelValid()) {
+            throw new Exception("Model is invalid. Please correct model expression and retry.");
+        }
+
         // Make call to sherpa to fit data
         FitResults retVal = client.fit(data, getFit());
         sedModel.getFit().integrateResults(retVal);
