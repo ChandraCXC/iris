@@ -284,6 +284,13 @@ public class FitController {
         client.stopConfidence();
     }
 
+    /**
+     * Clear fit info
+     */
+    public void clearAll() {
+        sedModel.reset();
+    }
+
     private double[] calcResiduals(double[] expected, double[] actual) {
         int len = expected.length;
 

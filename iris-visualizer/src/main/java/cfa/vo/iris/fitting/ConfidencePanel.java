@@ -67,6 +67,13 @@ public class ConfidencePanel extends javax.swing.JPanel {
     }
 
     /**
+     * Reset GUI
+     */
+    public void reset() {
+        setConfidenceResults(controller.getFit().getConfidenceResults());
+    }
+
+    /**
      * Set the value of confidenceResults
      *
      * @param confidenceResults new value of confidenceResults

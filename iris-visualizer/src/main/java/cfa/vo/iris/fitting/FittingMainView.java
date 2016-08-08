@@ -151,6 +151,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         busyFit = new org.jdesktop.swingx.JXBusyLabel();
         fitButton = new javax.swing.JButton();
         stopFitButton = new javax.swing.JButton();
+        clearButton = new javax.swing.JButton();
         modelViewerPanel = new cfa.vo.iris.gui.widgets.ModelViewerPanel();
         jSplitPane2 = new javax.swing.JSplitPane();
         resultsContainer = new javax.swing.JPanel();
@@ -285,6 +286,14 @@ public class FittingMainView extends JInternalFrame implements SedListener {
             }
         });
         jPanel6.add(stopFitButton);
+
+        clearButton.setText("Clear All");
+        clearButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearButtonActionPerformed(evt);
+            }
+        });
+        jPanel6.add(clearButton);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -549,6 +558,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
                     busyFit.setBusy(false);
                     fitButton.setEnabled(true);
                     stopFitButton.setEnabled(false);
+                    clearButton.setEnabled(true);
                 }
             }
         };
@@ -556,6 +566,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         busyFit.setBusy(true);
         fitButton.setEnabled(false);
         stopFitButton.setEnabled(true);
+        clearButton.setEnabled(false);
         worker.execute();
             
         
@@ -579,10 +590,16 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         }
     }//GEN-LAST:event_stopFitButtonActionPerformed
 
+    private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
+        controller.clearAll();
+        confidencePanel.reset();
+    }//GEN-LAST:event_clearButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel availableComponents;
     private javax.swing.JTree availableTree;
     private org.jdesktop.swingx.JXBusyLabel busyFit;
+    private javax.swing.JButton clearButton;
     private javax.swing.JPanel confidenceContainer;
     private cfa.vo.iris.fitting.ConfidencePanel confidencePanel;
     private javax.swing.JTextField currentSedField;
