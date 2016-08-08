@@ -239,26 +239,14 @@ public class SedModel {
             return false;
         }
         
+        // Construct LayerModel
         IrisStarTable newTable = convertSegment(seg, null);
-
-        // Ensure that the layer has a unique identifier in the list of segments
         LayerModel layer = new LayerModel(newTable);
-        int count = 0;
-        String id = layer.getSuffix();
-        while (!isUniqueLayerSuffix(id)) {
-            count++;
-            id = layer.getSuffix() + " " + count;
-        }
-        layer.setSuffix(id);
-        newTable.setName(id);
         
         // add colors to segment layer
         String hexColor = ColorPalette.colorToHex(colors.getNextColor());
         layer.setErrorColor(hexColor);
         layer.setMarkColor(hexColor);
-        
-        // update legend settings
-        layer.setLabel(id);
         
         // set the units
         setUnits(seg, newTable);
