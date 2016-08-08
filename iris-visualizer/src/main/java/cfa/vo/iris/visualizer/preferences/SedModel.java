@@ -382,4 +382,13 @@ public class SedModel {
     public ExtSed getSed() {
         return sed;
     }
+
+    /**
+     * Reset the model
+     */
+    public void reset() {
+        removeAll();
+        refresh();
+        sed.getFit().reset();
+    }
 }

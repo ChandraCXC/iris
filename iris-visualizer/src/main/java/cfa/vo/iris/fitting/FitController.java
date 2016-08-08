@@ -9,6 +9,7 @@ import cfa.vo.iris.units.UnitsException;
 import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
+import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sherpa.ConfidenceResults;
 import cfa.vo.sherpa.Data;
 import cfa.vo.sherpa.FitResults;
@@ -18,6 +19,8 @@ import cfa.vo.sherpa.models.DefaultModel;
 import cfa.vo.utils.Default;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.module.mrbean.MrBeanModule;
+import org.apache.commons.lang.ArrayUtils;
+import org.astrogrid.samp.client.SampException;
 
 import javax.swing.tree.TreeModel;
 import java.io.IOException;
@@ -118,7 +121,11 @@ public class FitController {
      */
     public FitResults fit() throws Exception {
         Data data = constructSherpaCall(sedModel);
-        
+
+        if (!getFit().isModelValid()) {
+            throw new Exception("Model is invalid. Please correct model expression and retry.");
+        }
+
         // Make call to sherpa to fit data
         FitResults retVal = client.fit(data, getFit());
         sedModel.getFit().integrateResults(retVal);
@@ -129,17 +136,20 @@ public class FitController {
         return retVal;
     }
     
-    Data constructSherpaCall(SedModel model) throws UnitsException {
+    Data constructSherpaCall(SedModel model) throws UnitsException, SedNoDataException {
         Data data = SAMPFactory.get(Data.class);
         data.setName(SherpaClient.DATA_NAME);
         
         // Extract fitting data from SedModel, don't include masked points.
-        sedModel.getFittingData(data, false);
+        model.getFittingData(data, false);
         double[] xoldvalues = data.getX();
+        if (ArrayUtils.isEmpty(xoldvalues)) {
+            throw new SedNoDataException("No Data in SED. Please add some data and try again.");
+        }
         double[] yoldvalues = data.getY();
         double[] erroldvalues = data.getStaterror();
-        String xoldunits = sedModel.getXUnits();
-        String yoldUnits = sedModel.getYUnits();
+        String xoldunits = model.getXUnits();
+        String yoldUnits = model.getYUnits();
         
         // Convert data's units to fitting units
         UnitsManager um = Default.getInstance().getUnitsManager();
@@ -262,6 +272,27 @@ public class FitController {
             table.setResidualValues(calcResiduals(table.getFluxValues(), y));
             table.setRatioValues(calcRatios(table.getFluxValues(), y));
         }
+    }
+
+    /**
+     * Stop fit
+     */
+    public void stopFit() throws SampException {
+        client.stopFit();
+    }
+
+    /**
+     * Stop confidence calculation
+     */
+    public void stopConfidence() throws SampException {
+        client.stopConfidence();
+    }
+
+    /**
+     * Clear fit info
+     */
+    public void clearAll() {
+        sedModel.reset();
     }
 
     private double[] calcResiduals(double[] expected, double[] actual) {

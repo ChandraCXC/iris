@@ -62,13 +62,8 @@ public class FitConfiguration {
     private transient final PropertyChangeSupport propertyChangeSupport = new java.beans.PropertyChangeSupport(this);
 
     public FitConfiguration() {
-        model = SAMPFactory.get(CompositeModel.class);
-        confidence = SAMPFactory.get(Confidence.class);
-        confidence.getConfig().setSigma(1.6);
-        confidence.setName("conf");
-        stat = Statistic.Chi2;
-        method = OptimizationMethod.LevenbergMarquardt;
         fittingRanges = new ArrayList<>();
+        init();
     }
 
     @Nonnull
@@ -357,6 +352,10 @@ public class FitConfiguration {
         setConfidenceResults(null);
     }
 
+    public void reset() {
+        init();
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -410,6 +409,24 @@ public class FitConfiguration {
     public void removePropertyChangeListener(java.beans.PropertyChangeListener listener )
     {
         propertyChangeSupport.removePropertyChangeListener( listener );
+    }
+
+    private void init() {
+        setModel(SAMPFactory.get(CompositeModel.class));
+        setConfidence(SAMPFactory.get(Confidence.class));
+        confidence.getConfig().setSigma(1.6);
+        confidence.setName("conf");
+        setConfidenceResults(SAMPFactory.get(ConfidenceResults.class));
+        setStat(Statistic.Chi2);
+        setMethod(OptimizationMethod.LevenbergMarquardt);
+        clearFittingRanges();
+        setStatVal(null);
+        setDof(null);
+        setnFev(null);
+        setNumPoints(null);
+        setqVal(null);
+        setrStat(null);
+        setUserModelList(new ArrayList<UserModel>());
     }
 
     private void removeUserModel(Model m) {

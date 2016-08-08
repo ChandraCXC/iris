@@ -31,6 +31,7 @@ import cfa.vo.sherpa.FitResults;
 import cfa.vo.sherpa.models.Model;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Statistic;
+import org.astrogrid.samp.client.SampException;
 
 import javax.swing.*;
 import javax.swing.tree.*;
@@ -146,8 +147,11 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         jLabel2 = new javax.swing.JLabel();
         statisticCombo = new javax.swing.JComboBox();
         openFittingRangesButton = new javax.swing.JButton();
-        fitButton = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
         busyFit = new org.jdesktop.swingx.JXBusyLabel();
+        fitButton = new javax.swing.JButton();
+        stopFitButton = new javax.swing.JButton();
+        clearButton = new javax.swing.JButton();
         modelViewerPanel = new cfa.vo.iris.gui.widgets.ModelViewerPanel();
         jSplitPane2 = new javax.swing.JSplitPane();
         resultsContainer = new javax.swing.JPanel();
@@ -264,25 +268,39 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 6, 0);
         jPanel5.add(openFittingRangesButton, gridBagConstraints);
 
+        jPanel6.add(busyFit);
+
         fitButton.setText("Fit");
         fitButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 doFit(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(18, 0, 18, 0);
-        jPanel5.add(fitButton, gridBagConstraints);
+        jPanel6.add(fitButton);
+
+        stopFitButton.setText("Stop");
+        stopFitButton.setEnabled(false);
+        stopFitButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stopFitButtonActionPerformed(evt);
+            }
+        });
+        jPanel6.add(stopFitButton);
+
+        clearButton.setText("Clear All");
+        clearButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                clearButtonActionPerformed(evt);
+            }
+        });
+        jPanel6.add(clearButton);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        jPanel5.add(busyFit, gridBagConstraints);
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel5.add(jPanel6, gridBagConstraints);
 
         jSplitPane3.setRightComponent(jPanel5);
 
@@ -353,7 +371,6 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         jSplitPane1.setRightComponent(jPanel2);
 
         availableComponents.setBorder(javax.swing.BorderFactory.createTitledBorder("Available Components"));
-        availableComponents.setPreferredSize(null);
         availableComponents.setLayout(new java.awt.GridBagLayout());
 
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("Model Components");
@@ -539,11 +556,17 @@ public class FittingMainView extends JInternalFrame implements SedListener {
                         modelViewerPanel.fitResult(false);
                 } finally {
                     busyFit.setBusy(false);
+                    fitButton.setEnabled(true);
+                    stopFitButton.setEnabled(false);
+                    clearButton.setEnabled(true);
                 }
             }
         };
             
         busyFit.setBusy(true);
+        fitButton.setEnabled(false);
+        stopFitButton.setEnabled(true);
+        clearButton.setEnabled(false);
         worker.execute();
             
         
@@ -556,10 +579,27 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         GUIUtils.moveToFront(fittingRangesFrame);
     }//GEN-LAST:event_openFittingRangesButtonActionPerformed
 
+    private void stopFitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopFitButtonActionPerformed
+        stopFitButton.setEnabled(false);
+        try {
+            controller.stopFit();
+        } catch (SampException e) {
+            NarrowOptionPane.showMessageDialog(this, e.getMessage(), "Unexpected Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            stopFitButton.setEnabled(true);
+        }
+    }//GEN-LAST:event_stopFitButtonActionPerformed
+
+    private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
+        controller.clearAll();
+        confidencePanel.reset();
+    }//GEN-LAST:event_clearButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel availableComponents;
     private javax.swing.JTree availableTree;
     private org.jdesktop.swingx.JXBusyLabel busyFit;
+    private javax.swing.JButton clearButton;
     private javax.swing.JPanel confidenceContainer;
     private cfa.vo.iris.fitting.ConfidencePanel confidencePanel;
     private javax.swing.JTextField currentSedField;
@@ -574,6 +614,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSplitPane jSplitPane1;
@@ -593,6 +634,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
     private javax.swing.JButton searchButton;
     private javax.swing.JTextField searchField;
     private javax.swing.JComboBox statisticCombo;
+    private javax.swing.JButton stopFitButton;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 

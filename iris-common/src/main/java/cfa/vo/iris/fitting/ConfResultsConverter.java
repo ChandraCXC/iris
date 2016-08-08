@@ -31,9 +31,11 @@ public class ConfResultsConverter extends Converter<ConfidenceResults, List<Conf
         double[] vals = res.getParvals();
         double[] mins = res.getParmins();
         double[] maxes = res.getParmaxes();
-        int l = maxes.length;
-        for (int i=0; i<l; i++) {
-            retVal.add(new ParameterLimits(names.get(i), vals[i], mins[i], maxes[i]));
+        if (maxes != null) {
+            int l = maxes.length;
+            for (int i = 0; i < l; i++) {
+                retVal.add(new ParameterLimits(names.get(i), vals[i], mins[i], maxes[i]));
+            }
         }
 
         return retVal;
