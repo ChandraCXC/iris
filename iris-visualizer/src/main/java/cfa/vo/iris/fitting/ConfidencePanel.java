@@ -81,10 +81,12 @@ public class ConfidencePanel extends javax.swing.JPanel {
         b.setConverter(new ConfResultsConverter());
         Property parName = BeanProperty.create("name");
         Property parMin = BeanProperty.create("lowerLimit");
+        Property parVal = BeanProperty.create("value");
         Property parMax = BeanProperty.create("upperLimit");
         b.addColumnBinding(parName).setColumnName("Parameter");
-        b.addColumnBinding(parMin).setColumnName("Lower Limit");
-        b.addColumnBinding(parMax).setColumnName("Upper Limit");
+        b.addColumnBinding(parVal).setColumnName("Value");
+        b.addColumnBinding(parMin).setColumnName("Lower Bound");
+        b.addColumnBinding(parMax).setColumnName("Upper Bound");
         bindingGroup.bind();
     }
 

@@ -172,8 +172,8 @@
     "parnames" : [ "m1.c0", "m1.c1", "m2.c2" ],
     "parmins" : [ -0.1, -0.2, -0.3 ],
     "parmaxes" : [ 0.1, 0.2, 0.3 ],
+    "parvals" : [1.0, 2.0, 3.0],
     "sigma" : 1.6,
-    "percent" : 96.3,
-    "parvals" : null
+    "percent" : 96.3
   }
 }
