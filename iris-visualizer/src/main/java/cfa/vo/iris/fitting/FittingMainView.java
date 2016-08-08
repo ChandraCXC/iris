@@ -31,6 +31,7 @@ import cfa.vo.sherpa.FitResults;
 import cfa.vo.sherpa.models.Model;
 import cfa.vo.sherpa.optimization.OptimizationMethod;
 import cfa.vo.sherpa.stats.Statistic;
+import org.astrogrid.samp.client.SampException;
 
 import javax.swing.*;
 import javax.swing.tree.*;
@@ -266,8 +267,6 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 6, 0);
         jPanel5.add(openFittingRangesButton, gridBagConstraints);
 
-        jPanel6.setMinimumSize(null);
-        jPanel6.setPreferredSize(null);
         jPanel6.add(busyFit);
 
         fitButton.setText("Fit");
@@ -280,6 +279,11 @@ public class FittingMainView extends JInternalFrame implements SedListener {
 
         stopFitButton.setText("Stop");
         stopFitButton.setEnabled(false);
+        stopFitButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stopFitButtonActionPerformed(evt);
+            }
+        });
         jPanel6.add(stopFitButton);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -358,7 +362,6 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         jSplitPane1.setRightComponent(jPanel2);
 
         availableComponents.setBorder(javax.swing.BorderFactory.createTitledBorder("Available Components"));
-        availableComponents.setPreferredSize(null);
         availableComponents.setLayout(new java.awt.GridBagLayout());
 
         javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("Model Components");
@@ -545,12 +548,14 @@ public class FittingMainView extends JInternalFrame implements SedListener {
                 } finally {
                     busyFit.setBusy(false);
                     fitButton.setEnabled(true);
+                    stopFitButton.setEnabled(false);
                 }
             }
         };
             
         busyFit.setBusy(true);
         fitButton.setEnabled(false);
+        stopFitButton.setEnabled(true);
         worker.execute();
             
         
@@ -562,6 +567,17 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         this.getDesktopPane().setLayer(fittingRangesFrame, 1);
         GUIUtils.moveToFront(fittingRangesFrame);
     }//GEN-LAST:event_openFittingRangesButtonActionPerformed
+
+    private void stopFitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopFitButtonActionPerformed
+        stopFitButton.setEnabled(false);
+        try {
+            controller.stopFit();
+        } catch (SampException e) {
+            NarrowOptionPane.showMessageDialog(this, e.getMessage(), "Unexpected Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            stopFitButton.setEnabled(true);
+        }
+    }//GEN-LAST:event_stopFitButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel availableComponents;

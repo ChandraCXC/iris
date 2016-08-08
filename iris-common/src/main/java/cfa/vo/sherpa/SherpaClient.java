@@ -21,8 +21,13 @@ import cfa.vo.iris.fitting.FitConfiguration;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.utils.UTYPE;
 import cfa.vo.sherpa.models.*;
+import org.astrogrid.samp.Message;
 import org.astrogrid.samp.Response;
+import org.astrogrid.samp.client.SampException;
+
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SherpaClient {
@@ -36,6 +41,7 @@ public class SherpaClient {
     private static final String FIT_MTYPE = "spectrum.fit.fit";
     private static final String CONFIDENCE_MTYPE = "spectrum.fit.confidence";
     private static final String EVALUATE_MTYPE = "spectrum.fit.calc.model.values";
+    private static final String STOP_FIT_MTYPE = "spectrum.fit.fit.stop";
     private Logger logger = Logger.getLogger(SherpaClient.class.getName());
 
     public SherpaClient(SampService sampService) {
@@ -143,6 +149,16 @@ public class SherpaClient {
 
     public String createId(String prefix) {
         return prefix + stringCounter.incrementAndGet();
+    }
+
+    public void stopFit() throws SampException {
+        try {
+            Message msg = new Message(STOP_FIT_MTYPE, new HashMap());
+            sampService.sendMessage(new SimpleSAMPMessage(msg));
+        } catch (Exception ex) {
+            logger.log(Level.SEVERE, null, ex);
+            throw ex;
+        }
     }
 
     private SherpaFitConfiguration make(Data data, FitConfiguration fit) {
