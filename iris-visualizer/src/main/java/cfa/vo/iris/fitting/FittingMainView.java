@@ -146,8 +146,10 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         jLabel2 = new javax.swing.JLabel();
         statisticCombo = new javax.swing.JComboBox();
         openFittingRangesButton = new javax.swing.JButton();
-        fitButton = new javax.swing.JButton();
+        jPanel6 = new javax.swing.JPanel();
         busyFit = new org.jdesktop.swingx.JXBusyLabel();
+        fitButton = new javax.swing.JButton();
+        stopFitButton = new javax.swing.JButton();
         modelViewerPanel = new cfa.vo.iris.gui.widgets.ModelViewerPanel();
         jSplitPane2 = new javax.swing.JSplitPane();
         resultsContainer = new javax.swing.JPanel();
@@ -264,25 +266,28 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 6, 0);
         jPanel5.add(openFittingRangesButton, gridBagConstraints);
 
+        jPanel6.setMinimumSize(null);
+        jPanel6.setPreferredSize(null);
+        jPanel6.add(busyFit);
+
         fitButton.setText("Fit");
         fitButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 doFit(evt);
             }
         });
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.WEST;
-        gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.insets = new java.awt.Insets(18, 0, 18, 0);
-        jPanel5.add(fitButton, gridBagConstraints);
+        jPanel6.add(fitButton);
+
+        stopFitButton.setText("Stop");
+        stopFitButton.setEnabled(false);
+        jPanel6.add(stopFitButton);
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 4;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.EAST;
-        jPanel5.add(busyFit, gridBagConstraints);
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        jPanel5.add(jPanel6, gridBagConstraints);
 
         jSplitPane3.setRightComponent(jPanel5);
 
@@ -539,11 +544,13 @@ public class FittingMainView extends JInternalFrame implements SedListener {
                         modelViewerPanel.fitResult(false);
                 } finally {
                     busyFit.setBusy(false);
+                    fitButton.setEnabled(true);
                 }
             }
         };
             
         busyFit.setBusy(true);
+        fitButton.setEnabled(false);
         worker.execute();
             
         
@@ -574,6 +581,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JSplitPane jSplitPane1;
@@ -593,6 +601,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
     private javax.swing.JButton searchButton;
     private javax.swing.JTextField searchField;
     private javax.swing.JComboBox statisticCombo;
+    private javax.swing.JButton stopFitButton;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 
