@@ -19,6 +19,7 @@ import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.fitting.FitController;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.gui.GUIUtils;
+import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.visualizer.IrisVisualizer;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
@@ -694,7 +695,14 @@ public class PlotterView extends JInternalFrame {
         
         // Re-evaluate all models currently plotted
         for (SedModel model : preferences.getDataModel().getSedModels()) {
-            preferences.evaluateModel(model, controller);
+            try {
+                preferences.evaluateModel(model, controller);
+            } catch (Exception e) {
+                NarrowOptionPane.showMessageDialog(this,
+                        "Exception caught while re-evaluating model: " + e.getMessage(),
+                        "Error",
+                        NarrowOptionPane.ERROR_MESSAGE);
+            }
         }
     }//GEN-LAST:event_evaluateButtonActionPerformed
 
