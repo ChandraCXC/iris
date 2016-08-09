@@ -36,6 +36,7 @@ import javax.swing.table.TableRowSorter;
 
 import java.awt.Rectangle;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -406,17 +407,16 @@ public class IrisStarJTable extends StarJTable {
     {
         List<SortKey> newKeys = new ArrayList<>(1);
         
-        if (keys.size() == 0) {
+        if (CollectionUtils.isEmpty(keys)) {
             return newKeys;
         }
         
-        ColumnIdentifier id = new ColumnIdentifier(getStarTable());
-
         // Primary key
         SortKey key = keys.get(0);
         ColumnInfo info = oldTable.getColumnInfo(key.getColumn() - 1);
         
-        // Is the new key in the current star table?
+        // Is the new key in the current star table?        
+        ColumnIdentifier id = new ColumnIdentifier(newTable);
         int newCol = 1; // Starts at 1 because of the index column
         try {
             newCol += id.getColumnIndex(info.getName());
