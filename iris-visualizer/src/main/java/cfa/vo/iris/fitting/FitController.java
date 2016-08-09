@@ -126,6 +126,9 @@ public class FitController {
         // Record the version number on the SED in the FitConfiguration
         sedModel.getFit().setSedVersion(sedModel.computeVersion());
         
+        // Record the FitConfiguration version in the SedModel
+        sedModel.setFitConfigurationVersion(sedModel.getFit().hashCode());
+        
         return retVal;
     }
     

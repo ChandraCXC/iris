@@ -67,6 +67,7 @@ public class SedModel {
     // Evaluated model version number
     private int modelVersion = 13;
     private boolean hasModelFunction = false;
+    private int fitConfigurationVersion = 0;
 
     public SedModel(ExtSed sed, IrisStarTableAdapter adapter) {
         this.sed = sed;
@@ -389,6 +390,14 @@ public class SedModel {
 
     public void setHasModelFunction(boolean hasModelFunction) {
         this.hasModelFunction = hasModelFunction;
+    }
+
+    public int getFitConfigurationVersion() {
+        return fitConfigurationVersion;
+    }
+
+    public void setFitConfigurationVersion(int fitConfigurationVersion) {
+        this.fitConfigurationVersion = fitConfigurationVersion;
     }
     
     public ExtSed getSed() {

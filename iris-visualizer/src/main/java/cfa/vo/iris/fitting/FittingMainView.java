@@ -648,6 +648,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
 
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
+            checkFittingConfigurationVersion();
             int result = chooser.showSaveDialog(FittingMainView.this);
             if (result == JFileChooser.APPROVE_OPTION) {
                 try {
@@ -666,6 +667,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
 
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
+            checkFittingConfigurationVersion();
             int result = chooser.showSaveDialog(FittingMainView.this);
             if (result == JFileChooser.APPROVE_OPTION) {
                 try {
@@ -692,6 +694,22 @@ public class FittingMainView extends JInternalFrame implements SedListener {
                     NarrowOptionPane.showMessageDialog(FittingMainView.this, ex.getMessage(), "Error", NarrowOptionPane.ERROR_MESSAGE);
                 }
             }
+        }
+    }
+
+    private void checkFittingConfigurationVersion() {
+        SedModel model = controller.getSedModel();
+        
+        // If no version avaiable ignore it
+        if (model.getFitConfigurationVersion() == 0) {
+            return;
+        }
+        
+        // Check the version against the current version
+        if (model.getFitConfigurationVersion() != model.getFit().hashCode()) {
+            NarrowOptionPane.showMessageDialog(FittingMainView.this,
+                    "The fitting configuration has changed since the last fit was performed, you may want to refit your data before saving.",
+                    "Warning", NarrowOptionPane.WARNING_MESSAGE);
         }
     }
 }
