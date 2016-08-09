@@ -168,43 +168,43 @@ public class SedPreferencesTest {
         
         // Empty SED -> 0 version
         SedModel model = new SedModel(sed, adapter);
-        int h1 = model.getVersion();
+        int h1 = model.computeVersion();
         assertEquals(13, h1);
         
         // Add basic segment
         Segment segment1 = createSampleSegment();//createSampleSegment(new double[] {1,1}, new double[] {1,1});
         sed.addSegment(segment1);
         model.refresh();
-        int h2 = model.getVersion();
+        int h2 = model.computeVersion();
         assertFalse(h1 == h2);
 
         // Additional segment changes hashcode
         Segment segment2 = createSampleSegment(new double[] {1,2}, new double[] {2,2});
         sed.addSegment(segment2);
         model.refresh();
-        int h3 = model.getVersion();
+        int h3 = model.computeVersion();
         assertFalse(h2 == h3);
         
         // Remove 2nd segment
         sed.remove(segment2);
         model.refresh();
-        int h4 = model.getVersion();
+        int h4 = model.computeVersion();
         assertTrue(h2 == h4);
         
         // Changing values changes version
         segment1.setSpectralAxisValues(new double[] {1, 2, 100});
         model.refresh();
-        int h5 = model.getVersion();
+        int h5 = model.computeVersion();
         assertFalse(h4 == h5);
         
         // Masking points changes version
         model.getDataTables().get(0).applyMasks(new int[] {0});
-        int h6 = model.getVersion();
+        int h6 = model.computeVersion();
         assertFalse(h5 == h6);
         
         // Remove mask
         model.getDataTables().get(0).clearMasks();
-        int h7 = model.getVersion();
+        int h7 = model.computeVersion();
         assertTrue(h5 == h7);
     }
     

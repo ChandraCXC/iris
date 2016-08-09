@@ -366,7 +366,7 @@ public class SedModel {
         sed.setFit(fit);
     }
     
-    public int getVersion() {
+    public int computeVersion() {
         HashCodeBuilder hcb = new HashCodeBuilder(13,31);
         for (IrisStarTable table : getDataTables()) {
             hcb.append(table.getPlotterDataTable().hashCode());
