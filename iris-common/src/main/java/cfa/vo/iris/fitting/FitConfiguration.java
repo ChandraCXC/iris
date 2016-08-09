@@ -387,10 +387,14 @@ public class FitConfiguration {
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                .append(model)
+                // Non primitive return types must manually specify which sub-objects to 
+                // include in order to maintain equality.
+                .append(model.getName())
+                .append(model.getParts())
+                .append(confidence.getConfig().getSigma())
+                .append(confidence.getName())
                 .append(stat)
                 .append(method)
-                .append(confidence)
                 .append(confResults)
                 .append(rStat)
                 .append(nFev)

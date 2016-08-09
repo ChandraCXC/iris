@@ -23,7 +23,6 @@ import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.test.unit.TestUtils;
-import cfa.vo.iris.units.spv.XUnits;
 import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
@@ -263,6 +262,17 @@ public class FitControllerTest {
 //        SegmentStarTable data = model.getDataTables().get(0).getPlotterDataTable();
 //        assertArrayEquals(new double[]{1.1, 1.2}, data.getSpecValues(), 0.001);
 //        assertArrayEquals(new double[]{2.1, 2.2}, data.getModelValues(), 0.001);
+    }
+    
+    @Test
+    public void testVersioning() throws Exception {
+        FitConfiguration ft = new FitConfiguration();
+        
+        int h1 = ft.hashCode();
+        assertEquals(h1, ft.hashCode());
+        
+        ft.getConfidence().setName("hi there");
+        assertNotEquals(h1, ft.hashCode());
     }
 
     private FitConfiguration createFit() throws Exception {
