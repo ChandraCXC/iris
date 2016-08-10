@@ -155,8 +155,8 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         statusPanel = new javax.swing.JPanel();
         statusField = new javax.swing.JLabel();
 
-        setMinimumSize(new java.awt.Dimension(487, 224));
-        setPreferredSize(new java.awt.Dimension(487, 224));
+        setMinimumSize(null);
+        setPreferredSize(new java.awt.Dimension(450, 250));
         setLayout(new java.awt.GridBagLayout());
 
         jLabel1.setText("Model Expression: ");
@@ -181,15 +181,13 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 0;
         gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.gridheight = 2;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 249;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weighty = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(12, 12, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(12, 12, 0, 5);
         add(modelExpressionField, gridBagConstraints);
 
-        jSplitPane1.setDividerLocation(150);
+        jSplitPane1.setDividerLocation(160);
         jSplitPane1.setName("jSplitPane1"); // NOI18N
 
         jPanel2.setName("jPanel2"); // NOI18N
@@ -203,11 +201,11 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(paramPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 319, Short.MAX_VALUE)
+            .add(paramPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(paramPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 157, Short.MAX_VALUE)
+            .add(paramPanel, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jSplitPane1.setRightComponent(jPanel2);
@@ -225,54 +223,44 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 1;
         gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 280;
-        gridBagConstraints.ipady = 7;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 1.0;
         gridBagConstraints.weighty = 0.8;
-        gridBagConstraints.insets = new java.awt.Insets(12, 12, 0, 0);
         add(jSplitPane1, gridBagConstraints);
 
         statusPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         statusPanel.setName("statusPanel"); // NOI18N
         statusPanel.setPreferredSize(new java.awt.Dimension(4, 14));
+        statusPanel.setLayout(new java.awt.GridBagLayout());
 
-        statusField.setMaximumSize(new java.awt.Dimension(0, 14));
-        statusField.setMinimumSize(new java.awt.Dimension(0, 8));
+        statusField.setText("Status");
+        statusField.setMaximumSize(null);
+        statusField.setMinimumSize(null);
         statusField.setName("statusField"); // NOI18N
-        statusField.setPreferredSize(new java.awt.Dimension(0, 8));
+        statusField.setPreferredSize(null);
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ, this, org.jdesktop.beansbinding.ELProperty.create("${fit.modelValid}"), statusField, org.jdesktop.beansbinding.BeanProperty.create("text"));
         binding.setConverter(new StatusConverter());
         bindingGroup.addBinding(binding);
 
-        org.jdesktop.layout.GroupLayout statusPanelLayout = new org.jdesktop.layout.GroupLayout(statusPanel);
-        statusPanel.setLayout(statusPanelLayout);
-        statusPanelLayout.setHorizontalGroup(
-            statusPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(statusField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE)
-        );
-        statusPanelLayout.setVerticalGroup(
-            statusPanelLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(statusPanelLayout.createSequentialGroup()
-                .add(statusField, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 2, Short.MAX_VALUE))
-        );
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.FIRST_LINE_START;
+        gridBagConstraints.weightx = 1.0;
+        gridBagConstraints.weighty = 1.0;
+        statusPanel.add(statusField, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 2;
         gridBagConstraints.gridwidth = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.ipadx = 393;
-        gridBagConstraints.ipady = 2;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 1.0;
-        gridBagConstraints.weighty = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        gridBagConstraints.weighty = 0.2;
         add(statusPanel, gridBagConstraints);
 
         bindingGroup.bind();

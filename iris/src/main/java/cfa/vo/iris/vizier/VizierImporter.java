@@ -26,6 +26,8 @@ import cfa.vo.sedlib.Field;
 import cfa.vo.sedlib.Point;
 import cfa.vo.sedlib.PositionParam;
 import cfa.vo.sedlib.Segment;
+
+import java.net.ConnectException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Collection;
@@ -41,14 +43,14 @@ public class VizierImporter {
     public static final String VIZIER_DATA_DEFAULT_ENDPOINT =
             "http://cdsarc.u-strasbg.fr/viz-bin/sed?-c=:targetName&-c.rs=:searchRadius";
     
-    public static Collection<Segment> getSedFromName(String targetName, Double searchRadius) throws SegmentImporterException {
+    public static Collection<Segment> getSedFromName(String targetName, Double searchRadius) throws SegmentImporterException, ConnectException {
         return getSedFromName(targetName, searchRadius, VIZIER_DATA_DEFAULT_ENDPOINT);
     }
     
-    public static Collection<Segment> getSedFromName(String targetName, Double searchRadius, String endpoint) throws SegmentImporterException {
+    public static Collection<Segment> getSedFromName(String targetName, Double searchRadius, String endpoint) throws SegmentImporterException, ConnectException {
         try {
             targetName = URLEncoder.encode(targetName, "UTF-8");
-            endpoint = endpoint.replace(":targetName&-c.rs=:searchRadius", targetName+"&-c.rs="+searchRadius);
+            endpoint = endpoint.replace(":targetName&-c.rs=:searchRadius", targetName + "&-c.rs=" + searchRadius);
             URL cdsUrl = new URL(endpoint);
 
             VOTableBuilder vob = new VOTableBuilder();
@@ -101,7 +103,8 @@ public class VizierImporter {
 
 
             return segMap.values();
-
+        } catch (ConnectException ex) {
+            throw ex;
         } catch (Exception ex) {
             throw new SegmentImporterException(ex);
         }

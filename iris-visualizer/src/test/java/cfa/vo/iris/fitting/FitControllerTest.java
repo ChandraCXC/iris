@@ -311,6 +311,7 @@ public class FitControllerTest {
         confidenceResults.setParnames(Arrays.asList("m1.c0", "m1.c1", "m2.c2"));
         confidenceResults.setParmins(new double[]{-0.1, -0.2, -0.3});
         confidenceResults.setParmaxes(new double[]{0.1, 0.2, 0.3});
+        confidenceResults.setParvals(new double[]{1.0, 2.0, 3.0});
         confidenceResults.setSigma(1.6);
         confidenceResults.setPercent(96.3);
         fit.setConfidenceResults(confidenceResults);

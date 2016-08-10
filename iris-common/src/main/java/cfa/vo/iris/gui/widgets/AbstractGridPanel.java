@@ -16,6 +16,7 @@ public abstract class AbstractGridPanel extends JPanel {
         makeGrid(getRows(), getCols());
         initBindings();
         group.bind();
+        setPreferredSize(null);
     }
 
     protected void createBinding(String propertyName, JComponent comp, String compPropertyName) {

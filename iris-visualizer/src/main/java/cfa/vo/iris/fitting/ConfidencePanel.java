@@ -81,10 +81,12 @@ public class ConfidencePanel extends javax.swing.JPanel {
         b.setConverter(new ConfResultsConverter());
         Property parName = BeanProperty.create("name");
         Property parMin = BeanProperty.create("lowerLimit");
+        Property parVal = BeanProperty.create("value");
         Property parMax = BeanProperty.create("upperLimit");
         b.addColumnBinding(parName).setColumnName("Parameter");
-        b.addColumnBinding(parMin).setColumnName("Lower Limit");
-        b.addColumnBinding(parMax).setColumnName("Upper Limit");
+        b.addColumnBinding(parVal).setColumnName("Value");
+        b.addColumnBinding(parMin).setColumnName("Lower Bound");
+        b.addColumnBinding(parMax).setColumnName("Upper Bound");
         bindingGroup.bind();
     }
 
@@ -108,7 +110,8 @@ public class ConfidencePanel extends javax.swing.JPanel {
         busyConfidence = new org.jdesktop.swingx.JXBusyLabel();
         jButton1 = new javax.swing.JButton();
 
-        setMinimumSize(new java.awt.Dimension(287, 191));
+        setMinimumSize(null);
+        setPreferredSize(null);
         setLayout(new java.awt.GridBagLayout());
 
         jLabel1.setText("Confidence Interval: ");
@@ -136,7 +139,7 @@ public class ConfidencePanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(12, 12, 0, 0);
         add(jTextField1, gridBagConstraints);
 
-        sigmaText.setText("sigma - 90.00%");
+        sigmaText.setText("sigma - 90.0%");
         sigmaText.setName("sigmaPercent"); // NOI18N
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${confidenceResults.percent}"), sigmaText, org.jdesktop.beansbinding.BeanProperty.create("text"));

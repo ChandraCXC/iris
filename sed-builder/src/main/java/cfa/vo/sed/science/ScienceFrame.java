@@ -53,9 +53,12 @@ import cfa.vo.sed.science.interpolation.ZConfig;
 import cfa.vo.sedlib.Param;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedException;
+import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sherpa.models.CompositeModel;
 import cfa.vo.sherpa.SherpaClient;
+import cfa.vo.sherpa.models.Model;
 import cfa.vo.sherpa.models.UserModel;
+import org.apache.commons.lang.SerializationUtils;
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Task;
 
@@ -924,6 +927,8 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
                 setPoints(null);
 //                ppoints.addAll(out);
                 setPoints(out);
+            } catch (SedNoDataException ex) {
+                NarrowOptionPane.showMessageDialog(null, "Cannot integrate empty SED. Please add some data and retry.", "Error", NarrowOptionPane.ERROR_MESSAGE);
             } catch (Exception ex) {
                 NarrowOptionPane.showMessageDialog(null, ex.getMessage(), "Error", NarrowOptionPane.ERROR_MESSAGE);
                 Logger.getLogger(ScienceFrame.class.getName()).log(Level.SEVERE, null, ex);
@@ -1286,7 +1291,12 @@ private void changeMode(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chang
         Response response = (Response) SAMPFactory.get(Response.class);
         if (integrateModel) {
             FitConfiguration fit = sed.getFit();
-            CompositeModel model = fit.getModel();
+
+            // Create new model rather than overwriting the model expression
+            CompositeModel model = SAMPFactory.get(CompositeModel.class);
+            for (Model m : fit.getModel().getParts()) {
+                model.addPart(m);
+            }
             model.setName(modelExpression);
 
             List<UserModel> userModels = fit.getUserModelList();
