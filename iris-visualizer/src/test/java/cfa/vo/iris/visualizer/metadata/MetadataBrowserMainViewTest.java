@@ -43,7 +43,6 @@ import cfa.vo.sedlib.TextParam;
 import static org.junit.Assert.*;
 
 import java.util.BitSet;
-import java.util.concurrent.Executor;
 
 import static cfa.vo.iris.test.unit.TestUtils.*;
 
@@ -67,13 +66,6 @@ public class MetadataBrowserMainViewTest extends AbstractUISpecTest {
     private Table plotterTable;
     private Table dataTable;
     private Table segmentTable;
-    
-    private static class SingleThreadExecutor implements Executor {
-        @Override
-        public void execute(Runnable command) {
-            command.run();
-        }
-    }
     
     @Before
     public void setupMbTest() throws Exception {
