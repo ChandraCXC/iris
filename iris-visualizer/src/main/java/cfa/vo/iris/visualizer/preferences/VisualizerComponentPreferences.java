@@ -46,13 +46,16 @@ import java.util.Map;
  */
 public class VisualizerComponentPreferences {
     
-    private static final ExecutorService visualizerExecutor = Executors.newFixedThreadPool(5);
+    private static final ExecutorService visualizerExecutor = Executors.newFixedThreadPool(20);
     
     // For accessing plot mouse listeners
     private final MouseListenerManager mouseListenerManager;
     
     // Pointer to the Iris workspace
     private final IWorkspace ws;
+    
+    // Listener for processing SedEvents
+    final VisualizerEventListener listener;
     
     // Persistence for Iris Visualizer data
     private final VisualizerDataStore dataStore;
@@ -84,6 +87,8 @@ public class VisualizerComponentPreferences {
         this.mouseListenerManager = new MouseListenerManager(this);
         
         this.boundToWorkspace = true;
+        
+        this.listener = new VisualizerEventListener(visualizerExecutor, this);
         
         Map<Object, PlotPreferences> builder = new MapMaker().weakKeys().makeMap();
         preferencesStore = Collections.synchronizedMap(builder);
