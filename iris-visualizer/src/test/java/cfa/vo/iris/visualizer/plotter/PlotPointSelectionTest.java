@@ -21,6 +21,7 @@ import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.test.unit.StubWorkspace;
 import cfa.vo.iris.test.unit.TestUtils;
+import cfa.vo.iris.test.unit.TestUtils.SingleThreadExecutor;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 
 import static org.junit.Assert.*;
@@ -34,7 +35,7 @@ public class PlotPointSelectionTest {
     @Test
     public void testStilPointSelectionMappingNonCoplot() throws Exception {
         IWorkspace ws = new StubWorkspace();
-        VisualizerComponentPreferences prefs = new VisualizerComponentPreferences(ws);
+        VisualizerComponentPreferences prefs = new VisualizerComponentPreferences(ws, new SingleThreadExecutor());
         
         StubListener listener = new StubListener();
         listener.dataModel = prefs.getDataModel();
@@ -68,7 +69,7 @@ public class PlotPointSelectionTest {
     @Test
     public void testCoplotPointSelection() throws Exception {
         IWorkspace ws = new StubWorkspace();
-        VisualizerComponentPreferences prefs = new VisualizerComponentPreferences(ws);
+        VisualizerComponentPreferences prefs = new VisualizerComponentPreferences(ws, new SingleThreadExecutor());
         
         StubListener listener = new StubListener();
         listener.dataModel = prefs.getDataModel();
