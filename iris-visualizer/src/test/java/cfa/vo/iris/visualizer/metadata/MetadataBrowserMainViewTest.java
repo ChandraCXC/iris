@@ -17,6 +17,7 @@
 package cfa.vo.iris.visualizer.metadata;
 
 import org.apache.commons.lang.StringUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.uispec4j.Panel;
@@ -42,6 +43,7 @@ import cfa.vo.sedlib.TextParam;
 import static org.junit.Assert.*;
 
 import java.util.BitSet;
+import java.util.concurrent.Executor;
 
 import static cfa.vo.iris.test.unit.TestUtils.*;
 
@@ -65,12 +67,19 @@ public class MetadataBrowserMainViewTest extends AbstractUISpecTest {
     private Table plotterTable;
     private Table dataTable;
     private Table segmentTable;
-
+    
+    private static class SingleThreadExecutor implements Executor {
+        @Override
+        public void execute(Runnable command) {
+            command.run();
+        }
+    }
+    
     @Before
     public void setupMbTest() throws Exception {
         // New prefs
         ws = new StubWorkspace();
-        preferences = new VisualizerComponentPreferences(ws);
+        preferences = new VisualizerComponentPreferences(ws, new SingleThreadExecutor());
         dataStore = preferences.getDataStore();
         dataModel = preferences.getDataModel();
         
@@ -79,7 +88,7 @@ public class MetadataBrowserMainViewTest extends AbstractUISpecTest {
         mbView = plView.getMetadataBrowserView();
 
         plWindow = new Window(plView);
-        
+
         org.uispec4j.Button mbButton = plWindow.getButton("Metadata");
         mbButton.click();
         mbWindow = new Window(mbView);
@@ -91,7 +100,7 @@ public class MetadataBrowserMainViewTest extends AbstractUISpecTest {
         
         // Segment list
         tablesTree = dataPanel.getTree();
-        
+
         // Data table with plotter info
         dataPanel.getTabGroup().selectTab("Data");
         plotterTable = dataPanel.getTabGroup().getSelectedTab().getTable();
@@ -105,6 +114,11 @@ public class MetadataBrowserMainViewTest extends AbstractUISpecTest {
         segmentTable = dataPanel.getTabGroup().getSelectedTab().getTable();
         
         dataPanel.getTabGroup().selectTab("Data");
+    }
+    
+    @After
+    public void tearDown() {
+        
     }
 
     @SuppressWarnings("unchecked")

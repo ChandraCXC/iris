@@ -15,8 +15,7 @@
  */
 package cfa.vo.iris.visualizer.preferences;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,7 +34,7 @@ public class VisualizerEventListener {
     private static final Logger logger = Logger.getLogger(VisualizerEventListener.class.getName());
     
     // Async executor
-    private final ExecutorService visualizerExecutor;
+    private final Executor visualizerExecutor;
     
     // Data store
     private final VisualizerDataStore dataStore;
@@ -43,7 +42,7 @@ public class VisualizerEventListener {
     // Preferences
     private final VisualizerComponentPreferences preferences;
     
-    public VisualizerEventListener(ExecutorService executor, VisualizerComponentPreferences preferences) {
+    public VisualizerEventListener(Executor executor, VisualizerComponentPreferences preferences) {
         
         this.visualizerExecutor = executor;
         this.preferences = preferences;
@@ -69,11 +68,10 @@ public class VisualizerEventListener {
         @Override
         public void process(final ExtSed sed, final SedCommand payload) {
             try {
-                visualizerExecutor.submit(new Callable<ExtSed>() {
+                visualizerExecutor.execute(new Runnable() {
                     @Override
-                    public ExtSed call() throws Exception {
+                    public void run() {
                         processNotification(sed, payload);
-                        return null;
                     };
                 });
             } catch (Exception e) {
@@ -108,11 +106,10 @@ public class VisualizerEventListener {
         @Override
         public void process(final Segment segment, final SegmentEvent.SegmentPayload payload) {
             try {
-                visualizerExecutor.submit(new Callable<ExtSed>() {
+                visualizerExecutor.execute(new Runnable() {
                     @Override
-                    public ExtSed call() throws Exception {
+                    public void run() {
                         processNotification(segment, payload);
-                        return null;
                     };
                 });
             } catch (Exception e) {
@@ -145,11 +142,10 @@ public class VisualizerEventListener {
         @Override
         public void process(final java.util.List<Segment> segments, final SegmentEvent.SegmentPayload payload) {
             try {
-                visualizerExecutor.submit(new Callable<ExtSed>() {
+                visualizerExecutor.execute(new Runnable() {
                     @Override
-                    public ExtSed call() throws Exception {
+                    public void run() {
                         processNotification(segments, payload);
-                        return null;
                     };
                 });
             } catch (Exception e) {
