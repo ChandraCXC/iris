@@ -254,7 +254,7 @@ public class FitConfiguration {
         // convert to Angstroms
         // TODO: update this to convert to user preferences later on
         XUnit oldUnit = new XUnits(fittingRange.getXUnit().getString());
-        XUnit newUnit = new XUnits("Angstrom");
+        XUnit newUnit = new XUnits(SherpaClient.X_UNIT);
         
         try {
             fittingRange.setXUnit(cfa.vo.iris.sed.quantities.XUnit.getFromUnitString(newUnit.toString()));

@@ -228,16 +228,21 @@ public class FitControllerTest {
         assertEquals(13.0, ranges.get(1).getEndPoint(), 0.00001);
         
         // add another fitting range, in energy units
-        range = new FittingRange(1.05, 1.3, XUnit.KEV);
+        range = new FittingRange(1.5, 2.0, XUnit.KEV);
         config.addFittingRange(range);
         
         ranges = model.getFit().getFittingRanges();
-        assertEquals(9.5372, ranges.get(2).getStartPoint(), 0.001);
-        assertEquals(11.808, ranges.get(2).getEndPoint(), 0.001);
+        assertEquals(6.1992, ranges.get(2).getStartPoint(), 0.001);
+        assertEquals(8.2656, ranges.get(2).getEndPoint(), 0.001);
         
         // make sure fitting ranges aren't overwriting each other
         assertEquals(10.5, ranges.get(0).getStartPoint(), 0.00001);
         assertEquals(13.0, ranges.get(0).getEndPoint(), 0.00001);
+        
+        // check that the number of data points used in the fit is 2
+        controller.setSedModel(model);
+        Data allData = controller.constructSherpaCall(model);
+        assertEquals(2, allData.getX().length);
         
         // remove one of the ranges
         config.removeFittingRange(range); // last one added
@@ -258,11 +263,10 @@ public class FitControllerTest {
         config.clearFittingRanges();
         assertEquals(0, config.getFittingRanges().size());
         
-        // TODO: uncomment when setting fit ranges to the data is done
-        // check that the evaluated model only has 2 points
-//        SegmentStarTable data = model.getDataTables().get(0).getPlotterDataTable();
-//        assertArrayEquals(new double[]{1.1, 1.2}, data.getSpecValues(), 0.001);
-//        assertArrayEquals(new double[]{2.1, 2.2}, data.getModelValues(), 0.001);
+        // assert that all the points are included in the fit calculation
+        controller.setSedModel(model);
+        allData = controller.constructSherpaCall(model);
+        assertEquals(3, allData.getX().length);
     }
 
     private FitConfiguration createFit() throws Exception {
