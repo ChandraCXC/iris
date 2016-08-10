@@ -15,6 +15,8 @@ import cfa.vo.sherpa.stats.Stat;
 import cfa.vo.sherpa.stats.Statistic;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
@@ -217,7 +219,7 @@ public class FitConfiguration {
     }
 
     public void setUserModelList(List<UserModel> userModelList) {
-        ObservableList oldList = this.userModelList;
+        ObservableList<UserModel> oldList = this.userModelList;
         this.userModelList = ObservableCollections.observableList(userModelList);
         propertyChangeSupport.firePropertyChange(PROP_USERMODELLIST, oldList, userModelList);
     }
@@ -386,11 +388,10 @@ public class FitConfiguration {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
+        HashCodeBuilder hcb = new HashCodeBuilder(17, 37)
                 // Non primitive return types must manually specify which sub-objects to 
                 // include in order to maintain equality.
                 .append(model.getName())
-                .append(model.getParts())
                 .append(confidence.getConfig().getSigma())
                 .append(confidence.getName())
                 .append(stat)
@@ -402,8 +403,18 @@ public class FitConfiguration {
                 .append(numPoints)
                 .append(statVal)
                 .append(dof)
-                .append(userModelList)
-                .toHashCode();
+                .append(userModelList);
+        
+        // Must manually include param and values in hashCode computation
+        if (CollectionUtils.isNotEmpty(model.getParts())) {
+            for (Model part : model.getParts()) {
+                for (Parameter param : part.getPars()) {
+                    hcb.append(HashCodeBuilder.reflectionHashCode(param));
+                }
+            }
+        }
+        
+        return hcb.toHashCode();
     }
 
     public void addPropertyChangeListener(java.beans.PropertyChangeListener listener )

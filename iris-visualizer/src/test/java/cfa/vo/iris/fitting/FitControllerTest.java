@@ -271,8 +271,28 @@ public class FitControllerTest {
         int h1 = ft.hashCode();
         assertEquals(h1, ft.hashCode());
         
+        // Changing confidence changes hc
         ft.getConfidence().setName("hi there");
-        assertNotEquals(h1, ft.hashCode());
+        int h2 = ft.hashCode();
+        assertNotEquals(h1, h2);
+        
+        // Adding model changes hc
+        ModelFactory factory = new ModelFactory();
+        Model m = factory.getModel("polynomial", "m1");
+        ft.addModel(m);
+        int h3 = ft.hashCode();
+        assertNotEquals(h2, h3);
+        
+        // Changing params changes hc
+        Parameter c0 = m.getPars().get(0);
+        c0.setFrozen(0);
+        c0.setVal(0.1);
+        int h4 = ft.hashCode();
+        assertNotEquals(h3, h4);
+        
+        // Blind check
+        int h5 = ft.hashCode();
+        assertEquals(h4, h5);
     }
 
     private FitConfiguration createFit() throws Exception {
