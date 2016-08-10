@@ -489,7 +489,7 @@ public class StilPlotterTest {
         model.getDataTables().get(0).getPlotterDataTable().setResidualValues(seg1.getSpectralAxisValues());
         
         // SedModel now has a version
-        model.setModelVersion(model.getVersion());
+        model.setModelVersion(model.computeVersion());
         model.setHasModelFunction(true);
         
         // Reset the plotter, no message should be sent

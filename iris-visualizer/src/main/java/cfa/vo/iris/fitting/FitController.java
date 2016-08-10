@@ -131,7 +131,10 @@ public class FitController {
         sedModel.getFit().integrateResults(retVal);
         
         // Record the version number on the SED in the FitConfiguration
-        sedModel.getFit().setSedVersion(sedModel.getVersion());
+        sedModel.getFit().setSedVersion(sedModel.computeVersion());
+        
+        // Record the FitConfiguration version in the SedModel
+        sedModel.setFitConfigurationVersion(sedModel.getFit().hashCode());
         
         return retVal;
     }
@@ -252,7 +255,7 @@ public class FitController {
     public void evaluateModel(SedModel sedModel) throws Exception {
         
         // Update the model version with the current version of the Sed
-        sedModel.setModelVersion(sedModel.getVersion());
+        sedModel.setModelVersion(sedModel.computeVersion());
         sedModel.setHasModelFunction(true);
         
         String xUnit = sedModel.getXUnits();

@@ -19,6 +19,8 @@ import cfa.vo.iris.gui.widgets.ModelViewerPanel;
 import cfa.vo.iris.test.IrisAppResource;
 import cfa.vo.iris.test.unit.AbstractUISpecTest;
 import cfa.vo.iris.test.unit.TestUtils;
+
+import org.apache.commons.lang.StringUtils;
 import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 import org.uispec4j.*;
@@ -204,11 +206,18 @@ public class IrisFunctionalIT extends AbstractUISpecTest {
     private void saveText() throws Exception {
         File outputFile = tempFolder.newFile("output.fit");
 
-        WindowInterceptor
-                .init(fittingView.getMenuBar().getMenu("File").getSubMenu("Save Text...").triggerClick())
-                .process(FileChooserHandler.init().select(outputFile.getAbsolutePath()))
-                .run()
-        ;
+        WindowInterceptor interceptor = WindowInterceptor
+                .init(fittingView.getMenuBar().getMenu("File").getSubMenu("Save Text...").triggerClick());
+        
+        interceptor.process(new WindowHandler() {
+            @Override
+            public Trigger process(Window w) throws Exception {
+                // Warning for changed data
+                junit.framework.Assert.assertTrue(StringUtils.contains(w.getTitle(), "Warning"));
+                w.getButton("Ok").click();
+                return Trigger.DO_NOTHING;
+            }
+        }).process(FileChooserHandler.init().select(outputFile.getAbsolutePath())).run();
 
         String expected = TestUtils.readFile(getClass(), "fit.output");
         String actual = com.google.common.io.Files.toString(outputFile, Charset.defaultCharset());
