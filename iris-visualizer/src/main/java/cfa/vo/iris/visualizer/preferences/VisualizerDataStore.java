@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
@@ -39,10 +39,10 @@ public class VisualizerDataStore {
     // All preferences for each ExtSed in the workspace
     final Map<ExtSed, SedModel> sedModels;
     
-    public VisualizerDataStore(ExecutorService visualizerExecutor, VisualizerComponentPreferences preferences) {
+    public VisualizerDataStore(Executor executor, VisualizerComponentPreferences preferences) {
         this.sedModels = Collections.synchronizedMap(new IdentityHashMap<ExtSed, SedModel>());
         this.preferences = preferences;
-        this.adapter = new IrisStarTableAdapter(visualizerExecutor, preferences);
+        this.adapter = new IrisStarTableAdapter(executor, preferences);
     }
     
     /**
