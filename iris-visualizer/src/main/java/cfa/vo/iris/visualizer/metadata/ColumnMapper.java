@@ -65,7 +65,7 @@ public class ColumnMapper {
                 variables.set("$"+column, (Double) tableRow[Integer.valueOf(column)]);
             } catch (NumberFormatException ex) {
                 throw new IllegalArgumentException(FilterExpressionException.NON_NUMERIC_COLUMN_NAME_MSG);
-            } catch (NoSuchElementException ex) {
+            } catch (NoSuchElementException | ArrayIndexOutOfBoundsException ex) {
                 throw new NoSuchElementException("Bad expression: "
                 + "Specified column $"+column+" does not exist.");
             } catch (ClassCastException ex) {
