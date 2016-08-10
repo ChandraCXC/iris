@@ -210,6 +210,7 @@ public class VisualizerDataModel {
             
             // Add models to the SED
             SedModel sedModel = store.getSedModel(sed);
+            
             dataModelTitle.append(sed.getId() + " ");
             
             // For coplotting we plot the entire SED as a single layer, do not add layers
