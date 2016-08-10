@@ -30,6 +30,7 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.test.unit.AbstractUISpecTest;
 import cfa.vo.iris.test.unit.StubWorkspace;
 import cfa.vo.iris.test.unit.TestUtils;
+import cfa.vo.iris.test.unit.TestUtils.SingleThreadExecutor;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
 import cfa.vo.iris.visualizer.metadata.StarTableJTree;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
@@ -56,7 +57,7 @@ public class CoPlottingTest extends AbstractUISpecTest {
     @Before
     public void setupMbTest() throws Exception {
         ws = new StubWorkspace();
-        prefs = new VisualizerComponentPreferences(ws);
+        prefs = new VisualizerComponentPreferences(ws, new SingleThreadExecutor());
         dataStore = prefs.getDataStore();
         dataModel = prefs.getDataModel();
         

@@ -20,6 +20,7 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedlibSedManager;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.test.unit.ApplicationStub;
+import cfa.vo.iris.test.unit.TestUtils.SingleThreadExecutor;
 import cfa.vo.iris.units.spv.XUnits;
 import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
@@ -59,7 +60,7 @@ public class FittingMainViewTest {
         SedModel sedModel = new SedModel(sed, new IrisStarTableAdapter(null));
         controller = new FitController(sedModel, modelsManager, client);
         ApplicationStub app = new ApplicationStub();
-        VisualizerComponentPreferences preferences = new VisualizerComponentPreferences(app.getWorkspace());
+        VisualizerComponentPreferences preferences = new VisualizerComponentPreferences(app.getWorkspace(), new SingleThreadExecutor());
         FittingMainView view = new FittingMainView(preferences, chooser, controller);
 
         fittingView = new Window(view);

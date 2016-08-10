@@ -24,6 +24,7 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.test.Ws;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
 import cfa.vo.iris.test.unit.TestUtils;
+import cfa.vo.iris.test.unit.TestUtils.SingleThreadExecutor;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
 import cfa.vo.iris.visualizer.preferences.FittingRangeModel;
 import cfa.vo.iris.visualizer.preferences.FunctionModel;
@@ -657,7 +658,7 @@ public class StilPlotterTest {
     }
     
     private StilPlotter setUpTests(ExtSed sed) throws Exception {
-        preferences = new VisualizerComponentPreferences(ws);
+        preferences = new VisualizerComponentPreferences(ws, new SingleThreadExecutor());
         preferences.getDataStore().update(sed);
         preferences.updateSelectedSed(sed);
         
