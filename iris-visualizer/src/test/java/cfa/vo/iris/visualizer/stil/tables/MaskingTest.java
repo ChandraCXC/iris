@@ -26,12 +26,13 @@ import org.junit.Test;
 import org.uispec4j.utils.ArrayUtils;
 
 import cfa.vo.iris.test.unit.TestUtils;
+import cfa.vo.iris.test.unit.TestUtils.SingleThreadExecutor;
 import cfa.vo.sedlib.Segment;
 import uk.ac.starlink.table.RowSequence;
 
 public class MaskingTest {
     
-    IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
+    IrisStarTableAdapter adapter = new IrisStarTableAdapter(new SingleThreadExecutor());
     
     @Test
     public void testMasks() throws Exception {
@@ -165,7 +166,7 @@ public class MaskingTest {
     
     @Test
     public void testMultipleTables() throws Exception {
-        IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter(new SingleThreadExecutor());
         
         IrisStarTable table1 = adapter.convertSegment(TestUtils.createSampleSegment());
         IrisStarTable table2 = adapter.convertSegment(TestUtils.createSampleSegment());
@@ -206,7 +207,7 @@ public class MaskingTest {
     
     @Test
     public void testRowMappingWithMasks() throws Exception {
-        IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter(new SingleThreadExecutor());
         
         IrisStarTable table1 = adapter.convertSegment(TestUtils.createSampleSegment());
         IrisStarTable table2 = adapter.convertSegment(TestUtils.createSampleSegment());
