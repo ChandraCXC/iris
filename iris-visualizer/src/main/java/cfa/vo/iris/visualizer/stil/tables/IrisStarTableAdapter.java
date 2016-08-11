@@ -19,7 +19,7 @@ package cfa.vo.iris.visualizer.stil.tables;
 import java.util.concurrent.Executor;
 
 import cfa.vo.iris.sed.stil.SegmentStarTable;
-import cfa.vo.iris.sed.stil.SerializingStarTableAdapter;
+import cfa.vo.iris.sed.stil.SerializingSegmentAdapter;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.sedlib.Segment;
@@ -61,7 +61,7 @@ public class IrisStarTableAdapter {
             SegmentStarTable segTable = new SegmentStarTable(data);
             IrisStarTable ret;
             
-            SerializingStarTableAdapter adapter = new SerializingStarTableAdapter();
+            SerializingSegmentAdapter adapter = new SerializingSegmentAdapter();
             if (async) {
                 ret = new IrisStarTable(segTable, EMPTY_STARTABLE);
                 executor.execute(new AsyncSerializer(data, adapter, ret));

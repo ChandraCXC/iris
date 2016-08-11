@@ -46,7 +46,7 @@ public class SerializingStarTableTest {
 
     @Test
     public void testStarTable() throws Exception {
-        StarTableAdapter<Segment> adapter = new SerializingStarTableAdapter();
+        StarTableAdapter<Segment> adapter = new SerializingSegmentAdapter();
         Segment seg = sed.getSegment(0);
         
         StarTable table = adapter.convertStarTable(seg);

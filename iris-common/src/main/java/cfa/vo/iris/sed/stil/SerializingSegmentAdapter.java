@@ -30,7 +30,7 @@ import uk.ac.starlink.util.ByteArrayDataSource;
 import uk.ac.starlink.votable.VOTableBuilder;
 
 
-public class SerializingStarTableAdapter implements StarTableAdapter<Segment> {
+public class SerializingSegmentAdapter implements StarTableAdapter<Segment> {
 
     @Override
     public StarTable convertStarTable(Segment data) {
