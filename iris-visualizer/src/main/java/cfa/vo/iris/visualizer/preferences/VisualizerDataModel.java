@@ -191,6 +191,17 @@ public class VisualizerDataModel {
         List<ExtSed> oldSeds = this.selectedSeds;
         this.coplotted = CollectionUtils.size(selectedSeds) > 1;
         
+        //
+        // TODO: Remove restriction on the number of segments in the SED until the StilPlotter
+        //       can handle more segments. This is set to 16 in the interim, as that is how 
+        //       many distinct colors the current implementation of the color palatte is generating.
+        //
+        for (ExtSed sed : selectedSeds) {
+            if (sed.getNumberOfSegments() > 16) {
+                coplotted = true;
+            }
+        }
+        
         // Here to support empty values for null seds
         List<LayerModel> newSedModels = new LinkedList<>();
         List<IrisStarTable> newSedTables = new LinkedList<>();
