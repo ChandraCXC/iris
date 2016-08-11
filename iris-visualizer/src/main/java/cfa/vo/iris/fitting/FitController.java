@@ -321,8 +321,6 @@ public class FitController {
                     SherpaClient.Y_UNIT, SherpaClient.X_UNIT, yUnit);
 
             table.setModelValues(y);
-            table.setResidualValues(calcResiduals(table.getFluxValues(), y));
-            table.setRatioValues(calcRatios(table.getFluxValues(), y));
         }
     }
 
@@ -345,38 +343,5 @@ public class FitController {
      */
     public void clearAll() {
         sedModel.reset();
-    }
-
-    private double[] calcResiduals(double[] expected, double[] actual) {
-        int len = expected.length;
-
-        if (len != actual.length) {
-            throw new IllegalArgumentException("Expected and Actual array should have the same size");
-        }
-
-        double[] ret = new double[len];
-
-        for (int i=0; i<len; i++) {
-            ret[i] = actual[i] - expected[i];
-        }
-
-        return ret;
-    }
-
-    private double[] calcRatios(double[] expected, double[] actual) {
-        int len = expected.length;
-
-        if (len != actual.length) {
-            throw new IllegalArgumentException("Expected and Actual array should have the same size");
-        }
-
-        double[] ret = new double[len];
-
-        for (int i=0; i<len; i++) {
-            double e = expected[i];
-            ret[i] = Math.abs(e - actual[i])/e;
-        }
-
-        return ret;
     }
 }
