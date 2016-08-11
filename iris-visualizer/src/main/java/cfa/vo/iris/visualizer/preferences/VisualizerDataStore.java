@@ -84,7 +84,8 @@ public class VisualizerDataStore {
         if (segment == null) return;
         
         if (sedModels.containsKey(sed)) {
-            sedModels.get(sed).addSegment(segment);
+            SedModel model = sedModels.get(sed);
+            model.updateSegment(segment);
         } else {
             // The segment will automatically be serialized and attached the the 
             // SedPrefrences since it's assumed to be attached to the SED.
@@ -105,7 +106,7 @@ public class VisualizerDataStore {
             for (Segment segment : segments) {
                 // Do nothing for null segments
                 if (segment == null) continue;
-                model.addSegment(segment);
+                model.updateSegments(segments);
             }
         } else {
             // The segment will automatically be serialized and attached the the 

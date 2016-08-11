@@ -56,7 +56,7 @@ public class SedPreferencesTest {
         assertEquals(1, model.getLayerModels().size());
         
         // Re-adding the same segment should not alter the map
-        model.addSegment(seg1);
+        model.updateSegment(seg1);
         assertEquals(1, model.getLayerModels().size());
         
         // Whereas adding an identical (but new) segment should add a new map element
