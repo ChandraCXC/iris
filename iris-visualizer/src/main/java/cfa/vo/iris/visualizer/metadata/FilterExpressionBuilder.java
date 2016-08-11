@@ -38,28 +38,4 @@ public class FilterExpressionBuilder {
         
         return new ArrayList<>(hashSetRows);
     }
-    
-//    public TreeNode createTreeNode() {
-//        Iterator<Character>itr = postOrder.iterator();
-//        Tree tree = new Tree();
-//        NodeStack nodeStack = new NodeStack();
-//        Tree.TreeNode node;
-//        while (itr.hasNext()) {
-//            Character c = itr.next();
-//            if(!isDigit(c)){
-//                node = tree.createNode(c);
-//                node.right = nodeStack.pop();
-//                node.left = nodeStack.pop();
-//                nodeStack.push(node);
-//            }else{
-//                node = tree.createNode(c);
-//                nodeStack.push(node);
-//            }
-//        }
-//        node = nodeStack.pop();
-//        return node;
-//    }
-
-
-    
 }

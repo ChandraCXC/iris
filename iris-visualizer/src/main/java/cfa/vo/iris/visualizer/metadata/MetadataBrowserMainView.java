@@ -32,14 +32,11 @@ import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import cfa.vo.iris.visualizer.metadata.IrisStarJTable.RowSelection;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.SegmentColumnInfoMatcher;
-import cfa.vo.iris.visualizer.stil.tables.StackedStarTable;
 import cfa.vo.iris.visualizer.stil.tables.UtypeColumnInfoMatcher;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
-import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
-import uk.ac.starlink.table.Tables;
 public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
     private static final long serialVersionUID = 1L;
@@ -604,7 +601,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         try {
             // select the table rows using the filter expression
             List<Integer> rows = filterExpressionBuilder.process(filterExpressionField.getText());
-            NarrowOptionPane.showMessageDialog(this, rows, title, JOptionPane.OK_OPTION);
             
             int actualRow;
             for (Integer row : rows) {
