@@ -20,7 +20,6 @@ import java.util.concurrent.Executor;
 
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.sed.stil.SerializingSegmentAdapter;
-import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.units.UnitsException;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedInconsistentException;
@@ -78,11 +77,11 @@ public class IrisStarTableAdapter {
     private static class AsyncSerializer implements Runnable {
         
         private final Segment data;
-        private final StarTableAdapter<Segment> adapter;
+        private final SerializingSegmentAdapter adapter;
         private final IrisStarTable table;
 
         public AsyncSerializer(Segment data, 
-                StarTableAdapter<Segment> adapter, 
+                SerializingSegmentAdapter adapter, 
                 IrisStarTable table)
         {
             this.data = data;

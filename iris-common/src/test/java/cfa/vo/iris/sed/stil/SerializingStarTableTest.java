@@ -18,7 +18,6 @@ package cfa.vo.iris.sed.stil;
 import static org.junit.Assert.*;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -46,7 +45,7 @@ public class SerializingStarTableTest {
 
     @Test
     public void testStarTable() throws Exception {
-        StarTableAdapter<Segment> adapter = new SerializingSegmentAdapter();
+        SerializingSegmentAdapter adapter = new SerializingSegmentAdapter();
         Segment seg = sed.getSegment(0);
         
         StarTable table = adapter.convertStarTable(seg);
