@@ -103,11 +103,7 @@ public class VisualizerDataStore {
     public void update(ExtSed sed, List<Segment> segments) {
         if (sedModels.containsKey(sed)) {
             SedModel model = sedModels.get(sed);
-            for (Segment segment : segments) {
-                // Do nothing for null segments
-                if (segment == null) continue;
-                model.updateSegments(segments);
-            }
+            model.updateSegments(segments);
         } else {
             // The segment will automatically be serialized and attached the the 
             // SedPrefrences since it's assumed to be attached to the SED.
