@@ -16,8 +16,13 @@
 
 package cfa.vo.iris.visualizer.stil.tables;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.sed.stil.SerializingSegmentAdapter;
 import cfa.vo.iris.units.UnitsException;
@@ -39,6 +44,8 @@ import uk.ac.starlink.table.StarTable;
  */
 public class IrisStarTableAdapter {
     
+    private static final Logger logger = Logger.getLogger(IrisStarTableAdapter.class.getName());
+    
     public static final StarTable EMPTY_STARTABLE = new EmptyStarTable();
     
     private final Executor executor;
@@ -48,14 +55,22 @@ public class IrisStarTableAdapter {
     }
 
     public IrisStarTable convertSegment(Segment data) {
-        return convert(data, false);
+        return convertSegment(data, false);
     }
     
     public IrisStarTable convertSegmentAsync(Segment data) {
-        return convert(data, true);
+        return convertSegment(data, true);
     }
     
-    private IrisStarTable convert(Segment data, boolean async) {
+    public List<IrisStarTable> convertSed(ExtSed sed) {
+        return convertSed(sed, false);
+    }
+
+    public List<IrisStarTable> convertSedAsync(ExtSed sed) {
+        return convertSed(sed, true);
+    }
+    
+    private IrisStarTable convertSegment(Segment data, boolean async) {
         try {
             SegmentStarTable segTable = new SegmentStarTable(data);
             IrisStarTable ret;
@@ -63,7 +78,7 @@ public class IrisStarTableAdapter {
             SerializingSegmentAdapter adapter = new SerializingSegmentAdapter();
             if (async) {
                 ret = new IrisStarTable(segTable, EMPTY_STARTABLE);
-                executor.execute(new AsyncSerializer(data, adapter, ret));
+                executor.execute(new AsyncSegmentSerializer(data, adapter, ret));
             } else {
                 ret = new IrisStarTable(segTable, adapter.convertStarTable(data));
             }
@@ -74,13 +89,40 @@ public class IrisStarTableAdapter {
         }
     }
     
-    private static class AsyncSerializer implements Runnable {
+    private List<IrisStarTable> convertSed(ExtSed sed, boolean async) {
+        SerializingSegmentAdapter adapter = new SerializingSegmentAdapter();
+        List<IrisStarTable> newTables = new ArrayList<>(sed.getNumberOfSegments());
+        
+        try {
+            // Iterate over each segment
+            for (Segment seg : sed.getSegments()) {
+                // Create the segment star table for plotting data
+                SegmentStarTable segTable = new SegmentStarTable(seg);
+                
+                // Always set data table to empty star tables initially
+                newTables.add(new IrisStarTable(segTable, EMPTY_STARTABLE));
+            }
+            
+            if (async) {
+                executor.execute(new AsyncSedSerializer(sed, adapter, newTables));
+            } else {
+                List<StarTable> converted = adapter.convertSed(sed);
+                setStarTables(newTables, converted);
+            }
+            
+            return newTables;
+        } catch (SedNoDataException | SedInconsistentException | UnitsException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    private static class AsyncSegmentSerializer implements Runnable {
         
         private final Segment data;
         private final SerializingSegmentAdapter adapter;
         private final IrisStarTable table;
 
-        public AsyncSerializer(Segment data, 
+        public AsyncSegmentSerializer(Segment data, 
                 SerializingSegmentAdapter adapter, 
                 IrisStarTable table)
         {
@@ -91,11 +133,53 @@ public class IrisStarTableAdapter {
         
         @Override
         public void run() {
-            // Convert and update the datatable
-            StarTable converted = adapter.convertStarTable(data);
-            
-            // Update the IrisStarTable with the new value
-            table.setSegmentMetadataTable(converted);
+            try {
+                // Convert and update the datatable
+                StarTable converted = adapter.convertStarTable(data);
+                
+                // Update the IrisStarTable with the new value
+                table.setSegmentMetadataTable(converted);
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, null, e);
+            }
+        }
+    }
+    
+    private static class AsyncSedSerializer implements Runnable {
+        
+        private final ExtSed data;
+        private final SerializingSegmentAdapter adapter;
+        private final List<IrisStarTable> tables;
+
+        public AsyncSedSerializer(ExtSed data, 
+                SerializingSegmentAdapter adapter, 
+                List<IrisStarTable> tables)
+        {
+            this.data = data;
+            this.adapter = adapter;
+            this.tables = tables;
+        }
+        
+        @Override
+        public void run() {
+            try {
+                // Convert and update the datatable
+                List<StarTable> converted = adapter.convertSed(data);
+                setStarTables(tables, converted);
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, null, e);
+            }
+        }
+    }
+    
+    private static void setStarTables(List<IrisStarTable> newTables, List<StarTable> converted) {
+        if (newTables.size() != converted.size()) {
+            throw new IllegalArgumentException("lists must have equal size!");
+        }
+        
+        // Update the IrisStarTable with the new value
+        for (int i=0; i<converted.size(); i++) {
+            newTables.get(i).setSegmentMetadataTable(converted.get(i));
         }
     }
 }
