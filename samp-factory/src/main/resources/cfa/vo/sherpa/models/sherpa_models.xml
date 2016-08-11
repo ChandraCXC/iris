@@ -402,25 +402,25 @@
         </parameter>
     </model>
     <model name="polynomial" description="1-D polynomial function of order &lt;= 5">
-        <parameter name="c0" val="1.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="0" hidden="0"
+        <parameter name="c0" val="1.0" min="-3.4028234663852886E38" max="3.4028234663852886e+38" frozen="0" hidden="0"
                    alwaysfrozen="0" units="" link="INDEF">
         </parameter>
-        <parameter name="c1" val="0.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1" hidden="0"
+        <parameter name="c1" val="0.0" min="-3.4028234663852886E38" max="3.4028234663852886e+38" frozen="1" hidden="0"
                    alwaysfrozen="0" units="" link="INDEF">
         </parameter>
-        <parameter name="c2" val="0.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1" hidden="0"
+        <parameter name="c2" val="0.0" min="-3.4028234663852886E38" max="3.4028234663852886e+38" frozen="1" hidden="0"
                    alwaysfrozen="0" units="" link="INDEF">
         </parameter>
-        <parameter name="c3" val="0.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1" hidden="0"
+        <parameter name="c3" val="0.0" min="-3.4028234663852886E38" max="3.4028234663852886e+38" frozen="1" hidden="0"
                    alwaysfrozen="0" units="" link="INDEF">
         </parameter>
-        <parameter name="c4" val="0.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1" hidden="0"
+        <parameter name="c4" val="0.0" min="-3.4028234663852886E38" max="3.4028234663852886e+38" frozen="1" hidden="0"
                    alwaysfrozen="0" units="" link="INDEF">
         </parameter>
-        <parameter name="c5" val="0.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1" hidden="0"
+        <parameter name="c5" val="0.0" min="-3.4028234663852886E38" max="3.4028234663852886e+38" frozen="1" hidden="0"
                    alwaysfrozen="0" units="" link="INDEF">
         </parameter>
-        <parameter name="offset" val="0.0" min="1.1754943508222875e-38" max="3.4028234663852886e+38" frozen="1"
+        <parameter name="offset" val="0.0" min="-3.4028234663852886E38" max="3.4028234663852886e+38" frozen="1"
                    hidden="0" alwaysfrozen="0" units="" link="INDEF">
         </parameter>
     </model>
