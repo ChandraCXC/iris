@@ -17,8 +17,7 @@
 package cfa.vo.iris.visualizer.stil.tables;
 
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -47,14 +46,14 @@ public class IrisStarTableAdapter {
     
     public static final StarTable EMPTY_STARTABLE = new EmptyStarTable();
     
-    private final ExecutorService executor;
+    private final Executor executor;
     private VisualizerComponentPreferences prefs;
     
-    public IrisStarTableAdapter(ExecutorService executor) {
+    public IrisStarTableAdapter(Executor executor) {
         this.executor = executor;
     }
     
-    public IrisStarTableAdapter(ExecutorService executor, VisualizerComponentPreferences prefs) {
+    public IrisStarTableAdapter(Executor executor, VisualizerComponentPreferences prefs) {
         this.executor = executor;
         this.prefs = prefs;
     }
@@ -83,7 +82,7 @@ public class IrisStarTableAdapter {
             SerializingStarTableAdapter adapter = new SerializingStarTableAdapter();
             if (async) {
                 ret = new IrisStarTable(segTable, EMPTY_STARTABLE);
-                executor.submit(new AsyncSerializer(data, adapter, name, ret, prefs));
+                executor.execute(new AsyncSerializer(data, adapter, name, ret, prefs));
             } else {
                 ret = new IrisStarTable(segTable, adapter.convertStarTable(data));
             }
@@ -99,7 +98,7 @@ public class IrisStarTableAdapter {
         }
     }
     
-    private static class AsyncSerializer implements Callable<StarTable> {
+    private static class AsyncSerializer implements Runnable {
         
         private final Segment data;
         private final StarTableAdapter<Segment> adapter;
@@ -121,7 +120,7 @@ public class IrisStarTableAdapter {
         }
         
         @Override
-        public StarTable call() throws Exception {
+        public void run() {
             // Convert and update the datatable
             StarTable converted = adapter.convertStarTable(data);
             
@@ -140,8 +139,6 @@ public class IrisStarTableAdapter {
             if (tables.contains(table)) {
                 prefs.getDataModel().refresh();
             }
-            
-            return converted;
         }
     }
 }

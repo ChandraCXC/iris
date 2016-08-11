@@ -15,8 +15,7 @@
  */
 package cfa.vo.iris.visualizer.preferences;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -46,13 +45,20 @@ import java.util.Map;
  */
 public class VisualizerComponentPreferences {
     
-    private static final ExecutorService visualizerExecutor = Executors.newFixedThreadPool(5);
+    // Executor for async serialization and other internal tasks
+    final Executor visualizerExecutor;
+    
+    // Executor for event processing
+    final Executor eventExecutor;
     
     // For accessing plot mouse listeners
     private final MouseListenerManager mouseListenerManager;
     
     // Pointer to the Iris workspace
     private final IWorkspace ws;
+    
+    // Listener for processing SedEvents
+    final VisualizerEventListener listener;
     
     // Persistence for Iris Visualizer data
     private final VisualizerDataStore dataStore;
@@ -75,7 +81,19 @@ public class VisualizerComponentPreferences {
     private final PlotPreferences DEFAULT_PLOT_PREFERENCES = PlotPreferences.getDefaultPlotPreferences();
     
     public VisualizerComponentPreferences(IWorkspace ws) {
+        this(ws, Executors.newFixedThreadPool(20));
+    }
+    
+    public VisualizerComponentPreferences(IWorkspace ws, Executor visualizerExecutor) {
+        this(ws, visualizerExecutor, Executors.newSingleThreadExecutor());
+    }
+    
+    public VisualizerComponentPreferences(IWorkspace ws, Executor visualizerExecutor, Executor eventExecutor) {
         this.ws = ws;
+        
+        this.visualizerExecutor = visualizerExecutor;
+        
+        this.eventExecutor = eventExecutor;
         
         this.dataStore = new VisualizerDataStore(visualizerExecutor, this);
         
@@ -84,6 +102,8 @@ public class VisualizerComponentPreferences {
         this.mouseListenerManager = new MouseListenerManager(this);
         
         this.boundToWorkspace = true;
+        
+        this.listener = new VisualizerEventListener(visualizerExecutor, this);
         
         Map<Object, PlotPreferences> builder = new MapMaker().weakKeys().makeMap();
         preferencesStore = Collections.synchronizedMap(builder);
@@ -128,16 +148,9 @@ public class VisualizerComponentPreferences {
         final ExtSed sed = (ExtSed) ws.getSedManager().newSed("FilterSed");
         
         // Extract selected rows to new Segments
-        final SegmentExtractor extractor = 
+        final SegmentExtractor extractor =
                 new SegmentExtractor(selection.selectedTables, selection.selectedRows, sed);
-        
-        visualizerExecutor.submit(new Callable<ExtSed>() {
-            @Override
-            public ExtSed call() throws Exception {
-                extractor.constructSed();
-                return null;
-            }
-        });
+        extractor.constructSed();
         
         return sed;
     }
