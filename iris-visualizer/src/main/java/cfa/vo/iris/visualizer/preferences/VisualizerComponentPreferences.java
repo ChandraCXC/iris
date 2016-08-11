@@ -45,7 +45,11 @@ import java.util.Map;
  */
 public class VisualizerComponentPreferences {
     
-    private final Executor visualizerExecutor;
+    // Executor for async serialization and other internal tasks
+    final Executor visualizerExecutor;
+    
+    // Executor for event processing
+    final Executor eventExecutor;
     
     // For accessing plot mouse listeners
     private final MouseListenerManager mouseListenerManager;
@@ -80,10 +84,16 @@ public class VisualizerComponentPreferences {
         this(ws, Executors.newFixedThreadPool(20));
     }
     
-    public VisualizerComponentPreferences(IWorkspace ws, Executor executor) {
+    public VisualizerComponentPreferences(IWorkspace ws, Executor visualizerExecutor) {
+        this(ws, visualizerExecutor, Executors.newSingleThreadExecutor());
+    }
+    
+    public VisualizerComponentPreferences(IWorkspace ws, Executor visualizerExecutor, Executor eventExecutor) {
         this.ws = ws;
         
-        this.visualizerExecutor = executor;
+        this.visualizerExecutor = visualizerExecutor;
+        
+        this.eventExecutor = eventExecutor;
         
         this.dataStore = new VisualizerDataStore(visualizerExecutor, this);
         

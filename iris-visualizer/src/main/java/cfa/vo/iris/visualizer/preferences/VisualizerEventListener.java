@@ -34,7 +34,7 @@ public class VisualizerEventListener {
     private static final Logger logger = Logger.getLogger(VisualizerEventListener.class.getName());
     
     // Async executor
-    private final Executor visualizerExecutor;
+    private final Executor executor;
     
     // Data store
     private final VisualizerDataStore dataStore;
@@ -44,7 +44,7 @@ public class VisualizerEventListener {
     
     public VisualizerEventListener(Executor executor, VisualizerComponentPreferences preferences) {
         
-        this.visualizerExecutor = executor;
+        this.executor = executor;
         this.preferences = preferences;
         this.dataStore = preferences.getDataStore();
         
@@ -68,7 +68,7 @@ public class VisualizerEventListener {
         @Override
         public void process(final ExtSed sed, final SedCommand payload) {
             try {
-                visualizerExecutor.execute(new Runnable() {
+                executor.execute(new Runnable() {
                     @Override
                     public void run() {
                         processNotification(sed, payload);
@@ -106,7 +106,7 @@ public class VisualizerEventListener {
         @Override
         public void process(final Segment segment, final SegmentEvent.SegmentPayload payload) {
             try {
-                visualizerExecutor.execute(new Runnable() {
+                executor.execute(new Runnable() {
                     @Override
                     public void run() {
                         processNotification(segment, payload);
@@ -142,7 +142,7 @@ public class VisualizerEventListener {
         @Override
         public void process(final java.util.List<Segment> segments, final SegmentEvent.SegmentPayload payload) {
             try {
-                visualizerExecutor.execute(new Runnable() {
+                executor.execute(new Runnable() {
                     @Override
                     public void run() {
                         processNotification(segments, payload);
