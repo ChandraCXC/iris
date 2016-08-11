@@ -15,7 +15,6 @@
  */
 package cfa.vo.iris.visualizer.preferences;
 
-import java.util.concurrent.Executor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,18 +32,14 @@ public class VisualizerEventListener {
     
     private static final Logger logger = Logger.getLogger(VisualizerEventListener.class.getName());
     
-    // Async executor
-    private final Executor executor;
-    
     // Data store
     private final VisualizerDataStore dataStore;
     
     // Preferences
     private final VisualizerComponentPreferences preferences;
     
-    public VisualizerEventListener(Executor executor, VisualizerComponentPreferences preferences) {
+    public VisualizerEventListener(VisualizerComponentPreferences preferences) {
         
-        this.executor = executor;
         this.preferences = preferences;
         this.dataStore = preferences.getDataStore();
         
@@ -68,12 +63,7 @@ public class VisualizerEventListener {
         @Override
         public void process(final ExtSed sed, final SedCommand payload) {
             try {
-                executor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        processNotification(sed, payload);
-                    };
-                });
+                processNotification(sed, payload);
             } catch (Exception e) {
                 // TODO: This happens asynchronously, what should we do with exceptions?
                 logger.log(Level.SEVERE, "Exception in visualizer data processing", e);
@@ -106,12 +96,7 @@ public class VisualizerEventListener {
         @Override
         public void process(final Segment segment, final SegmentEvent.SegmentPayload payload) {
             try {
-                executor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        processNotification(segment, payload);
-                    };
-                });
+                processNotification(segment, payload);
             } catch (Exception e) {
                 // TODO: This happens asynchronously, what should we do with exceptions?
                 logger.log(Level.SEVERE, "Exception in visualizer data processing", e);
@@ -142,12 +127,7 @@ public class VisualizerEventListener {
         @Override
         public void process(final java.util.List<Segment> segments, final SegmentEvent.SegmentPayload payload) {
             try {
-                executor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        processNotification(segments, payload);
-                    };
-                });
+                processNotification(segments, payload);
             } catch (Exception e) {
                 // TODO: This happens asynchronously, what should we do with
                 // exceptions?
