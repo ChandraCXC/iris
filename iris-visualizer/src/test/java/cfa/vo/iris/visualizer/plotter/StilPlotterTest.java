@@ -329,8 +329,6 @@ public class StilPlotterTest {
         
         SedModel model = plot.getDataModel().getSedModel(sed);
         model.getDataTables().get(0).getPlotterDataTable().setModelValues(seg.getFluxAxisValues());
-        model.getDataTables().get(0).getPlotterDataTable().setRatioValues(seg.getSpectralAxisValues());
-        model.getDataTables().get(0).getPlotterDataTable().setResidualValues(seg.getSpectralAxisValues());
         plot.getDataModel().refresh();
         
         FunctionModel functionModel = model.getFunctionModel();
@@ -414,13 +412,9 @@ public class StilPlotterTest {
         // Add model functions
         SedModel model1 = plot.getDataModel().getSedModel(sed1);
         model1.getDataTables().get(0).getPlotterDataTable().setModelValues(seg1.getFluxAxisValues());
-        model1.getDataTables().get(0).getPlotterDataTable().setRatioValues(seg1.getSpectralAxisValues());
-        model1.getDataTables().get(0).getPlotterDataTable().setResidualValues(seg1.getSpectralAxisValues());
         
         SedModel model2 = plot.getDataModel().getSedModel(sed2);
         model2.getDataTables().get(0).getPlotterDataTable().setModelValues(seg2.getFluxAxisValues());
-        model2.getDataTables().get(0).getPlotterDataTable().setRatioValues(seg2.getSpectralAxisValues());
-        model2.getDataTables().get(0).getPlotterDataTable().setResidualValues(seg2.getSpectralAxisValues());
         
         // Refresh the plotter
         plot.getDataModel().refresh();
@@ -485,8 +479,6 @@ public class StilPlotterTest {
         // Add model function to SED
         SedModel model = plot.getDataModel().getSedModel(sed1);
         model.getDataTables().get(0).getPlotterDataTable().setModelValues(seg1.getFluxAxisValues());
-        model.getDataTables().get(0).getPlotterDataTable().setRatioValues(seg1.getSpectralAxisValues());
-        model.getDataTables().get(0).getPlotterDataTable().setResidualValues(seg1.getSpectralAxisValues());
         
         // SedModel now has a version
         model.setModelVersion(model.getVersion());

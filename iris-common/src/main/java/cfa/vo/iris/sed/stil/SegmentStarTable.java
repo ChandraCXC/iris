@@ -25,7 +25,6 @@ import java.util.TreeSet;
 import java.util.UUID;
 
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.sherpa.SherpaClient;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -485,6 +484,10 @@ public class SegmentStarTable extends RandomStarTable implements IrisDataStarTab
 
     public void setModelValues(double[] modelValues) {
         this.modelValues = modelValues;
+        
+        setRatioValues(calcRatios(getFluxValues(), modelValues));
+        setResidualValues(calcResiduals(getFluxValues(), modelValues));
+        
         updateColumnValues(modelValues, Column.Model_Values);
     }
 
@@ -492,7 +495,10 @@ public class SegmentStarTable extends RandomStarTable implements IrisDataStarTab
         return residualValues;
     }
 
-    public void setResidualValues(double[] residualValues) {
+    /**
+     * Private as these are tied to model values.
+     */
+    private void setResidualValues(double[] residualValues) {
         this.residualValues = residualValues;
         updateColumnValues(residualValues, Column.Residuals);
     }
@@ -500,10 +506,46 @@ public class SegmentStarTable extends RandomStarTable implements IrisDataStarTab
     public double[] getRatioValues() {
         return ratioValues;
     }
-
-    public void setRatioValues(double[] ratioValues) {
+    
+    /**
+     * Private as these are tied to model values.
+     */
+    private void setRatioValues(double[] ratioValues) {
         this.ratioValues = ratioValues;
         updateColumnValues(ratioValues, Column.Ratios);
+    }
+
+    private double[] calcResiduals(double[] expected, double[] actual) {
+        int len = expected.length;
+
+        if (len != actual.length) {
+            throw new IllegalArgumentException("Expected and Actual array should have the same size");
+        }
+
+        double[] ret = new double[len];
+
+        for (int i=0; i<len; i++) {
+            ret[i] = actual[i] - expected[i];
+        }
+
+        return ret;
+    }
+
+    private double[] calcRatios(double[] expected, double[] actual) {
+        int len = expected.length;
+
+        if (len != actual.length) {
+            throw new IllegalArgumentException("Expected and Actual array should have the same size");
+        }
+
+        double[] ret = new double[len];
+
+        for (int i=0; i<len; i++) {
+            double e = expected[i];
+            ret[i] = Math.abs(e - actual[i])/e;
+        }
+
+        return ret;
     }
     
     /**
