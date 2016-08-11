@@ -94,7 +94,7 @@ public class VisualizerComponentPreferences {
         
         this.boundToWorkspace = true;
         
-        this.listener = new VisualizerEventListener(this);
+        this.listener = new VisualizerEventListener(this, ws);
         
         Map<Object, PlotPreferences> builder = new MapMaker().weakKeys().makeMap();
         preferencesStore = Collections.synchronizedMap(builder);
