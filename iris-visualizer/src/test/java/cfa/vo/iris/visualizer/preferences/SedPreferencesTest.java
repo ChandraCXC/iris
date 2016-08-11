@@ -31,7 +31,6 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
-import cfa.vo.sedlib.Target;
 import cfa.vo.sedlib.TextParam;
 import cfa.vo.sherpa.Data;
 
@@ -98,39 +97,6 @@ public class SedPreferencesTest {
     }
     
     @Test
-    public void testSuffixesWithSameTargetNames() throws Exception {
-        ExtSed sed = new ExtSed("test");
-        IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
-        
-        SedModel model = new SedModel(sed, adapter);
-        
-        // create two segments with the same Target name
-        Target targ = new Target();
-        targ.setName(new TextParam("my segment"));
-        
-        Segment seg1 = createSampleSegment();
-        seg1.setTarget(targ);
-        Segment seg2 = createSampleSegment();
-        seg2.setTarget(targ);
-        
-        sed.addSegment(seg1);
-        sed.addSegment(seg2);
-        
-        model.refresh();
-        assertEquals("my segment", model.getSegmentModel(seg1).getSuffix());
-        assertEquals("my segment 1", model.getSegmentModel(seg2).getSuffix());
-        
-        // add another segment of the same target name
-        // suffix number should go up 1
-        Segment seg3 = createSampleSegment();
-        seg3.setTarget(targ);
-        sed.addSegment(seg3);
-        
-        model.refresh();
-        assertEquals("my segment 2", model.getSegmentModel(seg3).getSuffix());
-    }
-    
-    @Test
     public void testAddMultipleSegments() throws Exception {
         
         final ExtSed sed = new ExtSed("sed");
@@ -147,7 +113,7 @@ public class SedPreferencesTest {
         SedModel model = new SedModel(sed, adapter);
         
         assertEquals("target1", model.getSegmentModel(sed.getSegment(0)).getSuffix());
-        assertEquals("target1 1", model.getSegmentModel(sed.getSegment(1)).getSuffix());
+        assertEquals("target1", model.getSegmentModel(sed.getSegment(1)).getSuffix());
     }
     
     @Test

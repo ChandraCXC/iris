@@ -192,8 +192,9 @@ public class PlotterView extends JInternalFrame {
         this.mntmXlog.setSelected(plotPreferences.getPlotType()==PlotType.X_LOG);
         this.mntmYlog.setSelected(plotPreferences.getPlotType()==PlotType.Y_LOG);
         
-        // Grid on/off
+        // Grid and legend on/off
         this.mntmGridOnOff.setSelected(plotPreferences.getShowGrid());
+        this.showLegendCheckBox.setSelected(plotPreferences.getShowLegend());
         
         // turn errorbars on/off
 //        this.mntmErrorBars.setSelected(this.stilPlotter1.getVisualizerPreferences()
@@ -201,7 +202,6 @@ public class PlotterView extends JInternalFrame {
 //                .getShowErrorBars());
         
         // set plot window fixed
-        
         this.mntmAutoFixed.setSelected(plotPreferences.getFixed());
     }
 

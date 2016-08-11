@@ -76,6 +76,7 @@ public class LayerModel {
     private ErrorBarType errorBarType;
     private ShapeType markType;
     private Integer size;
+    private Integer errorSize;
     private ShadingType markShading;
     private ShadingType errorShading;
     private String markColor;
@@ -101,6 +102,8 @@ public class LayerModel {
         this.xColName = SegmentColumn.Column.Spectral_Value.name();
         this.yColName = SegmentColumn.Column.Flux_Value.name();
         
+        // By default error sizes are larger than point sizes
+        this.errorSize = 5;
         this.showErrorBars = true;
         this.showMarks = true;
         this.showLine = false;
@@ -180,6 +183,9 @@ public class LayerModel {
             prefs.put(COLOR + suffix, errorColor);
         if (errorColorWeight != null)
             prefs.put(errorShading.name + suffix, errorColorWeight);
+        if (errorSize != null) {
+            prefs.put(SIZE + suffix, errorSize);
+        }
         
         addCommonFields(suffix, prefs);
     }
@@ -316,6 +322,15 @@ public class LayerModel {
 
     public LayerModel setSize(int size) {
         this.size = size;
+        return this;
+    }
+
+    public Integer getErrorSize() {
+        return errorSize;
+    }
+
+    public LayerModel setErrorSize(Integer errorSize) {
+        this.errorSize = errorSize;
         return this;
     }
 

@@ -33,8 +33,8 @@ public class FittingRangeModel extends LayerModel {
     
     private static final UnitsManager um = Default.getInstance().getUnitsManager();
     
-    private static final String FITTING_LAYER = "Fitting Ranges";
-    private static final String COLOR = "3305ff";
+    public static final String FITTING_LAYER = "Fitting Ranges";
+    public static final String COLOR = "3305ff";
 
     public FittingRangeModel(List<FittingRange> ranges, String xunit, double yvalue) {
         super(getFittingRangeTable(ranges, xunit, yvalue));

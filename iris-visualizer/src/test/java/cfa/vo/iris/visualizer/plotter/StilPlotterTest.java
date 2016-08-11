@@ -21,10 +21,8 @@ import static org.junit.Assert.*;
 import cfa.vo.iris.fitting.FitConfiguration;
 import cfa.vo.iris.fitting.FittingRange;
 import cfa.vo.iris.sed.ExtSed;
-import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.test.Ws;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
-import cfa.vo.iris.test.unit.AbstractUISpecTest;
 import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.iris.visualizer.plotter.PlotterView;
 import cfa.vo.iris.visualizer.preferences.FittingRangeModel;
@@ -45,6 +43,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.uispec4j.Trigger;
+import org.uispec4j.UISpec4J;
 import org.uispec4j.Window;
 import org.uispec4j.interception.WindowHandler;
 import org.uispec4j.interception.WindowInterceptor;
@@ -60,7 +59,11 @@ import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.task.BooleanParameter;
 import uk.ac.starlink.ttools.plot2.geom.PlaneSurfaceFactory;
 
-public class StilPlotterTest extends AbstractUISpecTest {
+public class StilPlotterTest {
+    
+    static {
+        UISpec4J.init();
+    }
     
     private Ws ws = new Ws();
     private VisualizerComponentPreferences preferences;
@@ -79,7 +82,7 @@ public class StilPlotterTest extends AbstractUISpecTest {
         // check shape
         StringParameter par = new StringParameter("shape");
         env.acquireValue(par);
-        assertEquals(par.objectValue(env), "open_circle");
+        assertEquals(par.objectValue(env), ShapeType.filled_diamond.name());
         
         // check xlog and ylog
         BooleanParameter log = new BooleanParameter("xlog");
@@ -599,13 +602,14 @@ public class StilPlotterTest extends AbstractUISpecTest {
         plot.setSeds(Arrays.asList(sed));
         plot.resetPlot(false, false);
         
-        TestUtils.invokeWithRetry(50, 100, new Runnable() {
+        TestUtils.invokeWithRetry(100, 100, new Runnable() {
             @Override
             public void run() {
                 assertTrue(plot.fittingRanges != null);
+                assertEquals(FittingRangeModel.FITTING_LAYER, plot.fittingRanges.getInSource().getName());
             }
         });
-        
+
         PlotDisplay<PlaneSurfaceFactory.Profile, PlaneAspect> display = plot.getPlotDisplay();
         
         // Just make sure plot aspect hasn't changed
@@ -623,9 +627,33 @@ public class StilPlotterTest extends AbstractUISpecTest {
         FittingRangeModel model = plot.fittingRanges;
         StarTable fitStarTable = model.getInSource();
         
-        // Validate values, y value should be at 1 + (10 - 1)*.5 = 1.45
+        // Validate values
         assertEquals(1, fitStarTable.getRowCount());
-        assertArrayEquals(new Object[] {5.0, 4.0, 4.0, 1.9}, fitStarTable.getRow(0));
+        Object[] row = fitStarTable.getRow(0);
+        assertEquals(4, row.length);
+        
+        assertEquals(5.0, (double) row[0], 0.00001);
+        assertEquals(4.0, (double) row[1], 0.00001);
+        assertEquals(4.0, (double) row[2], 0.00001);
+        assertEquals(1.258925, (double) row[3], 0.00001);
+    }
+    
+    @Test
+    public void testFittingRangeCalculation() {
+        
+        // Linear tests
+        PlaneAspect aspect = new PlaneAspect(new double[] {0,10}, new double[] {.1,10});
+        assertEquals(1.09, StilPlotter.computeFittingLocation(aspect, false), 0.0001);
+
+        aspect = new PlaneAspect(new double[] {0,10}, new double[] {-10,1});
+        assertEquals(-8.9, StilPlotter.computeFittingLocation(aspect, false), 0.0001);
+        
+        // Log tests
+        aspect = new PlaneAspect(new double[] {0,10}, new double[] {.1,.5});
+        assertEquals(.11745, StilPlotter.computeFittingLocation(aspect, true), 0.0001);
+        
+        aspect = new PlaneAspect(new double[] {0,10}, new double[] {.1,5});
+        assertEquals(.14787, StilPlotter.computeFittingLocation(aspect, true), 0.0001);
     }
     
     private StilPlotter setUpTests(ExtSed sed) throws Exception {

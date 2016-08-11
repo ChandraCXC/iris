@@ -203,6 +203,9 @@ public class StilPlotter extends JPanel {
      * @param plotType the plot type to use.
      */
     public void setPlotType(PlotPreferences.PlotType plotType) {
+        // Don't reset if value isn't changed
+        if (getPlotPreferences().getPlotType().equals(plotType)) return;
+        
         getPlotPreferences().setPlotType(plotType);
         resetPlot(false, false);
     }
@@ -212,6 +215,9 @@ public class StilPlotter extends JPanel {
     }
     
     public void setGridOn(boolean on) {
+        // Don't reset if value isn't changed
+        if (on == getGridOn()) return;
+        
         getPlotPreferences().setShowGrid(on);
         resetPlot(false, false);
     }
@@ -221,6 +227,9 @@ public class StilPlotter extends JPanel {
     }
     
     public void setShowLegend(boolean on) {
+        // Don't reset if value isn't changed
+        if (on == getShowLegend()) return;
+        
         // Fix the plot between showing legends
         boolean isFixed = getPlotPreferences().getFixed();
         getPlotPreferences().setFixed(true);
@@ -504,11 +513,8 @@ public class StilPlotter extends JPanel {
         // Do nothing if none are available
         if (CollectionUtils.isEmpty(ranges)) return display;
         
-        // Otherwise add the layer at 10% of the current aspect
-        PlaneAspect aspect = display.getAspect();
-        double min = Math.min(aspect.getYMin(), aspect.getYMax());
-        double max = Math.max(aspect.getYMin(), aspect.getYMax());
-        double y = min + ((max - min) * .1);
+        // Compute appropriate y-value for fit ranges
+        double y = computeFittingLocation(display.getAspect(), getPlotPreferences().getYlog());
         
         // Construct the model for the fitting ranges and add it to the plot
         fittingRanges = new FittingRangeModel(ranges, dataModel.getXunits(), y);
@@ -690,5 +696,22 @@ public class StilPlotter extends JPanel {
         
         display.revalidate();
         display.repaint();
+    }
+
+    static double computeFittingLocation(PlaneAspect aspect, boolean isLog) {
+        double min = Math.min(aspect.getYMin(), aspect.getYMax());
+        double max = Math.max(aspect.getYMin(), aspect.getYMax());
+        
+        // Put the layer at about 10% from the bottom of the plot for both linear and
+        // log scaled plots.
+        double y;
+        if (isLog) {
+            double exp = Math.log10(min) + ((Math.log10(max) - Math.log10(min)) * .1);
+            y = Math.pow(10, exp);
+        } else {
+            y = min + ((max - min) * .1);
+        }
+        
+        return y;
     }
 }
