@@ -16,16 +16,12 @@
 
 package cfa.vo.iris.visualizer.stil.tables;
 
-import java.util.List;
 import java.util.concurrent.Executor;
-
-import org.apache.commons.lang.StringUtils;
 
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.sed.stil.SerializingStarTableAdapter;
 import cfa.vo.iris.sed.stil.StarTableAdapter;
 import cfa.vo.iris.units.UnitsException;
-import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
@@ -47,34 +43,20 @@ public class IrisStarTableAdapter {
     public static final StarTable EMPTY_STARTABLE = new EmptyStarTable();
     
     private final Executor executor;
-    private VisualizerComponentPreferences prefs;
     
     public IrisStarTableAdapter(Executor executor) {
         this.executor = executor;
     }
-    
-    public IrisStarTableAdapter(Executor executor, VisualizerComponentPreferences prefs) {
-        this.executor = executor;
-        this.prefs = prefs;
-    }
 
     public IrisStarTable convertSegment(Segment data) {
-        return convert(data, false, null);
-    }
-
-    public IrisStarTable convertSegment(Segment data, String name) {
-        return convert(data, false, name);
+        return convert(data, false);
     }
     
     public IrisStarTable convertSegmentAsync(Segment data) {
-        return convert(data, true, null);
+        return convert(data, true);
     }
     
-    public IrisStarTable convertSegmentAsync(Segment data, String name) {
-        return convert(data, true, name);
-    }
-    
-    private IrisStarTable convert(Segment data, boolean async, String name) {
+    private IrisStarTable convert(Segment data, boolean async) {
         try {
             SegmentStarTable segTable = new SegmentStarTable(data);
             IrisStarTable ret;
@@ -82,14 +64,9 @@ public class IrisStarTableAdapter {
             SerializingStarTableAdapter adapter = new SerializingStarTableAdapter();
             if (async) {
                 ret = new IrisStarTable(segTable, EMPTY_STARTABLE);
-                executor.execute(new AsyncSerializer(data, adapter, name, ret, prefs));
+                executor.execute(new AsyncSerializer(data, adapter, ret));
             } else {
                 ret = new IrisStarTable(segTable, adapter.convertStarTable(data));
-            }
-            
-            // Set the name of the new star table if a name has been specified
-            if (StringUtils.isNotBlank(name)) {
-                ret.setName(name);
             }
             
             return ret;
@@ -102,21 +79,15 @@ public class IrisStarTableAdapter {
         
         private final Segment data;
         private final StarTableAdapter<Segment> adapter;
-        private final String name;
         private final IrisStarTable table;
-        private final VisualizerComponentPreferences prefs;
 
         public AsyncSerializer(Segment data, 
                 StarTableAdapter<Segment> adapter, 
-                String name,
-                IrisStarTable table,
-                VisualizerComponentPreferences prefs)
+                IrisStarTable table)
         {
             this.data = data;
             this.adapter = adapter;
-            this.name = name;
             this.table = table;
-            this.prefs = prefs;
         }
         
         @Override
@@ -126,19 +97,6 @@ public class IrisStarTableAdapter {
             
             // Update the IrisStarTable with the new value
             table.setSegmentMetadataTable(converted);
-
-            // Set the name of the new star table if a name has been specified
-            if (StringUtils.isNotBlank(name)) {
-                converted.setName(name);
-            }
-            
-            // If this segment is currently in the workspace we need to force
-            // the property change support to notify all listeners.
-            // TODO: Make this cleaner somehow
-            List<IrisStarTable> tables = prefs.getDataModel().getSelectedStarTables();
-            if (tables.contains(table)) {
-                prefs.getDataModel().refresh();
-            }
         }
     }
 }

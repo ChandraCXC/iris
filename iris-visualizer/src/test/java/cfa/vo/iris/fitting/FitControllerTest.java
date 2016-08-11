@@ -23,6 +23,7 @@ import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.test.unit.TestUtils;
+import cfa.vo.iris.test.unit.TestUtils.SingleThreadExecutor;
 import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
@@ -69,7 +70,7 @@ public class FitControllerTest {
         data.setY(y);
         data.setStaterror(err);
         Mockito.stub(mockClient.evaluate(Mockito.any(double[].class), Mockito.any(FitConfiguration.class))).toReturn(y);
-        SedModel sedModel = new SedModel(sed, new IrisStarTableAdapter(null));
+        SedModel sedModel = new SedModel(sed, new IrisStarTableAdapter(new SingleThreadExecutor()));
         controller = new FitController(sedModel, modelsManager, mockClient);
     }
 
@@ -103,7 +104,7 @@ public class FitControllerTest {
     @Test
     public void testEvaluate() throws Exception {
         ExtSed sed = ExtSed.makeSed("test", false, x, y, SherpaClient.X_UNIT, SherpaClient.Y_UNIT);
-        SedModel model = new SedModel(sed, new IrisStarTableAdapter(null));
+        SedModel model = new SedModel(sed, new IrisStarTableAdapter(new SingleThreadExecutor()));
         controller.evaluateModel(model);
         SegmentStarTable data = model.getDataTables().get(0).getPlotterDataTable();
         assertArrayEquals(x, data.getSpecValues(), 0.001);
@@ -130,7 +131,7 @@ public class FitControllerTest {
                 "nm", "Jy"));
         sed.setFit(configuration);
         
-        SedModel model = new SedModel(sed, new IrisStarTableAdapter(null));
+        SedModel model = new SedModel(sed, new IrisStarTableAdapter(new SingleThreadExecutor()));
         controller.setSedModel(model);
         
         // mask first row in data table
@@ -176,7 +177,7 @@ public class FitControllerTest {
         double[] expectedY = flatSed.getSegment(0).getFluxAxisValues();
         double[] expectedErrs = (double[]) flatSed.getSegment(0).getData().getDataValues(Utypes.SEG_DATA_FLUXAXIS_ACC_STATERR);
         
-        SedModel model = new SedModel(sed, new IrisStarTableAdapter(null));
+        SedModel model = new SedModel(sed, new IrisStarTableAdapter(new SingleThreadExecutor()));
         controller.setSedModel(model);
         
         // Get data
@@ -200,7 +201,7 @@ public class FitControllerTest {
     @Test
     public void testSetFittingRanges() throws Exception {
         ExtSed sed = ExtSed.makeSed("test", false, x, y, "nm", SherpaClient.Y_UNIT);
-        SedModel model = new SedModel(sed, new IrisStarTableAdapter(null));
+        SedModel model = new SedModel(sed, new IrisStarTableAdapter(new SingleThreadExecutor()));
         FitConfiguration config = model.getFit();
         
         // set fit ranges

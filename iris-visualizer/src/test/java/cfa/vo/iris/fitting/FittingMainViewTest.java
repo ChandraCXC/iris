@@ -57,7 +57,7 @@ public class FittingMainViewTest {
         Mockito.when(modelsManager.getCustomModels()).thenReturn(new DefaultMutableTreeNode("Custom Models"));
         SherpaClient client = Mockito.mock(SherpaClient.class);
         JFileChooser chooser = Mockito.mock(JFileChooser.class);
-        SedModel sedModel = new SedModel(sed, new IrisStarTableAdapter(null));
+        SedModel sedModel = new SedModel(sed, new IrisStarTableAdapter(new SingleThreadExecutor()));
         controller = new FitController(sedModel, modelsManager, client);
         ApplicationStub app = new ApplicationStub();
         VisualizerComponentPreferences preferences = new VisualizerComponentPreferences(app.getWorkspace(), new SingleThreadExecutor());

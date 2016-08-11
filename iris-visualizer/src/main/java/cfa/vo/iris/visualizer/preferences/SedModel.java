@@ -208,7 +208,11 @@ public class SedModel {
      */
     void refresh() {
         for (Segment seg : sed.getSegments()) {
-            addSegment(seg);
+            if (this.starTableData.containsKey(seg)) {
+                refreshSegment(seg);
+            } else {
+                addSegment(seg);
+            }
         }
     }
     
@@ -217,31 +221,28 @@ public class SedModel {
         tableLayerModels.clear();
     }
     
+    void refreshSegment(Segment seg) {
+        LayerModel mod = tableLayerModels.get(seg);
+
+        // Preserve table name on reserialization
+        IrisStarTable newTable = adapter.convertSegmentAsync(seg);
+
+        starTableData.put(seg, newTable);
+        mod.setInSource(newTable);
+    }
+    
     /**
      * Add a segment to the sed model map.
      * @param seg
      * @return true if the sed was added to the model.
      */
-    boolean addSegment(Segment seg) {
+    void addSegment(Segment seg) {
         
         // Do not keep track of empty segments
-        if (seg == null) return false;
-        
-        // If the segment is already in the map remake the star table
-        if (starTableData.containsKey(seg)) {
-            IrisStarTable table = starTableData.get(seg);
-            LayerModel mod = tableLayerModels.get(seg);
-            
-            // Preserve table name on reserialization
-            IrisStarTable newTable = convertSegment(seg, table.getName());
-            
-            starTableData.put(seg, newTable);
-            mod.setInSource(newTable);
-            return false;
-        }
+        if (seg == null) return;
         
         // Construct LayerModel
-        IrisStarTable newTable = convertSegment(seg, null);
+        IrisStarTable newTable = adapter.convertSegmentAsync(seg);
         LayerModel layer = new LayerModel(newTable);
         
         // add colors to segment layer
@@ -254,7 +255,6 @@ public class SedModel {
         
         starTableData.put(seg, newTable);
         tableLayerModels.put(seg, layer);
-        return true;
     }
     
     boolean isUniqueLayerSuffix(String suffix) {
@@ -264,16 +264,6 @@ public class SedModel {
             }
         }
         return true;
-    }
-    
-    private IrisStarTable convertSegment(Segment seg, String name) {
-        // Convert segments with more than 3000 points asynchronously.
-        if (seg.getLength() > 3000) {
-            return adapter.convertSegmentAsync(seg, name);
-        }
-        IrisStarTable table = adapter.convertSegment(seg, name);
-        
-        return table;
     }
     
     /**

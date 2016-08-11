@@ -42,7 +42,7 @@ public class VisualizerDataStore {
     public VisualizerDataStore(Executor executor, VisualizerComponentPreferences preferences) {
         this.sedModels = Collections.synchronizedMap(new IdentityHashMap<ExtSed, SedModel>());
         this.preferences = preferences;
-        this.adapter = new IrisStarTableAdapter(executor, preferences);
+        this.adapter = new IrisStarTableAdapter(executor);
     }
     
     /**

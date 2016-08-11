@@ -25,6 +25,7 @@ import org.uispec4j.utils.ArrayUtils;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.test.unit.TestUtils;
+import cfa.vo.iris.test.unit.TestUtils.SingleThreadExecutor;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 import cfa.vo.testdata.TestData;
@@ -32,7 +33,7 @@ import uk.ac.starlink.table.StarTable;
 
 public class IrisStarTableAdapterTest {
     
-    private IrisStarTableAdapter adapter = new IrisStarTableAdapter(Executors.newSingleThreadExecutor());
+    private IrisStarTableAdapter adapter = new IrisStarTableAdapter(new SingleThreadExecutor());
     
     @Test
     public void testSerialization() throws Exception {
