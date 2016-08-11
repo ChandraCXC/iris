@@ -26,6 +26,8 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.sed.stil.SerializingSegmentAdapter;
 import cfa.vo.iris.units.UnitsException;
+import cfa.vo.iris.visualizer.IrisVisualizer;
+import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
@@ -139,6 +141,12 @@ public class IrisStarTableAdapter {
                 
                 // Update the IrisStarTable with the new value
                 table.setSegmentMetadataTable(converted);
+                
+                // Refresh if necessary
+                VisualizerComponentPreferences prefs = IrisVisualizer.getInstance().getActivePreferences();
+                if (prefs != null && prefs.getDataModel().getSelectedStarTables().contains(table)) {
+                    prefs.getDataModel().refresh();
+                }
             } catch (Exception e) {
                 logger.log(Level.SEVERE, null, e);
             }
@@ -166,6 +174,12 @@ public class IrisStarTableAdapter {
                 // Convert and update the datatable
                 List<StarTable> converted = adapter.convertSed(data);
                 setStarTables(tables, converted);
+                
+                // Refresh if necessary
+                VisualizerComponentPreferences prefs = IrisVisualizer.getInstance().getActivePreferences();
+                if (prefs != null && prefs.getDataModel().getSelectedSeds().contains(data)) {
+                    prefs.getDataModel().refresh();
+                }
             } catch (Exception e) {
                 logger.log(Level.SEVERE, null, e);
             }
