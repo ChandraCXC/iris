@@ -48,9 +48,6 @@ public class VisualizerComponentPreferences {
     // Executor for async serialization and other internal tasks
     final Executor visualizerExecutor;
     
-    // Executor for event processing
-    final Executor eventExecutor;
-    
     // For accessing plot mouse listeners
     private final MouseListenerManager mouseListenerManager;
     
@@ -85,15 +82,9 @@ public class VisualizerComponentPreferences {
     }
     
     public VisualizerComponentPreferences(IWorkspace ws, Executor visualizerExecutor) {
-        this(ws, visualizerExecutor, Executors.newSingleThreadExecutor());
-    }
-    
-    public VisualizerComponentPreferences(IWorkspace ws, Executor visualizerExecutor, Executor eventExecutor) {
         this.ws = ws;
         
         this.visualizerExecutor = visualizerExecutor;
-        
-        this.eventExecutor = eventExecutor;
         
         this.dataStore = new VisualizerDataStore(visualizerExecutor, this);
         
@@ -103,7 +94,7 @@ public class VisualizerComponentPreferences {
         
         this.boundToWorkspace = true;
         
-        this.listener = new VisualizerEventListener(visualizerExecutor, this);
+        this.listener = new VisualizerEventListener(this);
         
         Map<Object, PlotPreferences> builder = new MapMaker().weakKeys().makeMap();
         preferencesStore = Collections.synchronizedMap(builder);
