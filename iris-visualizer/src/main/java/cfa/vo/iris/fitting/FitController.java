@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -144,7 +146,7 @@ public class FitController {
         data.setName(SherpaClient.DATA_NAME);
         
         // Extract fitting data from SedModel, don't include masked points.
-        model.getFittingData(data, false);
+        model.setFittingData(data, false);
         double[] xoldvalues = data.getX();
         if (ArrayUtils.isEmpty(xoldvalues)) {
             throw new SedNoDataException("No Data in SED. Please add some data and try again.");
@@ -161,7 +163,54 @@ public class FitController {
                 yoldUnits, xoldunits, SherpaClient.Y_UNIT));
         data.setX(um.convertX(xoldvalues, xoldunits, SherpaClient.X_UNIT));
         
+        // if there are no fitting ranges, return the data as-is.
+        if (sedModel.getFit().getFittingRanges().isEmpty()) {
+            return data;
+        }
+        
+        // otherwise, apply the fitting ranges to the data
+        applyFittingRanges(data);
         return data;
+    }
+    
+    /**
+     * Apply the fitting ranges to the data. Takes the FittingRanges in the 
+     * SedModel's FitConfiguration, and filters out points that don't fall 
+     * within the spectral fitting ranges.
+     * @param data - data to filter
+     */
+    private void applyFittingRanges(Data data) {
+        FittingRangeIntervalTree intervals = new FittingRangeIntervalTree(sedModel.getFit().getFittingRanges());
+        
+        List<Double> tmpX = new ArrayList<>();
+        List<Double> tmpY = new ArrayList<>();
+        List<Double> tmpYErr = new ArrayList<>();
+        
+        int ct = 0;
+        for (int i=0; i<data.getX().length; i++) {
+            // add the point if it falls within the fitting ranges
+            if (intervals.isPointInTree(data.getX()[i])) {
+                tmpX.add(data.getX()[i]);
+                tmpY.add(data.getY()[i]);
+                tmpYErr.add(data.getStaterror()[i]);
+                ct++;
+            }
+        }
+        
+        // convert the values to doubles
+        double[] filteredX = new double[ct];
+        double[] filteredY = new double[ct];
+        double[] filteredYErr = new double[ct];
+        
+        for (int i=0; i<ct; i++) {
+            filteredX[i] = tmpX.get(i);
+            filteredY[i] = tmpY.get(i);
+            filteredYErr[i] = tmpYErr.get(i);
+        }
+        
+        data.setX(filteredX);
+        data.setY(filteredY);
+        data.setStaterror(filteredYErr);
     }
 
     /**
@@ -272,8 +321,6 @@ public class FitController {
                     SherpaClient.Y_UNIT, SherpaClient.X_UNIT, yUnit);
 
             table.setModelValues(y);
-            table.setResidualValues(calcResiduals(table.getFluxValues(), y));
-            table.setRatioValues(calcRatios(table.getFluxValues(), y));
         }
     }
 
@@ -296,38 +343,5 @@ public class FitController {
      */
     public void clearAll() {
         sedModel.reset();
-    }
-
-    private double[] calcResiduals(double[] expected, double[] actual) {
-        int len = expected.length;
-
-        if (len != actual.length) {
-            throw new IllegalArgumentException("Expected and Actual array should have the same size");
-        }
-
-        double[] ret = new double[len];
-
-        for (int i=0; i<len; i++) {
-            ret[i] = actual[i] - expected[i];
-        }
-
-        return ret;
-    }
-
-    private double[] calcRatios(double[] expected, double[] actual) {
-        int len = expected.length;
-
-        if (len != actual.length) {
-            throw new IllegalArgumentException("Expected and Actual array should have the same size");
-        }
-
-        double[] ret = new double[len];
-
-        for (int i=0; i<len; i++) {
-            double e = expected[i];
-            ret[i] = Math.abs(e - actual[i])/e;
-        }
-
-        return ret;
     }
 }

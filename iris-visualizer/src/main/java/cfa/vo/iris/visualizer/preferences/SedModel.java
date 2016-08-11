@@ -183,7 +183,7 @@ public class SedModel {
     // TODO: Make this better! e.g., should have some mechanism to just have a stacked
     // IrisStarTable that would allow us to more easily and efficiently extract data. Still, 
     // performance wise much better than sedlib.
-    public void getFittingData(final Data data, boolean includeMasked) {
+    public void setFittingData(final Data data, boolean includeMasked) {
         
         List<IrisDataStarTable> dataTables = this.getIrisDataTables(includeMasked);
         
