@@ -192,8 +192,8 @@ public class SedPreferencesTest {
         Data allData = SAMPFactory.get(Data.class);
         Data maskedData = SAMPFactory.get(Data.class);
         
-        model.getFittingData(allData, true);
-        model.getFittingData(maskedData, false);
+        model.setFittingData(allData, true);
+        model.setFittingData(maskedData, false);
         
         // Verify allData is correct
         assertArrayEquals(new double[] {1,2,3,4,5}, allData.getX(), .01);

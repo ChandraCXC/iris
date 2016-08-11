@@ -573,9 +573,11 @@ public class FittingMainView extends JInternalFrame implements SedListener {
     }//GEN-LAST:event_doFit
 
     private void openFittingRangesButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openFittingRangesButtonActionPerformed
-        fittingRangesFrame = new FittingRangesFrame(preferences, controller);
-        this.getDesktopPane().add(fittingRangesFrame);
-        this.getDesktopPane().setLayer(fittingRangesFrame, 1);
+        if (fittingRangesFrame == null) {
+            fittingRangesFrame = new FittingRangesFrame(preferences, controller);
+            this.getDesktopPane().add(fittingRangesFrame);
+            this.getDesktopPane().setLayer(fittingRangesFrame, 1);
+        }
         GUIUtils.moveToFront(fittingRangesFrame);
     }//GEN-LAST:event_openFittingRangesButtonActionPerformed
 
