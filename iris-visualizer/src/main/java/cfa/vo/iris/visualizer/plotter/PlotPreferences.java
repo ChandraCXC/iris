@@ -123,8 +123,8 @@ public class PlotPreferences {
         pp.setLegendBorder(true);
         pp.setAspect(aspect);
         pp.setErrorBarType(ErrorBarType.capped_lines);
-        pp.setMarkType(ShapeType.open_circle);
-        pp.setSize(4);
+        pp.setMarkType(ShapeType.filled_diamond);
+        pp.setSize(2);
         
         return pp;
     }
@@ -434,7 +434,7 @@ public class PlotPreferences {
     protected void setSize(Integer size) {
         Integer old = getSize();
         preferences.put(SIZE, size);
-        pcs.firePropertyChange(PROP_LEGEND_BORDER, old, size);
+        pcs.firePropertyChange(PROP_MARK_SIZE, old, size);
     }
     
     /**

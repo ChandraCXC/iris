@@ -4,6 +4,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import cfa.vo.iris.fitting.FittingRange;
 import cfa.vo.iris.sed.ExtSed;
@@ -15,11 +16,11 @@ import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jdesktop.observablecollections.ObservableCollections;
 
 /**
  * Dynamic model for the plotter and metadata browser. Maintains the current state
@@ -194,12 +195,15 @@ public class VisualizerDataModel {
             
             // Add models to the SED
             SedModel sedModel = store.getSedModel(sed);
-            newSedTables.addAll(sedModel.getDataTables());
             dataModelTitle.append(sed.getId() + " ");
-
-            // For coplotting we plot the entire SED as a single layer
+            
+            // For coplotting we plot the entire SED as a single layer, do not add layers
+            // for SEDs with no segments
             if (coplotted) {
-                newSedModels.add(sedModel.getSedLayerModel());
+                // Only add LayerModels if they have data available
+                if (sed.getNumberOfSegments() > 0) {
+                    newSedModels.add(sedModel.getSedLayerModel());
+                }
             }
             // Otherwise we add a single layer for each corresponding segment
             else {
@@ -218,8 +222,11 @@ public class VisualizerDataModel {
             if (!coplotted && sed.getFit() != null) {
                 fittingRanges.addAll(sed.getFit().getFittingRanges());
             }
+            
+            // Add data from the sedModel
+            newSedTables.addAll(sedModel.getDataTables());
         }
-        this.selectedSeds = ObservableCollections.observableList(selectedSeds);
+        this.selectedSeds = selectedSeds;
         
         // Update units and colors
         updateUnits();
@@ -289,8 +296,29 @@ public class VisualizerDataModel {
     // Locked down since these are tied to the selected seds
     synchronized void setLayerModels(List<LayerModel> newModels) {
         List<LayerModel> oldModels = this.layerModels;
-        this.layerModels = ObservableCollections.observableList(newModels);
+        
+        // Verify unique suffixes for the models
+        Set<String> labels = new HashSet<>();
+        for (LayerModel model : newModels) {
+            verifyUniqueLayerSuffix(model, labels);
+        }
+        
+        this.layerModels = newModels;
         pcs.firePropertyChange(PROP_LAYER_MODELS, oldModels, layerModels);
+    }
+    
+    private void verifyUniqueLayerSuffix(LayerModel model, Set<String> labels) {
+        String id = model.getSuffix();
+        
+        int count = 0;
+        while (labels.contains(id)) {
+            count++;
+            id = model.getSuffix() + " " + count;
+        }
+        
+        model.getInSource().setName(id);
+        model.setSuffix(id);
+        labels.add(id);
     }
     
     public List<IrisStarTable> getSedStarTables() {
@@ -300,7 +328,7 @@ public class VisualizerDataModel {
     // Locked down since these are tied to the selected seds
     synchronized void setSedStarTables(List<IrisStarTable> newTables) {
         List<IrisStarTable> oldTables = sedStarTables;
-        this.sedStarTables = ObservableCollections.observableList(newTables);
+        this.sedStarTables = newTables;
         pcs.firePropertyChange(PROP_SED_STARTABLES, oldTables, sedStarTables);
     }
     
@@ -310,7 +338,7 @@ public class VisualizerDataModel {
 
     public synchronized void setSelectedStarTables(List<IrisStarTable> newStarTables) {
         List<IrisStarTable> oldStarTables = selectedStarTables;
-        this.selectedStarTables = ObservableCollections.observableList(newStarTables);
+        this.selectedStarTables = newStarTables;
         pcs.firePropertyChange(PROP_SELECTED_STARTABLES, oldStarTables, selectedStarTables);
     }
     
@@ -327,7 +355,7 @@ public class VisualizerDataModel {
      */
     private synchronized void setFunctionModels(List<FunctionModel> newFunctionModels) {
         List<FunctionModel> oldFunctionModels = functionModels;
-        this.functionModels = ObservableCollections.observableList(newFunctionModels);
+        this.functionModels = newFunctionModels;
         pcs.firePropertyChange(PROP_FUNCTION_MODELS, oldFunctionModels, functionModels);
     }
 
@@ -335,13 +363,7 @@ public class VisualizerDataModel {
         // This is a total cop-out. Just clear all existing preferences and reset
         // with the new selected SED.
         List<ExtSed> oldSeds = this.selectedSeds;
-        
         this.setSelectedSeds(new LinkedList<ExtSed>());
-        this.setLayerModels(new LinkedList<LayerModel>());
-        this.setSedStarTables(new LinkedList<IrisStarTable>());
-        this.setSelectedStarTables(new LinkedList<IrisStarTable>());
-        this.setFunctionModels(new LinkedList<FunctionModel>());
-        
         setSelectedSeds(oldSeds);
     }
     
