@@ -15,9 +15,11 @@
  */
 package cfa.vo.iris.visualizer.preferences;
 
+import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.events.MultipleSegmentEvent;
 import cfa.vo.iris.events.MultipleSegmentListener;
 import cfa.vo.iris.events.SedCommand;
@@ -25,6 +27,7 @@ import cfa.vo.iris.events.SedEvent;
 import cfa.vo.iris.events.SedListener;
 import cfa.vo.iris.events.SegmentEvent;
 import cfa.vo.iris.events.SegmentListener;
+import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.sedlib.Segment;
 
@@ -38,10 +41,14 @@ public class VisualizerEventListener {
     // Preferences
     private final VisualizerComponentPreferences preferences;
     
-    public VisualizerEventListener(VisualizerComponentPreferences preferences) {
+    // Workspace for errors
+    private final IWorkspace ws;
+    
+    public VisualizerEventListener(VisualizerComponentPreferences preferences, IWorkspace ws) {
         
         this.preferences = preferences;
         this.dataStore = preferences.getDataStore();
+        this.ws = ws;
         
         addSedListeners();
     }
@@ -62,12 +69,13 @@ public class VisualizerEventListener {
         
         @Override
         public void process(final ExtSed sed, final SedCommand payload) {
-            try {
-                processNotification(sed, payload);
-            } catch (Exception e) {
-                // TODO: This happens asynchronously, what should we do with exceptions?
-                logger.log(Level.SEVERE, "Exception in visualizer data processing", e);
-            }
+            retryEvent(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    processNotification(sed, payload);
+                    return true;
+                }
+            });
         }
         
         private void processNotification(ExtSed sed, SedCommand payload) {
@@ -95,12 +103,13 @@ public class VisualizerEventListener {
 
         @Override
         public void process(final Segment segment, final SegmentEvent.SegmentPayload payload) {
-            try {
-                processNotification(segment, payload);
-            } catch (Exception e) {
-                // TODO: This happens asynchronously, what should we do with exceptions?
-                logger.log(Level.SEVERE, "Exception in visualizer data processing", e);
-            }
+            retryEvent(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    processNotification(segment, payload);
+                    return true;
+                }
+            });
         }
         
         private void processNotification(Segment segment, SegmentEvent.SegmentPayload payload) {
@@ -126,13 +135,13 @@ public class VisualizerEventListener {
         
         @Override
         public void process(final java.util.List<Segment> segments, final SegmentEvent.SegmentPayload payload) {
-            try {
-                processNotification(segments, payload);
-            } catch (Exception e) {
-                // TODO: This happens asynchronously, what should we do with
-                // exceptions?
-                logger.log(Level.SEVERE, "Exception in visualizer data processing", e);
-            }
+            retryEvent(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    processNotification(segments, payload);
+                    return true;
+                }
+            });
         }
         
         private void processNotification(java.util.List<Segment> segments, SegmentEvent.SegmentPayload payload) {
@@ -151,5 +160,30 @@ public class VisualizerEventListener {
                 dataStore.remove(sed, segments);
             }
         }
+    }
+    
+    /**
+     * Since event processing happens asynchronously, we want to retry in cases of failure. Show 
+     * a popup to alert a failure if we cannot process the event.
+     * 
+     * @param call
+     */
+    private void retryEvent(Callable<?> call) {
+        Exception last = null;
+        for (int i=0; i<3; i++) {
+            try {
+                call.call();
+                return;
+            } catch (Exception e) {
+                last = e;
+            }
+        }
+        
+        logger.log(Level.SEVERE, "Error processing SedEvent", last);
+        NarrowOptionPane.showMessageDialog(ws.getDesktop(),
+                "Error processing SedEvent in the Iris Visualizer, you may want to refresh, or reload your data:\n " +
+                        last.getMessage(),
+                        "Error",
+                        NarrowOptionPane.ERROR_MESSAGE);
     }
 }
