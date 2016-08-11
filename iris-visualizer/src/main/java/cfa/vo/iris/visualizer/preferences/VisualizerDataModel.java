@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2016 Smithsonian Astrophysical Observatory
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *         http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package cfa.vo.iris.visualizer.preferences;
 
 import java.beans.PropertyChangeListener;
@@ -176,6 +191,17 @@ public class VisualizerDataModel {
         List<ExtSed> oldSeds = this.selectedSeds;
         this.coplotted = CollectionUtils.size(selectedSeds) > 1;
         
+        //
+        // TODO: Remove restriction on the number of segments in the SED until the StilPlotter
+        //       can handle more segments. This is set to 16 in the interim, as that is how 
+        //       many distinct colors the current implementation of the color palatte is generating.
+        //
+        for (ExtSed sed : selectedSeds) {
+            if (sed.getNumberOfSegments() > 16) {
+                coplotted = true;
+            }
+        }
+        
         // Here to support empty values for null seds
         List<LayerModel> newSedModels = new LinkedList<>();
         List<IrisStarTable> newSedTables = new LinkedList<>();
@@ -195,6 +221,7 @@ public class VisualizerDataModel {
             
             // Add models to the SED
             SedModel sedModel = store.getSedModel(sed);
+            
             dataModelTitle.append(sed.getId() + " ");
             
             // For coplotting we plot the entire SED as a single layer, do not add layers

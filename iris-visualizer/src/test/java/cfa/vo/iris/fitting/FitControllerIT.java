@@ -21,6 +21,7 @@ import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.test.unit.SherpaResource;
 import cfa.vo.iris.test.unit.TestUtils;
+import cfa.vo.iris.test.unit.TestUtils.SingleThreadExecutor;
 import cfa.vo.iris.units.UnitsManager;
 import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
@@ -67,7 +68,7 @@ public class FitControllerIT {
         data.setY(y);
         data.setStaterror(err);
         SherpaClient client = sherpa.getClient();
-        sedModel = new SedModel(sed, new IrisStarTableAdapter(null));
+        sedModel = new SedModel(sed, new IrisStarTableAdapter(new SingleThreadExecutor()));
         controller = new FitController(sedModel, modelsManager, client);
     }
 

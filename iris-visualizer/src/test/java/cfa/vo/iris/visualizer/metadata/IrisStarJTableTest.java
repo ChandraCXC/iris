@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.uispec4j.utils.ArrayUtils;
 
 import cfa.vo.iris.test.unit.TestUtils;
+import cfa.vo.iris.test.unit.TestUtils.SingleThreadExecutor;
 import cfa.vo.iris.visualizer.metadata.IrisStarJTable.RowSelection;
 import cfa.vo.iris.visualizer.metadata.IrisStarJTable.StarJTableHeader;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
@@ -39,7 +40,7 @@ import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 
 public class IrisStarJTableTest {
     
-    private IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
+    private IrisStarTableAdapter adapter = new IrisStarTableAdapter(new SingleThreadExecutor());
     
     @Test
     public void testColumnHeaderTooltips() throws Exception {

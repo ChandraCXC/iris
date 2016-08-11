@@ -18,10 +18,12 @@ package cfa.vo.iris.visualizer.preferences;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import cfa.vo.iris.fitting.FitConfiguration;
 
@@ -39,6 +41,7 @@ import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.iris.visualizer.stil.tables.SegmentColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.StackedStarTable;
 import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
 import cfa.vo.sherpa.Data;
 
@@ -75,6 +78,7 @@ public class SedModel {
         
         this.starTableData = Collections.synchronizedMap(new IdentityHashMap<Segment, IrisStarTable>());
         this.tableLayerModels = Collections.synchronizedMap(new IdentityHashMap<Segment, LayerModel>());
+        
         refresh();
     }
     
@@ -203,11 +207,26 @@ public class SedModel {
     }
     
     /**
-     * Reserializes all segments within the sed.
+     * Reserializes all segments within the sed and updates the mapping
      */
     void refresh() {
-        for (Segment seg : sed.getSegments()) {
-            addSegment(seg);
+        // Remove stored data
+        starTableData.clear();
+        
+        // Update or refresh new star tables
+        this.updateData(sed);
+
+        // Removes any segments that are no longer in the SED
+        List<Segment> segments = sed.getSegments();
+        Set<Segment> tbr = new HashSet<>();
+        for (Segment segment : tableLayerModels.keySet()) {
+            if (!segments.contains(segment)) {
+                tbr.add(segment);
+            }
+        }
+        
+        for (Segment seg : tbr) {
+            tableLayerModels.remove(seg);
         }
     }
     
@@ -217,30 +236,68 @@ public class SedModel {
     }
     
     /**
-     * Add a segment to the sed model map.
+     * Add or update segment in the sed model map.
      * @param seg
-     * @return true if the sed was added to the model.
      */
-    boolean addSegment(Segment seg) {
-        
-        // Do not keep track of empty segments
-        if (seg == null) return false;
-        
-        // If the segment is already in the map remake the star table
+    void updateSegment(Segment seg) {
+        // Always convert async
+        IrisStarTable newTable = adapter.convertSegmentAsync(seg);
         if (starTableData.containsKey(seg)) {
-            IrisStarTable table = starTableData.get(seg);
-            LayerModel mod = tableLayerModels.get(seg);
-            
-            // Preserve table name on reserialization
-            IrisStarTable newTable = convertSegment(seg, table.getName());
-            
-            starTableData.put(seg, newTable);
-            mod.setInSource(newTable);
-            return false;
+            refreshSegment(seg, newTable);
+        } else {
+            addSegment(seg, newTable);
+        }
+    }
+    
+    /**
+     * Add or update a list of segments in the sed model map.
+     * @param seg
+     */
+    void updateSegments(List<Segment> segments) {
+        
+        // Use a temporary SED
+        ExtSed tmp = new ExtSed("", false);
+        try {
+            tmp.addSegment(segments);
+        } catch (SedInconsistentException | SedNoDataException e) {
+            throw new RuntimeException(e);
         }
         
+        // Always convert async
+        this.updateData(tmp);
+    }
+    
+    private void updateData(ExtSed sed) {
+        List<IrisStarTable> newTables = adapter.convertSedAsync(sed);
+
+        for (int i=0; i<sed.getNumberOfSegments(); i++) {
+            
+            Segment seg = sed.getSegment(i);
+            IrisStarTable table = newTables.get(i);
+            
+            // Refresh the segment if present
+            if (tableLayerModels.containsKey(sed.getSegment(i))) {
+                refreshSegment(seg, table);
+            }
+            // Otherwise add it
+            else {
+                addSegment(seg, table);
+            }
+        }
+    }
+    
+    private void refreshSegment(Segment seg, IrisStarTable newTable) {
+        LayerModel mod = tableLayerModels.get(seg);
+        starTableData.put(seg, newTable);
+        mod.setInSource(newTable);
+    }
+    
+    private void addSegment(Segment seg, IrisStarTable newTable) {
+        
+        // Do not keep track of empty segments
+        if (seg == null) return;
+        
         // Construct LayerModel
-        IrisStarTable newTable = convertSegment(seg, null);
         LayerModel layer = new LayerModel(newTable);
         
         // add colors to segment layer
@@ -253,26 +310,6 @@ public class SedModel {
         
         starTableData.put(seg, newTable);
         tableLayerModels.put(seg, layer);
-        return true;
-    }
-    
-    boolean isUniqueLayerSuffix(String suffix) {
-        for (LayerModel layer : tableLayerModels.values()) {
-            if (StringUtils.equals(layer.getSuffix(), suffix)) {
-                return false;
-            }
-        }
-        return true;
-    }
-    
-    private IrisStarTable convertSegment(Segment seg, String name) {
-        // Convert segments with more than 3000 points asynchronously.
-        if (seg.getLength() > 3000) {
-            return adapter.convertSegmentAsync(seg, name);
-        }
-        IrisStarTable table = adapter.convertSegment(seg, name);
-        
-        return table;
     }
     
     /**
