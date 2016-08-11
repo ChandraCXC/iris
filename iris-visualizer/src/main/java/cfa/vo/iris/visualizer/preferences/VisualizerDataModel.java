@@ -390,7 +390,7 @@ public class VisualizerDataModel {
      */
     public void updateFittingVersionNumbers() {
         for (SedModel model : getSedModels()) {
-            int version = model.getVersion();
+            int version = model.computeVersion();
             if (model.getHasModelFunction()) {
                 model.setModelVersion(version);
             }

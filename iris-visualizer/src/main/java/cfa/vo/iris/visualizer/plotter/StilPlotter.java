@@ -297,7 +297,7 @@ public class StilPlotter extends JPanel {
             
             // If there is no model or the model is valid, then we're good
             if (!sedModel.getHasModelFunction() ||
-               (sedModel.getVersion() == sedModel.getModelVersion())) 
+               (sedModel.computeVersion() == sedModel.getModelVersion())) 
             {
                 continue;
             }

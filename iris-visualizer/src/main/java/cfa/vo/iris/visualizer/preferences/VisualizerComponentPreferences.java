@@ -154,20 +154,17 @@ public class VisualizerComponentPreferences {
             return;
         }
         
-        // Otherwise asynchronously evaluate the model
         final VisualizerDataModel dataModel = this.getDataModel();
-        visualizerExecutor.submit(new Callable<SedModel>() {
-            @Override
-            public SedModel call() throws Exception {
-                controller.evaluateModel(model);
-                
-                // Refresh the model once completed
-                if (dataModel.getSelectedSeds().contains(model.getSed())) {
-                    dataModel.refresh();
-                }
-                return model;
-            }
-        });
+        try {
+            controller.evaluateModel(model);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        
+        // Refresh the model once completed
+        if (dataModel.getSelectedSeds().contains(model.getSed())) {
+            dataModel.refresh();
+        }
     }
     
     /**

@@ -23,7 +23,6 @@ import cfa.vo.iris.sed.quantities.SPVYUnit;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.test.unit.TestUtils;
-import cfa.vo.iris.units.spv.XUnits;
 import cfa.vo.iris.visualizer.preferences.SedModel;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
@@ -263,6 +262,37 @@ public class FitControllerTest {
 //        SegmentStarTable data = model.getDataTables().get(0).getPlotterDataTable();
 //        assertArrayEquals(new double[]{1.1, 1.2}, data.getSpecValues(), 0.001);
 //        assertArrayEquals(new double[]{2.1, 2.2}, data.getModelValues(), 0.001);
+    }
+    
+    @Test
+    public void testVersioning() throws Exception {
+        FitConfiguration ft = new FitConfiguration();
+        
+        int h1 = ft.hashCode();
+        assertEquals(h1, ft.hashCode());
+        
+        // Changing confidence changes hc
+        ft.getConfidence().setName("hi there");
+        int h2 = ft.hashCode();
+        assertNotEquals(h1, h2);
+        
+        // Adding model changes hc
+        ModelFactory factory = new ModelFactory();
+        Model m = factory.getModel("polynomial", "m1");
+        ft.addModel(m);
+        int h3 = ft.hashCode();
+        assertNotEquals(h2, h3);
+        
+        // Changing params changes hc
+        Parameter c0 = m.getPars().get(0);
+        c0.setFrozen(0);
+        c0.setVal(0.1);
+        int h4 = ft.hashCode();
+        assertNotEquals(h3, h4);
+        
+        // Blind check
+        int h5 = ft.hashCode();
+        assertEquals(h4, h5);
     }
 
     private FitConfiguration createFit() throws Exception {
