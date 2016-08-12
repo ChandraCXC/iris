@@ -30,6 +30,8 @@ import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.SwingConstants;
@@ -702,6 +704,7 @@ public class PlotterView extends JInternalFrame {
                         "Exception caught while re-evaluating model: " + e.getMessage(),
                         "Error",
                         NarrowOptionPane.ERROR_MESSAGE);
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, e);
             }
         }
     }//GEN-LAST:event_evaluateButtonActionPerformed

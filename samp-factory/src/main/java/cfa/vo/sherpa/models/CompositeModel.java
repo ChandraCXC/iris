@@ -16,14 +16,11 @@
 
 package cfa.vo.sherpa.models;
 
-import cfa.vo.sherpa.models.Model;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.List;
 
-/**
- *
- * @author olaurino
- */
+@JsonDeserialize(as = DefaultCompositeModel.class)
 public interface CompositeModel {
 
     String getName();

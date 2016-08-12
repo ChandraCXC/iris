@@ -23,4 +23,6 @@ Fit Results:
 		                 Optimizer = LevenbergMarquardt
 		 Statistic (Cost function) = LeastSquares
 
+Confidence Limits at   nu sigma (  nu%):
+
 User Models:
