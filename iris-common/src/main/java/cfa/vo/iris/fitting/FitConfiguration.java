@@ -395,7 +395,6 @@ public class FitConfiguration {
                 .append(confidence.getName())
                 .append(stat)
                 .append(method)
-                .append(confResults)
                 .append(rStat)
                 .append(nFev)
                 .append(qVal)
@@ -403,6 +402,13 @@ public class FitConfiguration {
                 .append(statVal)
                 .append(dof)
                 .append(userModelList);
+        
+        // If confidence results are available append them as well
+        if (confResults != null) {
+            hcb.append(confResults.getParmaxes())
+                .append(confResults.getParmins())
+                .append(confResults.getParvals());
+        }
         
         // Must manually include param and values in hashCode computation
         if (CollectionUtils.isNotEmpty(model.getParts())) {
