@@ -21,7 +21,8 @@ import cfa.vo.iris.sed.SedException;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.units.spv.XUnits;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
-import java.awt.Point;
+
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.logging.Level;
@@ -60,6 +61,9 @@ public class MouseXRangesClickedListener extends StilPlotterMouseListener implem
     }
     
     public void setPickingRanges(boolean pickingRanges) {
+        if (display != null) {
+            display.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+        }
         this.pickingRanges = pickingRanges;
         this.fittingRange = new FittingRange();
     }
@@ -86,6 +90,8 @@ public class MouseXRangesClickedListener extends StilPlotterMouseListener implem
                 fittingRange.setStartPoint(x);
                 isStartPoint = false;
             } else {
+                display.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+
                 fittingRange.setEndPoint(x);
                 
                 // set unit
