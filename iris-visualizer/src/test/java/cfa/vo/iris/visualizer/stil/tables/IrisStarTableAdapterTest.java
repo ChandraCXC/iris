@@ -17,7 +17,8 @@ package cfa.vo.iris.visualizer.stil.tables;
 
 import static org.junit.Assert.*;
 
-import java.util.concurrent.Executors;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 import org.uispec4j.utils.ArrayUtils;
@@ -25,14 +26,16 @@ import org.uispec4j.utils.ArrayUtils;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.SegmentStarTable;
 import cfa.vo.iris.test.unit.TestUtils;
+import cfa.vo.iris.test.unit.TestUtils.SingleThreadExecutor;
 import cfa.vo.sedlib.Segment;
+import cfa.vo.sedlib.TextParam;
 import cfa.vo.sedlib.io.SedFormat;
 import cfa.vo.testdata.TestData;
 import uk.ac.starlink.table.StarTable;
 
 public class IrisStarTableAdapterTest {
     
-    private IrisStarTableAdapter adapter = new IrisStarTableAdapter(Executors.newSingleThreadExecutor());
+    private IrisStarTableAdapter adapter = new IrisStarTableAdapter(new SingleThreadExecutor());
     
     @Test
     public void testSerialization() throws Exception {
@@ -82,5 +85,28 @@ public class IrisStarTableAdapterTest {
                 assertEquals(2, table.getSegmentMetadataTable().getColumnCount());
             }
         });
+    }
+    
+    @Test
+    public void testSedConversion() throws Exception {
+        
+        Segment seg1 = TestUtils.createSampleSegment(new double[] {0}, new double[] {0});
+        seg1.createTarget().setName(new TextParam("1"));
+        Segment seg2 = TestUtils.createSampleSegment(new double[] {1,2}, new double[] {1,2});
+        seg2.createTarget().setName(new TextParam("2"));
+        Segment seg3 = TestUtils.createSampleSegment(new double[] {3,4,5}, new double[] {3,4,5});
+        seg3.createTarget().setName(new TextParam("3"));
+
+        ExtSed sed = new ExtSed("", false);
+        sed.addSegment(Arrays.asList(seg1, seg2, seg3));
+        
+        List<IrisStarTable> tables = adapter.convertSed(sed);
+
+        assertEquals(sed.getNumberOfSegments(), tables.size());
+        
+        for (int i=0; i<sed.getNumberOfSegments(); i++) {
+            assertEquals(sed.getSegment(i).getTarget().getName().getValue(), tables.get(i).getName());
+            assertEquals(sed.getSegment(i).getLength(), tables.get(i).getRowCount());
+        }
     }
 }

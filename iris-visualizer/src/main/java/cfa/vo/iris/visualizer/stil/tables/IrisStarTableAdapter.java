@@ -16,16 +16,17 @@
 
 package cfa.vo.iris.visualizer.stil.tables;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.commons.lang.StringUtils;
-
+import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.SegmentStarTable;
-import cfa.vo.iris.sed.stil.SerializingStarTableAdapter;
-import cfa.vo.iris.sed.stil.StarTableAdapter;
+import cfa.vo.iris.sed.stil.SerializingSegmentAdapter;
 import cfa.vo.iris.units.UnitsException;
+import cfa.vo.iris.visualizer.IrisVisualizer;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.common.SedInconsistentException;
@@ -45,52 +46,43 @@ import uk.ac.starlink.table.StarTable;
  */
 public class IrisStarTableAdapter {
     
+    private static final Logger logger = Logger.getLogger(IrisStarTableAdapter.class.getName());
+    
     public static final StarTable EMPTY_STARTABLE = new EmptyStarTable();
     
-    private final ExecutorService executor;
-    private VisualizerComponentPreferences prefs;
+    private final Executor executor;
     
-    public IrisStarTableAdapter(ExecutorService executor) {
+    public IrisStarTableAdapter(Executor executor) {
         this.executor = executor;
-    }
-    
-    public IrisStarTableAdapter(ExecutorService executor, VisualizerComponentPreferences prefs) {
-        this.executor = executor;
-        this.prefs = prefs;
     }
 
     public IrisStarTable convertSegment(Segment data) {
-        return convert(data, false, null);
-    }
-
-    public IrisStarTable convertSegment(Segment data, String name) {
-        return convert(data, false, name);
+        return convertSegment(data, false);
     }
     
     public IrisStarTable convertSegmentAsync(Segment data) {
-        return convert(data, true, null);
+        return convertSegment(data, true);
     }
     
-    public IrisStarTable convertSegmentAsync(Segment data, String name) {
-        return convert(data, true, name);
+    public List<IrisStarTable> convertSed(ExtSed sed) {
+        return convertSed(sed, false);
+    }
+
+    public List<IrisStarTable> convertSedAsync(ExtSed sed) {
+        return convertSed(sed, true);
     }
     
-    private IrisStarTable convert(Segment data, boolean async, String name) {
+    private IrisStarTable convertSegment(Segment data, boolean async) {
         try {
             SegmentStarTable segTable = new SegmentStarTable(data);
             IrisStarTable ret;
             
-            SerializingStarTableAdapter adapter = new SerializingStarTableAdapter();
+            SerializingSegmentAdapter adapter = new SerializingSegmentAdapter();
             if (async) {
                 ret = new IrisStarTable(segTable, EMPTY_STARTABLE);
-                executor.submit(new AsyncSerializer(data, adapter, name, ret, prefs));
+                executor.execute(new AsyncSegmentSerializer(data, adapter, ret));
             } else {
                 ret = new IrisStarTable(segTable, adapter.convertStarTable(data));
-            }
-            
-            // Set the name of the new star table if a name has been specified
-            if (StringUtils.isNotBlank(name)) {
-                ret.setName(name);
             }
             
             return ret;
@@ -99,49 +91,109 @@ public class IrisStarTableAdapter {
         }
     }
     
-    private static class AsyncSerializer implements Callable<StarTable> {
+    private List<IrisStarTable> convertSed(ExtSed sed, boolean async) {
+        SerializingSegmentAdapter adapter = new SerializingSegmentAdapter();
+        List<IrisStarTable> newTables = new ArrayList<>(sed.getNumberOfSegments());
+        
+        try {
+            // Iterate over each segment
+            for (Segment seg : sed.getSegments()) {
+                // Create the segment star table for plotting data
+                SegmentStarTable segTable = new SegmentStarTable(seg);
+                
+                // Always set data table to empty star tables initially
+                newTables.add(new IrisStarTable(segTable, EMPTY_STARTABLE));
+            }
+            
+            if (async) {
+                executor.execute(new AsyncSedSerializer(sed, adapter, newTables));
+            } else {
+                List<StarTable> converted = adapter.convertSed(sed);
+                setStarTables(newTables, converted);
+            }
+            
+            return newTables;
+        } catch (SedNoDataException | SedInconsistentException | UnitsException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    private static class AsyncSegmentSerializer implements Runnable {
         
         private final Segment data;
-        private final StarTableAdapter<Segment> adapter;
-        private final String name;
+        private final SerializingSegmentAdapter adapter;
         private final IrisStarTable table;
-        private final VisualizerComponentPreferences prefs;
 
-        public AsyncSerializer(Segment data, 
-                StarTableAdapter<Segment> adapter, 
-                String name,
-                IrisStarTable table,
-                VisualizerComponentPreferences prefs)
+        public AsyncSegmentSerializer(Segment data, 
+                SerializingSegmentAdapter adapter, 
+                IrisStarTable table)
         {
             this.data = data;
             this.adapter = adapter;
-            this.name = name;
             this.table = table;
-            this.prefs = prefs;
         }
         
         @Override
-        public StarTable call() throws Exception {
-            // Convert and update the datatable
-            StarTable converted = adapter.convertStarTable(data);
-            
-            // Update the IrisStarTable with the new value
-            table.setSegmentMetadataTable(converted);
+        public void run() {
+            try {
+                // Convert and update the datatable
+                StarTable converted = adapter.convertStarTable(data);
+                
+                // Update the IrisStarTable with the new value
+                table.setSegmentMetadataTable(converted);
+                
+                // Refresh if necessary
+                VisualizerComponentPreferences prefs = IrisVisualizer.getInstance().getActivePreferences();
+                if (prefs != null && prefs.getDataModel().getSelectedStarTables().contains(table)) {
+                    prefs.getDataModel().refresh();
+                }
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, null, e);
+            }
+        }
+    }
+    
+    private static class AsyncSedSerializer implements Runnable {
+        
+        private final ExtSed data;
+        private final SerializingSegmentAdapter adapter;
+        private final List<IrisStarTable> tables;
 
-            // Set the name of the new star table if a name has been specified
-            if (StringUtils.isNotBlank(name)) {
-                converted.setName(name);
+        public AsyncSedSerializer(ExtSed data, 
+                SerializingSegmentAdapter adapter, 
+                List<IrisStarTable> tables)
+        {
+            this.data = data;
+            this.adapter = adapter;
+            this.tables = tables;
+        }
+        
+        @Override
+        public void run() {
+            try {
+                // Convert and update the datatable
+                List<StarTable> converted = adapter.convertSed(data);
+                setStarTables(tables, converted);
+                
+                // Refresh if necessary
+                VisualizerComponentPreferences prefs = IrisVisualizer.getInstance().getActivePreferences();
+                if (prefs != null && prefs.getDataModel().getSelectedSeds().contains(data)) {
+                    prefs.getDataModel().refresh();
+                }
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, null, e);
             }
-            
-            // If this segment is currently in the workspace we need to force
-            // the property change support to notify all listeners.
-            // TODO: Make this cleaner somehow
-            List<IrisStarTable> tables = prefs.getDataModel().getSelectedStarTables();
-            if (tables.contains(table)) {
-                prefs.getDataModel().refresh();
-            }
-            
-            return converted;
+        }
+    }
+    
+    private static void setStarTables(List<IrisStarTable> newTables, List<StarTable> converted) {
+        if (newTables.size() != converted.size()) {
+            throw new IllegalArgumentException("lists must have equal size!");
+        }
+        
+        // Update the IrisStarTable with the new value
+        for (int i=0; i<converted.size(); i++) {
+            newTables.get(i).setSegmentMetadataTable(converted.get(i));
         }
     }
 }

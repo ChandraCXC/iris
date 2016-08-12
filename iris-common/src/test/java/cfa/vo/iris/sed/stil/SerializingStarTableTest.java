@@ -17,11 +17,13 @@ package cfa.vo.iris.sed.stil;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.junit.Before;
 import org.junit.Test;
 
+import cfa.vo.iris.test.unit.TestUtils;
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
@@ -32,21 +34,16 @@ import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
 public class SerializingStarTableTest {
     
-    private Sed sed;
-    
     private String utype = "utype$";
     private final String seg_flux_utype = "spec:Spectrum.Data.FluxAxis.Value";
     private final String seg_spec_utype = "spec:Spectrum.Data.SpectralAxis.Value";
-    
-    @Before
-    public void setUp() throws Exception {
-        sed = Sed.read(TestData.class.getResource("test.vot").openStream(), SedFormat.VOT);
-        assertEquals(1, sed.getNumberOfSegments());
-    }
 
     @Test
     public void testStarTable() throws Exception {
-        StarTableAdapter<Segment> adapter = new SerializingStarTableAdapter();
+        Sed sed = Sed.read(TestData.class.getResource("test.vot").openStream(), SedFormat.VOT);
+        assertEquals(1, sed.getNumberOfSegments());
+        
+        SerializingSegmentAdapter adapter = new SerializingSegmentAdapter();
         Segment seg = sed.getSegment(0);
         
         StarTable table = adapter.convertStarTable(seg);
@@ -68,5 +65,23 @@ public class SerializingStarTableTest {
             DescribedValue v = (DescribedValue) o;
             assertNotNull(v.getValue());
         }
+    }
+    
+    @Test
+    public void testSedSerialization() throws Exception {
+        Segment seg1 = TestUtils.createSampleSegment(new double[] {0}, new double[] {0});
+        Segment seg2 = TestUtils.createSampleSegment(new double[] {1,2}, new double[] {1,2});
+        Segment seg3 = TestUtils.createSampleSegment(new double[] {3,4,5}, new double[] {3,4,5});
+        
+        Sed sed = new Sed();
+        sed.addSegment(Arrays.asList(seg1, seg2, seg3));
+        
+        SerializingSegmentAdapter adapter = new SerializingSegmentAdapter();
+        
+        List<StarTable> tables = adapter.convertSed(sed);
+        
+        assertEquals(1, tables.get(0).getRowCount());
+        assertEquals(2, tables.get(1).getRowCount());
+        assertEquals(3, tables.get(2).getRowCount());
     }
 }

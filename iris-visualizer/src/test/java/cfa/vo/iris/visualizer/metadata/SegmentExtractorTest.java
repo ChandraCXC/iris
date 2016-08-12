@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.test.unit.TestUtils;
+import cfa.vo.iris.test.unit.TestUtils.SingleThreadExecutor;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.DateParam;
@@ -14,7 +15,7 @@ import cfa.vo.sedlib.TextParam;
 
 public class SegmentExtractorTest {
     
-    IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
+    IrisStarTableAdapter adapter = new IrisStarTableAdapter(new SingleThreadExecutor());
     
     @Test
     public void testSingleSegmentExtractionAllRows() throws Exception {

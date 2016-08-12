@@ -28,6 +28,7 @@ import org.junit.Test;
 
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.test.unit.TestUtils.SingleThreadExecutor;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
@@ -41,7 +42,7 @@ public class SedPreferencesTest {
         ExtSed sed = new ExtSed("test");
         sed.setManaged(false);
         
-        IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter(new SingleThreadExecutor());
         
         SedModel model = new SedModel(sed, adapter);
         
@@ -55,7 +56,7 @@ public class SedPreferencesTest {
         assertEquals(1, model.getLayerModels().size());
         
         // Re-adding the same segment should not alter the map
-        model.addSegment(seg1);
+        model.updateSegment(seg1);
         assertEquals(1, model.getLayerModels().size());
         
         // Whereas adding an identical (but new) segment should add a new map element
@@ -109,7 +110,7 @@ public class SedPreferencesTest {
         sed.getSegment(1).createTarget();
         sed.getSegment(1).getTarget().setName(new TextParam("target1"));
         
-        IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter(new SingleThreadExecutor());
         SedModel model = new SedModel(sed, adapter);
         
         assertEquals("target1", model.getSegmentModel(sed.getSegment(0)).getSuffix());
@@ -181,7 +182,7 @@ public class SedPreferencesTest {
         sed.addSegment(createSampleSegment(new double[] {1,2,3}, new double[] {100,200,300}), 0);
         sed.addSegment(createSampleSegment(new double[] {4,5}, new double[] {400,500}), 1);
 
-        IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter(new SingleThreadExecutor());
         SedModel model = new SedModel(sed, adapter);
         
         // Mask last row in both tables

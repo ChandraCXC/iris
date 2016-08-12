@@ -25,6 +25,7 @@ import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.test.unit.StubWorkspace;
 import cfa.vo.iris.test.unit.TestUtils;
+import cfa.vo.iris.test.unit.TestUtils.SingleThreadExecutor;
 import cfa.vo.sedlib.Segment;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,7 +40,7 @@ public class VisualizerComponentPreferencesTest {
         
         IWorkspace ws = new StubWorkspace();
 
-        VisualizerComponentPreferences prefs = new VisualizerComponentPreferences(ws);
+        VisualizerComponentPreferences prefs = new VisualizerComponentPreferences(ws, new SingleThreadExecutor());
         VisualizerDataStore store = prefs.getDataStore();
         
         assertEquals(0, store.getSedModels().size());
@@ -107,7 +108,7 @@ public class VisualizerComponentPreferencesTest {
         ws.getSedManager().add(sed1);
         ws.getSedManager().add(sed2);
         
-        VisualizerComponentPreferences prefs = new VisualizerComponentPreferences(ws);
+        VisualizerComponentPreferences prefs = new VisualizerComponentPreferences(ws, new SingleThreadExecutor());
         VisualizerDataStore store = prefs.getDataStore();
         
         store.update(sed1);

@@ -28,6 +28,7 @@ import org.uispec4j.utils.ArrayUtils;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.stil.SegmentColumn.Column;
 import cfa.vo.iris.test.unit.TestUtils;
+import cfa.vo.iris.test.unit.TestUtils.SingleThreadExecutor;
 import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 import cfa.vo.testdata.TestData;
@@ -75,7 +76,7 @@ public class StackedStarTableTest extends VisualizerStarTableTest {
     @Test
     public void testVOTableData() throws Exception {
         
-        IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter(new SingleThreadExecutor());
         
         Segment seg1 = ExtSed.read(TestData.class.getResource("3c273.vot").openStream(), SedFormat.VOT).getSegment(0);
         IrisStarTable table1 = adapter.convertSegment(seg1);
@@ -146,7 +147,7 @@ public class StackedStarTableTest extends VisualizerStarTableTest {
     
     @Test
     public void testStackedSegmentMatcher() throws Exception {
-        IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter(new SingleThreadExecutor());
         
         IrisStarTable table1 = adapter.convertSegment(TestUtils.createSampleSegment());
         IrisStarTable table2 = adapter.convertSegment(TestUtils.createSampleSegment());
