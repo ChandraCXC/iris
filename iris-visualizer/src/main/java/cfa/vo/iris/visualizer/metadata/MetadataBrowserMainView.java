@@ -15,6 +15,7 @@
  */
 package cfa.vo.iris.visualizer.metadata;
 
+import cfa.vo.iris.gui.NarrowOptionPane;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,6 +35,8 @@ import cfa.vo.iris.visualizer.stil.tables.SegmentColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.UtypeColumnInfoMatcher;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
+import java.util.List;
+import java.util.NoSuchElementException;
 public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
     private static final long serialVersionUID = 1L;
@@ -42,6 +45,8 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
     final VisualizerComponentPreferences preferences;
     final VisualizerDataModel dataModel;
+    
+    private FilterExpressionBuilder filterExpressionBuilder;
     
     /**
      * Creates new form MetadataBrowser
@@ -195,9 +200,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        filterExpressionField.setEditable(false);
         filterExpressionField.setColumns(2);
-        filterExpressionField.setText("Filter Expression");
         filterExpressionField.setToolTipText("Enter a column selection expression");
         filterExpressionField.setMaximumSize(new java.awt.Dimension(75, 75));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -213,7 +216,11 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         selectPointsButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
         selectPointsButton.setText("Select Points");
         selectPointsButton.setToolTipText("Select points matching the filter expression");
-        selectPointsButton.setEnabled(false);
+        selectPointsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectPointsButtonActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 5;
         gridBagConstraints.gridy = 1;
@@ -584,6 +591,29 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private void extractButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_extractButtonActionPerformed
         extractSelectionToSed();
     }//GEN-LAST:event_extractButtonActionPerformed
+
+    private void selectPointsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectPointsButtonActionPerformed
+        
+        IrisStarJTable selectedTable = getSelectedIrisJTable();
+        
+        this.filterExpressionBuilder = new FilterExpressionBuilder(selectedTable.getStarTable());
+        
+        try {
+            // select the table rows using the filter expression
+            List<Integer> rows = filterExpressionBuilder.process(filterExpressionField.getText());
+            
+            int actualRow;
+            for (Integer row : rows) {
+                // convert the rows indexes to the view's indexes so the correct
+                // rows are selected.
+                actualRow = selectedTable.convertRowIndexToView(row);
+                selectedTable.addRowSelectionInterval(actualRow, actualRow);
+            }
+                
+        } catch (IllegalArgumentException | NoSuchElementException ex) {
+            NarrowOptionPane.showMessageDialog(this, ex, "Bad filter expression", JOptionPane.OK_OPTION);
+        }
+    }//GEN-LAST:event_selectPointsButtonActionPerformed
 
     private void selectAllButtonActionPerformed(
             java.awt.event.ActionEvent evt) {// GEN-FIRST:event_selectAllButtonActionPerformed
