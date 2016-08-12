@@ -485,8 +485,10 @@ public class SegmentStarTable extends RandomStarTable implements IrisDataStarTab
     public void setModelValues(double[] modelValues) {
         this.modelValues = modelValues;
         
-        setRatioValues(calcRatios(getFluxValues(), modelValues));
-        setResidualValues(calcResiduals(getFluxValues(), modelValues));
+        if (!ArrayUtils.isEmpty(modelValues)) {
+            setRatioValues(calcRatios(getFluxValues(), modelValues));
+            setResidualValues(calcResiduals(getFluxValues(), modelValues));
+        }
         
         updateColumnValues(modelValues, Column.Model_Values);
     }
@@ -513,6 +515,12 @@ public class SegmentStarTable extends RandomStarTable implements IrisDataStarTab
     private void setRatioValues(double[] ratioValues) {
         this.ratioValues = ratioValues;
         updateColumnValues(ratioValues, Column.Ratios);
+    }
+    
+    public void clearModelValues() {
+        setRatioValues(null);
+        setResidualValues(null);
+        setModelValues(null);
     }
 
     private double[] calcResiduals(double[] expected, double[] actual) {
@@ -598,7 +606,7 @@ public class SegmentStarTable extends RandomStarTable implements IrisDataStarTab
      * Returns whether or not a double array is empty or contains all NaNs.
      * 
      */
-    private static final boolean isEmpty(double[] data) {
+    private static boolean isEmpty(double[] data) {
         boolean ret = ArrayUtils.isEmpty(data);
         
         if (ret) return ret;

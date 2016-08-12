@@ -21,6 +21,10 @@ import cfa.vo.iris.visualizer.plotter.LayerType;
 import cfa.vo.iris.visualizer.stil.tables.SortedStarTable;
 
 import java.io.IOException;
+
+import org.apache.commons.lang.StringUtils;
+
+import uk.ac.starlink.table.ColumnInfo;
 import uk.ac.starlink.table.StarTable;
 import uk.ac.starlink.ttools.jel.ColumnIdentifier;
 
@@ -39,7 +43,6 @@ public class FunctionModel {
     
     private SortedStarTable sortedStackedStarTable;
     private StarTable baseTable;
-    private boolean hasModelValues = false;
     
     private String functionColor = "red";
     private Double functionDash = Double.NaN;
@@ -119,7 +122,13 @@ public class FunctionModel {
      * baseTable.
      */
     public boolean hasModelValues() {
-        return this.hasModelValues;
+        for (int i=0; i<baseTable.getColumnCount(); i++) {
+            ColumnInfo c = baseTable.getColumnInfo(i);
+            if (StringUtils.equals(c.getName(), Column.Model_Values.name())) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
@@ -130,14 +139,7 @@ public class FunctionModel {
         // Verify that the function value columns are present - and set the appropriate fields
         // in this function model.
         ColumnIdentifier colId = new ColumnIdentifier(baseTable);
-        
         try {
-            
-            colId.getColumnIndex(Column.Model_Values.name());
-            colId.getColumnIndex(Column.Residuals.name());
-            colId.getColumnIndex(Column.Ratios.name());
-            hasModelValues = true;
-            
             // find column containing spectral values
             int col = colId.getColumnIndex(SegmentColumn.Column.Spectral_Value.name());
             
@@ -147,7 +149,7 @@ public class FunctionModel {
             
         } catch (IOException ex) {
             // Any exceptions and this becomes an invalid layer
-            hasModelValues = false;
+            throw new IllegalArgumentException("Must have spectral value column in a function model!");
         }
     }
     

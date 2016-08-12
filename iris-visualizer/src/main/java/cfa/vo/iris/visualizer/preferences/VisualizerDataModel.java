@@ -239,9 +239,8 @@ public class VisualizerDataModel {
             
             // set a FunctionModel
             // TODO: handle setting multiple function models
-            // TODO: Better if check for present fits ('if SED has FunctionModel')
             FunctionModel model = sedModel.getFunctionModel();
-            if (model.hasModelValues()) {
+            if (model != null && model.hasModelValues()) {
                 newFunctionModels.add(model);
             }
             
@@ -260,10 +259,10 @@ public class VisualizerDataModel {
         updateColors(newSedModels);
         
         // Update existing values
-        this.setLayerModels(newSedModels);
         this.setSedStarTables(newSedTables);
         this.setDataModelTitle(dataModelTitle.toString());
         this.setFunctionModels(newFunctionModels);
+        this.setLayerModels(newSedModels);
         
         pcs.firePropertyChange(PROP_SELECTED_SEDS, oldSeds, selectedSeds);
     }
@@ -321,7 +320,7 @@ public class VisualizerDataModel {
     }
     
     // Locked down since these are tied to the selected seds
-    synchronized void setLayerModels(List<LayerModel> newModels) {
+    private synchronized void setLayerModels(List<LayerModel> newModels) {
         List<LayerModel> oldModels = this.layerModels;
         
         // Verify unique suffixes for the models

@@ -27,6 +27,7 @@ import java.util.Set;
 
 import cfa.vo.iris.fitting.FitConfiguration;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -116,8 +117,12 @@ public class SedModel {
      * @return FunctionModel for the fit on this SED, if available.
      */
     public FunctionModel getFunctionModel() {
-        // TODO: Only return a model if this SedModel has been fitted.
-        StarTable table = new StackedStarTable(getIrisDataTables(true), new SegmentColumnInfoMatcher());
+        List<IrisDataStarTable> dataTables = getIrisDataTables(true);
+        
+        // No tables == no stacked star table
+        if (CollectionUtils.isEmpty(dataTables)) return null;
+        
+        StarTable table = new StackedStarTable(dataTables, new SegmentColumnInfoMatcher());
         table.setName(sed.getId());
         
         return new FunctionModel(table);
@@ -187,7 +192,7 @@ public class SedModel {
     // TODO: Make this better! e.g., should have some mechanism to just have a stacked
     // IrisStarTable that would allow us to more easily and efficiently extract data. Still, 
     // performance wise much better than sedlib.
-    public void setFittingData(final Data data, boolean includeMasked) {
+    public void extractFittingData(final Data data, boolean includeMasked) {
         
         List<IrisDataStarTable> dataTables = this.getIrisDataTables(includeMasked);
         
@@ -197,9 +202,9 @@ public class SedModel {
         double[] fluxErrData = new double[] {};
         
         for (IrisDataStarTable table : dataTables) {
-            specData = ArrayUtils.addAll(specData, table.getOriginalSpecValues());
-            fluxData = ArrayUtils.addAll(fluxData, table.getOriginalFluxValues());
-            fluxErrData = ArrayUtils.addAll(fluxErrData, table.getOriginalFluxErrValues());
+            specData = ArrayUtils.addAll(specData, table.getSpecValues());
+            fluxData = ArrayUtils.addAll(fluxData, table.getFluxValues());
+            fluxErrData = ArrayUtils.addAll(fluxErrData, table.getFluxErrValues());
         }
         
         data.setX(specData);
@@ -430,11 +435,13 @@ public class SedModel {
     }
 
     /**
-     * Reset the model
+     * Clears fitting data from the underlying star tables, and resets the FitConfiguration
+     * to default, empty values.
      */
-    public void reset() {
-        removeAll();
-        refresh();
+    public void clearFittingData() {
+        for (IrisStarTable table : this.getDataTables()) {
+            table.getPlotterDataTable().clearModelValues();
+        }
         sed.getFit().reset();
     }
 }

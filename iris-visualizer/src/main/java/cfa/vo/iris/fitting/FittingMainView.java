@@ -594,6 +594,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
 
     private void clearButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_clearButtonActionPerformed
         controller.clearAll();
+        preferences.getDataModel().refresh();
         confidencePanel.reset();
     }//GEN-LAST:event_clearButtonActionPerformed
 
