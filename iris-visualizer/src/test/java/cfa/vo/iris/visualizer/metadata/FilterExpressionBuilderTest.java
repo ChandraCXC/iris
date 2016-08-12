@@ -66,6 +66,10 @@ public class FilterExpressionBuilderTest {
         
         assertArrayEquals(new Integer[]{5, 6, 7, 8, 9}, 
                 (Integer[]) validator.process(expression).toArray(new Integer[5]));
+        
+        expression = "($1 * 2) >= 10 AND $2 >=6 NOT $1 != 11";
+        assertArrayEquals(new Integer[]{10}, 
+                (Integer[]) validator.process(expression).toArray(new Integer[1]));
     }
     
     @Test

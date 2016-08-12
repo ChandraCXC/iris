@@ -23,6 +23,7 @@ import cfa.vo.sedlib.Segment;
 import cfa.vo.sedlib.io.SedFormat;
 import cfa.vo.testdata.TestData;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.concurrent.Executors;
 import static org.junit.Assert.*;
 import org.junit.Before;
@@ -221,8 +222,8 @@ public class FilterExpressionValidatorTest {
     public void testInvalidExpressionColumnDNE1() throws Exception {
         // column specified does not exist
         String expression = "$5 * 2 > $1";
-        exception.expect(ArrayIndexOutOfBoundsException.class);
-        exception.expectMessage(FilterExpressionException.COLUMN_DNE_MSG);
+        exception.expect(NoSuchElementException.class);
+        exception.expectMessage("Bad expression: Specified column $5 does not exist.");
         validator.process(expression);
     }
     
