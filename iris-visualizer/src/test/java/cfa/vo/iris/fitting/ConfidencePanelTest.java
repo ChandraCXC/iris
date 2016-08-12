@@ -66,7 +66,7 @@ public class ConfidencePanelTest {
 
     @Test
     public void testDoConfidence() throws Exception {
-        uiPanel.getButton().click();
+        uiPanel.getButton("Compute").click();
         UISpecAssert.waitUntil(uiPanel.getTable().contentEquals(columnNames, expected), 1000);
     }
 }
