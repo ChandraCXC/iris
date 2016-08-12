@@ -342,6 +342,6 @@ public class FitController {
      * Clear fit info
      */
     public void clearAll() {
-        sedModel.reset();
+        sedModel.clearFittingData();
     }
 }

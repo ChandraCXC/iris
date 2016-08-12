@@ -27,6 +27,7 @@ import java.util.Set;
 
 import cfa.vo.iris.fitting.FitConfiguration;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -116,8 +117,12 @@ public class SedModel {
      * @return FunctionModel for the fit on this SED, if available.
      */
     public FunctionModel getFunctionModel() {
-        // TODO: Only return a model if this SedModel has been fitted.
-        StarTable table = new StackedStarTable(getIrisDataTables(true), new SegmentColumnInfoMatcher());
+        List<IrisDataStarTable> dataTables = getIrisDataTables(true);
+        
+        // No tables == no stacked star table
+        if (CollectionUtils.isEmpty(dataTables)) return null;
+        
+        StarTable table = new StackedStarTable(dataTables, new SegmentColumnInfoMatcher());
         table.setName(sed.getId());
         
         return new FunctionModel(table);
@@ -430,11 +435,13 @@ public class SedModel {
     }
 
     /**
-     * Reset the model
+     * Clears fitting data from the underlying star tables, and resets the FitConfiguration
+     * to default, empty values.
      */
-    public void reset() {
-        removeAll();
-        refresh();
+    public void clearFittingData() {
+        for (IrisStarTable table : this.getDataTables()) {
+            table.getPlotterDataTable().clearModelValues();
+        }
         sed.getFit().reset();
     }
 }
