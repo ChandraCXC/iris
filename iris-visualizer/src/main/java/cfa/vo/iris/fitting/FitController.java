@@ -146,7 +146,7 @@ public class FitController {
         data.setName(SherpaClient.DATA_NAME);
         
         // Extract fitting data from SedModel, don't include masked points.
-        model.setFittingData(data, false);
+        model.extractFittingData(data, false);
         double[] xoldvalues = data.getX();
         if (ArrayUtils.isEmpty(xoldvalues)) {
             throw new SedNoDataException("No Data in SED. Please add some data and try again.");

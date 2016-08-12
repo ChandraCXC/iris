@@ -187,7 +187,7 @@ public class SedModel {
     // TODO: Make this better! e.g., should have some mechanism to just have a stacked
     // IrisStarTable that would allow us to more easily and efficiently extract data. Still, 
     // performance wise much better than sedlib.
-    public void setFittingData(final Data data, boolean includeMasked) {
+    public void extractFittingData(final Data data, boolean includeMasked) {
         
         List<IrisDataStarTable> dataTables = this.getIrisDataTables(includeMasked);
         
@@ -197,9 +197,9 @@ public class SedModel {
         double[] fluxErrData = new double[] {};
         
         for (IrisDataStarTable table : dataTables) {
-            specData = ArrayUtils.addAll(specData, table.getOriginalSpecValues());
-            fluxData = ArrayUtils.addAll(fluxData, table.getOriginalFluxValues());
-            fluxErrData = ArrayUtils.addAll(fluxErrData, table.getOriginalFluxErrValues());
+            specData = ArrayUtils.addAll(specData, table.getSpecValues());
+            fluxData = ArrayUtils.addAll(fluxData, table.getFluxValues());
+            fluxErrData = ArrayUtils.addAll(fluxErrData, table.getFluxErrValues());
         }
         
         data.setX(specData);
