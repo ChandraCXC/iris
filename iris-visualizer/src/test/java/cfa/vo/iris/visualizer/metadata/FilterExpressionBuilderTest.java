@@ -55,14 +55,14 @@ public class FilterExpressionBuilderTest {
     public void testLogicalExpressions() throws Exception {
         String expression; // filter expression
 
-        expression = "$1 * 2 >= 10 && $2 >=6";
+        expression = "$1 * 2 >= 10 AND $2 >=6";
         // the evaluator returns the array of rows whose data complies
         // with the filter expression
         
         assertArrayEquals(new Integer[]{5, 6, 7, 8, 9, 10}, 
                 (Integer[]) validator.process(expression).toArray(new Integer[6]));
         
-        expression = "($1 * 2) >= 10 && $2 >=6 ! $1 == 11";
+        expression = "($1 * 2) >= 10 AND $2 >=6 NOT $1 == 11";
         
         assertArrayEquals(new Integer[]{5, 6, 7, 8, 9}, 
                 (Integer[]) validator.process(expression).toArray(new Integer[5]));
@@ -72,22 +72,22 @@ public class FilterExpressionBuilderTest {
     public void testLogicalExpressionsWithParentheses() {
         String expression;
         
-        expression = "{$1 * 2 >= 10 && $2 >= 6}";
+        expression = "{$1 * 2 >= 10 AND $2 >= 6}";
 
         assertArrayEquals(new Integer[]{5, 6, 7, 8, 9, 10}, 
                 (Integer[]) validator.process(expression).toArray(new Integer[6]));
 
-        expression = "{($1 * 2 >= 10) && $2 >= 6} || $1 == 1";
+        expression = "{($1 * 2 >= 10) AND $2 >= 6} OR $1 == 1";
 
         assertArrayEquals(new Integer[]{0, 5, 6, 7, 8, 9, 10}, 
                 (Integer[]) validator.process(expression).toArray(new Integer[7]));
         
-        expression = "{($1 * 2) >= 10 && $2 >= 6} || $1 == 1";
+        expression = "{($1 * 2) >= 10 AND $2 >= 6} OR $1 == 1";
 
         assertArrayEquals(new Integer[]{0, 5, 6, 7, 8, 9, 10}, 
                 (Integer[]) validator.process(expression).toArray(new Integer[7]));
         
-        expression = "{(($1 * 2) >= 10) && $2 >= 6} || $1 == 1";
+        expression = "{(($1 * 2) >= 10) AND $2 >= 6} OR $1 == 1";
 
         assertArrayEquals(new Integer[]{0, 5, 6, 7, 8, 9, 10}, 
                 (Integer[]) validator.process(expression).toArray(new Integer[7]));

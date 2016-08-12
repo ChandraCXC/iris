@@ -34,9 +34,9 @@ import uk.ac.starlink.table.StarTable;
  */
 public class LogicalSetEvaluator extends AbstractEvaluator<HashSet> {
         // logical operators
-    public final static Operator NOT = new Operator("!", 2, Operator.Associativity.RIGHT, 3);
-    public final static Operator AND = new Operator("&&", 2, Operator.Associativity.LEFT, 2);
-    public final static Operator  OR = new Operator("||", 2, Operator.Associativity.LEFT, 1);
+    public final static Operator NOT = new Operator("NOT", 2, Operator.Associativity.RIGHT, 3);
+    public final static Operator AND = new Operator("AND", 2, Operator.Associativity.LEFT, 2);
+    public final static Operator  OR = new Operator("OR", 2, Operator.Associativity.LEFT, 1);
     
     private static final Parameters PARAMETERS;
     
