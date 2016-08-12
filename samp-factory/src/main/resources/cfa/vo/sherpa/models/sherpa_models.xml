@@ -145,7 +145,7 @@
         </parameter>
     </model>
     <model name="const1d" description="1-D constant amplitude model">
-        <parameter name="c0" val="1.0" min="0.0" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
+        <parameter name="c0" val="1.0" min="-3.4028234663852886e+38" max="3.4028234663852886e+38" frozen="0" hidden="0" alwaysfrozen="0"
                    units="" link="INDEF">
         </parameter>
     </model>
