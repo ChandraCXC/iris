@@ -295,7 +295,7 @@ public class FittingRangesFrame extends javax.swing.JInternalFrame {
             NarrowOptionPane.showMessageDialog(this, message, "Fitting Tool", NarrowOptionPane.WARNING_MESSAGE);
             return;
         }
-        listener.setPickingRanges(true);
+        listener.setPickingRanges(true, this);
         GUIUtils.moveToFront(listener.getPlotterView());
     }//GEN-LAST:event_addRangeFromPlotButtonActionPerformed
 
