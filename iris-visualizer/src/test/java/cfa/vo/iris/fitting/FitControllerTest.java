@@ -93,6 +93,12 @@ public class FitControllerTest {
     }
 
     @Test
+    public void testAddPartToJsonModel() throws Exception {
+        FitConfiguration actual = controller.loadJson(getClass().getResource("fit.json").openStream());
+        actual.getModel().addPart(new DefaultModel()); // This would fail if using default Json deserializer.
+    }
+
+    @Test
     public void testRoundTrip() throws Exception {
         controller.saveJson(os);
         InputStream is = new ByteArrayInputStream(os.toString("UTF-8").getBytes("UTF-8"));
