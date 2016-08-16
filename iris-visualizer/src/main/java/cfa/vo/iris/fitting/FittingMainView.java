@@ -268,6 +268,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         gridBagConstraints.insets = new java.awt.Insets(6, 0, 6, 0);
         jPanel5.add(openFittingRangesButton, gridBagConstraints);
 
+        jPanel6.setLayout(new javax.swing.BoxLayout(jPanel6, javax.swing.BoxLayout.LINE_AXIS));
         jPanel6.add(busyFit);
 
         fitButton.setText("Fit");
@@ -346,7 +347,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         confidenceContainer.setLayout(confidenceContainerLayout);
         confidenceContainerLayout.setHorizontalGroup(
             confidenceContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(confidencePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
+            .addComponent(confidencePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 412, Short.MAX_VALUE)
         );
         confidenceContainerLayout.setVerticalGroup(
             confidenceContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
