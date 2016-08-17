@@ -1,6 +1,6 @@
 #Iris: the VO SED Analysis application
 
-Latest stable release: ${project.version} - ${buildDate}
+Latest stable release: 3.0b1 - Aug, 17th, 2016.
 
 Iris is a Virtual Observatory (VO)
 application for analysis of spectral energy distributions (SEDs).  Iris can
@@ -28,7 +28,7 @@ for process intercommunication.
 Iris provides interoperability features in input (import data from other VO-
 enabled applications) and output (export an SED to VO-enabled applications).
 
-# How to Install Iris ${project.version}
+# How to Install Iris
 
 If you installed a previous version of Iris,
 we suggest you install Iris in a different `conda` environment.
@@ -37,10 +37,10 @@ want to override the existing installation.
 
 To install Iris in a new environment:
 ````
-$ conda create -n iris3 -c cxc iris
+$ conda create -n iris3 -c cxc -c sherpa iris=3.0b1
 ````
 
-The `-c https://...` is not necessary if you have already the CXC channel
+The `-c cxc -c sherpa` is not necessary if you have already these CXC channels
 listed in your `$HOME/.condarc` file.
 
 # Source Build
