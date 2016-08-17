@@ -43,6 +43,18 @@ $ conda create -n iris3 -c cxc -c sherpa iris=3.0b1
 The `-c cxc -c sherpa` is not necessary if you have already these CXC channels
 listed in your `$HOME/.condarc` file.
 
+You can run Iris with:
+````
+$ source activate iris3
+$ iris
+````
+
+You can also run the smoke test in order to verify your installation is working
+properly:
+````
+$ iris smoketest
+````
+
 # Source Build
 Iris is the combination of several Python and Java packages. Source builds are
 thus more complex than the usual processes for individual packages alone.
