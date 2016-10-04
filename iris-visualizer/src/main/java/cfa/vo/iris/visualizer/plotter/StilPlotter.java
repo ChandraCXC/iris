@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2015,2016 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -277,7 +277,14 @@ public class StilPlotter extends JPanel {
         // forcing a redraw
         if (fixed && !forceReset) {
             PlaneAspect existingAspect = getPlotPreferences().getAspect();
-            display.setAspect(existingAspect);
+            
+            // If switching any axis from linear to log scale, only keep the 
+            // original aspect if that axis has positive values. Otherwise, an 
+            // error will occur when trying to calc the log of a negative number.
+            if ((getPlotPreferences().getXlog() && existingAspect.getXMin() > 0) 
+                    && (getPlotPreferences().getYlog() && existingAspect.getYMin() > 0)) {
+                display.setAspect(existingAspect);
+            }
         }
         
         // Add the display to the plot view

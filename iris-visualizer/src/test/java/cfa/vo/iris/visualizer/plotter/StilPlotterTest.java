@@ -649,6 +649,37 @@ public class StilPlotterTest {
         assertEquals(.14787, StilPlotter.computeFittingLocation(aspect, true), 0.0001);
     }
     
+    @Test
+    public void testFixedPlotChangePlotType() throws Exception {
+        // for GH issue #332
+        ExtSed sed = new ExtSed("test", false);
+        StilPlotter plot = setUpTests(sed);
+        
+        PlaneAspect control = plot.getPlotDisplay().getAspect();
+        
+        // linear first
+        plot.setPlotType(PlotType.LINEAR);
+        
+        // set fixed
+        plot.getPlotPreferences().setFixed(true);
+        
+        // zoom out
+        double[] xlimits = new double[] {-3.3, 13.3};
+        double[] ylimits = new double[] {0, 13.3};
+        plot.getPlotDisplay().setAspect(new PlaneAspect(xlimits, ylimits));
+        
+        // now set to LOG scale. No exceptions should be thrown.
+        plot.setPlotType(PlotType.LOG);
+        
+        PlaneAspect aspect = plot.getPlotDisplay().getAspect();
+        
+        // Verify plot aspect goes back to default log scale values 
+        assertEquals(control.getXMax(), aspect.getXMax(), 0.01);
+        assertEquals(control.getYMax(), aspect.getYMax(), 0.01);
+        assertEquals(control.getXMin(), aspect.getXMin(), 0.01);
+        assertEquals(control.getYMin(), aspect.getYMin(), 0.01);
+    }
+    
     private StilPlotter setUpTests(ExtSed sed) throws Exception {
         preferences = new VisualizerComponentPreferences(ws, new SingleThreadExecutor());
         preferences.getDataStore().update(sed);
