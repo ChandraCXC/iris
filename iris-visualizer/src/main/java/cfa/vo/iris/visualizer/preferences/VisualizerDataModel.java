@@ -344,6 +344,7 @@ public class VisualizerDataModel {
         
         model.getInSource().setName(id);
         model.setSuffix(id);
+        model.setLabel(id);
         labels.add(id);
     }
     
