@@ -281,8 +281,10 @@ public class StilPlotter extends JPanel {
             // If switching any axis from linear to log scale, only keep the 
             // original aspect if that axis has positive values. Otherwise, an 
             // error will occur when trying to calc the log of a negative number.
-            if ((getPlotPreferences().getXlog() && existingAspect.getXMin() > 0) 
-                    && (getPlotPreferences().getYlog() && existingAspect.getYMin() > 0)) {
+            if ((getPlotPreferences().getXlog() && existingAspect.getXMin() <= 0) 
+                    || (getPlotPreferences().getYlog() && existingAspect.getYMin() <= 0)) {
+                // reset the axis
+            } else {
                 display.setAspect(existingAspect);
             }
         }
