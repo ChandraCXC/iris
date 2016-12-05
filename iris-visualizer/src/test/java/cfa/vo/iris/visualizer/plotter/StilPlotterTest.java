@@ -522,7 +522,22 @@ public class StilPlotterTest {
         
         // add new model, then add a segment. The warning should pop up again.
         model.getDataTables().get(0).getPlotterDataTable().setModelValues(seg1.getFluxAxisValues());
-        plot.setSeds(Arrays.asList(sed1));
+        preferences.getDataStore().update(sed1, seg2);
+        
+        WindowInterceptor.init(new Trigger() {
+            @Override
+            public void run() throws Exception {
+                plot.setSeds(Arrays.asList(sed1));
+            }
+        }).process(new WindowHandler() {
+            @Override
+            public Trigger process(Window warning) throws Exception {
+                assertTrue(StringUtils.contains(warning.getTitle(), "Warning"));
+                assertTrue(StringUtils.contains(
+                        warning.getTextBox("Warning").getText(), sed1.getId()));
+                return Trigger.DO_NOTHING;
+            }
+        }).run();
     }
     
     @Test
