@@ -435,13 +435,14 @@ public class SedModel {
     }
 
     /**
-     * Clears fitting data from the underlying star tables, and resets the FitConfiguration
-     * to default, empty values.
+     * Clears fitting data from the underlying star tables, and resets the 
+     * FitConfiguration to default, empty values.
      */
     public void clearFittingData() {
         for (IrisStarTable table : this.getDataTables()) {
             table.getPlotterDataTable().clearModelValues();
         }
         sed.getFit().reset();
+        this.setHasModelFunction(false);
     }
 }
