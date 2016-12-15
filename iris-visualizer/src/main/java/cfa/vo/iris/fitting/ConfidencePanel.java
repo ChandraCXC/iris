@@ -18,13 +18,16 @@ package cfa.vo.iris.fitting;
 import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.sherpa.ConfidenceResults;
 import java.util.concurrent.ExecutionException;
+
+import org.astrogrid.samp.client.SampException;
 import org.jdesktop.beansbinding.BeanProperty;
 import org.jdesktop.beansbinding.Property;
 import org.jdesktop.swingbinding.JTableBinding;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.SwingWorker;
+import javax.swing.*;
+
 import org.jdesktop.beansbinding.Converter;
 
 
@@ -64,6 +67,13 @@ public class ConfidencePanel extends javax.swing.JPanel {
     }
 
     /**
+     * Reset GUI
+     */
+    public void reset() {
+        setConfidenceResults(controller.getFit().getConfidenceResults());
+    }
+
+    /**
      * Set the value of confidenceResults
      *
      * @param confidenceResults new value of confidenceResults
@@ -81,10 +91,12 @@ public class ConfidencePanel extends javax.swing.JPanel {
         b.setConverter(new ConfResultsConverter());
         Property parName = BeanProperty.create("name");
         Property parMin = BeanProperty.create("lowerLimit");
+        Property parVal = BeanProperty.create("value");
         Property parMax = BeanProperty.create("upperLimit");
         b.addColumnBinding(parName).setColumnName("Parameter");
-        b.addColumnBinding(parMin).setColumnName("Lower Limit");
-        b.addColumnBinding(parMax).setColumnName("Upper Limit");
+        b.addColumnBinding(parVal).setColumnName("Value");
+        b.addColumnBinding(parMin).setColumnName("Lower Bound");
+        b.addColumnBinding(parMax).setColumnName("Upper Bound");
         bindingGroup.bind();
     }
 
@@ -106,9 +118,11 @@ public class ConfidencePanel extends javax.swing.JPanel {
         jTable1 = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         busyConfidence = new org.jdesktop.swingx.JXBusyLabel();
-        jButton1 = new javax.swing.JButton();
+        computeButton = new javax.swing.JButton();
+        stopButton = new javax.swing.JButton();
 
-        setMinimumSize(new java.awt.Dimension(287, 191));
+        setMinimumSize(null);
+        setPreferredSize(null);
         setLayout(new java.awt.GridBagLayout());
 
         jLabel1.setText("Confidence Interval: ");
@@ -136,7 +150,7 @@ public class ConfidencePanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(12, 12, 0, 0);
         add(jTextField1, gridBagConstraints);
 
-        sigmaText.setText("sigma - 90.00%");
+        sigmaText.setText("sigma - 90.0%");
         sigmaText.setName("sigmaPercent"); // NOI18N
 
         binding = org.jdesktop.beansbinding.Bindings.createAutoBinding(org.jdesktop.beansbinding.AutoBinding.UpdateStrategy.READ_WRITE, this, org.jdesktop.beansbinding.ELProperty.create("${confidenceResults.percent}"), sigmaText, org.jdesktop.beansbinding.BeanProperty.create("text"));
@@ -175,13 +189,22 @@ public class ConfidencePanel extends javax.swing.JPanel {
 
         jPanel1.add(busyConfidence);
 
-        jButton1.setText("Compute");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        computeButton.setText("Compute");
+        computeButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 doConfidence(evt);
             }
         });
-        jPanel1.add(jButton1);
+        jPanel1.add(computeButton);
+
+        stopButton.setText("Stop");
+        stopButton.setEnabled(false);
+        stopButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stopButtonActionPerformed(evt);
+            }
+        });
+        jPanel1.add(stopButton);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
@@ -219,25 +242,41 @@ public class ConfidencePanel extends javax.swing.JPanel {
                     logger.log(Level.SEVERE, "Error computing confidence", ex);
                 } finally {
                     busyConfidence.setBusy(false);
+                    computeButton.setEnabled(true);
+                    stopButton.setEnabled(false);
                 }
             }
         };
             
         busyConfidence.setBusy(true);
+        computeButton.setEnabled(false);
+        stopButton.setEnabled(true);
         worker.execute();
         
     }//GEN-LAST:event_doConfidence
 
+    private void stopButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopButtonActionPerformed
+        stopButton.setEnabled(false);
+        try {
+            controller.stopConfidence();
+        } catch (SampException e) {
+            NarrowOptionPane.showMessageDialog(this, e.getMessage(), "Unexpected Error", JOptionPane.ERROR_MESSAGE);
+        } finally {
+            stopButton.setEnabled(true);
+        }
+    }//GEN-LAST:event_stopButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private org.jdesktop.swingx.JXBusyLabel busyConfidence;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton computeButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel sigmaText;
+    private javax.swing.JButton stopButton;
     private org.jdesktop.beansbinding.BindingGroup bindingGroup;
     // End of variables declaration//GEN-END:variables
 

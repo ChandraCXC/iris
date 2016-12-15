@@ -15,6 +15,8 @@ import cfa.vo.sherpa.stats.Stat;
 import cfa.vo.sherpa.stats.Statistic;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jdesktop.observablecollections.ObservableCollections;
 import org.jdesktop.observablecollections.ObservableList;
@@ -62,13 +64,8 @@ public class FitConfiguration {
     private transient final PropertyChangeSupport propertyChangeSupport = new java.beans.PropertyChangeSupport(this);
 
     public FitConfiguration() {
-        model = SAMPFactory.get(CompositeModel.class);
-        confidence = SAMPFactory.get(Confidence.class);
-        confidence.getConfig().setSigma(1.6);
-        confidence.setName("conf");
-        stat = Statistic.Chi2;
-        method = OptimizationMethod.LevenbergMarquardt;
         fittingRanges = new ArrayList<>();
+        init();
     }
 
     @Nonnull
@@ -217,7 +214,7 @@ public class FitConfiguration {
     }
 
     public void setUserModelList(List<UserModel> userModelList) {
-        ObservableList oldList = this.userModelList;
+        ObservableList<UserModel> oldList = this.userModelList;
         this.userModelList = ObservableCollections.observableList(userModelList);
         propertyChangeSupport.firePropertyChange(PROP_USERMODELLIST, oldList, userModelList);
     }
@@ -254,7 +251,7 @@ public class FitConfiguration {
         // convert to Angstroms
         // TODO: update this to convert to user preferences later on
         XUnit oldUnit = new XUnits(fittingRange.getXUnit().getString());
-        XUnit newUnit = new XUnits("Angstrom");
+        XUnit newUnit = new XUnits(SherpaClient.X_UNIT);
         
         try {
             fittingRange.setXUnit(cfa.vo.iris.sed.quantities.XUnit.getFromUnitString(newUnit.toString()));
@@ -357,6 +354,10 @@ public class FitConfiguration {
         setConfidenceResults(null);
     }
 
+    public void reset() {
+        init();
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -386,20 +387,39 @@ public class FitConfiguration {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(model)
+        HashCodeBuilder hcb = new HashCodeBuilder(17, 37)
+                // Non primitive return types must manually specify which sub-objects to 
+                // include in order to maintain equality.
+                .append(model.getName())
+                .append(confidence.getConfig().getSigma())
+                .append(confidence.getName())
                 .append(stat)
                 .append(method)
-                .append(confidence)
-                .append(confResults)
                 .append(rStat)
                 .append(nFev)
                 .append(qVal)
                 .append(numPoints)
                 .append(statVal)
                 .append(dof)
-                .append(userModelList)
-                .toHashCode();
+                .append(userModelList);
+        
+        // If confidence results are available append them as well
+        if (confResults != null) {
+            hcb.append(confResults.getParmaxes())
+                .append(confResults.getParmins())
+                .append(confResults.getParvals());
+        }
+        
+        // Must manually include param and values in hashCode computation
+        if (CollectionUtils.isNotEmpty(model.getParts())) {
+            for (Model part : model.getParts()) {
+                for (Parameter param : part.getPars()) {
+                    hcb.append(HashCodeBuilder.reflectionHashCode(param));
+                }
+            }
+        }
+        
+        return hcb.toHashCode();
     }
 
     public void addPropertyChangeListener(java.beans.PropertyChangeListener listener )
@@ -410,6 +430,24 @@ public class FitConfiguration {
     public void removePropertyChangeListener(java.beans.PropertyChangeListener listener )
     {
         propertyChangeSupport.removePropertyChangeListener( listener );
+    }
+
+    private void init() {
+        setModel(SAMPFactory.get(CompositeModel.class));
+        setConfidence(SAMPFactory.get(Confidence.class));
+        confidence.getConfig().setSigma(1.6);
+        confidence.setName("conf");
+        setConfidenceResults(SAMPFactory.get(ConfidenceResults.class));
+        setStat(Statistic.Chi2);
+        setMethod(OptimizationMethod.LevenbergMarquardt);
+        clearFittingRanges();
+        setStatVal(null);
+        setDof(null);
+        setnFev(null);
+        setNumPoints(null);
+        setqVal(null);
+        setrStat(null);
+        setUserModelList(new ArrayList<UserModel>());
     }
 
     private void removeUserModel(Model m) {

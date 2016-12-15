@@ -4,7 +4,7 @@
       "pars" : [ {
         "name" : "m.c0",
         "val" : 1.0,
-        "min" : 1.1754943508222875E-38,
+        "min" : -3.4028234663852886E+38,
         "max" : 3.4028234663852886E38,
         "frozen" : 0,
         "alwaysfrozen" : 0,
@@ -14,7 +14,7 @@
       }, {
         "name" : "m.c1",
         "val" : 3.25,
-        "min" : 1.1754943508222875E-38,
+        "min" : -3.4028234663852886E+38,
         "max" : 3.4028234663852886E38,
         "frozen" : 0,
         "alwaysfrozen" : 0,
@@ -24,7 +24,7 @@
       }, {
         "name" : "m.c2",
         "val" : 0.0,
-        "min" : 1.1754943508222875E-38,
+        "min" : -3.4028234663852886E+38,
         "max" : 3.4028234663852886E38,
         "frozen" : 1,
         "alwaysfrozen" : 0,
@@ -34,7 +34,7 @@
       }, {
         "name" : "m.c3",
         "val" : 0.0,
-        "min" : 1.1754943508222875E-38,
+        "min" : -3.4028234663852886E+38,
         "max" : 3.4028234663852886E38,
         "frozen" : 1,
         "alwaysfrozen" : 0,
@@ -44,7 +44,7 @@
       }, {
         "name" : "m.c4",
         "val" : 0.0,
-        "min" : 1.1754943508222875E-38,
+        "min" : -3.4028234663852886E+38,
         "max" : 3.4028234663852886E38,
         "frozen" : 1,
         "alwaysfrozen" : 0,
@@ -54,7 +54,7 @@
       }, {
         "name" : "m.c5",
         "val" : 0.0,
-        "min" : 1.1754943508222875E-38,
+        "min" : -3.4028234663852886E+38,
         "max" : 3.4028234663852886E38,
         "frozen" : 1,
         "alwaysfrozen" : 0,
@@ -64,7 +64,7 @@
       }, {
         "name" : "m.offset",
         "val" : 0.0,
-        "min" : 1.1754943508222875E-38,
+        "min" : -3.4028234663852886E+38,
         "max" : 3.4028234663852886E38,
         "frozen" : 1,
         "alwaysfrozen" : 0,
@@ -94,5 +94,5 @@
   "statVal" : null,
   "dof" : null,
   "userModelList" : [ ],
-  "confidenceResults" : null
+  "confidenceResults" : {"percent":null,"parnames":null,"parvals":null,"sigma":null,"parmins":null,"parmaxes":null}
 }

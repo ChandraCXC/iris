@@ -19,6 +19,8 @@ import cfa.vo.iris.gui.widgets.ModelViewerPanel;
 import cfa.vo.iris.test.IrisAppResource;
 import cfa.vo.iris.test.unit.AbstractUISpecTest;
 import cfa.vo.iris.test.unit.TestUtils;
+
+import org.apache.commons.lang.StringUtils;
 import org.junit.*;
 import org.junit.rules.TemporaryFolder;
 import org.uispec4j.*;
@@ -120,18 +122,18 @@ public class IrisFunctionalIT extends AbstractUISpecTest {
         UISpecAssert.waitUntil(new Assertion() {
             @Override
             public void check() {
-                Double amplInf = Double.valueOf((String) confidenceTable.getContentAt(0, 1));
+                Double amplInf = Double.valueOf((String) confidenceTable.getContentAt(0, 2));
                 assertEquals(-6.202e-6, amplInf, 1e-8);
             }
         }, TIMEOUT);
 
-        Double value = Double.valueOf((String) confidenceTable.getContentAt(0, 2));
+        Double value = Double.valueOf((String) confidenceTable.getContentAt(0, 3));
         assertEquals(6.065e-6, value, 1e-8);
 
-        value = Double.valueOf((String) confidenceTable.getContentAt(1, 1));
+        value = Double.valueOf((String) confidenceTable.getContentAt(1, 2));
         assertEquals(-0.00438, value, 0.00001);
 
-        value = Double.valueOf((String) confidenceTable.getContentAt(1, 2));
+        value = Double.valueOf((String) confidenceTable.getContentAt(1, 3));
         assertEquals(0.00486, value, 0.00001);
 
         // check the confidence interval label updated
@@ -190,12 +192,12 @@ public class IrisFunctionalIT extends AbstractUISpecTest {
         window.getButton("load").click();
 
         window.getMenuBar().getMenu("Tools").getSubMenu("SED Builder").getSubMenu("SED Builder").click();
-        Window builder = window.getDesktop().getWindow("SED Builder");
+        final Window builder = window.getDesktop().getWindow("SED Builder");
 
-        final String publisher = (String) builder.getTable().getContentAt(0, 2);
         UISpecAssert.waitUntil(new Assertion() {
             @Override
             public void check() {
+                String publisher = (String) builder.getTable().getContentAt(0, 2);
                 junit.framework.Assert.assertTrue(publisher.startsWith("Vizier - CDS"));
             }
         }, 20000);
@@ -204,11 +206,18 @@ public class IrisFunctionalIT extends AbstractUISpecTest {
     private void saveText() throws Exception {
         File outputFile = tempFolder.newFile("output.fit");
 
-        WindowInterceptor
-                .init(fittingView.getMenuBar().getMenu("File").getSubMenu("Save Text...").triggerClick())
-                .process(FileChooserHandler.init().select(outputFile.getAbsolutePath()))
-                .run()
-        ;
+        WindowInterceptor interceptor = WindowInterceptor
+                .init(fittingView.getMenuBar().getMenu("File").getSubMenu("Save Text...").triggerClick());
+        
+        interceptor.process(new WindowHandler() {
+            @Override
+            public Trigger process(Window w) throws Exception {
+                // Warning for changed data
+                junit.framework.Assert.assertTrue(StringUtils.contains(w.getTitle(), "Warning"));
+                w.getButton("Ok").click();
+                return Trigger.DO_NOTHING;
+            }
+        }).process(FileChooserHandler.init().select(outputFile.getAbsolutePath())).run();
 
         String expected = TestUtils.readFile(getClass(), "fit.output");
         String actual = com.google.common.io.Files.toString(outputFile, Charset.defaultCharset());
@@ -430,7 +439,7 @@ public class IrisFunctionalIT extends AbstractUISpecTest {
         fittingView.getButton("Compute").click();
 
         Table confTable = fittingView.getTable();
-        String[] columns = {"Parameter", "Lower Limit", "Upper Limit"};
+        String[] columns = {"Parameter", "Value", "Lower Bound", "Upper Bound"};
         UISpecAssert.waitUntil(UISpecAssert.not(confTable.isEmpty()), TIMEOUT);
 
         Assert.assertEquals(confTable.getContentAt(0, 0), "m5.ampl");

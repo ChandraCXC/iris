@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.uispec4j.utils.ArrayUtils;
 
 import cfa.vo.iris.test.unit.TestUtils;
+import cfa.vo.iris.test.unit.TestUtils.SingleThreadExecutor;
 import cfa.vo.iris.visualizer.metadata.IrisStarJTable.RowSelection;
 import cfa.vo.iris.visualizer.metadata.IrisStarJTable.StarJTableHeader;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
@@ -39,7 +40,7 @@ import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 
 public class IrisStarJTableTest {
     
-    private IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
+    private IrisStarTableAdapter adapter = new IrisStarTableAdapter(new SingleThreadExecutor());
     
     @Test
     public void testColumnHeaderTooltips() throws Exception {
@@ -278,5 +279,37 @@ public class IrisStarJTableTest {
         segTable2.applyMasks(new int[] {0});
         table.setSelectedStarTables(Arrays.asList(segTable1, segTable2));
         assertEquals(300.0, table.getValueAt(0, 3));
+    }
+    
+    @Test
+    public void testRowSortErrorLastCol() throws Exception {
+        IrisStarJTable table = new IrisStarJTable();
+        table.setSortBySpecValues(true);
+        table.setUsePlotterDataTables(true);
+        
+        // Create Segment
+        IrisStarTable segTable = adapter.convertSegment(TestUtils.createSampleSegment(
+                new double[] {1,2,3}, new double[] {4,5,6}));
+        table.setSelectedStarTables(Arrays.asList(segTable));
+        
+        // Sort by Original Flux Value (last column)
+        table.getRowSorter().setSortKeys(Arrays.asList(new RowSorter.SortKey(4, SortOrder.DESCENDING)));
+        
+        // Verify table values
+        assertEquals(3.0, table.getValueAt(0, 2));
+        assertEquals(2.0, table.getValueAt(1, 2));
+        assertEquals(1.0, table.getValueAt(2, 2));
+        
+        // Apply a mask
+        segTable.applyMasks(new int[] {0});
+        
+        // Resetting should preserve sort order
+        table.setSelectedStarTables(Arrays.asList(segTable));
+        
+        // Verify table values
+        assertEquals(false, table.getValueAt(0, 1));
+        assertEquals(false, table.getValueAt(1, 1));
+        assertEquals(true, table.getValueAt(2, 1));
+        table.setSelectedStarTables(Arrays.asList(segTable));
     }
 }

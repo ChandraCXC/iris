@@ -40,6 +40,7 @@ public class SherpaInterpolator {
     public SherpaInterpolator(SherpaClient client, SedlibSedManager manager, UnitsManager unitsManager) {
         this.client = client;
         this.um = unitsManager;
+        this.manager = manager;
     }
 
     public ExtSed interpolate(ExtSed sed, InterpolationConfig interpConf) throws Exception {

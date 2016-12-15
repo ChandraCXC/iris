@@ -16,12 +16,14 @@
 package cfa.vo.iris.visualizer.plotter;
 
 import cfa.vo.iris.fitting.FittingRange;
+import cfa.vo.iris.fitting.FittingRangesFrame;
 import cfa.vo.iris.sed.ExtSed;
 import cfa.vo.iris.sed.SedException;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.units.spv.XUnits;
 import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
-import java.awt.Point;
+
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.logging.Level;
@@ -39,7 +41,8 @@ public class MouseXRangesClickedListener extends StilPlotterMouseListener implem
     private FittingRange fittingRange;
     private boolean isStartPoint; // flag for if it's a first (start) or second (end) click on the plot
     private boolean pickingRanges; // flag for if fit ranges are currently being choosen. This mouse listener only reacts if this flag is set to true.
-
+    private FittingRangesFrame frame; // For refreshing when we've added a range to a FitConfiguration
+    
     @Override
     public void setPlotterView(PlotterView plotterView) {
         super.setPlotterView(plotterView);
@@ -59,9 +62,13 @@ public class MouseXRangesClickedListener extends StilPlotterMouseListener implem
         return pickingRanges;
     }
     
-    public void setPickingRanges(boolean pickingRanges) {
+    public void setPickingRanges(boolean pickingRanges, FittingRangesFrame frame) {
+        if (display != null) {
+            display.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
+        }
         this.pickingRanges = pickingRanges;
         this.fittingRange = new FittingRange();
+        this.frame = frame;
     }
 
     @Override
@@ -86,6 +93,8 @@ public class MouseXRangesClickedListener extends StilPlotterMouseListener implem
                 fittingRange.setStartPoint(x);
                 isStartPoint = false;
             } else {
+                display.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+
                 fittingRange.setEndPoint(x);
                 
                 // set unit
@@ -106,6 +115,11 @@ public class MouseXRangesClickedListener extends StilPlotterMouseListener implem
                 
                 // Reset the plotter
                 dataModel.refresh();
+                
+                // Refresh the frame, if available
+                if (frame != null) {
+                    frame.updateTable();
+                }
             }
         }
     }

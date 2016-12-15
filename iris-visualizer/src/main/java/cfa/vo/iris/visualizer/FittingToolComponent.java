@@ -137,7 +137,7 @@ public class FittingToolComponent implements IrisComponent {
             super();
 
             add(new AbstractDesktopItem("Fitting Tool",
-                    "Fitting Tool Prototype", "/tool.png", "/tool_tiny.png") {
+                    "Model SEDs using Sherpa", "/ruler_small.png", "/ruler_tiny.png") {
                 @Override
                 public void onClick() {
                     if (view == null) {

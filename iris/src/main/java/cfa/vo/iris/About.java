@@ -60,8 +60,8 @@ public class About extends javax.swing.JDialog {
         jLabel12 = new javax.swing.JLabel();
         jLabel13 = new javax.swing.JLabel();
 
-        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 18));
-        jLabel1.setText("Iris v2.1");
+        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
+        jLabel1.setText("Iris v3.0b1");
         jLabel1.setName("jLabel1"); // NOI18N
 
         jLabel2.setFont(new java.awt.Font("Lucida Grande", 0, 12)); // NOI18N
@@ -74,7 +74,7 @@ public class About extends javax.swing.JDialog {
         jLabel4.setText("for Spectral Energy Distributions");
         jLabel4.setName("jLabel4"); // NOI18N
 
-        jLabel5.setText("Copyright 2015");
+        jLabel5.setText("Copyright 2015, 2016");
         jLabel5.setName("jLabel5"); // NOI18N
 
         jLabel6.setFont(new java.awt.Font("Lucida Grande", 0, 12)); // NOI18N

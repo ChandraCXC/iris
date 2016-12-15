@@ -34,6 +34,8 @@ import static org.junit.Assert.*;
 import java.util.BitSet;
 
 import org.apache.commons.lang.StringUtils;
+import org.junit.Assert;
+import uk.ac.starlink.table.ColumnInfo;
 
 public class SegmentStarTableTest {
     
@@ -220,5 +222,33 @@ public class SegmentStarTableTest {
         int h3 = table.hashCode();
         assertFalse(h2 == h3);
         assertTrue(table.validHashCode);
+    }
+    
+    @Test
+    public void testModelClearing() throws Exception {
+        Segment segment = TestUtils.createSampleSegment(new double[] {1,2,3}, new double[] {1,2,3});
+        SegmentStarTable table = new SegmentStarTable(segment);
+        
+        table.setModelValues(new double[] {0,2,4});
+        
+        Assert.assertArrayEquals(new double[] {0,2,4}, table.getModelValues(), 0.001);
+        Assert.assertArrayEquals(new double[] {-1,0,1}, table.getResidualValues(), 0.001);
+        Assert.assertArrayEquals(new double[] {1,0,.33333}, table.getRatioValues(), 0.001);
+        
+        table.clearModelValues();
+        
+        assertNull(table.getModelValues());
+        assertNull(table.getRatioValues());
+        assertNull(table.getResidualValues());
+        
+        for (int i=0; i<table.getColumnCount(); i++) {
+            ColumnInfo c = table.getColumnInfo(i);
+            if (StringUtils.equals(Column.Model_Values.name(), c.getName()) ||
+                StringUtils.equals(Column.Ratios.name(), c.getName())||
+                StringUtils.equals(Column.Residuals.name(), c.getName())) 
+            {
+                fail("Should not have column: " + c.getName());
+            }
+        }
     }
 }

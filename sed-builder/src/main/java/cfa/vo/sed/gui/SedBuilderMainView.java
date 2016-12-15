@@ -1070,7 +1070,7 @@ public class SedBuilderMainView extends JInternalFrame {
     @Action
     public void saveSegments() {
         try {
-            ExtSed s = new ExtSed("");
+            ExtSed s = new ExtSed("", false);
             s.addSegment(selectedSegments);
             SaveSedDialog ssd = new SaveSedDialog(rootFrame, s, false);
             ssd.setVisible(true);

@@ -33,9 +33,9 @@ public class ConfidencePanelTest {
         confidenceResults.setParmins(new double[]{-10.0, -20.0});
         confidenceResults.setParmaxes(new double[]{10.0, 20.0});
 
-        columnNames = new String[]{"Parameter", "Lower Limit", "Upper Limit"};
-        expected = new String[][]{{"parA", "-10.0", "10.0"},
-                {"parB", "-20.0", "20.0"}
+        columnNames = new String[]{"Parameter", "Value", "Lower Bound", "Upper Bound"};
+        expected = new String[][]{{"parA", "1.0", "-10.0", "10.0"},
+                {"parB", "2.0", "-20.0", "20.0"}
         };
 
         FitController controller = Mockito.mock(FitController.class);
@@ -66,7 +66,7 @@ public class ConfidencePanelTest {
 
     @Test
     public void testDoConfidence() throws Exception {
-        uiPanel.getButton().click();
+        uiPanel.getButton("Compute").click();
         UISpecAssert.waitUntil(uiPanel.getTable().contentEquals(columnNames, expected), 1000);
     }
 }

@@ -7,6 +7,7 @@ import cfa.vo.sedlib.common.SedNoDataException;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.util.concurrent.Executor;
 
 /**
  * Class for helpful utility functions to be used in unit testing.
@@ -69,5 +70,12 @@ public class TestUtils {
     public static String readFile(Class requestingClass, String path) throws Exception {
         String p = requestingClass.getResource(path).getFile();
         return FileUtils.readFileToString(new File(p));
+    }
+    
+    public static class SingleThreadExecutor implements Executor {
+        @Override
+        public void execute(Runnable command) {
+            command.run();
+        }
     }
 }

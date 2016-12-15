@@ -20,7 +20,6 @@ import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.sed.SedException;
 import cfa.vo.iris.sed.quantities.XUnit;
 import cfa.vo.iris.visualizer.plotter.MouseXRangesClickedListener;
-import cfa.vo.iris.visualizer.plotter.PlotterView;
 import cfa.vo.iris.visualizer.preferences.VisualizerComponentPreferences;
 import java.math.BigDecimal;
 import java.util.List;
@@ -85,6 +84,7 @@ public class FittingRangesFrame extends javax.swing.JInternalFrame {
         addRangeButton = new javax.swing.JButton();
 
         setClosable(true);
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
@@ -279,7 +279,8 @@ public class FittingRangesFrame extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void OKButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OKButtonActionPerformed
-        this.dispose();
+        this.hide();
+        this.updateTable();
     }//GEN-LAST:event_OKButtonActionPerformed
 
     private void addRangeFromPlotButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addRangeFromPlotButtonActionPerformed
@@ -294,7 +295,7 @@ public class FittingRangesFrame extends javax.swing.JInternalFrame {
             NarrowOptionPane.showMessageDialog(this, message, "Fitting Tool", NarrowOptionPane.WARNING_MESSAGE);
             return;
         }
-        listener.setPickingRanges(true);
+        listener.setPickingRanges(true, this);
         GUIUtils.moveToFront(listener.getPlotterView());
     }//GEN-LAST:event_addRangeFromPlotButtonActionPerformed
 

@@ -28,10 +28,10 @@ import org.junit.Test;
 
 import cfa.vo.interop.SAMPFactory;
 import cfa.vo.iris.sed.ExtSed;
+import cfa.vo.iris.test.unit.TestUtils.SingleThreadExecutor;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTable;
 import cfa.vo.iris.visualizer.stil.tables.IrisStarTableAdapter;
 import cfa.vo.sedlib.Segment;
-import cfa.vo.sedlib.Target;
 import cfa.vo.sedlib.TextParam;
 import cfa.vo.sherpa.Data;
 
@@ -42,7 +42,7 @@ public class SedPreferencesTest {
         ExtSed sed = new ExtSed("test");
         sed.setManaged(false);
         
-        IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter(new SingleThreadExecutor());
         
         SedModel model = new SedModel(sed, adapter);
         
@@ -56,7 +56,7 @@ public class SedPreferencesTest {
         assertEquals(1, model.getLayerModels().size());
         
         // Re-adding the same segment should not alter the map
-        model.addSegment(seg1);
+        model.updateSegment(seg1);
         assertEquals(1, model.getLayerModels().size());
         
         // Whereas adding an identical (but new) segment should add a new map element
@@ -98,39 +98,6 @@ public class SedPreferencesTest {
     }
     
     @Test
-    public void testSuffixesWithSameTargetNames() throws Exception {
-        ExtSed sed = new ExtSed("test");
-        IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
-        
-        SedModel model = new SedModel(sed, adapter);
-        
-        // create two segments with the same Target name
-        Target targ = new Target();
-        targ.setName(new TextParam("my segment"));
-        
-        Segment seg1 = createSampleSegment();
-        seg1.setTarget(targ);
-        Segment seg2 = createSampleSegment();
-        seg2.setTarget(targ);
-        
-        sed.addSegment(seg1);
-        sed.addSegment(seg2);
-        
-        model.refresh();
-        assertEquals("my segment", model.getSegmentModel(seg1).getSuffix());
-        assertEquals("my segment 1", model.getSegmentModel(seg2).getSuffix());
-        
-        // add another segment of the same target name
-        // suffix number should go up 1
-        Segment seg3 = createSampleSegment();
-        seg3.setTarget(targ);
-        sed.addSegment(seg3);
-        
-        model.refresh();
-        assertEquals("my segment 2", model.getSegmentModel(seg3).getSuffix());
-    }
-    
-    @Test
     public void testAddMultipleSegments() throws Exception {
         
         final ExtSed sed = new ExtSed("sed");
@@ -143,11 +110,11 @@ public class SedPreferencesTest {
         sed.getSegment(1).createTarget();
         sed.getSegment(1).getTarget().setName(new TextParam("target1"));
         
-        IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter(new SingleThreadExecutor());
         SedModel model = new SedModel(sed, adapter);
         
         assertEquals("target1", model.getSegmentModel(sed.getSegment(0)).getSuffix());
-        assertEquals("target1 1", model.getSegmentModel(sed.getSegment(1)).getSuffix());
+        assertEquals("target1", model.getSegmentModel(sed.getSegment(1)).getSuffix());
     }
     
     @Test
@@ -168,43 +135,43 @@ public class SedPreferencesTest {
         
         // Empty SED -> 0 version
         SedModel model = new SedModel(sed, adapter);
-        int h1 = model.getVersion();
+        int h1 = model.computeVersion();
         assertEquals(13, h1);
         
         // Add basic segment
         Segment segment1 = createSampleSegment();//createSampleSegment(new double[] {1,1}, new double[] {1,1});
         sed.addSegment(segment1);
         model.refresh();
-        int h2 = model.getVersion();
+        int h2 = model.computeVersion();
         assertFalse(h1 == h2);
 
         // Additional segment changes hashcode
         Segment segment2 = createSampleSegment(new double[] {1,2}, new double[] {2,2});
         sed.addSegment(segment2);
         model.refresh();
-        int h3 = model.getVersion();
+        int h3 = model.computeVersion();
         assertFalse(h2 == h3);
         
         // Remove 2nd segment
         sed.remove(segment2);
         model.refresh();
-        int h4 = model.getVersion();
+        int h4 = model.computeVersion();
         assertTrue(h2 == h4);
         
         // Changing values changes version
         segment1.setSpectralAxisValues(new double[] {1, 2, 100});
         model.refresh();
-        int h5 = model.getVersion();
+        int h5 = model.computeVersion();
         assertFalse(h4 == h5);
         
         // Masking points changes version
         model.getDataTables().get(0).applyMasks(new int[] {0});
-        int h6 = model.getVersion();
+        int h6 = model.computeVersion();
         assertFalse(h5 == h6);
         
         // Remove mask
         model.getDataTables().get(0).clearMasks();
-        int h7 = model.getVersion();
+        int h7 = model.computeVersion();
         assertTrue(h5 == h7);
     }
     
@@ -215,7 +182,7 @@ public class SedPreferencesTest {
         sed.addSegment(createSampleSegment(new double[] {1,2,3}, new double[] {100,200,300}), 0);
         sed.addSegment(createSampleSegment(new double[] {4,5}, new double[] {400,500}), 1);
 
-        IrisStarTableAdapter adapter = new IrisStarTableAdapter(null);
+        IrisStarTableAdapter adapter = new IrisStarTableAdapter(new SingleThreadExecutor());
         SedModel model = new SedModel(sed, adapter);
         
         // Mask last row in both tables
@@ -226,8 +193,8 @@ public class SedPreferencesTest {
         Data allData = SAMPFactory.get(Data.class);
         Data maskedData = SAMPFactory.get(Data.class);
         
-        model.getFittingData(allData, true);
-        model.getFittingData(maskedData, false);
+        model.extractFittingData(allData, true);
+        model.extractFittingData(maskedData, false);
         
         // Verify allData is correct
         assertArrayEquals(new double[] {1,2,3,4,5}, allData.getX(), .01);

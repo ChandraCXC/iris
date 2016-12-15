@@ -15,6 +15,7 @@
  */
 package cfa.vo.iris.visualizer.metadata;
 
+import cfa.vo.iris.gui.NarrowOptionPane;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,6 +35,8 @@ import cfa.vo.iris.visualizer.stil.tables.SegmentColumnInfoMatcher;
 import cfa.vo.iris.visualizer.stil.tables.UtypeColumnInfoMatcher;
 import cfa.vo.sedlib.common.SedInconsistentException;
 import cfa.vo.sedlib.common.SedNoDataException;
+import java.util.List;
+import java.util.NoSuchElementException;
 public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
     private static final long serialVersionUID = 1L;
@@ -42,6 +45,8 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
     final VisualizerComponentPreferences preferences;
     final VisualizerDataModel dataModel;
+    
+    private FilterExpressionBuilder filterExpressionBuilder;
     
     /**
      * Creates new form MetadataBrowser
@@ -124,8 +129,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
      * Forces plotter and point tables to redraw themselves by manually resetting the models.
      */
     private void resetDataTables() {
-        plotterStarJTable.setSelectedStarTables(dataModel.getSelectedStarTables());
-        pointStarJTable.setSelectedStarTables(dataModel.getSelectedStarTables());
         dataModel.refresh();
     }
     
@@ -174,11 +177,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         extractToSedMenuItem = new javax.swing.JMenuItem();
-        broadcastToSampMenuItem = new javax.swing.JMenuItem();
-        createSubsetMenuItem = new javax.swing.JMenuItem();
-        editMenu = new javax.swing.JMenu();
-        createNewColumnMenuItem = new javax.swing.JMenuItem();
-        restoreSetMenuItem = new javax.swing.JMenuItem();
         selectMenu = new javax.swing.JMenu();
         selectAllMenuItem = new javax.swing.JMenuItem();
         clearSelectionMenuItem = new javax.swing.JMenuItem();
@@ -202,9 +200,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
 
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
-        filterExpressionField.setEditable(false);
         filterExpressionField.setColumns(2);
-        filterExpressionField.setText("Filter Expression");
         filterExpressionField.setToolTipText("Enter a column selection expression");
         filterExpressionField.setMaximumSize(new java.awt.Dimension(75, 75));
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -220,7 +216,11 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         selectPointsButton.setFont(new java.awt.Font("DejaVu Sans", 0, 12)); // NOI18N
         selectPointsButton.setText("Select Points");
         selectPointsButton.setToolTipText("Select points matching the filter expression");
-        selectPointsButton.setEnabled(false);
+        selectPointsButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                selectPointsButtonActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 5;
         gridBagConstraints.gridy = 1;
@@ -461,23 +461,7 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         });
         fileMenu.add(extractToSedMenuItem);
 
-        broadcastToSampMenuItem.setText("Broadcast to SAMP");
-        fileMenu.add(broadcastToSampMenuItem);
-
-        createSubsetMenuItem.setText("Create Subset");
-        fileMenu.add(createSubsetMenuItem);
-
         jMenuBar1.add(fileMenu);
-
-        editMenu.setText("Edit");
-
-        createNewColumnMenuItem.setText("Create New Column");
-        editMenu.add(createNewColumnMenuItem);
-
-        restoreSetMenuItem.setText("Restore Set");
-        editMenu.add(restoreSetMenuItem);
-
-        jMenuBar1.add(editMenu);
 
         selectMenu.setText("Select");
         selectMenu.setName(""); // NOI18N
@@ -608,6 +592,29 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
         extractSelectionToSed();
     }//GEN-LAST:event_extractButtonActionPerformed
 
+    private void selectPointsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectPointsButtonActionPerformed
+        
+        IrisStarJTable selectedTable = getSelectedIrisJTable();
+        
+        this.filterExpressionBuilder = new FilterExpressionBuilder(selectedTable.getStarTable());
+        
+        try {
+            // select the table rows using the filter expression
+            List<Integer> rows = filterExpressionBuilder.process(filterExpressionField.getText());
+            
+            int actualRow;
+            for (Integer row : rows) {
+                // convert the rows indexes to the view's indexes so the correct
+                // rows are selected.
+                actualRow = selectedTable.convertRowIndexToView(row);
+                selectedTable.addRowSelectionInterval(actualRow, actualRow);
+            }
+                
+        } catch (IllegalArgumentException | NoSuchElementException ex) {
+            NarrowOptionPane.showMessageDialog(this, ex, "Bad filter expression", JOptionPane.OK_OPTION);
+        }
+    }//GEN-LAST:event_selectPointsButtonActionPerformed
+
     private void selectAllButtonActionPerformed(
             java.awt.event.ActionEvent evt) {// GEN-FIRST:event_selectAllButtonActionPerformed
         JTable table = getSelectedJTable();
@@ -639,17 +646,13 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton applyMaskButton;
     private javax.swing.JMenuItem applyMaskMenuItem;
-    private javax.swing.JMenuItem broadcastToSampMenuItem;
     private javax.swing.JButton clearAllButton;
     private javax.swing.JMenuItem clearAllMenuItem;
     private javax.swing.JButton clearMaskButton;
     private javax.swing.JButton clearSelectionButton;
     private javax.swing.JMenuItem clearSelectionMenuItem;
-    private javax.swing.JMenuItem createNewColumnMenuItem;
-    private javax.swing.JMenuItem createSubsetMenuItem;
     private javax.swing.JSplitPane dataPane;
     private javax.swing.JTabbedPane dataTabsPane;
-    private javax.swing.JMenu editMenu;
     private javax.swing.JButton extractButton;
     private javax.swing.JMenuItem extractToSedMenuItem;
     private javax.swing.JMenu fileMenu;
@@ -665,7 +668,6 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     private javax.swing.JScrollPane pointMetadataScrollPane;
     private cfa.vo.iris.visualizer.metadata.IrisStarJTable pointStarJTable;
     private javax.swing.JMenuItem removeMasksMenuItem;
-    private javax.swing.JMenuItem restoreSetMenuItem;
     private javax.swing.JPanel segmentMetadataPanel;
     private javax.swing.JScrollPane segmentMetadataScrollPane;
     private javax.swing.JButton selectAllButton;

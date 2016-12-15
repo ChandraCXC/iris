@@ -17,7 +17,9 @@
 package cfa.vo.iris.sed.stil;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import cfa.vo.sedlib.Sed;
 import cfa.vo.sedlib.Segment;
@@ -30,9 +32,28 @@ import uk.ac.starlink.util.ByteArrayDataSource;
 import uk.ac.starlink.votable.VOTableBuilder;
 
 
-public class SerializingStarTableAdapter implements StarTableAdapter<Segment> {
+public class SerializingSegmentAdapter {
+    
+    public List<StarTable> convertSed(Sed sed) {
+        try {
+            List<StarTable> ret = new ArrayList<>(sed.getNumberOfSegments());
+            ByteArrayOutputStream os = toVOTable(sed);
+            TableSequence seq = convertOSStream(os);
+            
+            for (int i=0; i<sed.getNumberOfSegments(); i++) {
+                ret.add(seq.nextTable());
+            }
+            
+            if (seq.nextTable() != null) {
+                throw new IllegalStateException("Got extra table in serialization!");
+            }
+            
+            return ret;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-    @Override
     public StarTable convertStarTable(Segment data) {
         Sed tmp = new Sed();
         StarTable table;
@@ -40,7 +61,7 @@ public class SerializingStarTableAdapter implements StarTableAdapter<Segment> {
         try {
             tmp.addSegment(data);
             ByteArrayOutputStream os = toVOTable(tmp);
-            table = convertOSStream(os);
+            table = convertOSStream(os).nextTable();
             if (table == null) {
                 throw new IllegalStateException("Got null deserialization from segment");
             }
@@ -61,11 +82,10 @@ public class SerializingStarTableAdapter implements StarTableAdapter<Segment> {
         return os;
     }
 
-    private StarTable convertOSStream(ByteArrayOutputStream os) throws Exception {
+    private TableSequence convertOSStream(ByteArrayOutputStream os) throws Exception {
         ByteArrayDataSource ds = new ByteArrayDataSource("Iris DS", os.toByteArray());
         VOTableBuilder votBuilder = new VOTableBuilder();
-        TableSequence seq = votBuilder.makeStarTables(ds, StoragePolicy.getDefaultPolicy());
-        return seq.nextTable();
+        return votBuilder.makeStarTables(ds, StoragePolicy.getDefaultPolicy());
     }
     
     private void cleanParameters(StarTable table) {

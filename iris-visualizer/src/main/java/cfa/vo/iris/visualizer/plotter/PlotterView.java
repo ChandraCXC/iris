@@ -19,6 +19,7 @@ import cfa.vo.iris.IWorkspace;
 import cfa.vo.iris.fitting.FitController;
 import cfa.vo.iris.IrisApplication;
 import cfa.vo.iris.gui.GUIUtils;
+import cfa.vo.iris.gui.NarrowOptionPane;
 import cfa.vo.iris.visualizer.IrisVisualizer;
 import cfa.vo.iris.visualizer.metadata.MetadataBrowserMainView;
 import cfa.vo.iris.visualizer.plotter.PlotPreferences.PlotType;
@@ -29,6 +30,8 @@ import cfa.vo.iris.visualizer.preferences.VisualizerDataModel;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.SwingConstants;
@@ -192,8 +195,9 @@ public class PlotterView extends JInternalFrame {
         this.mntmXlog.setSelected(plotPreferences.getPlotType()==PlotType.X_LOG);
         this.mntmYlog.setSelected(plotPreferences.getPlotType()==PlotType.Y_LOG);
         
-        // Grid on/off
+        // Grid and legend on/off
         this.mntmGridOnOff.setSelected(plotPreferences.getShowGrid());
+        this.showLegendCheckBox.setSelected(plotPreferences.getShowLegend());
         
         // turn errorbars on/off
 //        this.mntmErrorBars.setSelected(this.stilPlotter1.getVisualizerPreferences()
@@ -201,7 +205,6 @@ public class PlotterView extends JInternalFrame {
 //                .getShowErrorBars());
         
         // set plot window fixed
-        
         this.mntmAutoFixed.setSelected(plotPreferences.getFixed());
     }
 
@@ -694,7 +697,15 @@ public class PlotterView extends JInternalFrame {
         
         // Re-evaluate all models currently plotted
         for (SedModel model : preferences.getDataModel().getSedModels()) {
-            preferences.evaluateModel(model, controller);
+            try {
+                preferences.evaluateModel(model, controller);
+            } catch (Exception e) {
+                NarrowOptionPane.showMessageDialog(this,
+                        "Exception caught while re-evaluating model: " + e.getMessage(),
+                        "Error",
+                        NarrowOptionPane.ERROR_MESSAGE);
+                Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, e);
+            }
         }
     }//GEN-LAST:event_evaluateButtonActionPerformed
 

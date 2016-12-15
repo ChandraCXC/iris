@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,7 +36,7 @@ public class SampService {
 
     private boolean autoRunHub = false;
     private boolean sampUp = false;
-    private boolean sherpaUp = false;
+    private AtomicBoolean sherpaUp = new AtomicBoolean(false);
     private boolean startingHub = false;
     private boolean started = false;
 
@@ -155,11 +156,10 @@ public class SampService {
         try {
             newState = pingSherpa();
             logger.log(LEVEL, "Sherpa client connected: " + newState);
-            if (newState != sherpaUp) {
-                logger.log(Level.INFO, "Sherpa Client connection status changed: "+sherpaUp+ " -> "+newState);
-                sherpaUp = newState;
+            if (sherpaUp.compareAndSet(!newState, newState)) {
+                logger.log(Level.INFO, "Sherpa Client connection status changed: "+!newState+ " -> "+newState);
                 for(SAMPConnectionListener listener : sherpaListeners) {
-                    listener.run(sherpaUp);
+                    listener.run(newState);
                 }
             }
         } catch (Exception e) {
@@ -175,7 +175,7 @@ public class SampService {
                 monitorSherpaOnce();
             }
         };
-        sherpaMonitorHandle = executor.scheduleAtFixedRate(sherpaMonitor, 0, 1, TimeUnit.SECONDS);
+        sherpaMonitorHandle = executor.scheduleAtFixedRate(sherpaMonitor, 0, 3, TimeUnit.SECONDS);
     }
 
     private void startSamp() {
@@ -195,7 +195,7 @@ public class SampService {
             logger.log(Level.INFO, "Starting SAMP resource server");
         }
         logger.log(Level.INFO, "Starting SAMP monitor thread");
-        sampMonitorHandle = executor.scheduleAtFixedRate(sampMonitor, 0, 1, TimeUnit.SECONDS);
+        sampMonitorHandle = executor.scheduleAtFixedRate(sampMonitor, 0, 3, TimeUnit.SECONDS);
     }
 
     private void shutdownSamp() {
@@ -235,7 +235,7 @@ public class SampService {
 
     public void addSherpaConnectionListener(SAMPConnectionListener listener) {
         sherpaListeners.add(listener);
-        listener.run(sherpaUp);
+        listener.run(sherpaUp.get());
     }
 
     public Response callSherpaAndRetry(SAMPMessage message) throws SEDException, SampException {
