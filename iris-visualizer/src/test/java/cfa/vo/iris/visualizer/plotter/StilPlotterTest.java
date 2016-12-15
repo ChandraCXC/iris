@@ -652,7 +652,7 @@ public class StilPlotterTest {
     @Test
     public void testFixedPlotChangePlotType() throws Exception {
         // for GH issue #332
-        ExtSed sed = new ExtSed("test", false);
+        ExtSed sed = new ExtSed("test", true);
         StilPlotter plot = setUpTests(sed);
         
         PlaneAspect control = plot.getPlotDisplay().getAspect();
@@ -678,6 +678,41 @@ public class StilPlotterTest {
         assertEquals(control.getYMax(), aspect.getYMax(), 0.01);
         assertEquals(control.getXMin(), aspect.getXMin(), 0.01);
         assertEquals(control.getYMin(), aspect.getYMin(), 0.01);
+        
+        // go back to linear, cause a SED change, and verify the plot aspect 
+        // doesn't change.
+        plot.setPlotType(PlotType.LINEAR);
+        
+        // zoom out
+        xlimits = new double[] {-3.3, 13.3};
+        ylimits = new double[] {0, 13.3};
+        plot.getPlotDisplay().setAspect(new PlaneAspect(xlimits, ylimits));
+        control = plot.getPlotDisplay().getAspect();
+        
+        // throw sed change
+        sed.addSegment(TestUtils.createSampleSegment());
+        preferences.getDataStore().update(sed);
+        preferences.updateSelectedSed(sed);
+        plot.setPreferences(preferences);
+        
+        // assert plot ranges haven't changed
+        aspect = plot.getPlotDisplay().getAspect();
+        assertEquals(control.getXMax(), aspect.getXMax(), 0.01);
+        assertEquals(control.getYMax(), aspect.getYMax(), 0.01);
+        assertEquals(control.getXMin(), aspect.getXMin(), 0.01);
+        assertEquals(control.getYMin(), aspect.getYMin(), 0.01);
+        
+        // now unset fixed plot range; ranges should update on sed change
+        plot.getPlotPreferences().setFixed(false);
+        preferences.getDataStore().update(sed);
+        preferences.updateSelectedSed(sed);
+        plot.setPreferences(preferences);
+        
+        aspect = plot.getPlotDisplay().getAspect();
+        assertNotEquals(control.getXMax(), aspect.getXMax(), 0.01);
+        assertNotEquals(control.getYMax(), aspect.getYMax(), 0.01);
+        assertNotEquals(control.getXMin(), aspect.getXMin(), 0.01);
+        assertNotEquals(control.getYMin(), aspect.getYMin(), 0.01);
     }
     
     private StilPlotter setUpTests(ExtSed sed) throws Exception {
