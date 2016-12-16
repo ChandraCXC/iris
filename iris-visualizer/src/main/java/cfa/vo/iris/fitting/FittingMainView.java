@@ -717,7 +717,28 @@ public class FittingMainView extends JInternalFrame implements SedListener {
             int result = chooser.showSaveDialog(FittingMainView.this);
             if (result == JFileChooser.APPROVE_OPTION) {
                 try {
-                    controller.saveJson(new FileOutputStream(chooser.getSelectedFile()));
+                    
+                    boolean overwrite = true;
+                    int resp = NarrowOptionPane.YES_OPTION;
+                    
+                    String filePath = chooser.getSelectedFile().getAbsolutePath();
+                    
+                    if (chooser.getSelectedFile().exists()) {
+                        resp = NarrowOptionPane.showConfirmDialog(FittingMainView.this,
+                            filePath + " exists, do you want to overwrite it?", 
+                            "File exists", NarrowOptionPane.YES_NO_OPTION);
+                    }
+                    
+                    // overwrite and response are always true UNLESS the user 
+                    // specifies otherwise in the OptionPane above.
+                    overwrite = (resp == NarrowOptionPane.YES_OPTION);
+                    if (overwrite) {
+                        controller.saveJson(new FileOutputStream(chooser.getSelectedFile()));
+                        NarrowOptionPane.showMessageDialog(FittingMainView.this, 
+                                "Saved file " + filePath, "Saved File", 
+                                NarrowOptionPane.INFORMATION_MESSAGE);
+                    }
+
                 } catch(IOException ex) {
                     NarrowOptionPane.showMessageDialog(FittingMainView.this, ex.getMessage(), "Error", NarrowOptionPane.ERROR_MESSAGE);
                 }

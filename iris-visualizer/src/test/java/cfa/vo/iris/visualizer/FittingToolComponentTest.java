@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2015, 2016 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -236,18 +236,93 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         mainFit.getComboBox("statisticCombo").select("Chi2");
         mainFit.getComboBox("optimizationCombo").select("MonteCarlo");
 
-        File outputFile = tempFolder.newFile("output.json");
-
+        String outputFile = tempFolder.getRoot().getAbsolutePath()+"output.json";
+        
         WindowInterceptor
                 .init(mainFit.getMenuBar().getMenu("File").getSubMenu("Save Json...").triggerClick())
                 .process(FileChooserHandler.init()
                         .assertIsSaveDialog()
-                        .select(outputFile.getAbsolutePath()))
+                        .select(outputFile))
                 .run()
         ;
-
+        
         String expected = TestUtils.readFile(getClass(), "fit.json");
-        JsonAssert.assertJsonEquals(expected, Files.toString(outputFile, Charset.defaultCharset()));
+        JsonAssert.assertJsonEquals(expected, Files.toString(new File(outputFile), Charset.defaultCharset()));
+    }
+    
+    @Test
+    public void testSaveJsonOverwrite() throws Exception {
+        ExtSed sed = sedManager.newSed("TestSed");
+        addFit(sed);
+        final Window mainFit = setupFitWindow(sed);
+        
+        Tree modelsTree = mainFit.getTree("modelsTree");
+        modelsTree.click("polynomial.m/m.c1");
+        TextBox parVal = mainFit.getInputTextBox("Par Val");
+        UISpecAssert.waitUntil(parVal.textEquals("0.0"), 1000);
+        parVal.setText("3.25");
+        mainFit.getComboBox("statisticCombo").select("Chi2");
+        mainFit.getComboBox("optimizationCombo").select("MonteCarlo");
+
+        String outputFile = tempFolder.getRoot().getAbsolutePath()+"output.json";
+        
+        WindowInterceptor
+                .init(mainFit.getMenuBar().getMenu("File").getSubMenu("Save Json...").triggerClick())
+                .process(FileChooserHandler.init()
+                        .assertIsSaveDialog()
+                        .select(outputFile))
+                .run()
+        ;
+        
+        String expected = TestUtils.readFile(getClass(), "fit.json");
+        JsonAssert.assertJsonEquals(expected, Files.toString(new File(outputFile), Charset.defaultCharset()));
+        
+        // update the model and try to save the results to the same filename
+        mainFit.getComboBox("optimizationCombo").select("NelderMeadSimplex");
+        
+        WindowInterceptor interceptor = WindowInterceptor
+			.init(mainFit.getMenuBar().getMenu("File").getSubMenu("Save Json...").triggerClick());
+        
+        interceptor.process(FileChooserHandler.init()
+                        .assertIsSaveDialog()
+                        .select(outputFile))
+                .process(new WindowHandler() {
+                    public Trigger process(Window window) throws Exception {
+                        // Yes, overwrite the file
+                        return window.getButton("Yes").triggerClick();
+                    }
+                })
+                .process(new WindowHandler() {
+                    public Trigger process(Window window) throws Exception {
+                        // file successfully saved message
+                        return window.getButton("OK").triggerClick();
+                    }
+                })
+                .run();
+        
+        // check the file updated
+        expected = expected.replace("MonteCarlo", "NelderMeadSimplex");
+        JsonAssert.assertJsonEquals(expected, Files.toString(new File(outputFile), Charset.defaultCharset()));
+        
+        // update the model, use the same filename, but choose not to override it.
+        mainFit.getComboBox("optimizationCombo").select("MonteCarlo");
+        
+        interceptor = WindowInterceptor
+			.init(mainFit.getMenuBar().getMenu("File").getSubMenu("Save Json...").triggerClick());
+        
+        interceptor.process(FileChooserHandler.init()
+                        .assertIsSaveDialog()
+                        .select(outputFile))
+                .process(new WindowHandler() {
+                    public Trigger process(Window window) throws Exception {
+                        // No, do not overwrite the file
+                        return window.getButton("No").triggerClick();
+                    }
+                })
+                .run();
+        
+        // check that the file stayed the same as before.
+        JsonAssert.assertJsonEquals(expected, Files.toString(new File(outputFile), Charset.defaultCharset()));
     }
 
     @Test
