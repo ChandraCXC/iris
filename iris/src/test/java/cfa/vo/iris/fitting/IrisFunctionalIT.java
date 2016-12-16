@@ -53,6 +53,7 @@ public class IrisFunctionalIT extends AbstractUISpecTest {
     private String templateUrlString;
     private String functionUrlString;
 
+    private Window builder;
     private Window fittingView;
     private Tree modelsTree;
     private Tree availableTree;
@@ -92,7 +93,7 @@ public class IrisFunctionalIT extends AbstractUISpecTest {
     }
 
     private void simplefit() throws Exception {
-        desktop.getWindow("SED Builder").getButton("New").click();
+        builder.getButton("New").click();
         String[][] table = new String[][]{{"3C 066A", "35.665, 43.036", "NASA/IPAC Extragalactic Database (NED)", "34"}};
         loadSed("3c66a.xml", table);
 
@@ -192,7 +193,7 @@ public class IrisFunctionalIT extends AbstractUISpecTest {
         window.getButton("load").click();
 
         window.getMenuBar().getMenu("Tools").getSubMenu("SED Builder").getSubMenu("SED Builder").click();
-        final Window builder = window.getDesktop().getWindow("SED Builder");
+        builder = window.getDesktop().getWindow("SED Builder");
 
         UISpecAssert.waitUntil(new Assertion() {
             @Override
@@ -200,7 +201,7 @@ public class IrisFunctionalIT extends AbstractUISpecTest {
                 String publisher = (String) builder.getTable().getContentAt(0, 2);
                 junit.framework.Assert.assertTrue(publisher.startsWith("Vizier - CDS"));
             }
-        }, 20000);
+        }, 50000);
     }
 
     private void saveText() throws Exception {
@@ -481,16 +482,11 @@ public class IrisFunctionalIT extends AbstractUISpecTest {
     }
 
     protected void loadSed(String name, String[][] table) throws Exception {
-        TestUtils.invokeWithRetry(50, 100, new Runnable() {
-            @Override
-            public void run() {
-                window.getMenuBar().getMenu("Tools").getSubMenu("SED Builder").getSubMenu("SED Builder").click();
-                desktop.containsWindow("SED Builder").check();
-                desktop.getWindow("SED Builder").getButton("New").click();
-                desktop.getWindow("SED Builder").getButton("Load File").click();
-                desktop.containsWindow("Load an input File").check();
-            }
-        });
+        window.getMenuBar().getMenu("Tools").getSubMenu("SED Builder").getSubMenu("SED Builder").click();
+        desktop.containsWindow("SED Builder").check();
+        builder.getButton("New").click();
+        desktop.getWindow("SED Builder").getButton("Load File").click();
+        desktop.containsWindow("Load an input File").check();
 
         Window loader = desktop.getWindow("Load an input File");
         loader.getRadioButton("Location on Disk").click();
