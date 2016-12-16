@@ -519,11 +519,20 @@ public class StilPlotterTest {
         Segment seg3 = TestUtils.createSampleSegment();
         sed1.addSegment(seg3);
         preferences.getDataStore().update(sed1, seg3);
+        plot.setSeds(Arrays.asList(sed1));
+        
+        // no warning pops up
         
         // add new model, then add a segment. The warning should pop up again.
         model.getDataTables().get(0).getPlotterDataTable().setModelValues(seg1.getFluxAxisValues());
-        preferences.getDataStore().update(sed1, seg2);
+        model.setModelVersion(model.computeVersion());
+        model.setHasModelFunction(true);
         
+        Segment seg4 = TestUtils.createSampleSegment();
+        sed1.addSegment(seg4);
+        preferences.getDataStore().update(sed1, seg4);
+        
+        // intercept warning message on plotting the updated sed
         WindowInterceptor.init(new Trigger() {
             @Override
             public void run() throws Exception {
