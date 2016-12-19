@@ -179,18 +179,7 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         addFit(sed);
         final Window mainFit = setupFitWindow(sed);
 
-        File outputFile = tempFolder.newFile("output.fit");
-
-        WindowInterceptor
-                .init(mainFit.getMenuBar().getMenu("File").getSubMenu("Save Text...").triggerClick())
-                .process(FileChooserHandler.init()
-                        .assertIsSaveDialog()
-                        .select(outputFile.getAbsolutePath()))
-                .run()
-        ;
-
-        String expected = TestUtils.readFile(getClass(), "fit.output");
-        assertEquals(expected, Files.toString(outputFile, Charset.defaultCharset()));
+        testSaveFit("Save Text...", "fit.output", true, mainFit);
     }
 
     @Test
@@ -237,51 +226,30 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         mainFit.getComboBox("optimizationCombo").select("MonteCarlo");
 
         String outputFile = tempFolder.getRoot().getAbsolutePath()+"output.json";
-        
-        WindowInterceptor
-                .init(mainFit.getMenuBar().getMenu("File").getSubMenu("Save Json...").triggerClick())
-                .process(FileChooserHandler.init()
-                        .assertIsSaveDialog()
-                        .select(outputFile))
-                .run()
-        ;
-        
-        String expected = TestUtils.readFile(getClass(), "fit.json");
-        JsonAssert.assertJsonEquals(expected, Files.toString(new File(outputFile), Charset.defaultCharset()));
+
+        testSaveFit("Save Json...", "fit.json", false, mainFit);
     }
     
-    @Test
-    public void testSaveJsonOverwrite() throws Exception {
-        ExtSed sed = sedManager.newSed("TestSed");
-        addFit(sed);
-        final Window mainFit = setupFitWindow(sed);
-        
-        Tree modelsTree = mainFit.getTree("modelsTree");
-        modelsTree.click("polynomial.m/m.c1");
-        TextBox parVal = mainFit.getInputTextBox("Par Val");
-        UISpecAssert.waitUntil(parVal.textEquals("0.0"), 1000);
-        parVal.setText("3.25");
-        mainFit.getComboBox("statisticCombo").select("Chi2");
-        mainFit.getComboBox("optimizationCombo").select("MonteCarlo");
+    private void testSaveFit(String menuItemText, String controlFile, boolean text, Window mainFit) throws Exception { 
 
-        String outputFile = tempFolder.getRoot().getAbsolutePath()+"output.json";
+        String outputFile = tempFolder.getRoot().getAbsolutePath()+controlFile;
         
         WindowInterceptor
-                .init(mainFit.getMenuBar().getMenu("File").getSubMenu("Save Json...").triggerClick())
+                .init(mainFit.getMenuBar().getMenu("File").getSubMenu(menuItemText).triggerClick())
                 .process(FileChooserHandler.init()
                         .assertIsSaveDialog()
                         .select(outputFile))
                 .run()
         ;
         
-        String expected = TestUtils.readFile(getClass(), "fit.json");
-        JsonAssert.assertJsonEquals(expected, Files.toString(new File(outputFile), Charset.defaultCharset()));
+        String expected = TestUtils.readFile(getClass(), controlFile);
+        checkOutput(text, expected, outputFile); // test
         
         // update the model and try to save the results to the same filename
         mainFit.getComboBox("optimizationCombo").select("NelderMeadSimplex");
         
         WindowInterceptor interceptor = WindowInterceptor
-			.init(mainFit.getMenuBar().getMenu("File").getSubMenu("Save Json...").triggerClick());
+			.init(mainFit.getMenuBar().getMenu("File").getSubMenu(menuItemText).triggerClick());
         
         interceptor.process(FileChooserHandler.init()
                         .assertIsSaveDialog()
@@ -301,14 +269,18 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
                 .run();
         
         // check the file updated
-        expected = expected.replace("MonteCarlo", "NelderMeadSimplex");
-        JsonAssert.assertJsonEquals(expected, Files.toString(new File(outputFile), Charset.defaultCharset()));
+        if (text) {
+            expected = expected.replace("LevenbergMarquardt", "NelderMeadSimplex");
+        } else {
+            expected = expected.replace("MonteCarlo", "NelderMeadSimplex");
+        }
+        checkOutput(text, expected, outputFile); // test
         
         // update the model, use the same filename, but choose not to override it.
         mainFit.getComboBox("optimizationCombo").select("MonteCarlo");
         
         interceptor = WindowInterceptor
-			.init(mainFit.getMenuBar().getMenu("File").getSubMenu("Save Json...").triggerClick());
+			.init(mainFit.getMenuBar().getMenu("File").getSubMenu(menuItemText).triggerClick());
         
         interceptor.process(FileChooserHandler.init()
                         .assertIsSaveDialog()
@@ -322,7 +294,15 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
                 .run();
         
         // check that the file stayed the same as before.
-        JsonAssert.assertJsonEquals(expected, Files.toString(new File(outputFile), Charset.defaultCharset()));
+        checkOutput(text, expected, outputFile); // test
+    }
+    
+    private void checkOutput(boolean isTextFile, String expected, String outputFile) throws Exception {
+        if (isTextFile) {
+            assertEquals(expected, Files.toString(new File(outputFile), Charset.defaultCharset()));
+        } else {
+            JsonAssert.assertJsonEquals(expected, Files.toString(new File(outputFile), Charset.defaultCharset()));
+        }
     }
 
     @Test
