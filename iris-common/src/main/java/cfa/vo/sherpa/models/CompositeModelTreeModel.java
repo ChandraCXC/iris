@@ -28,9 +28,10 @@ import javax.swing.tree.DefaultTreeModel;
 import java.util.List;
 
 public class CompositeModelTreeModel extends DefaultTreeModel {
+    public static final String ROOT_STRING = "Model Components";
 
     public CompositeModelTreeModel(FitConfiguration fit) {
-        super(new DefaultMutableTreeNode("Model Components"));
+        super(new DefaultMutableTreeNode(ROOT_STRING));
 
         CompositeModel model = fit.getModel();
         List<UserModel> userModels = fit.getUserModelList();

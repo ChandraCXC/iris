@@ -490,6 +490,55 @@ public class IrisFunctionalIT extends AbstractUISpecTest {
 
         UISpecAssert.waitUntil(UISpecAssert.not(frozen.isSelected()), 5000);
 
+        PopupMenuInterceptor.run(
+                modelsTree.triggerRightClick(""))
+                .getSubMenu("Freeze All Parameters")
+                .click();
+
+        modelsTree.select("tablemodel.m6/m6.ampl");
+        UISpecAssert.waitUntil(frozen.isSelected(), 5000);
+
+        modelsTree.select("usermodel.m7/m7.ref");
+        UISpecAssert.waitUntil(frozen.isSelected(), 5000);
+
+        modelsTree.select("usermodel.m7/m7.ampl");
+        UISpecAssert.waitUntil(frozen.isSelected(), 5000);
+
+        modelsTree.select("usermodel.m7/m7.index");
+        UISpecAssert.waitUntil(frozen.isSelected(), 5000);
+
+        modelsTree.select("template.m8/m8.idx");
+        UISpecAssert.waitUntil(frozen.isSelected(), 5000);
+
+        modelsTree.select("template.m8/m8.refer");
+        UISpecAssert.waitUntil(frozen.isSelected(), 5000);
+
+        PopupMenuInterceptor.run(
+                modelsTree.triggerRightClick(""))
+                .getSubMenu("Thaw All Parameters")
+                .click();
+
+        modelsTree.select("tablemodel.m6/m6.ampl");
+        UISpecAssert.waitUntil(UISpecAssert.not(frozen.isSelected()), 5000);
+
+        modelsTree.select("usermodel.m7/m7.ref");
+        UISpecAssert.waitUntil(UISpecAssert.not(frozen.isSelected()), 5000);
+
+        modelsTree.select("usermodel.m7/m7.ampl");
+        UISpecAssert.waitUntil(UISpecAssert.not(frozen.isSelected()), 5000);
+
+        modelsTree.select("usermodel.m7/m7.index");
+        UISpecAssert.waitUntil(UISpecAssert.not(frozen.isSelected()), 5000);
+
+        modelsTree.select("template.m8/m8.idx");
+        UISpecAssert.waitUntil(UISpecAssert.not(frozen.isSelected()), 5000);
+
+        modelsTree.select("template.m8/m8.refer");
+        UISpecAssert.waitUntil(UISpecAssert.not(frozen.isSelected()), 5000);
+
+        // Make sure we get to the original state, or the rest of the test will fail
+        modelsTree.select("usermodel.m7/m7.ref");
+        frozen.select();
     }
 
     private void removeModel(String m) {

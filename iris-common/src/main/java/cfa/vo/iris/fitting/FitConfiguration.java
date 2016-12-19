@@ -43,6 +43,8 @@ public class FitConfiguration {
     public static final String PROP_EXPRESSION = "expression";
     public static final String PROP_CONFIDENCE = "confidence";
 
+    public static final String ROOT_MODELS_STRING = CompositeModelTreeModel.ROOT_STRING;
+
     private CompositeModel model;
     private List<FittingRange> fittingRanges;
     private Stat stat;

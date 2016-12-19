@@ -1,5 +1,6 @@
 package cfa.vo.iris.gui.widgets;
 
+import cfa.vo.iris.fitting.FitConfiguration;
 import cfa.vo.sherpa.models.Model;
 import cfa.vo.sherpa.models.Parameter;
 
@@ -69,8 +70,12 @@ class ModelViewerMouseAdapter extends MouseAdapter implements TreeSelectionListe
     }
 
     private void handlePopup(MouseEvent e) {
-        if (selectedObject instanceof Model && modelViewerPanel.isEditable()) {
-            makePopupMenu((Model)selectedObject).show(modelViewerPanel.getModelsTree(), e.getX(), e.getY());
+        if(modelViewerPanel.isEditable()) {
+            if (selectedObject instanceof Model) {
+                makePopupMenu((Model) selectedObject).show(modelViewerPanel.getModelsTree(), e.getX(), e.getY());
+            } else if (FitConfiguration.ROOT_MODELS_STRING.equals(selectedObject)) {
+                makeRootPopupMenu().show(modelViewerPanel.getModelsTree(), e.getX(), e.getY());
+            }
         }
     }
 
@@ -98,6 +103,17 @@ class ModelViewerMouseAdapter extends MouseAdapter implements TreeSelectionListe
         return menu;
     }
 
+    private JPopupMenu makeRootPopupMenu() {
+        JPopupMenu menu = new JPopupMenu();
+        JMenuItem item = new JMenuItem("Freeze All Parameters");
+        item.addActionListener(makeFreezeRootActionListener());
+        menu.add(item);
+        item = new JMenuItem("Thaw All Parameters");
+        item.addActionListener(makeThawRootActionListener());
+        menu.add(item);
+        return menu;
+    }
+
     private ActionListener makeDeleteActionListener(final Model model) {
         return new ActionListener() {
             @Override
@@ -118,12 +134,32 @@ class ModelViewerMouseAdapter extends MouseAdapter implements TreeSelectionListe
         };
     }
 
+    private ActionListener makeFreezeRootActionListener() {
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                logger.info("Freezing all parameters.");
+                modelViewerPanel.freezeAll();
+            }
+        };
+    }
+
     private ActionListener makeThawActionListener(final Model model) {
         return new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 logger.info("Thawing all in " + model.getName());
                 modelViewerPanel.thawAll(model);
+            }
+        };
+    }
+
+    private ActionListener makeThawRootActionListener() {
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                logger.info("Thawing all parameters.");
+                modelViewerPanel.thawAll();
             }
         };
     }
