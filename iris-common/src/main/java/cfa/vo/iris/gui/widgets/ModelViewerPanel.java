@@ -101,6 +101,22 @@ public final class ModelViewerPanel extends javax.swing.JPanel implements SedLis
         fit.removeModel(model);
     }
 
+    public void freezeAll(Model model) {
+        for (Parameter par : model.getPars()) {
+            par.setFrozen(1);
+        }
+        setSelectedParameter(paramPanel.getParameter());
+    }
+
+    public void thawAll(Model model) {
+        for (Parameter par : model.getPars()) {
+            if (! new Integer(1).equals(par.getAlwaysfrozen())) {
+                par.setFrozen(0);
+            }
+        }
+        setSelectedParameter(paramPanel.getParameter());
+    }
+
     public void setSed(ExtSed sed) {
         this.sed = sed;
         FitConfiguration fitConf = sed.getFit();

@@ -89,6 +89,12 @@ class ModelViewerMouseAdapter extends MouseAdapter implements TreeSelectionListe
         JMenuItem item = new JMenuItem("Remove");
         item.addActionListener(makeDeleteActionListener(model));
         menu.add(item);
+        item = new JMenuItem("Freeze All Parameters");
+        item.addActionListener(makeFreezeActionListener(model));
+        menu.add(item);
+        item = new JMenuItem("Thaw All Parameters");
+        item.addActionListener(makeThawActionListener(model));
+        menu.add(item);
         return menu;
     }
 
@@ -98,6 +104,26 @@ class ModelViewerMouseAdapter extends MouseAdapter implements TreeSelectionListe
             public void actionPerformed(ActionEvent arg0) {
                 logger.info("Deleting " + model.getName());
                 modelViewerPanel.removeModelComponent(model);
+            }
+        };
+    }
+
+    private ActionListener makeFreezeActionListener(final Model model) {
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                logger.info("Freezing all in " + model.getName());
+                modelViewerPanel.freezeAll(model);
+            }
+        };
+    }
+
+    private ActionListener makeThawActionListener(final Model model) {
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                logger.info("Thawing all in " + model.getName());
+                modelViewerPanel.thawAll(model);
             }
         };
     }

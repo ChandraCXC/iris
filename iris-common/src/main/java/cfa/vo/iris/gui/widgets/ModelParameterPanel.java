@@ -27,9 +27,8 @@ public class ModelParameterPanel extends AbstractGridPanel {
     }
 
     public void setParameter(Parameter par) {
-        Parameter oldPar = this.parameter;
         this.parameter = par;
-        firePropertyChange(PROP_PARAMETER, oldPar, par);
+        firePropertyChange(PROP_PARAMETER, null, par);
     }
 
     public Parameter getParameter() {
