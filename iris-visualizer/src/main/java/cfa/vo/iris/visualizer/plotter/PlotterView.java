@@ -227,7 +227,6 @@ public class PlotterView extends JInternalFrame {
         btnReset = new javax.swing.JButton();
         zoomIn = new javax.swing.JButton();
         btnUnits = new javax.swing.JButton();
-        fluxOrDensity = new javax.swing.JSpinner();
         zoomOut = new javax.swing.JButton();
         metadataButton = new javax.swing.JButton();
         buttonPanel = new javax.swing.JPanel();
@@ -350,14 +349,6 @@ public class PlotterView extends JInternalFrame {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
         gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 0);
         topButtonsPanel.add(btnUnits, gridBagConstraints);
-
-        fluxOrDensity.setModel(new javax.swing.SpinnerListModel(new String[] {"Flux", "Flux Density"}));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 9;
-        gridBagConstraints.gridy = 0;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHEAST;
-        gridBagConstraints.insets = new java.awt.Insets(5, 0, 0, 9);
-        topButtonsPanel.add(fluxOrDensity, gridBagConstraints);
 
         zoomOut.setText("Out");
         zoomOut.addActionListener(new java.awt.event.ActionListener() {
@@ -719,7 +710,6 @@ public class PlotterView extends JInternalFrame {
     private javax.swing.JPanel buttonPanel;
     private cfa.vo.iris.visualizer.plotter.JButtonArrow down;
     private javax.swing.JButton evaluateButton;
-    private javax.swing.JSpinner fluxOrDensity;
     private cfa.vo.iris.visualizer.plotter.JButtonArrow left;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JButton metadataButton;
