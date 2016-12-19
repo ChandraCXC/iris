@@ -49,8 +49,11 @@ public class ModelParameterPanel extends AbstractGridPanel {
         createBinding("min", min, "text");
         createBinding("max", max, "text");
         createBinding("frozen", frozen, "selected");
-        Binding name = group.getBinding("name");
-        name.setSourceUnreadableValue("No Parameter Selected");
+        group.getBinding("name").setSourceUnreadableValue("No Parameter Selected");
+        group.getBinding("val").setSourceUnreadableValue("");
+        group.getBinding("min").setSourceUnreadableValue("");
+        group.getBinding("max").setSourceUnreadableValue("");
+        group.getBinding("frozen").setSourceUnreadableValue(false);
     }
 
     @Override

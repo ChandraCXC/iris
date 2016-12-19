@@ -90,6 +90,20 @@ public class IrisFunctionalIT extends AbstractUISpecTest {
         fitCustomModel();
         saveText();
         simplefit();
+        clearAll();
+    }
+
+    private void clearAll() {
+        Button clearAll = fittingView.getButton("Clear All");
+        clearAll.click();
+        TextBox current = fittingView.getInputTextBox("Name");
+        current.textEquals("No Parameter Selected").check();
+        current = fittingView.getInputTextBox("Min");
+        current.textIsEmpty().check();
+        current = fittingView.getInputTextBox("Max");
+        current.textIsEmpty().check();
+        CheckBox frozen = fittingView.getCheckBox("Frozen");
+        UISpecAssert.not(frozen.isSelected()).check();
     }
 
     private void simplefit() throws Exception {
