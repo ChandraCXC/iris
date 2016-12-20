@@ -589,8 +589,13 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
             @Override
             protected void done() {
                 try {
-                    ExtSed sed = get();
-                    preferences.addSed(sed);
+                    final ExtSed sed = get();
+                    SwingUtilities.invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            preferences.addSed(sed);
+                        }
+                    });
                     JOptionPane.showMessageDialog(MetadataBrowserMainView.this, "Adding new SED (" + sed.getId() + ") to workspace.");
                 } catch (InterruptedException ex) {
                     // noop
