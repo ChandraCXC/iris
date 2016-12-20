@@ -16,13 +16,12 @@
 package cfa.vo.iris.visualizer.metadata;
 
 import cfa.vo.iris.gui.NarrowOptionPane;
+
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.*;
 
 import org.apache.commons.collections.CollectionUtils;
 
@@ -87,41 +86,32 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
      * SedManager through the Iris Workspace.
      * 
      */
-    private void extractSelectionToSed() {
+    private ExtSed extractSelectionToSed() throws Exception {
         
         // Do nothing if no SED is selected
         if (CollectionUtils.isEmpty(dataModel.getSelectedSeds())) {
-            JOptionPane.showMessageDialog(this, "No SEDs in browser. Please load an SED.",
-                    null, JOptionPane.WARNING_MESSAGE);
-            return;
+            throw new Exception("No SEDs in browser. Please load an SED.");
         }
         
         // Cannot extract from segment tab
         IrisStarJTable jtable = getSelectedIrisJTable();
         if (jtable == null) {
-            JOptionPane.showMessageDialog(this, "Select either Data or Point Metadata tab.",
-                    null, JOptionPane.WARNING_MESSAGE);
-            return;
+            throw new Exception("Select either Data or Point Metadata tab.");
         }
         
         // Do nothing if there are no rows selected
         RowSelection selectedRows = jtable.getRowSelection();
         if (selectedRows == null || selectedRows.originalRows.length == 0) {
-            JOptionPane.showMessageDialog(this, "No rows selected to extract. Please select rows.",
-                    null, JOptionPane.WARNING_MESSAGE);
-            return;
+            throw new Exception("No rows selected to extract. Please select rows.");
         }
         
         try {
-            
             logger.info(String.format("Extracting %s points from Sed.", selectedRows.originalRows.length));
-            ExtSed newSed = preferences.createNewWorkspaceSed(selectedRows);
-            JOptionPane.showMessageDialog(this, "Added new SED (" + newSed.getId() + ") to workspace.");
+            return preferences.createNewWorkspaceSed(selectedRows);
             
         } catch (SedInconsistentException | SedNoDataException ex) {
             String msg = "Error extracting SED: " + ex.getMessage();
-            JOptionPane.showMessageDialog(this, msg, null, JOptionPane.ERROR_MESSAGE);
-            logger.log(Level.SEVERE, msg, ex);
+            throw new Exception(msg);
         }
     }
     
@@ -585,11 +575,43 @@ public class MetadataBrowserMainView extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_clearAllButtonActionPerformed
 
     private void extractToSedMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_extractToSedMenuItemActionPerformed
-        extractSelectionToSed();
+        extractButtonActionPerformed(evt);
     }//GEN-LAST:event_extractToSedMenuItemActionPerformed
 
     private void extractButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_extractButtonActionPerformed
-        extractSelectionToSed();
+        SwingWorker worker = new SwingWorker<ExtSed, Void>() {
+
+            @Override
+            protected ExtSed doInBackground() throws Exception {
+                return extractSelectionToSed();
+            }
+
+            @Override
+            protected void done() {
+                try {
+                    ExtSed sed = get();
+                    preferences.addSed(sed);
+                    JOptionPane.showMessageDialog(MetadataBrowserMainView.this, "Adding new SED (" + sed.getId() + ") to workspace.");
+                } catch (InterruptedException ex) {
+                    // noop
+                } catch (ExecutionException ex) {
+                    Logger.getLogger(MetadataBrowserMainView.class.getName()).log(Level.SEVERE, null, ex);
+                    Throwable cause = ex.getCause();
+                    NarrowOptionPane.showMessageDialog(
+                            MetadataBrowserMainView.this,
+                            cause.getMessage(),
+                            cause.getClass().getSimpleName(),
+                            NarrowOptionPane.ERROR_MESSAGE
+                    );
+                    logger.log(Level.SEVERE, "Error Extracting SED", ex);
+                } finally {
+                    extractButton.setEnabled(true);
+                }
+            }
+        };
+
+        extractButton.setEnabled(false);
+        worker.execute();
     }//GEN-LAST:event_extractButtonActionPerformed
 
     private void selectPointsButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_selectPointsButtonActionPerformed

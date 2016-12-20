@@ -376,7 +376,7 @@ public class MetadataBrowserMainViewTest extends AbstractUISpecTest {
                 // Check warning message
                 assertEquals("No SEDs in browser. Please load an SED.", 
                         warning.getTextBox("OptionPane.label").getText());
-                return Trigger.DO_NOTHING;
+                return warning.getButton("OK").triggerClick();
             }
         }).run();
         
@@ -414,7 +414,7 @@ public class MetadataBrowserMainViewTest extends AbstractUISpecTest {
                 // Check warning message
                 assertEquals(warning.getTextBox("OptionPane.label").getText(), 
                              "No rows selected to extract. Please select rows.");
-                return Trigger.DO_NOTHING;
+                return warning.getButton("OK").triggerClick();
             }
         }).run();
         
@@ -427,8 +427,8 @@ public class MetadataBrowserMainViewTest extends AbstractUISpecTest {
             public Trigger process(Window warning) throws Exception {
                 // Check warning message
                 assertTrue(StringUtils.contains(warning.getTextBox("OptionPane.label").getText(), 
-                             "Added new SED"));
-                return Trigger.DO_NOTHING;
+                             "Adding new SED"));
+                return warning.getButton("OK").triggerClick();
             }
         }).run();
         
@@ -470,8 +470,8 @@ public class MetadataBrowserMainViewTest extends AbstractUISpecTest {
             public Trigger process(Window warning) throws Exception {
                 // Check warning message
                 assertTrue(StringUtils.contains(warning.getTextBox("OptionPane.label").getText(), 
-                             "Added new SED"));
-                return Trigger.DO_NOTHING;
+                             "Adding new SED"));
+                return warning.getButton("OK").triggerClick();
             }
         }).run();
         
