@@ -511,6 +511,42 @@ public class StilPlotterTest {
         
         // Now that it has been run, the dialog should not show up again
         plot.setSeds(Arrays.asList(sed1));
+        
+        // for iris-#336 bug. Now clear the model and add a 
+        // segment; no warning message should pop up as there is no model.
+        model.clearFittingData();
+        
+        Segment seg3 = TestUtils.createSampleSegment();
+        sed1.addSegment(seg3);
+        preferences.getDataStore().update(sed1, seg3);
+        plot.setSeds(Arrays.asList(sed1));
+        
+        // no warning pops up
+        
+        // add new model, then add a segment. The warning should pop up again.
+        model.getDataTables().get(0).getPlotterDataTable().setModelValues(seg1.getFluxAxisValues());
+        model.setModelVersion(model.computeVersion());
+        model.setHasModelFunction(true);
+        
+        Segment seg4 = TestUtils.createSampleSegment();
+        sed1.addSegment(seg4);
+        preferences.getDataStore().update(sed1, seg4);
+        
+        // intercept warning message on plotting the updated sed
+        WindowInterceptor.init(new Trigger() {
+            @Override
+            public void run() throws Exception {
+                plot.setSeds(Arrays.asList(sed1));
+            }
+        }).process(new WindowHandler() {
+            @Override
+            public Trigger process(Window warning) throws Exception {
+                assertTrue(StringUtils.contains(warning.getTitle(), "Warning"));
+                assertTrue(StringUtils.contains(
+                        warning.getTextBox("Warning").getText(), sed1.getId()));
+                return Trigger.DO_NOTHING;
+            }
+        }).run();
     }
     
     @Test
