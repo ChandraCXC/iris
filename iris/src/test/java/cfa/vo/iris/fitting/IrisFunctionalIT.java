@@ -412,7 +412,7 @@ public class IrisFunctionalIT extends AbstractUISpecTest {
         val.textEquals("-0.5").check();
         min.textEquals("-10.0").check();
         max.textEquals("10.0").check();
-        UISpecAssert.not(frozen.isSelected());
+        UISpecAssert.not(frozen.isSelected()).check();
 
         val.isEnabled().check();
         min.isEnabled().check();
@@ -474,11 +474,85 @@ public class IrisFunctionalIT extends AbstractUISpecTest {
         fittingView.getButton("Fit").click();
 
         assertFitSucceeded();
+
+        freezeAndThawAll();
     }
 
     private void assertFitSucceeded() {
         UISpecAssert.waitUntil(fittingView.getTextBox("status").textEquals(ModelViewerPanel.FIT_SUCCEEDED), TIMEOUT);
 
+    }
+
+    private void freezeAndThawAll() {
+        CheckBox frozen = fittingView.getCheckBox("Par Frozen");
+
+        PopupMenuInterceptor.run(
+                modelsTree.triggerRightClick("tablemodel.m6"))
+                .getSubMenu("Freeze All Parameters")
+                .click();
+
+        modelsTree.select("tablemodel.m6/m6.ampl");
+
+        UISpecAssert.waitUntil(frozen.isSelected(), 5000);
+
+        PopupMenuInterceptor.run(
+                modelsTree.triggerRightClick("tablemodel.m6"))
+                .getSubMenu("Thaw All Parameters")
+                .click();
+
+        modelsTree.select("tablemodel.m6/m6.ampl");
+
+        UISpecAssert.waitUntil(UISpecAssert.not(frozen.isSelected()), 5000);
+
+        PopupMenuInterceptor.run(
+                modelsTree.triggerRightClick(""))
+                .getSubMenu("Freeze All Parameters")
+                .click();
+
+        modelsTree.select("tablemodel.m6/m6.ampl");
+        UISpecAssert.waitUntil(frozen.isSelected(), 5000);
+
+        modelsTree.select("usermodel.m7/m7.ref");
+        UISpecAssert.waitUntil(frozen.isSelected(), 5000);
+
+        modelsTree.select("usermodel.m7/m7.ampl");
+        UISpecAssert.waitUntil(frozen.isSelected(), 5000);
+
+        modelsTree.select("usermodel.m7/m7.index");
+        UISpecAssert.waitUntil(frozen.isSelected(), 5000);
+
+        modelsTree.select("template.m8/m8.idx");
+        UISpecAssert.waitUntil(frozen.isSelected(), 5000);
+
+        modelsTree.select("template.m8/m8.refer");
+        UISpecAssert.waitUntil(frozen.isSelected(), 5000);
+
+        PopupMenuInterceptor.run(
+                modelsTree.triggerRightClick(""))
+                .getSubMenu("Thaw All Parameters")
+                .click();
+
+        modelsTree.select("tablemodel.m6/m6.ampl");
+        UISpecAssert.waitUntil(UISpecAssert.not(frozen.isSelected()), 5000);
+
+        modelsTree.select("usermodel.m7/m7.ref");
+        UISpecAssert.waitUntil(UISpecAssert.not(frozen.isSelected()), 5000);
+
+        modelsTree.select("usermodel.m7/m7.ampl");
+        UISpecAssert.waitUntil(UISpecAssert.not(frozen.isSelected()), 5000);
+
+        modelsTree.select("usermodel.m7/m7.index");
+        UISpecAssert.waitUntil(UISpecAssert.not(frozen.isSelected()), 5000);
+
+        modelsTree.select("template.m8/m8.idx");
+        UISpecAssert.waitUntil(UISpecAssert.not(frozen.isSelected()), 5000);
+
+        modelsTree.select("template.m8/m8.refer");
+        UISpecAssert.waitUntil(UISpecAssert.not(frozen.isSelected()), 5000);
+
+        // Make sure we get to the original state, or the rest of the test will fail
+        modelsTree.select("usermodel.m7/m7.ref");
+        frozen.select();
     }
 
     private void removeModel(String m) {
