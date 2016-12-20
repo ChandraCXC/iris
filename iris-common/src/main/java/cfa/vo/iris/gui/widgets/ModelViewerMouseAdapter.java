@@ -94,6 +94,7 @@ class ModelViewerMouseAdapter extends MouseAdapter implements TreeSelectionListe
         JMenuItem item = new JMenuItem("Remove");
         item.addActionListener(makeDeleteActionListener(model));
         menu.add(item);
+        menu.addSeparator();
         item = new JMenuItem("Freeze All Parameters");
         item.addActionListener(makeFreezeActionListener(model));
         menu.add(item);
