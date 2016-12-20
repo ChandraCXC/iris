@@ -110,6 +110,15 @@ public class StilPlotterTest {
         assertEquals(layers[0].getDataSpec().getSourceTable().getRowCount(), 
                 layers[1].getDataSpec().getSourceTable().getRowCount());
         
+        // the legend label should match the segment startable names
+        plot.getDataModel().getLayerModels();
+        par = new StringParameter("leglabel3C 273");
+        env.acquireValue(par);
+        assertEquals(par.objectValue(env), "3C 273");
+        par = new StringParameter("leglabel3C 273_ERROR");
+        env.acquireValue(par);
+        assertEquals(par.objectValue(env), "3C 273");
+        
         // assert that the plot has the same amount of data as the original SED
         assertEquals(sed.getSegment(0).getLength(),
                 layers[0].getDataSpec().getSourceTable().getRowCount());

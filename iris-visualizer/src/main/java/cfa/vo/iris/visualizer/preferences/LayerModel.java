@@ -98,6 +98,7 @@ public class LayerModel {
         
         this.setInSource(table);
         this.suffix = table.getName();
+        this.leglabel = table.getName();
         
         this.xColName = SegmentColumn.Column.Spectral_Value.name();
         this.yColName = SegmentColumn.Column.Flux_Value.name();
