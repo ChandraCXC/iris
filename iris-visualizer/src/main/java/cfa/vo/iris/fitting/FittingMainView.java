@@ -597,6 +597,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         controller.clearAll();
         preferences.getDataModel().refresh();
         confidencePanel.reset();
+        modelViewerPanel.setSelectedParameter(null);
     }//GEN-LAST:event_clearButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
