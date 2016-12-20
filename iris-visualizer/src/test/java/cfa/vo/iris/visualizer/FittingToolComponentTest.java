@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2015 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2015, 2016 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -179,18 +179,7 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         addFit(sed);
         final Window mainFit = setupFitWindow(sed);
 
-        File outputFile = tempFolder.newFile("output.fit");
-
-        WindowInterceptor
-                .init(mainFit.getMenuBar().getMenu("File").getSubMenu("Save Text...").triggerClick())
-                .process(FileChooserHandler.init()
-                        .assertIsSaveDialog()
-                        .select(outputFile.getAbsolutePath()))
-                .run()
-        ;
-
-        String expected = TestUtils.readFile(getClass(), "fit.output");
-        assertEquals(expected, Files.toString(outputFile, Charset.defaultCharset()));
+        testSaveFit("Save Text...", "fit.output", true, mainFit);
     }
 
     @Test
@@ -236,18 +225,84 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
         mainFit.getComboBox("statisticCombo").select("Chi2");
         mainFit.getComboBox("optimizationCombo").select("MonteCarlo");
 
-        File outputFile = tempFolder.newFile("output.json");
+        String outputFile = tempFolder.getRoot().getAbsolutePath()+"output.json";
 
+        testSaveFit("Save Json...", "fit.json", false, mainFit);
+    }
+    
+    private void testSaveFit(String menuItemText, String controlFile, boolean text, Window mainFit) throws Exception { 
+
+        String outputFile = tempFolder.getRoot().getAbsolutePath()+controlFile;
+        
         WindowInterceptor
-                .init(mainFit.getMenuBar().getMenu("File").getSubMenu("Save Json...").triggerClick())
+                .init(mainFit.getMenuBar().getMenu("File").getSubMenu(menuItemText).triggerClick())
                 .process(FileChooserHandler.init()
                         .assertIsSaveDialog()
-                        .select(outputFile.getAbsolutePath()))
+                        .select(outputFile))
                 .run()
         ;
-
-        String expected = TestUtils.readFile(getClass(), "fit.json");
-        JsonAssert.assertJsonEquals(expected, Files.toString(outputFile, Charset.defaultCharset()));
+        
+        String expected = TestUtils.readFile(getClass(), controlFile);
+        checkOutput(text, expected, outputFile); // test
+        
+        // update the model and try to save the results to the same filename
+        mainFit.getComboBox("optimizationCombo").select("NelderMeadSimplex");
+        
+        WindowInterceptor interceptor = WindowInterceptor
+			.init(mainFit.getMenuBar().getMenu("File").getSubMenu(menuItemText).triggerClick());
+        
+        interceptor.process(FileChooserHandler.init()
+                        .assertIsSaveDialog()
+                        .select(outputFile))
+                .process(new WindowHandler() {
+                    public Trigger process(Window window) throws Exception {
+                        // Yes, overwrite the file
+                        return window.getButton("Yes").triggerClick();
+                    }
+                })
+                .process(new WindowHandler() {
+                    public Trigger process(Window window) throws Exception {
+                        // file successfully saved message
+                        return window.getButton("OK").triggerClick();
+                    }
+                })
+                .run();
+        
+        // check the file updated
+        if (text) {
+            expected = expected.replace("LevenbergMarquardt", "NelderMeadSimplex");
+        } else {
+            expected = expected.replace("MonteCarlo", "NelderMeadSimplex");
+        }
+        checkOutput(text, expected, outputFile); // test
+        
+        // update the model, use the same filename, but choose not to override it.
+        mainFit.getComboBox("optimizationCombo").select("MonteCarlo");
+        
+        interceptor = WindowInterceptor
+			.init(mainFit.getMenuBar().getMenu("File").getSubMenu(menuItemText).triggerClick());
+        
+        interceptor.process(FileChooserHandler.init()
+                        .assertIsSaveDialog()
+                        .select(outputFile))
+                .process(new WindowHandler() {
+                    public Trigger process(Window window) throws Exception {
+                        // No, do not overwrite the file
+                        return window.getButton("No").triggerClick();
+                    }
+                })
+                .run();
+        
+        // check that the file stayed the same as before.
+        checkOutput(text, expected, outputFile); // test
+    }
+    
+    private void checkOutput(boolean isTextFile, String expected, String outputFile) throws Exception {
+        if (isTextFile) {
+            assertEquals(expected, Files.toString(new File(outputFile), Charset.defaultCharset()));
+        } else {
+            JsonAssert.assertJsonEquals(expected, Files.toString(new File(outputFile), Charset.defaultCharset()));
+        }
     }
 
     @Test

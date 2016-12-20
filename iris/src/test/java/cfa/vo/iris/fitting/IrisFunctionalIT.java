@@ -205,7 +205,7 @@ public class IrisFunctionalIT extends AbstractUISpecTest {
     }
 
     private void saveText() throws Exception {
-        File outputFile = tempFolder.newFile("output.fit");
+        String outputFile = tempFolder.getRoot().getAbsolutePath()+"output.fit";
 
         WindowInterceptor interceptor = WindowInterceptor
                 .init(fittingView.getMenuBar().getMenu("File").getSubMenu("Save Text...").triggerClick());
@@ -218,10 +218,10 @@ public class IrisFunctionalIT extends AbstractUISpecTest {
                 w.getButton("Ok").click();
                 return Trigger.DO_NOTHING;
             }
-        }).process(FileChooserHandler.init().select(outputFile.getAbsolutePath())).run();
+        }).process(FileChooserHandler.init().select(outputFile)).run();
 
         String expected = TestUtils.readFile(getClass(), "fit.output");
-        String actual = com.google.common.io.Files.toString(outputFile, Charset.defaultCharset());
+        String actual = com.google.common.io.Files.toString(new File(outputFile), Charset.defaultCharset());
         actual = actual.replaceAll("(/home/.*?/|/Users/.*?/)", "\\$HOME/");
 
         assertEquals(expected, actual);
