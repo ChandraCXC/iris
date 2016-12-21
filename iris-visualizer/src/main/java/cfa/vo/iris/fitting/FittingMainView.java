@@ -98,6 +98,7 @@ public class FittingMainView extends JInternalFrame implements SedListener {
         if (SedCommand.SELECTED.equals(payload) || 
                 (SedCommand.CHANGED.equals(payload) && source.equals(sedModel.getSed()))) {
             setSedModel(dataStore.getSedModel(source));
+            resultsPanel.setFit(dataStore.getSedModel(source).getFit());
         }
     }
 

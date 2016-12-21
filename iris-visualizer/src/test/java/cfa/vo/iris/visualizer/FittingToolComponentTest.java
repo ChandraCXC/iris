@@ -73,6 +73,50 @@ public class FittingToolComponentTest extends AbstractComponentGUITest {
     }
 
     @Test
+    public void testSwitchSedAfterFitting() throws Exception {
+        ExtSed sed = sedManager.newSed("TestSed");
+        final Window mainFit = setupFitWindow(sed);
+
+        FitConfiguration fit = createFit();
+        fit.setStatVal(200.0);
+        fit.setrStat(300.0);
+        fit.setqVal(400.0);
+        fit.setnFev(10);
+        fit.setNumPoints(1000);
+        fit.setDof(5);
+        sed.setFit(fit);
+
+        ExtSed sed2 = sedManager.newSed("TestSed2");
+
+        fit = createFit();
+        fit.setStatVal(2000.0);
+        fit.setrStat(3000.0);
+        fit.setqVal(4000.0);
+        fit.setnFev(100);
+        fit.setNumPoints(10000);
+        fit.setDof(50);
+        sed2.setFit(fit);
+
+        sedManager.select(sed);
+
+        UISpecAssert.waitUntil(mainFit.getInputTextBox("final fit").textEquals("200.0"), 5000);
+        mainFit.getInputTextBox("reduced").textEquals("300.0");
+        mainFit.getInputTextBox("q-value").textEquals("400.0");
+        mainFit.getInputTextBox("evaluations").textEquals("10.0");
+        mainFit.getInputTextBox("points").textEquals("1000.0");
+        mainFit.getInputTextBox("degrees").textEquals("5");
+
+        sedManager.select(sed2);
+
+        UISpecAssert.waitUntil(mainFit.getInputTextBox("final fit").textEquals("2000.0"), 5000);
+        mainFit.getInputTextBox("reduced").textEquals("3000.0");
+        mainFit.getInputTextBox("q-value").textEquals("4000.0");
+        mainFit.getInputTextBox("evaluations").textEquals("100.0");
+        mainFit.getInputTextBox("points").textEquals("10000.0");
+        mainFit.getInputTextBox("degrees").textEquals("50");
+    }
+
+    @Test
     public void testFittingNoSed() throws Exception {
         WindowInterceptor wi = WindowInterceptor.init(
             window.getMenuBar()
