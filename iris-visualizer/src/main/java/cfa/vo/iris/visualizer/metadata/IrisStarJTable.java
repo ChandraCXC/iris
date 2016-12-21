@@ -406,26 +406,34 @@ public class IrisStarJTable extends StarJTable {
             StarTable newTable)
     {
         List<SortKey> newKeys = new ArrayList<>(1);
-        
+
         if (CollectionUtils.isEmpty(keys)) {
             return newKeys;
         }
-        
+
         // Primary key
         SortKey key = keys.get(0);
-        ColumnInfo info = oldTable.getColumnInfo(key.getColumn() - 1);
-        
-        // Is the new key in the current star table?        
+        int idx = key.getColumn() - 1;
+        ColumnInfo info = null;
+        if (idx != -1) { // index column
+            info = oldTable.getColumnInfo(idx);
+        }
+
+        // Is the new key in the current star table?
         ColumnIdentifier id = new ColumnIdentifier(newTable);
         int newCol = 1; // Starts at 1 because of the index column
         try {
-            newCol += id.getColumnIndex(info.getName());
+            if (info != null) {
+                newCol += id.getColumnIndex(info.getName());
+            } else { // index column
+                newCol = 0;
+            }
         } catch (IOException ex) {
             return newKeys;
         }
-        
+
         newKeys.add(new SortKey(newCol, key.getSortOrder()));
-        
+
         return newKeys;
     }
 }
