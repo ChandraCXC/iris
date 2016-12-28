@@ -136,7 +136,7 @@ public class VisualizerComponentPreferences {
      */
     public ExtSed createNewWorkspaceSed(RowSelection selection) throws SedInconsistentException, SedNoDataException {
         
-        final ExtSed sed = (ExtSed) ws.getSedManager().newSed("FilterSed");
+        final ExtSed sed = new ExtSed("FilterSed", false);
         
         // Extract selected rows to new Segments
         final SegmentExtractor extractor =
@@ -249,5 +249,9 @@ public class VisualizerComponentPreferences {
             preferencesStore.put(key, prefs);
             return prefs;
         }
+    }
+
+    public void addSed(ExtSed sed) {
+        ws.getSedManager().add(sed);
     }
 }
