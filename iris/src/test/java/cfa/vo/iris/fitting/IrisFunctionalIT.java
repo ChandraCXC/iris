@@ -127,6 +127,7 @@ public class IrisFunctionalIT extends AbstractUISpecTest {
         UISpecAssert.waitUntil(np.textEquals("23"), TIMEOUT);
 
         TextBox statS = fittingView.getInputTextBox("Final Fit Statistic");
+        UISpecAssert.waitUntil(UISpecAssert.not(statS.textIsEmpty()), 5000);
         Double stat = Double.valueOf(statS.getText());
         assertEquals(14102.333, stat, 0.01);
 
