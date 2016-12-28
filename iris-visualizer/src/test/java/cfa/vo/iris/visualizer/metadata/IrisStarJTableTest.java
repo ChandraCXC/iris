@@ -312,4 +312,36 @@ public class IrisStarJTableTest {
         assertEquals(true, table.getValueAt(2, 1));
         table.setSelectedStarTables(Arrays.asList(segTable));
     }
+
+    @Test
+    public void testRowSortErrorIndexCol() throws Exception {
+        IrisStarJTable table = new IrisStarJTable();
+        table.setSortBySpecValues(true);
+        table.setUsePlotterDataTables(true);
+
+        // Create Segment
+        IrisStarTable segTable = adapter.convertSegment(TestUtils.createSampleSegment(
+                new double[] {10,20,30}, new double[] {40,50,60}));
+        table.setSelectedStarTables(Arrays.asList(segTable));
+
+        // Sort by Original Flux Value (last column)
+        table.getRowSorter().setSortKeys(Arrays.asList(new RowSorter.SortKey(0, SortOrder.DESCENDING)));
+
+        // Verify table values
+        assertEquals(30.0, table.getValueAt(0, 2));
+        assertEquals(20.0, table.getValueAt(1, 2));
+        assertEquals(10.0, table.getValueAt(2, 2));
+
+        // Apply a mask
+        segTable.applyMasks(new int[] {0});
+
+        // Resetting should preserve sort order
+        table.setSelectedStarTables(Arrays.asList(segTable));
+
+        // Verify table values
+        assertEquals(false, table.getValueAt(0, 1));
+        assertEquals(false, table.getValueAt(1, 1));
+        assertEquals(true, table.getValueAt(2, 1));
+        table.setSelectedStarTables(Arrays.asList(segTable));
+    }
 }
