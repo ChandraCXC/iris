@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2012, 2015 Smithsonian Astrophysical Observatory
+ * Copyright (C) 2012, 2015, 2017 Smithsonian Astrophysical Observatory
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ public class About extends javax.swing.JDialog {
         jLabel13 = new javax.swing.JLabel();
 
         jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
-        jLabel1.setText("Iris v3.0b1");
+        jLabel1.setText("Iris v3.0b2");
         jLabel1.setName("jLabel1"); // NOI18N
 
         jLabel2.setFont(new java.awt.Font("Lucida Grande", 0, 12)); // NOI18N
@@ -74,7 +74,7 @@ public class About extends javax.swing.JDialog {
         jLabel4.setText("for Spectral Energy Distributions");
         jLabel4.setName("jLabel4"); // NOI18N
 
-        jLabel5.setText("Copyright 2015, 2016");
+        jLabel5.setText("Copyright 2015, 2016, 2017");
         jLabel5.setName("jLabel5"); // NOI18N
 
         jLabel6.setFont(new java.awt.Font("Lucida Grande", 0, 12)); // NOI18N
