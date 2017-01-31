@@ -25,7 +25,7 @@
     <groupId>cfa.vo</groupId>
     <artifactId>iris2</artifactId>
     <packaging>pom</packaging>
-    <version>3.0b2</version>
+    <version>3.0</version>
     <name>Iris</name>
     <description>
         Iris is a desktop application for building and analyzing 
