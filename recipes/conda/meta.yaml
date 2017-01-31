@@ -1,13 +1,13 @@
 package:
   name: iris
-  version: "3.0b1"
+  version: "3.0b2"
 
 build:
   number: 1
 
 requirements:
   run:
-   - sherpa-samp 3.0b1
+   - sherpa-samp 3.0b2
 
 about:
   home: https://github.com/ChandraCXC/sherpa-samp.git
