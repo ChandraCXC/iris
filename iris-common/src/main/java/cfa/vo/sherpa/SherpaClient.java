@@ -52,9 +52,17 @@ public class SherpaClient {
     FitResults fit(SherpaFitConfiguration conf) throws Exception {
         fixDatasets(conf);
         SAMPMessage message = SAMPFactory.createMessage(FIT_MTYPE, conf, SherpaFitConfiguration.class);
-        Response response = sendMessage(message);
 
-        return SAMPFactory.get(response.getResult(), FitResults.class);
+        try {
+            Response response = sendMessage(message, Boolean.FALSE);
+            return SAMPFactory.get(response.getResult(), FitResults.class);
+        } catch (SampException ex) {
+            if ("Synchronous call timeout".equals(ex.getMessage())) {
+                throw new SampException("Sherpa did not respond within the current timeout", ex);
+            } else {
+                throw ex;
+            }
+        }
     }
 
     public FitResults fit(ExtSed sed) throws Exception {
@@ -123,8 +131,16 @@ public class SherpaClient {
         return this.sampService;
     }
 
+    public Response sendMessage(final SAMPMessage message, Boolean retry) throws Exception {
+        if (retry) {
+            return sampService.callSherpaAndRetry(message);
+        } else {
+            return sampService.callSherpa(message);
+        }
+    }
+
     public Response sendMessage(final SAMPMessage message) throws Exception {
-        return sampService.callSherpaAndRetry(message);
+        return sendMessage(message, Boolean.TRUE);
     }
 
     public boolean ping() {
