@@ -26,10 +26,6 @@ package cfa.vo.iris;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
-/**
- *
- * @author olaurino
- */
 public class About extends javax.swing.JDialog {
 
     /** Creates new form About */
@@ -61,7 +57,7 @@ public class About extends javax.swing.JDialog {
         jLabel13 = new javax.swing.JLabel();
 
         jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 18)); // NOI18N
-        jLabel1.setText("Iris v3.0b2");
+        jLabel1.setText("Iris v3.0");
         jLabel1.setName("jLabel1"); // NOI18N
 
         jLabel2.setFont(new java.awt.Font("Lucida Grande", 0, 12)); // NOI18N
