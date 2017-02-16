@@ -6,8 +6,10 @@ build:
   number: 0
 
 requirements:
+  build:
+   - openjdk 8.*
   run:
-   - openjdk 8.17
+   - openjdk 8.*
    - sherpa-samp 3.0
 
 about:
