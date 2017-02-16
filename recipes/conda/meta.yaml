@@ -7,6 +7,7 @@ build:
 
 requirements:
   run:
+   - openjdk 8.17
    - sherpa-samp 3.0
 
 about:
