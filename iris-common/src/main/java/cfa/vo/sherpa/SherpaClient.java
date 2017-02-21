@@ -111,6 +111,7 @@ public class SherpaClient {
             return SAMPFactory.get(response.getResult(), ConfidenceResults.class);
         } catch (SampException ex) {
             if ("Synchronous call timeout".equals(ex.getMessage())) {
+                stopConfidence();
                 throw new SampException("Sherpa did not respond within the current timeout", ex);
             } else {
                 throw ex;
