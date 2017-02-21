@@ -105,8 +105,18 @@ public class SherpaClient {
     private ConfidenceResults computeConfidence(SherpaFitConfiguration conf) throws Exception {
         fixDatasets(conf);
         SAMPMessage message = SAMPFactory.createMessage(CONFIDENCE_MTYPE, conf, SherpaFitConfiguration.class);
-        Response response = sendMessage(message);
-        return SAMPFactory.get(response.getResult(), ConfidenceResults.class);
+
+        try {
+            Response response = sendMessage(message, Boolean.FALSE);
+            return SAMPFactory.get(response.getResult(), ConfidenceResults.class);
+        } catch (SampException ex) {
+            if ("Synchronous call timeout".equals(ex.getMessage())) {
+                stopConfidence();
+                throw new SampException("Sherpa did not respond within the current timeout", ex);
+            } else {
+                throw ex;
+            }
+        }
     }
 
     public CompositeModel createCompositeModel(String expression, Model... models) {

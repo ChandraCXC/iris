@@ -74,7 +74,7 @@ function start_iris {
 
     echo "Killing Sherpa process..."
 
-    [ "$sherpapid" ] && kill -2 $sherpapid
+    pkill -2 -f sherpa-samp
 
     sleep 5
 
@@ -82,14 +82,16 @@ function start_iris {
 
     if [[ $sherpagrep == *sherpa-samp* ]]
     then
-        kill -9 "$sherpapid"
+        pkill -9 -f sherpa-samp
     fi
+
+    sleep 2
 
     sherpagrep=`ps aux | grep sherpa`
 
     if [[ $sherpagrep == *sherpa-samp* ]]
     then
-        echo "WARNING: Sherpa process still running with PID $sherpapid. Please kill this process manually"
+        echo "WARNING: Sherpa processes still running. Please kill these processes manually."
     else
         echo "ALL DONE. Quitting."
     fi
