@@ -23,6 +23,10 @@
     <packaging>jar</packaging>
     <name>iris-visualizer</name>
 
+    <description>
+      The visualization and fitting components in Iris.
+    </description>
+
     <parent>
         <groupId>cfa.vo</groupId>
         <artifactId>iris2</artifactId>

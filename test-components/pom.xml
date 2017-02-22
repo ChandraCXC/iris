@@ -23,6 +23,11 @@
     <packaging>jar</packaging>
     <name>test-components</name>
 
+    <description>
+      Various prototype components. We do not support
+      these components in the documentation and do not guarentee they work.
+    </description>
+
     <parent>
         <groupId>cfa.vo</groupId>
         <artifactId>iris2</artifactId>

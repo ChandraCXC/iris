@@ -23,6 +23,11 @@
     <packaging>jar</packaging>
     <name>sed-builder</name>
 
+    <description>
+      The package containing SED building, I/O, and science tools
+      (redshifting, interpolating, integration, coadding).
+    </description>
+
     <parent>
         <groupId>cfa.vo</groupId>
         <artifactId>iris2</artifactId>

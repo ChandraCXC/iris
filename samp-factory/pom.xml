@@ -24,6 +24,10 @@
     <name>samp-factory</name>
     <url>http://maven.apache.org</url>
 
+    <description>
+      SAMP (Simple Application Messaging Protocol) factory methods.
+    </description>
+
     <parent>
        <groupId>cfa.vo</groupId>
        <artifactId>iris2</artifactId>
