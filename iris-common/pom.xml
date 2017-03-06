@@ -23,10 +23,15 @@
     <packaging>jar</packaging>
     <name>iris-common</name>
 
+    <description>
+        Contains common classes and functions used in the other modules,
+        as well as the Iris software development kit (SDK).
+    </description>
+
     <parent>
         <groupId>cfa.vo</groupId>
         <artifactId>iris2</artifactId>
-        <version>3.0b2</version>
+        <version>3.0</version>
     </parent>
 
     <build>

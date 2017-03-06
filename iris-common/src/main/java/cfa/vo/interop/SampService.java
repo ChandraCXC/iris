@@ -22,9 +22,10 @@ import java.util.logging.Logger;
 
 public class SampService {
     private final String PING_MTYPE = "sherpa.ping";
-    private final int DEFAULT_TIMEOUT = 10;
+    private final int SHORT_TIMEOUT = 10;
     private final int RETRY = 100;
     private final int RETRY_INTERVAL = 100;
+    private final int LONG_TIMEOUT = 120;
     private Logger logger = Logger.getLogger(SampService.class.getName());
     private final Level LEVEL = Level.FINEST;
 
@@ -222,7 +223,7 @@ public class SampService {
         if(sampClient.getConnection().getSubscribedClients(message.get().getMType()).isEmpty())
             throw new SampException("No clients can receive the SAMP Message");
 
-        sampClient.callAll(message.get(), new LogResultHandler(message.get()), DEFAULT_TIMEOUT);
+        sampClient.callAll(message.get(), new LogResultHandler(message.get()), SHORT_TIMEOUT);
     }
 
     public HubConnector getSampClient() {
@@ -242,11 +243,7 @@ public class SampService {
         String id = null;
         for (int i=0; i<RETRY; i++) {
             try {
-                Response response = getSampClient().callAndWait(findSherpa(message.get().getMType()), message.get(), 10);
-                if (isException(response)) {
-                    throw getException(response);
-                }
-                return response;
+                return callSherpa(message, SHORT_TIMEOUT);
             } catch (SampException ex) {
                 try {
                     Thread.sleep(RETRY_INTERVAL);
@@ -257,6 +254,18 @@ public class SampService {
         String action = "calling";
         String msg = "Tried " + action + " Sherpa for " + RETRY + " times every " + RETRY_INTERVAL + " milliseconds. Giving up";
         throw new SEDException(msg);
+    }
+
+    public Response callSherpa(SAMPMessage message, int timeout) throws SEDException, SampException {
+        Response response = getSampClient().callAndWait(findSherpa(message.get().getMType()), message.get(), timeout);
+        if (isException(response)) {
+            throw getException(response);
+        }
+        return response;
+    }
+
+    public Response callSherpa(SAMPMessage message) throws SEDException, SampException {
+        return callSherpa(message, LONG_TIMEOUT);
     }
 
     public boolean pingSherpa() {
