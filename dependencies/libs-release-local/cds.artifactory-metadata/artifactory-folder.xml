@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>cds</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>cds</name>
+  <created>1411069426702</created>
+  <lastModified>1411069426702</lastModified>
+  <additionalInfo>
+    <lastUpdated>1411069426702</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

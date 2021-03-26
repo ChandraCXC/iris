@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>cfa/vo/test-components</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>test-components</name>
+  <created>1437257217409</created>
+  <lastModified>1437257217409</lastModified>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1437257217409</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

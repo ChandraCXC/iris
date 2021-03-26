@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>cfa</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>cfa</name>
+  <created>1411069425779</created>
+  <lastModified>1411069425779</lastModified>
+  <additionalInfo>
+    <lastUpdated>1411069425779</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

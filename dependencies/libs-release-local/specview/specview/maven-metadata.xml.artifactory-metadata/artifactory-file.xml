@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>specview/specview/maven-metadata.xml</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>maven-metadata.xml</name>
+  <created>1405626436574</created>
+  <lastModified>1502805799422</lastModified>
+  <size>571</size>
+  <additionalInfo>
+    <createdBy>user</createdBy>
+    <modifiedBy>admin</modifiedBy>
+    <lastUpdated>1502805799422</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>b78da161714ed0a01148ad7b9539b761</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>eef2741fdf9c1b449ecc3abe07e65fdc30f2fcbc</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

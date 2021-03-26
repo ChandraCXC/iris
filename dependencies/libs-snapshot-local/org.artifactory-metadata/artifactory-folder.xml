@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>org</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>org</name>
+  <created>1437269874723</created>
+  <lastModified>1437269874723</lastModified>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1437269874723</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

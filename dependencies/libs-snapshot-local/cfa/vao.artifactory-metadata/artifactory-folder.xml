@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>cfa/vao</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>vao</name>
+  <created>1434048598392</created>
+  <lastModified>1434048598392</lastModified>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1434048598392</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

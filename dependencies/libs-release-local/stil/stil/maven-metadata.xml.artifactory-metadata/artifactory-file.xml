@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>stil/stil/maven-metadata.xml</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>maven-metadata.xml</name>
+  <created>1405627383684</created>
+  <lastModified>1502805799452</lastModified>
+  <size>355</size>
+  <additionalInfo>
+    <createdBy>user</createdBy>
+    <modifiedBy>admin</modifiedBy>
+    <lastUpdated>1502805799452</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>321ffb94617999cc7c30284fc3b0b2b4</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>e7433a8b1fa72758be0febf8dc7b06e933a2e8b8</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

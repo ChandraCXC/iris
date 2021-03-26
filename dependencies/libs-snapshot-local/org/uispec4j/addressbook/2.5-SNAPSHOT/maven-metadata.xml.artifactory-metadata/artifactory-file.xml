@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>org/uispec4j/addressbook/2.5-SNAPSHOT/maven-metadata.xml</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>maven-metadata.xml</name>
+  <created>1437269889993</created>
+  <lastModified>1502805810667</lastModified>
+  <size>767</size>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>admin</modifiedBy>
+    <lastUpdated>1502805810667</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>0e6efd81528d6374072ce9fb7e69c2eb</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>8947e33f6b629a65c9c58ce68f4250dde66cdd04</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

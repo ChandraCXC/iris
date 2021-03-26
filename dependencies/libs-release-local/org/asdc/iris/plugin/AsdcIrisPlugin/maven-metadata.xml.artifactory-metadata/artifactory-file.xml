@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>org/asdc/iris/plugin/AsdcIrisPlugin/maven-metadata.xml</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>maven-metadata.xml</name>
+  <created>1405630491040</created>
+  <lastModified>1502805799253</lastModified>
+  <size>389</size>
+  <additionalInfo>
+    <createdBy>anonymous</createdBy>
+    <modifiedBy>admin</modifiedBy>
+    <lastUpdated>1502805799253</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>d137c4601b76953ea9d7ff212bc30ae2</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>64cf9cee5d2805c8624cb5a70d40acdd398f19bc</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

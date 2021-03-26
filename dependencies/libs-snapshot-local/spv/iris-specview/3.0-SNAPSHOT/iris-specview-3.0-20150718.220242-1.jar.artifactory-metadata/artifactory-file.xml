@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>spv/iris-specview/3.0-SNAPSHOT/iris-specview-3.0-20150718.220242-1.jar</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>iris-specview-3.0-20150718.220242-1.jar</name>
+  <created>1437257143026</created>
+  <lastModified>1437257143011</lastModified>
+  <size>104770</size>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1437257143011</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>5b94a5a03dab6cee956ccf5c7ef0c2dc</original>
+          <actual>5b94a5a03dab6cee956ccf5c7ef0c2dc</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>855b14892d37b9db11acf7f6c80d024401221712</original>
+          <actual>855b14892d37b9db11acf7f6c80d024401221712</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

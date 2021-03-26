@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>ext-release-local</repoKey>
+    <path>org/astrogrid/jsamp</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>jsamp</name>
+  <created>1450675092733</created>
+  <lastModified>1450675092733</lastModified>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1450675092733</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

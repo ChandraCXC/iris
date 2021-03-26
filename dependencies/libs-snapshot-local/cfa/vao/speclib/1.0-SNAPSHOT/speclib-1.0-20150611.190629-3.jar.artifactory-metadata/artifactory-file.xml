@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>cfa/vao/speclib/1.0-SNAPSHOT/speclib-1.0-20150611.190629-3.jar</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>speclib-1.0-20150611.190629-3.jar</name>
+  <created>1434049488479</created>
+  <lastModified>1434049488471</lastModified>
+  <size>85766</size>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1434049488471</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>a70fc3137bff778e3cbc5e89c82c806d</original>
+          <actual>a70fc3137bff778e3cbc5e89c82c806d</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>375c717874d9dd9156e20c6ddbf2fcad0d593dfc</original>
+          <actual>375c717874d9dd9156e20c6ddbf2fcad0d593dfc</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

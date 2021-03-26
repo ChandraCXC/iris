@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>cfa/vo/sed-builder</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>sed-builder</name>
+  <created>1437257151999</created>
+  <lastModified>1437257151999</lastModified>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1437257151999</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

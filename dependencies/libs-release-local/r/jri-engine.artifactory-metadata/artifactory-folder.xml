@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>r/jri-engine</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>jri-engine</name>
+  <created>1411069426579</created>
+  <lastModified>1411069426579</lastModified>
+  <additionalInfo>
+    <lastUpdated>1411069426579</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

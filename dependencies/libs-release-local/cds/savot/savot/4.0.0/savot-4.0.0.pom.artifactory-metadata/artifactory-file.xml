@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>cds/savot/savot/4.0.0/savot-4.0.0.pom</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>savot-4.0.0.pom</name>
+  <created>1405629011727</created>
+  <lastModified>1405629011723</lastModified>
+  <size>4718</size>
+  <additionalInfo>
+    <createdBy>anonymous</createdBy>
+    <modifiedBy>anonymous</modifiedBy>
+    <lastUpdated>1405629011723</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>10995fa11d9b58a30188701acef8156a</original>
+          <actual>10995fa11d9b58a30188701acef8156a</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>34bdde351965b630aab7e6de5e1c1bf9f8c2062c</original>
+          <actual>34bdde351965b630aab7e6de5e1c1bf9f8c2062c</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>org/uispec4j/addressbook/2.5-SNAPSHOT/addressbook-2.5-20150719.013508-1.jar</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>addressbook-2.5-20150719.013508-1.jar</name>
+  <created>1437269889148</created>
+  <lastModified>1437269889142</lastModified>
+  <size>49115</size>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1437269889142</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>a2cada5218705c505cfceebffb1e1a21</original>
+          <actual>a2cada5218705c505cfceebffb1e1a21</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>dd8fa6d1876f7f819b44a9ee49bb330f40d672bd</original>
+          <actual>dd8fa6d1876f7f819b44a9ee49bb330f40d672bd</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

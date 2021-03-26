@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>org/uispec4j/uispec4j-root/2.5-SNAPSHOT/uispec4j-root-2.5-20150719.013507-1.pom</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>uispec4j-root-2.5-20150719.013507-1.pom</name>
+  <created>1437269887784</created>
+  <lastModified>1437269887778</lastModified>
+  <size>2699</size>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1437269887778</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>234a3d1d95fcb2990d421153fe111747</original>
+          <actual>234a3d1d95fcb2990d421153fe111747</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>65af4e949f6411075ae2469a547d4bd93fee450d</original>
+          <actual>65af4e949f6411075ae2469a547d4bd93fee450d</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

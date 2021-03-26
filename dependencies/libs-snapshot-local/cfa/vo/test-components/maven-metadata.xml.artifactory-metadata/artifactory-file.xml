@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>cfa/vo/test-components/maven-metadata.xml</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>maven-metadata.xml</name>
+  <created>1437257222217</created>
+  <lastModified>1502805810636</lastModified>
+  <size>368</size>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>admin</modifiedBy>
+    <lastUpdated>1502805810636</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>fe054aecc276c4f7e8d757dbd2ed3b3a</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>42198124395474bcea8c0a74b41220b0896d7b12</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

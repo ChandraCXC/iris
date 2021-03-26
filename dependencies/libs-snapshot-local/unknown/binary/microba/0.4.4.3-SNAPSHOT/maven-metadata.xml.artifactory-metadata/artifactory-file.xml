@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>unknown/binary/microba/0.4.4.3-SNAPSHOT/maven-metadata.xml</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>maven-metadata.xml</name>
+  <created>1464805362064</created>
+  <lastModified>1502805810767</lastModified>
+  <size>777</size>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>admin</modifiedBy>
+    <lastUpdated>1502805810767</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>b3883a900262963d5c25fc0672c09391</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>d33c5362febb194fe92a508e73df9aa16829d9b1</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

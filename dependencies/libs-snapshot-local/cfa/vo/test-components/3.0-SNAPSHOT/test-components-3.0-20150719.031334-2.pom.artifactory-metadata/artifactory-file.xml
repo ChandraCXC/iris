@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>cfa/vo/test-components/3.0-SNAPSHOT/test-components-3.0-20150719.031334-2.pom</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>test-components-3.0-20150719.031334-2.pom</name>
+  <created>1437275805198</created>
+  <lastModified>1437275805197</lastModified>
+  <size>2771</size>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1437275805197</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>f59e8d1e7a1b4615606fba82ada2be01</original>
+          <actual>f59e8d1e7a1b4615606fba82ada2be01</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>41a198484c09fe68b296aa8cfbecdac5c934bd70</original>
+          <actual>41a198484c09fe68b296aa8cfbecdac5c934bd70</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

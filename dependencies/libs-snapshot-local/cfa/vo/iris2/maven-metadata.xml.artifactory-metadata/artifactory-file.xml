@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>cfa/vo/iris2/maven-metadata.xml</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>maven-metadata.xml</name>
+  <created>1437275406251</created>
+  <lastModified>1502805810581</lastModified>
+  <size>358</size>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>admin</modifiedBy>
+    <lastUpdated>1502805810581</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>11fc75ed9be59260ffcc44af6daf6a67</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>342ff9fe4e039e14bd5d81be956d0985c9291c7f</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

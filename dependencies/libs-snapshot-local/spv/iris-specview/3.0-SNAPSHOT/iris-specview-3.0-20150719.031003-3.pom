@@ -1,0 +1,98 @@
+<!--
+
+  Copyright (C) 2012, 2013, 2015 Smithsonian Astrophysical Observatory
+ 
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+          http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ 
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>spv</groupId>
+    <artifactId>iris-specview</artifactId>
+    <packaging>jar</packaging>
+    <name>iris-specview</name>
+    <url>http://maven.apache.org</url>
+
+    <parent>
+        <groupId>cfa.vo</groupId>
+        <artifactId>iris2</artifactId>
+        <version>3.0-SNAPSHOT</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>cfa.vo</groupId>
+            <artifactId>iris-common</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+<!--        <dependency>
+            <groupId>specview</groupId>
+            <artifactId>specview</artifactId>
+            <version>20141119b1</version>
+        </dependency>-->
+<!--        <dependency>
+            <groupId>cds.savot.common</groupId>
+            <artifactId>cds.savot.common</artifactId>
+            <version>cds.savot.common</version>
+        </dependency>
+        <dependency>
+            <groupId>cds.savot.model</groupId>
+            <artifactId>cds.savot.model</artifactId>
+            <version>cds.savot.model</version>
+        </dependency>
+        <dependency>
+            <groupId>cds.savot.pull</groupId>
+            <artifactId>cds.savot.pull</artifactId>
+            <version>cds.savot.pull</version>
+        </dependency>
+        <dependency>
+            <groupId>cds.savot.writer</groupId>
+            <artifactId>cds.savot.writer</artifactId>
+            <version>cds.savot.writer</version>
+        </dependency>-->
+        <dependency>
+          <groupId>cds.savot</groupId>
+          <artifactId>savot</artifactId>
+          <version>4.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>xml</groupId>
+            <artifactId>xml</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.help</groupId>
+            <artifactId>javahelp</artifactId>
+            <version>2.0.05</version>
+        </dependency>
+        <dependency>
+            <groupId>org.python</groupId>
+            <artifactId>jython</artifactId>
+            <version>2.5.3</version>
+        </dependency>
+<!--        <dependency>
+            <groupId>cfa.vo</groupId>
+            <artifactId>sed-builder</artifactId>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>-->
+    </dependencies>
+</project>

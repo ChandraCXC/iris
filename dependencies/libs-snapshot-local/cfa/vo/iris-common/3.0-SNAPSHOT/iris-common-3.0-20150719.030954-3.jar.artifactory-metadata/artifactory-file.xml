@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>cfa/vo/iris-common/3.0-SNAPSHOT/iris-common-3.0-20150719.030954-3.jar</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>iris-common-3.0-20150719.030954-3.jar</name>
+  <created>1437275574988</created>
+  <lastModified>1437275574987</lastModified>
+  <size>256298</size>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1437275574987</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>0dffd3a0e1f748bc38255d7f2d863046</original>
+          <actual>0dffd3a0e1f748bc38255d7f2d863046</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>402b132a11cb6e41cedc698501b3fc9883e65c42</original>
+          <actual>402b132a11cb6e41cedc698501b3fc9883e65c42</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

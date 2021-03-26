@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>r/jri-engine/0.5/jri-engine-0.5-5.jar</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>jri-engine-0.5-5.jar</name>
+  <created>1405628239935</created>
+  <lastModified>1405628235000</lastModified>
+  <size>10276</size>
+  <additionalInfo>
+    <createdBy>user</createdBy>
+    <modifiedBy>user</modifiedBy>
+    <lastUpdated>1405628235000</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>f0b44c118791d6fad4e0d0e466c8964d</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>754cbfa3cfee45daba82989cf20f564b91a9f48e</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

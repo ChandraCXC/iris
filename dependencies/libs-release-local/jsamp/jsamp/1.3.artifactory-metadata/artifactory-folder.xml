@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>jsamp/jsamp/1.3</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>1.3</name>
+  <created>1411069426891</created>
+  <lastModified>1411069426891</lastModified>
+  <additionalInfo>
+    <lastUpdated>1411069426891</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

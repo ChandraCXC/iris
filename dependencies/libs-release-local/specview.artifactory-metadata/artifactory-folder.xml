@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>specview</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>specview</name>
+  <created>1411069450426</created>
+  <lastModified>1411069450426</lastModified>
+  <additionalInfo>
+    <lastUpdated>1411069450426</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

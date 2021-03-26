@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>org/uispec4j/calculator/2.5-SNAPSHOT/calculator-2.5-20150719.013510-1.jar</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>calculator-2.5-20150719.013510-1.jar</name>
+  <created>1437269890760</created>
+  <lastModified>1437269890754</lastModified>
+  <size>17589</size>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1437269890754</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>bcf09d470e43446d9807fdf951a94bb8</original>
+          <actual>bcf09d470e43446d9807fdf951a94bb8</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>a6fd61cb40ecab9a2a5b50a16759867f69fcfe3d</original>
+          <actual>a6fd61cb40ecab9a2a5b50a16759867f69fcfe3d</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

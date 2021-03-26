@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>xml/xml/1.0/xml-1.0.jar</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>xml-1.0.jar</name>
+  <created>1405629684277</created>
+  <lastModified>1405629682000</lastModified>
+  <size>132472</size>
+  <additionalInfo>
+    <createdBy>user</createdBy>
+    <modifiedBy>user</modifiedBy>
+    <lastUpdated>1405629682000</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>4631613115b4acd9b1f59964c3688db2</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>7c0819f5ff85f642b4658b8f74697a10d85cf61f</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

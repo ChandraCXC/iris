@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>sherpa/sherpa/iris-2.0b7</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>iris-2.0b7</name>
+  <created>1411069427245</created>
+  <lastModified>1411069427245</lastModified>
+  <additionalInfo>
+    <lastUpdated>1411069427245</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

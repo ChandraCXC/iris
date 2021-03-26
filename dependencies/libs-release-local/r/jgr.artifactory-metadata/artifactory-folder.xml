@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>r/jgr</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>jgr</name>
+  <created>1411069426512</created>
+  <lastModified>1411069426512</lastModified>
+  <additionalInfo>
+    <lastUpdated>1411069426512</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

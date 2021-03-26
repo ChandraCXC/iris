@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>sherpa/sherpa/iris-2.0b7/sherpa-iris-2.0b7.pom</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>sherpa-iris-2.0b7.pom</name>
+  <created>1405631015558</created>
+  <lastModified>1405630903000</lastModified>
+  <size>482</size>
+  <additionalInfo>
+    <createdBy>user</createdBy>
+    <modifiedBy>user</modifiedBy>
+    <lastUpdated>1405630903000</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>c93c38c7c3234b4f9554c83286528b57</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>1220d4bb0a08691e6811c59792fdfd07ef686a18</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

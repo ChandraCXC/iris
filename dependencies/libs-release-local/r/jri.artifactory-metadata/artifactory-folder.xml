@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>r/jri</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>jri</name>
+  <created>1411069426441</created>
+  <lastModified>1411069426441</lastModified>
+  <additionalInfo>
+    <lastUpdated>1411069426441</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

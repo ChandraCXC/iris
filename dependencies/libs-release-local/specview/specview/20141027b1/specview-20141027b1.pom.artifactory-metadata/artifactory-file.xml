@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>specview/specview/20141027b1/specview-20141027b1.pom</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>specview-20141027b1.pom</name>
+  <created>1416841400571</created>
+  <lastModified>1416841307000</lastModified>
+  <size>453</size>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1416841307000</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>b7febb7b5c5bcefd2fb57edd5c4c23d0</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>3beef7872917ffe24278f8fc8f72ba120bbc9e44</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>jcenter-cache</repoKey>
+    <path>org/ini4j/ini4j/0.5.2/ini4j-0.5.2.jar</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>ini4j-0.5.2.jar</name>
+  <created>1405626067457</created>
+  <lastModified>1309880038000</lastModified>
+  <size>101578</size>
+  <additionalInfo>
+    <createdBy>anonymous</createdBy>
+    <modifiedBy>anonymous</modifiedBy>
+    <lastUpdated>1405626067659</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <actual>50738a9e30cce8f6d63d5a2b63fffd63</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>16561cb11c221b5928119e10d7636c95ee5c960d</original>
+          <actual>16561cb11c221b5928119e10d7636c95ee5c960d</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

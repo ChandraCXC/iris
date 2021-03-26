@@ -411,10 +411,15 @@
 
     <repositories>
 
-        <repository>
+       <repository>
             <id>cxc</id>
             <name>cxc</name>
-            <url>http://artifactory.cfa.harvard.edu/artifactory/repo</url>
+            <url>file:${project.basedir}/../dependencies/libs-release-local</url>
+        </repository>
+        <repository>
+            <id>cxc-snapshots</id>
+            <name>cxc-snapshots</name>
+            <url>file:${project.basedir}/../dependencies/libs-snapshot-local</url>
         </repository>
         <repository>
             <url>https://maven.java.net/content/repositories/public</url>
@@ -422,7 +427,7 @@
             <layout>default</layout>
         </repository>
         <repository>
-            <url>http://central.maven.org/maven2/</url>
+            <url>https://repo1.maven.org/maven2</url>
             <id>central</id>
             <layout>default</layout>
         </repository>

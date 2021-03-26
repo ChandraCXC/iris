@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>r/jri-engine/0.5/jri-engine-0.5.pom</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>jri-engine-0.5.pom</name>
+  <created>1405628239940</created>
+  <lastModified>1405628235000</lastModified>
+  <size>441</size>
+  <additionalInfo>
+    <createdBy>user</createdBy>
+    <modifiedBy>user</modifiedBy>
+    <lastUpdated>1405628235000</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>904e3a0294671eba7458c818a8d09fa3</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>fc0415629ad8fe7c31fc05c5282a90eae62fe096</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

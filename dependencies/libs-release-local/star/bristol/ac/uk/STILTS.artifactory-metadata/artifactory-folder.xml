@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>ext-release-local</repoKey>
+    <path>star/bristol/ac/uk/STILTS</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>STILTS</name>
+  <created>1438022509161</created>
+  <lastModified>1438022509161</lastModified>
+  <additionalInfo>
+    <createdBy>eholum</createdBy>
+    <modifiedBy>eholum</modifiedBy>
+    <lastUpdated>1438022509161</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

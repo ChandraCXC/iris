@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>ext-release-local</repoKey>
+    <path>star/bristol/ac/uk/stitls/3.0-12</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>3.0-12</name>
+  <created>1438022260407</created>
+  <lastModified>1438022260407</lastModified>
+  <additionalInfo>
+    <createdBy>eholum</createdBy>
+    <modifiedBy>eholum</modifiedBy>
+    <lastUpdated>1438022260407</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

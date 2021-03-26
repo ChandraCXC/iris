@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>jsky/jsky/3.0</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>3.0</name>
+  <created>1411069425417</created>
+  <lastModified>1411069425417</lastModified>
+  <additionalInfo>
+    <lastUpdated>1411069425417</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

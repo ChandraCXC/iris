@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>ext-release-local</repoKey>
+    <path>star/bristol/ac/uk/STILTS/maven-metadata.xml</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>maven-metadata.xml</name>
+  <created>1438022509537</created>
+  <lastModified>1502805774735</lastModified>
+  <size>383</size>
+  <additionalInfo>
+    <createdBy>eholum</createdBy>
+    <modifiedBy>admin</modifiedBy>
+    <lastUpdated>1502805774735</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>f355ae9a1adf550c7b0b863aa9c6d314</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>5cef0df089ffdcb4d2a8facb32e22657877f29c6</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>
