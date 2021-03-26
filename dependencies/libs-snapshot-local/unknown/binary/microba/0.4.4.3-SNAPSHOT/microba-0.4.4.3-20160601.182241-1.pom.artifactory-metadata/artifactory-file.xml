@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>unknown/binary/microba/0.4.4.3-SNAPSHOT/microba-0.4.4.3-20160601.182241-1.pom</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>microba-0.4.4.3-20160601.182241-1.pom</name>
+  <created>1464805361809</created>
+  <lastModified>1464805302000</lastModified>
+  <size>464</size>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1464805302000</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>d726eb01b078b10480e1928f703b09be</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>9fa699b3f254cd4c4ac34b0a870fc22709ceea64</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

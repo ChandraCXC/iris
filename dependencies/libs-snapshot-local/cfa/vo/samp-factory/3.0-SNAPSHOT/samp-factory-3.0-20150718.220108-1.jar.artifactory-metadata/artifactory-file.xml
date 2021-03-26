@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>cfa/vo/samp-factory/3.0-SNAPSHOT/samp-factory-3.0-20150718.220108-1.jar</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>samp-factory-3.0-20150718.220108-1.jar</name>
+  <created>1437257049584</created>
+  <lastModified>1437257049422</lastModified>
+  <size>20098</size>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1437257049422</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>b0e95fb3cb90364e8dbbec0e4691e026</original>
+          <actual>b0e95fb3cb90364e8dbbec0e4691e026</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>05b34c6e72abb196da2e032bb9bc06a5b208dee0</original>
+          <actual>05b34c6e72abb196da2e032bb9bc06a5b208dee0</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

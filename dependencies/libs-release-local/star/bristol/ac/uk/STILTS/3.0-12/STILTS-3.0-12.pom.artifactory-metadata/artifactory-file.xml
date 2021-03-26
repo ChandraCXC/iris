@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>ext-release-local</repoKey>
+    <path>star/bristol/ac/uk/STILTS/3.0-12/STILTS-3.0-12.pom</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>STILTS-3.0-12.pom</name>
+  <created>1438022509350</created>
+  <lastModified>1438022434000</lastModified>
+  <size>457</size>
+  <additionalInfo>
+    <createdBy>eholum</createdBy>
+    <modifiedBy>eholum</modifiedBy>
+    <lastUpdated>1438022434000</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>490b6f48b94fd55d6da37366acd76cb6</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>901180c214cdc703ec7130db2f9031e8e940ba7a</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

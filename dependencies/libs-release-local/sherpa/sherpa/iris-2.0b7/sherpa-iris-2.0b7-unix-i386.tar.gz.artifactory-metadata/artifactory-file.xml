@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>sherpa/sherpa/iris-2.0b7/sherpa-iris-2.0b7-unix-i386.tar.gz</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>sherpa-iris-2.0b7-unix-i386.tar.gz</name>
+  <created>1405631204268</created>
+  <lastModified>1405631179000</lastModified>
+  <size>32807458</size>
+  <additionalInfo>
+    <createdBy>user</createdBy>
+    <modifiedBy>user</modifiedBy>
+    <lastUpdated>1405631179000</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>78dca08e93db1ec669705724922e90d6</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>6713e7c8faebb21fd941138a332c1c4ba446f1de</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

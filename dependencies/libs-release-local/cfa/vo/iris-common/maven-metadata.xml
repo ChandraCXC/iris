@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>cfa.vo</groupId>
+  <artifactId>iris-common</artifactId>
+  <version>2.0.1</version>
+  <versioning>
+    <latest>2.0.1</latest>
+    <release>2.0.1</release>
+    <versions>
+      <version>2.0.1</version>
+    </versions>
+    <lastUpdated>20170815140318</lastUpdated>
+  </versioning>
+</metadata>

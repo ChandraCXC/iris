@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>sherpa</groupId>
+  <artifactId>sherpa</artifactId>
+  <version>iris-2.0b7</version>
+  <versioning>
+    <latest>iris-2.0b7</latest>
+    <release>iris-2.0b7</release>
+    <versions>
+      <version>iris-2.0b7</version>
+    </versions>
+    <lastUpdated>20170815140319</lastUpdated>
+  </versioning>
+</metadata>

@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>cfa/vo/iris/3.0-SNAPSHOT/iris-3.0-20150718.220406-1.pom</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>iris-3.0-20150718.220406-1.pom</name>
+  <created>1437257234048</created>
+  <lastModified>1437257234046</lastModified>
+  <size>22062</size>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1437257234046</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>18715a666f15be8344db7761598706bb</original>
+          <actual>18715a666f15be8344db7761598706bb</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>4504ecdb87724ed2056dae161ad23aee128bbc9b</original>
+          <actual>4504ecdb87724ed2056dae161ad23aee128bbc9b</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

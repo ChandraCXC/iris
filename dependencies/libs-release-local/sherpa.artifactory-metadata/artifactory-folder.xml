@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>sherpa</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>sherpa</name>
+  <created>1411069427173</created>
+  <lastModified>1411069427173</lastModified>
+  <additionalInfo>
+    <lastUpdated>1411069427173</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

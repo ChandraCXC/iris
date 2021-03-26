@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>org/asdc/iris/plugin/AsdcIrisPlugin</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>AsdcIrisPlugin</name>
+  <created>1411069451146</created>
+  <lastModified>1411069451146</lastModified>
+  <additionalInfo>
+    <lastUpdated>1411069451146</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

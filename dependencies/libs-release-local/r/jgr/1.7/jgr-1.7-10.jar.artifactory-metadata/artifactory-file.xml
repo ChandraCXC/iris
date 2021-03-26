@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>r/jgr/1.7/jgr-1.7-10.jar</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>jgr-1.7-10.jar</name>
+  <created>1405628220954</created>
+  <lastModified>1405628209000</lastModified>
+  <size>560728</size>
+  <additionalInfo>
+    <createdBy>user</createdBy>
+    <modifiedBy>user</modifiedBy>
+    <lastUpdated>1405628209000</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>bc6d42b0c8a75bbc1354286adb747d9b</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>9c74978a33bdf2f2cad56c1db28079db9c6277a2</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

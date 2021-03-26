@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>stil/stil/3.0/stil-3.0.pom</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>stil-3.0.pom</name>
+  <created>1405627383671</created>
+  <lastModified>1405627366000</lastModified>
+  <size>439</size>
+  <additionalInfo>
+    <createdBy>user</createdBy>
+    <modifiedBy>user</modifiedBy>
+    <lastUpdated>1405627366000</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>86ec601be87758b24881dfa59ea60ab6</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>87a53c1e2d8e884a87f7bb38f36f5c3ab850d8e4</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

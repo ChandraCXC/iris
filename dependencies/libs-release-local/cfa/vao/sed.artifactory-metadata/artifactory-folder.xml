@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>cfa/vao/sed</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>sed</name>
+  <created>1411069425786</created>
+  <lastModified>1411069425786</lastModified>
+  <additionalInfo>
+    <lastUpdated>1411069425786</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

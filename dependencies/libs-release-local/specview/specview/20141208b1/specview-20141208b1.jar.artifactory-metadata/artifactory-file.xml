@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>specview/specview/20141208b1/specview-20141208b1.jar</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>specview-20141208b1.jar</name>
+  <created>1418146642640</created>
+  <lastModified>1418146613000</lastModified>
+  <size>5998097</size>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1418146613000</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>6163d05278bc8f05a7fc4b4bcba212c9</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>e32f996e3304b3f8f70b7436fcd70ac04e0e43ac</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

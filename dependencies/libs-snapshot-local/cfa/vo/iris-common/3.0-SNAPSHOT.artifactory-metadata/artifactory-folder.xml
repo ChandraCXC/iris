@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>cfa/vo/iris-common/3.0-SNAPSHOT</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>3.0-SNAPSHOT</name>
+  <created>1437257052194</created>
+  <lastModified>1437257052194</lastModified>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1437257052194</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>unknown/binary</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>binary</name>
+  <created>1464812507255</created>
+  <lastModified>1464812507255</lastModified>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1464812507255</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

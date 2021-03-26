@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>cds/savot</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>savot</name>
+  <created>1411069426704</created>
+  <lastModified>1411069426704</lastModified>
+  <additionalInfo>
+    <lastUpdated>1411069426704</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>cfa/vo/iris-common</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>iris-common</name>
+  <created>1411069426161</created>
+  <lastModified>1411069426161</lastModified>
+  <additionalInfo>
+    <lastUpdated>1411069426161</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

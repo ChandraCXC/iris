@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>org/uispec4j/uispec4j/2.5-SNAPSHOT/uispec4j-2.5-20150719.013454-1.jar</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>uispec4j-2.5-20150719.013454-1.jar</name>
+  <created>1437269874741</created>
+  <lastModified>1437269874717</lastModified>
+  <size>434641</size>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1437269874717</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>48246aa2bfe0dc84b7ed982427f6e4b7</original>
+          <actual>48246aa2bfe0dc84b7ed982427f6e4b7</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>a6b265b8fb78f8d96a1ba417175022369fa520c0</original>
+          <actual>a6b265b8fb78f8d96a1ba417175022369fa520c0</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

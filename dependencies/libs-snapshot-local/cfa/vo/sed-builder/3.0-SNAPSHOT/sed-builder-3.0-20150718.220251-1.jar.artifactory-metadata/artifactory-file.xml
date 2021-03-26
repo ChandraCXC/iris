@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>cfa/vo/sed-builder/3.0-SNAPSHOT/sed-builder-3.0-20150718.220251-1.jar</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>sed-builder-3.0-20150718.220251-1.jar</name>
+  <created>1437257152006</created>
+  <lastModified>1437257151995</lastModified>
+  <size>1046061</size>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1437257151995</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>804434e32cbc7003b3ce61f7b3040fd3</original>
+          <actual>804434e32cbc7003b3ce61f7b3040fd3</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <actual>fe930b5b8f4a7bda893ef78c55d58cfb92451ab0</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>ext-release-local</repoKey>
+    <path>star/bristol/ac/uk/stitls/3.0-12/stitls-3.0-12.jar</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>stitls-3.0-12.jar</name>
+  <created>1438022260413</created>
+  <lastModified>1438022175000</lastModified>
+  <size>11718806</size>
+  <additionalInfo>
+    <createdBy>eholum</createdBy>
+    <modifiedBy>eholum</modifiedBy>
+    <lastUpdated>1438022175000</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>ec8ef2e07238a6783fa417e63771869f</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>f25012318c88545ab5160d1a8f8fc5568cd5dcf2</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

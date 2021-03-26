@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>cds/savot/savot/maven-metadata.xml</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>maven-metadata.xml</name>
+  <created>1405629011745</created>
+  <lastModified>1502805798842</lastModified>
+  <size>369</size>
+  <additionalInfo>
+    <createdBy>anonymous</createdBy>
+    <modifiedBy>admin</modifiedBy>
+    <lastUpdated>1502805798842</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>5f5230c8b03188e2fcb214221e6dc2da</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>7a599af0312962e5a6e4cc219612ed1304938545</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>jcenter-cache</repoKey>
+    <path>org/ini4j/ini4j/0.5.2</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>0.5.2</name>
+  <created>1411069458007</created>
+  <lastModified>1411069458007</lastModified>
+  <additionalInfo>
+    <lastUpdated>1411069458007</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>ext-release-local</repoKey>
+    <path>org/astrogrid/jsamp/1.3.5/jsamp-1.3.5.jar</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>jsamp-1.3.5.jar</name>
+  <created>1450675093537</created>
+  <lastModified>1450675057000</lastModified>
+  <size>712822</size>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1450675057000</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>d62b40597cdc63430a87a0950499e1a8</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>d931905dc79e59ecf6110296aaa1cf535a04c963</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

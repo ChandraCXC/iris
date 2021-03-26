@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>cfa/vao/sed/sedlib/1.2/sedlib-1.2-sources.jar</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>sedlib-1.2-sources.jar</name>
+  <created>1405625818631</created>
+  <lastModified>1405625818629</lastModified>
+  <size>180235</size>
+  <additionalInfo>
+    <createdBy>anonymous</createdBy>
+    <modifiedBy>anonymous</modifiedBy>
+    <lastUpdated>1405625818629</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>fb02d2279d4637947ac50f6b3716a1c9</original>
+          <actual>fb02d2279d4637947ac50f6b3716a1c9</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>9a3358f80b970fe9dcbb3ba05086368a79820a62</original>
+          <actual>9a3358f80b970fe9dcbb3ba05086368a79820a62</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

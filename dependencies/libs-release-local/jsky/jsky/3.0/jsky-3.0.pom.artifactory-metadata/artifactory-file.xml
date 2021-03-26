@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>jsky/jsky/3.0/jsky-3.0.pom</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>jsky-3.0.pom</name>
+  <created>1460751873105</created>
+  <lastModified>1460751843000</lastModified>
+  <size>6052</size>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1460751843000</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>2f2757f6e81a9af37b97239c2a08fb46</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>809d53e34af91a03fa541eca64c1c1a5e9773672</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>org/uispec4j/calculator</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>calculator</name>
+  <created>1437269890756</created>
+  <lastModified>1437269890756</lastModified>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1437269890756</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

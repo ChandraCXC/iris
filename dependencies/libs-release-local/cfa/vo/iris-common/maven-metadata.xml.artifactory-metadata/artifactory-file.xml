@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>cfa/vo/iris-common/maven-metadata.xml</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>maven-metadata.xml</name>
+  <created>1405630384297</created>
+  <lastModified>1502805798931</lastModified>
+  <size>372</size>
+  <additionalInfo>
+    <createdBy>anonymous</createdBy>
+    <modifiedBy>admin</modifiedBy>
+    <lastUpdated>1502805798931</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>35ad4f4d70e7bab96877f3fdeceb4d4f</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>2bd1519060fa34aaeddf434793b5017f5db35379</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

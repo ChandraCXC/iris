@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>cfa/vo/iris-common/2.0.1/iris-common-2.0.1.jar</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>iris-common-2.0.1.jar</name>
+  <created>1405630384169</created>
+  <lastModified>1405630384164</lastModified>
+  <size>189979</size>
+  <additionalInfo>
+    <createdBy>anonymous</createdBy>
+    <modifiedBy>anonymous</modifiedBy>
+    <lastUpdated>1405630384164</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>759b417aec95cd092fcf94116c72b6d3</original>
+          <actual>759b417aec95cd092fcf94116c72b6d3</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>b61d025d8e3db4f7dcd858c62d333e35b2bb9927</original>
+          <actual>b61d025d8e3db4f7dcd858c62d333e35b2bb9927</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

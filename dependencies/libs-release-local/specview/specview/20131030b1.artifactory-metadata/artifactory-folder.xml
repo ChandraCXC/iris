@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>specview/specview/20131030b1</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>20131030b1</name>
+  <created>1411069450474</created>
+  <lastModified>1411069450474</lastModified>
+  <additionalInfo>
+    <lastUpdated>1411069450474</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

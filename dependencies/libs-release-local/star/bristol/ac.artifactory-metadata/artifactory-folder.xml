@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>ext-release-local</repoKey>
+    <path>star/bristol/ac</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>ac</name>
+  <created>1438022260406</created>
+  <lastModified>1438022260406</lastModified>
+  <additionalInfo>
+    <createdBy>eholum</createdBy>
+    <modifiedBy>eholum</modifiedBy>
+    <lastUpdated>1438022260406</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

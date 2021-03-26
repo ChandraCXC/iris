@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>jsamp/jsamp/1.3/jsamp-1.3-2.jar</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>jsamp-1.3-2.jar</name>
+  <created>1405620797696</created>
+  <lastModified>1405620778000</lastModified>
+  <size>707990</size>
+  <additionalInfo>
+    <createdBy>user</createdBy>
+    <modifiedBy>user</modifiedBy>
+    <lastUpdated>1405620778000</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>c4d5c94e0c8997722404921401228f58</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>078b3b7dd395e57202b48c281ad025e6474cfca1</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

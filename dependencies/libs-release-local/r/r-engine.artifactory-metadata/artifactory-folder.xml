@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>r/r-engine</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>r-engine</name>
+  <created>1411069426360</created>
+  <lastModified>1411069426360</lastModified>
+  <additionalInfo>
+    <lastUpdated>1411069426360</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

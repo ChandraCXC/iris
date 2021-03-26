@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>org/asdc</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>asdc</name>
+  <created>1411069451128</created>
+  <lastModified>1411069451128</lastModified>
+  <additionalInfo>
+    <lastUpdated>1411069451128</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

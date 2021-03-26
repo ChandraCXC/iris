@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>r/r-engine/0.5/r-engine-0.5.pom</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>r-engine-0.5.pom</name>
+  <created>1405628250229</created>
+  <lastModified>1405628245000</lastModified>
+  <size>439</size>
+  <additionalInfo>
+    <createdBy>user</createdBy>
+    <modifiedBy>user</modifiedBy>
+    <lastUpdated>1405628245000</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>NO_ORIG</original>
+          <actual>8e1baa549fc599b039ed63f13d647b3e</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>NO_ORIG</original>
+          <actual>a0a664429940ea93ad2e5618cfdc97d7a5b7ad09</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>

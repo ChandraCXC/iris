@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>cfa/vo/iris2</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>iris2</name>
+  <created>1437275406186</created>
+  <lastModified>1437275406186</lastModified>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1437275406186</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

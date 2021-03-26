@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-folder>
+  <repoPath>
+    <repoKey>libs-snapshot-local</repoKey>
+    <path>cfa/vo/samp-factory</path>
+    <folder>true</folder>
+  </repoPath>
+  <name>samp-factory</name>
+  <created>1437257049490</created>
+  <lastModified>1437257049490</lastModified>
+  <additionalInfo>
+    <createdBy>olaurino</createdBy>
+    <modifiedBy>olaurino</modifiedBy>
+    <lastUpdated>1437257049490</lastUpdated>
+  </additionalInfo>
+</artifactory-folder>

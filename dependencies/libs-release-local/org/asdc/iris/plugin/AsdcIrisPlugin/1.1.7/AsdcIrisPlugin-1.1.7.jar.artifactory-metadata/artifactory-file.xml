@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<artifactory-file>
+  <repoPath>
+    <repoKey>libs-release-local</repoKey>
+    <path>org/asdc/iris/plugin/AsdcIrisPlugin/1.1.7/AsdcIrisPlugin-1.1.7.jar</path>
+    <folder>false</folder>
+  </repoPath>
+  <name>AsdcIrisPlugin-1.1.7.jar</name>
+  <created>1405630490933</created>
+  <lastModified>1405630490926</lastModified>
+  <size>64067</size>
+  <additionalInfo>
+    <createdBy>anonymous</createdBy>
+    <modifiedBy>anonymous</modifiedBy>
+    <lastUpdated>1405630490926</lastUpdated>
+    <checksumsInfo>
+      <checksums>
+        <checksum>
+          <type>md5</type>
+          <original>bd3a168de7cb0b98e7c80dac334b5118</original>
+          <actual>bd3a168de7cb0b98e7c80dac334b5118</actual>
+        </checksum>
+        <checksum>
+          <type>sha1</type>
+          <original>d4604c072ff980d5675132930a3bc5e8ba484db9</original>
+          <actual>d4604c072ff980d5675132930a3bc5e8ba484db9</actual>
+        </checksum>
+      </checksums>
+    </checksumsInfo>
+  </additionalInfo>
+</artifactory-file>
